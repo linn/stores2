@@ -183,8 +183,6 @@ Resources:
               Value: !Ref loggingEnvironment
             - Name: LOG_MAX_INNER_EXCEPTION_DEPTH
               Value: !Ref loggingMaxInnerExceptionDepth
-            - Name: SMTP_HOSTNAME
-              Value: !Ref smtpHostname
             - Name: PDF_SERVICE_ROOT
               Value: !Ref pdfServiceRoot
             - Name: awsRegion
