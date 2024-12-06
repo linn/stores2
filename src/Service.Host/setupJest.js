@@ -1,4 +1,6 @@
 import 'regenerator-runtime/runtime';
+global.TextEncoder = require('util').TextEncoder;
+global.TextDecoder = require('util').TextDecoder;
 
 global.console = {
     // suppresses errors and warnings in tests
