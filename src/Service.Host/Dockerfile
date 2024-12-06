@@ -4,6 +4,9 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 ARG gitBranch=unspecified
 ENV TZ=Europe/London
 
+RUN apt-get update && apt-get install -y curl
+RUN rm -rf /var/lib/apt/lists/*
+
 EXPOSE 5050
 
 COPY bin/release/net8.0/publish/ /app/bin/
