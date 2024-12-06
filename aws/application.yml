@@ -195,58 +195,58 @@ Resources:
               Value:
                 Fn::ImportValue:
                   !Sub "kms-key-alias${environmentSuffix}"
-  stores2MessagingTaskDefinition:
-    Type: AWS::ECS::TaskDefinition
-    Properties:
-      Tags:
-        - Key: "Project"
-          Value: "stores2"
-        - Key: "CIT"
-          Value: "IT"
-        - Key: AppManagerCFNStackKey
-          Value: !Sub ${AWS::StackId}
-      TaskRoleArn: !GetAtt stores2Role.Arn
-      ContainerDefinitions:
-        - Name: stores2Messaging
-          Essential: 'true'
-          Image: !Sub docker.io/linn/stores2-messaging:${dockerTag}
-          PortMappings:
-            - ContainerPort: 5050
-          Memory: '150'
-          LogConfiguration:
-            LogDriver: gelf
-            Options:
-              'gelf-address': 'udp://syslog.linn.co.uk:12201'
-              'tag': !Sub stores2-messaging-${dockerTag}-ecs-task
-          Environment:
-            - Name: DATABASE_HOST
-              Value: !Ref databaseHost
-            - Name: DATABASE_NAME
-              Value: !Ref databaseName
-            - Name: DATABASE_USER_ID
-              Value: !Ref databaseUserId
-            - Name: DATABASE_PASSWORD
-              Value: !Ref databasePassword
-            - Name: RABBIT_SERVER
-              Value: !Ref rabbitServer
-            - Name: RABBIT_PORT
-              Value: !Ref rabbitPort
-            - Name: RABBIT_USERNAME
-              Value: !Ref rabbitUsername
-            - Name: RABBIT_PASSWORD
-              Value: !Ref rabbitPassword
-            - Name: APP_ROOT
-              Value: !Ref appRoot
-            - Name: PROXY_ROOT
-              Value: !Ref proxyRoot
-            - Name: LOG_AMAZON_SQSQUEUEURI
-              Value: !ImportValue logging-queue-url
-            - Name: LOG_ENVIRONMENT
-              Value: !Ref loggingEnvironment
-            - Name: LOG_MAX_INNER_EXCEPTION_DEPTH
-              Value: !Ref loggingMaxInnerExceptionDepth
-            - Name: awsRegion
-              Value: !Ref AWS::Region
+  # stores2MessagingTaskDefinition:
+  #   Type: AWS::ECS::TaskDefinition
+  #   Properties:
+  #     Tags:
+  #       - Key: "Project"
+  #         Value: "stores2"
+  #       - Key: "CIT"
+  #         Value: "IT"
+  #       - Key: AppManagerCFNStackKey
+  #         Value: !Sub ${AWS::StackId}
+  #     TaskRoleArn: !GetAtt stores2Role.Arn
+  #     ContainerDefinitions:
+  #       - Name: stores2Messaging
+  #         Essential: 'true'
+  #         Image: !Sub docker.io/linn/stores2-messaging:${dockerTag}
+  #         PortMappings:
+  #           - ContainerPort: 5050
+  #         Memory: '150'
+  #         LogConfiguration:
+  #           LogDriver: gelf
+  #           Options:
+  #             'gelf-address': 'udp://syslog.linn.co.uk:12201'
+  #             'tag': !Sub stores2-messaging-${dockerTag}-ecs-task
+  #         Environment:
+  #           - Name: DATABASE_HOST
+  #             Value: !Ref databaseHost
+  #           - Name: DATABASE_NAME
+  #             Value: !Ref databaseName
+  #           - Name: DATABASE_USER_ID
+  #             Value: !Ref databaseUserId
+  #           - Name: DATABASE_PASSWORD
+  #             Value: !Ref databasePassword
+  #           - Name: RABBIT_SERVER
+  #             Value: !Ref rabbitServer
+  #           - Name: RABBIT_PORT
+  #             Value: !Ref rabbitPort
+  #           - Name: RABBIT_USERNAME
+  #             Value: !Ref rabbitUsername
+  #           - Name: RABBIT_PASSWORD
+  #             Value: !Ref rabbitPassword
+  #           - Name: APP_ROOT
+  #             Value: !Ref appRoot
+  #           - Name: PROXY_ROOT
+  #             Value: !Ref proxyRoot
+  #           - Name: LOG_AMAZON_SQSQUEUEURI
+  #             Value: !ImportValue logging-queue-url
+  #           - Name: LOG_ENVIRONMENT
+  #             Value: !Ref loggingEnvironment
+  #           - Name: LOG_MAX_INNER_EXCEPTION_DEPTH
+  #             Value: !Ref loggingMaxInnerExceptionDepth
+  #           - Name: awsRegion
+  #             Value: !Ref AWS::Region
   stores2Service:
     Type: AWS::ECS::Service
     Properties:
@@ -269,20 +269,20 @@ Resources:
         - Field: instanceId
           Type: spread
       TaskDefinition: !Ref stores2TaskDefinition
-  stores2MessagingService:
-    Type: AWS::ECS::Service
-    Properties:
-      Tags:
-        - Key: "Project"
-          Value: "stores2"
-        - Key: "CIT"
-          Value: "IT"
-        - Key: AppManagerCFNStackKey
-          Value: !Sub ${AWS::StackId}
-      # Have to use long form conditional
-      Cluster: !If
-        - isTesting
-        - !Sub ${TestClusterName}
-        - !Sub ${ProductionClusterName}
-      DesiredCount: !If [isTesting, 1, 1]
-      TaskDefinition: !Ref stores2MessagingTaskDefinition
+  # stores2MessagingService:
+  #   Type: AWS::ECS::Service
+  #   Properties:
+  #     Tags:
+  #       - Key: "Project"
+  #         Value: "stores2"
+  #       - Key: "CIT"
+  #         Value: "IT"
+  #       - Key: AppManagerCFNStackKey
+  #         Value: !Sub ${AWS::StackId}
+  #     # Have to use long form conditional
+  #     Cluster: !If
+  #       - isTesting
+  #       - !Sub ${TestClusterName}
+  #       - !Sub ${ProductionClusterName}
+  #     DesiredCount: !If [isTesting, 1, 1]
+  #     TaskDefinition: !Ref stores2MessagingTaskDefinition
