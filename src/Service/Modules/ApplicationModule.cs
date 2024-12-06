@@ -15,14 +15,14 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/", this.Redirect);
-            app.MapGet("/template", this.GetApp);
-            app.MapGet("/template/signin-oidc-client", this.GetApp);
-            app.MapGet("/template/signin-oidc-silent", this.GetSilentRenew);
+            app.MapGet("/stores2", this.GetApp);
+            app.MapGet("/stores2/signin-oidc-client", this.GetApp);
+            app.MapGet("/stores2/signin-oidc-silent", this.GetSilentRenew);
         }
 
         private Task Redirect(HttpRequest req, HttpResponse res)
         {
-            res.Redirect("/template");
+            res.Redirect("/stores2");
             return Task.CompletedTask;
         }
 

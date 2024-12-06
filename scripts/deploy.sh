@@ -12,9 +12,9 @@ if [ "${TRAVIS_BRANCH}" = "main" ]; then
     # master - deploy to production
     echo deploy to production
 
-    aws s3 cp s3://$S3_BUCKET_NAME/template/production.env ./secrets.env
+    aws s3 cp s3://$S3_BUCKET_NAME/stores2/production.env ./secrets.env
 
-    STACK_NAME=template
+    STACK_NAME=stores2
     APP_ROOT=http://app.linn.co.uk
     PROXY_ROOT=http://app.linn.co.uk
   	ENV_SUFFIX=
@@ -22,9 +22,9 @@ if [ "${TRAVIS_BRANCH}" = "main" ]; then
     # pull request based on master - deploy to sys
     echo deploy to sys
 
-    aws s3 cp s3://$S3_BUCKET_NAME/template/sys.env ./secrets.env
+    aws s3 cp s3://$S3_BUCKET_NAME/stores2/sys.env ./secrets.env
 
-    STACK_NAME=template-sys
+    STACK_NAME=stores2-sys
     APP_ROOT=http://app-sys.linn.co.uk
     PROXY_ROOT=http://app.linn.co.uk
     ENV_SUFFIX=-sys

@@ -15,9 +15,9 @@ function Root() {
             <div>
                 <Navigation />
                 <Routes>
-                    <Route path="/" element={<Navigate to="/template" replace />} />
-                    <Route path="/template" element={<App />} />
-                    <Route path="/test" element={<TestPage />} />
+                    <Route path="/" element={<Navigate to="/stores2" replace />} />
+                    <Route path="/stores2" element={<App />} />
+                    <Route path="/stores2/test" element={<TestPage />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>

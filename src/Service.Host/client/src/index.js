@@ -24,7 +24,7 @@ const oidcConfig = {
     client_id: 'app2',
     response_type: 'code',
     scope: 'openid profile email associations',
-    redirect_uri: `${host}/template`,
+    redirect_uri: `${host}/stores2`,
     post_logout_redirect_uri: `${config.proxyRoot}/authentication/Account/Logout`,
     onSigninCallback: () => {
         const redirect = sessionStorage.getItem('auth:redirect');
@@ -32,7 +32,7 @@ const oidcConfig = {
             window.location.href = redirect;
             sessionStorage.removeItem('auth:redirect');
         } else {
-            window.location.href = `${host}/template`;
+            window.location.href = `${host}/stores2`;
         }
     },
     userStore: new WebStorageStateStore({ store: window.localStorage })

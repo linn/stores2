@@ -9,6 +9,6 @@ import App from '../App';
 describe('App tests', () => {
     test('App renders without crashing...', () => {
         const { getByText } = render(<App />);
-        expect(getByText('Template')).toBeInTheDocument();
+        expect(getByText('stores2')).toBeInTheDocument();
     });
 });

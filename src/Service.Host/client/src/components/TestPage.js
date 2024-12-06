@@ -23,7 +23,7 @@ function TestPage() {
                         </ListItem>
                         <ListItem
                             onClick={() => {
-                                navigate('/template');
+                                navigate('/stores2');
                             }}
                         >
                             <Typography color="primary">Navigate Home</Typography>
