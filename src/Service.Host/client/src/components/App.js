@@ -13,11 +13,11 @@ function App() {
         <Page homeUrl={config.appRoot}>
             <Grid container spacing={3}>
                 <Grid item xs={12}>
-                    <Typography variant="h4">Template</Typography>
+                    <Typography variant="h4">stores2</Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <List>
-                        <ListItem component={Link} to="/test">
+                        <ListItem component={Link} to="/stores2/test">
                             <Typography color="primary">Test Page</Typography>
                         </ListItem>
                     </List>

@@ -1,7 +1,7 @@
 {
-  "name": "template",
+  "name": "stores2",
   "version": "1.0.0",
-  "description": "template",
+  "description": "stores2",
   "main": "index.js",
   "scripts": {
     "noEmitOnError": "true",

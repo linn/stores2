@@ -44,8 +44,8 @@ namespace Linn.Stores2.Service.Host
                 options =>
                     {
                         options.Authority = ApplicationSettings.Get().AuthorityUri;
-                        options.CallbackPath = new PathString("/template/signin-oidc");
-                        options.CookiePath = "/template";
+                        options.CallbackPath = new PathString("/stores2/signin-oidc");
+                        options.CookiePath = "/stores2";
                     });
         }
 
@@ -58,7 +58,7 @@ namespace Linn.Stores2.Service.Host
                 app.UseDeveloperExceptionPage();
                 app.UseStaticFiles(new StaticFileOptions
                                        {
-                                           RequestPath = "/template/build",
+                                           RequestPath = "/stores2/build",
                                            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "client", "build"))
                                        });
             }
@@ -66,7 +66,7 @@ namespace Linn.Stores2.Service.Host
             {
                 app.UseStaticFiles(new StaticFileOptions
                                        {
-                                           RequestPath = "/template/build",
+                                           RequestPath = "/stores2/build",
                                            FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "app", "client", "build"))
                                        });
             }

@@ -16,7 +16,7 @@
             // all the routing keys the Listener cares about need to be registered here:
             var routingKeys = new[] { ThingMessage.RoutingKey };
 
-            return services.AddSingleton<ChannelConfiguration>(d => new ChannelConfiguration("template", routingKeys))
+            return services.AddSingleton<ChannelConfiguration>(d => new ChannelConfiguration("stores2", routingKeys))
                 .AddSingleton(d => new EventingBasicConsumer(d.GetService<ChannelConfiguration>()?.ConsumerChannel));
         }
 
