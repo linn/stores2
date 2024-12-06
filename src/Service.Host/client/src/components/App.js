@@ -17,7 +17,7 @@ function App() {
                 </Grid>
                 <Grid item xs={12}>
                     <List>
-                        <ListItem component={Link} to="stores2/test">
+                        <ListItem component={Link} to="/stores2/test">
                             <Typography color="primary">Test Page</Typography>
                         </ListItem>
                     </List>
