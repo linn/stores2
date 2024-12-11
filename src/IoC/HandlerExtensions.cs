@@ -1,8 +1,5 @@
 ﻿namespace Linn.Stores2.IoC
 {
-    using System.Collections.Generic;
-
-    using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Handlers;
     using Linn.Stores2.Resources;
 
@@ -13,6 +10,7 @@
         public static IServiceCollection AddHandlers(this IServiceCollection services)
         {
             return services
+                .AddSingleton<IHandler, JsonResultHandler<CountryResource>>() // singleton? or scoped?
                 .AddScoped<IHandler, JsonResultHandler<ProcessResultResource>>();
         }
     }

@@ -26,7 +26,6 @@
 
 	<ItemGroup>
 	  <Folder Include="ResourceBuilders\" />
-	  <Folder Include="Services\" />
 	</ItemGroup>
 
 </Project>
