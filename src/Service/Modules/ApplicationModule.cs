@@ -16,8 +16,6 @@
         {
             app.MapGet("/", this.Redirect);
             app.MapGet("/stores2", this.GetApp);
-            app.MapGet("/stores2/signin-oidc-client", this.GetApp);
-            app.MapGet("/stores2/signin-oidc-silent", this.GetSilentRenew);
         }
 
         private Task Redirect(HttpRequest req, HttpResponse res)
@@ -29,11 +27,6 @@
         private async Task GetApp(HttpRequest req, HttpResponse res)
         {
             await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
-        }
-
-        private async Task GetSilentRenew(HttpRequest req, HttpResponse res)
-        {
-            await res.Negotiate(new ViewResponse { ViewName = "SilentRenew.html" });
         }
     }
 }

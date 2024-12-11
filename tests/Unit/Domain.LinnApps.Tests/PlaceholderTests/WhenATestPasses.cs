@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.PlayTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.PlaceholderTests
 {
     using FluentAssertions;
 
@@ -6,19 +6,18 @@
 
     public class WhenATestPasses
     {
-        private Thing thing;
-
+        private bool result;
+        
         [SetUp]
         public void SetUp()
         {
-            this.thing = new Thing { Id = 1, Name = "new" };
+            this.result = true;
         }
 
         [Test]
         public void ShouldBeAThing()
         {
-            this.thing.Id.Should().Be(1);
-            this.thing.Name.Should().Be("new");
+            this.result.Should().BeTrue();
         }
     }
 }
