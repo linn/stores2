@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="Linn.Common.Configuration" Version="2.0.0" />
 		<PackageReference Include="Linn.Common.Logging" Version="2.0.0" />
-		<PackageReference Include="Linn.Common.Persistence" Version="3.0.0" />
+		<PackageReference Include="Linn.Common.Persistence" Version="4.0.0" />
 		<PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="4.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="Oracle.EntityFrameworkCore" Version="7.21.13" />
