@@ -13,7 +13,12 @@
         public DateTime DateInvalid { get; protected set; }
 
         public Organisation Organisation { get; protected set; }
-
+        
+        public Carrier()
+        {
+            // efcore
+        }
+        
         public Carrier(
             string code,
             string name,

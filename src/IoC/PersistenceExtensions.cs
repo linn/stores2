@@ -15,7 +15,7 @@
         {
             return services.AddScoped<ServiceDbContext>()
                 .AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
-                .AddScoped<ITransactionManager, TransactionManager>()
+                .AddScoped<ITransactionManager, AsyncTransactionManager>()
                 .AddScoped<IRepository<Country, string>, CountryRepository>();
         }
     }

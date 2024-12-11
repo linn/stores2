@@ -11,7 +11,7 @@
         {
             return services
                 .AddSingleton<IHandler, JsonResultHandler<CountryResource>>() // singleton? or scoped?
-                .AddScoped<IHandler, JsonResultHandler<ProcessResultResource>>();
+                .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>();
         }
     }
 }

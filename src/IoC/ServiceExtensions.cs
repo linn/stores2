@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.IoC
 {
     using Linn.Common.Rendering;
+    using Linn.Stores2.Facade.Services;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +18,8 @@
         {
             return services
                 .AddSingleton<IRazorEngine, RazorEngine>()
-                .AddSingleton<ITemplateEngine, RazorTemplateEngine>();
+                .AddSingleton<ITemplateEngine, RazorTemplateEngine>()
+                .AddScoped<ICountryFacadeService, CountryFacadeService>();
         }
     }
 }

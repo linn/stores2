@@ -17,7 +17,10 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/countries/{countryCode}", this.GetCountry);
         }
 
-        private async Task GetCountry(HttpRequest req, HttpResponse res, ICountryFacadeService service, string countryCode)
+        private async Task GetCountry(
+            HttpRequest req, 
+            HttpResponse res, 
+            ICountryFacadeService service, string countryCode)
         {
             await res.Negotiate(await service.GetCountry(countryCode));
         }
