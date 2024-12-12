@@ -5,6 +5,7 @@
     using System.Net;
 
     using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
 
@@ -12,9 +13,16 @@
 
     public class WhenGettingCountries : ContextBase
     {
+        private Country greatBritain;
+
         [SetUp]
         public void SetUp()
         {
+            this.greatBritain = new Country("GB", "Starmer's Britain");
+
+            this.DbContext.Countries.Add(this.greatBritain);
+            this.DbContext.SaveChanges();
+
             this.Response = this.Client.Get(
                 "/stores2/countries",
                 with =>

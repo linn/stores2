@@ -25,15 +25,11 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
-        protected Country GreatBritain { get; set; }
 
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
-            this.GreatBritain = new Country("GB", "Starmer's Britain");
-            this.DbContext.Countries.Add(this.GreatBritain);
-            this.DbContext.SaveChanges();
 
             this.CountryRepository = new CountryRepository(this.DbContext.Countries);
 
@@ -57,7 +53,7 @@
         [TearDown]
         public void Teardown()
         {
-            this.DbContext.Countries.Remove(this.GreatBritain);
+            this.DbContext.Countries = null;
             this.DbContext.SaveChanges();
         }
     }
