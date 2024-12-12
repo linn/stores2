@@ -20,7 +20,7 @@
         {
             this.greatBritain = new Country("GB", "Starmer's Britain");
 
-            this.DbContext.Countries.Add(this.greatBritain);
+            this.DbContext.Countries.AddAndSave(this.DbContext, this.greatBritain);
             this.DbContext.SaveChanges();
 
             this.Response = this.Client.Get(

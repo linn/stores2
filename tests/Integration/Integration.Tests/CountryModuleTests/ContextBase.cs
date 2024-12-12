@@ -5,6 +5,7 @@
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Facade.Services;
+    using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Service.Modules;
@@ -53,8 +54,7 @@
         [TearDown]
         public void Teardown()
         {
-            this.DbContext.Countries = null;
-            this.DbContext.SaveChanges();
+           this.DbContext.Countries.RemoveAllAndSave(this.DbContext);
         }
     }
 }
