@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Facade.Services
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
@@ -7,8 +8,6 @@ namespace Linn.Stores2.Facade.Services
 
     public interface ICountryFacadeService
     {
-        Task<IResult<CountryResource>> GetCountry(string countryCode);
-        
-        Task<IResult<CountryResource>> GetAllCountries();
+        Task<IResult<IEnumerable<CountryResource>>> GetAllCountries();
     }
 }

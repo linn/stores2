@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="Linn.Common.Facade" Version="12.0.0" />
 		<PackageReference Include="Linn.Common.Logging" Version="2.0.0" />
-		<PackageReference Include="linn.Common.Persistence" Version="4.0.0" />
+		<PackageReference Include="linn.Common.Persistence" Version="4.2.0" />
 		<PackageReference Include="Linn.Common.Proxy.LinnApps" Version="3.2.0" />
 		<PackageReference Include="Linn.Common.Reporting" Version="1.9.0" />
 		<PackageReference Include="Linn.Common.Reporting.Resources" Version="1.7.2" />

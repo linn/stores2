@@ -4,7 +4,6 @@
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Persistence.LinnApps;
-    using Linn.Stores2.Persistence.LinnApps.Repositories;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +14,9 @@
         {
             return services.AddScoped<ServiceDbContext>()
                 .AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
-                .AddScoped<ITransactionManager, AsyncTransactionManager>()
-                .AddScoped<IRepository<Country, string>, CountryRepository>();
+                .AddScoped<ITransactionManager, TransactionManager>()
+                .AddScoped<IRepository<Country, string>, EntityFrameworkRepository<Country, string>>(
+                    r => new EntityFrameworkRepository<Country, string>(r.GetService<ServiceDbContext>()?.Countries));
         }
     }
 }

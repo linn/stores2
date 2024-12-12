@@ -1,11 +1,15 @@
 namespace Linn.Stores2.Facade.Services
 {
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Resources;
+
+    using Microsoft.EntityFrameworkCore;
 
     public class CountryFacadeService : ICountryFacadeService
     {
@@ -26,9 +30,11 @@ namespace Linn.Stores2.Facade.Services
                                                           });
         }
         
-        public async Task<IResult<CountryResource>> GetAllCountries()
+        public async Task<IResult<IEnumerable<CountryResource>>> GetAllCountries()
         {
-            throw new System.NotImplementedException();
+            var result = await this.repository.FindAll().ToListAsync();
+            return new SuccessResult<IEnumerable<CountryResource>>(
+                result.Select(r => new CountryResource { CountryCode = r.CountryCode, Name = r.Name }));
         }
     }
 }

@@ -11,7 +11,6 @@
         public static readonly LoggerFactory MyLoggerFactory =
             new LoggerFactory(new[] { new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider() });
         
-        
         public DbSet<Carrier> Carriers { get; set; }
         
         public DbSet<Country> Countries { get; set; }

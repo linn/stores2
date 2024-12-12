@@ -14,15 +14,15 @@ namespace Linn.Stores2.Service.Modules
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/countries/{countryCode}", this.GetCountry);
+            app.MapGet("/stores2/countries", this.GetCountries);
         }
 
-        private async Task GetCountry(
+        private async Task GetCountries(
             HttpRequest req, 
             HttpResponse res, 
-            ICountryFacadeService service, string countryCode)
+            ICountryFacadeService service)
         {
-            await res.Negotiate(await service.GetCountry(countryCode));
+            await res.Negotiate(await service.GetAllCountries());
         }
     }
 }
