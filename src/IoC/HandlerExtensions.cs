@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
 
-    using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Handlers;
     using Linn.Stores2.Resources;
 
@@ -13,7 +12,10 @@
         public static IServiceCollection AddHandlers(this IServiceCollection services)
         {
             return services
-                .AddScoped<IHandler, JsonResultHandler<ProcessResultResource>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CountryResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<CarrierResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>();
         }
     }
 }

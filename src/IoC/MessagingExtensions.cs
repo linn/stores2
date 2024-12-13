@@ -1,9 +1,6 @@
 ﻿namespace Linn.Stores2.IoC
 {
-    using Linn.Common.Logging;
     using Linn.Common.Messaging.RabbitMQ.Configuration;
-    using Linn.Common.Messaging.RabbitMQ.Dispatchers;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Messaging.Messages;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -29,9 +26,7 @@
         public static IServiceCollection AddMessageDispatchers(this IServiceCollection services)
         {
             // register dispatchers for different message types:
-            return services.AddScoped<IMessageDispatcher<Thing>>(
-            x => new RabbitMessageDispatcher<Thing>(
-                x.GetService<ChannelConfiguration>(), x.GetService<ILog>(), ThingMessage.RoutingKey));
+            return services;
         }
     }
 }
