@@ -33,7 +33,7 @@
         }
 
         [Test]
-        public void ShouldBeAThing()
+        public void ShouldThrow()
         {
             this.action.Should().Throw<CarrierException>().WithMessage("Name is required");
         }
