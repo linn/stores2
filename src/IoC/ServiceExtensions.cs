@@ -19,7 +19,8 @@
             return services
                 .AddSingleton<IRazorEngine, RazorEngine>()
                 .AddSingleton<ITemplateEngine, RazorTemplateEngine>()
-                .AddScoped<ICountryFacadeService, CountryFacadeService>();
+                .AddScoped<ICountryService, CountryService>()
+                .AddScoped<ICarrierService, CarrierService>();
         }
     }
 }

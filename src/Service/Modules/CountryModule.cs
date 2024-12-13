@@ -20,7 +20,7 @@ namespace Linn.Stores2.Service.Modules
         private async Task GetCountries(
             HttpRequest req, 
             HttpResponse res, 
-            ICountryFacadeService service)
+            ICountryService service)
         {
             await res.Negotiate(await service.GetAllCountries());
         }

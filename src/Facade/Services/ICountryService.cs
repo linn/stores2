@@ -6,7 +6,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Common.Facade;
     using Linn.Stores2.Resources;
 
-    public interface ICountryFacadeService
+    public interface ICountryService
     {
         Task<IResult<IEnumerable<CountryResource>>> GetAllCountries();
     }

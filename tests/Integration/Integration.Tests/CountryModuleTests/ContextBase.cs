@@ -3,6 +3,7 @@
     using System.Net.Http;
 
     using Linn.Common.Persistence;
+    using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
@@ -20,7 +21,7 @@
 
         protected HttpResponseMessage Response { get; set; }
 
-        protected ICountryFacadeService CountryFacadeServiceService { get; private set; }
+        protected ICountryService CountryService { get; private set; }
 
         protected IRepository<Country, string> CountryRepository { get; private set; }
 
@@ -32,14 +33,14 @@
         {
             this.DbContext = new TestServiceDbContext();
 
-            this.CountryRepository = new CountryRepository(this.DbContext.Countries);
+            this.CountryRepository = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
 
-            this.CountryFacadeServiceService = new CountryFacadeService(this.CountryRepository);
+            this.CountryService = new CountryService(this.CountryRepository);
 
             this.Client = TestClient.With<CountryModule>(
                 services =>
                     {
-                        services.AddSingleton(this.CountryFacadeServiceService);
+                        services.AddSingleton(this.CountryService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

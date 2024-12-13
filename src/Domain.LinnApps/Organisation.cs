@@ -15,5 +15,22 @@
         public Address Address { get; protected set; } 
         
         public DateTime Created { get; protected set; }
+
+        public Organisation()
+        {
+        }
+
+        public Organisation(
+            string title, 
+            string vatRegistrationNumber, 
+            string phoneNumber, 
+            Address address)
+        {
+            this.Title = title;
+            this.VatRegistrationNumber = vatRegistrationNumber;
+            this.PhoneNumber = phoneNumber;
+            this.Address = address;
+            this.Created = DateTime.Now;
+        }
     }
 }

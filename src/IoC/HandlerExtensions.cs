@@ -13,7 +13,9 @@
         {
             return services
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CountryResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>();
+                .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<CarrierResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>();
         }
     }
 }

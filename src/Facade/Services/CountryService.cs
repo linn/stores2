@@ -11,11 +11,11 @@ namespace Linn.Stores2.Facade.Services
 
     using Microsoft.EntityFrameworkCore;
 
-    public class CountryFacadeService : ICountryFacadeService
+    public class CountryService : ICountryService
     {
         private readonly IRepository<Country, string> repository;
 
-        public CountryFacadeService(IRepository<Country, string> repository)
+        public CountryService(IRepository<Country, string> repository)
         {
             this.repository = repository;
         }

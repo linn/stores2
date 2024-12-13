@@ -17,5 +17,27 @@
         public string PostCode { get; protected set; }
 
         public Country Country { get; protected set; }
+
+        public Address()
+        {
+        }
+
+        public Address(
+            string addressee,
+            string line1,
+            string line2,
+            string line3,
+            string line4,
+            string postCode,
+            Country country)
+        {   
+            this.Addressee = addressee;
+            this.Line1 = line1;
+            this.Line2 = line2;
+            this.Line3 = line3;
+            this.Line4 = line4;
+            this.PostCode = postCode;
+            this.Country = country;
+        }
     }
 }
