@@ -40,7 +40,7 @@ function Carrier({ creating }) {
         send: createCarrier,
         isLoading: createLoading,
         errorMessage: createError
-    } = usePost(itemTypes.carriers.url, true);
+    } = usePost(itemTypes.carriers.url, true, true);
 
     if (!creating && !hasFetched) {
         setHasFetched(true);

@@ -33,8 +33,8 @@
             string phoneNumber,
             string vrn)
         {
-            this.CarrierCode = code;
-            this.Name = name;
+            this.CarrierCode = code.ToUpper().Trim();
+            this.Name = name.ToUpper().Trim();
 
             var address = new Address(
                 addressee,
