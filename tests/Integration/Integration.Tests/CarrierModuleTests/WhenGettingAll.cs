@@ -32,7 +32,6 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
                 "123456789");
 
             this.DbContext.Carriers.AddAndSave(this.DbContext, this.dhl);
-            this.DbContext.SaveChanges();
 
             this.Response = this.Client.Get(
                 "/stores2/carriers",

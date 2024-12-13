@@ -39,7 +39,6 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
                                       };
 
             this.DbContext.Carriers.AddAndSave(this.DbContext, this.dhl);
-            this.DbContext.SaveChanges();
             this.Response = this.Client.PutAsJsonAsync($"/stores2/carriers/{this.dhl.CarrierCode}", this.updateResource).Result;
         }
 
