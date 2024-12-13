@@ -5,7 +5,8 @@ import 'typeface-roboto';
 import NotFoundPage from './NotFoundPage';
 import useSignIn from '../hooks/useSignIn';
 import Navigation from '../containers/Navigation';
-import TestPage from './TestPage';
+import Carriers from './Carriers';
+import Carrier from './Carrier';
 
 function Root() {
     useSignIn();
@@ -17,7 +18,9 @@ function Root() {
                 <Routes>
                     <Route path="/" element={<Navigate to="/stores2" replace />} />
                     <Route path="/stores2" element={<App />} />
-                    <Route path="/stores2/test" element={<TestPage />} />
+                    <Route path="/stores2/carriers" element={<Carriers />} />
+                    <Route path="/stores2/carriers/create" element={<Carrier creating />} />
+                    <Route path="/stores2/carriers/:code" element={<Carrier />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>
