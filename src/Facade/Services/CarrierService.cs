@@ -44,7 +44,7 @@ namespace Linn.Stores2.Facade.Services
             return new SuccessResult<CarrierResource>(this.BuildResource(result));
         }
         
-        public async Task<IResult<CarrierResource>> Update(string id, CarrierResource updated)
+        public async Task<IResult<CarrierResource>> Update(string id, CarrierUpdateResource updated)
         {
             try
             {

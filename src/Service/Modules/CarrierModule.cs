@@ -51,7 +51,7 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest _, 
             HttpResponse res, 
             string code,
-            CarrierResource resource,
+            CarrierUpdateResource resource,
             ICarrierService service)
         {
             await res.Negotiate(await service.Update(code, resource));

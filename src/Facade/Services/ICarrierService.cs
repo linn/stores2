@@ -12,7 +12,7 @@ namespace Linn.Stores2.Facade.Services
 
         Task<IResult<CarrierResource>> GetById(string carrierCode);
         
-        Task<IResult<CarrierResource>> Update(string id, CarrierResource updated);
+        Task<IResult<CarrierResource>> Update(string id, CarrierUpdateResource updated);
         
         Task<IResult<CarrierResource>> Create(CarrierResource toCreate);
     }

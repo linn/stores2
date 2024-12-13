@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.CountryModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
 {
     using System.Net.Http;
 
@@ -7,6 +7,7 @@
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
+    using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Service.Modules;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -20,21 +21,22 @@
         protected HttpResponseMessage Response { get; set; }
         
         protected TestServiceDbContext DbContext { get; private set; }
-
-
+        
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
 
             var countryRepository = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
-
-            ICountryService countryService = new CountryService(countryRepository);
-
-            this.Client = TestClient.With<CountryModule>(
+            var carrierRepository = new CarrierRepository(this.DbContext);
+            var transactionManager = new TransactionManager(this.DbContext);
+            
+            ICarrierService carrierService = new CarrierService(countryRepository, carrierRepository, transactionManager);
+            
+            this.Client = TestClient.With<CarrierModule>(
                 services =>
                     {
-                        services.AddSingleton(countryService);
+                        services.AddSingleton(carrierService);
                         services.AddHandlers();
                         services.AddRouting();
                     });
@@ -50,6 +52,7 @@
         public void Teardown()
         {
            this.DbContext.Countries.RemoveAllAndSave(this.DbContext);
+           this.DbContext.Carriers.RemoveAllAndSave(this.DbContext);
         }
     }
 }
