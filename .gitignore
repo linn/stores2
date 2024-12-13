@@ -76,6 +76,6 @@ local-update.sh
 *StyleCop.Cache
 
 
-.\src\Service.Host\Service.Host.sln
+./src/Service.Host/Service.Host.sln
 
 *.idea*

@@ -42,7 +42,7 @@ function usePost(url, requiresAuth = false, redirectOnSuccess = false) {
             setIsLoading(false);
             if (redirectOnSuccess) {
                 // redirect to the rel:self link of the result
-                navigate.push(utilities.getSelfHref(result));
+                navigate(utilities.getSelfHref(result));
             }
         } else {
             const text = await response.text();
