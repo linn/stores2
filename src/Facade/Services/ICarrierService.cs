@@ -15,5 +15,7 @@ namespace Linn.Stores2.Facade.Services
         Task<IResult<CarrierResource>> Update(string id, CarrierUpdateResource updated);
         
         Task<IResult<CarrierResource>> Create(CarrierResource toCreate);
+        
+        Task<IResult<IEnumerable<CarrierResource>>> Search(string searchTerm);
     }
 }

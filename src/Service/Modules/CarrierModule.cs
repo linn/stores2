@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Service.Modules
 {
+    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Service.Core;
@@ -15,18 +16,26 @@ namespace Linn.Stores2.Service.Modules
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/carriers", this.GetAll);
+            app.MapGet("/stores2/carriers", this.Search);
             app.MapPost("/stores2/carriers", this.Create);
             app.MapGet("/stores2/carriers/{code}", this.GetById);
             app.MapPut("/stores2/carriers/{code}", this.Update);
         }
 
-        private async Task GetAll(
+        private async Task Search(
             HttpRequest _, 
-            HttpResponse res, 
+            HttpResponse res,
+            string searchTerm,
             ICarrierService service)
         {
-            await res.Negotiate(await service.GetAll());
+            if (String.IsNullOrEmpty(searchTerm))
+            {
+                await res.Negotiate(await service.GetAll());
+            }
+            else
+            {
+                await res.Negotiate(await service.Search(searchTerm));
+            }
         }
         
         private async Task GetById(
