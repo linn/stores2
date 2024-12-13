@@ -89,6 +89,7 @@ namespace Linn.Stores2.Facade.Services
                 return new BadRequestResult<CarrierResource>(ex.Message);
             }
         }
+        
         public async Task<IResult<IEnumerable<CarrierResource>>> Search(string searchTerm)
         {
             var results = await this.carrierRepository.
