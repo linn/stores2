@@ -101,6 +101,7 @@ function Carrier({ creating }) {
                         <>
                             <Grid size={6}>
                                 <InputField
+                                    disabled={!creating}
                                     value={formValues.code}
                                     fullWidth
                                     label="Code"
@@ -119,6 +120,7 @@ function Carrier({ creating }) {
                             </Grid>
                             <Grid size={6}>
                                 <InputField
+                                    disabled={!creating}
                                     value={formValues.addressee}
                                     fullWidth
                                     label="Addressee Name"
@@ -130,6 +132,7 @@ function Carrier({ creating }) {
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.line1}
+                                    disabled={!creating}
                                     fullWidth
                                     label="Address Line 1"
                                     propertyName="line1"
@@ -139,6 +142,7 @@ function Carrier({ creating }) {
                             <Grid item size={6} />
                             <Grid size={6}>
                                 <InputField
+                                    disabled={!creating}
                                     value={formValues.line2}
                                     fullWidth
                                     label="Address Line 2"
@@ -151,6 +155,7 @@ function Carrier({ creating }) {
                                 <InputField
                                     value={formValues.line3}
                                     fullWidth
+                                    disabled={!creating}
                                     label="Address Line 3"
                                     propertyName="line3"
                                     onChange={handleFieldChange}
@@ -160,6 +165,7 @@ function Carrier({ creating }) {
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.line4}
+                                    disabled={!creating}
                                     fullWidth
                                     label="Address Line 4"
                                     propertyName="line4"
@@ -170,6 +176,7 @@ function Carrier({ creating }) {
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.postCode}
+                                    disabled={!creating}
                                     fullWidth
                                     label="Post Code"
                                     propertyName="postCode"
@@ -180,6 +187,7 @@ function Carrier({ creating }) {
                             <Grid size={6}>
                                 <Dropdown
                                     value={formValues.countryCode}
+                                    disabled={!creating}
                                     fullWidth
                                     label="Country"
                                     propertyName="countryCode"
@@ -207,6 +215,7 @@ function Carrier({ creating }) {
                                     value={formValues.vatRegistrationNumber}
                                     fullWidth
                                     label="Vat Reg No"
+                                    disabled={!creating}
                                     propertyName="vatRegistrationNumber"
                                     onChange={handleFieldChange}
                                 />

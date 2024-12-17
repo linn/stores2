@@ -112,7 +112,7 @@ namespace Linn.Stores2.Facade.Services
                            Line4 = address?.Line4,
                            PostCode = address?.PostCode,
                            PhoneNumber = carrier.Organisation?.PhoneNumber,
-                           VatRegistrationNumber = carrier.Organisation?.PhoneNumber,
+                           VatRegistrationNumber = carrier.Organisation?.VatRegistrationNumber,
                            CountryCode = address?.Country?.CountryCode,
                            Links =
                                [
