@@ -6,6 +6,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Common.Resources;
@@ -33,11 +34,17 @@
             this.resourceBuilder = resourceBuilder;
         }
 
-        public Task<IResult<TResource>> GetById(
+        public async Task<IResult<TResource>> GetById(
             TKey id,
             IEnumerable<string> privileges = null)
         {
-            throw new NotImplementedException();
+            var entity = await this.FindById(id);
+            if (entity == null)
+            {
+                return new NotFoundResult<TResource>();
+            }
+
+            return new SuccessResult<TResource>(this.BuildResource(entity, privileges));
         }
 
         public virtual async Task<IResult<IEnumerable<TResource>>> GetAll(
@@ -70,11 +77,19 @@
             throw new NotImplementedException();
         }
 
-        public Task<IResult<IEnumerable<TResource>>> Search(
-            string searchTerm, 
-            IEnumerable<string> privileges = null)
+        public virtual async Task<IResult<IEnumerable<TResource>>> Search(
+            string searchTerm, IEnumerable<string> privileges = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var results = await this.repository.FilterBy(this.SearchExpression(searchTerm)).ToListAsync();
+                return new SuccessResult<IEnumerable<TResource>>(
+                    this.BuildResources(results, privileges));
+            }
+            catch (NotImplementedException)
+            {
+                return new BadRequestResult<IEnumerable<TResource>>("Search is not implemented");
+            }
         }
 
         public Task<IResult<IPagedList<TResource>>> GetAll(
@@ -95,26 +110,73 @@
             throw new NotImplementedException();
         }
 
-        public Task<IResult<TResource>> Add(
+        public async Task<IResult<TResource>> Add(
             TResource resource, 
             IEnumerable<string> privileges = null, 
             int? userNumber = null)
         {
-            throw new NotImplementedException();
+            T entity;
+
+            var privilegesList = privileges?.ToList();
+
+            try
+            {
+                entity = await this.CreateFromResourceAsync(resource, privilegesList);
+            }
+            catch (DomainException exception)
+            {
+                return new BadRequestResult<TResource>(exception.Message);
+            }
+
+            await this.repository.AddAsync(entity);
+
+            if (userNumber.HasValue)
+            {
+                await this.MaybeSaveLog("Create", userNumber, entity, resource, default);
+            }
+
+            await this.transactionManager.CommitAsync();
+
+            return new CreatedResult<TResource>(this.BuildResource(entity, privilegesList));
         }
 
-        public Task<IResult<TResource>> Update(
+        public async Task<IResult<TResource>> Update(
             TKey id, 
             TUpdateResource updateResource, 
             IEnumerable<string> privileges = null,
             int? userNumber = null)
         {
-            throw new NotImplementedException();
+            var entity = await this.FindById(id);
+            if (entity == null)
+            {
+                return new NotFoundResult<TResource>();
+            }
+
+            var privilegesList = privileges?.ToList();
+
+            try
+            {
+                await this.UpdateFromResourceAsync(entity, updateResource, privilegesList);
+            }
+            catch (DomainException exception)
+            {
+                return new BadRequestResult<TResource>($"Error updating {id} - {exception.Message}");
+            }
+
+            if (userNumber.HasValue)
+            {
+                await this.MaybeSaveLog("Update", userNumber, entity, default, updateResource);
+            }
+
+            await this.transactionManager.CommitAsync();
+
+            return new SuccessResult<TResource>(this.BuildResource(entity, privilegesList));
         }
 
         public Task<IResult<TResource>> GetApplicationState(
             IEnumerable<string> privileges = null)
         {
+            // todo
             throw new NotImplementedException();
         }
 
@@ -123,6 +185,7 @@
             IEnumerable<string> privileges = null, 
             int? userNumber = null)
         {
+            // todo
             throw new NotImplementedException();
         }
 
@@ -131,6 +194,7 @@
             IEnumerable<string> privileges = null, 
             int? userNumber = null)
         {
+            // todo
             throw new NotImplementedException();
         }
 
@@ -147,18 +211,40 @@
             return (TResource)this.resourceBuilder.Build(entity, privileges);
         }
 
-        protected abstract T CreateFromResource(
+        protected virtual T CreateFromResource(
             TResource resource,
-            IEnumerable<string> privileges = null);
+            IEnumerable<string> privileges = null)
+        {
+            throw new NotImplementedException("Synchronous CreateFromResource must be implemented.");
+        }
 
-        protected abstract void UpdateFromResource(
+        protected virtual Task<T> CreateFromResourceAsync(
+            TResource resource,
+            IEnumerable<string> privileges = null)
+        {
+            return Task.Run(() => this.CreateFromResource(resource, privileges));
+        }
+
+        protected virtual void UpdateFromResource(
             T entity,
             TUpdateResource updateResource,
-            IEnumerable<string> privileges = null);
+            IEnumerable<string> privileges = null)
+        {
+            throw new NotImplementedException("Synchronous UpdateFromResource must be implemented.");
+        }
+
+        protected virtual Task UpdateFromResourceAsync(
+            T entity,
+            TUpdateResource updateResource,
+            IEnumerable<string> privileges = null)
+        {
+            this.UpdateFromResource(entity, updateResource, privileges);
+            return Task.CompletedTask;
+        }
 
         protected abstract Expression<Func<T, bool>> SearchExpression(string searchTerm);
 
-        protected abstract void SaveToLogTable(
+        protected abstract Task SaveToLogTable(
             string actionType,
             int userNumber,
             T entity,
@@ -172,5 +258,28 @@
         protected abstract Expression<Func<T, bool>> FilterExpression(TSearchResource searchResource);
 
         protected abstract Expression<Func<T, bool>> FindExpression(TSearchResource searchResource);
+
+        private async Task<T> FindById(TKey id)
+        {
+            var result = await this.repository.FindByIdAsync(id);
+            return result;
+        }
+
+        private async Task MaybeSaveLog(
+            string actionType,
+            int? userNumber,
+            T entity,
+            TResource resource,
+            TUpdateResource updateResource)
+        {
+            try
+            {
+                await this.SaveToLogTable(
+                    actionType, userNumber.GetValueOrDefault(), entity, resource, updateResource);
+            }
+            catch (NotImplementedException)
+            {
+            }
+        }
     }
 }

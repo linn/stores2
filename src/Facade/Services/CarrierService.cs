@@ -3,6 +3,7 @@ namespace Linn.Stores2.Facade.Services
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
@@ -15,36 +16,6 @@ namespace Linn.Stores2.Facade.Services
     {
         private readonly IRepository<Country, string> countryRepository;
         
-        // public async Task<IResult<CarrierResource>> Create(CarrierResource toCreate)
-        // {
-        //     try
-        //     {
-        //         var country = await this.countryRepository.FindByIdAsync(toCreate.CountryCode);
-        //
-        //         var entity = new Carrier(
-        //             toCreate.Code,
-        //             toCreate.Name,
-        //             toCreate.Addressee,
-        //             toCreate.Line1,
-        //             toCreate.Line2,
-        //             toCreate.Line3,
-        //             toCreate.Line4,
-        //             toCreate.PostCode,
-        //             country,
-        //             toCreate.CountryCode,
-        //             toCreate.VatRegistrationNumber);
-        //
-        //         await this.carrierRepository.AddAsync(entity);
-        //         await this.transactionManager.CommitAsync();
-        //         
-        //         return new CreatedResult<CarrierResource>(this.BuildResource(entity));
-        //     }
-        //     catch (DomainException ex)
-        //     {
-        //         return new BadRequestResult<CarrierResource>(ex.Message);
-        //     }
-        // }
-        
         public CarrierService(
             IRepository<Carrier, string> repository, 
             ITransactionManager transactionManager, 
@@ -55,33 +26,52 @@ namespace Linn.Stores2.Facade.Services
             this.countryRepository = countryRepository;
         }
 
-        protected override Carrier CreateFromResource(
+        // creating an entity from a resource does require some IO
+        // (to look up the country from the db) which must be await'd
+        // so override the asynchronous version of CreateFromResource
+        protected override async Task<Carrier> CreateFromResourceAsync(
             CarrierResource resource, 
             IEnumerable<string> privileges = null)
         {
-            throw new NotImplementedException();
+            var country = await this.countryRepository.FindByIdAsync(resource.CountryCode);
+            return new Carrier(
+                resource.Code,
+                resource.Name,
+                resource.Addressee,
+                resource.Line1,
+                resource.Line2,
+                resource.Line3,
+                resource.Line4,
+                resource.PostCode,
+                country,
+                resource.CountryCode,
+                resource.VatRegistrationNumber);
         }
 
+        // no async behaviour required when specifying how an entity should be
+        // updated from the resource in this case...
+        // so just override the synchronous UpdateFromResource, as per usual
         protected override void UpdateFromResource(
-            Carrier entity, 
+            Carrier entity,
             CarrierUpdateResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            throw new NotImplementedException();
+            entity.Name = updateResource.Name.Trim();
         }
 
         protected override Expression<Func<Carrier, bool>> SearchExpression(string searchTerm)
         {
-            throw new NotImplementedException();
+            return x => x.Name.ToUpper().Contains(searchTerm.Trim().ToUpper());
         }
 
-        protected override void SaveToLogTable(
+        protected override async Task SaveToLogTable(
             string actionType,
             int userNumber,
             Carrier entity,
             CarrierResource resource,
             CarrierUpdateResource updateResource)
         {
+            await Task.CompletedTask;
             throw new NotImplementedException();
         }
 
