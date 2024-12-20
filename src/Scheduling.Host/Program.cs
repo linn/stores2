@@ -8,7 +8,6 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddLog();
         services.AddCredentialsExtensions();
         services.AddSqsExtensions();
-        services.AddServices();
         services.AddPersistence();
         services.AddRabbitConfiguration();
         services.AddMessageDispatchers();

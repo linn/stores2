@@ -5,6 +5,8 @@ namespace Linn.Stores2.Service.Modules
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources;
 
@@ -26,7 +28,7 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest _, 
             HttpResponse res,
             string searchTerm,
-            ICarrierService service)
+            IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)
         {
             if (String.IsNullOrEmpty(searchTerm))
             {
@@ -42,7 +44,7 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest _, 
             HttpResponse res, 
             string code,
-            ICarrierService service)
+            IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)
         {
             await res.Negotiate(await service.GetById(code));
         }
@@ -51,9 +53,9 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest _, 
             HttpResponse res, 
             CarrierResource resource,
-            ICarrierService service)
+            IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)
         {
-            await res.Negotiate(await service.Create(resource));
+            await res.Negotiate(await service.Add(resource));
         }
         
         private async Task Update(
@@ -61,7 +63,7 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res, 
             string code,
             CarrierUpdateResource resource,
-            ICarrierService service)
+            IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)
         {
             await res.Negotiate(await service.Update(code, resource));
         }

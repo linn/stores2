@@ -4,10 +4,13 @@
 
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Facade.Common;
+    using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Service.Modules;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -30,8 +33,13 @@
             var countryRepository = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
             var carrierRepository = new CarrierRepository(this.DbContext);
             var transactionManager = new TransactionManager(this.DbContext);
-            
-            ICarrierService carrierService = new CarrierService(countryRepository, carrierRepository, transactionManager);
+
+            IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> carrierService 
+                = new CarrierService(
+                    carrierRepository, 
+                    transactionManager, 
+                    new CarrierResourceBuilder(), 
+                    countryRepository);
             
             this.Client = TestClient.With<CarrierModule>(
                 services =>

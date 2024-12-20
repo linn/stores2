@@ -6,7 +6,6 @@ var host = Host.CreateDefaultBuilder(args)
         {
             services.AddLog();
             services.AddCredentialsExtensions();
-            services.AddServices();
             services.AddPersistence();
             services.AddSqsExtensions();
             services.AddRabbitConfiguration();
