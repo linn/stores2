@@ -19,13 +19,14 @@
             return services
                 .AddSingleton<IRazorEngine, RazorEngine>()
                 .AddSingleton<ITemplateEngine, RazorTemplateEngine>()
-                .AddScoped<ICountryService, CountryService>()
-                .AddScoped<IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>, CarrierService>();
+                .AddScoped<IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>, CarrierService>()
+                .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
         {
-            return services.AddScoped<IBuilder<Carrier>, CarrierResourceBuilder>();
+            return services.AddScoped<IBuilder<Carrier>, CarrierResourceBuilder>()
+                .AddScoped<IBuilder<Country>, CountryResourceBuilder>();
         }
     }
 }

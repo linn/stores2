@@ -1,40 +1,53 @@
 namespace Linn.Stores2.Facade.Services
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
-    using Microsoft.EntityFrameworkCore;
 
-    public class CountryService : ICountryService
+    public class CountryService 
+    : AsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>
     {
-        private readonly IRepository<Country, string> repository;
+        public CountryService(IRepository<Country, string> repository, ITransactionManager transactionManager, IBuilder<Country> resourceBuilder)
+            : base(repository, transactionManager, resourceBuilder)
+        {
+        }
 
-        public CountryService(IRepository<Country, string> repository)
+        protected override Expression<Func<Country, bool>> SearchExpression(string searchTerm)
         {
-            this.repository = repository;
+            throw new NotImplementedException();
         }
-        
-        public async Task<IResult<CountryResource>> GetCountry(string countryCode)
+
+        protected override Task SaveToLogTable(
+            string actionType,
+            int userNumber,
+            Country entity,
+            CountryResource resource,
+            CountryResource updateResource)
         {
-            var result = await this.repository.FindByIdAsync(countryCode);
-            return new SuccessResult<CountryResource>(new CountryResource
-                                                          {
-                                                              CountryCode = result.CountryCode,
-                                                              Name = result.Name
-                                                          });
+            throw new NotImplementedException();
         }
-        
-        public async Task<IResult<IEnumerable<CountryResource>>> GetAllCountries()
+
+        protected override void DeleteOrObsoleteResource(Country entity, IEnumerable<string> privileges = null)
         {
-            var result = await this.repository.FindAll().ToListAsync();
-            return new SuccessResult<IEnumerable<CountryResource>>(
-                result.Select(r => new CountryResource { CountryCode = r.CountryCode, Name = r.Name }));
+            throw new NotImplementedException();
+        }
+
+        protected override Expression<Func<Country, bool>> FilterExpression(CountryResource searchResource)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Expression<Func<Country, bool>> FindExpression(CountryResource searchResource)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -32,7 +32,7 @@
 
         public string GetLocation(Carrier model)
         {
-            return $"/stores2/cariers/{model.CarrierCode}";
+            return $"/stores2/carriers/{model.CarrierCode}";
         }
 
         object IBuilder<Carrier>.Build(Carrier entity, IEnumerable<string> claims) =>
