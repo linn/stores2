@@ -1,6 +1,8 @@
 namespace Linn.Stores2.Resources
 {
-    public class CountryResource
+    using Linn.Common.Resources;
+
+    public class CountryResource : HypermediaResource
     {
         public string CountryCode { get; set; }
         

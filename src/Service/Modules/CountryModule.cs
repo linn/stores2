@@ -4,7 +4,10 @@ namespace Linn.Stores2.Service.Modules
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
+    using Linn.Stores2.Resources;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -20,9 +23,9 @@ namespace Linn.Stores2.Service.Modules
         private async Task GetCountries(
             HttpRequest req, 
             HttpResponse res, 
-            ICountryService service)
+            IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource> service)
         {
-            await res.Negotiate(await service.GetAllCountries());
+            await res.Negotiate(await service.GetAll());
         }
     }
 }

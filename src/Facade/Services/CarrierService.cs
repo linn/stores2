@@ -1,125 +1,95 @@
 namespace Linn.Stores2.Facade.Services
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
-    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
-    using Microsoft.EntityFrameworkCore;
-
-    public class CarrierService : ICarrierService
+    public class CarrierService 
+        : AsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>
     {
         private readonly IRepository<Country, string> countryRepository;
         
-        private readonly IRepository<Carrier, string> carrierRepository;
-        
-        private readonly ITransactionManager transactionManager;
-
         public CarrierService(
-            IRepository<Country, string> countryRepository,
-            IRepository<Carrier, string> carrierRepository,
-            ITransactionManager transactionManager)
+            IRepository<Carrier, string> repository, 
+            ITransactionManager transactionManager, 
+            IBuilder<Carrier> resourceBuilder,
+            IRepository<Country, string> countryRepository)
+            : base(repository, transactionManager, resourceBuilder)
         {
             this.countryRepository = countryRepository;
-            this.carrierRepository = carrierRepository;
-            this.transactionManager = transactionManager;
-        }
-        
-        public async Task<IResult<IEnumerable<CarrierResource>>> GetAll()
-        {
-            var results = await this.carrierRepository.FindAll().ToListAsync();
-            return new SuccessResult<IEnumerable<CarrierResource>>(
-                results.Select(x => this.BuildResource(x)));
-        }
-        
-        public async Task<IResult<CarrierResource>> GetById(string carrierCode)
-        {
-            var result = await this.carrierRepository.FindByIdAsync(carrierCode);
-            return new SuccessResult<CarrierResource>(this.BuildResource(result));
-        }
-        
-        public async Task<IResult<CarrierResource>> Update(string id, CarrierUpdateResource updated)
-        {
-            try
-            {
-                var entity = await this.carrierRepository.FindByIdAsync(id);
-                entity.Update(updated.Name);
-                await this.transactionManager.CommitAsync();
-
-                return new SuccessResult<CarrierResource>(this.BuildResource(entity));
-            }
-            catch (DomainException ex)
-            {
-                return new BadRequestResult<CarrierResource>(ex.Message);
-            }
-        }
-        
-        public async Task<IResult<CarrierResource>> Create(CarrierResource toCreate)
-        {
-            try
-            {
-                var country = await this.countryRepository.FindByIdAsync(toCreate.CountryCode);
-
-                var entity = new Carrier(
-                    toCreate.Code,
-                    toCreate.Name,
-                    toCreate.Addressee,
-                    toCreate.Line1,
-                    toCreate.Line2,
-                    toCreate.Line3,
-                    toCreate.Line4,
-                    toCreate.PostCode,
-                    country,
-                    toCreate.CountryCode,
-                    toCreate.VatRegistrationNumber);
-
-                await this.carrierRepository.AddAsync(entity);
-                await this.transactionManager.CommitAsync();
-                
-                return new CreatedResult<CarrierResource>(this.BuildResource(entity));
-            }
-            catch (DomainException ex)
-            {
-                return new BadRequestResult<CarrierResource>(ex.Message);
-            }
-        }
-        
-        public async Task<IResult<IEnumerable<CarrierResource>>> Search(string searchTerm)
-        {
-            var results = await this.carrierRepository.
-                              FilterBy(x => x.Name.ToUpper().Contains(searchTerm.Trim().ToUpper())).ToListAsync();
-            return new SuccessResult<IEnumerable<CarrierResource>>(
-                results.Select(x => this.BuildResource(x)));
         }
 
-        private CarrierResource BuildResource(Carrier carrier)
+        // creating an entity from a resource does require some IO
+        // (to look up the country from the db) which must be await'd
+        // so override the asynchronous version of CreateFromResource
+        protected override async Task<Carrier> CreateFromResourceAsync(
+            CarrierResource resource, 
+            IEnumerable<string> privileges = null)
         {
-            var address = carrier.Organisation?.Address;
-            return new CarrierResource
-                       {
-                           Code = carrier.CarrierCode,
-                           Name = carrier.Name,
-                           Addressee = address?.Addressee,
-                           Line1 = address?.Line1,
-                           Line2 = address?.Line2,
-                           Line3 = address?.Line3,
-                           Line4 = address?.Line4,
-                           PostCode = address?.PostCode,
-                           PhoneNumber = carrier.Organisation?.PhoneNumber,
-                           VatRegistrationNumber = carrier.Organisation?.VatRegistrationNumber,
-                           CountryCode = address?.Country?.CountryCode,
-                           Links =
-                               [
-                                   new LinkResource(
-                                               "self", $"/stores2/carriers/{carrier.CarrierCode}")
-                               ]
-                       };
+            var country = await this.countryRepository.FindByIdAsync(resource.CountryCode);
+            return new Carrier(
+                resource.Code,
+                resource.Name,
+                resource.Addressee,
+                resource.Line1,
+                resource.Line2,
+                resource.Line3,
+                resource.Line4,
+                resource.PostCode,
+                country,
+                resource.CountryCode,
+                resource.VatRegistrationNumber);
+        }
+
+        // no async behaviour required when specifying how an entity should be
+        // updated from the resource in this case...
+        // so just override the synchronous UpdateFromResource, as per usual
+        protected override void UpdateFromResource(
+            Carrier entity,
+            CarrierUpdateResource updateResource,
+            IEnumerable<string> privileges = null)
+        {
+            entity.Name = updateResource.Name.Trim();
+        }
+
+        protected override Expression<Func<Carrier, bool>> SearchExpression(string searchTerm)
+        {
+            return x => x.Name.ToUpper().Contains(searchTerm.Trim().ToUpper());
+        }
+
+        protected override async Task SaveToLogTable(
+            string actionType,
+            int userNumber,
+            Carrier entity,
+            CarrierResource resource,
+            CarrierUpdateResource updateResource)
+        {
+            await Task.CompletedTask;
+            throw new NotImplementedException();
+        }
+
+        protected override void DeleteOrObsoleteResource(
+            Carrier entity, 
+            IEnumerable<string> privileges = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Expression<Func<Carrier, bool>> FilterExpression(CarrierResource searchResource)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override Expression<Func<Carrier, bool>> FindExpression(CarrierResource searchResource)
+        {
+            throw new NotImplementedException();
         }
     }
 }
