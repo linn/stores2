@@ -13,8 +13,6 @@
 
     using Microsoft.EntityFrameworkCore;
 
-    using PagedList.Core;
-
     public abstract class AsyncFacadeService<T, TKey, TResource, TUpdateResource, TSearchResource> 
         : IAsyncFacadeService<T, TKey, TResource, TUpdateResource, TSearchResource>
     {
@@ -90,24 +88,6 @@
             {
                 return new BadRequestResult<IEnumerable<TResource>>("Search is not implemented");
             }
-        }
-
-        public Task<IResult<IPagedList<TResource>>> GetAll(
-            int pageNumber, 
-            int pageSize, 
-            IEnumerable<string> privileges = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IResult<IPagedList<TResource>>> GetAll<TKeySort>(
-            int pageNumber,
-            int pageSize,
-            Expression<Func<T, TKeySort>> keySelectorForSort,
-            bool asc,
-            IEnumerable<string> privileges = null)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IResult<TResource>> Add(

@@ -7,7 +7,6 @@
 
     using Linn.Common.Facade;
     using Linn.Common.Resources;
-    using PagedList.Core;
 
     public interface IAsyncFacadeService<T, TKey, TResource, TUpdateResource, in TSearchResource>
     {
@@ -33,18 +32,6 @@
 
         Task<IResult<IEnumerable<TResource>>> Search(
             string searchTerm, 
-            IEnumerable<string> privileges = null);
-
-        Task<IResult<IPagedList<TResource>>> GetAll(
-            int pageNumber, 
-            int pageSize, 
-            IEnumerable<string> privileges = null);
-
-        Task<IResult<IPagedList<TResource>>> GetAll<TKeySort>(
-            int pageNumber,
-            int pageSize,
-            Expression<Func<T, TKeySort>> keySelectorForSort,
-            bool asc,
             IEnumerable<string> privileges = null);
 
         Task<IResult<TResource>> Add(TResource resource, IEnumerable<string> privileges = null, int? userNumber = null);
