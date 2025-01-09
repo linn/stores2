@@ -100,9 +100,15 @@
                             RowId = rowId, TextDisplay = stockLocator.Part.Description, ColumnId = "Description"
                         });
                 values.Add(
-                    new CalculationValueModel { RowId = rowId, TextDisplay = stockLocator.Part.OurUnitOfMeasure, ColumnId = "UOM" });
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, TextDisplay = stockLocator.Part.OurUnitOfMeasure, ColumnId = "UOM"
+                        });
                 values.Add(
-                    new CalculationValueModel { RowId = rowId, Quantity = stockLocator.Quantity ?? 0, ColumnId = "Quantity" });
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, Quantity = stockLocator.Quantity ?? 0, ColumnId = "Quantity"
+                        });
                 values.Add(
                     new CalculationValueModel
                         {
@@ -133,7 +139,10 @@
                                {
                                    SortOrder = 3, GridDisplayType = GridDisplayType.TextValue
                                },
-                           new AxisDetailsModel("Quantity") { SortOrder = 4, GridDisplayType = GridDisplayType.Value, DecimalPlaces = 1 },
+                           new AxisDetailsModel("Quantity")
+                               {
+                                   SortOrder = 4, GridDisplayType = GridDisplayType.Value, DecimalPlaces = 1
+                               },
                            new AxisDetailsModel("UOM") { SortOrder = 5, GridDisplayType = GridDisplayType.TextValue },
                            new AxisDetailsModel("Allocated") { SortOrder = 6, GridDisplayType = GridDisplayType.Value }
                        };

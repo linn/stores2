@@ -21,7 +21,9 @@
             this.resourceBuilder = resourceBuilder;
         }
 
-        public IResult<ReportReturnResource> GetStoragePlaceAuditReport(IEnumerable<string> locationList, string locationRange)
+        public IResult<ReportReturnResource> GetStoragePlaceAuditReport(
+            IEnumerable<string> locationList,
+            string locationRange)
         {
             var result = this.storagePlaceAuditReportService.StoragePlaceAuditReport(locationList, locationRange);
             

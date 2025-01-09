@@ -7,6 +7,8 @@
 
     public interface IStoragePlaceAuditReportFacadeService
     {
-        IResult<ReportReturnResource> GetStoragePlaceAuditReport(IEnumerable<string> locationList, string locationRange);
+        IResult<ReportReturnResource> GetStoragePlaceAuditReport(
+            IEnumerable<string> locationList,
+            string locationRange);
     }
 }
