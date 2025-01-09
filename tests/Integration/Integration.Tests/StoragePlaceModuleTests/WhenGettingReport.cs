@@ -3,6 +3,7 @@ namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+    using System.Threading;
 
     using FluentAssertions;
 
@@ -22,19 +23,24 @@ namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
 
         private string location2;
 
+        private string locationRange;
+
         [SetUp]
         public void SetUp()
         {
             this.result = new ResultsModel { ReportTitle = new NameModel("Title") };
             this.location1 = "P285";
             this.location2 = "P745";
+            this.locationRange = "E-K";
 
             this.StoragePlaceAuditReportService
-                .StoragePlaceAuditReport(Arg.Any<IEnumerable<string>>(), Arg.Any<string>())
+                .StoragePlaceAuditReport(
+                    Arg.Is<IEnumerable<string>>(a => a.Contains(this.location1) && a.Contains(this.location2)),
+                    this.locationRange)
                 .Returns(this.result);
 
             this.Response = this.Client.Get(
-                $"/stores2/reports/storage-place-audit/report?locationList={this.location1}&locationList={this.location2}",
+                $"/stores2/reports/storage-place-audit/report?locationList={this.location1}&locationList={this.location2}&locationRange={this.locationRange}",
                 with =>
                     {
                         with.Accept("application/json");
