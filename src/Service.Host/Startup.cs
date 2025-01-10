@@ -34,6 +34,7 @@ namespace Linn.Stores2.Service.Host
             services.AddSqsExtensions();
             services.AddLog();
 
+            services.AddServices();
             services.AddFacadeServices();
             services.AddBuilders();
             services.AddPersistence();

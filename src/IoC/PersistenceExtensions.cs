@@ -3,6 +3,7 @@
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Persistence.LinnApps;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
 
@@ -18,7 +19,8 @@
                 .AddScoped<ITransactionManager, TransactionManager>()
                 .AddScoped<IRepository<Country, string>, EntityFrameworkRepository<Country, string>>(
                     r => new EntityFrameworkRepository<Country, string>(r.GetService<ServiceDbContext>()?.Countries))
-                .AddScoped<IRepository<Carrier, string>, CarrierRepository>();
+                .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
+                .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>();
         }
     }
 }
