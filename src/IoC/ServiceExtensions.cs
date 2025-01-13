@@ -6,6 +6,7 @@
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Reports;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -38,6 +39,7 @@
         {
             return services.AddScoped<IBuilder<Carrier>, CarrierResourceBuilder>()
                 .AddScoped<IBuilder<Country>, CountryResourceBuilder>()
+                .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
         }
     }
