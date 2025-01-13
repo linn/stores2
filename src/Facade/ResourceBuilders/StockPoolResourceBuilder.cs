@@ -27,6 +27,17 @@
                          Sequence = stockPool.Sequence,
                          StockCategory = stockPool.StockCategory,
                          DefaultLocation = stockPool.DefaultLocation,
+                         StorageLocation = stockPool.StorageLocation == null? null : new StorageLocationResource
+                                               {
+                                                   LocationCode = stockPool.StorageLocation.LocationCode,
+                                                   Description = stockPool.StorageLocation.Description,
+                                                   DateInvalid = stockPool.StorageLocation.DateInvalid?.ToString("o"),
+                                                   DefaultStockPool = stockPool.StorageLocation.DefaultStockPool,
+                                                   LocationId = stockPool.StorageLocation.LocationId,
+                                                   LocationType = stockPool.StorageLocation.LocationType,
+                                                   SiteCode = stockPool.StorageLocation.SiteCode,
+                                                   StorageType = stockPool.StorageLocation.StorageType
+                         },
                          BridgeId = stockPool.BridgeId,
                          AvailableToMrp = stockPool.AvailableToMrp
             };
