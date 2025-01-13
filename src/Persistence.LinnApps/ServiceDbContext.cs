@@ -18,7 +18,9 @@
         public DbSet<Country> Countries { get; set; }
 
         public DbSet<StockLocator> StockLocators { get; set; }
-        
+
+        public DbSet<StockPool> StockPools { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -30,6 +32,7 @@
             this.BuildStockLocators(builder);
             this.BuildStorageLocations(builder);
             this.BuildParts(builder);
+            this.BuildStockPool(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -218,6 +221,22 @@
             e.Property(p => p.SimModelName).HasColumnName("SIM_MODEL_NAME").HasMaxLength(100);
             e.Property(p => p.AltiumValue).HasColumnName("ALTIUM_VALUE").HasMaxLength(100);
             e.Property(p => p.ResistorTolerance).HasColumnName("RES_TOLERANCE");
+        }
+
+        private void BuildStockPool(ModelBuilder builder)
+        {
+            var e = builder.Entity<StockPool>().ToTable("STOCK_POOLS");
+            e.HasKey(l => l.StockPoolCode);
+            e.Property(l => l.StockPoolCode).HasColumnName("STOCK_POOL_CODE").HasMaxLength(10);
+            e.Property(l => l.StockPoolDescription).HasColumnName("STOCK_POOL_DESCRIPTION").HasMaxLength(50);
+            e.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
+            e.Property(l => l.AccountingCompany).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
+            e.Property(l => l.Sequence).HasColumnName("SEQUENCE");
+            e.Property(l => l.StockCategory).HasColumnName("STOCK_CATEGORY").HasMaxLength(1);
+            e.Property(l => l.DefaultLocation).HasColumnName("DEFAULT_LOCATION");
+            e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID");
+            e.Property(l => l.AvailableToMrp).HasColumnName("AVAILABLE_TO_MRP");
+            e.HasOne(l => l.StorageLocation).WithMany().HasForeignKey(l => l.DefaultLocation);
         }
     }
 }
