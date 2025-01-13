@@ -17,6 +17,7 @@ namespace Linn.Stores2.Service.Modules
         {
             app.MapGet("/stores2/reports/storage-place-audit/report", this.StoragePlaceAuditReport);
             app.MapGet("/stores2/reports/storage-place-audit", this.GetApp);
+            app.MapGet("/stores2/reports/storage-place-audit/pdf", this.StoragePlaceAuditReportAsPdf);
         }
 
         private async Task StoragePlaceAuditReport(
@@ -32,6 +33,19 @@ namespace Linn.Stores2.Service.Modules
         private async Task GetApp(HttpRequest req, HttpResponse res)
         {
             await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+        }
+
+        private async Task StoragePlaceAuditReportAsPdf(
+            HttpRequest req,
+            HttpResponse res,
+            string[] locationList,
+            string locationRange,
+            IStoragePlaceAuditReportFacadeService documentsFacadeService)
+        {
+            var result = await documentsFacadeService.GetStoragePlaceAuditReportAsPdf(locationList, locationRange);
+
+            res.ContentType = "application/pdf";
+            await res.FromStream(result, res.ContentType, new System.Net.Mime.ContentDisposition("attachment"));
         }
     }
 }

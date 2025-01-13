@@ -29,7 +29,9 @@
             {
                 stockLocators = this.stockLocatorRepository
                     .FilterBy(s => s.CurrentStock == "Y" && s.StorageLocation.LocationCode.StartsWith(locationRange))
-                    .OrderBy(s => s.StorageLocation.LocationCode).ThenBy(s => s.PartNumber).ToList();
+                    .OrderBy(s => s.StorageLocation.LocationCode)
+                    .ThenBy(s => s.PartNumber)
+                    .ToList();
             }
             else
             {
@@ -50,7 +52,8 @@
                 stockLocators = stockLocators
                     .OrderBy(a => a.PalletNumber)
                     .ThenBy(b => b.StorageLocation?.LocationCode)
-                    .ThenBy(c => c.PartNumber).ToList();
+                    .ThenBy(c => c.PartNumber)
+                    .ToList();
             }
 
             var model = new ResultsModel { ReportTitle = new NameModel($"Storage Place: {locationRange}") };
