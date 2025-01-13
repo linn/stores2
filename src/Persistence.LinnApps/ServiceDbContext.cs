@@ -12,7 +12,9 @@
     {
         public static readonly LoggerFactory MyLoggerFactory =
             new LoggerFactory(new[] { new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider() });
-        
+
+        public DbSet<AccountingCompany> AccountingCompanies { get; set; }
+
         public DbSet<Carrier> Carriers { get; set; }
         
         public DbSet<Country> Countries { get; set; }
@@ -25,6 +27,7 @@
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
             base.OnModelCreating(builder);
+            this.BuildAccountingCompanies(builder);
             BuildAddresses(builder);
             BuildCountries(builder);
             BuildOrganisations(builder);
@@ -237,6 +240,16 @@
             e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID");
             e.Property(l => l.AvailableToMrp).HasColumnName("AVAILABLE_TO_MRP");
             e.HasOne(l => l.StorageLocation).WithMany().HasForeignKey(l => l.DefaultLocation);
+        }
+
+        private void BuildAccountingCompanies(ModelBuilder builder)
+        {
+            var entity = builder.Entity<AccountingCompany>().ToTable("ACCOUNTING_COMPANIES");
+            entity.HasKey(m => m.Name);
+            entity.Property(e => e.Name).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
+            entity.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            entity.Property(e => e.Sequence).HasColumnName("SEQUENCE");
+            entity.Property(e => e.Id).HasColumnName("BRIDGE_ID");
         }
     }
 }

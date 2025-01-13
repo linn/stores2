@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Linn.Stores2.Resources
+﻿namespace Linn.Stores2.Resources
 {
+    using System;
+
     public class StockPoolResource
     {
         public int StockPoolCode { get; set; }
@@ -20,6 +15,7 @@ namespace Linn.Stores2.Resources
         public int? Sequence { get; set; }
 
         public string StockCategory { get; set; }
+
         public int? DefaultLocation { get; set; }
 
         //public StorageLocationResource StorageLocation { get; set; }

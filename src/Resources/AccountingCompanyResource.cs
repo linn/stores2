@@ -1,8 +1,8 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+﻿namespace Linn.Stores2.Resources
 {
     using System;
 
-    public class AccountingCompany
+    public class AccountingCompanyResource
     {
         public int Id { get; set; }
 
