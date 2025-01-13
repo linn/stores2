@@ -22,6 +22,7 @@
         public override IQueryable<StockPool> FilterBy(Expression<Func<StockPool, bool>> expression)
         {
             return this.serviceDbContext.StockPools.Where(expression)
+                .Include(a => a.AccountingCompany)
                 .Include(l => l.StorageLocation);
         }
     }
