@@ -18,7 +18,7 @@
 
         public int? DefaultLocation { get; set; }
 
-        //public StorageLocationResource StorageLocation { get; set; }
+        public StorageLocationResource StorageLocation { get; set; }
 
         public int? BridgeId { get; set; }
 
