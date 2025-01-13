@@ -19,10 +19,22 @@
         .grid-item {
             text-align: right;
         }
-        .grid-text-item {
+
+        .grid-text-short-item {
             text-align: left;
+            width: 50px;
         }
 
+        .grid-text-item {
+            text-align: left;
+            page-break-inside: avoid;
+            white-space: pre-wrap;
+        }
+
+        .grid-text-long-item {
+            text-align: left;
+            width: 200px;
+        }
         .column-grid-container {
                 column-gap: 10px;
                 display: grid;
@@ -52,8 +64,8 @@
         {
             <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 0)</div>
             <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 1)</div>
-            <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 2)</div>
-            <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 3)</div>
+            <div class="grid-text-short-item">@Model.Report.GetGridTextValue(line.RowIndex, 2)</div>
+            <div class="grid-text-long-item">@Model.Report.GetGridTextValue(line.RowIndex, 3)</div>
             <div class="grid-item">@($"{Model.Report.GetGridValue(line.RowIndex, 4):N2}")</div>
             <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 5)</div>
             <div class="grid-item">@($"{Model.Report.GetGridValue(line.RowIndex, 6):N2}")</div>

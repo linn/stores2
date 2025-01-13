@@ -12,7 +12,7 @@ import useGet from '../hooks/useGet';
 import ReportDataGrids from './ReportDataGrids';
 
 function StoragePlaceAudit() {
-    const [formValues, setFormValues] = useState();
+    const [range, setRange] = useState(null);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -23,8 +23,22 @@ function StoragePlaceAudit() {
         result: reportResult
     } = useGet(itemTypes.storagePlaceAudit.url);
 
-    const handleFieldChange = (propertyName, newValue) => {
-        setFormValues(current => ({ ...current, [propertyName]: newValue }));
+    const handleRangeChange = (propertyName, newValue) => {
+        if (newValue) {
+            setRange(newValue.toUpperCase());
+        } else {
+            setRange(newValue);
+        }
+    };
+
+    const getQueryString = () => {
+        let queryString = '?';
+
+        if (range) {
+            queryString += `locationRange=${range}`;
+        }
+
+        return queryString;
     };
 
     const reports = useMemo(
@@ -55,21 +69,21 @@ function StoragePlaceAudit() {
                         </List>
                     </Grid>
                 )}
-                <Grid size={6}>
+                <Grid size={3}>
                     <InputField
-                        value={formValues?.name}
-                        fullWidth
-                        label="Name"
-                        propertyName="name"
-                        onChange={handleFieldChange}
+                        value={range}
+                        label="Range"
+                        propertyName="range"
+                        onChange={handleRangeChange}
                     />
                 </Grid>
-                <Grid item size={4} />
+                <Grid item size={7} />
                 <Grid item xs={1}>
                     <Button
+                        disabled={isLoading}
                         variant="contained"
                         onClick={() => {
-                            getReport(null, '?locationList=P745');
+                            getReport(null, getQueryString());
                         }}
                     >
                         Run
@@ -84,7 +98,7 @@ function StoragePlaceAudit() {
                         accessToken={token}
                         href={`${
                             config.appRoot
-                        }/stores2/reports/storage-place-audit/pdf?locationList=P275&locationList=P745`}
+                        }/stores2/reports/storage-place-audit/pdf${getQueryString()}`}
                     />
                 </Grid>
                 <Grid item size={11} />
