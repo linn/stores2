@@ -4,24 +4,24 @@
 
     public class StockPool
     {
-        public int StockPoolCode { get; set; }
+        public int StockPoolCode { get; protected set; }
 
-        public string StockPoolDescription { get; set; }
+        public string StockPoolDescription { get; protected set; }
 
-        public DateTime? DateInvalid { get; set; }
+        public DateTime? DateInvalid { get; protected set; }
 
-        public string AccountingCompany { get; set; }
+        public string AccountingCompany { get; protected set; }
 
-        public int? Sequence { get; set; }
+        public int? Sequence { get; protected set; }
 
-        public string StockCategory { get; set; }
+        public string StockCategory { get; protected set; }
 
-        public int? DefaultLocation { get; set; }
+        public int? DefaultLocation { get; protected set; }
 
-        public StorageLocation StorageLocation { get; set; }
+        public StorageLocation StorageLocation { get; protected set; }
 
-        public int? BridgeId { get; set; }
+        public int? BridgeId { get; protected set; }
 
-        public string AvailableToMrp { get; set; }
+        public string AvailableToMrp { get; protected set; }
     }
 }
