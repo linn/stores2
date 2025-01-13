@@ -16,7 +16,13 @@
                          StockPoolCode  = stockPool.StockPoolCode,
                          StockPoolDescription = stockPool.StockPoolDescription,
                          DateInvalid = stockPool.DateInvalid?.ToString("o"),
-                         AccountingCompany = stockPool.AccountingCompany,
+                         AccountingCompany = stockPool.AccountingCompany == null ? null : new AccountingCompanyResource
+                                                 {
+                                                     Id = stockPool.AccountingCompany.Id,
+                                                     Name = stockPool.AccountingCompany.Name,
+                                                     Description = stockPool.AccountingCompany.Description,
+                                                     Sequence = stockPool.AccountingCompany.Sequence
+                                                 },
                          Sequence = stockPool.Sequence,
                          StockCategory = stockPool.StockCategory,
                          DefaultLocation = stockPool.DefaultLocation,

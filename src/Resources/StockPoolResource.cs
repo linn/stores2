@@ -10,7 +10,7 @@
 
         public string DateInvalid { get; set; }
 
-        public string AccountingCompany { get; set; }
+        public AccountingCompanyResource AccountingCompany { get; set; }
 
         public int? Sequence { get; set; }
 
