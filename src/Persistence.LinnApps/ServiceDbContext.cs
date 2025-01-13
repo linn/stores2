@@ -233,19 +233,20 @@
             e.Property(l => l.StockPoolCode).HasColumnName("STOCK_POOL_CODE").HasMaxLength(10);
             e.Property(l => l.StockPoolDescription).HasColumnName("STOCK_POOL_DESCRIPTION").HasMaxLength(50);
             e.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
-            e.Property(l => l.AccountingCompany).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
+            e.Property(l => l.AccountingCompanyCode).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
             e.Property(l => l.Sequence).HasColumnName("SEQUENCE");
             e.Property(l => l.StockCategory).HasColumnName("STOCK_CATEGORY").HasMaxLength(1);
             e.Property(l => l.DefaultLocation).HasColumnName("DEFAULT_LOCATION");
             e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID");
             e.Property(l => l.AvailableToMrp).HasColumnName("AVAILABLE_TO_MRP");
             e.HasOne(l => l.StorageLocation).WithMany().HasForeignKey(l => l.DefaultLocation);
+            e.HasOne(a => a.AccountingCompany).WithMany().HasForeignKey(c => c.AccountingCompanyCode);
         }
 
         private void BuildAccountingCompanies(ModelBuilder builder)
         {
             var entity = builder.Entity<AccountingCompany>().ToTable("ACCOUNTING_COMPANIES");
-            entity.HasKey(m => m.Name);
+            entity.HasKey(e => e.Name);
             entity.Property(e => e.Name).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
             entity.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             entity.Property(e => e.Sequence).HasColumnName("SEQUENCE");

@@ -16,6 +16,7 @@
                          StockPoolCode  = stockPool.StockPoolCode,
                          StockPoolDescription = stockPool.StockPoolDescription,
                          DateInvalid = stockPool.DateInvalid?.ToString("o"),
+                         AccountingCompanyCode = stockPool.AccountingCompanyCode, 
                          AccountingCompany = stockPool.AccountingCompany == null ? null : new AccountingCompanyResource
                                                  {
                                                      Id = stockPool.AccountingCompany.Id,

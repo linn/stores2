@@ -10,6 +10,8 @@
 
         public DateTime? DateInvalid { get; protected set; }
 
+        public string AccountingCompanyCode { get; protected set; }
+
         public AccountingCompany AccountingCompany { get; protected set; }
 
         public int? Sequence { get; protected set; }
