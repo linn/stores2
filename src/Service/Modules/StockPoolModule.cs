@@ -19,7 +19,7 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/stores2/stock-pools", this.GetStockPools);
-            app.MapGet("/stores2/stock-pools/:code", this.GetStockPools);
+            app.MapGet("/stores2/stock-pools/{code}", this.GetStockPools);
         }
 
         private async Task GetStockPools(
