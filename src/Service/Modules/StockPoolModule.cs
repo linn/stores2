@@ -38,7 +38,7 @@
             string code,
             IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
         {
-            var results = facadeService.GetById(code, req.HttpContext.GetPrivileges());
+            var results = await facadeService.GetById(code, req.HttpContext.GetPrivileges());
             await res.Negotiate(results);
         }
 
