@@ -1,0 +1,75 @@
+﻿@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Models.StoragePlaceAuditReport>
+@{
+  <style>
+        body { font-family: Trebuchet, sans-serif; font-size: 12px; }
+
+        .title { grid-area: title; }
+        .date  { grid-area: date; }
+       
+        .grid-container {
+            column-gap: 10px;
+            display: grid;
+            grid-template-areas:
+              'title date balances currency-base company';
+            padding: 10px;
+            padding-bottom: 50px;
+            row-gap: 20px;
+        }
+
+        .grid-item {
+            text-align: right;
+        }
+
+        .grid-text-short-item {
+            text-align: left;
+            width: 50px;
+        }
+
+        .grid-text-item {
+            text-align: left;
+            page-break-inside: avoid;
+            white-space: pre-wrap;
+        }
+
+        .grid-text-long-item {
+            text-align: left;
+            width: 200px;
+        }
+        .column-grid-container {
+                column-gap: 10px;
+                display: grid;
+                grid-template-columns: auto auto auto auto auto auto auto;
+                row-gap: 10px;
+            }
+        .page { page-break-after: always; }
+    </style>
+    
+  <div class="page">
+      <div class="grid-container">
+          <div class="title">
+              <b>Storage Place Audit Report</b>
+          </div>
+            <div class="date"><b>@Model.ReportDate.ToString("dd MMM yyyy")</b></div>
+      </div>
+
+    <div class="column-grid-container">
+        <div class="grid-text-item"><b>Storage Place</b></div>
+        <div class="grid-text-item"><b>Part Number</b></div>
+        <div class="grid-text-item"><b>R/F</b></div>
+        <div class="grid-text-item"><b>Description</b></div>
+        <div class="grid-item"><b>Quantity</b></div>
+        <div class="grid-text-item"><b>UOM</b></div>
+        <div class="grid-item"><b>Allocated</b></div>
+        @foreach (var line in Model.Report.Rows.OrderBy(b => b.SortOrder))
+        {
+            <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 0)</div>
+            <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 1)</div>
+            <div class="grid-text-short-item">@Model.Report.GetGridTextValue(line.RowIndex, 2)</div>
+            <div class="grid-text-long-item">@Model.Report.GetGridTextValue(line.RowIndex, 3)</div>
+            <div class="grid-item">@($"{Model.Report.GetGridValue(line.RowIndex, 4):N2}")</div>
+            <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 5)</div>
+            <div class="grid-item">@($"{Model.Report.GetGridValue(line.RowIndex, 6):N2}")</div>
+        }
+    </div>
+</div>
+}
