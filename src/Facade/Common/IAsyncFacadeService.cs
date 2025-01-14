@@ -1,8 +1,6 @@
 ﻿namespace Linn.Stores2.Facade.Common
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;

@@ -7,7 +7,6 @@ namespace Linn.Stores2.Service.Modules
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources;
 
     using Microsoft.AspNetCore.Builder;
@@ -30,7 +29,7 @@ namespace Linn.Stores2.Service.Modules
             string searchTerm,
             IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)
         {
-            if (String.IsNullOrEmpty(searchTerm))
+            if (string.IsNullOrEmpty(searchTerm))
             {
                 await res.Negotiate(await service.GetAll());
             }

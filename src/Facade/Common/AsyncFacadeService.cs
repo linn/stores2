@@ -53,11 +53,20 @@
                 this.BuildResources(result, privileges));
         }
 
-        public Task<IResult<IEnumerable<TResource>>> FilterBy(
+        public async Task<IResult<IEnumerable<TResource>>> FilterBy(
             TSearchResource searchResource, 
             IEnumerable<string> privileges = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                return new SuccessResult<IEnumerable<TResource>>(this.BuildResources(
+                    await this.repository.FilterBy(this.FilterExpression(searchResource)).ToListAsync(),
+                    privileges));
+            }
+            catch (NotImplementedException)
+            {
+                return new BadRequestResult<IEnumerable<TResource>>("Filter is not implemented");
+            }
         }
 
         public Task<IResult<IEnumerable<TResource>>> FilterBy(
