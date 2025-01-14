@@ -4,7 +4,8 @@ const itemTypes = {
     health: { url: `${config.appRoot}/healthcheck` },
     countries: { url: `${config.appRoot}/stores2/countries` },
     carriers: { url: `${config.appRoot}/stores2/carriers` },
-    storagePlaceAudit: { url: `${config.appRoot}/stores2/reports/storage-place-audit/report` }
+    storagePlaceAudit: { url: `${config.appRoot}/stores2/reports/storage-place-audit/report` },
+    storagePlaces: { url: `${config.proxyRoot}/inventory/storage-places` }
 };
 
 export default itemTypes;
