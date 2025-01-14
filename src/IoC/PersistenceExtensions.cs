@@ -14,14 +14,16 @@
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
-            return services.AddScoped<ServiceDbContext>()
-                .AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
+            return services.AddScoped<ServiceDbContext>().AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
                 .AddScoped<ITransactionManager, TransactionManager>()
                 .AddScoped<IRepository<Country, string>, EntityFrameworkRepository<Country, string>>(
                     r => new EntityFrameworkRepository<Country, string>(r.GetService<ServiceDbContext>()?.Countries))
                 .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
                 .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
-                .AddScoped<IRepository<StockPool, string>, StockPoolRepository>();
+                .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
+                .AddTransient<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
+                    r => new EntityFrameworkRepository<AccountingCompany, string>(
+                        r.GetService<ServiceDbContext>()?.AccountingCompanies));
         }
     }
 }

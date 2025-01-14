@@ -25,7 +25,7 @@
         private async Task GetStockPools(
             HttpRequest req,
             HttpResponse res,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolResource, StockPoolUpdateResource> service)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
         {
             await res.Negotiate(service.GetAll(req.HttpContext.GetPrivileges()));
         }
@@ -34,7 +34,7 @@
             HttpRequest req,
             HttpResponse res,
             string code,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolResource, StockPoolUpdateResource> service)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
         {
             await res.Negotiate(service.GetById(code, req.HttpContext.GetPrivileges()));
         }

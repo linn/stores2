@@ -4,7 +4,7 @@
 
     public class StockPoolResource
     {
-        public int StockPoolCode { get; set; }
+        public string StockPoolCode { get; set; }
 
         public string StockPoolDescription { get; set; }
 
