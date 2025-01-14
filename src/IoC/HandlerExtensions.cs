@@ -12,13 +12,14 @@
     {
         public static IServiceCollection AddHandlers(this IServiceCollection services)
         {
-            return services
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CountryResource>>>()
+            return services.AddSingleton<IHandler, JsonResultHandler<IEnumerable<CountryResource>>>()
                 .AddTransient<IHandler, JsonResultHandler<ReportReturnResource>>()
                 .AddTransient<IHandler, CsvResultHandler<ReportReturnResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<CarrierResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<StockPoolResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StockPoolResource>>>();
         }
     }
 }
