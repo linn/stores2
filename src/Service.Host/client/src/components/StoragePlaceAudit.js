@@ -58,8 +58,15 @@ function StoragePlaceAudit() {
 
     const addToLocationList = selectedLocation => {
         if (selectedLocation) {
-            if (locations.findIndex(a => a === selectedLocation.toUpperCase()) < 0) {
-                const newLocations = [...locations, selectedLocation.toUpperCase()];
+            let locationToAdd;
+            if (Number.isNaN(Number(selectedLocation))) {
+                locationToAdd = selectedLocation.toUpperCase();
+            } else {
+                locationToAdd = `P${selectedLocation}`;
+            }
+
+            if (locations.findIndex(a => a === locationToAdd) < 0) {
+                const newLocations = [...locations, locationToAdd];
                 setLocations(newLocations);
             }
         }
