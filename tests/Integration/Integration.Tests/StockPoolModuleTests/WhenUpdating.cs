@@ -53,25 +53,31 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
             this.updateResource = new StockPoolUpdateResource
                                       { 
                                           StockPoolDescription = "A NEW DESCRIPTION",
-                DateInvalid = "22/01/2005",
-                AccountingCompany = new AccountingCompanyResource{},
-                AccountingCompanyCode = "456",
-                Sequence = 1,
-                StockCategory = "B",
-                DefaultLocation = 7,
-                StorageLocation = new StorageLocationResource
-                {
-                    LocationCode = "NEWLOC",
-                    DefaultStockPool = "NEWDEFAULT",
-                    Description = "NEW DESC",
-                    LocationId = 7,
-                    LocationType = "NEWTYPE",
-                    SiteCode = "NEW",
-                    StorageType = "NEW"
-                },
-                BridgeId = 6,
-                AvailableToMrp = "N"
-            };
+                                          DateInvalid = "22/01/2005",
+                                          AccountingCompany = new AccountingCompanyResource 
+                                                                  { 
+                                                                      Description = "Test Description",
+                                                                      Id = 456,
+                                                                      Name = "Test Name",
+                                                                      Sequence = 1
+                                                                  },
+                                          AccountingCompanyCode = "456",
+                                          Sequence = 1,
+                                          StockCategory = "B",
+                                          DefaultLocation = 7,
+                                          StorageLocation = new StorageLocationResource 
+                                                                {
+                                                                    LocationCode = "NEWLOC",
+                                                                    DefaultStockPool = "NEWDEFAULT",
+                                                                    Description = "NEW DESC",
+                                                                    LocationId = 7,
+                                                                    LocationType = "NEWTYPE",
+                                                                    SiteCode = "NEW",
+                                                                    StorageType = "NEW"
+                                                                },
+                                          BridgeId = 6,
+                                          AvailableToMrp = "N"
+                                        };
 
             this.DbContext.StockPools.AddAndSave(this.DbContext, this.stockPool);
             this.Response = this.Client.PutAsJsonAsync($"/stores2/stock-pools/{this.stockPool.StockPoolCode}", this.updateResource).Result;
