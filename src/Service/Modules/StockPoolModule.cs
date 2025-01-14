@@ -2,10 +2,8 @@
 {
     using System.Threading.Tasks;
 
-    using Linn.Common.Facade;
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
@@ -28,9 +26,9 @@
         private async Task GetStockPools(
             HttpRequest req,
             HttpResponse res,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
         {
-            var results = await service.GetAll(req.HttpContext.GetPrivileges());
+            var results = await facadeService.GetAll(req.HttpContext.GetPrivileges());
             await res.Negotiate(results);
         }
 
@@ -38,18 +36,19 @@
             HttpRequest req,
             HttpResponse res,
             string code,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
         {
-            await res.Negotiate(service.GetById(code, req.HttpContext.GetPrivileges()));
+            var results = facadeService.GetById(code, req.HttpContext.GetPrivileges());
+            await res.Negotiate(results);
         }
 
         private async Task CreateStockPool(
             HttpRequest req,
             HttpResponse res,
             StockPoolResource resource,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
         {
-            await res.Negotiate(await service.Add(resource));
+            await res.Negotiate(await facadeService.Add(resource));
         }
 
         private async Task UpdateStockPool(
@@ -57,9 +56,9 @@
             HttpResponse res,
             string code,
             StockPoolUpdateResource resource,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
         {
-            await res.Negotiate(await service.Update(code, resource, req.HttpContext.GetPrivileges()));
+            await res.Negotiate(await facadeService.Update(code, resource, req.HttpContext.GetPrivileges()));
         }
     }
 }
