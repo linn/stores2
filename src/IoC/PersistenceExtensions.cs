@@ -21,9 +21,8 @@
                 .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
                 .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
                 .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
-                .AddTransient<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
-                    r => new EntityFrameworkRepository<AccountingCompany, string>(
-                        r.GetService<ServiceDbContext>()?.AccountingCompanies));
+                .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
+                    r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
         }
     }
 }
