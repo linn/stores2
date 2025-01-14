@@ -19,7 +19,10 @@
         public DbSet<Country> Countries { get; set; }
 
         public DbSet<StockLocator> StockLocators { get; set; }
-        
+
+        public DbSet<RequisitionHeader> RequisitionHeaders { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
