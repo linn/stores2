@@ -23,6 +23,8 @@
                 .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
                 .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
                     r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
+                .AddScoped<IRepository<StorageLocation, int>, EntityFrameworkRepository<StorageLocation, int>>(
+                    r => new EntityFrameworkRepository<StorageLocation, int>(r.GetService<ServiceDbContext>()?.StorageLocations))
         }
     }
 }

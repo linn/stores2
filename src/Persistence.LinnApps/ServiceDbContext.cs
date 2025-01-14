@@ -23,6 +23,8 @@
 
         public DbSet<StockPool> StockPools { get; set; }
 
+        public DbSet<StorageLocation> StorageLocations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
