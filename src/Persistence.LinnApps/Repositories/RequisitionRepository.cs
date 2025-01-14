@@ -22,6 +22,7 @@
         {
             return await this.serviceDbContext
                        .RequisitionHeaders
+                       .Include(r => r.Lines)
                        .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
     }

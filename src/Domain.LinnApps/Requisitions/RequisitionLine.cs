@@ -13,8 +13,6 @@
 
         public string TransactionCode { get; protected set; }
 
-        public StoresTransactionDefinition TransactionDefinition { get; protected set; }
-
         public DateTime? DateCancelled { get; protected set; }
 
         public string CancelledReason { get; protected set; }
