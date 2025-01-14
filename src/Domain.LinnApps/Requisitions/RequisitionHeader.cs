@@ -54,6 +54,7 @@
             }
 
             this.Comments = comments;
+            this.DateCreated = DateTime.Now;
         }
 
         public void Cancel(int cancelledBy)
