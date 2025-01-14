@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { InputField, Loading, ExportButton, Search } from '@linn-it/linn-form-components-library';
+import { Loading, ExportButton, Search } from '@linn-it/linn-form-components-library';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
@@ -29,22 +29,22 @@ function StoragePlaceAudit() {
     const {
         send: getStoragePlaces,
         storagePlacesLoading,
-        result: storagePlacesResult
+        result: storagePlacesResult,
+        clearData: clearStoragePlaces
     } = useGet(itemTypes.storagePlaces.url);
 
-    const handleRangeChange = (propertyName, newValue) => {
-        if (newValue) {
-            setRange(newValue.toUpperCase());
-        } else {
-            setRange(newValue);
-        }
-    };
+    const {
+        send: getAuditLocations,
+        auditLocationsLoading,
+        result: auditLocationsResult,
+        clearData: clearAuditLocations
+    } = useGet(itemTypes.auditLocations.url);
 
     const getQueryString = () => {
         let queryString = '?';
 
         if (range) {
-            queryString += `locationRange=${range}&`;
+            queryString += `locationRange=${range.toUpperCase()}&`;
         }
 
         if (locations?.length) {
@@ -102,17 +102,33 @@ function StoragePlaceAudit() {
                     </Grid>
                 )}
                 <Grid size={3}>
-                    <InputField
-                        value={range}
+                    <Search
+                        propertyName="rangeSelect"
                         label="Range"
-                        propertyName="range"
-                        onChange={handleRangeChange}
+                        resultsInModal
+                        autoFocus={false}
+                        resultLimit={100}
+                        value={range}
+                        handleValueChange={(_, newVal) => setRange(newVal)}
+                        helperText="Press ENTER to search or TAB to proceed"
+                        search={() => getAuditLocations(null, `?searchTerm=${range}`)}
+                        searchResults={auditLocationsResult?.map(s => ({
+                            ...s,
+                            id: s.storagePlace,
+                            name: s.storagePlace
+                        }))}
+                        loading={auditLocationsLoading}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={newValue => {
+                            setRange(newValue.id);
+                        }}
+                        clearSearch={clearAuditLocations}
                     />
                 </Grid>
                 <Grid size={3}>
                     <Search
                         propertyName="locationSelect"
-                        label="Locations"
+                        label="Or Locations"
                         resultsInModal
                         autoFocus={false}
                         resultLimit={100}
@@ -133,7 +149,7 @@ function StoragePlaceAudit() {
                             setLocationSelect(newValue.id);
                             addToLocationList(newValue.id);
                         }}
-                        clearSearch={() => {}}
+                        clearSearch={clearStoragePlaces}
                     />
                 </Grid>
                 <Grid size={2}>
@@ -156,6 +172,7 @@ function StoragePlaceAudit() {
                         variant="outlined"
                         onClick={() => {
                             setLocations([]);
+                            setRange(null);
                         }}
                     >
                         Clear
