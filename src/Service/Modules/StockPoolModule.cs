@@ -27,7 +27,8 @@
             HttpResponse res,
             IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
         {
-            await res.Negotiate(service.GetAll(req.HttpContext.GetPrivileges()));
+            var results = await service.GetAll(req.HttpContext.GetPrivileges());
+            await res.Negotiate(results);
         }
 
         private async Task GetStockPool(
