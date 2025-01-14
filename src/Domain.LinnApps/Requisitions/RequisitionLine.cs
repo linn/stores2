@@ -23,6 +23,6 @@
 
         public int? Document1Line { get; protected set; }
 
-        public IEnumerable<ReqMove> Moves { get; protected set; }
+        public ICollection<ReqMove> Moves { get; protected set; }
     }
 }

@@ -11,6 +11,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -42,14 +43,17 @@
                 .AddSingleton<IRazorEngine, RazorEngine>()
                 .AddScoped<IStoragePlaceAuditReportFacadeService, StoragePlaceAuditReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>, CarrierService>()
-                .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>();
+                .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
+                .AddScoped<IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionHeaderResource>, RequisitionFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
         {
             return services.AddScoped<IBuilder<Carrier>, CarrierResourceBuilder>()
                 .AddScoped<IBuilder<Country>, CountryResourceBuilder>()
-                .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
+                .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
+                // I think this can be a singleton
+                .AddSingleton<IBuilder<RequisitionHeader>, RequisitionResourceBuilder>();
         }
     }
 }
