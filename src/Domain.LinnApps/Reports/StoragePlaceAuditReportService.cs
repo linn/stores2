@@ -136,11 +136,11 @@
                                },
                            new AxisDetailsModel("Raw or Finished")
                                {
-                                   SortOrder = 2, GridDisplayType = GridDisplayType.TextValue
+                                    Name = "R/F", SortOrder = 2, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 100
                                },
                            new AxisDetailsModel("Description")
                                {
-                                   SortOrder = 3, GridDisplayType = GridDisplayType.TextValue
+                                   SortOrder = 3, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 300
                                },
                            new AxisDetailsModel("Quantity")
                                {

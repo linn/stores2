@@ -53,7 +53,8 @@
                 .AddScoped<IBuilder<Country>, CountryResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 // I think this can be a singleton
-                .AddSingleton<IBuilder<RequisitionHeader>, RequisitionResourceBuilder>();
+                .AddSingleton<IBuilder<RequisitionHeader>, RequisitionResourceBuilder>()
+                .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
         }
     }
 }
