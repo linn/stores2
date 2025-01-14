@@ -9,10 +9,10 @@
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionFacadeService
-        : AsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionHeaderResource>
+        : AsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource>
     {
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
@@ -46,13 +46,16 @@
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> FilterExpression(
-            RequisitionHeaderResource searchResource)
+            RequisitionSearchResource searchResource)
         {
-            throw new NotImplementedException();
+            return x => (string.IsNullOrEmpty(searchResource.Comments) 
+                         || x.Comments.ToUpper().Contains(searchResource.Comments.ToUpper().Trim())) 
+                        && (searchResource.IncludeCancelled || !x.DateCancelled.HasValue)
+                        && (!searchResource.ReqNumber.HasValue || x.ReqNumber == searchResource.ReqNumber);
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> FindExpression(
-            RequisitionHeaderResource searchResource)
+            RequisitionSearchResource searchResource)
         {
             throw new NotImplementedException();
         }

@@ -6,7 +6,7 @@
 
     public class ReqMove
     {
-        // public setters for now, might make more sense to protect them
+        // public setters for now, might make more sense to protect them later
         public int ReqNumber { get; set; }
 
         public int LineNumber { get; set; }

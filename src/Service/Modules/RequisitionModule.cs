@@ -1,13 +1,12 @@
 ﻿namespace Linn.Stores2.Service.Modules
 {
-    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Requisitions;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -24,17 +23,26 @@
         private async Task Search(
             HttpRequest _,
             HttpResponse res,
-            RequisitionHeaderResource searchResource,
-            IAsyncFacadeService<RequisitionHeaderResource, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionHeaderResource> service)
+            string comments,
+            int? reqNumber,
+            bool? includeCancelled,
+            IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource> service)
         {
-            await res.Negotiate(await service.FilterBy(searchResource, null));
+            await res.Negotiate(await service.FilterBy(
+                                    new RequisitionSearchResource
+                                        {
+                                            Comments = comments,
+                                            ReqNumber = reqNumber,
+                                            IncludeCancelled = includeCancelled.GetValueOrDefault()
+                                        }, 
+                                    null));
         }
 
         private async Task GetById(
             HttpRequest _,
             HttpResponse res,
             int reqNumber,
-            IAsyncFacadeService<RequisitionHeaderResource, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionHeaderResource> service)
+            IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource> service)
         {
             await res.Negotiate(await service.GetById(reqNumber));
         }

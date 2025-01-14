@@ -278,6 +278,7 @@
             e.HasMany(r => r.Lines).WithOne().HasForeignKey(r => r.ReqNumber);
             e.HasMany(r => r.Moves).WithOne(m => m.Header).HasForeignKey(r => r.ReqNumber);
             e.HasOne(r => r.ToLocation).WithMany().HasForeignKey(r => r.ToLocationId);
+            e.Property(r => r.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)

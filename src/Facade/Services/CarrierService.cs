@@ -59,6 +59,11 @@ namespace Linn.Stores2.Facade.Services
             entity.Update(updateResource.Name.Trim());
         }
 
+        protected override Task UpdateFromResourceAsync(Carrier entity, CarrierUpdateResource updateResource, IEnumerable<string> privileges = null)
+        {
+            return base.UpdateFromResourceAsync(entity, updateResource, privileges);
+        }
+
         protected override Expression<Func<Carrier, bool>> SearchExpression(string searchTerm)
         {
             return x => x.Name.ToUpper().Contains(searchTerm.Trim().ToUpper());

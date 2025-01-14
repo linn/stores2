@@ -5,6 +5,7 @@
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Service.Core.Handlers;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Requisitions;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +19,9 @@
                 .AddTransient<IHandler, CsvResultHandler<ReportReturnResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<CarrierResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<RequisitionHeaderResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<RequisitionHeaderResource>>>();
         }
     }
 }

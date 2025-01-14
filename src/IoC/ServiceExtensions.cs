@@ -16,6 +16,7 @@
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Requisitions;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -28,7 +29,7 @@
             return services
                 .AddSingleton<IReportingHelper, ReportingHelper>()
                 .AddSingleton<ITemplateEngine, RazorTemplateEngine>()
-                .AddTransient<IPdfService>(
+                .AddScoped<IPdfService>(
                     x => new PdfService(ConfigurationManager.Configuration["PDF_SERVICE_ROOT"], new HttpClient()))
                 .AddScoped<IStoragePlaceAuditReportService, StoragePlaceAuditReportService>()
                 .AddScoped<IHtmlTemplateService<StoragePlaceAuditReport>>(
@@ -44,7 +45,7 @@
                 .AddScoped<IStoragePlaceAuditReportFacadeService, StoragePlaceAuditReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>, CarrierService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
-                .AddScoped<IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionHeaderResource>, RequisitionFacadeService>();
+                .AddScoped<IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource>, RequisitionFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
@@ -52,8 +53,7 @@
             return services.AddScoped<IBuilder<Carrier>, CarrierResourceBuilder>()
                 .AddScoped<IBuilder<Country>, CountryResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
-                // I think this can be a singleton
-                .AddSingleton<IBuilder<RequisitionHeader>, RequisitionResourceBuilder>()
+                .AddScoped<IBuilder<RequisitionHeader>, RequisitionResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
         }
     }

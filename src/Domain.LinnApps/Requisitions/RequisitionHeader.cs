@@ -39,5 +39,27 @@
         public string CancelledReason { get; protected set; }
 
         public string FunctionCode { get; protected set; }
+
+        public string Comments { get; protected set; }
+
+        public RequisitionHeader()
+        {
+        }
+
+        public RequisitionHeader(int? reqNumber, string comments)
+        {
+            if (reqNumber.HasValue)
+            {
+                this.ReqNumber = reqNumber.Value;
+            }
+
+            this.Comments = comments;
+        }
+
+        public void Cancel(int cancelledBy)
+        {
+            this.CancelledBy = cancelledBy;
+            this.DateCancelled = DateTime.Now;
+        }
     }
 }

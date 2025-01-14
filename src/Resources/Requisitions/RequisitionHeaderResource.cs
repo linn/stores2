@@ -1,9 +1,10 @@
-﻿namespace Linn.Stores2.Resources
+﻿namespace Linn.Stores2.Resources.Requisitions
 {
-    using System;
     using System.Collections.Generic;
 
-    public class RequisitionHeaderResource
+    using Linn.Common.Resources;
+
+    public class RequisitionHeaderResource : HypermediaResource
     {
         public int ReqNumber { get; set; }
 
@@ -32,5 +33,7 @@
         public string CancelledReason { get;  set; }
 
         public string FunctionCode { get;  set; }
+
+        public string Comments { get; set; }
     }
 }
