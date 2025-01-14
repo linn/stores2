@@ -5,6 +5,7 @@
     using Linn.Common.Facade;
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
@@ -20,6 +21,8 @@
         {
             app.MapGet("/stores2/stock-pools", this.GetStockPools);
             app.MapGet("/stores2/stock-pools/{code}", this.GetStockPool);
+            app.MapPost("/stores2/stock-pools", this.CreateStockPool);
+            app.MapPut("/stores2/stock-pools/{code}", this.UpdateStockPool);
         }
 
         private async Task GetStockPools(
@@ -37,6 +40,25 @@
             IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
         {
             await res.Negotiate(service.GetById(code, req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task CreateStockPool(
+            HttpRequest req,
+            HttpResponse res,
+            StockPoolResource resource,
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
+        {
+            await res.Negotiate(await service.Add(resource));
+        }
+
+        private async Task UpdateStockPool(
+            HttpRequest req,
+            HttpResponse res,
+            string code,
+            StockPoolUpdateResource resource,
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> service)
+        {
+            await res.Negotiate(await service.Update(code, resource, req.HttpContext.GetPrivileges()));
         }
     }
 }
