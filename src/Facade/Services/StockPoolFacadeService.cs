@@ -51,7 +51,7 @@ namespace Linn.Stores2.Facade.Services
                 resource.AvailableToMrp);
         }
 
-        protected override async Task<StockPool> UpdateFromResourceAsync(
+        protected override async Task UpdateFromResourceAsync(
             StockPool entity,
             StockPoolUpdateResource updateResource,
             IEnumerable<string> privileges = null)
@@ -59,7 +59,7 @@ namespace Linn.Stores2.Facade.Services
             var accountingCompany = await this.accountingCompanyRepository.FindByIdAsync(updateResource.AccountingCompanyCode);
             var storageLocation = await this.storageLocationRepository.FindByIdAsync((int)updateResource.DefaultLocation);
 
-            return entity.Update(
+            entity.Update(
                 updateResource.StockPoolDescription,
                 updateResource.DateInvalid,
                 accountingCompany,

@@ -55,7 +55,7 @@
 
         public string AvailableToMrp { get; set; }
 
-        public StockPool Update(
+        public void Update(
             string description,
             string dateInvalid,
             AccountingCompany accountingCompany,
