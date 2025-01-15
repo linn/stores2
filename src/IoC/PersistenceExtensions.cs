@@ -15,7 +15,9 @@
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
-            return services.AddScoped<ServiceDbContext>().AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
+            return services
+                .AddScoped<ServiceDbContext>()
+                .AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
                 .AddScoped<ITransactionManager, TransactionManager>()
                 .AddScoped<IRepository<Country, string>, EntityFrameworkRepository<Country, string>>(
                     r => new EntityFrameworkRepository<Country, string>(r.GetService<ServiceDbContext>()?.Countries))
