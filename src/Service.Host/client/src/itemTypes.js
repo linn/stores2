@@ -7,7 +7,8 @@ const itemTypes = {
     storagePlaceAudit: { url: `${config.appRoot}/stores2/reports/storage-place-audit/report` },
     storagePlaces: { url: `${config.proxyRoot}/inventory/storage-places` },
     auditLocations: { url: `${config.proxyRoot}/inventory/audit-locations` },
-    createAuditReqs: { url: `${config.proxyRoot}/inventory/storage-places/create-audit-reqs` }
+    createAuditReqs: { url: `${config.proxyRoot}/inventory/storage-places/create-audit-reqs` },
+    StockPools: { url: `${config.appRoot}/stores2/stock-pools` }
 };
 
 export default itemTypes;
