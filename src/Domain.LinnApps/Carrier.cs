@@ -8,7 +8,7 @@
     {
         public string CarrierCode { get; protected init; }
 
-        public string Name { get; set; }
+        public string Name { get; protected set; }
 
         public DateTime DateCreated { get; protected set; }
 

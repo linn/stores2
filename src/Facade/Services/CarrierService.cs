@@ -56,7 +56,7 @@ namespace Linn.Stores2.Facade.Services
             CarrierUpdateResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            entity.Name = updateResource.Name.Trim();
+            entity.Update(updateResource.Name.Trim());
         }
 
         protected override Expression<Func<Carrier, bool>> SearchExpression(string searchTerm)

@@ -47,6 +47,9 @@ Parameters:
   pdfServiceRoot:
     Type: String
     Description: Pdf Service API root url
+  viewsRoot:
+    Type: String
+    Description: path to the views folder
   environmentSuffix:
     Type: String
     AllowedValues:
@@ -185,6 +188,8 @@ Resources:
               Value: !Ref loggingMaxInnerExceptionDepth
             - Name: PDF_SERVICE_ROOT
               Value: !Ref pdfServiceRoot
+            - Name: VIEWS_ROOT
+              Value: !Ref viewsRoot
             - Name: awsRegion
               Value: !Ref AWS::Region
             - Name: KEYS_BUCKET_NAME
