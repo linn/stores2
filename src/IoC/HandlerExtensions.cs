@@ -18,9 +18,9 @@
                 .AddTransient<IHandler, CsvResultHandler<ReportReturnResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<CarrierResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<RequisitionHeaderResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<RequisitionHeaderResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<RequisitionHeaderResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StockPoolResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StockPoolResource>>>();
         }
