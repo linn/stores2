@@ -23,7 +23,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
             this.stockPool = new StockPool(
                 "TESTCODE",
                 "A TEST STOCKPOOL",
-                "14/01/2025",
+                DateTime.Now.ToString("o"),
                 new AccountingCompany
                     {
                         Description = "LINN LTD",

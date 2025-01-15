@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
 {
+    using System;
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
@@ -22,7 +23,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
             {
                 StockPoolCode = "TESTCODE",
                 StockPoolDescription = "A DESCRIPTION",
-                DateInvalid = "22/01/2005",
+                DateInvalid = DateTime.Now.ToString("o"),
                 AccountingCompany = new AccountingCompanyResource
                                         {
                                             Description = "Test Description",
