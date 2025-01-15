@@ -35,7 +35,7 @@ namespace Linn.Stores2.Facade.Services
             IEnumerable<string> privileges = null)
         {
             var accountingCompany = await this.accountingCompanyRepository.FindByIdAsync(resource.AccountingCompanyCode);
-            var storageLocation = new StorageLocation();
+            StorageLocation storageLocation = null;
 
             if (resource.DefaultLocation.HasValue)
             {
@@ -62,10 +62,11 @@ namespace Linn.Stores2.Facade.Services
         {
             var accountingCompany = await this.accountingCompanyRepository.FindByIdAsync(updateResource.AccountingCompanyCode);
             var storageLocation = await this.storageLocationRepository.FindByIdAsync((int)updateResource.DefaultLocation);
+            var dateInvalid = Convert.ToDateTime(updateResource.DateInvalid);
 
             entity.Update(
                 updateResource.StockPoolDescription,
-                updateResource.DateInvalid,
+                dateInvalid,
                 accountingCompany,
                 updateResource.Sequence,
                 updateResource.StockCategory,

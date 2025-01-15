@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Resources
 {
-    public class StockPoolResource
+    using Linn.Common.Resources;
+
+    public class StockPoolResource : HypermediaResource
     {
         public string StockPoolCode { get; set; }
 

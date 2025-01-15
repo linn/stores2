@@ -32,7 +32,7 @@
             this.AvailableToMrp = availableToMrp;
         }
 
-        public string StockPoolCode { get; protected set; }
+        public string StockPoolCode { get; set; }
 
         public string StockPoolDescription { get; set; }
 
@@ -56,7 +56,7 @@
 
         public void Update(
             string description,
-            string dateInvalid,
+            DateTime? dateInvalid,
             AccountingCompany accountingCompany,
             int? sequence,
             string stockCategory,
@@ -66,7 +66,7 @@
             string availableToMrp)
         {
             this.StockPoolDescription = description;
-            this.DateInvalid = Convert.ToDateTime(dateInvalid);
+            this.DateInvalid = dateInvalid;
             this.AccountingCompany = accountingCompany;
             this.Sequence = sequence;
             this.StockCategory = stockCategory;

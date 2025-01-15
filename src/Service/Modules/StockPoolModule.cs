@@ -48,7 +48,7 @@
             StockPoolResource resource,
             IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
         {
-            await res.Negotiate(await facadeService.Add(resource));
+            await res.Negotiate(await facadeService.Add(resource, req.HttpContext.GetPrivileges()));
         }
 
         private async Task UpdateStockPool(

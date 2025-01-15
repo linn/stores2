@@ -32,7 +32,7 @@
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
             base.OnModelCreating(builder);
-            this.BuildAccountingCompanies(builder);
+            BuildAccountingCompanies(builder);
             BuildAddresses(builder);
             BuildCountries(builder);
             BuildOrganisations(builder);
@@ -40,7 +40,7 @@
             BuildStockLocators(builder);
             BuildStorageLocations(builder);
             BuildParts(builder);
-            this.BuildStockPool(builder);
+            BuildStockPool(builder);
             BuildStockLocators(builder);
             BuildStorageLocations(builder);
             BuildParts(builder);
@@ -238,7 +238,7 @@
             e.Property(p => p.ResistorTolerance).HasColumnName("RES_TOLERANCE");
         }
         
-        private void BuildStockPool(ModelBuilder builder)
+        private static void BuildStockPool(ModelBuilder builder)
         {
             var e = builder.Entity<StockPool>().ToTable("STOCK_POOLS");
             e.HasKey(l => l.StockPoolCode);
@@ -255,7 +255,7 @@
             e.HasOne(a => a.AccountingCompany).WithMany().HasForeignKey(c => c.AccountingCompanyCode);
         }
 
-        private void BuildAccountingCompanies(ModelBuilder builder)
+        private static void BuildAccountingCompanies(ModelBuilder builder)
         {
             var entity = builder.Entity<AccountingCompany>().ToTable("ACCOUNTING_COMPANIES");
             entity.HasKey(e => e.Name);
