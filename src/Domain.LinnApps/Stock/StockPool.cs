@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System;
-    using System.Data;
 
     public class StockPool
     {

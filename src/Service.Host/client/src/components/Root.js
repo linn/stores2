@@ -7,6 +7,7 @@ import useSignIn from '../hooks/useSignIn';
 import Navigation from '../containers/Navigation';
 import Carriers from './Carriers';
 import Carrier from './Carrier';
+import StoragePlaceAudit from './StoragePlaceAudit';
 
 function Root() {
     useSignIn();
@@ -21,6 +22,10 @@ function Root() {
                     <Route path="/stores2/carriers" element={<Carriers />} />
                     <Route path="/stores2/carriers/create" element={<Carrier creating />} />
                     <Route path="/stores2/carriers/:code" element={<Carrier />} />
+                    <Route
+                        path="/stores2/reports/storage-place-audit"
+                        element={<StoragePlaceAudit />}
+                    />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>

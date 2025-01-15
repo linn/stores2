@@ -1,7 +1,5 @@
 ﻿namespace Linn.Stores2.Resources
 {
-    using System;
-
     public class StockPoolUpdateResource
     {
         public string StockPoolDescription { get; set; }

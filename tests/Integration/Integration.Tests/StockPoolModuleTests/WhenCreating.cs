@@ -6,7 +6,6 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
 

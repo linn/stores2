@@ -6,7 +6,6 @@ namespace Linn.Stores2.Service.Modules
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources;
 
     using Microsoft.AspNetCore.Builder;

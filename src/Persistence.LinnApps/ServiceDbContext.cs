@@ -3,6 +3,7 @@
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     using Microsoft.EntityFrameworkCore;
@@ -20,11 +21,7 @@
         public DbSet<Country> Countries { get; set; }
 
         public DbSet<StockLocator> StockLocators { get; set; }
-
-        public DbSet<StockPool> StockPools { get; set; }
-
-        public DbSet<StorageLocation> StorageLocations { get; set; }
-
+        
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -37,7 +34,6 @@
             this.BuildStockLocators(builder);
             this.BuildStorageLocations(builder);
             this.BuildParts(builder);
-            this.BuildStockPool(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -105,7 +101,7 @@
             builder.Entity<Carrier>().HasOne(o => o.Organisation).WithMany().HasForeignKey("ORG_ID");
         }
 
-        private void BuildStockLocators(ModelBuilder builder)
+        private static void BuildStockLocators(ModelBuilder builder)
         {
             var q = builder.Entity<StockLocator>();
             q.ToTable("STOCK_LOCATORS");
@@ -128,7 +124,7 @@
             q.HasOne(l => l.StorageLocation).WithMany().HasForeignKey(l => l.LocationId);
         }
 
-        private void BuildStorageLocations(ModelBuilder builder)
+        private static void BuildStorageLocations(ModelBuilder builder)
         {
             var e = builder.Entity<StorageLocation>().ToTable("STORAGE_LOCATIONS");
             e.HasKey(l => l.LocationId);
@@ -142,7 +138,7 @@
             e.Property(l => l.DefaultStockPool).HasColumnName("DEFAULT_STOCK_POOL").HasMaxLength(10);
         }
 
-        private void BuildParts(ModelBuilder builder)
+        private static void BuildParts(ModelBuilder builder)
         {
             var e = builder.Entity<Part>().ToTable("PARTS");
             e.HasKey(p => p.PartNumber);
@@ -226,33 +222,6 @@
             e.Property(p => p.SimModelName).HasColumnName("SIM_MODEL_NAME").HasMaxLength(100);
             e.Property(p => p.AltiumValue).HasColumnName("ALTIUM_VALUE").HasMaxLength(100);
             e.Property(p => p.ResistorTolerance).HasColumnName("RES_TOLERANCE");
-        }
-
-        private void BuildStockPool(ModelBuilder builder)
-        {
-            var e = builder.Entity<StockPool>().ToTable("STOCK_POOLS");
-            e.HasKey(l => l.StockPoolCode);
-            e.Property(l => l.StockPoolCode).HasColumnName("STOCK_POOL_CODE").HasMaxLength(10);
-            e.Property(l => l.StockPoolDescription).HasColumnName("STOCK_POOL_DESCRIPTION").HasMaxLength(50);
-            e.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
-            e.Property(l => l.AccountingCompanyCode).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
-            e.Property(l => l.Sequence).HasColumnName("SEQUENCE");
-            e.Property(l => l.StockCategory).HasColumnName("STOCK_CATEGORY").HasMaxLength(1);
-            e.Property(l => l.DefaultLocation).HasColumnName("DEFAULT_LOCATION");
-            e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID");
-            e.Property(l => l.AvailableToMrp).HasColumnName("AVAILABLE_TO_MRP");
-            e.HasOne(l => l.StorageLocation).WithMany().HasForeignKey(l => l.DefaultLocation);
-            e.HasOne(a => a.AccountingCompany).WithMany().HasForeignKey(c => c.AccountingCompanyCode);
-        }
-
-        private void BuildAccountingCompanies(ModelBuilder builder)
-        {
-            var entity = builder.Entity<AccountingCompany>().ToTable("ACCOUNTING_COMPANIES");
-            entity.HasKey(e => e.Name);
-            entity.Property(e => e.Name).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
-            entity.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
-            entity.Property(e => e.Sequence).HasColumnName("SEQUENCE");
-            entity.Property(e => e.Id).HasColumnName("BRIDGE_ID");
         }
     }
 }
