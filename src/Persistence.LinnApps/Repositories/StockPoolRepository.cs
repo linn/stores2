@@ -21,9 +21,9 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override IQueryable<StockPool> FilterBy(Expression<Func<StockPool, bool>> expression)
+        public override IQueryable<StockPool> FindAll()
         {
-            return this.FindAll().Where(expression)
+            return this.serviceDbContext.StockPools
                 .Include(a => a.AccountingCompany)
                 .Include(l => l.StorageLocation);
         }
