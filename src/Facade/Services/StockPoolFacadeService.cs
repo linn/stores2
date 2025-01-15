@@ -11,7 +11,6 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
-    using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
     public class StockPoolFacadeService : AsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>
     {

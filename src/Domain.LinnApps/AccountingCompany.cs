@@ -1,7 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps
 {
-    using System;
-
     public class AccountingCompany
     {
         public int Id { get; set; }
