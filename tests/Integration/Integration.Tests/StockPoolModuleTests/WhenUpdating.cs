@@ -53,7 +53,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
             this.updateResource = new StockPoolUpdateResource
                                       { 
                                           StockPoolDescription = "A NEW DESCRIPTION",
-                                          DateInvalid = "22/01/2005",
+                                          DateInvalid = DateTime.Today.ToString("o"),
                                           AccountingCompany = new AccountingCompanyResource 
                                                                   { 
                                                                       Description = "Test Description",

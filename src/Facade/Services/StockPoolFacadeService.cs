@@ -35,7 +35,12 @@ namespace Linn.Stores2.Facade.Services
             IEnumerable<string> privileges = null)
         {
             var accountingCompany = await this.accountingCompanyRepository.FindByIdAsync(resource.AccountingCompanyCode);
-            var storageLocation = await this.storageLocationRepository.FindByIdAsync((int)resource.DefaultLocation);
+            var storageLocation = new StorageLocation();
+
+            if (resource.DefaultLocation.HasValue)
+            {
+                storageLocation = await this.storageLocationRepository.FindByIdAsync((int)resource.DefaultLocation);
+            }
 
             return new StockPool(
                 resource.StockPoolCode,
