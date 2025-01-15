@@ -10,7 +10,7 @@
             column-gap: 10px;
             display: grid;
             grid-template-areas:
-              'title date balances currency-base company';
+              'title date';
             padding: 10px;
             padding-bottom: 50px;
             row-gap: 20px;
@@ -38,9 +38,17 @@
         .column-grid-container {
                 column-gap: 10px;
                 display: grid;
-                grid-template-columns: auto auto auto auto auto auto auto;
+                grid-template-columns: auto auto auto auto auto auto auto auto auto;
                 row-gap: 10px;
-            }
+        }
+
+        .footer-grid-container {
+            column-gap: 10px;
+            row-gap: 30px;
+            padding-top: 30px;
+            display: grid;
+            grid-template-columns: auto auto;
+        }
         .page { page-break-after: always; }
     </style>
     
@@ -52,24 +60,48 @@
             <div class="date"><b>@Model.ReportDate.ToString("dd MMM yyyy")</b></div>
       </div>
 
-    <div class="column-grid-container">
-        <div class="grid-text-item"><b>Storage Place</b></div>
-        <div class="grid-text-item"><b>Part Number</b></div>
-        <div class="grid-text-item"><b>R/F</b></div>
-        <div class="grid-text-item"><b>Description</b></div>
-        <div class="grid-item"><b>Quantity</b></div>
-        <div class="grid-text-item"><b>UOM</b></div>
-        <div class="grid-item"><b>Allocated</b></div>
-        @foreach (var line in Model.Report.Rows.OrderBy(b => b.SortOrder))
-        {
-            <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 0)</div>
-            <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 1)</div>
-            <div class="grid-text-short-item">@Model.Report.GetGridTextValue(line.RowIndex, 2)</div>
-            <div class="grid-text-long-item">@Model.Report.GetGridTextValue(line.RowIndex, 3)</div>
-            <div class="grid-item">@($"{Model.Report.GetGridValue(line.RowIndex, 4):N2}")</div>
-            <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 5)</div>
-            <div class="grid-item">@($"{Model.Report.GetGridValue(line.RowIndex, 6):N2}")</div>
-        }
-    </div>
+      <div class="column-grid-container">
+          <div class="grid-text-item"><b>Storage Place</b></div>
+          <div class="grid-text-item"><b>Part Number</b></div>
+          <div class="grid-text-item"><b>R/F</b></div>
+          <div class="grid-text-item"><b>Description</b></div>
+          <div class="grid-item"><b>Quantity</b></div>
+          <div class="grid-text-item"><b>UOM</b></div>
+          <div class="grid-item"><b>Allocated</b></div>
+          <div class="grid-text-item"><b>Counted</b></div>
+          <div class="grid-text-item"><b>Adjusted</b></div>
+          @foreach (var line in Model.Report.Rows.OrderBy(b => b.SortOrder))
+          {
+              <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 0)</div>
+              <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 1)</div>
+              <div class="grid-text-short-item">@Model.Report.GetGridTextValue(line.RowIndex, 2)</div>
+              <div class="grid-text-long-item">@Model.Report.GetGridTextValue(line.RowIndex, 3)</div>
+              <div class="grid-item">@($"{Model.Report.GetGridValue(line.RowIndex, 4):N2}")</div>
+              <div class="grid-text-item">@Model.Report.GetGridTextValue(line.RowIndex, 5)</div>
+              <div class="grid-item">@($"{Model.Report.GetGridValue(line.RowIndex, 6):N2}")</div>
+              <div class="grid-text-item">___________</div>
+              <div class="grid-text-item">___________</div>
+          }
+      </div>
+      <div class="footer-grid-container">
+            <div class="grid-text-item">
+              <b>Audited By</b> _____________________________
+          </div>
+          <div class="grid-text-item">
+              <b>Date</b> _________________
+          </div>
+          <div class="grid-text-item">
+              <b>Requisition</b> _____________________
+          </div>
+          <div class="grid-text-item">
+              <b>Posted</b> _________________
+          </div>
+          <div class="grid-text-item">
+              <b>Additional Parts</b> _____________________
+          </div>
+          <div class="grid-text-item">
+              ___________________ _________________
+          </div>
+      </div>
 </div>
 }
