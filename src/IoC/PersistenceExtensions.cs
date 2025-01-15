@@ -20,8 +20,8 @@
                 .AddScoped<IRepository<Country, string>, EntityFrameworkRepository<Country, string>>(
                     r => new EntityFrameworkRepository<Country, string>(r.GetService<ServiceDbContext>()?.Countries))
                 .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
-                .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>();
-                .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>();
+                .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
+                .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>()
                  .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
                 .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
                     r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
