@@ -57,6 +57,7 @@
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<RequisitionHeader>, RequisitionResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
+                .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
         }
     }
