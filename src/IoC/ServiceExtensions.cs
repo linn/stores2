@@ -9,6 +9,7 @@
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -16,6 +17,7 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
+    using Linn.Stores2.Proxy;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Requisitions;
 
@@ -36,7 +38,8 @@
                 .AddScoped<IHtmlTemplateService<StoragePlaceAuditReport>>(
                     x => new HtmlTemplateService<StoragePlaceAuditReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoragePlaceAudit.cshtml",
-                        x.GetService<ITemplateEngine>()));
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

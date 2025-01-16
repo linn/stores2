@@ -6,6 +6,7 @@
 
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
+    using Linn.Common.Resources;
 
     public interface IStoragePlaceAuditReportFacadeService
     {
@@ -14,5 +15,10 @@
             string locationRange);
 
         Task<Stream> GetStoragePlaceAuditReportAsPdf(string[] locationList, string locationRange);
+
+        IResult<ProcessResultResource> CreateCheckedAuditReqs(
+            string[] locationList,
+            string locationRange,
+            int employeeNumber);
     }
 }

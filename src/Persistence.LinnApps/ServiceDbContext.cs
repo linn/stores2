@@ -28,6 +28,8 @@
 
         public DbSet<RequisitionHeader> RequisitionHeaders { get; set; }
 
+        public DbSet<StoragePlace> StoragePlaces { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -48,6 +50,7 @@
             BuildReqMoves(builder);
             BuildRequisitionHeaders(builder);
             BuildRequisitionLines(builder);
+            BuildStoragePlaces(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -113,6 +116,16 @@
             builder.Entity<Carrier>().Property(c => c.DateCreated).HasColumnName("DATE_CREATED");
             builder.Entity<Carrier>().Property(c => c.DateInvalid).HasColumnName("DATE_INVALID");
             builder.Entity<Carrier>().HasOne(o => o.Organisation).WithMany().HasForeignKey("ORG_ID");
+        }
+
+        private static void BuildStoragePlaces(ModelBuilder builder)
+        {
+            builder.Entity<StoragePlace>().ToTable("V_STORAGE_PLACES").HasNoKey();
+            builder.Entity<StoragePlace>().Property(e => e.Description).HasColumnName("STORAGE_PLACE_DESCRIPTION");
+            builder.Entity<StoragePlace>().Property(e => e.Name).HasColumnName("STORAGE_PLACE");
+            builder.Entity<StoragePlace>().Property(e => e.LocationId).HasColumnName("LOCATION_ID");
+            builder.Entity<StoragePlace>().Property(e => e.PalletNumber).HasColumnName("PALLET_NUMBER");
+            builder.Entity<StoragePlace>().Property(e => e.SiteCode).HasColumnName("SITE_CODE");
         }
 
         private static void BuildStockLocators(ModelBuilder builder)

@@ -3,8 +3,10 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Domain;
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class StoragePlaceAuditReportService : IStoragePlaceAuditReportService
@@ -13,12 +15,20 @@
 
         private readonly IRepository<StockLocator, int> stockLocatorRepository;
 
+        private readonly IStoragePlaceAuditPack storagePlaceAuditPack;
+
+        private readonly IQueryRepository<StoragePlace> storagePlaceRepository;
+
         public StoragePlaceAuditReportService(
             IReportingHelper reportingHelper,
-            IRepository<StockLocator, int> stockLocatorRepository)
+            IRepository<StockLocator, int> stockLocatorRepository,
+            IStoragePlaceAuditPack storagePlaceAuditPack,
+            IQueryRepository<StoragePlace> storagePlaceRepository)
         {
             this.reportingHelper = reportingHelper;
             this.stockLocatorRepository = stockLocatorRepository;
+            this.storagePlaceAuditPack = storagePlaceAuditPack;
+            this.storagePlaceRepository = storagePlaceRepository;
         }
 
         public ResultsModel StoragePlaceAuditReport(IEnumerable<string> locationList, string locationRange)
@@ -67,6 +77,43 @@
             this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Quantity, true);
 
             return model;
+        }
+
+        public ProcessResult CreateSuccessAuditReqs(
+            int employeeNumber,
+            IEnumerable<string> locationList,
+            string locationRange,
+            string departmentCode)
+        {
+            List<StoragePlace> storagePlaces;
+
+            if (!string.IsNullOrEmpty(locationRange) && locationRange.StartsWith("E-K"))
+            {
+                storagePlaces = this.storagePlaceRepository
+                    .FilterBy(s => s.Name.StartsWith(locationRange))
+                    .OrderBy(s => s.Name).ToList();
+            }
+            else
+            {
+                storagePlaces = this.storagePlaceRepository
+                    .FilterBy(s => locationList.Any(l => s.Name == l))
+                    .OrderBy(s => s.Name).ToList();
+            }
+
+            foreach (var storagePlace in storagePlaces)
+            {
+                var result = this.storagePlaceAuditPack.CreateAuditReq(
+                    storagePlace.Name,
+                    employeeNumber,
+                    departmentCode);
+
+                if (result != "SUCCESS")
+                {
+                    return new ProcessResult(false, result);
+                }
+            }
+
+            return new ProcessResult(true, "Successfully created audit reqs");
         }
 
         private List<CalculationValueModel> SetModelRows(IEnumerable<StockLocator> stockLocators)

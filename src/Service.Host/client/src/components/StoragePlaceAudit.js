@@ -20,6 +20,7 @@ function StoragePlaceAudit() {
 
     const auth = useAuth();
     const token = auth.user?.access_token;
+    const employeeId = auth?.user?.profile?.employee?.split('/')?.[2];
 
     const {
         send: getReport,
@@ -66,7 +67,7 @@ function StoragePlaceAudit() {
     };
 
     const getCreateReqResource = () => {
-        const resource = {};
+        const resource = { employeeNumber: employeeId };
 
         if (range) {
             resource.locationRange = range;
@@ -268,7 +269,7 @@ function StoragePlaceAudit() {
                 )}
                 {createAuditReqsResult && (
                     <Grid size={12}>
-                        <Typography variant="h6">{createAuditReqsResult}</Typography>
+                        <Typography variant="h6">{createAuditReqsResult.message}</Typography>
                     </Grid>
                 )}
             </Grid>
