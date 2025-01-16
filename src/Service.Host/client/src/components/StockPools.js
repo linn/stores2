@@ -1,5 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
+import moment from 'moment';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
 import { DataGrid } from '@mui/x-data-grid';
@@ -15,8 +16,21 @@ function StockPools() {
     const stockPoolColumns = [
         { field: 'stockPoolCode', headerName: 'Code', width: 100 },
         { field: 'stockPoolDescription', headerName: 'Description', width: 225 },
-        { field: 'sequence', headerName: 'Sequence', width: 100 },
-        { field: 'dateInvalid', headerName: 'Date Invalid', width: 225 }
+        {
+            field: 'dateInvalid',
+            headerName: 'Date Invalid',
+            width: 175,
+            valueFormatter: value => value && moment(value).format('DD-MMM-YYYY')
+        },
+        { field: 'stockCategory', headerName: 'Stock Category', width: 100 },
+        { field: 'accountingCompanyCode', headerName: 'Accounting Company', width: 100 },
+        {
+            field: 'locationCode',
+            headerName: 'Default Location',
+            width: 200,
+            valueGetter: params => params?.row?.storageLocation?.locationCode || ''
+        },
+        { field: 'sequence', headerName: 'Sequence', width: 100 }
     ];
 
     const sortedStockPools = stockPools?.sort((a, b) => {
