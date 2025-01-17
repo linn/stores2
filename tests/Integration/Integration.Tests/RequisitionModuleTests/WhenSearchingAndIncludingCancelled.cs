@@ -8,10 +8,11 @@
 
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using Linn.Stores2.Integration.Tests.RequisitionModuleTests.TestData;
     using Linn.Stores2.Resources.Requisitions;
 
     using NUnit.Framework;
+
+    using TestData.Requisitions;
 
     public class WhenSearchingAndIncludingCancelled : ContextBase
     {
@@ -23,7 +24,7 @@
         public void SetUp()
         {
             this.req123 = new RequisitionHeader(123, "Hello Requisitions");
-            this.req456 = new TestCancelledRequisitionHeader(456);
+            this.req456 = new CancelledRequisitionHeader(456);
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);
