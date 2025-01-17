@@ -16,8 +16,8 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/requisitions", this.Search);
-            app.MapGet("/stores2/requisitions/{reqNumber}", this.GetById);
+            app.MapGet("/requisitions", this.Search);
+            app.MapGet("/requisitions/{reqNumber}", this.GetById);
         }
 
         private async Task Search(

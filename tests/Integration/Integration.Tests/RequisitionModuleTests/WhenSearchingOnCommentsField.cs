@@ -28,7 +28,7 @@
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);
 
             this.Response = this.Client.Get(
-                "/stores2/requisitions?comments=Hello",
+                "/requisitions?comments=Hello",
                 with =>
                     {
                         with.Accept("application/json");

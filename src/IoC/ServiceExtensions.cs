@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
@@ -29,13 +30,15 @@
             return services
                 .AddSingleton<IReportingHelper, ReportingHelper>()
                 .AddSingleton<ITemplateEngine, RazorTemplateEngine>()
+                .AddSingleton<IAuthorisationService, AuthorisationService>()
                 .AddScoped<IPdfService>(
-                    x => new PdfService(ConfigurationManager.Configuration["PDF_SERVICE_ROOT"], new HttpClient()))
+                    _ => new PdfService(ConfigurationManager.Configuration["PDF_SERVICE_ROOT"], new HttpClient()))
                 .AddScoped<IStoragePlaceAuditReportService, StoragePlaceAuditReportService>()
                 .AddScoped<IHtmlTemplateService<StoragePlaceAuditReport>>(
                     x => new HtmlTemplateService<StoragePlaceAuditReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoragePlaceAudit.cshtml",
-                        x.GetService<ITemplateEngine>()));
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IRequisitionService, RequisitionService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

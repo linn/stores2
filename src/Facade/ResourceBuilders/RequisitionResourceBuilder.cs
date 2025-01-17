@@ -22,15 +22,27 @@
                            ToLocationId = header.ToLocationId,
                            ToLocation = header.ToLocation?.LocationCode,
                            Cancelled = header.Cancelled,
-                           CancelledBy = header.CancelledBy,
+                           CancelledBy = header.CancelledBy?.Id,
+                           CancelledByName = header.CancelledBy?.Name,
                            DateCancelled = header.DateCancelled?.ToString("o"),
                            CancelledReason = header.CancelledReason,
-                           FunctionCode = header.FunctionCode,
+                           FunctionCode = header.FunctionCode?.FunctionCode,
+                           FunctionCodeDescription = header.FunctionCode?.Description,
                            Comments = header.Comments,
-                           Lines = header.Lines?.Select(x => new RequisitionLineResource
+                           DateBooked = header.DateBooked?.ToString("o"),
+                           BookedBy = header.BookedBy?.Id,
+                           BookedByName = header.BookedBy?.Name,
+                           CreatedBy = header.CreatedBy?.Id,
+                           CreatedByName = header.CreatedBy?.Name,
+                           Reversed = header.Reversed,
+                           Lines = header.Lines?.Select(l => new RequisitionLineResource
                                                                  {
-                                                                     LineNumber = x.LineNumber,
-                                                                     PartNumber = x.PartNumber
+                                                                     LineNumber = l.LineNumber,
+                                                                     PartNumber = l.Part?.PartNumber,
+                                                                     PartDescription = l.Part?.Description,
+                                                                     Qty = l.Qty,
+                                                                     TransactionCode = l.TransactionDefinition?.TransactionCode,
+                                                                     TransactionCodeDescription = l.TransactionDefinition?.Description
                                                                  }),
                            Links = this.BuildLinks(header, claims).ToArray()
                         };
@@ -38,7 +50,7 @@
 
         public string GetLocation(RequisitionHeader model)
         {
-            return $"/stores2/requisitions/{model.ReqNumber}";
+            return $"/requisitions/{model.ReqNumber}";
         }
 
         object IBuilder<RequisitionHeader>.Build(RequisitionHeader entity, IEnumerable<string> claims) =>

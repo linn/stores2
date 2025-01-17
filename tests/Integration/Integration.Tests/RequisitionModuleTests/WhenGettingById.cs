@@ -22,7 +22,7 @@
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req);
 
             this.Response = this.Client.Get(
-                "/stores2/requisitions/123",
+                "/requisitions/123",
                 with =>
                     {
                         with.Accept("application/json");
