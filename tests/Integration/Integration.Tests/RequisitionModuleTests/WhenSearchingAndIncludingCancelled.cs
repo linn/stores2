@@ -6,9 +6,9 @@
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
+    using Linn.Stores2.Integration.Tests.RequisitionModuleTests.TestData;
     using Linn.Stores2.Resources.Requisitions;
 
     using NUnit.Framework;
