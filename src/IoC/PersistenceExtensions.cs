@@ -24,7 +24,9 @@
                 .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
                 .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
                 .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>()
-                 .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
+                .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
+                .AddScoped<IQueryRepository<StoragePlace>, EntityFrameworkQueryRepository<StoragePlace>>(
+                    r => new EntityFrameworkQueryRepository<StoragePlace>(r.GetService<ServiceDbContext>()?.StoragePlaces))
                 .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
                     r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
                 .AddScoped<IRepository<StorageLocation, int>, EntityFrameworkRepository<StorageLocation, int>>(

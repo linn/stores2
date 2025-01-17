@@ -3,6 +3,7 @@
     using System.Collections.Generic;
 
     using Linn.Common.Reporting.Resources.ReportResultResources;
+    using Linn.Common.Resources;
     using Linn.Common.Service.Core.Handlers;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Requisitions;
