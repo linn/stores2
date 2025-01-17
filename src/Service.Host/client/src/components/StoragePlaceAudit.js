@@ -124,6 +124,8 @@ function StoragePlaceAudit() {
         }
     ];
 
+    const notReadyToRun = () => (!range && !locations?.length);
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -219,7 +221,7 @@ function StoragePlaceAudit() {
                 <Grid size={1} />
                 <Grid size={1}>
                     <Button
-                        disabled={isLoading}
+                        disabled={isLoading || notReadyToRun()}
                         variant="contained"
                         onClick={() => {
                             getReport(null, getQueryString());
@@ -231,6 +233,7 @@ function StoragePlaceAudit() {
                 <Grid size={1}>
                     <ExportButton
                         buttonText="PDF"
+                        disabled={isLoading || notReadyToRun()}
                         accept="application/pdf"
                         fileName="export.pdf"
                         tooltipText="Download report as PDF"
@@ -249,7 +252,7 @@ function StoragePlaceAudit() {
                 )}
                 <Grid size={2}>
                     <Button
-                        disabled={isLoading || createAuditReqsLoading}
+                        disabled={isLoading || createAuditReqsLoading || notReadyToRun()}
                         variant="outlined"
                         onClick={() => {
                             clearCreateAuditData();
