@@ -15,14 +15,22 @@
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
-            return services.AddScoped<ServiceDbContext>()
+            return services
+                .AddScoped<ServiceDbContext>()
                 .AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
                 .AddScoped<ITransactionManager, TransactionManager>()
                 .AddScoped<IRepository<Country, string>, EntityFrameworkRepository<Country, string>>(
                     r => new EntityFrameworkRepository<Country, string>(r.GetService<ServiceDbContext>()?.Countries))
                 .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
                 .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
-                .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>();
+                .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>()
+                .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
+                .AddScoped<IQueryRepository<StoragePlace>, EntityFrameworkQueryRepository<StoragePlace>>(
+                    r => new EntityFrameworkQueryRepository<StoragePlace>(r.GetService<ServiceDbContext>()?.StoragePlaces))
+                .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
+                    r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
+                .AddScoped<IRepository<StorageLocation, int>, EntityFrameworkRepository<StorageLocation, int>>(
+                    r => new EntityFrameworkRepository<StorageLocation, int>(r.GetService<ServiceDbContext>()?.StorageLocations));
         }
     }
 }

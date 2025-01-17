@@ -9,6 +9,7 @@
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
+    using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
 
@@ -52,6 +53,21 @@
             var html = await this.htmlTemplateServiceForStorageAudit.GetHtml(data);
 
             return await this.pdfService.ConvertHtmlToPdf(html, false);
+        }
+
+        public IResult<ProcessResultResource> CreateCheckedAuditReqs(
+            string[] locationList,
+            string locationRange,
+            int employeeNumber)
+        {
+            var result = this.storagePlaceAuditReportService.CreateSuccessAuditReqs(
+                employeeNumber,
+                locationList,
+                locationRange,
+                null);
+
+            var returnResource = new ProcessResultResource(result.Success, result.Message);
+            return new SuccessResult<ProcessResultResource>(returnResource);
         }
     }
 }

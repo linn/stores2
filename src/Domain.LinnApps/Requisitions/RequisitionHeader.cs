@@ -65,11 +65,5 @@
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
         }
-
-        public void Cancel(Employee cancelledBy)
-        {
-            this.CancelledBy = cancelledBy;
-            this.DateCancelled = DateTime.Now;
-        }
     }
 }

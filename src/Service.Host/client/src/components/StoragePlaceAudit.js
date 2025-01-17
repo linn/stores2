@@ -10,6 +10,7 @@ import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
+import usePost from '../hooks/usePost';
 import ReportDataGrids from './ReportDataGrids';
 
 function StoragePlaceAudit() {
@@ -19,6 +20,7 @@ function StoragePlaceAudit() {
 
     const auth = useAuth();
     const token = auth.user?.access_token;
+    const employeeId = auth?.user?.profile?.employee?.split('/')?.[2];
 
     const {
         send: getReport,
@@ -40,6 +42,14 @@ function StoragePlaceAudit() {
         clearData: clearAuditLocations
     } = useGet(itemTypes.auditLocations.url);
 
+    const {
+        send: createAuditReqs,
+        createAuditReqsLoading,
+        errorMessage: createAuditErrorMessage,
+        postResult: createAuditReqsResult,
+        clearPostResult: clearCreateAuditData
+    } = usePost(itemTypes.createAuditReqs.url);
+
     const getQueryString = () => {
         let queryString = '?';
 
@@ -54,6 +64,25 @@ function StoragePlaceAudit() {
         }
 
         return queryString;
+    };
+
+    const getCreateReqResource = () => {
+        const resource = { employeeNumber: employeeId };
+
+        if (range) {
+            resource.locationRange = range;
+        }
+
+        if (locations?.length) {
+            const locationList = [];
+            locations.forEach(e => {
+                locationList.push(e);
+            });
+
+            resource.locationList = locationList;
+        }
+
+        return resource;
     };
 
     const addToLocationList = selectedLocation => {
@@ -179,7 +208,9 @@ function StoragePlaceAudit() {
                         variant="outlined"
                         onClick={() => {
                             setLocations([]);
+                            setLocationSelect(null);
                             setRange(null);
+                            clearCreateAuditData();
                         }}
                     >
                         Clear
@@ -209,13 +240,37 @@ function StoragePlaceAudit() {
                         }/stores2/reports/storage-place-audit/pdf${getQueryString()}`}
                     />
                 </Grid>
-                <Grid item size={11} />
-                {isLoading ? (
+                {isLoading || createAuditReqsLoading ? (
                     <Grid item xs={12}>
                         <Loading />
                     </Grid>
                 ) : (
                     reports
+                )}
+                <Grid size={2}>
+                    <Button
+                        disabled={isLoading || createAuditReqsLoading}
+                        variant="outlined"
+                        onClick={() => {
+                            clearCreateAuditData();
+                            createAuditReqs(null, getCreateReqResource());
+                        }}
+                    >
+                        Create Audit Reqs
+                    </Button>
+                </Grid>
+                <Grid item size={10} />
+                {createAuditErrorMessage && (
+                    <Grid size={12}>
+                        <Typography variant="h6" color="red">
+                            {createAuditErrorMessage}
+                        </Typography>
+                    </Grid>
+                )}
+                {createAuditReqsResult && (
+                    <Grid size={12}>
+                        <Typography variant="h6">{createAuditReqsResult.message}</Typography>
+                    </Grid>
                 )}
             </Grid>
         </Page>

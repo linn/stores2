@@ -50,7 +50,7 @@
         {
             return x => (string.IsNullOrEmpty(searchResource.Comments) 
                          || x.Comments.ToUpper().Contains(searchResource.Comments.ToUpper().Trim())) 
-                        && (searchResource.IncludeCancelled || !x.DateCancelled.HasValue)
+                        && (searchResource.IncludeCancelled || x.Cancelled != "Y")
                         && (!searchResource.ReqNumber.HasValue || x.ReqNumber == searchResource.ReqNumber);
         }
 

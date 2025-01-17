@@ -13,23 +13,36 @@
     {
         public static readonly LoggerFactory MyLoggerFactory =
             new LoggerFactory(new[] { new Microsoft.Extensions.Logging.Debug.DebugLoggerProvider() });
-        
+
+        public DbSet<AccountingCompany> AccountingCompanies { get; set; }
+
         public DbSet<Carrier> Carriers { get; set; }
         
         public DbSet<Country> Countries { get; set; }
 
         public DbSet<StockLocator> StockLocators { get; set; }
 
+        public DbSet<StockPool> StockPools { get; set; }
+
+        public DbSet<StorageLocation> StorageLocations { get; set; }
+
         public DbSet<RequisitionHeader> RequisitionHeaders { get; set; }
         
+        public DbSet<StoragePlace> StoragePlaces { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
             base.OnModelCreating(builder);
+            BuildAccountingCompanies(builder);
             BuildAddresses(builder);
             BuildCountries(builder);
             BuildOrganisations(builder);
             BuildCarriers(builder);
+            BuildStockLocators(builder);
+            BuildStorageLocations(builder);
+            BuildParts(builder);
+            BuildStockPool(builder);
             BuildStockLocators(builder);
             BuildStorageLocations(builder);
             BuildParts(builder);
@@ -39,6 +52,7 @@
             BuildRequisitionLines(builder);
             BuildStoresFunctionCodes(builder);
             BuildEmployees(builder);
+            BuildStoragePlaces(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -104,6 +118,16 @@
             builder.Entity<Carrier>().Property(c => c.DateCreated).HasColumnName("DATE_CREATED");
             builder.Entity<Carrier>().Property(c => c.DateInvalid).HasColumnName("DATE_INVALID");
             builder.Entity<Carrier>().HasOne(o => o.Organisation).WithMany().HasForeignKey("ORG_ID");
+        }
+
+        private static void BuildStoragePlaces(ModelBuilder builder)
+        {
+            builder.Entity<StoragePlace>().ToTable("V_STORAGE_PLACES").HasNoKey();
+            builder.Entity<StoragePlace>().Property(e => e.Description).HasColumnName("STORAGE_PLACE_DESCRIPTION");
+            builder.Entity<StoragePlace>().Property(e => e.Name).HasColumnName("STORAGE_PLACE");
+            builder.Entity<StoragePlace>().Property(e => e.LocationId).HasColumnName("LOCATION_ID");
+            builder.Entity<StoragePlace>().Property(e => e.PalletNumber).HasColumnName("PALLET_NUMBER");
+            builder.Entity<StoragePlace>().Property(e => e.SiteCode).HasColumnName("SITE_CODE");
         }
 
         private static void BuildStockLocators(ModelBuilder builder)
@@ -227,6 +251,33 @@
             e.Property(p => p.SimModelName).HasColumnName("SIM_MODEL_NAME").HasMaxLength(100);
             e.Property(p => p.AltiumValue).HasColumnName("ALTIUM_VALUE").HasMaxLength(100);
             e.Property(p => p.ResistorTolerance).HasColumnName("RES_TOLERANCE");
+        }
+        
+        private static void BuildStockPool(ModelBuilder builder)
+        {
+            var e = builder.Entity<StockPool>().ToTable("STOCK_POOLS");
+            e.HasKey(l => l.StockPoolCode);
+            e.Property(l => l.StockPoolCode).HasColumnName("STOCK_POOL_CODE").HasMaxLength(10);
+            e.Property(l => l.StockPoolDescription).HasColumnName("STOCK_POOL_DESCRIPTION").HasMaxLength(50);
+            e.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
+            e.Property(l => l.AccountingCompanyCode).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
+            e.Property(l => l.Sequence).HasColumnName("SEQUENCE");
+            e.Property(l => l.StockCategory).HasColumnName("STOCK_CATEGORY").HasMaxLength(1);
+            e.Property(l => l.DefaultLocation).HasColumnName("DEFAULT_LOCATION");
+            e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID");
+            e.Property(l => l.AvailableToMrp).HasColumnName("AVAILABLE_TO_MRP");
+            e.HasOne(l => l.StorageLocation).WithMany().HasForeignKey(l => l.DefaultLocation);
+            e.HasOne(a => a.AccountingCompany).WithMany().HasForeignKey(c => c.AccountingCompanyCode);
+        }
+
+        private static void BuildAccountingCompanies(ModelBuilder builder)
+        {
+            var entity = builder.Entity<AccountingCompany>().ToTable("ACCOUNTING_COMPANIES");
+            entity.HasKey(e => e.Name);
+            entity.Property(e => e.Name).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
+            entity.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            entity.Property(e => e.Sequence).HasColumnName("SEQUENCE");
+            entity.Property(e => e.Id).HasColumnName("BRIDGE_ID");
         }
 
         private static void BuildStoresTransactionDefinitions(ModelBuilder builder)

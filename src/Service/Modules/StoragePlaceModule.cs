@@ -5,6 +5,7 @@ namespace Linn.Stores2.Service.Modules
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Facade.Services;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
@@ -18,6 +19,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/reports/storage-place-audit/report", this.StoragePlaceAuditReport);
             app.MapGet("/stores2/reports/storage-place-audit", this.GetApp);
             app.MapGet("/stores2/reports/storage-place-audit/pdf", this.StoragePlaceAuditReportAsPdf);
+            app.MapPost("/stores2/storage-places/create-checked-audit-reqs", this.CreateAuditReqs);
         }
 
         private async Task StoragePlaceAuditReport(
@@ -40,12 +42,25 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res,
             string[] locationList,
             string locationRange,
-            IStoragePlaceAuditReportFacadeService documentsFacadeService)
+            IStoragePlaceAuditReportFacadeService facadeService)
         {
-            var result = await documentsFacadeService.GetStoragePlaceAuditReportAsPdf(locationList, locationRange);
+            var result = await facadeService.GetStoragePlaceAuditReportAsPdf(locationList, locationRange);
 
             res.ContentType = "application/pdf";
             await res.FromStream(result, res.ContentType, new System.Net.Mime.ContentDisposition("attachment"));
+        }
+
+        private async Task CreateAuditReqs(
+            HttpRequest _,
+            HttpResponse res,
+            StoragePlaceRequestResource resource,
+            IStoragePlaceAuditReportFacadeService facadeService)
+        {
+            var result = facadeService.CreateCheckedAuditReqs(
+                resource.LocationList,
+                resource.LocationRange,
+                resource.EmployeeNumber);
+            await res.Negotiate(result);
         }
     }
 }

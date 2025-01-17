@@ -30,8 +30,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var req = await this.repository.FindByIdAsync(reqNumber);
 
-            // doesn't make sense to have any cancellation logic inside the requisition class itself for now
-            // since the actual cancel operations will be performed by executing a stored procedure
             if (req.DateBooked.HasValue)
             {
                 throw new RequisitionException("Cannot cancel a requisition that has already been booked");
