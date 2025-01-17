@@ -187,14 +187,17 @@
                                },
                            new AxisDetailsModel("Description")
                                {
-                                   SortOrder = 3, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 300
+                                   SortOrder = 3, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 350
                                },
                            new AxisDetailsModel("Quantity")
                                {
-                                   SortOrder = 4, GridDisplayType = GridDisplayType.Value, DecimalPlaces = 1
+                                   Name = "Qty",
+                                   SortOrder = 4,
+                                   GridDisplayType = GridDisplayType.Value,
+                                   DecimalPlaces = 1
                                },
-                           new AxisDetailsModel("UOM") { SortOrder = 5, GridDisplayType = GridDisplayType.TextValue },
-                           new AxisDetailsModel("Allocated") { SortOrder = 6, GridDisplayType = GridDisplayType.Value }
+                           new AxisDetailsModel("UOM") { SortOrder = 5, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 100 },
+                           new AxisDetailsModel("Allocated") { Name = "Alloc", SortOrder = 6, GridDisplayType = GridDisplayType.Value, ColumnWidth = 100 }
                        };
         }
     }
