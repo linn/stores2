@@ -17,7 +17,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         [SetUp]
         public void SetUp()
         {
-            this.ReqRepository.FindByIdAsync(123).Returns(new RequisitionHeader(123, "comment"));
+            this.ReqRepository.FindByIdAsync(123)
+                .Returns(new RequisitionHeader(
+                    123, 
+                    "comment", 
+                    new StoresFunctionCode { FunctionCode = "FUNC" }));
 
             var user = new User
                            {
@@ -26,7 +30,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                            };
             
             this.AuthService.HasPermissionFor(AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
-            this.req = this.Sut.Cancel(123, user).Result;
+            this.req = this.Sut.Cancel(
+                123, 
+                user).Result;
         }
 
         [Test]

@@ -27,7 +27,11 @@
                                Privileges = new List<string>()
                            };
 
-            this.ReqRepository.FindByIdAsync(123).Returns(new BookedRequisitionHeader(123, 33087));
+            this.ReqRepository.FindByIdAsync(123)
+                .Returns(new BookedRequisitionHeader(
+                    123, 
+                    33087,
+                    new StoresFunctionCode { FunctionCode = "F" }));
 
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>())

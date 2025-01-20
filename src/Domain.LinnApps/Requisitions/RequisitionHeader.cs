@@ -55,7 +55,7 @@
         {
         }
 
-        public RequisitionHeader(int? reqNumber, string comments)
+        public RequisitionHeader(int? reqNumber, string comments, StoresFunctionCode functionCode)
         {
             if (reqNumber.HasValue)
             {
@@ -64,6 +64,7 @@
 
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
+            this.FunctionCode = functionCode;
         }
     }
 }

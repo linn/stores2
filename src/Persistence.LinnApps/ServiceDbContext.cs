@@ -358,9 +358,10 @@
             var r = builder.Entity<StoresFunctionCode>().ToTable("STORES_FUNCTIONS");
             r.HasKey(c => c.FunctionCode);
             r.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
-            r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(10);
+            r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
         }
-        
+
         private static void BuildEmployees(ModelBuilder builder)
         {
             var r = builder.Entity<Employee>().ToTable("AUTH_USER_NAME_VIEW");

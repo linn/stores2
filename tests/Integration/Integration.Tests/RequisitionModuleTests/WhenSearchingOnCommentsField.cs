@@ -6,6 +6,7 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
@@ -21,8 +22,14 @@
         [SetUp]
         public void SetUp()
         {
-            this.req123 = new RequisitionHeader(123, "Hello Requisitions");
-            this.req456 = new RequisitionHeader(456, "Goodbye Requisitions");
+            this.req123 = new RequisitionHeader(
+                123, 
+                "Hello Requisitions", 
+                new StoresFunctionCode { FunctionCode = "F1" });
+            this.req456 = new RequisitionHeader(
+                456, 
+                "Goodbye Requisitions",
+                new StoresFunctionCode { FunctionCode = "F2" });
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);

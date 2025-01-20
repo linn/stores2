@@ -42,6 +42,7 @@
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoragePlaceAudit.cshtml",
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<IRequisitionService, RequisitionService>()
+                .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>();
         }
 
