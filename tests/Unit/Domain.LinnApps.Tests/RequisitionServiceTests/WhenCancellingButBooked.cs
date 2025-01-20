@@ -36,7 +36,7 @@
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>())
                 .Returns(true);
-            this.action = async () => await this.Sut.Cancel(123, user);
+            this.action = async () => await this.Sut.Cancel(123, user, "REASON");
         }
 
         [Test]

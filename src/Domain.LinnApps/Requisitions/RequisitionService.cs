@@ -16,17 +16,24 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRequisitionStoredProcedures requisitionStoredProcedures;
 
+        private readonly IRepository<Employee, int> employeeRepository;
+
         public RequisitionService(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
-            IRequisitionStoredProcedures requisitionStoredProcedures)
+            IRequisitionStoredProcedures requisitionStoredProcedures,
+            IRepository<Employee, int> employeeRepository)
         {
             this.authService = authService;
             this.repository = repository;
             this.requisitionStoredProcedures = requisitionStoredProcedures;
+            this.employeeRepository = employeeRepository;
         }
         
-        public async Task<RequisitionHeader> Cancel(int reqNumber, User cancelledBy)
+        public async Task<RequisitionHeader> Cancel(
+            int reqNumber, 
+            User cancelledBy,
+            string reason)
         {
             if (!this.authService.HasPermissionFor(
                     AuthorisedActions.CancelRequisition, cancelledBy.Privileges))
@@ -45,7 +52,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (string.IsNullOrEmpty(req.FunctionCode.CancelFunction))
             {
-                // cancel the req
+                var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
+                req.Cancel(reason, by);
             }
             else if (req.FunctionCode.CancelFunction == "UNALLOC_REQ")
             {

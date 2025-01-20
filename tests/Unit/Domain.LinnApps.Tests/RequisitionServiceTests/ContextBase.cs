@@ -17,6 +17,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         
         protected IRepository<RequisitionHeader, int> ReqRepository { get; set; }
 
+        protected IRepository<Employee, int> EmployeeRepository { get; set; }
+
+
         protected IRequisitionStoredProcedures ReqStoredProcedures { get; set; }
 
         [SetUp]
@@ -25,11 +28,13 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.AuthService = Substitute.For<IAuthorisationService>();
             this.ReqRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
             this.ReqStoredProcedures = Substitute.For<IRequisitionStoredProcedures>();
-            
+            this.EmployeeRepository = Substitute.For<IRepository<Employee, int>>();
+
             this.Sut = new RequisitionService(
                 this.AuthService, 
                 this.ReqRepository,
-                this.ReqStoredProcedures);
+                this.ReqStoredProcedures,
+                this.EmployeeRepository);
         }
     }
 }

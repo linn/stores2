@@ -26,7 +26,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>())
                 .Returns(false);
-            this.action = async () => await this.Sut.Cancel(123, user);
+            this.action = async () => await this.Sut.Cancel(123, user, "REASON");
         }
 
         [Test]

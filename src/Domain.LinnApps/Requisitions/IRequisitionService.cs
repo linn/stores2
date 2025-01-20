@@ -4,6 +4,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
     public interface IRequisitionService
     {
-        Task<RequisitionHeader> Cancel(int reqNumber, User cancelledBy);
+        Task<RequisitionHeader> Cancel(
+            int reqNumber, 
+            User cancelledBy,
+            string reason);
     }
 }

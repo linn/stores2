@@ -28,11 +28,12 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                                UserNumber = 33087,
                                Privileges = new List<string>()
                            };
-            
+            this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee { Id = 33087 });
             this.AuthService.HasPermissionFor(AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
             this.req = this.Sut.Cancel(
                 123, 
-                user).Result;
+                user,
+                "REASON").Result;
         }
 
         [Test]

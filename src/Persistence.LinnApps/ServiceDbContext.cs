@@ -53,6 +53,7 @@
             BuildStoresFunctionCodes(builder);
             BuildEmployees(builder);
             BuildStoragePlaces(builder);
+            BuildRequisitionCancelDetails(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -335,6 +336,7 @@
             e.HasOne(r => r.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
             e.Property(r => r.DateBooked).HasColumnName("DATE_BOOKED");
             e.Property(r => r.Reversed).HasColumnName("REVERSED").HasMaxLength(1);
+            e.HasMany(r => r.CancelDetails).WithOne().HasForeignKey(c => c.ReqNumber);
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)
@@ -368,6 +370,18 @@
             r.HasKey(c => c.Id);
             r.Property(c => c.Id).HasColumnName("USER_NUMBER");
             r.Property(c => c.Name).HasColumnName("USER_NAME");
+        }
+
+        private static void BuildRequisitionCancelDetails(ModelBuilder builder)
+        {
+            var r = builder.Entity<CancelDetails>().ToTable("REQ_CANC_DETAILS");
+            r.HasKey(c => c.Id);
+            r.Property(c => c.Id).HasColumnName("REQCANC_ID");
+            r.Property(c => c.ReqNumber).HasColumnName("REQ_NUMBER");
+            r.Property(c => c.LineNumber).HasColumnName("LINE_NUMBER");
+            r.Property(c => c.CancelledBy).HasColumnName("CANCELLED_BY");
+            r.Property(c => c.DateCancelled).HasColumnName("DATE_CANCELLED");
+            r.Property(c => c.Reason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
         }
     }
 }

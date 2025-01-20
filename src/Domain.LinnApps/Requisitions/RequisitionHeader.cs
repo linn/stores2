@@ -51,6 +51,8 @@
         
         public string Reversed { get; protected set; }
 
+        public ICollection<CancelDetails> CancelDetails { get; protected set; }
+
         public RequisitionHeader()
         {
         }
@@ -65,6 +67,26 @@
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.FunctionCode = functionCode;
+        }
+
+        public void Cancel(string reason, Employee cancelledBy)
+        {
+            var now = DateTime.Now;
+            this.Cancelled = "Y";
+            this.CancelledBy = cancelledBy;
+            this.DateCancelled = now;
+            this.CancelledReason = reason;
+
+            this.CancelDetails ??= new List<CancelDetails>();
+
+            // todo - will need to make sure Id is set at the db level
+            this.CancelDetails.Add(new CancelDetails
+                                       {
+                                           ReqNumber = this.ReqNumber,
+                                           DateCancelled = now,
+                                           Reason = reason,
+                                           CancelledBy = cancelledBy.Id
+                                       });
         }
     }
 }
