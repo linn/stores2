@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import Dialog from '@mui/material/Dialog';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
-import { DataGrid, GridSearchIcon} from '@mui/x-data-grid';
-import { CreateButton, Loading } from '@linn-it/linn-form-components-library';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
+import { CreateButton, Loading, Search, ErrorCard } from '@linn-it/linn-form-components-library';
+import Button from '@mui/material/Button';
 import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
+import useGet from '../hooks/useGet';
+import usePut from '../hooks/usePut';
 import useInitialise from '../hooks/useInitialise';
 
 function StockPools() {
-    const { isLoading, result: stockPools } = useInitialise(itemTypes.stockPools.url);
+    const { isLoading, result } = useInitialise(itemTypes.stockPools.url);
+    const { stockPools, setStockPools } = useState(result);
+    const { searchTerm, setSearchTerm } = useState(result);
 
     const [searchDialogOpen, setSearchDialogOpen] = useState({
         forRow: null,
@@ -33,13 +41,55 @@ function StockPools() {
         </>
     );
 
+    const addNewRow = () => {
+        setPaymentType(pt => ({
+            ...pt,
+            elements: [
+                ...pt.elements,
+                {
+                    accountingCompany: null,
+                    availableToMrp: 'Y',
+                    bridgeId: null,
+                    dateInvalid: null,
+                    defaultLocation: null,
+                    links: null,
+                    sequence: null,
+                    stockCategory: null,
+                    stockPoolCode: null,
+                    stockPoolDescription: null,
+                    storageLocation: null
+                }
+            ]
+        }));
+    };
+
+    const processRowUpdate = newRow => {
+        setStockPools(pt => [
+            ...pt
+            // {
+            //     accountingCompany: null,
+            //     availableToMrp: 'Y',
+            //     bridgeId: null,
+            //     dateInvalid: null,
+            //     defaultLocation: null,
+            //     links: null,
+            //     sequence: null,
+            //     stockCategory: null,
+            //     stockPoolCode: null,
+            //     stockPoolDescription: null,
+            //     storageLocation: null
+            // }
+        ]);
+        return newRow;
+    };
+
     const renderSearchDialog = c => {
         const handleClose = () => {
             setSearchDialogOpen({ forRow: null, forColumn: null });
         };
 
         const handleSearchResultSelect = selected => {
-            const currentRow = rows.find(r => r.stockPoolCode === searchDialogOpen.forRow);
+            const currentRow = selected.find(r => r.stockPoolCode === searchDialogOpen.forRow);
             let newRow = {
                 ...currentRow,
                 hasChanged: true
@@ -67,11 +117,10 @@ function StockPools() {
                             loading={c.searchLoading}
                             handleValueChange={(_, newVal) => setSearchTerm(newVal)}
                             search={c.search}
-                            searchResults={c.searchResults
-                                ?.map(r => ({
-                                    ...r,
-                                    id: r[c.field]
-                                }))}
+                            searchResults={c.searchResults?.map(r => ({
+                                ...r,
+                                id: r[c.field]
+                            }))}
                             priorityFunction="closestMatchesFirst"
                             onResultSelect={handleSearchResultSelect}
                             clearSearch={() => {}}
@@ -84,7 +133,21 @@ function StockPools() {
             </div>
         );
     };
-    
+
+    const {
+        send: getStorageLocations,
+        storageLocationsLoading,
+        result: storageLocationsResult,
+        clearData: clearStorageLocations
+    } = useGet(itemTypes.storagePlaces.url);
+
+    const {
+        send: updateStockPool,
+        isLoading: updateLoading,
+        errorMessage: updateError,
+        putResult: updateResult
+    } = usePut(itemTypes.carriers.url, true);
+
     const stockPoolColumns = [
         { field: 'stockPoolCode', headerName: 'Code', width: 100 },
         { field: 'stockPoolDescription', headerName: 'Description', width: 225 },
@@ -109,17 +172,16 @@ function StockPools() {
             width: 150,
             editable: true,
             type: 'search',
-            search: searchAction,
-            searchResults: ,
-            searchLoading: ,
+            search: getStorageLocations,
+            searchResults: storageLocationsResult,
+            searchLoading: storageLocationsLoading,
             searchUpdateFieldNames: [
                 { fieldName: 'defaultLocation', searchResultFieldName: 'locationId' },
                 { fieldName: 'defaultLocationName', searchResultFieldName: 'locationCode' }
-
             ],
-            clearSearch: ,
+            clearSearch: clearStorageLocations,
             renderCell: searchRenderCell
-        },
+        }
     ];
 
     const sortedStockPools = stockPools?.sort((a, b) => {
@@ -139,7 +201,7 @@ function StockPools() {
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
-            {columns.filter(c => c.type === 'search').map(c => renderSearchDialog(c))}
+            {stockPoolColumns.filter(c => c.type === 'search').map(c => renderSearchDialog(c))}
             <Grid container spacing={3}>
                 <Grid size={12}>
                     <Typography variant="h4">Stock Pools</Typography>
@@ -159,13 +221,35 @@ function StockPools() {
                         getRowId={row => row.stockPoolCode}
                         rows={sortedStockPools}
                         editMode="cell"
-                        processRowUpdate={}
+                        processRowUpdate={processRowUpdate}
                         columns={stockPoolColumns}
                         rowHeight={34}
                         loading={false}
                         hideFooter
                     />
                 </Grid>
+                <Grid item xs={4}>
+                    <Button onClick={addNewRow} variant="outlined">
+                        Add Stock Pool
+                    </Button>
+                </Grid>
+                <Grid item xs={4}>
+                    <Button
+                        onClick={() => {
+                            updateStockPool(stockPool.code, stockPools);
+                        }}
+                        variant="outlined"
+                        // eslint-disable-next-line eqeqeq
+                        disabled={result == stockPools}
+                    >
+                        Save
+                    </Button>
+                </Grid>
+                {updateError && (
+                    <Grid item xs={12}>
+                        <ErrorCard errorMessage={updateError?.details} />
+                    </Grid>
+                )}
             </Grid>
         </Page>
     );
