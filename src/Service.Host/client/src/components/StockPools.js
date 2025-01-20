@@ -42,11 +42,9 @@ function StockPools() {
     );
 
     const addNewRow = () => {
-        setPaymentType(pt => ({
-            ...pt,
-            elements: [
-                ...pt.elements,
-                {
+        setStockPools(
+            ...stockPools,
+            {
                     accountingCompany: null,
                     availableToMrp: 'Y',
                     bridgeId: null,
@@ -59,8 +57,15 @@ function StockPools() {
                     stockPoolDescription: null,
                     storageLocation: null
                 }
-            ]
+        );
+    };
+
+    const processRowUpdate = newRow => {
+        setPaymentType(pt => ({
+            ...pt,
+            elements: pt.elements?.map(x => (x.seq === newRow.seq ? newRow : x))
         }));
+        return newRow;
     };
 
     const processRowUpdate = newRow => {
@@ -235,8 +240,8 @@ function StockPools() {
                 </Grid>
                 <Grid item xs={4}>
                     <Button
-                        onClick={() => {
-                            updateStockPool(stockPool.code, stockPools);
+                        onClick={sp => {
+                            updateStockPool(sp.stockPoolCode, stockPools);
                         }}
                         variant="outlined"
                         // eslint-disable-next-line eqeqeq
