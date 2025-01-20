@@ -5,19 +5,35 @@ import Grid from '@mui/material/Grid2';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import { InputField, Loading, DatePicker, Dropdown } from '@linn-it/linn-form-components-library';
+import {
+    InputField,
+    Loading,
+    DatePicker,
+    Dropdown,
+    ErrorCard
+} from '@linn-it/linn-form-components-library';
+import Button from '@mui/material/Button';
+
 import Page from '../Page';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
 
 import useInitialise from '../../hooks/useInitialise';
 import LinesTab from './LinesTab';
+import CancelWithReasonDialog from '../CancelWithReasonDialog';
+import usePost from '../../hooks/usePost';
 
 function Requisition() {
     const { reqNumber } = useParams();
     const { isLoading, result } = useInitialise(itemTypes.requisitions.url, reqNumber);
-
+    const {
+        send: cancelReq,
+        isLoading: cancelLoading,
+        errorMessage: cancelError
+    } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
     const [tab, setTab] = useState(0);
+
+    const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
 
     const handleChange = (_, newValue) => {
         setTab(newValue);
@@ -25,15 +41,29 @@ function Requisition() {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
+                {cancelDialogVisible && (
+                    <CancelWithReasonDialog
+                        visible={cancelDialogVisible}
+                        closeDialog={() => setCancelDialogVisible(false)}
+                        onConfirm={reason => {
+                            cancelReq(null, { reason, reqNumber });
+                        }}
+                    />
+                )}
                 <Grid size={12}>
                     <Typography variant="h6">Requisition Viewer</Typography>
                 </Grid>
-                {isLoading && (
+                {cancelError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={cancelError} />{' '}
+                    </Grid>
+                )}
+                {(isLoading || cancelLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
                 )}
-                {!isLoading && result && (
+                {(!isLoading || !cancelLoading) && result && (
                     <>
                         <Grid size={2}>
                             <InputField
@@ -118,6 +148,16 @@ function Requisition() {
                                 label="Cancelled"
                                 propertyName="cancelled"
                             />
+                        </Grid>
+                        <Grid size={2}>
+                            <Button
+                                disabled={result?.cancelled === 'Y'}
+                                variant="contained"
+                                onClick={() => setCancelDialogVisible(true)}
+                                color="secondary"
+                            >
+                                Cancel Req
+                            </Button>
                         </Grid>
                         <Grid size={12}>
                             <InputField

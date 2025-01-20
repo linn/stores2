@@ -28,11 +28,11 @@
                                       };
             this.DomainService.Cancel(this.resource.ReqNumber, Arg.Any<User>(), this.resource.Reason)
                 .Returns(new CancelledRequisitionHeader(this.resource.ReqNumber));
-            this.Response = this.Client.PostAsJsonAsync($"/requisitions/cancel/{this.resource.ReqNumber}", this.resource).Result;
+            this.Response = this.Client.PostAsJsonAsync("/requisitions/cancel", this.resource).Result;
         }
 
         [Test]
-        public void ShouldReturnOK()
+        public void ShouldReturnOk()
         {
             this.Response.StatusCode.Should().Be(HttpStatusCode.OK);
         }

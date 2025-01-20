@@ -18,7 +18,7 @@
         {
             app.MapGet("/requisitions", this.Search);
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
-            app.MapPost("/requisitions/cancel/{reqNumber}", this.Cancel);
+            app.MapPost("/requisitions/cancel", this.Cancel);
         }
 
         private async Task Search(
