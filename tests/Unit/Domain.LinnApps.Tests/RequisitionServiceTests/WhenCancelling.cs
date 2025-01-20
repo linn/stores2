@@ -29,7 +29,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                                Privileges = new List<string>()
                            };
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee { Id = 33087 });
-            this.AuthService.HasPermissionFor(AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
+            this.AuthService.HasPermissionFor(
+                AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
             this.req = this.Sut.Cancel(
                 123, 
                 user,
@@ -40,6 +41,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         public void ShouldReturnCancelled()
         {
             this.req.ReqNumber.Should().Be(123);
+            this.req.Cancelled.Should().Be("Y");
+            this.req.CancelDetails.Count.Should().Be(1);
         }
     }
 }
