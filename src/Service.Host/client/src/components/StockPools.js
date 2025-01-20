@@ -61,14 +61,6 @@ function StockPools() {
     };
 
     const processRowUpdate = newRow => {
-        setPaymentType(pt => ({
-            ...pt,
-            elements: pt.elements?.map(x => (x.seq === newRow.seq ? newRow : x))
-        }));
-        return newRow;
-    };
-
-    const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
         setStockPools(prevRows => prevRows.map(row => (row.stockPoolCode === newRow.stockPoolCode ? updatedRow : row)));
         return newRow;
