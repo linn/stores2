@@ -21,6 +21,12 @@
                 ?.Value;
         }
 
+        public static int? GetEmployeeNumber(this ClaimsPrincipal principal)
+        {
+            var url = principal.GetEmployeeUrl();
+            return string.IsNullOrEmpty(url) ? null : int.Parse(url.Split("/").Last());
+        }
+            
         public static bool HasClaim(this ClaimsPrincipal principal, string type)
         {
             if (type == null)

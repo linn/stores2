@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
@@ -71,6 +72,11 @@
 
         public void Cancel(string reason, Employee cancelledBy)
         {
+            if (string.IsNullOrEmpty(reason))
+            {
+                throw new RequisitionException("Must provide a cancel reason");
+            }
+
             var now = DateTime.Now;
             this.Cancelled = "Y";
             this.CancelledBy = cancelledBy;
