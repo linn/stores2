@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
-
+    
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
@@ -11,6 +13,8 @@
         public int ReqNumber { get; protected init; }
 
         public DateTime DateCreated { get; protected init; }
+        
+        public Employee CreatedBy { get; protected init; }
 
         public int? Document1 { get; protected set; }
 
@@ -32,21 +36,29 @@
 
         public string Cancelled { get; protected set; }
 
-        public int? CancelledBy { get; protected set; }
+        public Employee CancelledBy { get; protected set; }
 
         public DateTime? DateCancelled { get; protected set; }
 
         public string CancelledReason { get; protected set; }
-
-        public string FunctionCode { get; protected set; }
-
+        
+        public StoresFunctionCode FunctionCode { get; protected set;}
+        
         public string Comments { get; protected set; }
+        
+        public DateTime? DateBooked { get; protected set; }
+        
+        public Employee BookedBy { get; protected set; }
+        
+        public string Reversed { get; protected set; }
+
+        public ICollection<CancelDetails> CancelDetails { get; protected set; }
 
         public RequisitionHeader()
         {
         }
 
-        public RequisitionHeader(int? reqNumber, string comments)
+        public RequisitionHeader(int? reqNumber, string comments, StoresFunctionCode functionCode)
         {
             if (reqNumber.HasValue)
             {
@@ -55,12 +67,32 @@
 
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
+            this.FunctionCode = functionCode;
         }
 
-        public void Cancel(int cancelledBy)
+        public void Cancel(string reason, Employee cancelledBy)
         {
+            if (string.IsNullOrEmpty(reason))
+            {
+                throw new RequisitionException("Must provide a cancel reason");
+            }
+
+            var now = DateTime.Now;
+            this.Cancelled = "Y";
             this.CancelledBy = cancelledBy;
-            this.DateCancelled = DateTime.Now;
+            this.DateCancelled = now;
+            this.CancelledReason = reason;
+
+            this.CancelDetails ??= new List<CancelDetails>();
+
+            // todo - will need to make sure Id is set at the db level
+            this.CancelDetails.Add(new CancelDetails
+                                       {
+                                           ReqNumber = this.ReqNumber,
+                                           DateCancelled = now,
+                                           Reason = reason,
+                                           CancelledBy = cancelledBy.Id
+                                       });
         }
     }
 }

@@ -27,8 +27,10 @@
         public DbSet<StorageLocation> StorageLocations { get; set; }
 
         public DbSet<RequisitionHeader> RequisitionHeaders { get; set; }
-
+        
         public DbSet<StoragePlace> StoragePlaces { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -50,7 +52,10 @@
             BuildReqMoves(builder);
             BuildRequisitionHeaders(builder);
             BuildRequisitionLines(builder);
+            BuildStoresFunctionCodes(builder);
+            BuildEmployees(builder);
             BuildStoragePlaces(builder);
+            BuildRequisitionCancelDetails(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -315,20 +320,25 @@
             e.Property(r => r.ReqNumber).HasColumnName("REQ_NUMBER");
             e.Property(r => r.Document1).HasColumnName("DOCUMENT_1");
             e.Property(r => r.DateCreated).HasColumnName("DATE_CREATED");
+            e.HasOne(r => r.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
             e.Property(r => r.Qty).HasColumnName("QTY");
             e.Property(r => r.ToLocationId).HasColumnName("TO_LOCATION_ID");
             e.Property(r => r.Document1Name).HasColumnName("DOC1_NAME");
             e.Property(r => r.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.Property(r => r.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
-            e.Property(r => r.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             e.Property(r => r.DateCancelled).HasColumnName("DATE_CANCELLED");
             e.Property(r => r.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
-            e.Property(r => r.CancelledBy).HasColumnName("CANCELLED_BY").HasMaxLength(6);
+            e.HasOne(r => r.CancelledBy).WithMany().HasForeignKey("CANCELLED_BY");
             e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
             e.HasMany(r => r.Lines).WithOne().HasForeignKey(r => r.ReqNumber);
             e.HasMany(r => r.Moves).WithOne(m => m.Header).HasForeignKey(r => r.ReqNumber);
             e.HasOne(r => r.ToLocation).WithMany().HasForeignKey(r => r.ToLocationId);
             e.Property(r => r.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
+            e.HasOne(r => r.FunctionCode).WithMany().HasForeignKey("FUNCTION_CODE");
+            e.HasOne(r => r.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
+            e.Property(r => r.DateBooked).HasColumnName("DATE_BOOKED");
+            e.Property(r => r.Reversed).HasColumnName("REVERSED").HasMaxLength(1);
+            e.HasMany(r => r.CancelDetails).WithOne().HasForeignKey(c => c.ReqNumber);
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)
@@ -337,13 +347,43 @@
             r.HasKey(l => new { l.ReqNumber, l.LineNumber });
             r.Property(l => l.ReqNumber).HasColumnName("REQ_NUMBER");
             r.Property(l => l.LineNumber).HasColumnName("LINE_NUMBER");
-            r.Property(l => l.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
-            r.Property(l => l.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            r.HasOne(l => l.Part).WithMany().HasForeignKey("PART_NUMBER");
+            r.Property(l => l.Qty).HasColumnName("QTY");
             r.Property(l => l.DateCancelled).HasColumnName("DATE_CANCELLED");
             r.Property(l => l.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
             r.Property(l => l.CancelledBy).HasColumnName("CANCELLED_BY").HasMaxLength(6);
             r.Property(l => l.Document1Line).HasColumnName("DOCUMENT_1_LINE").HasMaxLength(4);
+            r.HasOne(l => l.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
             r.HasMany(t => t.Moves).WithOne().HasForeignKey(reqMove => new { reqMove.ReqNumber, reqMove.LineNumber });
+        }
+        
+        private static void BuildStoresFunctionCodes(ModelBuilder builder)
+        {
+            var r = builder.Entity<StoresFunctionCode>().ToTable("STORES_FUNCTIONS");
+            r.HasKey(c => c.FunctionCode);
+            r.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
+            r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
+        }
+
+        private static void BuildEmployees(ModelBuilder builder)
+        {
+            var r = builder.Entity<Employee>().ToTable("AUTH_USER_NAME_VIEW");
+            r.HasKey(c => c.Id);
+            r.Property(c => c.Id).HasColumnName("USER_NUMBER");
+            r.Property(c => c.Name).HasColumnName("USER_NAME");
+        }
+
+        private static void BuildRequisitionCancelDetails(ModelBuilder builder)
+        {
+            var r = builder.Entity<CancelDetails>().ToTable("REQ_CANC_DETAILS");
+            r.HasKey(c => c.Id);
+            r.Property(c => c.Id).HasColumnName("REQCANC_ID");
+            r.Property(c => c.ReqNumber).HasColumnName("REQ_NUMBER");
+            r.Property(c => c.LineNumber).HasColumnName("LINE_NUMBER");
+            r.Property(c => c.CancelledBy).HasColumnName("CANCELLED_BY");
+            r.Property(c => c.DateCancelled).HasColumnName("DATE_CANCELLED");
+            r.Property(c => c.Reason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
         }
     }
 }

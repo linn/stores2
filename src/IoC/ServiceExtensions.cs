@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
@@ -32,13 +33,16 @@
             return services
                 .AddSingleton<IReportingHelper, ReportingHelper>()
                 .AddSingleton<ITemplateEngine, RazorTemplateEngine>()
+                .AddSingleton<IAuthorisationService, AuthorisationService>()
                 .AddScoped<IPdfService>(
-                    x => new PdfService(ConfigurationManager.Configuration["PDF_SERVICE_ROOT"], new HttpClient()))
+                    _ => new PdfService(ConfigurationManager.Configuration["PDF_SERVICE_ROOT"], new HttpClient()))
                 .AddScoped<IStoragePlaceAuditReportService, StoragePlaceAuditReportService>()
                 .AddScoped<IHtmlTemplateService<StoragePlaceAuditReport>>(
                     x => new HtmlTemplateService<StoragePlaceAuditReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoragePlaceAudit.cshtml",
                         x.GetService<ITemplateEngine>()))
+                .AddScoped<IRequisitionService, RequisitionService>()
+                .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>();
         }
 
@@ -49,7 +53,7 @@
                 .AddScoped<IStoragePlaceAuditReportFacadeService, StoragePlaceAuditReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>, CarrierService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
-                .AddScoped<IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource>, RequisitionFacadeService>()
+                .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>();
         }
 

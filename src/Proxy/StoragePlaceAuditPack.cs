@@ -14,7 +14,8 @@
             int createdBy,
             string department)
         {
-            var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
+            using var connection = new OracleConnection(
+                ConnectionStrings.ManagedConnectionString());
 
             var cmd = new OracleCommand("STORAGE_PLACE_AUDIT_PACK.CREATE_AUDIT_REQ_WRAPPER", connection)
                           {
