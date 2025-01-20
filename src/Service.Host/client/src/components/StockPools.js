@@ -64,22 +64,8 @@ function StockPools() {
     };
 
     const processRowUpdate = newRow => {
-        setStockPools(pt => [
-            ...pt
-            // {
-            //     accountingCompany: null,
-            //     availableToMrp: 'Y',
-            //     bridgeId: null,
-            //     dateInvalid: null,
-            //     defaultLocation: null,
-            //     links: null,
-            //     sequence: null,
-            //     stockCategory: null,
-            //     stockPoolCode: null,
-            //     stockPoolDescription: null,
-            //     storageLocation: null
-            // }
-        ]);
+        const updatedRow = { ...newRow, updated: true };
+        setStockPools(prevRows => prevRows.map(row => (row.stockPoolCode === newRow.stockPoolCode ? updatedRow : row)));
         return newRow;
     };
 
