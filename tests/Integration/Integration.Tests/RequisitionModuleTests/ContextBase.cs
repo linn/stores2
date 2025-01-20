@@ -4,12 +4,10 @@
 
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
-    using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Service.Modules;
 
     using Microsoft.Extensions.DependencyInjection;
