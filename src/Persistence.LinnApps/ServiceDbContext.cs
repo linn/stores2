@@ -30,6 +30,8 @@
         
         public DbSet<StoragePlace> StoragePlaces { get; set; }
 
+        public DbSet<Employee> Employees { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
