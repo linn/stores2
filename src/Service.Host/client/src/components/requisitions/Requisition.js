@@ -63,7 +63,7 @@ function Requisition() {
                         <Loading />
                     </Grid>
                 )}
-                {(!isLoading || !cancelLoading) && result && (
+                {!isLoading && !cancelLoading && result && (
                     <>
                         <Grid size={2}>
                             <InputField
