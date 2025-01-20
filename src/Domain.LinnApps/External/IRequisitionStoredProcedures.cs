@@ -2,8 +2,10 @@
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Domain;
+
     public interface IRequisitionStoredProcedures
     {
-        Task UnallocateRequisition(int reqNumber, int? lineNumber, int cancelledBy);
+        Task<ProcessResult> UnallocateRequisition(int reqNumber, int? lineNumber, int cancelledBy);
     }
 }
