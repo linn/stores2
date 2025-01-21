@@ -19,12 +19,22 @@
 
         public int? CancelledBy { get; protected set; }
 
+        public int? Document1Number { get; protected set; }
+
         public int? Document1Line { get; protected set; }
+
+        public string Document1Type { get; protected set; }
 
         public ICollection<ReqMove> Moves { get; protected set; }
         
         public decimal Qty { get; protected set; }
         
         public StoresTransactionDefinition TransactionDefinition { get; protected set; }
+
+        public string Cancelled { get; protected set; }
+
+        public DateTime? DateBooked { get; protected set; }
+
+        public ICollection<RequisitionLinePosting> NominalAccountPostings { get; protected set; }
     }
 }

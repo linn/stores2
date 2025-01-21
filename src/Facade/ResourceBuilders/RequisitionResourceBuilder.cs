@@ -6,6 +6,7 @@
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionResourceBuilder : IBuilder<RequisitionHeader>
@@ -19,8 +20,11 @@
                            Qty = header.Qty,
                            Document1Name = header.Document1Name,
                            PartNumber = header.PartNumber,
-                           ToLocationId = header.ToLocationId,
-                           ToLocation = header.ToLocation?.LocationCode,
+                           ToLocationId = header.ToLocation?.LocationId,
+                           ToLocationCode = header.ToLocation?.LocationCode,
+                           FromLocationCode = header.FromLocation?.LocationCode,
+                           ToPalletNumber = header.ToPalletNumber,
+                           FromPalletNumber = header.FromPalletNumber,
                            Cancelled = header.Cancelled,
                            CancelledBy = header.CancelledBy?.Id,
                            CancelledByName = header.CancelledBy?.Name,
@@ -35,15 +39,48 @@
                            CreatedBy = header.CreatedBy?.Id,
                            CreatedByName = header.CreatedBy?.Name,
                            Reversed = header.Reversed,
-                           Lines = header.Lines?.Select(l => new RequisitionLineResource
-                                                                 {
-                                                                     LineNumber = l.LineNumber,
-                                                                     PartNumber = l.Part?.PartNumber,
-                                                                     PartDescription = l.Part?.Description,
-                                                                     Qty = l.Qty,
-                                                                     TransactionCode = l.TransactionDefinition?.TransactionCode,
-                                                                     TransactionCodeDescription = l.TransactionDefinition?.Description
-                                                                 }),
+                           Lines = header
+                               .Lines?.Select(
+                                   l => new RequisitionLineResource 
+                                            {
+                                                LineNumber = l.LineNumber,
+                                                PartNumber = l.Part?.PartNumber,
+                                                PartDescription = l.Part?.Description,
+                                                Qty = l.Qty,
+                                                TransactionCode = l.TransactionDefinition?.TransactionCode,
+                                                TransactionCodeDescription = l.TransactionDefinition?.Description,
+                                                Document1Number = l.Document1Number,
+                                                Document1Line = l.Document1Line,
+                                                Document1Type = l.Document1Type,
+                                                DateBooked = l.DateBooked?.ToString("o"),
+                                                Cancelled = l.Cancelled,
+                                                Postings = l.NominalAccountPostings?.Select(
+                                                    p => new RequisitionLinePostingResource
+                                                             {
+                                                                 DebitOrCredit = p.DebitOrCredit,
+                                                                 Seq = p.Seq,
+                                                                 DepartmentCode = p.NominalAccount?.Department?.DepartmentCode,
+                                                                 NominalCode = p.NominalAccount?.Nominal?.NominalCode
+                                                             })
+                                            }),
+                           Nominal = new NominalResource
+                                         {
+                                             NominalCode = header.Nominal?.NominalCode, 
+                                             Description = header.Nominal?.Description
+                                         },
+                           Department = new DepartmentResource
+                                         {
+                                             DepartmentCode = header.Department?.DepartmentCode,
+                                             Description = header.Department?.Description
+                                         },
+                           ReqType = header.ReqType,
+                           ManualPick = header.ManualPick, 
+                           Reference = header.Reference,
+                           FromStockPool = header.FromStockPool,
+                           ToStockPool = header.ToStockPool,
+                           AuthorisedBy = header.AuthorisedBy?.Id,
+                           AuthorisedByName = header.AuthorisedBy?.Name,
+                           DateAuthorised = header.DateAuthorised?.ToString("o"),
                            Links = this.BuildLinks(header, claims).ToArray()
                         };
         }

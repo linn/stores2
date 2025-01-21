@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -30,9 +31,13 @@
 
         public Part Part { get; protected set; }
 
-        public int? ToLocationId { get; protected set; }
-
         public StorageLocation ToLocation { get; protected set; }
+
+        public StorageLocation FromLocation { get; protected set; }
+
+        public int? FromPalletNumber { get; protected set; }
+
+        public int? ToPalletNumber { get; protected set; }
 
         public string Cancelled { get; protected set; }
 
@@ -53,6 +58,24 @@
         public string Reversed { get; protected set; }
 
         public ICollection<CancelDetails> CancelDetails { get; protected set; }
+
+        public Department Department { get; protected set; }
+
+        public Nominal Nominal { get; protected set; }
+
+        public Employee AuthorisedBy { get; protected set; }
+
+        public DateTime? DateAuthorised { get; protected set;  }
+
+        public string ManualPick { get; protected set; }
+
+        public string ReqType { get; set; }
+
+        public string Reference { get; set; }
+
+        public string FromStockPool { get; set; }
+
+        public string ToStockPool { get; set; }
 
         public RequisitionHeader()
         {

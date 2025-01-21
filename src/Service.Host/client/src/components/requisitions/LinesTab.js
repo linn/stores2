@@ -30,6 +30,31 @@ function LinesTab({ lines = [1, 2, 3, 4, 5] }) {
             field: 'transactionCodeDescription',
             headerName: 'Trans Desc',
             width: 200
+        },
+        {
+            field: 'document1Type',
+            headerName: 'Doc1 Type',
+            width: 100
+        },
+        {
+            field: 'document1Number',
+            headerName: 'Doc1 Number',
+            width: 100
+        },
+        {
+            field: 'document1Line',
+            headerName: 'Doc1 Line',
+            width: 100
+        },
+        {
+            field: 'dateBooked',
+            headerName: 'Booked',
+            width: 100
+        },
+        {
+            field: 'cancelled',
+            headerName: 'Cancelled',
+            width: 100
         }
     ];
     return (

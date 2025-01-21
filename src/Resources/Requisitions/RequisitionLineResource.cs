@@ -1,5 +1,7 @@
 ﻿namespace Linn.Stores2.Resources.Requisitions
 {
+    using System.Collections.Generic;
+
     public class RequisitionLineResource
     {
         public int ReqNumber { get; set; }
@@ -25,5 +27,13 @@
         public int? Document1Line { get; set; }
         
         public int? Document1Number { get; set; }
+
+        public string Document1Type { get; set; }
+
+        public string DateBooked { get; set; }
+
+        public string Cancelled { get; set; }
+
+        public IEnumerable<RequisitionLinePostingResource> Postings { get; set; }
     }
 }

@@ -25,9 +25,14 @@
                        .Include(r => r.FunctionCode)
                        .Include(r => r.Lines).ThenInclude(l => l.Part)
                        .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition)
+                       .Include(r => r.Lines).ThenInclude(l => l.NominalAccountPostings) //.ThenInclude(p => p.NominalAccount)
                        .Include(r => r.CancelledBy)
                        .Include(r => r.CreatedBy)
                        .Include(r => r.BookedBy)
+                       .Include(r => r.Department)
+                       .Include(r => r.Nominal)
+                       .Include(r => r.ToLocation)
+                       .Include(r => r.FromLocation)
                        .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
     }

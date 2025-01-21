@@ -68,7 +68,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result?.reqNumber}
+                                value={result.reqNumber}
                                 type="number"
                                 onChange={() => {}}
                                 label="Req Number"
@@ -77,7 +77,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <DatePicker
-                                value={result?.dateBooked}
+                                value={result.dateBooked}
                                 onChange={() => {}}
                                 label="Date Booked"
                                 propertyName="dateBooked"
@@ -86,7 +86,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result?.bookedByName}
+                                value={result.bookedByName}
                                 onChange={() => {}}
                                 label="Booked By"
                                 propertyName="bookedByName"
@@ -96,7 +96,7 @@ function Requisition() {
                             <Dropdown
                                 fullWidth
                                 items={['Y', 'N']}
-                                value={result?.reversed}
+                                value={result.reversed}
                                 onChange={() => {}}
                                 label="Reversed"
                                 propertyName="reversed"
@@ -106,7 +106,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result?.functionCode}
+                                value={result.functionCode}
                                 onChange={() => {}}
                                 label="Function Code"
                                 propertyName="functionCode"
@@ -115,7 +115,7 @@ function Requisition() {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={result?.functionCodeDescription}
+                                value={result.functionCodeDescription}
                                 onChange={() => {}}
                                 label="Function Code Description"
                                 propertyName="functionCodeDescription"
@@ -125,7 +125,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result?.createdByName}
+                                value={result.createdByName}
                                 onChange={() => {}}
                                 label="Created By"
                                 propertyName="createdByName"
@@ -133,7 +133,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <DatePicker
-                                value={result?.dateCreated}
+                                value={result.dateCreated}
                                 onChange={() => {}}
                                 label="Date Created"
                                 propertyName="dateCreated"
@@ -143,7 +143,7 @@ function Requisition() {
                             <Dropdown
                                 fullWidth
                                 items={['Y', 'N']}
-                                value={result?.cancelled}
+                                value={result.cancelled}
                                 onChange={() => {}}
                                 label="Cancelled"
                                 propertyName="cancelled"
@@ -151,21 +151,109 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <Button
-                                disabled={result?.cancelled === 'Y'}
+                                disabled={result.cancelled === 'Y'}
                                 variant="contained"
+                                sx={{ marginTop: '30px' }}
                                 onClick={() => setCancelDialogVisible(true)}
                                 color="secondary"
                             >
                                 Cancel Req
                             </Button>
                         </Grid>
-                        <Grid size={12}>
+                        <Grid size={4} />
+                        <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result?.comments}
+                                value={result.department?.departmentCode}
+                                onChange={() => {}}
+                                label="Dept"
+                                propertyName="departmentCode"
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <InputField
+                                fullWidth
+                                value={result.department?.description}
+                                onChange={() => {}}
+                                label="Desc"
+                                propertyName="departmentDescription"
+                            />
+                        </Grid>
+                        <Grid size={2}>
+                            <InputField
+                                fullWidth
+                                value={result.nominal?.nominalCode}
+                                onChange={() => {}}
+                                label="Nominal"
+                                propertyName="nominalCode"
+                            />
+                        </Grid>
+                        <Grid size={4}>
+                            <InputField
+                                fullWidth
+                                value={result.nominal?.description}
+                                onChange={() => {}}
+                                label="Desc"
+                                propertyName="nominalDescription"
+                            />
+                        </Grid>
+                        <Grid size={2}>
+                            <InputField
+                                fullWidth
+                                value={result.authorisedByName}
+                                onChange={() => {}}
+                                label="Auth By"
+                                propertyName="authorisedByName"
+                            />
+                        </Grid>
+                        <Grid size={2}>
+                            <DatePicker
+                                value={result.dateAuthorised}
+                                onChange={() => {}}
+                                label="Date Authd"
+                                propertyName="dateAuthorised"
+                            />
+                        </Grid>
+                        <Grid size={8} />
+                        <Grid size={2}>
+                            <Dropdown
+                                fullWidth
+                                items={['Y', 'N']}
+                                allowNoValue
+                                value={result.manualPick}
+                                onChange={() => {}}
+                                label="Manual Pick"
+                                propertyName="manualPick"
+                            />
+                        </Grid>
+                        <Grid size={2}>
+                            <Dropdown
+                                fullWidth
+                                items={['F', 'O']}
+                                allowNoValue
+                                value={result.reqType}
+                                onChange={() => {}}
+                                label="Req Type"
+                                propertyName="reqType"
+                            />
+                        </Grid>
+                        <Grid size={8} />
+                        <Grid size={6}>
+                            <InputField
+                                fullWidth
+                                value={result.comments}
                                 onChange={() => {}}
                                 label="Comments"
                                 propertyName="comments"
+                            />
+                        </Grid>
+                        <Grid size={6}>
+                            <InputField
+                                fullWidth
+                                value={result.reference}
+                                onChange={() => {}}
+                                label="Reference"
+                                propertyName="reference"
                             />
                         </Grid>
                         <Grid size={12}>
