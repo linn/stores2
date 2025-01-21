@@ -7,6 +7,7 @@
     using Linn.Common.Service.Core.Handlers;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Requisitions;
+    using Linn.Stores2.Resources.Stores;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +22,8 @@
                 .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<CarrierResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<StoresBudgetResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresBudgetResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<RequisitionHeaderResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<RequisitionHeaderResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StockPoolResource>>()

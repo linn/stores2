@@ -2,9 +2,11 @@
 {
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Stores;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
@@ -30,6 +32,8 @@
 
         public DbSet<StoragePlace> StoragePlaces { get; set; }
 
+        public DbSet<StoresBudget> StoresBudgets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -51,6 +55,11 @@
             BuildRequisitionHeaders(builder);
             BuildRequisitionLines(builder);
             BuildStoragePlaces(builder);
+            BuildDepartments(builder);
+            BuildNominals(builder);
+            BuildNominalAccounts(builder);
+            BuildStoresBudgets(builder);
+            BuildStoresBudgetPostings(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -344,6 +353,77 @@
             r.Property(l => l.CancelledBy).HasColumnName("CANCELLED_BY").HasMaxLength(6);
             r.Property(l => l.Document1Line).HasColumnName("DOCUMENT_1_LINE").HasMaxLength(4);
             r.HasMany(t => t.Moves).WithOne().HasForeignKey(reqMove => new { reqMove.ReqNumber, reqMove.LineNumber });
+        }
+
+        private static void BuildDepartments(ModelBuilder builder)
+        {
+            var e = builder.Entity<Department>().ToTable("LINN_DEPARTMENTS");
+            e.HasKey(d => d.DepartmentCode);
+            e.Property(d => d.DepartmentCode).HasColumnName("DEPARTMENT_CODE").HasMaxLength(10);
+            e.Property(d => d.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.Property(d => d.DateClosed).HasColumnName("DATE_CLOSED");
+            e.Property(d => d.ObsoleteInStores).HasColumnName("OBSOLETE_IN_STORES");
+            e.Property(d => d.ProjectDepartment).HasColumnName("PROJECT_DEPARTMENT").HasMaxLength(1);
+        }
+
+        private static void BuildNominals(ModelBuilder builder)
+        {
+            var e = builder.Entity<Nominal>().ToTable("LINN_NOMINALS");
+            e.HasKey(n => n.NominalCode);
+            e.Property(n => n.NominalCode).HasColumnName("NOMINAL_CODE");
+            e.Property(n => n.Description).HasColumnName("DESCRIPTION");
+            e.Property(n => n.DateClosed).HasColumnName("DATE_CLOSED");
+        }
+
+        private static void BuildNominalAccounts(ModelBuilder builder)
+        {
+            var e = builder.Entity<NominalAccount>().ToTable("NOMINAL_ACCOUNTS");
+            e.HasKey(a => a.Id);
+            e.Property(a => a.Id).HasColumnName("NOMACC_ID");
+            e.Property(a => a.StoresPostsAllowed).HasColumnName("STORES_POSTS_ALLOWED");
+            e.Property(d => d.DepartmentCode).HasColumnName("DEPARTMENT_CODE").HasMaxLength(10);
+            e.HasOne(r => r.Department).WithMany().HasForeignKey(r => r.DepartmentCode);
+            e.Property(n => n.NominalCode).HasColumnName("NOMINAL_CODE");
+            e.HasOne(r => r.Nominal).WithMany().HasForeignKey(r => r.NominalCode);
+        }
+
+        private static void BuildStoresBudgets(ModelBuilder builder)
+        {
+            var e = builder.Entity<StoresBudget>().ToTable("STORES_BUDGETS");
+            e.HasKey(a => a.BudgetId);
+            e.Property(a => a.BudgetId).HasColumnName("BUDGET_ID");
+            e.Property(a => a.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            e.Property(a => a.OverheadPrice).HasColumnName("OVERHEAD_PRICE");
+            e.Property(d => d.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
+            e.Property(n => n.Quantity).HasColumnName("QTY");
+            e.Property(d => d.Reference).HasColumnName("REFERENCE").HasMaxLength(200);
+            e.Property(n => n.PartPrice).HasColumnName("PART_PRICE");
+            e.Property(n => n.RequisitionNumber).HasColumnName("REQ_NUMBER");
+            e.Property(n => n.LineNumber).HasColumnName("LINE_NUMBER");
+            e.HasOne(r => r.Requisition).WithMany().HasForeignKey(r => r.RequisitionNumber);
+            e.Property(n => n.MaterialPrice).HasColumnName("MATERIAL_PRICE");
+            e.Property(n => n.LabourPrice).HasColumnName("LABOUR_PRICE");
+            e.Property(n => n.MachinePrice).HasColumnName("MACHINE_PRICE");
+            e.Property(d => d.CurrencyCode).HasColumnName("CODE").HasMaxLength(4);
+            e.Property(n => n.SpotRate).HasColumnName("SPOT_RATE");
+            e.Property(n => n.DateBooked).HasColumnName("DATE_BOOKED");
+            e.HasMany(t => t.StoresBudgetPostings).WithOne().HasForeignKey(p => p.BudgetId);
+        }
+
+        private static void BuildStoresBudgetPostings(ModelBuilder builder)
+        {
+            var table = builder.Entity<StoresBudgetPosting>().ToTable("STORES_BUDGET_POSTINGS");
+            table.HasKey(s => new { s.BudgetId, s.Sequence });
+            table.Property(s => s.BudgetId).HasColumnName("BUDGET_ID");
+            table.Property(s => s.Sequence).HasColumnName("SEQ");
+            table.Property(s => s.Quantity).HasColumnName("QTY");
+            table.Property(s => s.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT").HasMaxLength(1);
+            table.Property(s => s.Person).HasColumnName("PERSON");
+            table.Property(s => s.Product).HasColumnName("PRODUCT").HasMaxLength(10);
+            table.Property(s => s.Building).HasColumnName("BUILDING").HasMaxLength(10);
+            table.Property(s => s.Vehicle).HasColumnName("VEHICLE").HasMaxLength(10);
+            table.HasOne(s => s.NominalAccount).WithMany().HasForeignKey("NOMACC_ID");
         }
     }
 }
