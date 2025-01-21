@@ -440,8 +440,8 @@
             e.HasKey(a => a.Id);
             e.Property(a => a.Id).HasColumnName("NOMACC_ID");
             e.Property(a => a.StoresPostsAllowed).HasColumnName("STORES_POSTS_ALLOWED");
-            e.HasOne(r => r.Department).WithMany().HasForeignKey("DEPARTMENT_CODE");
-            e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL_CODE");
+            e.HasOne(r => r.Department).WithMany().HasForeignKey("DEPARTMENT");
+            e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
         }
 
         private static void BuildStoresBudgets(ModelBuilder builder)
