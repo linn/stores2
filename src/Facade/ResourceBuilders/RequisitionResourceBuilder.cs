@@ -60,7 +60,8 @@
                                                                  DebitOrCredit = p.DebitOrCredit,
                                                                  Seq = p.Seq,
                                                                  DepartmentCode = p.NominalAccount?.Department?.DepartmentCode,
-                                                                 NominalCode = p.NominalAccount?.Nominal?.NominalCode
+                                                                 NominalCode = p.NominalAccount?.Nominal?.NominalCode,
+                                                                 Qty = p.Qty
                                                              })
                                             }),
                            Nominal = new NominalResource
