@@ -49,19 +49,22 @@ function StockPools() {
     );
 
     const addNewRow = () => {
-        setStockPools(...stockPools, {
-            accountingCompany: null,
-            availableToMrp: 'Y',
-            bridgeId: null,
-            dateInvalid: null,
-            defaultLocation: null,
-            links: null,
-            sequence: null,
-            stockCategory: null,
-            stockPoolCode: '',
-            stockPoolDescription: null,
-            storageLocation: null
-        });
+        setStockPools([
+            ...stockPools,
+            {
+                accountingCompany: null,
+                availableToMrp: 'Y',
+                bridgeId: null,
+                dateInvalid: null,
+                defaultLocation: null,
+                links: null,
+                sequence: null,
+                stockCategory: null,
+                stockPoolCode: '',
+                stockPoolDescription: null,
+                storageLocation: null
+            }
+        ]);
     };
 
     const {
@@ -76,7 +79,9 @@ function StockPools() {
         isLoading: updateLoading,
         errorMessage: updateError,
         putResult: updateResult
-    } = usePut(itemTypes.carriers.url, true);
+    } = usePut(itemTypes.stockPools.url, true);
+
+    console.log(updateResult);
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
@@ -110,7 +115,6 @@ function StockPools() {
                 <Dialog open={searchDialogOpen.forColumn === c.field} onClose={handleClose}>
                     <DialogTitle>Search</DialogTitle>
                     <DialogContent>
-                        {console.log(c)}
                         <Search
                             autoFocus
                             propertyName={`${c.field}-searchTerm`}
@@ -123,8 +127,7 @@ function StockPools() {
                             search={() => getStorageLocations(null, `?searchTerm=${searchTerm}`)}
                             searchResults={storageLocationsResult?.map(s => ({
                                 ...s,
-                                id: s.storagePlace,
-                                name: s.storagePlace
+                                id: s.name
                             }))}
                             priorityFunction="closestMatchesFirst"
                             onResultSelect={handleSearchResultSelect}
@@ -181,6 +184,8 @@ function StockPools() {
     // const sortedStockPools = stockPools?.sort((a, b) => {
     //     const fa = a.sequence;
     //     const fb = b.sequence;
+
+    //     console.log(fa, fb);
 
     //     if (fa === null && fb !== null) {
     //         return 1;
