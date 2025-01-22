@@ -244,8 +244,16 @@ function StockPools() {
                 </Grid>
                 <Grid item xs={4}>
                     <Button
-                        onClick={sp => {
-                            updateStockPool(sp.stockPoolCode, stockPools);
+                        onClick={() => {
+                            stockPools
+                                .filter(sp => sp.hasChanged === true)
+                                .forEach(sp => {
+                                    const updatedStockPool = stockPools.find(
+                                        pool => pool.stockPoolCode === sp.stockPoolCode
+                                    );
+                                    console.log(updatedStockPool);
+                                    updateStockPool(sp.stockPoolCode, updatedStockPool);
+                                });
                         }}
                         variant="outlined"
                         // eslint-disable-next-line eqeqeq
@@ -254,7 +262,6 @@ function StockPools() {
                         Save
                     </Button>
                 </Grid>
-                y
                 <Grid>
                     <SnackbarMessage
                         visible={snackbarVisible}
