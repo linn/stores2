@@ -7,6 +7,7 @@
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Service.Extensions;
+    using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -29,14 +30,21 @@
             bool? includeCancelled,
             IRequisitionFacadeService service)
         {
-            await res.Negotiate(await service.FilterBy(
-                                    new RequisitionSearchResource
-                                        {
-                                            Comments = comments,
-                                            ReqNumber = reqNumber,
-                                            IncludeCancelled = includeCancelled.GetValueOrDefault()
-                                        },
-                                    null));
+            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments))
+            {
+                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            }
+            else
+            {
+                await res.Negotiate(await service.FilterBy(
+                                        new RequisitionSearchResource
+                                            {
+                                                Comments = comments,
+                                                ReqNumber = reqNumber,
+                                                IncludeCancelled = includeCancelled.GetValueOrDefault()
+                                            }));
+            }
+            
         }
 
         private async Task GetById(
