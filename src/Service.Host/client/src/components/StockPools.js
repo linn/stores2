@@ -81,8 +81,6 @@ function StockPools() {
         putResult: updateResult
     } = usePut(itemTypes.stockPools.url, true);
 
-    console.log(updateResult);
-
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
         setStockPools(prevRows =>
@@ -97,7 +95,7 @@ function StockPools() {
         };
 
         const handleSearchResultSelect = selected => {
-            const currentRow = selected.find(r => r.stockPoolCode === searchDialogOpen.forRow);
+            const currentRow = stockPools?.find(r => r.stockPoolCode === searchDialogOpen.forRow);
             let newRow = {
                 ...currentRow,
                 hasChanged: true
