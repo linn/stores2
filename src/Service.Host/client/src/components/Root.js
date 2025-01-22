@@ -8,6 +8,8 @@ import Navigation from '../containers/Navigation';
 import Carriers from './Carriers';
 import Carrier from './Carrier';
 import StoragePlaceAudit from './StoragePlaceAudit';
+import SearchRequisitions from './requisitions/SearchRequisitions';
+import Requisition from './requisitions/Requisition';
 
 function Root() {
     useSignIn();
@@ -26,6 +28,9 @@ function Root() {
                         path="/stores2/reports/storage-place-audit"
                         element={<StoragePlaceAudit />}
                     />
+                    <Route path="/requisitions" element={<SearchRequisitions />} />
+                    <Route path="/requisitions/:reqNumber" element={<Requisition />} />
+
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>

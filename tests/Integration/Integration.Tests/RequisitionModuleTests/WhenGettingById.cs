@@ -4,6 +4,7 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
@@ -17,12 +18,15 @@
         [SetUp]
         public void SetUp()
         {
-            this.req = new RequisitionHeader(123, "Hello Requisitions");
+            this.req = new RequisitionHeader(
+                123, 
+                "Hello Requisitions",
+                new StoresFunctionCode { FunctionCode = "F" });
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req);
 
             this.Response = this.Client.Get(
-                "/stores2/requisitions/123",
+                "/requisitions/123",
                 with =>
                     {
                         with.Accept("application/json");

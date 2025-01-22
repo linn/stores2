@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Service.Modules
 {
-    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Service.Core;
