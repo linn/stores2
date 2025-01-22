@@ -52,6 +52,9 @@
                                                 Document1Number = l.Document1Number,
                                                 Document1Line = l.Document1Line,
                                                 Document1Type = l.Document1Type,
+                                                Document2Number = l.Document2Number,
+                                                Document2Line = l.Document2Line,
+                                                Document2Type = l.Document2Type,
                                                 DateBooked = l.DateBooked?.ToString("o"),
                                                 Cancelled = l.Cancelled,
                                                 Postings = l.NominalAccountPostings?.Select(

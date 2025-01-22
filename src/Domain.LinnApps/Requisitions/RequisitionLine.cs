@@ -25,6 +25,12 @@
 
         public string Document1Type { get; protected set; }
 
+        public int? Document2Number { get; protected set; }
+
+        public int? Document2Line { get; protected set; }
+
+        public string Document2Type { get; protected set; }
+
         public ICollection<ReqMove> Moves { get; protected set; }
         
         public decimal Qty { get; protected set; }

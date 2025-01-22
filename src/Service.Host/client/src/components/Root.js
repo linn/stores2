@@ -10,6 +10,7 @@ import Carrier from './Carrier';
 import StoragePlaceAudit from './StoragePlaceAudit';
 import SearchRequisitions from './requisitions/SearchRequisitions';
 import Requisition from './requisitions/Requisition';
+import StoresBudgetViewer from './StoresBudgetViewer';
 
 function Root() {
     useSignIn();
@@ -31,6 +32,8 @@ function Root() {
                     <Route path="/requisitions" element={<SearchRequisitions />} />
                     <Route path="/requisitions/:reqNumber" element={<Requisition />} />
 
+                    <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
+                    <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>
