@@ -34,7 +34,7 @@
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);
 
             this.Response = this.Client.Get(
-                "/requisitions?includeCancelled=True",
+                "/requisitions?includeCancelled=True&comments=req",
                 with =>
                     {
                         with.Accept("application/json");
