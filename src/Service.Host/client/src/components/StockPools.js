@@ -120,7 +120,7 @@ function StockPools() {
                             value={searchTerm}
                             loading={storageLocationsLoading}
                             handleValueChange={(_, newVal) => setSearchTerm(newVal)}
-                            search={() => getStorageLocations(null, `?searchTerm=17225`)}
+                            search={() => getStorageLocations(null, `?searchTerm=${searchTerm}`)}
                             searchResults={storageLocationsResult?.map(s => ({
                                 ...s,
                                 id: s.storagePlace,
