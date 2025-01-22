@@ -5,6 +5,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Persistence.LinnApps;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
 
@@ -24,11 +25,16 @@
                 .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
                 .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
                 .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>()
-                 .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
+                .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
+                .AddScoped<IRepository<StoresBudget, int>, StoresBudgetRepository>()
+                .AddScoped<IQueryRepository<StoragePlace>, EntityFrameworkQueryRepository<StoragePlace>>(
+                    r => new EntityFrameworkQueryRepository<StoragePlace>(r.GetService<ServiceDbContext>()?.StoragePlaces))
                 .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
                     r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
                 .AddScoped<IRepository<StorageLocation, int>, EntityFrameworkRepository<StorageLocation, int>>(
-                    r => new EntityFrameworkRepository<StorageLocation, int>(r.GetService<ServiceDbContext>()?.StorageLocations));
+                    r => new EntityFrameworkRepository<StorageLocation, int>(r.GetService<ServiceDbContext>()?.StorageLocations))
+                .AddScoped<IRepository<Employee, int>, EntityFrameworkRepository<Employee, int>>(
+                    r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees));
         }
     }
 }

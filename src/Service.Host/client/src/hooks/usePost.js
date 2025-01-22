@@ -37,12 +37,7 @@ function usePost(url, requiresAuth = false, redirectOnSuccess = false) {
         const response = await fetch(id ? `${url}/${id}` : url, requestParameters);
 
         if (response.ok) {
-            let result;
-            if (response.bodyUsed) {
-                result = await response.json();
-            } else {
-                result = 'Success';
-            }
+            const result = await response.json();
             setPostResult(result);
             setIsLoading(false);
             if (redirectOnSuccess) {

@@ -29,4 +29,8 @@ Form and reporting application for data relating to Stores, Logistics etc. A mor
 * `npm test` to run javascript tests.
 
 ### Routes
-With the current configuration, all requests to app.linn.co.uk/stores2/* will be sent to this app via traefik
+With the current configuration, all requests to 
+* app.linn.co.uk/stores2* 
+* app.linn.co.uk/requisitions*
+
+will be sent to this app via traefik

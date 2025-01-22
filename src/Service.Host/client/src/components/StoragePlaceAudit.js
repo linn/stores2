@@ -20,6 +20,7 @@ function StoragePlaceAudit() {
 
     const auth = useAuth();
     const token = auth.user?.access_token;
+    const employeeId = auth?.user?.profile?.employee?.split('/')?.[2];
 
     const {
         send: getReport,
@@ -66,7 +67,7 @@ function StoragePlaceAudit() {
     };
 
     const getCreateReqResource = () => {
-        const resource = {};
+        const resource = { employeeNumber: employeeId };
 
         if (range) {
             resource.locationRange = range;
@@ -122,6 +123,8 @@ function StoragePlaceAudit() {
             width: 220
         }
     ];
+
+    const notReadyToRun = () => (!range && !locations?.length);
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -218,7 +221,7 @@ function StoragePlaceAudit() {
                 <Grid size={1} />
                 <Grid size={1}>
                     <Button
-                        disabled={isLoading}
+                        disabled={isLoading || notReadyToRun()}
                         variant="contained"
                         onClick={() => {
                             getReport(null, getQueryString());
@@ -230,6 +233,7 @@ function StoragePlaceAudit() {
                 <Grid size={1}>
                     <ExportButton
                         buttonText="PDF"
+                        disabled={isLoading || notReadyToRun()}
                         accept="application/pdf"
                         fileName="export.pdf"
                         tooltipText="Download report as PDF"
@@ -248,7 +252,7 @@ function StoragePlaceAudit() {
                 )}
                 <Grid size={2}>
                     <Button
-                        disabled={isLoading || createAuditReqsLoading}
+                        disabled={isLoading || createAuditReqsLoading || notReadyToRun()}
                         variant="outlined"
                         onClick={() => {
                             clearCreateAuditData();
@@ -268,7 +272,7 @@ function StoragePlaceAudit() {
                 )}
                 {createAuditReqsResult && (
                     <Grid size={12}>
-                        <Typography variant="h6">{createAuditReqsResult}</Typography>
+                        <Typography variant="h6">{createAuditReqsResult.message}</Typography>
                     </Grid>
                 )}
             </Grid>

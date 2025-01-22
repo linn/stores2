@@ -2,9 +2,11 @@
 {
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Stores;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
@@ -27,6 +29,12 @@
         public DbSet<StorageLocation> StorageLocations { get; set; }
 
         public DbSet<RequisitionHeader> RequisitionHeaders { get; set; }
+        
+        public DbSet<StoragePlace> StoragePlaces { get; set; }
+
+        public DbSet<Employee> Employees { get; set; }
+        
+        public DbSet<StoresBudget> StoresBudgets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -48,6 +56,16 @@
             BuildReqMoves(builder);
             BuildRequisitionHeaders(builder);
             BuildRequisitionLines(builder);
+            BuildStoresFunctionCodes(builder);
+            BuildEmployees(builder);
+            BuildStoragePlaces(builder);
+            BuildRequisitionCancelDetails(builder);
+            BuildDepartments(builder);
+            BuildNominals(builder);
+            BuildNominalAccounts(builder);
+            BuildStoresBudgets(builder);
+            BuildStoresBudgetPostings(builder);
+            BuildReqLinePostings(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -113,6 +131,16 @@
             builder.Entity<Carrier>().Property(c => c.DateCreated).HasColumnName("DATE_CREATED");
             builder.Entity<Carrier>().Property(c => c.DateInvalid).HasColumnName("DATE_INVALID");
             builder.Entity<Carrier>().HasOne(o => o.Organisation).WithMany().HasForeignKey("ORG_ID");
+        }
+
+        private static void BuildStoragePlaces(ModelBuilder builder)
+        {
+            builder.Entity<StoragePlace>().ToTable("V_STORAGE_PLACES").HasNoKey();
+            builder.Entity<StoragePlace>().Property(e => e.Description).HasColumnName("STORAGE_PLACE_DESCRIPTION");
+            builder.Entity<StoragePlace>().Property(e => e.Name).HasColumnName("STORAGE_PLACE");
+            builder.Entity<StoragePlace>().Property(e => e.LocationId).HasColumnName("LOCATION_ID");
+            builder.Entity<StoragePlace>().Property(e => e.PalletNumber).HasColumnName("PALLET_NUMBER");
+            builder.Entity<StoragePlace>().Property(e => e.SiteCode).HasColumnName("SITE_CODE");
         }
 
         private static void BuildStockLocators(ModelBuilder builder)
@@ -302,20 +330,37 @@
             e.Property(r => r.ReqNumber).HasColumnName("REQ_NUMBER");
             e.Property(r => r.Document1).HasColumnName("DOCUMENT_1");
             e.Property(r => r.DateCreated).HasColumnName("DATE_CREATED");
+            e.HasOne(r => r.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
             e.Property(r => r.Qty).HasColumnName("QTY");
-            e.Property(r => r.ToLocationId).HasColumnName("TO_LOCATION_ID");
             e.Property(r => r.Document1Name).HasColumnName("DOC1_NAME");
             e.Property(r => r.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.Property(r => r.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
-            e.Property(r => r.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             e.Property(r => r.DateCancelled).HasColumnName("DATE_CANCELLED");
             e.Property(r => r.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
-            e.Property(r => r.CancelledBy).HasColumnName("CANCELLED_BY").HasMaxLength(6);
+            e.HasOne(r => r.CancelledBy).WithMany().HasForeignKey("CANCELLED_BY");
             e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
             e.HasMany(r => r.Lines).WithOne().HasForeignKey(r => r.ReqNumber);
             e.HasMany(r => r.Moves).WithOne(m => m.Header).HasForeignKey(r => r.ReqNumber);
-            e.HasOne(r => r.ToLocation).WithMany().HasForeignKey(r => r.ToLocationId);
+            e.HasOne(r => r.ToLocation).WithMany().HasForeignKey("TO_LOCATION_ID");
+            e.HasOne(r => r.FromLocation).WithMany().HasForeignKey("FROM_LOCATION_ID");
             e.Property(r => r.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
+            e.HasOne(r => r.FunctionCode).WithMany().HasForeignKey("FUNCTION_CODE");
+            e.HasOne(r => r.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
+            e.Property(r => r.DateBooked).HasColumnName("DATE_BOOKED");
+            e.Property(r => r.Reversed).HasColumnName("REVERSED").HasMaxLength(1);
+            e.HasMany(r => r.CancelDetails).WithOne().HasForeignKey(c => c.ReqNumber);
+            e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
+            e.HasOne(r => r.Department).WithMany().HasForeignKey("DEPARTMENT");
+            e.HasOne(r => r.AuthorisedBy).WithMany().HasForeignKey("AUTHORISED_BY");
+            e.Property(r => r.DateAuthorised).HasColumnName("DATE_AUTHORISED");
+            e.Property(r => r.ReqType).HasColumnName("REQ_TYPE").HasMaxLength(1);
+            e.Property(r => r.ManualPick).HasColumnName("MANUAL_PICK").HasMaxLength(1);
+            e.Property(r => r.Reference).HasColumnName("TRANS_REFERENCE").HasMaxLength(2000);
+            e.Property(r => r.ToPalletNumber).HasColumnName("PALLET_NUMBER");
+            e.Property(r => r.FromPalletNumber).HasColumnName("FROM_PALLET_NUMBER");
+            e.Property(r => r.ToPalletNumber).HasColumnName("PALLET_NUMBER");
+            e.Property(r => r.FromStockPool).HasColumnName("FROM_STOCK_POOL").HasMaxLength(10);
+            e.Property(r => r.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)
@@ -324,13 +369,130 @@
             r.HasKey(l => new { l.ReqNumber, l.LineNumber });
             r.Property(l => l.ReqNumber).HasColumnName("REQ_NUMBER");
             r.Property(l => l.LineNumber).HasColumnName("LINE_NUMBER");
-            r.Property(l => l.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
-            r.Property(l => l.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            r.HasOne(l => l.Part).WithMany().HasForeignKey("PART_NUMBER");
+            r.Property(l => l.Qty).HasColumnName("QTY");
             r.Property(l => l.DateCancelled).HasColumnName("DATE_CANCELLED");
             r.Property(l => l.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
             r.Property(l => l.CancelledBy).HasColumnName("CANCELLED_BY").HasMaxLength(6);
-            r.Property(l => l.Document1Line).HasColumnName("DOCUMENT_1_LINE").HasMaxLength(4);
+            r.Property(l => l.Document1Number).HasColumnName("DOCUMENT_1");
+            r.Property(l => l.Document1Line).HasColumnName("DOCUMENT_1_LINE");
+            r.Property(l => l.Document1Type).HasColumnName("NAME").HasMaxLength(6);
+            r.HasOne(l => l.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
             r.HasMany(t => t.Moves).WithOne().HasForeignKey(reqMove => new { reqMove.ReqNumber, reqMove.LineNumber });
+            r.Property(l => l.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
+            r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
+            r.HasMany(l => l.NominalAccountPostings).WithOne()
+                .HasForeignKey(p => new { p.ReqNumber, p.LineNumber });
+        }
+        
+        private static void BuildStoresFunctionCodes(ModelBuilder builder)
+        {
+            var r = builder.Entity<StoresFunctionCode>().ToTable("STORES_FUNCTIONS");
+            r.HasKey(c => c.FunctionCode);
+            r.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
+            r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
+        }
+
+        private static void BuildEmployees(ModelBuilder builder)
+        {
+            var r = builder.Entity<Employee>().ToTable("AUTH_USER_NAME_VIEW");
+            r.HasKey(c => c.Id);
+            r.Property(c => c.Id).HasColumnName("USER_NUMBER");
+            r.Property(c => c.Name).HasColumnName("USER_NAME");
+        }
+
+        private static void BuildRequisitionCancelDetails(ModelBuilder builder)
+        {
+            var r = builder.Entity<CancelDetails>().ToTable("REQ_CANC_DETAILS");
+            r.HasKey(c => c.Id);
+            r.Property(c => c.Id).HasColumnName("REQCANC_ID");
+            r.Property(c => c.ReqNumber).HasColumnName("REQ_NUMBER");
+            r.Property(c => c.LineNumber).HasColumnName("LINE_NUMBER");
+            r.Property(c => c.CancelledBy).HasColumnName("CANCELLED_BY");
+            r.Property(c => c.DateCancelled).HasColumnName("DATE_CANCELLED");
+            r.Property(c => c.Reason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
+        }
+
+        private static void BuildDepartments(ModelBuilder builder)
+        {
+            var e = builder.Entity<Department>().ToTable("LINN_DEPARTMENTS");
+            e.HasKey(d => d.DepartmentCode);
+            e.Property(d => d.DepartmentCode).HasColumnName("DEPARTMENT_CODE").HasMaxLength(10);
+            e.Property(d => d.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.Property(d => d.DateClosed).HasColumnName("DATE_CLOSED");
+            e.Property(d => d.ObsoleteInStores).HasColumnName("OBSOLETE_IN_STORES");
+            e.Property(d => d.ProjectDepartment).HasColumnName("PROJECT_DEPARTMENT").HasMaxLength(1);
+        }
+
+        private static void BuildNominals(ModelBuilder builder)
+        {
+            var e = builder.Entity<Nominal>().ToTable("LINN_NOMINALS");
+            e.HasKey(n => n.NominalCode);
+            e.Property(n => n.NominalCode).HasColumnName("NOMINAL_CODE");
+            e.Property(n => n.Description).HasColumnName("DESCRIPTION");
+            e.Property(n => n.DateClosed).HasColumnName("DATE_CLOSED");
+        }
+
+        private static void BuildNominalAccounts(ModelBuilder builder)
+        {
+            var e = builder.Entity<NominalAccount>().ToTable("NOMINAL_ACCOUNTS");
+            e.HasKey(a => a.Id);
+            e.Property(a => a.Id).HasColumnName("NOMACC_ID");
+            e.Property(a => a.StoresPostsAllowed).HasColumnName("STORES_POSTS_ALLOWED");
+            e.HasOne(r => r.Department).WithMany().HasForeignKey("DEPARTMENT");
+            e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
+        }
+
+        private static void BuildStoresBudgets(ModelBuilder builder)
+        {
+            var e = builder.Entity<StoresBudget>().ToTable("STORES_BUDGETS");
+            e.HasKey(a => a.BudgetId);
+            e.Property(a => a.BudgetId).HasColumnName("BUDGET_ID");
+            e.Property(a => a.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            e.Property(a => a.OverheadPrice).HasColumnName("OVERHEAD_PRICE");
+            e.Property(d => d.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
+            e.Property(n => n.Quantity).HasColumnName("QTY");
+            e.Property(d => d.Reference).HasColumnName("REFERENCE").HasMaxLength(200);
+            e.Property(n => n.PartPrice).HasColumnName("PART_PRICE");
+            e.Property(n => n.RequisitionNumber).HasColumnName("REQ_NUMBER");
+            e.Property(n => n.LineNumber).HasColumnName("LINE_NUMBER");
+            e.HasOne(r => r.Requisition).WithMany().HasForeignKey(r => r.RequisitionNumber);
+            e.Property(n => n.MaterialPrice).HasColumnName("MATERIAL_PRICE");
+            e.Property(n => n.LabourPrice).HasColumnName("LABOUR_PRICE");
+            e.Property(n => n.MachinePrice).HasColumnName("MACHINE_PRICE");
+            e.Property(d => d.CurrencyCode).HasColumnName("CODE").HasMaxLength(4);
+            e.Property(n => n.SpotRate).HasColumnName("SPOT_RATE");
+            e.Property(n => n.DateBooked).HasColumnName("DATE_BOOKED");
+            e.HasMany(t => t.StoresBudgetPostings).WithOne().HasForeignKey(p => p.BudgetId);
+        }
+
+        private static void BuildStoresBudgetPostings(ModelBuilder builder)
+        {
+            var table = builder.Entity<StoresBudgetPosting>().ToTable("STORES_BUDGET_POSTINGS");
+            table.HasKey(s => new { s.BudgetId, s.Sequence });
+            table.Property(s => s.BudgetId).HasColumnName("BUDGET_ID");
+            table.Property(s => s.Sequence).HasColumnName("SEQ");
+            table.Property(s => s.Quantity).HasColumnName("QTY");
+            table.Property(s => s.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT").HasMaxLength(1);
+            table.Property(s => s.Person).HasColumnName("PERSON");
+            table.Property(s => s.Product).HasColumnName("PRODUCT").HasMaxLength(10);
+            table.Property(s => s.Building).HasColumnName("BUILDING").HasMaxLength(10);
+            table.Property(s => s.Vehicle).HasColumnName("VEHICLE").HasMaxLength(10);
+            table.HasOne(s => s.NominalAccount).WithMany().HasForeignKey("NOMACC_ID");
+        }
+
+        private static void BuildReqLinePostings(ModelBuilder builder)
+        {
+            var entity = builder.Entity<RequisitionLinePosting>().ToTable("REQLINES_POSTINGS");
+            entity.HasKey(p => new { p.ReqNumber, p.LineNumber, p.Seq });
+            entity.Property(e => e.ReqNumber).HasColumnName("REQ_NUMBER");
+            entity.Property(e => e.LineNumber).HasColumnName("LINE_NUMBER");
+            entity.Property(e => e.Seq).HasColumnName("SEQ");
+            entity.Property(e => e.Qty).HasColumnName("QTY");
+            entity.HasOne(e => e.NominalAccount).WithMany().HasForeignKey("NOMACC_ID");
+            entity.Property(e => e.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT").HasMaxLength(1);
         }
     }
 }
