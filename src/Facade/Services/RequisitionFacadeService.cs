@@ -28,12 +28,12 @@
             this.requisitionService = requisitionService;
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> Cancel(
+        public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
             int reqNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
         {
             try
             {
-                var result = await this.requisitionService.Cancel(reqNumber, new User(), reason);
+                var result = await this.requisitionService.CancelHeader(reqNumber, new User(), reason);
                 return new SuccessResult<RequisitionHeaderResource>(this.BuildResource(result, privileges));
             }
             catch (Exception e)

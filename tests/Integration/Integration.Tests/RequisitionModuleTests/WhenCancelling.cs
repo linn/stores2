@@ -26,7 +26,7 @@
                                           Reason = "Just cos",
                                           ReqNumber = 123
                                       };
-            this.DomainService.Cancel(this.resource.ReqNumber, Arg.Any<User>(), this.resource.Reason)
+            this.DomainService.CancelHeader(this.resource.ReqNumber, Arg.Any<User>(), this.resource.Reason)
                 .Returns(new CancelledRequisitionHeader(this.resource.ReqNumber));
             this.Response = this.Client.PostAsJsonAsync("/requisitions/cancel", this.resource).Result;
         }

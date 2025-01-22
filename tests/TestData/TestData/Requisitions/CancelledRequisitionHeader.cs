@@ -6,7 +6,12 @@
     public class CancelledRequisitionHeader : RequisitionHeader
     {
         public CancelledRequisitionHeader(int reqNumber)
-            : base(reqNumber, "A cancelled req", new StoresFunctionCode { FunctionCode = "C" })
+            : base(
+                reqNumber, 
+                "A cancelled req", 
+                new StoresFunctionCode { FunctionCode = "C" },
+                12345678, 
+                "TYPE")
         {
             this.Cancelled = "Y";
             this.DateCancelled = DateTime.Now;

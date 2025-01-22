@@ -25,11 +25,15 @@
             this.req123 = new RequisitionHeader(
                 123, 
                 "Hello Requisitions", 
-                new StoresFunctionCode { FunctionCode = "F1" });
+                new StoresFunctionCode { FunctionCode = "F1" },
+                12345678,
+                "TYPE");
             this.req456 = new RequisitionHeader(
                 456, 
                 "Goodbye Requisitions",
-                new StoresFunctionCode { FunctionCode = "F2" });
+                new StoresFunctionCode { FunctionCode = "F2" },
+                12345678,
+                "TYPE");
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);

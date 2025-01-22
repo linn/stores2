@@ -62,7 +62,7 @@
             CancelRequisitionResource resource,
             IRequisitionFacadeService service)
         {
-            await res.Negotiate(await service.Cancel(
+            await res.Negotiate(await service.CancelHeader(
                                     resource.ReqNumber, 
                                     req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
                                     resource.Reason,

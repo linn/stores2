@@ -30,7 +30,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.employeeRepository = employeeRepository;
         }
         
-        public async Task<RequisitionHeader> Cancel(
+        public async Task<RequisitionHeader> CancelHeader(
             int reqNumber, 
             User cancelledBy,
             string reason)
@@ -57,13 +57,29 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
             else if (req.FunctionCode.CancelFunction == "UNALLOC_REQ")
             {
-                await this.requisitionStoredProcedures.UnallocateRequisition(
+                var unallocateReqResult = await this.requisitionStoredProcedures.UnallocateRequisition(
                     reqNumber, null, cancelledBy.UserNumber);
+
+                if (!unallocateReqResult.Success)
+                {
+                    throw new RequisitionException(unallocateReqResult.Message);
+                }
             }
             else
             {
                 throw new RequisitionException(
                     "Cannot cancel req - invalid cancel function");
+            }
+
+            var deleteAllocsOntoResult = await this.requisitionStoredProcedures.DeleteAllocOntos(
+                                             reqNumber,
+                                             null,
+                                             req.Document1.GetValueOrDefault(), // todo - what if null? can that happen?
+                                             req.Document1Name);
+
+            if (!deleteAllocsOntoResult.Success)
+            {
+                throw new RequisitionException(deleteAllocsOntoResult.Message);
             }
             
             return req;
