@@ -8,7 +8,13 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
-import { CreateButton, Loading, Search, ErrorCard } from '@linn-it/linn-form-components-library';
+import {
+    CreateButton,
+    Loading,
+    Search,
+    ErrorCard,
+    SnackbarMessage
+} from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from './Page';
 import config from '../config';
@@ -24,6 +30,25 @@ function StockPools() {
     );
     const [stockPools, setStockPools] = useState();
     const [searchTerm, setSearchTerm] = useState();
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+    const {
+        send: getStorageLocations,
+        storageLocationsLoading,
+        result: storageLocationsResult,
+        clearData: clearStorageLocations
+    } = useGet(itemTypes.storagePlaces.url);
+
+    const {
+        send: updateStockPool,
+        isLoading: updateLoading,
+        errorMessage: updateError,
+        putResult: updateResult
+    } = usePut(itemTypes.stockPools.url, true);
+
+    useEffect(() => {
+        setSnackbarVisible(!!updateResult);
+    }, [updateResult]);
 
     useEffect(() => {
         setStockPools(stockPoolResult);
@@ -66,20 +91,6 @@ function StockPools() {
             }
         ]);
     };
-
-    const {
-        send: getStorageLocations,
-        storageLocationsLoading,
-        result: storageLocationsResult,
-        clearData: clearStorageLocations
-    } = useGet(itemTypes.storagePlaces.url);
-
-    const {
-        send: updateStockPool,
-        isLoading: updateLoading,
-        errorMessage: updateError,
-        putResult: updateResult
-    } = usePut(itemTypes.stockPools.url, true);
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
@@ -242,6 +253,14 @@ function StockPools() {
                     >
                         Save
                     </Button>
+                </Grid>
+                y
+                <Grid>
+                    <SnackbarMessage
+                        visible={snackbarVisible}
+                        onClose={() => setSnackbarVisible(false)}
+                        message="Save Successful"
+                    />
                 </Grid>
                 {updateError && (
                     <Grid item xs={12}>
