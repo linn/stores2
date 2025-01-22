@@ -4,7 +4,10 @@ namespace Linn.Stores2.Service.Modules
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
@@ -18,6 +21,8 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/reports/storage-place-audit/report", this.StoragePlaceAuditReport);
             app.MapGet("/stores2/reports/storage-place-audit", this.GetApp);
             app.MapGet("/stores2/reports/storage-place-audit/pdf", this.StoragePlaceAuditReportAsPdf);
+            
+            //app.MapGet("/stores2/storage-places", this.SearchStorageLocations);
         }
 
         private async Task StoragePlaceAuditReport(
@@ -47,5 +52,13 @@ namespace Linn.Stores2.Service.Modules
             res.ContentType = "application/pdf";
             await res.FromStream(result, res.ContentType, new System.Net.Mime.ContentDisposition("attachment"));
         }
+
+        // private async Task SearchStorageLocations(
+        //     HttpResponse res,
+        //     string searchTerm,
+        //     IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> service)
+        // {
+        //     await res.Negotiate(service.Search(searchTerm));
+        // }
     }
 }

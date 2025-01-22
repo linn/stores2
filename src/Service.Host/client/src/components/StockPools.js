@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import Dialog from '@mui/material/Dialog';
@@ -18,9 +18,16 @@ import usePut from '../hooks/usePut';
 import useInitialise from '../hooks/useInitialise';
 
 function StockPools() {
-    const { isLoading, result } = useInitialise(itemTypes.stockPools.url);
-    const { stockPools, setStockPools } = useState(result);
-    const { searchTerm, setSearchTerm } = useState(result);
+    const { isLoading, result: stockPoolResult } = useInitialise(itemTypes.stockPools.url);
+    const { isLoading: accountingCompanyLoading, result: accountingCompany } = useInitialise(
+        itemTypes.accountingCompany.url
+    );
+    const [stockPools, setStockPools] = useState();
+    const [searchTerm, setSearchTerm] = useState();
+
+    useEffect(() => {
+        setStockPools(stockPoolResult);
+    }, [stockPoolResult]);
 
     const [searchDialogOpen, setSearchDialogOpen] = useState({
         forRow: null,
@@ -42,27 +49,40 @@ function StockPools() {
     );
 
     const addNewRow = () => {
-        setStockPools(
-            ...stockPools,
-            {
-                    accountingCompany: null,
-                    availableToMrp: 'Y',
-                    bridgeId: null,
-                    dateInvalid: null,
-                    defaultLocation: null,
-                    links: null,
-                    sequence: null,
-                    stockCategory: null,
-                    stockPoolCode: null,
-                    stockPoolDescription: null,
-                    storageLocation: null
-                }
-        );
+        setStockPools(...stockPools, {
+            accountingCompany: null,
+            availableToMrp: 'Y',
+            bridgeId: null,
+            dateInvalid: null,
+            defaultLocation: null,
+            links: null,
+            sequence: null,
+            stockCategory: null,
+            stockPoolCode: '',
+            stockPoolDescription: null,
+            storageLocation: null
+        });
     };
+
+    const {
+        send: getStorageLocations,
+        storageLocationsLoading,
+        result: storageLocationsResult,
+        clearData: clearStorageLocations
+    } = useGet(itemTypes.storagePlaces.url);
+
+    const {
+        send: updateStockPool,
+        isLoading: updateLoading,
+        errorMessage: updateError,
+        putResult: updateResult
+    } = usePut(itemTypes.carriers.url, true);
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
-        setStockPools(prevRows => prevRows.map(row => (row.stockPoolCode === newRow.stockPoolCode ? updatedRow : row)));
+        setStockPools(prevRows =>
+            prevRows.map(row => (row.stockPoolCode === newRow.stockPoolCode ? updatedRow : row))
+        );
         return newRow;
     };
 
@@ -90,19 +110,21 @@ function StockPools() {
                 <Dialog open={searchDialogOpen.forColumn === c.field} onClose={handleClose}>
                     <DialogTitle>Search</DialogTitle>
                     <DialogContent>
+                        {console.log(c)}
                         <Search
                             autoFocus
                             propertyName={`${c.field}-searchTerm`}
-                            label=""
+                            label="defaultLocation"
                             resultsInModal
                             resultLimit={100}
                             value={searchTerm}
-                            loading={c.searchLoading}
+                            loading={storageLocationsLoading}
                             handleValueChange={(_, newVal) => setSearchTerm(newVal)}
-                            search={c.search}
-                            searchResults={c.searchResults?.map(r => ({
-                                ...r,
-                                id: r[c.field]
+                            search={() => getStorageLocations(null, `?searchTerm=17225`)}
+                            searchResults={storageLocationsResult?.map(s => ({
+                                ...s,
+                                id: s.storagePlace,
+                                name: s.storagePlace
                             }))}
                             priorityFunction="closestMatchesFirst"
                             onResultSelect={handleSearchResultSelect}
@@ -117,38 +139,26 @@ function StockPools() {
         );
     };
 
-    const {
-        send: getStorageLocations,
-        storageLocationsLoading,
-        result: storageLocationsResult,
-        clearData: clearStorageLocations
-    } = useGet(itemTypes.storagePlaces.url);
-
-    const {
-        send: updateStockPool,
-        isLoading: updateLoading,
-        errorMessage: updateError,
-        putResult: updateResult
-    } = usePut(itemTypes.carriers.url, true);
-
     const stockPoolColumns = [
-        { field: 'stockPoolCode', headerName: 'Code', width: 100 },
-        { field: 'stockPoolDescription', headerName: 'Description', width: 225 },
+        { field: 'stockPoolCode', headerName: 'Code', editable: true, width: 100 },
+        { field: 'stockPoolDescription', editable: true, headerName: 'Description', width: 225 },
         {
             field: 'dateInvalid',
             headerName: 'Date Invalid',
+            editable: true,
             width: 175,
             valueFormatter: value => value && moment(value).format('DD-MMM-YYYY')
         },
-        { field: 'stockCategory', headerName: 'Stock Category', width: 100 },
-        { field: 'accountingCompanyCode', headerName: 'Accounting Company', width: 100 },
+        { field: 'stockCategory', editable: true, headerName: 'Stock Category', width: 100 },
         {
-            field: 'locationCode',
-            headerName: 'Default Location',
-            width: 200,
-            valueGetter: params => params?.row?.storageLocation?.locationCode || ''
+            field: 'accountingCompanyCode',
+            editable: true,
+            headerName: 'Accounting Company',
+            width: 100,
+            defaultFormat: true,
+            valueOptions: accountingCompany?.map(ac => ac.name),
+            type: 'singleSelect'
         },
-        { field: 'sequence', headerName: 'Sequence', width: 100 },
         {
             field: 'defaultLocation',
             headerName: 'Default Location',
@@ -164,27 +174,29 @@ function StockPools() {
             ],
             clearSearch: clearStorageLocations,
             renderCell: searchRenderCell
-        }
+        },
+        { field: 'sequence', editable: true, headerName: 'Sequence', width: 100 }
     ];
 
-    const sortedStockPools = stockPools?.sort((a, b) => {
-        const fa = a.sequence;
-        const fb = b.sequence;
-        if (fa === null && fb !== null) {
-            return 1;
-        }
-        if (fa !== null && fb === null) {
-            return -1;
-        }
-        if (fa === null && fb === null) {
-            return 0;
-        }
-        return fa - fb;
-    });
+    // const sortedStockPools = stockPools?.sort((a, b) => {
+    //     const fa = a.sequence;
+    //     const fb = b.sequence;
+
+    //     if (fa === null && fb !== null) {
+    //         return 1;
+    //     }
+    //     if (fa !== null && fb === null) {
+    //         return -1;
+    //     }
+    //     if (fa === null && fb === null) {
+    //         return 0;
+    //     }
+    //     return fa - fb;
+    // });
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
-            {stockPoolColumns.filter(c => c.type === 'search').map(c => renderSearchDialog(c))}
+            {stockPoolColumns?.filter(c => c.type === 'search').map(c => renderSearchDialog(c))}
             <Grid container spacing={3}>
                 <Grid size={12}>
                     <Typography variant="h4">Stock Pools</Typography>
@@ -192,7 +204,7 @@ function StockPools() {
                 <Grid size={12}>
                     <CreateButton createUrl="/stores2/stock-pools/create" />
                 </Grid>
-                {isLoading && (
+                {(isLoading || accountingCompanyLoading || updateLoading) && (
                     <Grid size={12}>
                         <List>
                             <Loading />
@@ -202,7 +214,7 @@ function StockPools() {
                 <Grid size={12}>
                     <DataGrid
                         getRowId={row => row.stockPoolCode}
-                        rows={sortedStockPools}
+                        rows={stockPools}
                         editMode="cell"
                         processRowUpdate={processRowUpdate}
                         columns={stockPoolColumns}
@@ -223,7 +235,7 @@ function StockPools() {
                         }}
                         variant="outlined"
                         // eslint-disable-next-line eqeqeq
-                        disabled={result == stockPools}
+                        disabled={stockPoolResult == stockPools}
                     >
                         Save
                     </Button>
