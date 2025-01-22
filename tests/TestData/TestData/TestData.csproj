@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+	  <AssemblyName>Linn.Stores2.TestData</AssemblyName>
+	  <RootNamespace>Linn.Stores2.TestData</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Domain.LinnApps\Domain.LinnApps.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Requisitions\" />
+  </ItemGroup>
+
+</Project>

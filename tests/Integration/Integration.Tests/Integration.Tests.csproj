@@ -28,6 +28,7 @@
 		<ProjectReference Include="..\..\..\src\IoC\IoC.csproj" />
 		<ProjectReference Include="..\..\..\src\Resources\Resources.csproj" />
 		<ProjectReference Include="..\..\..\src\Service\Service.csproj" />
+		<ProjectReference Include="..\..\TestData\TestData\TestData.csproj" />
 	</ItemGroup>
 
 </Project>

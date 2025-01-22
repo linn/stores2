@@ -6,11 +6,14 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
 
     using NUnit.Framework;
+
+    using TestData.Requisitions;
 
     public class WhenSearchingAndIncludingCancelled : ContextBase
     {
@@ -21,15 +24,17 @@
         [SetUp]
         public void SetUp()
         {
-            this.req123 = new RequisitionHeader(123, "Hello Requisitions");
-            this.req123.Cancel(33087);
-            this.req456 = new RequisitionHeader(456, "Goodbye Requisitions");
+            this.req123 = new RequisitionHeader(
+                123, 
+                "Hello Requisitions",
+                new StoresFunctionCode { FunctionCode = "F" });
+            this.req456 = new CancelledRequisitionHeader(456);
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);
 
             this.Response = this.Client.Get(
-                "/stores2/requisitions?comments=Req&includeCancelled=True",
+                "/requisitions?includeCancelled=True&comments=req",
                 with =>
                     {
                         with.Accept("application/json");

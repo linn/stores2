@@ -8,6 +8,8 @@ import Navigation from '../containers/Navigation';
 import Carriers from './Carriers';
 import Carrier from './Carrier';
 import StoragePlaceAudit from './StoragePlaceAudit';
+import SearchRequisitions from './requisitions/SearchRequisitions';
+import Requisition from './requisitions/Requisition';
 import StoresBudgetViewer from './StoresBudgetViewer';
 
 function Root() {
@@ -27,6 +29,9 @@ function Root() {
                         path="/stores2/reports/storage-place-audit"
                         element={<StoragePlaceAudit />}
                     />
+                    <Route path="/requisitions" element={<SearchRequisitions />} />
+                    <Route path="/requisitions/:reqNumber" element={<Requisition />} />
+
                     <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
                     <Route path="*" element={<NotFoundPage />} />

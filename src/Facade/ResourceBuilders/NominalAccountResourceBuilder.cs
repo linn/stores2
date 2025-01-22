@@ -14,7 +14,7 @@
             return new NominalAccountResource
                        {
                            Id = nominalAccount.Id,
-                           DepartmentCode = nominalAccount.DepartmentCode,
+                           DepartmentCode = nominalAccount?.Department.DepartmentCode,
                            Department = nominalAccount.Department == null
                                             ? null
                                             : new DepartmentResource
@@ -25,7 +25,7 @@
                                                       ObsoleteInStores = nominalAccount.Department.ObsoleteInStores,
                                                       ProjectDepartment = nominalAccount.Department.ProjectDepartment
                                                   },
-                           NominalCode = nominalAccount.NominalCode,
+                           NominalCode = nominalAccount.Nominal?.NominalCode,
                            Nominal = nominalAccount.Nominal == null
                                          ? null
                                          : new NominalResource

@@ -4,9 +4,10 @@
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.Facade.Common;
+    using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources.Requisitions;
+    using Linn.Stores2.Service.Extensions;
+    using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -16,8 +17,9 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/requisitions", this.Search);
-            app.MapGet("/stores2/requisitions/{reqNumber}", this.GetById);
+            app.MapGet("/requisitions", this.Search);
+            app.MapGet("/requisitions/{reqNumber}", this.GetById);
+            app.MapPost("/requisitions/cancel", this.Cancel);
         }
 
         private async Task Search(
@@ -26,25 +28,45 @@
             string comments,
             int? reqNumber,
             bool? includeCancelled,
-            IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource> service)
+            IRequisitionFacadeService service)
         {
-            await res.Negotiate(await service.FilterBy(
-                                    new RequisitionSearchResource
-                                        {
-                                            Comments = comments,
-                                            ReqNumber = reqNumber,
-                                            IncludeCancelled = includeCancelled.GetValueOrDefault()
-                                        }, 
-                                    null));
+            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments))
+            {
+                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            }
+            else
+            {
+                await res.Negotiate(await service.FilterBy(
+                                        new RequisitionSearchResource
+                                            {
+                                                Comments = comments,
+                                                ReqNumber = reqNumber,
+                                                IncludeCancelled = includeCancelled.GetValueOrDefault()
+                                            }));
+            }
+            
         }
 
         private async Task GetById(
             HttpRequest _,
             HttpResponse res,
             int reqNumber,
-            IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource> service)
+            IRequisitionFacadeService service)
         {
             await res.Negotiate(await service.GetById(reqNumber));
+        }
+
+        private async Task Cancel(
+            HttpRequest req,
+            HttpResponse res,
+            CancelRequisitionResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.Cancel(
+                                    resource.ReqNumber, 
+                                    req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                                    resource.Reason,
+                                    req.HttpContext.GetPrivileges()));
         }
     }
 }
