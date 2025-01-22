@@ -150,9 +150,9 @@ Resources:
             traefik.http.routers.stores2.entrypoints: web
             traefik.http.routers.stores2.rule: "PathPrefix(`/stores2`)"
             traefik.http.services.stores2.loadbalancer.healthcheck.path: "/healthcheck"
-            traefik.http.routers.requisitions.entrypoints: web
-            traefik.http.routers.requisitions.rule: "PathPrefix(`/requisitions`)"
-            traefik.http.services.requisitions.loadbalancer.healthcheck.path: "/healthcheck"
+            # traefik.http.routers.requisitions.entrypoints: web
+            # traefik.http.routers.requisitions.rule: "PathPrefix(`/requisitions`)"
+            # traefik.http.services.requisitions.loadbalancer.healthcheck.path: "/healthcheck"
           LogConfiguration:
             LogDriver: gelf
             Options:
