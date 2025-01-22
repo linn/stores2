@@ -12,6 +12,8 @@
 
         public string TransactionCode { get; set; }
 
+        public string TransactionCodeDescription { get; set; }
+
         public string PartNumber { get; set; }
 
         public PartResource Part { get; set; }

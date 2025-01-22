@@ -30,6 +30,12 @@
 
         public string Document1Type { get; set; }
 
+        public int? Document2Number { get; set; }
+
+        public int? Document2Line { get; set; }
+
+        public string Document2Type { get; set; }
+
         public string DateBooked { get; set; }
 
         public string Cancelled { get; set; }

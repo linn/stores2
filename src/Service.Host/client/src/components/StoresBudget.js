@@ -11,16 +11,24 @@ import { Link } from 'react-router-dom';
 
 function StoresBudget({ storesBudget }) {
     const useStyles = makeStyles(() => ({
-        pullRight: {
-            float: 'right'
-        },
         marginBelow: {
             marginBottom: '10px'
+        },
+        displayLabel: {
+            float: 'right',
+            fontWeight: 'bold'
         }
     }));
     const classes = useStyles();
 
-    const numberFormat = new Intl.NumberFormat('en-GB', { minimumFractionDigits: 2 });
+    const currencyFormat = new Intl.NumberFormat('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
+    const partPriceFormat = new Intl.NumberFormat('en-GB', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 5
+    });
     const reqHref = utilities.getSelfHref(storesBudget?.requisition);
 
     const postingColumns = [
@@ -46,9 +54,9 @@ function StoresBudget({ storesBudget }) {
                     id: i,
                     debitOrCreditDisplay: p.debitOrCredit === 'D' ? 'Debit' : 'Credit',
                     nominalCode: p.nominalAccount?.nominalCode,
-                    nominalDescription: p.nominalAccount?.description,
+                    nominalDescription: p.nominalAccount?.nominal?.description,
                     departmentCode: p.nominalAccount?.departmentCode,
-                    departmentDescription: p.nominalAccount?.departmentDescription
+                    departmentDescription: p.nominalAccount?.department?.description
                 }));
             }
         }
@@ -56,10 +64,14 @@ function StoresBudget({ storesBudget }) {
         return [];
     };
 
+    const reqLine = storesBudget?.requisition?.lines?.length
+        ? storesBudget.requisition.lines.find(a => a.lineNumber === storesBudget.lineNumber)
+        : null;
+
     return (
         <Grid container spacing={1}>
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
+                <Typography className={classes.displayLabel} variant="body1">
                     Budget Id:
                 </Typography>
             </Grid>
@@ -67,7 +79,7 @@ function StoresBudget({ storesBudget }) {
                 <Typography variant="body1">{storesBudget?.budgetId}</Typography>
             </Grid>
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
+                <Typography className={classes.displayLabel} variant="body1">
                     Date Booked:
                 </Typography>
             </Grid>
@@ -78,7 +90,7 @@ function StoresBudget({ storesBudget }) {
             </Grid>
             <Grid size={2} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
+                <Typography className={classes.displayLabel} variant="body1">
                     Part Number:
                 </Typography>
             </Grid>
@@ -88,7 +100,7 @@ function StoresBudget({ storesBudget }) {
                 </Typography>
             </Grid>
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
+                <Typography className={classes.displayLabel} variant="body1">
                     Quantity
                 </Typography>
             </Grid>
@@ -97,16 +109,17 @@ function StoresBudget({ storesBudget }) {
             </Grid>
             <Grid size={6} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
+                <Typography className={classes.displayLabel} variant="body1">
                     Transaction:
                 </Typography>
             </Grid>
-            <Grid size={4}>
-                <Typography variant="body1">{storesBudget?.transactionCode}</Typography>
+            <Grid size={10}>
+                <Typography variant="body1">
+                    {storesBudget?.transactionCode} - {storesBudget?.transactionCodeDescription}
+                </Typography>
             </Grid>
-            <Grid size={6} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
+                <Typography className={classes.displayLabel} variant="body1">
                     Req Number / Line:
                 </Typography>
             </Grid>
@@ -118,74 +131,111 @@ function StoresBudget({ storesBudget }) {
             </Grid>
             <Grid size={6} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
-                    By:
+                <Typography className={classes.displayLabel} variant="body1">
+                    Created By:
                 </Typography>
             </Grid>
             <Grid size={6}>
                 <Stack direction="row" spacing={2}>
-                    <Typography variant="body1">{storesBudget?.bookedById}</Typography>
-                    <Typography variant="body1">{storesBudget?.bookedByName}</Typography>
+                    <Typography variant="body1">{storesBudget?.requisition?.createdBy}</Typography>
+                    <Typography variant="body1">
+                        {storesBudget?.requisition?.createdByName}
+                    </Typography>
                 </Stack>
             </Grid>
             <Grid size={4} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
-                    Order Number/Line:
+                <Typography className={classes.displayLabel} variant="body1">
+                    Document Number/Line:
                 </Typography>
             </Grid>
-            <Grid size={3}>
-                {storesBudget?.orderNumber && (
+            <Grid size={4}>
+                {reqLine?.document1Number && (
                     <Stack direction="row" spacing={2}>
-                        <Typography variant="body1">{storesBudget?.orderNumber}</Typography>
+                        <Typography variant="body1">{reqLine.document1Number}</Typography>
                         <Typography variant="body1">/</Typography>
-                        <Typography variant="body1">{storesBudget?.lineNumber}</Typography>
+                        <Typography variant="body1">{reqLine.document1Line}</Typography>
+                        {'  '}
+                        <Typography variant="body1">{reqLine.document1Type}</Typography>
                     </Stack>
                 )}
             </Grid>
-            <Grid size={7} />
+            <Grid size={6} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
-                    Budget Price
+                <Typography className={classes.displayLabel} variant="body1">
+                    Document 2 Number/Line:
                 </Typography>
             </Grid>
             <Grid size={4}>
-                <Typography variant="body1">
-                    {numberFormat.format(storesBudget?.budgetPartPrice)}
-                </Typography>
+                {reqLine?.document2Number && (
+                    <Stack direction="row" spacing={2}>
+                        <Typography variant="body1">{reqLine.document2Number}</Typography>
+                        <Typography variant="body1">/</Typography>
+                        <Typography variant="body1">{reqLine.document2Line}</Typography>
+                        {'  '}
+                        <Typography variant="body1">{reqLine.document2Type}</Typography>
+                    </Stack>
+                )}
             </Grid>
             <Grid size={6} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
-                    Material Price
+                <Typography className={classes.displayLabel} variant="body1">
+                    Currency:
                 </Typography>
             </Grid>
-            <Grid size={4}>
-                <Typography variant="body1">
-                    {numberFormat.format(storesBudget?.materialPrice)}
-                </Typography>
-            </Grid>
-            <Grid size={6} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
+                <Typography variant="body1">{storesBudget?.currencyCode}</Typography>
+            </Grid>
+            <Grid size={2}>
+                <Typography className={classes.displayLabel} variant="body1">
                     Exchange Rate:
                 </Typography>
             </Grid>
-            <Grid size={4}>
+            <Grid size={2}>
                 <Typography variant="body1">
-                    {numberFormat.format(storesBudget?.spotRate)}
+                    {currencyFormat.format(storesBudget?.spotRate)}
                 </Typography>
             </Grid>
-            <Grid size={6} />
+            <Grid size={4} />
             <Grid size={2}>
-                <Typography className={classes.pullRight} variant="body1">
+                <Typography className={classes.displayLabel} variant="body1">
                     Reference:
                 </Typography>
             </Grid>
-            <Grid size={4}>
+            <Grid size={6}>
                 <Typography variant="body1">{storesBudget?.reference}</Typography>
             </Grid>
-            <Grid size={6} />
+            <Grid size={4} />
+            <Grid size={2}>
+                <Typography className={classes.displayLabel} variant="body1">
+                    Base Unit Price:
+                </Typography>
+            </Grid>
+            <Grid size={2}>
+                <Typography variant="body1">
+                    {partPriceFormat.format(storesBudget?.partPrice)}
+                </Typography>
+            </Grid>
+            <Grid size={2}>
+                <Typography className={classes.displayLabel} variant="body1">
+                    Material Price
+                </Typography>
+            </Grid>
+            <Grid size={2}>
+                <Typography variant="body1">
+                    {partPriceFormat.format(storesBudget?.materialPrice)}
+                </Typography>
+            </Grid>
+            <Grid size={2}>
+                <Typography className={classes.displayLabel} variant="body1">
+                    Labour Price
+                </Typography>
+            </Grid>
+            <Grid size={2}>
+                <Typography variant="body1">
+                    {partPriceFormat.format(storesBudget?.labourPrice)}
+                </Typography>
+            </Grid>
             <Grid size={12}>
                 <DataGrid
                     rows={getBudgetPostings()}
@@ -215,20 +265,33 @@ StoresBudget.propTypes = {
         budgetId: PropTypes.number,
         dateBooked: PropTypes.string,
         transactionCode: PropTypes.string,
-        bookedById: PropTypes.number,
-        bookedByName: PropTypes.string,
+        transactionCodeDescription: PropTypes.string,
         partNumber: PropTypes.string,
+        currencyCode: PropTypes.string,
         storesBudgetPostings: PropTypes.arrayOf(PropTypes.shape({})),
         quantity: PropTypes.number,
         spotRate: PropTypes.number,
         requisitionNumber: PropTypes.number,
         lineNumber: PropTypes.number,
         materialPrice: PropTypes.number,
-        budgetPartPrice: PropTypes.number,
-        orderNumber: PropTypes.number,
+        labourPrice: PropTypes.number,
+        partPrice: PropTypes.number,
         reference: PropTypes.string,
         part: PropTypes.shape({ description: PropTypes.string }),
-        requisition: PropTypes.shape({})
+        requisition: PropTypes.shape({
+            createdBy: PropTypes.string,
+            createdByName: PropTypes.string,
+            lines: PropTypes.arrayOf(
+                PropTypes.shape({
+                    document1Number: PropTypes.number,
+                    document1Line: PropTypes.number,
+                    document1Type: PropTypes.string,
+                    document2Number: PropTypes.number,
+                    document2Line: PropTypes.number,
+                    document2Type: PropTypes.string
+                })
+            )
+        })
     }).isRequired
 };
 

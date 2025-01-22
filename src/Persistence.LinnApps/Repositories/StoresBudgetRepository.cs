@@ -21,9 +21,13 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
         {
             var result = await this.serviceDbContext.StoresBudgets
                              .Include(x => x.Part)
-                             .Include(x => x.StoresBudgetPostings).ThenInclude(b => b.NominalAccount).ThenInclude(n => n.Department)
-                             .Include(x => x.StoresBudgetPostings).ThenInclude(b => b.NominalAccount).ThenInclude(n => n.Department)
-                             .Include(x => x.Requisition)
+                             .Include(x => x.Transaction)
+                             .Include(x => x.StoresBudgetPostings)
+                             .ThenInclude(b => b.NominalAccount).ThenInclude(n => n.Department)
+                             .Include(x => x.StoresBudgetPostings)
+                             .ThenInclude(b => b.NominalAccount).ThenInclude(n => n.Nominal)
+                             .Include(x => x.Requisition).ThenInclude(b => b.Lines)
+                             .Include(x => x.Requisition).ThenInclude(b => b.CreatedBy)
                              .FirstOrDefaultAsync(storesBudget => storesBudget.BudgetId == key);
             return result;
         }
