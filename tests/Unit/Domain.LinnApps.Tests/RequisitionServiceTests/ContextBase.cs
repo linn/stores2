@@ -18,8 +18,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         protected IRepository<RequisitionHeader, int> ReqRepository { get; set; }
 
         protected IRepository<Employee, int> EmployeeRepository { get; set; }
-
-
+        
         protected IRequisitionStoredProcedures ReqStoredProcedures { get; set; }
 
         [SetUp]
