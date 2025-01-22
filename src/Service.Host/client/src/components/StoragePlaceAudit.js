@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { Loading, ExportButton, Search } from '@linn-it/linn-form-components-library';
-import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -124,7 +123,7 @@ function StoragePlaceAudit() {
         }
     ];
 
-    const notReadyToRun = () => (!range && !locations?.length);
+    const notReadyToRun = () => !range && !locations?.length;
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -134,9 +133,7 @@ function StoragePlaceAudit() {
                 </Grid>
                 {isLoading && (
                     <Grid size={12}>
-                        <List>
-                            <Loading />
-                        </List>
+                        <Loading />
                     </Grid>
                 )}
                 <Grid size={3}>

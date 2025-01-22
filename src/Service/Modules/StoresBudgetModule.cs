@@ -7,6 +7,7 @@ namespace Linn.Stores2.Service.Modules
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Stores;
+    using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -16,6 +17,7 @@ namespace Linn.Stores2.Service.Modules
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
+            app.MapGet("/stores2/budgets", this.GetApp);
             app.MapGet("/stores2/budgets/{id:int}", this.GetById);
         }
 
@@ -27,6 +29,11 @@ namespace Linn.Stores2.Service.Modules
         {
             var result = await service.GetById(id);
             await res.Negotiate(result);
+        }
+
+        private async Task GetApp(HttpRequest req, HttpResponse res)
+        {
+            await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
         }
     }
 }
