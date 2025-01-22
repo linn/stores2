@@ -21,6 +21,7 @@
                        {
                            BudgetId = storesBudget.BudgetId,
                            TransactionCode = storesBudget.TransactionCode,
+                           TransactionCodeDescription = storesBudget.Transaction?.Description,
                            PartNumber = storesBudget.PartNumber,
                            Part = storesBudget.Part == null
                                       ? null

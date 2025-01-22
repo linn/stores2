@@ -377,6 +377,9 @@
             r.Property(l => l.Document1Number).HasColumnName("DOCUMENT_1");
             r.Property(l => l.Document1Line).HasColumnName("DOCUMENT_1_LINE");
             r.Property(l => l.Document1Type).HasColumnName("NAME").HasMaxLength(6);
+            r.Property(l => l.Document2Number).HasColumnName("DOCUMENT_2");
+            r.Property(l => l.Document2Line).HasColumnName("DOCUMENT_2_LINE");
+            r.Property(l => l.Document2Type).HasColumnName("NAME_DOC_2").HasMaxLength(6);
             r.HasOne(l => l.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
             r.HasMany(t => t.Moves).WithOne().HasForeignKey(reqMove => new { reqMove.ReqNumber, reqMove.LineNumber });
             r.Property(l => l.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
@@ -450,6 +453,7 @@
             e.HasKey(a => a.BudgetId);
             e.Property(a => a.BudgetId).HasColumnName("BUDGET_ID");
             e.Property(a => a.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            e.HasOne(r => r.Transaction).WithMany().HasForeignKey(r => r.TransactionCode);
             e.Property(a => a.OverheadPrice).HasColumnName("OVERHEAD_PRICE");
             e.Property(d => d.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
