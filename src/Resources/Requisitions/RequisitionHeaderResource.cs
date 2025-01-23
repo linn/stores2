@@ -79,5 +79,9 @@
         public string FromStockPool { get; set; }
 
         public string ToStockPool { get; set; }
+        
+        public IEnumerable<MoveFromResource> MovesFrom { get; set; }
+        
+        public IEnumerable<MoveToResource> MovesTo { get; set; }
     }
 }

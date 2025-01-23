@@ -76,7 +76,7 @@
                                          {
                                              DepartmentCode = header.Department?.DepartmentCode,
                                              Description = header.Department?.Description
-                                         },
+                                         }, 
                            ReqType = header.ReqType,
                            ManualPick = header.ManualPick, 
                            Reference = header.Reference,
