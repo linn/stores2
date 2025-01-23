@@ -13,6 +13,8 @@
     {
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
+            var nominalAccountBuilder = new NominalAccountResourceBuilder();
+
             return new RequisitionHeaderResource
                        {
                            ReqNumber = header.ReqNumber, DateCreated = header.DateCreated.ToString("o"), 
@@ -61,10 +63,11 @@
                                                     p => new RequisitionLinePostingResource
                                                              {
                                                                  DebitOrCredit = p.DebitOrCredit,
-                                                                 Seq = p.Seq,
+                                                                 Sequence = p.Seq,
                                                                  DepartmentCode = p.NominalAccount?.Department?.DepartmentCode,
                                                                  NominalCode = p.NominalAccount?.Nominal?.NominalCode,
-                                                                 Qty = p.Qty
+                                                                 Quantity = p.Qty,
+                                                                 NominalAccount = nominalAccountBuilder.Build(p.NominalAccount, null)
                                                              }),
                                                 MovesFrom = l.Moves?
                                                     .Where(x => x.StockLocator != null)
@@ -103,7 +106,7 @@
                                          {
                                              DepartmentCode = header.Department?.DepartmentCode,
                                              Description = header.Department?.Description
-                                         }, 
+                                         },
                            ReqType = header.ReqType,
                            ManualPick = header.ManualPick, 
                            Reference = header.Reference,

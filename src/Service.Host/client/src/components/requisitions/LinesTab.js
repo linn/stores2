@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
 import { Typography } from '@mui/material';
+import BudgetPostings from '../BudgetPostings';
 
 function LinesTab({ lines = [], selected, setSelected }) {
     const linesColumns = [
@@ -59,28 +60,6 @@ function LinesTab({ lines = [], selected, setSelected }) {
         }
     ];
 
-    const postingsColumns = [
-        {
-            field: 'debitOrCredit',
-            headerName: 'D/C',
-            width: 100
-        },
-        {
-            field: 'qty',
-            headerName: 'Qty',
-            width: 100
-        },
-        {
-            field: 'nominalCode',
-            headerName: 'Nominal',
-            width: 150
-        },
-        {
-            field: 'departmentCode',
-            headerName: 'Dept',
-            width: 150
-        }
-    ];
     return (
         <Grid container spacing={3}>
             <Grid size={12}>
@@ -101,22 +80,16 @@ function LinesTab({ lines = [], selected, setSelected }) {
                     {!selected ? 'Click a row to view postings' : `Postings for line ${selected}`}
                 </Typography>
             </Grid>
-            <Grid size={6}>
-                <DataGrid
-                    getRowId={r => r.seq}
-                    rows={
-                        selected ? (lines.find(l => l.lineNumber === selected)?.postings ?? []) : []
-                    }
-                    columns={postingsColumns}
-                    noRowsLabel="No Line Selected"
-                    editMode="cell"
-                    loading={false}
+            <Grid size={10}>
+                <BudgetPostings
+                    budgetPostings={lines.find(l => l.lineNumber === selected)?.postings}
                 />
             </Grid>
+            <Grid size={2} />
         </Grid>
     );
 }
 
-LinesTab.propTypes = { lines: PropTypes.arrayOf(PropTypes.shape({})) };
+LinesTab.propTypes = { lines: PropTypes.arrayOf(PropTypes.shape({})).isRequired };
 
 export default LinesTab;
