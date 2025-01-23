@@ -2,7 +2,7 @@ import React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import PropTypes from 'prop-types';
 
-function BudgetPostings({ budgetPostings }) {
+function BudgetPostings({ budgetPostings, loading }) {
     const postingColumns = [
         { field: 'sequence', headerName: 'Seq', width: 80 },
         { field: 'debitOrCreditDisplay', headerName: 'Debit/Credit', width: 100 },
@@ -38,6 +38,7 @@ function BudgetPostings({ budgetPostings }) {
             rows={getBudgetPostings()}
             columns={postingColumns}
             density="compact"
+            loading={loading}
             autoHeight
             hideFooterSelectedRowCount
             hideFooter={getBudgetPostings().length <= 100}
@@ -56,7 +57,9 @@ function BudgetPostings({ budgetPostings }) {
 }
 
 BudgetPostings.propTypes = {
-    budgetPostings: PropTypes.arrayOf(PropTypes.shape({})).isRequired
+    budgetPostings: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
+    loading: PropTypes.bool
 };
+BudgetPostings.defaultProps = { loading: false };
 
 export default BudgetPostings;
