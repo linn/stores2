@@ -277,9 +277,9 @@ function Requisition() {
                             )}
                             {tab === 1 && (
                                 <MovesTab
-                                    movesFrom={
+                                    moves={
                                         result.lines?.find(x => x.lineNumber === selectedLine)
-                                            ?.movesFrom
+                                            ?.moves
                                     }
                                 />
                             )}

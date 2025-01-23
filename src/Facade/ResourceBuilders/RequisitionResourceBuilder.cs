@@ -69,33 +69,42 @@
                                                                  Quantity = p.Qty,
                                                                  NominalAccount = nominalAccountBuilder.Build(p.NominalAccount, null)
                                                              }),
-                                                MovesFrom = l.Moves?
-                                                    .Where(x => x.StockLocator != null)
-                                                    .Select(f => new MoveFromResource
-                                                    {
-                                                        Seq = f.Sequence,
-                                                        LocationCode = f.StockLocator.StorageLocation?.LocationCode,
-                                                        State = f.StockLocator.State,
-                                                        BatchDate = f.StockLocator.StockRotationDate?.ToString("o"),
-                                                        BatchRef = f.StockLocator.BatchRef,
-                                                        PalletNumber = f.StockLocator.PalletNumber,
-                                                        LocationDescription = f.StockLocator.StorageLocation?.Description,
-                                                        QtyAllocated = f.StockLocator.QuantityAllocated,
-                                                        StockPool = f.StockPoolCode,
-                                                        QtyAtLocation = f.Quantity
-                                                    }),
-                                                MovesTo = l.Moves?.Where(x => x.StockLocator == null)
-                                                    .Select(t => new MoveToResource
-                                                    {
-                                                        Seq = t.Sequence,
-                                                        LocationCode = t.Location.LocationCode,
-                                                        LocationDescription = t.Location.Description,
-                                                        PalletNumber = t.PalletNumber,
-                                                        StockPool = t.StockPoolCode,
-                                                        State = t.State,
-                                                        SerialNumber = t.SerialNumber,
-                                                        Remarks = t.Remarks
-                                                    })
+                                                Moves = l.Moves.Select(m => new MoveHeaderResource
+                                                {
+                                                    Part = l.Part?.PartNumber,
+                                                    Qty = m.Quantity,
+                                                    LineNumber = l.LineNumber,
+                                                    Seq = m.Sequence,
+                                                    DateCancelled = l.DateCancelled?.ToString("o"),
+                                                    DateBooked = l.DateBooked?.ToString("o"),
+                                                    ReqNumber = l.ReqNumber,
+                                                    From = m.StockLocator != null ?
+                                                       new MoveFromResource
+                                                        {
+                                                            Seq = m.Sequence,
+                                                            LocationCode = m.StockLocator.StorageLocation?.LocationCode,
+                                                            State = m.StockLocator.State,
+                                                            BatchDate = m.StockLocator.StockRotationDate?.ToString("o"),
+                                                            BatchRef = m.StockLocator.BatchRef,
+                                                            PalletNumber = m.StockLocator.PalletNumber,
+                                                            LocationDescription = m.StockLocator.StorageLocation?.Description,
+                                                            QtyAllocated = m.StockLocator.QuantityAllocated,
+                                                            StockPool = m.StockLocator.StockPoolCode,
+                                                            QtyAtLocation = m.Quantity
+                                                        } : null,
+                                                    To = m.LocationId.HasValue || m.PalletNumber.HasValue 
+                                                        ? new MoveToResource
+                                                        {
+                                                            Seq = m.Sequence,
+                                                            LocationCode = m.Location.LocationCode,
+                                                            LocationDescription = m.Location.Description,
+                                                            PalletNumber = m.PalletNumber,
+                                                            StockPool = m.StockPoolCode,
+                                                            State = m.State,
+                                                            SerialNumber = m.SerialNumber,
+                                                            Remarks = m.Remarks
+                                                        } : null
+                                                })
                                             }),
                            Nominal = new NominalResource
                                          {

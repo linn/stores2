@@ -39,7 +39,6 @@ function BudgetPostings({ budgetPostings, loading }) {
             columns={postingColumns}
             density="compact"
             loading={loading}
-            autoHeight
             hideFooterSelectedRowCount
             hideFooter={getBudgetPostings().length <= 100}
             initialState={{

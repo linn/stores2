@@ -42,8 +42,6 @@
 
         public IEnumerable<RequisitionLinePostingResource> Postings { get; set; }
         
-        public IEnumerable<MoveFromResource> MovesFrom { get; set; }
-        
-        public IEnumerable<MoveToResource> MovesTo { get; set; }
+        public IEnumerable<MoveHeaderResource> Moves { get; set; }
     }
 }

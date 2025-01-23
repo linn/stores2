@@ -71,6 +71,8 @@ function LinesTab({ lines = [], selected, setSelected }) {
                         setSelected(s?.[0]);
                     }}
                     columns={linesColumns}
+                    hideFooter
+                    density="compact"
                     editMode="cell"
                     loading={false}
                 />
