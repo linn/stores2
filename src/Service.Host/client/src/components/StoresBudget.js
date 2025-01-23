@@ -203,9 +203,10 @@ function StoresBudget({ storesBudget }) {
                     {partPriceFormat.format(storesBudget?.labourPrice)}
                 </Typography>
             </Grid>
-            <Grid size={12}>
+            <Grid size={10}>
                 <BudgetPostings budgetPostings={storesBudget?.storesBudgetPostings} />
             </Grid>
+            <Grid size={2} />
         </Grid>
     );
 }
