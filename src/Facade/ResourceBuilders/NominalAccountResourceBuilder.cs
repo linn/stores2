@@ -11,6 +11,11 @@
     {
         public NominalAccountResource Build(NominalAccount nominalAccount, IEnumerable<string> claims)
         {
+            if (nominalAccount == null)
+            {
+                return null;
+            }
+
             return new NominalAccountResource
                        {
                            Id = nominalAccount.Id,

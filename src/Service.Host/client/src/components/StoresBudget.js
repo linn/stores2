@@ -3,11 +3,11 @@ import { utilities } from '@linn-it/linn-form-components-library';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { DataGrid } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid2';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import BudgetPostings from './BudgetPostings';
 
 function StoresBudget({ storesBudget }) {
     const useStyles = makeStyles(() => ({
@@ -30,39 +30,6 @@ function StoresBudget({ storesBudget }) {
         maximumFractionDigits: 5
     });
     const reqHref = utilities.getSelfHref(storesBudget?.requisition);
-
-    const postingColumns = [
-        { field: 'sequence', headerName: 'Seq', width: 80 },
-        { field: 'debitOrCreditDisplay', headerName: 'Debit/Credit', width: 100 },
-        { field: 'quantity', type: 'number', headerName: 'Quantity', width: 100 },
-        { field: 'nominalCode', headerName: 'Nominal', width: 130 },
-        { field: 'nominalDescription', headerName: 'Description', width: 250 },
-        { field: 'departmentCode', headerName: 'Department', width: 130 },
-        { field: 'departmentDescription', headerName: 'Description', width: 250 },
-        { field: 'product', headerName: 'Product', width: 130 },
-        { field: 'building', headerName: 'Building', width: 130 },
-        { field: 'vehicle', headerName: 'Vehicle', width: 130 },
-        { field: 'person', headerName: 'Person', width: 130 }
-    ];
-
-    const getBudgetPostings = () => {
-        if (storesBudget) {
-            const { storesBudgetPostings } = storesBudget;
-            if (storesBudgetPostings && storesBudgetPostings.length) {
-                return storesBudgetPostings.map((p, i) => ({
-                    ...p,
-                    id: i,
-                    debitOrCreditDisplay: p.debitOrCredit === 'D' ? 'Debit' : 'Credit',
-                    nominalCode: p.nominalAccount?.nominalCode,
-                    nominalDescription: p.nominalAccount?.nominal?.description,
-                    departmentCode: p.nominalAccount?.departmentCode,
-                    departmentDescription: p.nominalAccount?.department?.description
-                }));
-            }
-        }
-
-        return [];
-    };
 
     const reqLine = storesBudget?.requisition?.lines?.length
         ? storesBudget.requisition.lines.find(a => a.lineNumber === storesBudget.lineNumber)
@@ -237,24 +204,7 @@ function StoresBudget({ storesBudget }) {
                 </Typography>
             </Grid>
             <Grid size={12}>
-                <DataGrid
-                    rows={getBudgetPostings()}
-                    columns={postingColumns}
-                    density="compact"
-                    autoHeight
-                    hideFooterSelectedRowCount
-                    hideFooter={getBudgetPostings().length <= 100}
-                    initialState={{
-                        columns: {
-                            columnVisibilityModel: {
-                                product: false,
-                                building: false,
-                                person: false,
-                                vehicle: false
-                            }
-                        }
-                    }}
-                />
+                <BudgetPostings budgetPostings={storesBudget?.storesBudgetPostings} />
             </Grid>
         </Grid>
     );
