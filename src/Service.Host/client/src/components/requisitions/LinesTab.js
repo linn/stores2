@@ -4,8 +4,7 @@ import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
 import { Typography } from '@mui/material';
 
-function LinesTab({ lines = [] }) {
-    const [selected, setSelected] = useState([]);
+function LinesTab({ lines = [], selected, setSelected }) {
     const linesColumns = [
         {
             field: 'lineNumber',
@@ -88,9 +87,9 @@ function LinesTab({ lines = [] }) {
                 <DataGrid
                     getRowId={r => r.lineNumber}
                     rows={lines}
-                    selected={selected}
+                    selected={[selected]}
                     onRowSelectionModelChange={s => {
-                        setSelected(s);
+                        setSelected(s?.[0]);
                     }}
                     columns={linesColumns}
                     editMode="cell"
@@ -99,18 +98,14 @@ function LinesTab({ lines = [] }) {
             </Grid>
             <Grid size={12}>
                 <Typography variant="h6">
-                    {!selected?.length
-                        ? 'Click a row to view postings'
-                        : `Postings for line ${selected[0]}`}
+                    {!selected ? 'Click a row to view postings' : `Postings for line ${selected}`}
                 </Typography>
             </Grid>
             <Grid size={6}>
                 <DataGrid
                     getRowId={r => r.seq}
                     rows={
-                        selected?.length
-                            ? (lines.find(l => l.lineNumber === selected[0])?.postings ?? [])
-                            : []
+                        selected ? (lines.find(l => l.lineNumber === selected)?.postings ?? []) : []
                     }
                     columns={postingsColumns}
                     noRowsLabel="No Line Selected"
