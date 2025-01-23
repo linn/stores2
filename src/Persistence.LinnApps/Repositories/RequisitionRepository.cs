@@ -34,7 +34,8 @@
                        .Include(r => r.Nominal)
                        .Include(r => r.ToLocation)
                        .Include(r => r.FromLocation)
-                       .Include(r => r.Moves).ThenInclude(m => m.StockLocator)
+                       .Include(r => r.Lines).ThenInclude(r => r.Moves).ThenInclude(m => m.Location)
+                       .Include(r => r.Lines).ThenInclude(r => r.Moves).ThenInclude(m => m.StockLocator).ThenInclude(l => l.StorageLocation)
                        .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
     }

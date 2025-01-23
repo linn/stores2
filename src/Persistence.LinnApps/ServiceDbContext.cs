@@ -321,6 +321,8 @@
             r.HasOne(l => l.Location).WithMany().HasForeignKey(l => l.LocationId);
             r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
             r.Property(l => l.DateCancelled).HasColumnName("DATE_CANCELLED");
+            r.Property(l => l.State).HasColumnName("STATE").HasMaxLength(6);
+            r.Property(l => l.SerialNumber).HasColumnName("SERIAL_NUMBER");
         }
 
         private static void BuildRequisitionHeaders(ModelBuilder builder)
@@ -340,7 +342,6 @@
             e.HasOne(r => r.CancelledBy).WithMany().HasForeignKey("CANCELLED_BY");
             e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
             e.HasMany(r => r.Lines).WithOne().HasForeignKey(r => r.ReqNumber);
-            e.HasMany(r => r.Moves).WithOne(m => m.Header).HasForeignKey(r => r.ReqNumber);
             e.HasOne(r => r.ToLocation).WithMany().HasForeignKey("TO_LOCATION_ID");
             e.HasOne(r => r.FromLocation).WithMany().HasForeignKey("FROM_LOCATION_ID");
             e.Property(r => r.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);

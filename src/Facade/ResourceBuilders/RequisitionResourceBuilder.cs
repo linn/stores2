@@ -65,7 +65,34 @@
                                                                  DepartmentCode = p.NominalAccount?.Department?.DepartmentCode,
                                                                  NominalCode = p.NominalAccount?.Nominal?.NominalCode,
                                                                  Qty = p.Qty
-                                                             })
+                                                             }),
+                                                MovesFrom = l.Moves?
+                                                    .Where(x => x.StockLocator != null)
+                                                    .Select(f => new MoveFromResource
+                                                    {
+                                                        Seq = f.Sequence,
+                                                        LocationCode = f.StockLocator.StorageLocation?.LocationCode,
+                                                        State = f.StockLocator.State,
+                                                        BatchDate = f.StockLocator.StockRotationDate?.ToString("o"),
+                                                        BatchRef = f.StockLocator.BatchRef,
+                                                        PalletNumber = f.StockLocator.PalletNumber,
+                                                        LocationDescription = f.StockLocator.StorageLocation?.Description,
+                                                        QtyAllocated = f.StockLocator.QuantityAllocated,
+                                                        StockPool = f.StockPoolCode,
+                                                        QtyAtLocation = f.Quantity
+                                                    }),
+                                                MovesTo = l.Moves?.Where(x => x.StockLocator == null)
+                                                    .Select(t => new MoveToResource
+                                                    {
+                                                        Seq = t.Sequence,
+                                                        LocationCode = t.Location.LocationCode,
+                                                        LocationDescription = t.Location.Description,
+                                                        PalletNumber = t.PalletNumber,
+                                                        StockPool = t.StockPoolCode,
+                                                        State = t.State,
+                                                        SerialNumber = t.SerialNumber,
+                                                        Remarks = t.Remarks
+                                                    })
                                             }),
                            Nominal = new NominalResource
                                          {

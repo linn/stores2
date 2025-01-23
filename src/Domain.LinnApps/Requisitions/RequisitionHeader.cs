@@ -20,9 +20,7 @@
         public int? Document1 { get; protected set; }
 
         public ICollection<RequisitionLine> Lines { get; protected set; }
-
-        public ICollection<ReqMove> Moves { get; protected set; }
-
+        
         public decimal? Qty { get; protected set; }
 
         public string Document1Name { get; protected set; }

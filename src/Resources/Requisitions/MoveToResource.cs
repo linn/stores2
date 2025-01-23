@@ -14,7 +14,7 @@ namespace Linn.Stores2.Resources.Requisitions
             
         public string State { get; set; } 
         
-        public string SerialNumber { get; set; }
+        public int? SerialNumber { get; set; }
 
         public string Remarks { get; set; }
     }
