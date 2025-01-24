@@ -42,7 +42,45 @@
                                             NominalCode = p.NominalAccount?.Nominal?.NominalCode,
                                             Quantity = p.Qty,
                                             NominalAccount = nominalAccountBuilder.Build(p.NominalAccount, null)
-                                        })
+                                        }),
+                           Moves = l.Moves?.Select(m => new MoveHeaderResource 
+                                                            {
+                                                                Part = l.Part?.PartNumber,
+                                                                Qty = m.Quantity,
+                                                                LineNumber = m.LineNumber,
+                                                                Seq = m.Sequence,
+                                                                DateCancelled = m.DateCancelled?.ToString("o"),
+                                                                DateBooked = m.DateBooked?.ToString("o"),
+                                                                ReqNumber = m.ReqNumber,
+                                                                From = m.StockLocator != null ?
+                                                                        new MoveFromResource
+                                                                            {
+                                                                                Seq = m.Sequence,
+                                                                                LocationCode = m.StockLocator.StorageLocation?.LocationCode,
+                                                                                State = m.StockLocator.State,
+                                                                                BatchDate = m.StockLocator.StockRotationDate?.ToString("o"),
+                                                                                BatchRef = m.StockLocator.BatchRef,
+                                                                                PalletNumber = m.StockLocator.PalletNumber,
+                                                                                LocationDescription = m.StockLocator.StorageLocation?.Description,
+                                                                                QtyAllocated = m.StockLocator.QuantityAllocated,
+                                                                                StockPool = m.StockLocator.StockPoolCode,
+                                                                                QtyAtLocation = m.Quantity
+                                                                            }
+                                                                        : null,
+                                                                To = m.LocationId.HasValue || m.PalletNumber.HasValue
+                                                                        ? new MoveToResource
+                                                                                {
+                                                                                    Seq = m.Sequence,
+                                                                                    LocationCode = m.Location.LocationCode,
+                                                                                    LocationDescription = m.Location.Description,
+                                                                                    PalletNumber = m.PalletNumber,
+                                                                                    StockPool = m.StockPoolCode,
+                                                                                    State = m.State,
+                                                                                    SerialNumber = m.SerialNumber,
+                                                                                                        Remarks = m.Remarks
+                                                                                                    }
+                                                                                            : null
+                                                                                })
                        };
         }
 
