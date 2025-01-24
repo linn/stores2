@@ -466,7 +466,6 @@
             e.Property(n => n.PartPrice).HasColumnName("PART_PRICE");
             e.Property(n => n.RequisitionNumber).HasColumnName("REQ_NUMBER");
             e.Property(n => n.LineNumber).HasColumnName("LINE_NUMBER");
-            // e.HasOne(r => r.RequisitionLine).WithMany().HasForeignKey(r => new { r.RequisitionNumber, r.LineNumber });
             e.Property(n => n.MaterialPrice).HasColumnName("MATERIAL_PRICE");
             e.Property(n => n.LabourPrice).HasColumnName("LABOUR_PRICE");
             e.Property(n => n.MachinePrice).HasColumnName("MACHINE_PRICE");
