@@ -14,7 +14,6 @@
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
             var nominalAccountBuilder = new NominalAccountResourceBuilder();
-            var lineBuilder = new RequisitionLineResourceBuilder();
 
             return new RequisitionHeaderResource
                        {
@@ -44,7 +43,69 @@
                            Reversed = header.Reversed,
                            Lines = header
                                .Lines?.Select(
-                                   l => lineBuilder.Build(l, null)),
+                                   l => new RequisitionLineResource 
+                                            {
+                                                LineNumber = l.LineNumber,
+                                                PartNumber = l.Part?.PartNumber,
+                                                PartDescription = l.Part?.Description,
+                                                Qty = l.Qty,
+                                                TransactionCode = l.TransactionDefinition?.TransactionCode,
+                                                TransactionCodeDescription = l.TransactionDefinition?.Description,
+                                                Document1Number = l.Document1Number,
+                                                Document1Line = l.Document1Line,
+                                                Document1Type = l.Document1Type,
+                                                Document2Number = l.Document2Number,
+                                                Document2Line = l.Document2Line,
+                                                Document2Type = l.Document2Type,
+                                                DateBooked = l.DateBooked?.ToString("o"),
+                                                Cancelled = l.Cancelled,
+                                                Postings = l.NominalAccountPostings?.Select(
+                                                    p => new RequisitionLinePostingResource
+                                                             {
+                                                                 DebitOrCredit = p.DebitOrCredit,
+                                                                 Sequence = p.Seq,
+                                                                 DepartmentCode = p.NominalAccount?.Department?.DepartmentCode,
+                                                                 NominalCode = p.NominalAccount?.Nominal?.NominalCode,
+                                                                 Quantity = p.Qty,
+                                                                 NominalAccount = nominalAccountBuilder.Build(p.NominalAccount, null)
+                                                             }),
+                                                Moves = l.Moves?.Select(m => new MoveHeaderResource
+                                                {
+                                                    Part = l.Part?.PartNumber,
+                                                    Qty = m.Quantity,
+                                                    LineNumber = l.LineNumber,
+                                                    Seq = m.Sequence,
+                                                    DateCancelled = l.DateCancelled?.ToString("o"),
+                                                    DateBooked = l.DateBooked?.ToString("o"),
+                                                    ReqNumber = l.ReqNumber,
+                                                    From = m.StockLocator != null ?
+                                                       new MoveFromResource
+                                                        {
+                                                            Seq = m.Sequence,
+                                                            LocationCode = m.StockLocator.StorageLocation?.LocationCode,
+                                                            State = m.StockLocator.State,
+                                                            BatchDate = m.StockLocator.StockRotationDate?.ToString("o"),
+                                                            BatchRef = m.StockLocator.BatchRef,
+                                                            PalletNumber = m.StockLocator.PalletNumber,
+                                                            LocationDescription = m.StockLocator.StorageLocation?.Description,
+                                                            QtyAllocated = m.StockLocator.QuantityAllocated,
+                                                            StockPool = m.StockLocator.StockPoolCode,
+                                                            QtyAtLocation = m.Quantity
+                                                        } : null,
+                                                    To = m.LocationId.HasValue || m.PalletNumber.HasValue 
+                                                        ? new MoveToResource
+                                                        {
+                                                            Seq = m.Sequence,
+                                                            LocationCode = m.Location.LocationCode,
+                                                            LocationDescription = m.Location.Description,
+                                                            PalletNumber = m.PalletNumber,
+                                                            StockPool = m.StockPoolCode,
+                                                            State = m.State,
+                                                            SerialNumber = m.SerialNumber,
+                                                            Remarks = m.Remarks
+                                                        } : null
+                                                })
+                                            }),
                            Nominal = new NominalResource
                                          {
                                              NominalCode = header.Nominal?.NominalCode, 

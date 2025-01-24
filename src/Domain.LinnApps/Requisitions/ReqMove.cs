@@ -36,5 +36,9 @@
         public DateTime? DateBooked { get; set; }
 
         public DateTime? DateCancelled { get; set; }
+        
+        public string State { get; set; }
+        
+        public int? SerialNumber { get; set; }
     }
 }

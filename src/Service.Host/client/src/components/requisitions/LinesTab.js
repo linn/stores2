@@ -5,8 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Typography } from '@mui/material';
 import BudgetPostings from '../BudgetPostings';
 
-function LinesTab({ lines = [] }) {
-    const [selected, setSelected] = useState([]);
+function LinesTab({ lines = [], selected, setSelected }) {
     const linesColumns = [
         {
             field: 'lineNumber',
@@ -67,25 +66,25 @@ function LinesTab({ lines = [] }) {
                 <DataGrid
                     getRowId={r => r.lineNumber}
                     rows={lines}
-                    selected={selected}
+                    selected={[selected]}
                     onRowSelectionModelChange={s => {
-                        setSelected(s);
+                        setSelected(s?.[0]);
                     }}
                     columns={linesColumns}
+                    hideFooter
+                    density="compact"
                     editMode="cell"
                     loading={false}
                 />
             </Grid>
             <Grid size={12}>
                 <Typography variant="h6">
-                    {!selected?.length
-                        ? 'Click a row to view postings'
-                        : `Postings for line ${selected[0]}`}
+                    {!selected ? 'Click a row to view postings' : `Postings for line ${selected}`}
                 </Typography>
             </Grid>
             <Grid size={10}>
                 <BudgetPostings
-                    budgetPostings={lines.find(l => l.lineNumber === selected[0])?.postings}
+                    budgetPostings={lines.find(l => l.lineNumber === selected)?.postings}
                 />
             </Grid>
             <Grid size={2} />

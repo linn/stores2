@@ -22,6 +22,7 @@ import useInitialise from '../../hooks/useInitialise';
 import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import usePost from '../../hooks/usePost';
+import MovesTab from './MovesTab';
 
 function Requisition() {
     const { reqNumber } = useParams();
@@ -32,6 +33,7 @@ function Requisition() {
         errorMessage: cancelError
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
     const [tab, setTab] = useState(0);
+    const [selectedLine, setSelectedLine] = useState();
 
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
 
@@ -260,12 +262,28 @@ function Requisition() {
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tab} onChange={handleChange}>
                                     <Tab label="Lines" />
-                                    <Tab label="Moves" disabled />
+                                    <Tab label="Moves" disabled={!selectedLine} />
                                     <Tab label="Transactions" disabled />
                                 </Tabs>
                             </Box>
                         </Grid>
-                        <Grid size={12}>{tab === 0 && <LinesTab lines={result.lines} />}</Grid>
+                        <Grid size={12}>
+                            {tab === 0 && (
+                                <LinesTab
+                                    lines={result.lines}
+                                    selected={selectedLine}
+                                    setSelected={setSelectedLine}
+                                />
+                            )}
+                            {tab === 1 && (
+                                <MovesTab
+                                    moves={
+                                        result.lines?.find(x => x.lineNumber === selectedLine)
+                                            ?.moves
+                                    }
+                                />
+                            )}
+                        </Grid>
                     </>
                 )}
             </Grid>

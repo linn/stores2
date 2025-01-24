@@ -26,7 +26,7 @@
             if (storesBudget.RequisitionLine != null)
             {
                 resource.RequisitionLine = reqLineBuilder.Build(storesBudget.RequisitionLine, null);
-                if (resource.RequisitionLine.RequisitionHeader != null)
+                if (storesBudget.RequisitionLine.RequisitionHeader != null)
                 {
                     resource.RequisitionLine.RequisitionHeader =
                         reqBuilder.Build(storesBudget.RequisitionLine.RequisitionHeader, null);

@@ -15,7 +15,12 @@
         {
             this.ReqNumber = 349378;
 
-            this.Sut = new RequisitionHeader(this.ReqNumber, "Test", new StoresFunctionCode { FunctionCode = "FUNC" });
+            this.Sut = new RequisitionHeader(
+                this.ReqNumber,
+                "Test",
+                new StoresFunctionCode { FunctionCode = "FUNC" },
+                12,
+                "P");
         }
     }
 }
