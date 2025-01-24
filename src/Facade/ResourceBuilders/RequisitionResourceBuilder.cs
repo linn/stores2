@@ -73,11 +73,11 @@
                                                 {
                                                     Part = l.Part?.PartNumber,
                                                     Qty = m.Quantity,
-                                                    LineNumber = l.LineNumber,
+                                                    LineNumber = m.LineNumber,
                                                     Seq = m.Sequence,
-                                                    DateCancelled = l.DateCancelled?.ToString("o"),
-                                                    DateBooked = l.DateBooked?.ToString("o"),
-                                                    ReqNumber = l.ReqNumber,
+                                                    DateCancelled = m.DateCancelled?.ToString("o"),
+                                                    DateBooked = m.DateBooked?.ToString("o"),
+                                                    ReqNumber = m.ReqNumber,
                                                     From = m.StockLocator != null ?
                                                        new MoveFromResource
                                                         {
@@ -91,7 +91,8 @@
                                                             QtyAllocated = m.StockLocator.QuantityAllocated,
                                                             StockPool = m.StockLocator.StockPoolCode,
                                                             QtyAtLocation = m.Quantity
-                                                        } : null,
+                                                        } 
+                                                       : null,
                                                     To = m.LocationId.HasValue || m.PalletNumber.HasValue 
                                                         ? new MoveToResource
                                                         {
@@ -103,7 +104,8 @@
                                                             State = m.State,
                                                             SerialNumber = m.SerialNumber,
                                                             Remarks = m.Remarks
-                                                        } : null
+                                                        } 
+                                                        : null
                                                 })
                                             }),
                            Nominal = new NominalResource

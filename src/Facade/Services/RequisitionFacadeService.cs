@@ -19,6 +19,10 @@
     {
         private readonly IRequisitionService requisitionService;
 
+        private readonly ITransactionManager transactionManager;
+
+        private readonly IRepository<RequisitionHeader, int> repository;
+
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -27,6 +31,8 @@
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionService = requisitionService;
+            this.transactionManager = transactionManager;
+            this.repository = repository;
         }
 
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -35,7 +41,8 @@
             try
             {
                 var privilegeList = privileges.ToList();
-                var result = await this.requisitionService.CancelHeader(
+
+                var cancelled = await this.requisitionService.CancelHeader(
                                  reqNumber,
                                  new User
                                      {
@@ -43,8 +50,10 @@
                                          Privileges = privilegeList
                                  }, 
                                  reason);
+                await this.transactionManager.CommitAsync();
+
                 return new SuccessResult<RequisitionHeaderResource>(
-                    this.BuildResource(result, privilegeList));
+                    this.BuildResource(cancelled, privilegeList));
             }
             catch (Exception e)
             {

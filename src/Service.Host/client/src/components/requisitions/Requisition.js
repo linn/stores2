@@ -30,7 +30,8 @@ function Requisition() {
     const {
         send: cancelReq,
         isLoading: cancelLoading,
-        errorMessage: cancelError
+        errorMessage: cancelError,
+        postResult: cancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState();
@@ -40,6 +41,7 @@ function Requisition() {
     const handleChange = (_, newValue) => {
         setTab(newValue);
     };
+    const req = cancelResult ?? result;
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -65,12 +67,12 @@ function Requisition() {
                         <Loading />
                     </Grid>
                 )}
-                {!isLoading && !cancelLoading && result && (
+                {!isLoading && !cancelLoading && req && (
                     <>
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result.reqNumber}
+                                value={req.reqNumber}
                                 type="number"
                                 onChange={() => {}}
                                 label="Req Number"
@@ -79,7 +81,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <DatePicker
-                                value={result.dateBooked}
+                                value={req.dateBooked}
                                 onChange={() => {}}
                                 label="Date Booked"
                                 propertyName="dateBooked"
@@ -88,7 +90,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result.bookedByName}
+                                value={req.bookedByName}
                                 onChange={() => {}}
                                 label="Booked By"
                                 propertyName="bookedByName"
@@ -98,7 +100,7 @@ function Requisition() {
                             <Dropdown
                                 fullWidth
                                 items={['Y', 'N']}
-                                value={result.reversed}
+                                value={req.reversed}
                                 onChange={() => {}}
                                 label="Reversed"
                                 propertyName="reversed"
@@ -108,7 +110,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result.functionCode}
+                                value={req.functionCode}
                                 onChange={() => {}}
                                 label="Function Code"
                                 propertyName="functionCode"
@@ -117,7 +119,7 @@ function Requisition() {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={result.functionCodeDescription}
+                                value={req.functionCodeDescription}
                                 onChange={() => {}}
                                 label="Function Code Description"
                                 propertyName="functionCodeDescription"
@@ -127,7 +129,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result.createdByName}
+                                value={req.createdByName}
                                 onChange={() => {}}
                                 label="Created By"
                                 propertyName="createdByName"
@@ -135,7 +137,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <DatePicker
-                                value={result.dateCreated}
+                                value={req.dateCreated}
                                 onChange={() => {}}
                                 label="Date Created"
                                 propertyName="dateCreated"
@@ -145,7 +147,7 @@ function Requisition() {
                             <Dropdown
                                 fullWidth
                                 items={['Y', 'N']}
-                                value={result.cancelled}
+                                value={req.cancelled}
                                 onChange={() => {}}
                                 label="Cancelled"
                                 propertyName="cancelled"
@@ -153,7 +155,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <Button
-                                disabled={result.cancelled === 'Y'}
+                                disabled={req.cancelled === 'Y'}
                                 variant="contained"
                                 sx={{ marginTop: '30px' }}
                                 onClick={() => setCancelDialogVisible(true)}
@@ -166,7 +168,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result.department?.departmentCode}
+                                value={req.department?.departmentCode}
                                 onChange={() => {}}
                                 label="Dept"
                                 propertyName="departmentCode"
@@ -175,7 +177,7 @@ function Requisition() {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={result.department?.description}
+                                value={req.department?.description}
                                 onChange={() => {}}
                                 label="Desc"
                                 propertyName="departmentDescription"
@@ -184,7 +186,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result.nominal?.nominalCode}
+                                value={req.nominal?.nominalCode}
                                 onChange={() => {}}
                                 label="Nominal"
                                 propertyName="nominalCode"
@@ -193,7 +195,7 @@ function Requisition() {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={result.nominal?.description}
+                                value={req.nominal?.description}
                                 onChange={() => {}}
                                 label="Desc"
                                 propertyName="nominalDescription"
@@ -202,7 +204,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={result.authorisedByName}
+                                value={req.authorisedByName}
                                 onChange={() => {}}
                                 label="Auth By"
                                 propertyName="authorisedByName"
@@ -210,7 +212,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <DatePicker
-                                value={result.dateAuthorised}
+                                value={req.dateAuthorised}
                                 onChange={() => {}}
                                 label="Date Authd"
                                 propertyName="dateAuthorised"
@@ -222,7 +224,7 @@ function Requisition() {
                                 fullWidth
                                 items={['Y', 'N']}
                                 allowNoValue
-                                value={result.manualPick}
+                                value={req.manualPick}
                                 onChange={() => {}}
                                 label="Manual Pick"
                                 propertyName="manualPick"
@@ -233,7 +235,7 @@ function Requisition() {
                                 fullWidth
                                 items={['F', 'O']}
                                 allowNoValue
-                                value={result.reqType}
+                                value={req.reqType}
                                 onChange={() => {}}
                                 label="Req Type"
                                 propertyName="reqType"
@@ -243,7 +245,7 @@ function Requisition() {
                         <Grid size={6}>
                             <InputField
                                 fullWidth
-                                value={result.comments}
+                                value={req.comments}
                                 onChange={() => {}}
                                 label="Comments"
                                 propertyName="comments"
@@ -252,7 +254,7 @@ function Requisition() {
                         <Grid size={6}>
                             <InputField
                                 fullWidth
-                                value={result.reference}
+                                value={req.reference}
                                 onChange={() => {}}
                                 label="Reference"
                                 propertyName="reference"
@@ -270,7 +272,7 @@ function Requisition() {
                         <Grid size={12}>
                             {tab === 0 && (
                                 <LinesTab
-                                    lines={result.lines}
+                                    lines={req.lines}
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                 />
@@ -278,8 +280,7 @@ function Requisition() {
                             {tab === 1 && (
                                 <MovesTab
                                     moves={
-                                        result.lines?.find(x => x.lineNumber === selectedLine)
-                                            ?.moves
+                                        req.lines?.find(x => x.lineNumber === selectedLine)?.moves
                                     }
                                 />
                             )}

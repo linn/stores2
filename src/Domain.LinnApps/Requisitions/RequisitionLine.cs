@@ -47,5 +47,23 @@
         public ICollection<StoresBudget> StoresBudgets { get; protected set; }
 
         public RequisitionHeader RequisitionHeader { get; set; }
+
+        public void Cancel(int by, string reason, DateTime when)
+        {
+            this.CancelledBy = by;
+            this.Cancelled = "Y";
+            this.CancelledReason = reason;
+            this.DateCancelled = when;
+
+            if (this.Moves == null)
+            {
+                return;
+            }
+
+            foreach (var reqMove in this.Moves)
+            {
+                reqMove.Cancel(when);
+            }
+        }
     }
 }
