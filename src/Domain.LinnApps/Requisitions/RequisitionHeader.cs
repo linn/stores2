@@ -108,6 +108,11 @@
                 throw new RequisitionException("Must provide a cancel reason");
             }
 
+            if (this.DateBooked.HasValue)
+            {
+                throw new RequisitionException("Cannot cancel a booked req");
+            }
+
             var now = DateTime.Now;
             this.Cancelled = "Y";
             this.CancelledBy = cancelledBy;

@@ -43,13 +43,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var req = await this.repository.FindByIdAsync(reqNumber);
-
-            if (req.DateBooked.HasValue)
-            {
-                throw new RequisitionException(
-                    "Cannot cancel a requisition that has already been booked");
-            }
-
+            
             if (string.IsNullOrEmpty(req.FunctionCode.CancelFunction))
             {
                 var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);

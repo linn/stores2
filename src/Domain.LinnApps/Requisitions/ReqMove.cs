@@ -6,40 +6,39 @@
 
     public class ReqMove
     {
-        // public setters for now, might make more sense to protect them later
-        public int ReqNumber { get; set; }
+        public int ReqNumber { get; protected init; }
 
-        public int LineNumber { get; set; }
+        public int LineNumber { get; protected init; }
 
-        public int Sequence { get; set; }
+        public int Sequence { get; protected init; }
 
-        public decimal Quantity { get; set; }
+        public decimal Quantity { get; protected set; }
 
-        public int? StockLocatorId { get; set; }
+        public int? StockLocatorId { get; protected set; }
 
-        public StockLocator StockLocator { get; set; }
+        public StockLocator StockLocator { get; protected set; }
 
-        public int? PalletNumber { get; set; }
+        public int? PalletNumber { get; protected set; }
 
-        public int? LocationId { get; set; }
+        public int? LocationId { get; protected set; }
 
-        public StorageLocation Location { get; set; }
+        public StorageLocation Location { get; protected set; }
 
-        public string StockPoolCode { get; set; }
+        public string StockPoolCode { get; protected set; }
 
-        public string Booked { get; set; }
+        public string Booked { get; protected set; }
 
-        public string Remarks { get; set; }
+        public string Remarks { get; protected set; }
 
-        public RequisitionHeader Header { get; set; }
+        public RequisitionHeader Header { get; protected set; }
 
-        public DateTime? DateBooked { get; set; }
+        public DateTime? DateBooked { get; protected set; }
 
-        public DateTime? DateCancelled { get; set; }
+        public DateTime? DateCancelled { get; protected set; }
         
-        public string State { get; set; }
+        public string State { get; protected set; }
         
-        public int? SerialNumber { get; set; }
+        public int? SerialNumber { get; protected set; }
 
         public void Cancel(DateTime when)
         {

@@ -12,8 +12,4 @@
     <ProjectReference Include="..\..\..\src\Domain.LinnApps\Domain.LinnApps.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Requisitions\" />
-  </ItemGroup>
-
 </Project>
