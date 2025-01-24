@@ -87,7 +87,7 @@
         }
 
         public async Task<ProcessResult> DeleteAllocOntos(
-            int reqNumber, int? lineNumber, int docNumber, string docType)
+            int reqNumber, int? lineNumber, int? docNumber, string docType)
         {
             using var connection = new OracleConnection(
                 ConnectionStrings.ManagedConnectionString());
@@ -126,9 +126,10 @@
             };
             cmd.Parameters.Add(docTypeParameter);
 
-            var successParameter = new OracleParameter("p_success", OracleDbType.Decimal)
+            var successParameter = new OracleParameter("p_success", OracleDbType.Varchar2)
             {
-                Direction = ParameterDirection.InputOutput
+                Direction = ParameterDirection.InputOutput,
+                Size = 10
             };
 
             cmd.Parameters.Add(successParameter);
@@ -146,7 +147,7 @@
             await connection.CloseAsync();
 
             return new ProcessResult(
-                (OracleDecimal)successParameter.Value == 1,
+                successParameter.Value.ToString() == "TRUE",
                 messageParameter.Value.ToString());
         }
     }

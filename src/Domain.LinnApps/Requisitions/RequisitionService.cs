@@ -43,13 +43,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var req = await this.repository.FindByIdAsync(reqNumber);
-
-            if (req.DateBooked.HasValue)
-            {
-                throw new RequisitionException(
-                    "Cannot cancel a requisition that has already been booked");
-            }
-
+            
             if (string.IsNullOrEmpty(req.FunctionCode.CancelFunction))
             {
                 var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
@@ -74,14 +68,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var deleteAllocsOntoResult = await this.requisitionStoredProcedures.DeleteAllocOntos(
                                              reqNumber,
                                              null,
-                                             req.Document1.GetValueOrDefault(), // todo - what if null? can that happen?
+                                             req.Document1,
                                              req.Document1Name);
 
             if (!deleteAllocsOntoResult.Success)
             {
                 throw new RequisitionException(deleteAllocsOntoResult.Message);
             }
-            
+
             return req;
         }
     }

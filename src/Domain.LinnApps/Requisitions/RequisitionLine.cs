@@ -42,5 +42,23 @@
         public DateTime? DateBooked { get; protected set; }
 
         public ICollection<RequisitionLinePosting> NominalAccountPostings { get; protected set; }
+
+        public void Cancel(int by, string reason, DateTime when)
+        {
+            this.CancelledBy = by;
+            this.Cancelled = "Y";
+            this.CancelledReason = reason;
+            this.DateCancelled = when;
+
+            if (this.Moves == null)
+            {
+                return;
+            }
+
+            foreach (var reqMove in this.Moves)
+            {
+                reqMove.Cancel(when);
+            }
+        }
     }
 }
