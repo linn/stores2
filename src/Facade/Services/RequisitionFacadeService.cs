@@ -21,6 +21,8 @@
 
         private readonly ITransactionManager transactionManager;
 
+        private readonly IRepository<RequisitionHeader, int> repository;
+
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -30,6 +32,7 @@
         {
             this.requisitionService = requisitionService;
             this.transactionManager = transactionManager;
+            this.repository = repository;
         }
 
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -38,7 +41,9 @@
             try
             {
                 var privilegeList = privileges.ToList();
-                var result = await this.requisitionService.CancelHeader(
+
+                // the following method both updates my entity directly AND calls a stored proc
+                var cancelled = await this.requisitionService.CancelHeader(
                                  reqNumber,
                                  new User
                                      {
@@ -47,8 +52,10 @@
                                  }, 
                                  reason);
                 await this.transactionManager.CommitAsync();
+
+                // return to client
                 return new SuccessResult<RequisitionHeaderResource>(
-                    this.BuildResource(result, privilegeList));
+                    this.BuildResource(cancelled, privilegeList));
             }
             catch (Exception e)
             {

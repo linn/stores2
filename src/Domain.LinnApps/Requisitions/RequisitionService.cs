@@ -50,17 +50,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     "Cannot cancel a requisition that has already been booked");
             }
 
-            var deleteAllocsOntoResult = await this.requisitionStoredProcedures.DeleteAllocOntos(
-                                             reqNumber,
-                                             null,
-                                             req.Document1.GetValueOrDefault(), // todo - what if null? can that happen?
-                                             req.Document1Name);
-
-            if (!deleteAllocsOntoResult.Success)
-            {
-                throw new RequisitionException(deleteAllocsOntoResult.Message);
-            }
-
             if (string.IsNullOrEmpty(req.FunctionCode.CancelFunction))
             {
                 var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
@@ -80,6 +69,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new RequisitionException(
                     "Cannot cancel req - invalid cancel function");
+            }
+
+            var deleteAllocsOntoResult = await this.requisitionStoredProcedures.DeleteAllocOntos(
+                                             reqNumber,
+                                             null,
+                                             req.Document1,
+                                             req.Document1Name);
+
+            if (!deleteAllocsOntoResult.Success)
+            {
+                throw new RequisitionException(deleteAllocsOntoResult.Message);
             }
 
             return req;

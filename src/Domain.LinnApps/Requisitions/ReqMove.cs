@@ -40,5 +40,10 @@
         public string State { get; set; }
         
         public int? SerialNumber { get; set; }
+
+        public void Cancel(DateTime when)
+        {
+            this.DateCancelled = when;
+        }
     }
 }

@@ -116,7 +116,6 @@
 
             this.CancelDetails ??= new List<CancelDetails>();
 
-            // todo - will need to make sure Id is set at the db level
             this.CancelDetails.Add(new CancelDetails
                                        {
                                            ReqNumber = this.ReqNumber,
@@ -124,6 +123,19 @@
                                            Reason = reason,
                                            CancelledBy = cancelledBy.Id
                                        });
+            if (this.Lines == null)
+            {
+                return;
+            }
+
+            foreach (var l in this.Lines)
+            {
+                // Set some cancelled fields
+                // This probably happens in the store procedures anyway
+                // But no harm in making sure
+                // (and actually updating this tracked entity so updates can be returned to the client)
+                l.Cancel(cancelledBy.Id, reason, now);
+            }
         }
     }
 }

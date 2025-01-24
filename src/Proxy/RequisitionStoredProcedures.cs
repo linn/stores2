@@ -87,7 +87,7 @@
         }
 
         public async Task<ProcessResult> DeleteAllocOntos(
-            int reqNumber, int? lineNumber, int docNumber, string docType)
+            int reqNumber, int? lineNumber, int? docNumber, string docType)
         {
             using var connection = new OracleConnection(
                 ConnectionStrings.ManagedConnectionString());
