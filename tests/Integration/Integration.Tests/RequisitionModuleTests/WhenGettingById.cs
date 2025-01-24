@@ -21,7 +21,9 @@
             this.req = new RequisitionHeader(
                 123, 
                 "Hello Requisitions",
-                new StoresFunctionCode { FunctionCode = "F" });
+                new StoresFunctionCode { FunctionCode = "F" },
+                12345678,
+                "TYPE");
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req);
 

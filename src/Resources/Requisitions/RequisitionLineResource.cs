@@ -41,5 +41,7 @@
         public string Cancelled { get; set; }
 
         public IEnumerable<RequisitionLinePostingResource> Postings { get; set; }
+        
+        public IEnumerable<MoveHeaderResource> Moves { get; set; }
     }
 }

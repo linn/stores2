@@ -20,9 +20,7 @@
         public int? Document1 { get; protected set; }
 
         public ICollection<RequisitionLine> Lines { get; protected set; }
-
-        public ICollection<ReqMove> Moves { get; protected set; }
-
+        
         public decimal? Qty { get; protected set; }
 
         public string Document1Name { get; protected set; }
@@ -81,7 +79,12 @@
         {
         }
 
-        public RequisitionHeader(int? reqNumber, string comments, StoresFunctionCode functionCode)
+        public RequisitionHeader(
+            int? reqNumber,
+            string comments,
+            StoresFunctionCode functionCode,
+            int? document1Number,
+            string document1Type)
         {
             if (reqNumber.HasValue)
             {
@@ -91,10 +94,15 @@
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.FunctionCode = functionCode;
+            this.Document1 = document1Number;
+            this.Document1Name = document1Type;
         }
 
         public void Cancel(string reason, Employee cancelledBy)
         {
+            // note: this function does not represent a complete picture
+            // a lot of extra logic surrounding cancelling the req is in stored procedures
+            // see RequisitionService
             if (string.IsNullOrEmpty(reason))
             {
                 throw new RequisitionException("Must provide a cancel reason");
