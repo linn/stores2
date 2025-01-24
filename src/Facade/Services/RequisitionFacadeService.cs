@@ -42,7 +42,6 @@
             {
                 var privilegeList = privileges.ToList();
 
-                // the following method both updates my entity directly AND calls a stored proc
                 var cancelled = await this.requisitionService.CancelHeader(
                                  reqNumber,
                                  new User
@@ -53,7 +52,6 @@
                                  reason);
                 await this.transactionManager.CommitAsync();
 
-                // return to client
                 return new SuccessResult<RequisitionHeaderResource>(
                     this.BuildResource(cancelled, privilegeList));
             }
