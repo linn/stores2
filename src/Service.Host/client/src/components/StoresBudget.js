@@ -29,11 +29,7 @@ function StoresBudget({ storesBudget }) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 5
     });
-    const reqHref = utilities.getSelfHref(storesBudget?.requisition);
-
-    const reqLine = storesBudget?.requisition?.lines?.length
-        ? storesBudget.requisition.lines.find(a => a.lineNumber === storesBudget.lineNumber)
-        : null;
+    const reqHref = utilities.getSelfHref(storesBudget?.requisitionLine?.requisitionHeader);
 
     return (
         <Grid container spacing={1}>
@@ -104,9 +100,11 @@ function StoresBudget({ storesBudget }) {
             </Grid>
             <Grid size={6}>
                 <Stack direction="row" spacing={2}>
-                    <Typography variant="body1">{storesBudget?.requisition?.createdBy}</Typography>
                     <Typography variant="body1">
-                        {storesBudget?.requisition?.createdByName}
+                        {storesBudget?.requisitionLine?.requisitionHeader?.createdBy}
+                    </Typography>
+                    <Typography variant="body1">
+                        {storesBudget?.requisitionLine?.requisitionHeader?.createdByName}
                     </Typography>
                 </Stack>
             </Grid>
@@ -117,13 +115,19 @@ function StoresBudget({ storesBudget }) {
                 </Typography>
             </Grid>
             <Grid size={4}>
-                {reqLine?.document1Number && (
+                {storesBudget.requisitionLine?.document1Number && (
                     <Stack direction="row" spacing={2}>
-                        <Typography variant="body1">{reqLine.document1Number}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document1Number}
+                        </Typography>
                         <Typography variant="body1">/</Typography>
-                        <Typography variant="body1">{reqLine.document1Line}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document1Line}
+                        </Typography>
                         {'  '}
-                        <Typography variant="body1">{reqLine.document1Type}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document1Type}
+                        </Typography>
                     </Stack>
                 )}
             </Grid>
@@ -134,13 +138,19 @@ function StoresBudget({ storesBudget }) {
                 </Typography>
             </Grid>
             <Grid size={4}>
-                {reqLine?.document2Number && (
+                {storesBudget.requisitionLine?.document2Number && (
                     <Stack direction="row" spacing={2}>
-                        <Typography variant="body1">{reqLine.document2Number}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document2Number}
+                        </Typography>
                         <Typography variant="body1">/</Typography>
-                        <Typography variant="body1">{reqLine.document2Line}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document2Line}
+                        </Typography>
                         {'  '}
-                        <Typography variant="body1">{reqLine.document2Type}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document2Type}
+                        </Typography>
                     </Stack>
                 )}
             </Grid>
@@ -229,19 +239,17 @@ StoresBudget.propTypes = {
         partPrice: PropTypes.number,
         reference: PropTypes.string,
         part: PropTypes.shape({ description: PropTypes.string }),
-        requisition: PropTypes.shape({
-            createdBy: PropTypes.string,
-            createdByName: PropTypes.string,
-            lines: PropTypes.arrayOf(
-                PropTypes.shape({
-                    document1Number: PropTypes.number,
-                    document1Line: PropTypes.number,
-                    document1Type: PropTypes.string,
-                    document2Number: PropTypes.number,
-                    document2Line: PropTypes.number,
-                    document2Type: PropTypes.string
-                })
-            )
+        requisitionLine: PropTypes.shape({
+            document1Number: PropTypes.number,
+            document1Line: PropTypes.number,
+            document1Type: PropTypes.string,
+            document2Number: PropTypes.number,
+            document2Line: PropTypes.number,
+            document2Type: PropTypes.string,
+            requisitionHeader: PropTypes.shape({
+                createdBy: PropTypes.string,
+                createdByName: PropTypes.string
+            })
         })
     }).isRequired
 };
