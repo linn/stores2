@@ -28,7 +28,7 @@
 
         public int LineNumber { get; set; }
 
-      //  public RequisitionLine RequisitionLine { get; set; }
+        public RequisitionLine RequisitionLine { get; set; }
 
         public string CurrencyCode { get; set; }
 

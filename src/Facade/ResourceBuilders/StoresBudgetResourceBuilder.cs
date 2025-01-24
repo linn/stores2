@@ -6,62 +6,30 @@
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Stores;
-    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Stores;
 
     public class StoresBudgetResourceBuilder : IBuilder<StoresBudget>
     {
         public StoresBudgetResource Build(StoresBudget storesBudget, IEnumerable<string> claims)
         {
+            if (storesBudget == null)
+            {
+                return null;
+            }
+            
             var reqLineBuilder = new RequisitionLineResourceBuilder();
-            var nominalAccountBuilder = new NominalAccountResourceBuilder();
+            var builder = new StoresBudgetResourceWithoutReqLineBuilder();
             var claimsList = claims?.ToList();
 
-            return new StoresBudgetResource
-                       {
-                           BudgetId = storesBudget.BudgetId,
-                           TransactionCode = storesBudget.TransactionCode,
-                           TransactionCodeDescription = storesBudget.Transaction?.Description,
-                           PartNumber = storesBudget.PartNumber,
-                           Part = storesBudget.Part == null
-                                      ? null
-                                      : new PartResource
-                                            {
-                                                PartNumber = storesBudget.Part.PartNumber,
-                                                Description = storesBudget.Part.Description
-                                            },
-                           Quantity = storesBudget.Quantity,
-                           Reference = storesBudget.Reference,
-                           PartPrice = storesBudget.PartPrice,
-                           RequisitionNumber = storesBudget.RequisitionNumber,
-                           LineNumber = storesBudget.LineNumber,
-                           // RequisitionLine = storesBudget.RequisitionLine == null
-                           //                   ? null
-                           //                   : reqLineBuilder.Build(storesBudget.RequisitionLine, claimsList),
-                           CurrencyCode = storesBudget.CurrencyCode,
-                           MaterialPrice = storesBudget.MaterialPrice,
-                           LabourPrice = storesBudget.LabourPrice,
-                           OverheadPrice = storesBudget.OverheadPrice,
-                           MachinePrice = storesBudget.MachinePrice,
-                           SpotRate = storesBudget.SpotRate,
-                           DateBooked = storesBudget.DateBooked?.ToString("o"),
-                           StoresBudgetPostings = storesBudget.StoresBudgetPostings?.Select(a => new StoresBudgetPostingResource
-                               {
-                                   BudgetId = a.BudgetId,
-                                   Sequence = a.Sequence,
-                                   Quantity = a.Quantity,
-                                   DebitOrCredit = a.DebitOrCredit,
-                                   NominalAccount =
-                                       a.NominalAccount == null
-                                           ? null
-                                           : nominalAccountBuilder.Build(a.NominalAccount, claimsList),
-                                   Product = a.Product,
-                                   Building = a.Building,
-                                   Vehicle = a.Vehicle,
-                                   Person = a.Person
-                               }),
-                           Links = this.BuildLinks(storesBudget, claimsList).ToArray()
-            };
+            var resource = builder.Build(storesBudget, null);
+            if (storesBudget.RequisitionLine != null)
+            {
+                resource.RequisitionLine = reqLineBuilder.Build(storesBudget.RequisitionLine, null);
+            }
+
+            resource.Links = this.BuildLinks(storesBudget, claimsList).ToArray();
+
+            return resource;
         }
 
         public string GetLocation(StoresBudget model)

@@ -385,7 +385,7 @@
             r.HasMany(t => t.Moves).WithOne().HasForeignKey(reqMove => new { reqMove.ReqNumber, reqMove.LineNumber });
             r.Property(l => l.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
             r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
-            r.HasMany(l => l.StoresBudgets).WithOne()
+            r.HasMany(l => l.StoresBudgets).WithOne(a => a.RequisitionLine)
                 .HasForeignKey(p => new { p.RequisitionNumber, p.LineNumber });
             r.HasMany(l => l.NominalAccountPostings).WithOne()
                 .HasForeignKey(p => new { p.ReqNumber, p.LineNumber });

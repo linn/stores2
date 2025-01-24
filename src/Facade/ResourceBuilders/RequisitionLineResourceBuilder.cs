@@ -13,7 +13,7 @@
         public RequisitionLineResource Build(RequisitionLine l, IEnumerable<string> claims)
         {
             var nominalAccountBuilder = new NominalAccountResourceBuilder();
-            var storesBudgetResourceBuilder = new StoresBudgetResourceBuilder();
+            var storesBudgetResourceBuilder = new StoresBudgetResourceWithoutReqLineBuilder();
             var reqHeaderBuilder = new RequisitionResourceBuilder();
 
             return new RequisitionLineResource 

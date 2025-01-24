@@ -26,7 +26,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                              .ThenInclude(b => b.NominalAccount).ThenInclude(n => n.Department)
                              .Include(x => x.StoresBudgetPostings)
                              .ThenInclude(b => b.NominalAccount).ThenInclude(n => n.Nominal)
-                            // .Include(x => x.RequisitionLine)
+                             .Include(x => x.RequisitionLine).IgnoreAutoIncludes()
                              // .ThenInclude(x => x.RequisitionHeader).ThenInclude(b => b.CreatedBy)
                              .FirstOrDefaultAsync(storesBudget => storesBudget.BudgetId == key);
             return result;
