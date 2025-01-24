@@ -18,6 +18,7 @@
             }
             
             var reqLineBuilder = new RequisitionLineResourceBuilder();
+            var reqBuilder = new RequisitionResourceBuilder();
             var builder = new StoresBudgetResourceWithoutReqLineBuilder();
             var claimsList = claims?.ToList();
 
@@ -25,6 +26,11 @@
             if (storesBudget.RequisitionLine != null)
             {
                 resource.RequisitionLine = reqLineBuilder.Build(storesBudget.RequisitionLine, null);
+                if (resource.RequisitionLine.RequisitionHeader != null)
+                {
+                    resource.RequisitionLine.RequisitionHeader =
+                        reqBuilder.Build(storesBudget.RequisitionLine.RequisitionHeader, null);
+                }
             }
 
             resource.Links = this.BuildLinks(storesBudget, claimsList).ToArray();

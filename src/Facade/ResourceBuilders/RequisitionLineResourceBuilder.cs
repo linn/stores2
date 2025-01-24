@@ -14,7 +14,6 @@
         {
             var nominalAccountBuilder = new NominalAccountResourceBuilder();
             var storesBudgetResourceBuilder = new StoresBudgetResourceWithoutReqLineBuilder();
-            var reqHeaderBuilder = new RequisitionResourceBuilder();
 
             return new RequisitionLineResource 
                        {
@@ -34,9 +33,6 @@
                            Cancelled = l.Cancelled,
                            StoresBudgets = l.StoresBudgets?.Select(
                                b => storesBudgetResourceBuilder.Build(b, null)),
-                           // RequisitionHeader = l.RequisitionHeader == null
-                           //                         ? null
-                           //                         : reqHeaderBuilder.Build(l.RequisitionHeader, null),
                            Postings = l.NominalAccountPostings?.Select(
                                p => new RequisitionLinePostingResource
                                         {
