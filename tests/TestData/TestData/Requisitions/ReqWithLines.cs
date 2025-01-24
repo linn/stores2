@@ -8,9 +8,10 @@ namespace Linn.Stores2.TestData.Requisitions
         public ReqWithLines(int reqNumber, StoresFunctionCode functionCode)
             : base(reqNumber, "A cancelled req", functionCode, 12345678, "TYPE")
         {
+            this.CreatedBy = new Employee { Id = 100 };
             this.Lines = new List<RequisitionLine>
                              {
-                                 new LineWithMoves()
+                                 new LineWithMoves(reqNumber, 1)
                              };
         }
     }

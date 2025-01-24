@@ -341,7 +341,7 @@
             e.Property(r => r.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
             e.HasOne(r => r.CancelledBy).WithMany().HasForeignKey("CANCELLED_BY");
             e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
-            e.HasMany(r => r.Lines).WithOne().HasForeignKey(r => r.ReqNumber);
+            e.HasMany(r => r.Lines).WithOne(a => a.RequisitionHeader).HasForeignKey(d => d.ReqNumber);
             e.HasOne(r => r.ToLocation).WithMany().HasForeignKey("TO_LOCATION_ID");
             e.HasOne(r => r.FromLocation).WithMany().HasForeignKey("FROM_LOCATION_ID");
             e.Property(r => r.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
@@ -382,9 +382,12 @@
             r.Property(l => l.Document2Line).HasColumnName("DOCUMENT_2_LINE");
             r.Property(l => l.Document2Type).HasColumnName("NAME_DOC_2").HasMaxLength(6);
             r.HasOne(l => l.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
+            r.HasOne(l => l.RequisitionHeader).WithMany(a => a.Lines).HasForeignKey(a => a.ReqNumber);
             r.HasMany(t => t.Moves).WithOne().HasForeignKey(reqMove => new { reqMove.ReqNumber, reqMove.LineNumber });
             r.Property(l => l.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
             r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
+            r.HasMany(l => l.StoresBudgets).WithOne(a => a.RequisitionLine)
+                .HasForeignKey(p => new { p.RequisitionNumber, p.LineNumber });
             r.HasMany(l => l.NominalAccountPostings).WithOne()
                 .HasForeignKey(p => new { p.ReqNumber, p.LineNumber });
         }
@@ -463,7 +466,6 @@
             e.Property(n => n.PartPrice).HasColumnName("PART_PRICE");
             e.Property(n => n.RequisitionNumber).HasColumnName("REQ_NUMBER");
             e.Property(n => n.LineNumber).HasColumnName("LINE_NUMBER");
-            e.HasOne(r => r.Requisition).WithMany().HasForeignKey(r => r.RequisitionNumber);
             e.Property(n => n.MaterialPrice).HasColumnName("MATERIAL_PRICE");
             e.Property(n => n.LabourPrice).HasColumnName("LABOUR_PRICE");
             e.Property(n => n.MachinePrice).HasColumnName("MACHINE_PRICE");

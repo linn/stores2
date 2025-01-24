@@ -4,9 +4,27 @@
     using System.Collections.Generic;
 
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Stores;
 
     public class RequisitionLine
     {
+        protected RequisitionLine()
+        {
+        }
+
+        public RequisitionLine(int? reqNumber, int? lineNumber)
+        {
+            if (reqNumber.HasValue)
+            {
+                this.ReqNumber = reqNumber.Value;
+            }
+
+            if (lineNumber.HasValue)
+            {
+                this.LineNumber = lineNumber.Value;
+            }
+        }
+
         public int ReqNumber { get; protected init; }
 
         public int LineNumber { get; protected init; }
@@ -42,6 +60,10 @@
         public DateTime? DateBooked { get; protected set; }
 
         public ICollection<RequisitionLinePosting> NominalAccountPostings { get; protected set; }
+
+        public ICollection<StoresBudget> StoresBudgets { get; protected set; }
+
+        public RequisitionHeader RequisitionHeader { get; set; }
 
         public void Cancel(int by, string reason, DateTime when)
         {

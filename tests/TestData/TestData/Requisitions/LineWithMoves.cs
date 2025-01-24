@@ -7,6 +7,13 @@ namespace Linn.Stores2.TestData.Requisitions
         public LineWithMoves()
         {
             this.Moves = new List<ReqMove> { new ReqMove() };
-        } 
+        }
+
+        public LineWithMoves(int reqNumber, int lineNumber)
+        {
+            this.ReqNumber = reqNumber;
+            this.LineNumber = lineNumber;
+            this.Moves = new List<ReqMove>();
+        }
     }
 }

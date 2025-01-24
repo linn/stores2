@@ -24,7 +24,7 @@
         protected HttpResponseMessage Response { get; set; }
         
         protected TestServiceDbContext DbContext { get; private set; }
-        
+
         [SetUp]
         public void SetUpContext()
         {

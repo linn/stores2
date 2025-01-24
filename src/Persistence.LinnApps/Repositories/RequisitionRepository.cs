@@ -27,6 +27,7 @@
                        .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition)
                        .Include(r => r.Lines).ThenInclude(l => l.NominalAccountPostings).ThenInclude(p => p.NominalAccount).ThenInclude(a => a.Nominal)
                        .Include(r => r.Lines).ThenInclude(l => l.NominalAccountPostings).ThenInclude(p => p.NominalAccount).ThenInclude(a => a.Department)
+                       .Include(r => r.Lines).ThenInclude(l => l.StoresBudgets)
                        .Include(r => r.CancelledBy)
                        .Include(r => r.CreatedBy)
                        .Include(r => r.BookedBy)

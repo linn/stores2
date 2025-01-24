@@ -28,8 +28,6 @@
 
         public int LineNumber { get; set; }
 
-        public RequisitionHeaderResource Requisition { get; set; }
-
         public string CurrencyCode { get; set; }
 
         public decimal? MaterialPrice { get; set; }
@@ -45,5 +43,7 @@
         public string DateBooked { get; set; }
 
         public IEnumerable<StoresBudgetPostingResource> StoresBudgetPostings { get; set; }
+
+        public RequisitionLineResource RequisitionLine { get; set; }
     }
 }
