@@ -8,6 +8,23 @@
 
     public class RequisitionLine
     {
+        protected RequisitionLine()
+        {
+        }
+
+        public RequisitionLine(int? reqNumber, int? lineNumber)
+        {
+            if (reqNumber.HasValue)
+            {
+                this.ReqNumber = reqNumber.Value;
+            }
+
+            if (lineNumber.HasValue)
+            {
+                this.LineNumber = lineNumber.Value;
+            }
+        }
+
         public int ReqNumber { get; protected init; }
 
         public int LineNumber { get; protected init; }

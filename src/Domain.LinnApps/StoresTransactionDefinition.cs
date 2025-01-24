@@ -2,6 +2,15 @@
 {
     public class StoresTransactionDefinition
     {
+        public StoresTransactionDefinition()
+        {
+        }
+
+        public StoresTransactionDefinition(string transactionCode)
+        {
+            this.TransactionCode = transactionCode;
+        }
+
         public string TransactionCode { get; set; }
 
         public string Description { get; set; }
