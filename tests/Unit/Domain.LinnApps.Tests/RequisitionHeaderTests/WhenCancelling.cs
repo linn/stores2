@@ -11,26 +11,26 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 
     public class WhenCancelling
     {
-        private RequisitionHeader Sut;
+        private RequisitionHeader sut;
 
         [SetUp]
         public void SetUp()
         {
-            this.Sut = new ReqWithLines(123, new StoresFunctionCode { FunctionCode = "CODE" });
-            this.Sut.Cancel("reason", new Employee());
+            this.sut = new ReqWithLines(123, new StoresFunctionCode { FunctionCode = "CODE" });
+            this.sut.Cancel("reason", new Employee());
         }
 
         [Test]
         public void ShouldCancelHeader()
         {
-            this.Sut.Cancelled.Should().Be("Y");
-            this.Sut.DateCancelled.Should().NotBeNull();
+            this.sut.Cancelled.Should().Be("Y");
+            this.sut.DateCancelled.Should().NotBeNull();
         }
 
         [Test]
         public void ShouldCancelLines()
         {
-            this.Sut.Lines.All(
+            this.sut.Lines.All(
                 x => x.Cancelled == "Y" 
                      && x.DateCancelled.HasValue 
                      && x.CancelledBy != null 
@@ -40,7 +40,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
         [Test]
         public void ShouldCancelMoves()
         {
-            this.Sut.Lines
+            this.sut.Lines
                 .All(l => l.Moves.All(x => x.DateCancelled.HasValue)).Should().BeTrue();
         }
     }
