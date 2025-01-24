@@ -14,6 +14,7 @@
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
             var nominalAccountBuilder = new NominalAccountResourceBuilder();
+            var lineBuilder = new RequisitionLineResourceBuilder();
 
             return new RequisitionHeaderResource
                        {
@@ -43,33 +44,7 @@
                            Reversed = header.Reversed,
                            Lines = header
                                .Lines?.Select(
-                                   l => new RequisitionLineResource 
-                                            {
-                                                LineNumber = l.LineNumber,
-                                                PartNumber = l.Part?.PartNumber,
-                                                PartDescription = l.Part?.Description,
-                                                Qty = l.Qty,
-                                                TransactionCode = l.TransactionDefinition?.TransactionCode,
-                                                TransactionCodeDescription = l.TransactionDefinition?.Description,
-                                                Document1Number = l.Document1Number,
-                                                Document1Line = l.Document1Line,
-                                                Document1Type = l.Document1Type,
-                                                Document2Number = l.Document2Number,
-                                                Document2Line = l.Document2Line,
-                                                Document2Type = l.Document2Type,
-                                                DateBooked = l.DateBooked?.ToString("o"),
-                                                Cancelled = l.Cancelled,
-                                                Postings = l.NominalAccountPostings?.Select(
-                                                    p => new RequisitionLinePostingResource
-                                                             {
-                                                                 DebitOrCredit = p.DebitOrCredit,
-                                                                 Sequence = p.Seq,
-                                                                 DepartmentCode = p.NominalAccount?.Department?.DepartmentCode,
-                                                                 NominalCode = p.NominalAccount?.Nominal?.NominalCode,
-                                                                 Quantity = p.Qty,
-                                                                 NominalAccount = nominalAccountBuilder.Build(p.NominalAccount, null)
-                                                             })
-                                            }),
+                                   l => lineBuilder.Build(l, null)),
                            Nominal = new NominalResource
                                          {
                                              NominalCode = header.Nominal?.NominalCode, 

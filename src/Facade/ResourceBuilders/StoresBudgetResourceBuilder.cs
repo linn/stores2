@@ -13,7 +13,7 @@
     {
         public StoresBudgetResource Build(StoresBudget storesBudget, IEnumerable<string> claims)
         {
-            var reqHeaderBuilder = new RequisitionResourceBuilder();
+            var reqLineBuilder = new RequisitionLineResourceBuilder();
             var nominalAccountBuilder = new NominalAccountResourceBuilder();
             var claimsList = claims?.ToList();
 
@@ -35,9 +35,9 @@
                            PartPrice = storesBudget.PartPrice,
                            RequisitionNumber = storesBudget.RequisitionNumber,
                            LineNumber = storesBudget.LineNumber,
-                           Requisition = storesBudget.Requisition == null
-                                             ? null
-                                             : reqHeaderBuilder.Build(storesBudget.Requisition, claimsList),
+                           // RequisitionLine = storesBudget.RequisitionLine == null
+                           //                   ? null
+                           //                   : reqLineBuilder.Build(storesBudget.RequisitionLine, claimsList),
                            CurrencyCode = storesBudget.CurrencyCode,
                            MaterialPrice = storesBudget.MaterialPrice,
                            LabourPrice = storesBudget.LabourPrice,

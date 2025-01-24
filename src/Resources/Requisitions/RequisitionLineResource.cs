@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
 
+    using Linn.Stores2.Resources.Stores;
+
     public class RequisitionLineResource
     {
         public int ReqNumber { get; set; }
@@ -41,5 +43,9 @@
         public string Cancelled { get; set; }
 
         public IEnumerable<RequisitionLinePostingResource> Postings { get; set; }
+
+        public IEnumerable<StoresBudgetResource> StoresBudgets { get; set; }
+
+        public RequisitionHeaderResource RequisitionHeader { get; set; }
     }
 }

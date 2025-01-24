@@ -4,6 +4,7 @@
     using System.Collections.Generic;
 
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Stores;
 
     public class RequisitionLine
     {
@@ -42,5 +43,9 @@
         public DateTime? DateBooked { get; protected set; }
 
         public ICollection<RequisitionLinePosting> NominalAccountPostings { get; protected set; }
+
+        public ICollection<StoresBudget> StoresBudgets { get; protected set; }
+
+        public RequisitionHeader RequisitionHeader { get; set; }
     }
 }
