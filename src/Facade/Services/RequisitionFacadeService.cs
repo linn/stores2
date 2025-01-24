@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
@@ -33,8 +34,17 @@
         {
             try
             {
-                var result = await this.requisitionService.CancelHeader(reqNumber, new User(), reason);
-                return new SuccessResult<RequisitionHeaderResource>(this.BuildResource(result, privileges));
+                var privilegeList = privileges.ToList();
+                var result = await this.requisitionService.CancelHeader(
+                                 reqNumber,
+                                 new User
+                                     {
+                                         UserNumber = cancelledBy,
+                                         Privileges = privilegeList
+                                 }, 
+                                 reason);
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(result, privilegeList));
             }
             catch (Exception e)
             {

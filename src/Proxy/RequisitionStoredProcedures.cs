@@ -8,6 +8,7 @@
     using Linn.Stores2.Domain.LinnApps.External;
 
     using Oracle.ManagedDataAccess.Client;
+    using Oracle.ManagedDataAccess.Types;
 
     public class RequisitionStoredProcedures : IRequisitionStoredProcedures
     {
@@ -125,7 +126,7 @@
             };
             cmd.Parameters.Add(docTypeParameter);
 
-            var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
+            var successParameter = new OracleParameter("p_success", OracleDbType.Decimal)
             {
                 Direction = ParameterDirection.InputOutput
             };
@@ -145,7 +146,7 @@
             await connection.CloseAsync();
 
             return new ProcessResult(
-                (int)successParameter.Value == 1,
+                (OracleDecimal)successParameter.Value == 1,
                 messageParameter.Value.ToString());
         }
     }
