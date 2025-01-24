@@ -19,6 +19,8 @@
     {
         private readonly IRequisitionService requisitionService;
 
+        private readonly ITransactionManager transactionManager;
+
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -27,6 +29,7 @@
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionService = requisitionService;
+            this.transactionManager = transactionManager;
         }
 
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -43,6 +46,7 @@
                                          Privileges = privilegeList
                                  }, 
                                  reason);
+                await this.transactionManager.CommitAsync();
                 return new SuccessResult<RequisitionHeaderResource>(
                     this.BuildResource(result, privilegeList));
             }
