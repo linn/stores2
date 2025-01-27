@@ -29,6 +29,7 @@ function StockPools() {
     const { isLoading: accountingCompanyLoading, result: accountingCompany } = useInitialise(
         itemTypes.accountingCompany.url
     );
+    const [creating, setCreating] = useState(false);
     const [stockPools, setStockPools] = useState();
     const [searchTerm, setSearchTerm] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
@@ -60,7 +61,13 @@ function StockPools() {
     }, [createStockPoolResult, updateResult]);
 
     useEffect(() => {
-        setStockPools(stockPoolResult);
+        if (stockPoolResult) {
+            const stockPoolsWithIds = stockPoolResult.map((stockPool, index) => ({
+                ...stockPool,
+                id: stockPool.id || index + 1
+            }));
+            setStockPools(stockPoolsWithIds);
+        }
     }, [stockPoolResult]);
 
     const [searchDialogOpen, setSearchDialogOpen] = useState({
@@ -97,15 +104,22 @@ function StockPools() {
                 stockPoolCode: '',
                 stockPoolDescription: null,
                 storageLocation: null,
-                creating: true
+                creating: true,
+                id: stockPools.length + 1
             }
         ]);
+        setCreating(true);
     };
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
         setStockPools(prevRows =>
-            prevRows.map(row => (row.stockPoolCode === newRow.stockPoolCode ? updatedRow : row))
+            prevRows.map(row =>
+                // eslint-disable-next-line eqeqeq
+                row.stockPoolCode == newRow.stockPoolCode || row.stockPoolCode == ''
+                    ? updatedRow
+                    : row
+            )
         );
         return newRow;
     };
@@ -240,7 +254,7 @@ function StockPools() {
                 )}
                 <Grid size={12}>
                     <DataGrid
-                        getRowId={row => row.stockPoolCode}
+                        getRowId={row => row.id}
                         rows={stockPools}
                         editMode="cell"
                         processRowUpdate={processRowUpdate}
@@ -251,7 +265,7 @@ function StockPools() {
                     />
                 </Grid>
                 <Grid item xs={4}>
-                    <Button onClick={addNewRow} variant="outlined">
+                    <Button onClick={addNewRow} variant="outlined" disabled={creating}>
                         Add Stock Pool
                     </Button>
                 </Grid>
@@ -271,6 +285,7 @@ function StockPools() {
                                 if (updatedStockPool.creating) {
                                     clearCreateStockPool();
                                     createStockPool(null, sp);
+                                    setCreating(false);
                                 } else {
                                     updateStockPool(sp.stockPoolCode, updatedStockPool);
                                 }
