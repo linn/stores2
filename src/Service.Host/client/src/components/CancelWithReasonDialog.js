@@ -46,6 +46,7 @@ function CancelWithReasonDialog({
                     Back
                 </Button>
                 <Button
+                    disabled={!reason}
                     variant="contained"
                     onClick={() => {
                         closeDialog();

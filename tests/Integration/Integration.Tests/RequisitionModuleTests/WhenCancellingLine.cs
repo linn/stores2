@@ -14,7 +14,7 @@
 
     using NUnit.Framework;
 
-    public class WhenCancelling : ContextBase
+    public class WhenCancellingLine : ContextBase
     {
         private CancelRequisitionResource resource;
 
@@ -22,13 +22,25 @@
         public void SetUp()
         {
             this.resource = new CancelRequisitionResource
-                                      {
-                                          Reason = "Just cos",
-                                          ReqNumber = 123
-                                      };
-            this.DomainService.CancelHeader(this.resource.ReqNumber, Arg.Any<User>(), this.resource.Reason)
+            {
+                Reason = "Just cos",
+                ReqNumber = 123,
+                LineNumber = 1
+            };
+            this.DomainService.CancelLine(
+                    this.resource.ReqNumber, this.resource.LineNumber.Value, Arg.Any<User>(), this.resource.Reason)
                 .Returns(new CancelledRequisitionHeader(this.resource.ReqNumber));
             this.Response = this.Client.PostAsJsonAsync("/requisitions/cancel", this.resource).Result;
+        }
+
+        [Test]
+        public void ShouldCancelLine()
+        {
+            this.DomainService.Received(1).CancelLine(
+                this.resource.ReqNumber, 
+                this.resource.LineNumber.Value, 
+                Arg.Any<User>(), 
+                this.resource.Reason);
         }
 
         [Test]

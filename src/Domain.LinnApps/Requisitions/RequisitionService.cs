@@ -78,5 +78,52 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             return req;
         }
+
+        public async Task<RequisitionHeader> CancelLine(
+            int reqNumber, int lineNumber, User cancelledBy, string reason)
+        {
+            if (!this.authService.HasPermissionFor(
+                    AuthorisedActions.CancelRequisition, cancelledBy.Privileges))
+            {
+                throw new UnauthorizedAccessException(
+                    "You do not have permission to cancel a requisition");
+            }
+
+            var req = await this.repository.FindByIdAsync(reqNumber);
+
+            if (string.IsNullOrEmpty(req.FunctionCode.CancelFunction))
+            {
+                var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
+                req.CancelLine(lineNumber, reason, by);
+            }
+            else if (req.FunctionCode.CancelFunction == "UNALLOC_REQ")
+            {
+                var unallocateReqResult = await this.requisitionStoredProcedures.UnallocateRequisition(
+                                              reqNumber, lineNumber, cancelledBy.UserNumber);
+
+                if (!unallocateReqResult.Success)
+                {
+                    throw new RequisitionException(unallocateReqResult.Message);
+                }
+            }
+            else
+            {
+                throw new RequisitionException(
+                    "Cannot cancel req - invalid cancel function");
+            }
+
+            var deleteAllocsOntoResult = await this.requisitionStoredProcedures.DeleteAllocOntos(
+                                             reqNumber,
+                                             lineNumber,
+                                             req.Document1,
+                                             req.Document1Name);
+
+            if (!deleteAllocsOntoResult.Success)
+            {
+                throw new RequisitionException(deleteAllocsOntoResult.Message);
+            }
+
+            return req;
+        }
     }
 }
