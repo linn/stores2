@@ -88,5 +88,10 @@
                 reqMove.Cancel(when);
             }
         }
+
+        public void Book()
+        {
+            this.DateBooked = DateTime.Now;
+        }
     }
 }

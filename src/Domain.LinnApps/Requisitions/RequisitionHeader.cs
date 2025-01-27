@@ -99,6 +99,28 @@
             this.Document1Name = document1Type;
         }
 
+        public void AddLine(RequisitionLine toAdd)
+        {
+            this.Lines ??= new List<RequisitionLine>();
+
+            this.Lines.Add(toAdd);
+        }
+
+        public void Book(Employee bookedBy)
+        {
+            this.DateBooked = DateTime.Now;
+            this.BookedBy = bookedBy;
+        }
+
+        public void BookLine(int lineNumber, Employee bookedBy)
+        {
+            this.Lines.First(x => x.LineNumber == lineNumber).Book();
+            if (!this.DateBooked.HasValue && Lines.All(l => l.DateBooked.HasValue))
+            {
+                this.Book(bookedBy);
+            }
+        }
+
         public void Cancel(string reason, Employee cancelledBy)
         {
             // note: this function does not represent a complete picture
@@ -155,12 +177,12 @@
             if (this.Lines.All(x => x.DateCancelled.HasValue) 
                 && !this.DateCancelled.HasValue)
             {
-                this.Cancel("All lines cancelled", cancelledBy);
+                this.Cancel(reason, cancelledBy);
             }
 
             // book header if all non-cancelled lines are booked
             if (!this.DateBooked.HasValue
-                && this.Lines.All(l => l.DateBooked.HasValue || l.DateCancelled.HasValue))
+                && this.Lines.Where(x => !x.DateCancelled.HasValue).All(l => l.DateBooked.HasValue))
             {
                 this.DateBooked = now;
             }

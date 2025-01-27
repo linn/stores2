@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
 
@@ -9,7 +9,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 
     using NUnit.Framework;
 
-    public class WhehCancellingAndBooked
+    public class WhenCancellingLineAndBooked
     {
         private Action action;
 
@@ -17,15 +17,15 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
         public void SetUp()
         {
             this.action = () => new BookedRequisitionHeader(
-                123, 33087, new StoresFunctionCode { FunctionCode = "C" })
-                .Cancel("reason", new Employee());
+                    123, 33087, new StoresFunctionCode { FunctionCode = "C" })
+                .CancelLine(1, "reason", new Employee());
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<RequisitionException>()
-                .WithMessage("Cannot cancel a booked req");
+                .WithMessage("Cannot cancel a booked req line");
         }
     }
 }
