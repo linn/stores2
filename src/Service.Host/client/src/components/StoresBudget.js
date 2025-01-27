@@ -3,11 +3,11 @@ import { utilities } from '@linn-it/linn-form-components-library';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import { DataGrid } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid2';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import BudgetPostings from './BudgetPostings';
 
 function StoresBudget({ storesBudget }) {
     const useStyles = makeStyles(() => ({
@@ -29,44 +29,7 @@ function StoresBudget({ storesBudget }) {
         minimumFractionDigits: 2,
         maximumFractionDigits: 5
     });
-    const reqHref = utilities.getSelfHref(storesBudget?.requisition);
-
-    const postingColumns = [
-        { field: 'sequence', headerName: 'Seq', width: 80 },
-        { field: 'debitOrCreditDisplay', headerName: 'Debit/Credit', width: 100 },
-        { field: 'quantity', type: 'number', headerName: 'Quantity', width: 100 },
-        { field: 'nominalCode', headerName: 'Nominal', width: 130 },
-        { field: 'nominalDescription', headerName: 'Description', width: 250 },
-        { field: 'departmentCode', headerName: 'Department', width: 130 },
-        { field: 'departmentDescription', headerName: 'Description', width: 250 },
-        { field: 'product', headerName: 'Product', width: 130 },
-        { field: 'building', headerName: 'Building', width: 130 },
-        { field: 'vehicle', headerName: 'Vehicle', width: 130 },
-        { field: 'person', headerName: 'Person', width: 130 }
-    ];
-
-    const getBudgetPostings = () => {
-        if (storesBudget) {
-            const { storesBudgetPostings } = storesBudget;
-            if (storesBudgetPostings && storesBudgetPostings.length) {
-                return storesBudgetPostings.map((p, i) => ({
-                    ...p,
-                    id: i,
-                    debitOrCreditDisplay: p.debitOrCredit === 'D' ? 'Debit' : 'Credit',
-                    nominalCode: p.nominalAccount?.nominalCode,
-                    nominalDescription: p.nominalAccount?.nominal?.description,
-                    departmentCode: p.nominalAccount?.departmentCode,
-                    departmentDescription: p.nominalAccount?.department?.description
-                }));
-            }
-        }
-
-        return [];
-    };
-
-    const reqLine = storesBudget?.requisition?.lines?.length
-        ? storesBudget.requisition.lines.find(a => a.lineNumber === storesBudget.lineNumber)
-        : null;
+    const reqHref = utilities.getSelfHref(storesBudget?.requisitionLine?.requisitionHeader);
 
     return (
         <Grid container spacing={1}>
@@ -137,9 +100,11 @@ function StoresBudget({ storesBudget }) {
             </Grid>
             <Grid size={6}>
                 <Stack direction="row" spacing={2}>
-                    <Typography variant="body1">{storesBudget?.requisition?.createdBy}</Typography>
                     <Typography variant="body1">
-                        {storesBudget?.requisition?.createdByName}
+                        {storesBudget?.requisitionLine?.requisitionHeader?.createdBy}
+                    </Typography>
+                    <Typography variant="body1">
+                        {storesBudget?.requisitionLine?.requisitionHeader?.createdByName}
                     </Typography>
                 </Stack>
             </Grid>
@@ -150,13 +115,19 @@ function StoresBudget({ storesBudget }) {
                 </Typography>
             </Grid>
             <Grid size={4}>
-                {reqLine?.document1Number && (
+                {storesBudget.requisitionLine?.document1Number && (
                     <Stack direction="row" spacing={2}>
-                        <Typography variant="body1">{reqLine.document1Number}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document1Number}
+                        </Typography>
                         <Typography variant="body1">/</Typography>
-                        <Typography variant="body1">{reqLine.document1Line}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document1Line}
+                        </Typography>
                         {'  '}
-                        <Typography variant="body1">{reqLine.document1Type}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document1Type}
+                        </Typography>
                     </Stack>
                 )}
             </Grid>
@@ -167,13 +138,19 @@ function StoresBudget({ storesBudget }) {
                 </Typography>
             </Grid>
             <Grid size={4}>
-                {reqLine?.document2Number && (
+                {storesBudget.requisitionLine?.document2Number && (
                     <Stack direction="row" spacing={2}>
-                        <Typography variant="body1">{reqLine.document2Number}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document2Number}
+                        </Typography>
                         <Typography variant="body1">/</Typography>
-                        <Typography variant="body1">{reqLine.document2Line}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document2Line}
+                        </Typography>
                         {'  '}
-                        <Typography variant="body1">{reqLine.document2Type}</Typography>
+                        <Typography variant="body1">
+                            {storesBudget.requisitionLine.document2Type}
+                        </Typography>
                     </Stack>
                 )}
             </Grid>
@@ -236,26 +213,10 @@ function StoresBudget({ storesBudget }) {
                     {partPriceFormat.format(storesBudget?.labourPrice)}
                 </Typography>
             </Grid>
-            <Grid size={12}>
-                <DataGrid
-                    rows={getBudgetPostings()}
-                    columns={postingColumns}
-                    density="compact"
-                    autoHeight
-                    hideFooterSelectedRowCount
-                    hideFooter={getBudgetPostings().length <= 100}
-                    initialState={{
-                        columns: {
-                            columnVisibilityModel: {
-                                product: false,
-                                building: false,
-                                person: false,
-                                vehicle: false
-                            }
-                        }
-                    }}
-                />
+            <Grid size={10}>
+                <BudgetPostings budgetPostings={storesBudget?.storesBudgetPostings} />
             </Grid>
+            <Grid size={2} />
         </Grid>
     );
 }
@@ -278,19 +239,17 @@ StoresBudget.propTypes = {
         partPrice: PropTypes.number,
         reference: PropTypes.string,
         part: PropTypes.shape({ description: PropTypes.string }),
-        requisition: PropTypes.shape({
-            createdBy: PropTypes.string,
-            createdByName: PropTypes.string,
-            lines: PropTypes.arrayOf(
-                PropTypes.shape({
-                    document1Number: PropTypes.number,
-                    document1Line: PropTypes.number,
-                    document1Type: PropTypes.string,
-                    document2Number: PropTypes.number,
-                    document2Line: PropTypes.number,
-                    document2Type: PropTypes.string
-                })
-            )
+        requisitionLine: PropTypes.shape({
+            document1Number: PropTypes.number,
+            document1Line: PropTypes.number,
+            document1Type: PropTypes.string,
+            document2Number: PropTypes.number,
+            document2Line: PropTypes.number,
+            document2Type: PropTypes.string,
+            requisitionHeader: PropTypes.shape({
+                createdBy: PropTypes.string,
+                createdByName: PropTypes.string
+            })
         })
     }).isRequired
 };

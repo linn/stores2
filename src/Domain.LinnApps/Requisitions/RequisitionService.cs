@@ -30,7 +30,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.employeeRepository = employeeRepository;
         }
         
-        public async Task<RequisitionHeader> Cancel(
+        public async Task<RequisitionHeader> CancelHeader(
             int reqNumber, 
             User cancelledBy,
             string reason)
@@ -43,13 +43,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var req = await this.repository.FindByIdAsync(reqNumber);
-
-            if (req.DateBooked.HasValue)
-            {
-                throw new RequisitionException(
-                    "Cannot cancel a requisition that has already been booked");
-            }
-
+            
             if (string.IsNullOrEmpty(req.FunctionCode.CancelFunction))
             {
                 var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
@@ -57,15 +51,31 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
             else if (req.FunctionCode.CancelFunction == "UNALLOC_REQ")
             {
-                await this.requisitionStoredProcedures.UnallocateRequisition(
+                var unallocateReqResult = await this.requisitionStoredProcedures.UnallocateRequisition(
                     reqNumber, null, cancelledBy.UserNumber);
+
+                if (!unallocateReqResult.Success)
+                {
+                    throw new RequisitionException(unallocateReqResult.Message);
+                }
             }
             else
             {
                 throw new RequisitionException(
                     "Cannot cancel req - invalid cancel function");
             }
-            
+
+            var deleteAllocsOntoResult = await this.requisitionStoredProcedures.DeleteAllocOntos(
+                                             reqNumber,
+                                             null,
+                                             req.Document1,
+                                             req.Document1Name);
+
+            if (!deleteAllocsOntoResult.Success)
+            {
+                throw new RequisitionException(deleteAllocsOntoResult.Message);
+            }
+
             return req;
         }
     }

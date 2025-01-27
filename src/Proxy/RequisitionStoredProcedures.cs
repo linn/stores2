@@ -8,6 +8,7 @@
     using Linn.Stores2.Domain.LinnApps.External;
 
     using Oracle.ManagedDataAccess.Client;
+    using Oracle.ManagedDataAccess.Types;
 
     public class RequisitionStoredProcedures : IRequisitionStoredProcedures
     {
@@ -56,7 +57,7 @@
                                              };
             cmd.Parameters.Add(qtyAllocatedParameter);
 
-            var commitParameter = new OracleParameter("p_commit", OracleDbType.Boolean)
+            var commitParameter = new OracleParameter("p_commit", OracleDbType.Boolean) // todo - won't work? amend wrapper?
                                             {
                                                 Direction = ParameterDirection.Input,
                                                 Value = true
@@ -82,6 +83,71 @@
 
             return new ProcessResult(
                 (int)successParameter.Value == 1,
+                messageParameter.Value.ToString());
+        }
+
+        public async Task<ProcessResult> DeleteAllocOntos(
+            int reqNumber, int? lineNumber, int? docNumber, string docType)
+        {
+            using var connection = new OracleConnection(
+                ConnectionStrings.ManagedConnectionString());
+
+            var cmd = new OracleCommand("STORES_OO.DELETE_ALLOCS_ONTO_WRAPPER", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            var reqNumberParameter = new OracleParameter("p_req_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = reqNumber
+            };
+            cmd.Parameters.Add(reqNumberParameter);
+
+            var lineNumberParameter = new OracleParameter("p_line_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = lineNumber
+            };
+            cmd.Parameters.Add(lineNumberParameter);
+
+            var docNumberParameter = new OracleParameter("p_doc_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = docNumber
+            };
+            cmd.Parameters.Add(docNumberParameter);
+
+            var docTypeParameter = new OracleParameter("p_doc_type", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.Input,
+                Value = docType,
+                Size = 50
+            };
+            cmd.Parameters.Add(docTypeParameter);
+
+            var successParameter = new OracleParameter("p_success", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Size = 10
+            };
+
+            cmd.Parameters.Add(successParameter);
+
+            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Size = 500
+            };
+
+            cmd.Parameters.Add(messageParameter);
+
+            await connection.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+
+            return new ProcessResult(
+                successParameter.Value.ToString() == "TRUE",
                 messageParameter.Value.ToString());
         }
     }

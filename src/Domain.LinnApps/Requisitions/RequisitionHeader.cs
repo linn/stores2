@@ -20,9 +20,7 @@
         public int? Document1 { get; protected set; }
 
         public ICollection<RequisitionLine> Lines { get; protected set; }
-
-        public ICollection<ReqMove> Moves { get; protected set; }
-
+        
         public decimal? Qty { get; protected set; }
 
         public string Document1Name { get; protected set; }
@@ -81,7 +79,12 @@
         {
         }
 
-        public RequisitionHeader(int? reqNumber, string comments, StoresFunctionCode functionCode)
+        public RequisitionHeader(
+            int? reqNumber,
+            string comments,
+            StoresFunctionCode functionCode,
+            int? document1Number,
+            string document1Type)
         {
             if (reqNumber.HasValue)
             {
@@ -91,13 +94,23 @@
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.FunctionCode = functionCode;
+            this.Document1 = document1Number;
+            this.Document1Name = document1Type;
         }
 
         public void Cancel(string reason, Employee cancelledBy)
         {
+            // note: this function does not represent a complete picture
+            // a lot of extra logic surrounding cancelling the req is in stored procedures
+            // see RequisitionService
             if (string.IsNullOrEmpty(reason))
             {
                 throw new RequisitionException("Must provide a cancel reason");
+            }
+
+            if (this.DateBooked.HasValue)
+            {
+                throw new RequisitionException("Cannot cancel a booked req");
             }
 
             var now = DateTime.Now;
@@ -108,7 +121,6 @@
 
             this.CancelDetails ??= new List<CancelDetails>();
 
-            // todo - will need to make sure Id is set at the db level
             this.CancelDetails.Add(new CancelDetails
                                        {
                                            ReqNumber = this.ReqNumber,
@@ -116,6 +128,19 @@
                                            Reason = reason,
                                            CancelledBy = cancelledBy.Id
                                        });
+            if (this.Lines == null)
+            {
+                return;
+            }
+
+            foreach (var l in this.Lines)
+            {
+                // Set some cancelled fields
+                // This probably happens in the store procedures anyway
+                // But no harm in making sure
+                // (and actually updating this tracked entity so updates can be returned to the client)
+                l.Cancel(cancelledBy.Id, reason, now);
+            }
         }
     }
 }

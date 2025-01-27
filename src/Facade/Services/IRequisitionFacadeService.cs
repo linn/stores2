@@ -12,7 +12,7 @@
         : IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource,
         RequisitionHeaderResource, RequisitionSearchResource>
     {
-        Task<IResult<RequisitionHeaderResource>> Cancel(
+        Task<IResult<RequisitionHeaderResource>> CancelHeader(
             int reqNumber, int cancelledBy, string reason, IEnumerable<string> privileges);
     }
 }
