@@ -61,6 +61,31 @@
             }
         }
 
+        public async Task<IResult<RequisitionHeaderResource>> CancelLine(int reqNumber, int lineNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
+        {
+            try
+            {
+                var privilegeList = privileges.ToList();
+
+                var cancelled = await this.requisitionService.CancelHeader(
+                                    reqNumber,
+                                    new User
+                                        {
+                                            UserNumber = cancelledBy,
+                                            Privileges = privilegeList
+                                        },
+                                    reason);
+                await this.transactionManager.CommitAsync();
+
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(cancelled, privilegeList));
+            }
+            catch (Exception e)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(e.Message);
+            }
+        }
+
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
             string searchTerm)
         {

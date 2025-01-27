@@ -142,5 +142,12 @@
                 l.Cancel(cancelledBy.Id, reason, now);
             }
         }
+
+        public void CancelLine(int lineNumber, string reason, Employee cancelledBy)
+        {
+            // cancel line
+            // cancel moves
+            // cancel whole req if this line was the only non-cancelled one
+        }
     }
 }
