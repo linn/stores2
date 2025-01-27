@@ -66,10 +66,17 @@ function Requisition({ creating }) {
 
     const {
         search: searchDepartments,
-        results: departmentSearchResults,
+        results: departmentsSearchResults,
         loading: departmentsSearchLoading,
         clear: clearDepartmentsSearch
-    } = useSearch(itemTypes.departments.url);
+    } = useSearch(itemTypes.departments.url, 'departmentCode', 'departmentCode', 'description');
+
+    const {
+        search: searchNominals,
+        results: nominalsSearchResults,
+        loading: nominalsSearchLoading,
+        clear: clearNominalsSearch
+    } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -196,42 +203,34 @@ function Requisition({ creating }) {
                         </Grid>
                         <Grid size={4} />
                         <Grid size={2}>
-                            <Grid item xs={3}>
-                                <Search
-                                    propertyName="departmentCode"
-                                    label="Department"
-                                    resultsInModal
-                                    resultLimit={100}
-                                    helperText="Enter a search term and press enter to look up departments, or just enter the code if you know it"
-                                    value={formState.department?.departmentCode}
-                                    handleValueChange={(_, newVal) =>
-                                        setFormState(fs => ({
-                                            ...fs,
-                                            department: { departmentCode: newVal }
-                                        }))
-                                    }
-                                    search={searchDepartments}
-                                    loading={departmentsSearchLoading}
-                                    searchResults={departmentSearchResults}
-                                    priorityFunction="closestMatchesFirst"
-                                    onResultSelect={r => {
-                                        setFormState(fs => ({
-                                            ...fs,
-                                            department: r
-                                        }));
-                                    }}
-                                    clearSearch={clearDepartmentsSearch}
-                                    autoFocus={false}
-                                />
-                            </Grid>
-                            {/* <InputField
-                                fullWidth
-                                value={formState.department?.departmentCode}
-                                onChange={() => {}}
-                                label="Dept"
+                            <Search
                                 propertyName="departmentCode"
-                            /> */}
+                                label="Department"
+                                resultsInModal
+                                resultLimit={100}
+                                helperText="Enter a search term and press enter to look up departments"
+                                value={formState.department?.departmentCode}
+                                handleValueChange={(_, newVal) =>
+                                    setFormState(fs => ({
+                                        ...fs,
+                                        department: { departmentCode: newVal }
+                                    }))
+                                }
+                                search={searchDepartments}
+                                loading={departmentsSearchLoading}
+                                searchResults={departmentsSearchResults}
+                                priorityFunction="closestMatchesFirst"
+                                onResultSelect={r => {
+                                    setFormState(fs => ({
+                                        ...fs,
+                                        department: r
+                                    }));
+                                }}
+                                clearSearch={clearDepartmentsSearch}
+                                autoFocus={false}
+                            />
                         </Grid>
+
                         <Grid size={4}>
                             <InputField
                                 fullWidth
@@ -242,12 +241,31 @@ function Requisition({ creating }) {
                             />
                         </Grid>
                         <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.nominal?.nominalCode}
-                                onChange={() => {}}
-                                label="Nominal"
+                            <Search
                                 propertyName="nominalCode"
+                                label="Nominal"
+                                resultsInModal
+                                resultLimit={100}
+                                helperText="Enter a search term and press enter to look up nominals"
+                                value={formState.nominal?.nominalCode}
+                                handleValueChange={(_, newVal) =>
+                                    setFormState(fs => ({
+                                        ...fs,
+                                        nominal: { nominalCode: newVal }
+                                    }))
+                                }
+                                search={searchNominals}
+                                loading={nominalsSearchLoading}
+                                searchResults={nominalsSearchResults}
+                                priorityFunction="closestMatchesFirst"
+                                onResultSelect={r => {
+                                    setFormState(fs => ({
+                                        ...fs,
+                                        nominal: r
+                                    }));
+                                }}
+                                clearSearch={clearNominalsSearch}
+                                autoFocus={false}
                             />
                         </Grid>
                         <Grid size={4}>
