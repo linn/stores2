@@ -67,8 +67,9 @@
             {
                 var privilegeList = privileges.ToList();
 
-                var cancelled = await this.requisitionService.CancelHeader(
+                var req = await this.requisitionService.CancelLine(
                                     reqNumber,
+                                    lineNumber,
                                     new User
                                         {
                                             UserNumber = cancelledBy,
@@ -78,7 +79,7 @@
                 await this.transactionManager.CommitAsync();
 
                 return new SuccessResult<RequisitionHeaderResource>(
-                    this.BuildResource(cancelled, privilegeList));
+                    this.BuildResource(req, privilegeList));
             }
             catch (Exception e)
             {
