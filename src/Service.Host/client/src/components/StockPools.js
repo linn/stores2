@@ -22,6 +22,7 @@ import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import usePut from '../hooks/usePut';
 import useInitialise from '../hooks/useInitialise';
+import usePost from '../hooks/usePost';
 
 function StockPools() {
     const { isLoading, result: stockPoolResult } = useInitialise(itemTypes.stockPools.url);
@@ -45,6 +46,14 @@ function StockPools() {
         errorMessage: updateError,
         putResult: updateResult
     } = usePut(itemTypes.stockPools.url, true);
+
+    const {
+        send: createStockPool,
+        createStockPoolLoading,
+        errorMessage: createStockPoolMessage,
+        postResult: createStockPoolResult,
+        clearPostResult: clearcreateStockPool
+    } = usePost(itemTypes.stockPools.url);
 
     useEffect(() => {
         setSnackbarVisible(!!updateResult);
@@ -109,7 +118,7 @@ function StockPools() {
             const currentRow = stockPools?.find(r => r.stockPoolCode === searchDialogOpen.forRow);
             let newRow = {
                 ...currentRow,
-                hasChanged: true
+                updated: true
             };
             c.searchUpdateFieldNames?.forEach(f => {
                 newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
@@ -245,14 +254,22 @@ function StockPools() {
                 <Grid item xs={4}>
                     <Button
                         onClick={() => {
-                            stockPools
-                                .filter(sp => sp.hasChanged === true)
-                                .forEach(sp => {
+                            const aa = stockPools.filter(sp => sp.updated === true)
+                            console.log(stockPools)
+                                aa.forEach(sp => {
                                     const updatedStockPool = stockPools.find(
                                         pool => pool.stockPoolCode === sp.stockPoolCode
                                     );
+
                                     console.log(updatedStockPool);
-                                    updateStockPool(sp.stockPoolCode, updatedStockPool);
+                                    console.log(sp);
+
+                                    if (updatedStockPool) {
+                                        updateStockPool(sp.stockPoolCode, updatedStockPool);
+                                    } else {
+                                        createStockPool(sp);
+                                    }
+                                    
                                 });
                         }}
                         variant="outlined"
