@@ -2,7 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Linq;
+
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -145,9 +146,24 @@
 
         public void CancelLine(int lineNumber, string reason, Employee cancelledBy)
         {
+            var now = DateTime.Now;
+            
             // cancel line
-            // cancel moves
-            // cancel whole req if this line was the only non-cancelled one
+            this.Lines.First(x => x.LineNumber == lineNumber).Cancel(cancelledBy.Id, reason, now);
+
+            // cancel header if all lines are now cancelled
+            if (this.Lines.All(x => x.DateCancelled.HasValue) 
+                && !this.DateCancelled.HasValue)
+            {
+                this.Cancel("All lines cancelled", cancelledBy);
+            }
+
+            // book header if all non-cancelled lines are booked
+            if (!this.DateBooked.HasValue
+                && this.Lines.All(l => l.DateBooked.HasValue || l.DateCancelled.HasValue))
+            {
+                this.DateBooked = now;
+            }
         }
     }
 }
