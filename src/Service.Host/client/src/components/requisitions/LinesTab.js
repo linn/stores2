@@ -99,7 +99,7 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine }) {
                         });
                     }}
                 />
-            )}{' '}
+            )}
             <Grid size={12}>
                 <DataGrid
                     getRowId={r => r.lineNumber}
