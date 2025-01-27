@@ -10,7 +10,8 @@ import {
     Loading,
     DatePicker,
     Dropdown,
-    ErrorCard
+    ErrorCard,
+    Search
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
@@ -22,6 +23,7 @@ import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
+import useSearch from '../../hooks/useSearch';
 
 function Requisition({ creating }) {
     const { reqNumber } = useParams();
@@ -61,6 +63,13 @@ function Requisition({ creating }) {
             setFormState(defaultState);
         }
     }, [result, cancelResult, creating]);
+
+    const {
+        search: searchDepartments,
+        results: departmentSearchResults,
+        loading: departmentsSearchLoading,
+        clear: clearDepartmentsSearch
+    } = useSearch(itemTypes.departments.url);
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -187,13 +196,41 @@ function Requisition({ creating }) {
                         </Grid>
                         <Grid size={4} />
                         <Grid size={2}>
-                            <InputField
+                            <Grid item xs={3}>
+                                <Search
+                                    propertyName="departmentCode"
+                                    label="Department"
+                                    resultsInModal
+                                    resultLimit={100}
+                                    helperText="Enter a search term and press enter to look up departments, or just enter the code if you know it"
+                                    value={formState.department?.departmentCode}
+                                    handleValueChange={(_, newVal) =>
+                                        setFormState(fs => ({
+                                            ...fs,
+                                            department: { departmentCode: newVal }
+                                        }))
+                                    }
+                                    search={searchDepartments}
+                                    loading={departmentsSearchLoading}
+                                    searchResults={departmentSearchResults}
+                                    priorityFunction="closestMatchesFirst"
+                                    onResultSelect={r => {
+                                        setFormState(fs => ({
+                                            ...fs,
+                                            department: r
+                                        }));
+                                    }}
+                                    clearSearch={clearDepartmentsSearch}
+                                    autoFocus={false}
+                                />
+                            </Grid>
+                            {/* <InputField
                                 fullWidth
                                 value={formState.department?.departmentCode}
                                 onChange={() => {}}
                                 label="Dept"
                                 propertyName="departmentCode"
-                            />
+                            /> */}
                         </Grid>
                         <Grid size={4}>
                             <InputField
