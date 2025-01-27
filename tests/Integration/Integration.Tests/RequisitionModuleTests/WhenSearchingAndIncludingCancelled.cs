@@ -27,7 +27,9 @@
             this.req123 = new RequisitionHeader(
                 123, 
                 "Hello Requisitions",
-                new StoresFunctionCode { FunctionCode = "F" });
+                new StoresFunctionCode { FunctionCode = "F" },
+                12345678,
+                "TYPE");
             this.req456 = new CancelledRequisitionHeader(456);
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);

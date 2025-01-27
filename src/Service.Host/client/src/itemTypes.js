@@ -9,6 +9,8 @@ const itemTypes = {
     auditLocations: { url: `${config.proxyRoot}/inventory/audit-locations` },
     requisitions: { url: `${config.appRoot}/requisitions` },
     createAuditReqs: { url: `${config.appRoot}/stores2/storage-places/create-checked-audit-reqs` },
+    storesBudget: { url: `${config.appRoot}/stores2/budgets` },
+    storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
     stockPools: { url: `${config.appRoot}/stores2/stock-pools` },
     accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` }
 };

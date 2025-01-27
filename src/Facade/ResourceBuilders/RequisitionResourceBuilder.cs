@@ -13,6 +13,8 @@
     {
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
+            var reqLineBuilder = new RequisitionLineResourceBuilder();
+
             return new RequisitionHeaderResource
                        {
                            ReqNumber = header.ReqNumber, DateCreated = header.DateCreated.ToString("o"), 
@@ -39,31 +41,7 @@
                            CreatedBy = header.CreatedBy?.Id,
                            CreatedByName = header.CreatedBy?.Name,
                            Reversed = header.Reversed,
-                           Lines = header
-                               .Lines?.Select(
-                                   l => new RequisitionLineResource 
-                                            {
-                                                LineNumber = l.LineNumber,
-                                                PartNumber = l.Part?.PartNumber,
-                                                PartDescription = l.Part?.Description,
-                                                Qty = l.Qty,
-                                                TransactionCode = l.TransactionDefinition?.TransactionCode,
-                                                TransactionCodeDescription = l.TransactionDefinition?.Description,
-                                                Document1Number = l.Document1Number,
-                                                Document1Line = l.Document1Line,
-                                                Document1Type = l.Document1Type,
-                                                DateBooked = l.DateBooked?.ToString("o"),
-                                                Cancelled = l.Cancelled,
-                                                Postings = l.NominalAccountPostings?.Select(
-                                                    p => new RequisitionLinePostingResource
-                                                             {
-                                                                 DebitOrCredit = p.DebitOrCredit,
-                                                                 Seq = p.Seq,
-                                                                 DepartmentCode = p.NominalAccount?.Department?.DepartmentCode,
-                                                                 NominalCode = p.NominalAccount?.Nominal?.NominalCode,
-                                                                 Qty = p.Qty
-                                                             })
-                                            }),
+                           Lines = header.Lines?.Select(l => reqLineBuilder.Build(l, null)),
                            Nominal = new NominalResource
                                          {
                                              NominalCode = header.Nominal?.NominalCode, 

@@ -2,6 +2,8 @@
 {
     using System.Collections.Generic;
 
+    using Linn.Stores2.Resources.Stores;
+
     public class RequisitionLineResource
     {
         public int ReqNumber { get; set; }
@@ -30,10 +32,22 @@
 
         public string Document1Type { get; set; }
 
+        public int? Document2Number { get; set; }
+
+        public int? Document2Line { get; set; }
+
+        public string Document2Type { get; set; }
+
         public string DateBooked { get; set; }
 
         public string Cancelled { get; set; }
 
         public IEnumerable<RequisitionLinePostingResource> Postings { get; set; }
+
+        public IEnumerable<StoresBudgetResource> StoresBudgets { get; set; }
+
+        public RequisitionHeaderResource RequisitionHeader { get; set; }
+        
+        public IEnumerable<MoveHeaderResource> Moves { get; set; }
     }
 }

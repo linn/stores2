@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
@@ -18,6 +19,10 @@
     {
         private readonly IRequisitionService requisitionService;
 
+        private readonly ITransactionManager transactionManager;
+
+        private readonly IRepository<RequisitionHeader, int> repository;
+
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -26,15 +31,29 @@
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionService = requisitionService;
+            this.transactionManager = transactionManager;
+            this.repository = repository;
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> Cancel(
+        public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
             int reqNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
         {
             try
             {
-                var result = await this.requisitionService.Cancel(reqNumber, new User(), reason);
-                return new SuccessResult<RequisitionHeaderResource>(this.BuildResource(result, privileges));
+                var privilegeList = privileges.ToList();
+
+                var cancelled = await this.requisitionService.CancelHeader(
+                                 reqNumber,
+                                 new User
+                                     {
+                                         UserNumber = cancelledBy,
+                                         Privileges = privilegeList
+                                 }, 
+                                 reason);
+                await this.transactionManager.CommitAsync();
+
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(cancelled, privilegeList));
             }
             catch (Exception e)
             {

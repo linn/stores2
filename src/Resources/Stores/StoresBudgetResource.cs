@@ -12,6 +12,8 @@
 
         public string TransactionCode { get; set; }
 
+        public string TransactionCodeDescription { get; set; }
+
         public string PartNumber { get; set; }
 
         public PartResource Part { get; set; }
@@ -25,8 +27,6 @@
         public int RequisitionNumber { get; set; }
 
         public int LineNumber { get; set; }
-
-        public RequisitionHeaderResource Requisition { get; set; }
 
         public string CurrencyCode { get; set; }
 
@@ -43,5 +43,7 @@
         public string DateBooked { get; set; }
 
         public IEnumerable<StoresBudgetPostingResource> StoresBudgetPostings { get; set; }
+
+        public RequisitionLineResource RequisitionLine { get; set; }
     }
 }

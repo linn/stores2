@@ -36,6 +36,8 @@
         
         public DbSet<StoresBudget> StoresBudgets { get; set; }
 
+        public DbSet<StorageSite> StorageSites { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -66,6 +68,8 @@
             BuildStoresBudgets(builder);
             BuildStoresBudgetPostings(builder);
             BuildReqLinePostings(builder);
+            BuildStorageSites(builder);
+            BuildStorageAreas(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -321,6 +325,8 @@
             r.HasOne(l => l.Location).WithMany().HasForeignKey(l => l.LocationId);
             r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
             r.Property(l => l.DateCancelled).HasColumnName("DATE_CANCELLED");
+            r.Property(l => l.State).HasColumnName("STATE").HasMaxLength(6);
+            r.Property(l => l.SerialNumber).HasColumnName("SERIAL_NUMBER");
         }
 
         private static void BuildRequisitionHeaders(ModelBuilder builder)
@@ -339,8 +345,7 @@
             e.Property(r => r.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
             e.HasOne(r => r.CancelledBy).WithMany().HasForeignKey("CANCELLED_BY");
             e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
-            e.HasMany(r => r.Lines).WithOne().HasForeignKey(r => r.ReqNumber);
-            e.HasMany(r => r.Moves).WithOne(m => m.Header).HasForeignKey(r => r.ReqNumber);
+            e.HasMany(r => r.Lines).WithOne(a => a.RequisitionHeader).HasForeignKey(d => d.ReqNumber);
             e.HasOne(r => r.ToLocation).WithMany().HasForeignKey("TO_LOCATION_ID");
             e.HasOne(r => r.FromLocation).WithMany().HasForeignKey("FROM_LOCATION_ID");
             e.Property(r => r.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
@@ -377,10 +382,16 @@
             r.Property(l => l.Document1Number).HasColumnName("DOCUMENT_1");
             r.Property(l => l.Document1Line).HasColumnName("DOCUMENT_1_LINE");
             r.Property(l => l.Document1Type).HasColumnName("NAME").HasMaxLength(6);
+            r.Property(l => l.Document2Number).HasColumnName("DOCUMENT_2");
+            r.Property(l => l.Document2Line).HasColumnName("DOCUMENT_2_LINE");
+            r.Property(l => l.Document2Type).HasColumnName("NAME_DOC_2").HasMaxLength(6);
             r.HasOne(l => l.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
+            r.HasOne(l => l.RequisitionHeader).WithMany(a => a.Lines).HasForeignKey(a => a.ReqNumber);
             r.HasMany(t => t.Moves).WithOne().HasForeignKey(reqMove => new { reqMove.ReqNumber, reqMove.LineNumber });
             r.Property(l => l.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
             r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
+            r.HasMany(l => l.StoresBudgets).WithOne(a => a.RequisitionLine)
+                .HasForeignKey(p => new { p.RequisitionNumber, p.LineNumber });
             r.HasMany(l => l.NominalAccountPostings).WithOne()
                 .HasForeignKey(p => new { p.ReqNumber, p.LineNumber });
         }
@@ -450,6 +461,7 @@
             e.HasKey(a => a.BudgetId);
             e.Property(a => a.BudgetId).HasColumnName("BUDGET_ID");
             e.Property(a => a.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            e.HasOne(r => r.Transaction).WithMany().HasForeignKey(r => r.TransactionCode);
             e.Property(a => a.OverheadPrice).HasColumnName("OVERHEAD_PRICE");
             e.Property(d => d.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
@@ -458,7 +470,6 @@
             e.Property(n => n.PartPrice).HasColumnName("PART_PRICE");
             e.Property(n => n.RequisitionNumber).HasColumnName("REQ_NUMBER");
             e.Property(n => n.LineNumber).HasColumnName("LINE_NUMBER");
-            e.HasOne(r => r.Requisition).WithMany().HasForeignKey(r => r.RequisitionNumber);
             e.Property(n => n.MaterialPrice).HasColumnName("MATERIAL_PRICE");
             e.Property(n => n.LabourPrice).HasColumnName("LABOUR_PRICE");
             e.Property(n => n.MachinePrice).HasColumnName("MACHINE_PRICE");
@@ -493,6 +504,27 @@
             entity.Property(e => e.Qty).HasColumnName("QTY");
             entity.HasOne(e => e.NominalAccount).WithMany().HasForeignKey("NOMACC_ID");
             entity.Property(e => e.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT").HasMaxLength(1);
+        }
+
+        private static void BuildStorageSites(ModelBuilder builder)
+        {
+            var e = builder.Entity<StorageSite>().ToTable("STORAGE_SITES");
+            e.HasKey(l => l.SiteCode);
+            e.Property(l => l.SiteCode).HasColumnName("SITE_CODE").HasMaxLength(16);
+            e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.Property(l => l.SitePrefix).HasColumnName("SITE_PREFIX").HasMaxLength(1);
+            e.HasMany(r => r.StorageAreas).WithOne(a => a.StorageSite).HasForeignKey(r => r.SiteCode);
+        }
+
+        private static void BuildStorageAreas(ModelBuilder builder)
+        {
+            var e = builder.Entity<StorageArea>().ToTable("STORAGE_AREAS");
+            e.HasKey(l => new { l.SiteCode, l.StorageAreaCode });
+            e.Property(l => l.StorageAreaCode).HasColumnName("STORAGE_AREA_CODE").HasMaxLength(16);
+            e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
+            e.Property(l => l.SiteCode).HasColumnName("SITE_CODE").HasMaxLength(16);
+            e.Property(l => l.AreaPrefix).HasColumnName("AREA_PREFIX").HasMaxLength(3);
         }
     }
 }

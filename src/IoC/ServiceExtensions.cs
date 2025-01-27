@@ -58,7 +58,8 @@
                 .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>, StoresBudgetFacadeService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
-                .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>();
+                .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
+                .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
@@ -69,6 +70,7 @@
                 .AddScoped<IBuilder<RequisitionHeader>, RequisitionResourceBuilder>()
                 .AddScoped<IBuilder<NominalAccount>, NominalAccountResourceBuilder>()
                 .AddScoped<IBuilder<StoresBudget>, StoresBudgetResourceBuilder>()
+                .AddScoped<IBuilder<StorageSite>, StorageSiteResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
