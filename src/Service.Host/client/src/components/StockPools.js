@@ -56,7 +56,7 @@ function StockPools() {
     } = usePost(itemTypes.stockPools.url);
 
     useEffect(() => {
-        setSnackbarVisible(!!updateResult);
+        setSnackbarVisible(!!updateResult || !!createStockPoolResult);
     }, [updateResult]);
 
     useEffect(() => {
@@ -96,7 +96,8 @@ function StockPools() {
                 stockCategory: null,
                 stockPoolCode: '',
                 stockPoolDescription: null,
-                storageLocation: null
+                storageLocation: null,
+                creating : true
             }
         ]);
     };
@@ -264,10 +265,10 @@ function StockPools() {
                                     console.log(updatedStockPool);
                                     console.log(sp);
 
-                                    if (updatedStockPool) {
-                                        updateStockPool(sp.stockPoolCode, updatedStockPool);
+                                    if (updatedStockPool.creating) {
+                                        createStockPool(null, sp);
                                     } else {
-                                        createStockPool(sp);
+                                        updateStockPool(sp.stockPoolCode, updatedStockPool);
                                     }
                                     
                                 });
