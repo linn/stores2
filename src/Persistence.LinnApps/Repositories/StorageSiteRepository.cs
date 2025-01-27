@@ -1,9 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-
-namespace Linn.Stores2.Persistence.LinnApps.Repositories
+﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
+    using System.Linq;
+    using Microsoft.EntityFrameworkCore;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Stock;
 

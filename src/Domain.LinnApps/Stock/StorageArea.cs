@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Linn.Stores2.Domain.LinnApps.Stock
+﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
+    using System;
+
     public class StorageArea
     {
         public string StorageAreaCode { get; set; }

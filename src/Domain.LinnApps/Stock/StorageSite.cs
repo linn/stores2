@@ -1,8 +1,7 @@
-﻿using Linn.Stores2.Domain.LinnApps.Requisitions;
-using System.Collections.Generic;
-
-namespace Linn.Stores2.Domain.LinnApps.Stock
+﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
+    using System.Collections.Generic;
+
     public class StorageSite
     {
         public string SiteCode { get; set; }
