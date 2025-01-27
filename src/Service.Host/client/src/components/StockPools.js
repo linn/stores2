@@ -50,14 +50,14 @@ function StockPools() {
     const {
         send: createStockPool,
         createStockPoolLoading,
-        errorMessage: createStockPoolMessage,
+        errorMessage: createStockPoolError,
         postResult: createStockPoolResult,
-        clearPostResult: clearcreateStockPool
+        clearPostResult: clearCreateStockPool
     } = usePost(itemTypes.stockPools.url);
 
     useEffect(() => {
         setSnackbarVisible(!!updateResult || !!createStockPoolResult);
-    }, [updateResult]);
+    }, [createStockPoolResult, updateResult]);
 
     useEffect(() => {
         setStockPools(stockPoolResult);
@@ -97,7 +97,7 @@ function StockPools() {
                 stockPoolCode: '',
                 stockPoolDescription: null,
                 storageLocation: null,
-                creating : true
+                creating: true
             }
         ]);
     };
@@ -228,7 +228,10 @@ function StockPools() {
                 <Grid size={12}>
                     <CreateButton createUrl="/stores2/stock-pools/create" />
                 </Grid>
-                {(isLoading || accountingCompanyLoading || updateLoading) && (
+                {(isLoading ||
+                    accountingCompanyLoading ||
+                    updateLoading ||
+                    createStockPoolLoading) && (
                     <Grid size={12}>
                         <List>
                             <Loading />
@@ -255,23 +258,23 @@ function StockPools() {
                 <Grid item xs={4}>
                     <Button
                         onClick={() => {
-                            const aa = stockPools.filter(sp => sp.updated === true)
-                            console.log(stockPools)
-                                aa.forEach(sp => {
-                                    const updatedStockPool = stockPools.find(
-                                        pool => pool.stockPoolCode === sp.stockPoolCode
-                                    );
+                            const aa = stockPools.filter(sp => sp.updated === true);
+                            console.log(stockPools);
+                            aa.forEach(sp => {
+                                const updatedStockPool = stockPools.find(
+                                    pool => pool.stockPoolCode === sp.stockPoolCode
+                                );
 
-                                    console.log(updatedStockPool);
-                                    console.log(sp);
+                                console.log(updatedStockPool);
+                                console.log(sp);
 
-                                    if (updatedStockPool.creating) {
-                                        createStockPool(null, sp);
-                                    } else {
-                                        updateStockPool(sp.stockPoolCode, updatedStockPool);
-                                    }
-                                    
-                                });
+                                if (updatedStockPool.creating) {
+                                    clearCreateStockPool();
+                                    createStockPool(null, sp);
+                                } else {
+                                    updateStockPool(sp.stockPoolCode, updatedStockPool);
+                                }
+                            });
                         }}
                         variant="outlined"
                         // eslint-disable-next-line eqeqeq
@@ -287,9 +290,11 @@ function StockPools() {
                         message="Save Successful"
                     />
                 </Grid>
-                {updateError && (
+                {(updateError || createStockPoolError) && (
                     <Grid item xs={12}>
-                        <ErrorCard errorMessage={updateError?.details} />
+                        <ErrorCard
+                            errorMessage={updateError ? updateError?.details : createStockPoolError}
+                        />
                     </Grid>
                 )}
             </Grid>
