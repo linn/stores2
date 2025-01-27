@@ -51,7 +51,7 @@ function Requisition({ creating }) {
     const [formState, setFormState] = useState();
 
     useEffect(() => {
-        const defaultState = { dateCreated: new Date(), dateAuthorised: null };
+        const defaultState = { dateCreated: new Date(), dateAuthorised: null, lines: [] };
 
         if (cancelResult) {
             setFormState(cancelResult);

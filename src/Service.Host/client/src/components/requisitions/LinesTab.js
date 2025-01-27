@@ -105,8 +105,8 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine }) {
                     getRowId={r => r.lineNumber}
                     rows={lines}
                     rowSelectionModel={selected ? [selected] : []}
-                    onRowSelectionModelChange={s => {
-                        setSelected(s?.[0]);
+                    onRowClick={row => {
+                        setSelected(row.id);
                     }}
                     columns={linesColumns}
                     hideFooter
@@ -123,7 +123,7 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine }) {
             <Grid size={10}>
                 {selected && (
                     <BudgetPostings
-                        budgetPostings={lines.find(l => l.lineNumber === selected)?.postings}
+                        budgetPostings={lines.find(l => l.lineNumber === selected)?.postings ?? []}
                     />
                 )}
             </Grid>
