@@ -28,13 +28,13 @@ function Requisition() {
     const { reqNumber } = useParams();
     const { isLoading, result } = useInitialise(itemTypes.requisitions.url, reqNumber);
     const {
-        send: cancelReq,
+        send: cancel,
         isLoading: cancelLoading,
         errorMessage: cancelError,
         postResult: cancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
     const [tab, setTab] = useState(0);
-    const [selectedLine, setSelectedLine] = useState();
+    const [selectedLine, setSelectedLine] = useState(1);
 
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
 
@@ -50,7 +50,7 @@ function Requisition() {
                         visible={cancelDialogVisible}
                         closeDialog={() => setCancelDialogVisible(false)}
                         onConfirm={reason => {
-                            cancelReq(null, { reason, reqNumber });
+                            cancel(null, { reason, reqNumber });
                         }}
                     />
                 )}
@@ -157,9 +157,8 @@ function Requisition() {
                             <Button
                                 disabled={req.cancelled === 'Y'}
                                 variant="contained"
-                                sx={{ marginTop: '30px' }}
+                                sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
                                 onClick={() => setCancelDialogVisible(true)}
-                                color="secondary"
                             >
                                 Cancel Req
                             </Button>
@@ -264,7 +263,7 @@ function Requisition() {
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tab} onChange={handleChange}>
                                     <Tab label="Lines" />
-                                    <Tab label="Moves" disabled={!selectedLine} />
+                                    <Tab label="Moves" disabled={!req.lines || !selectedLine} />
                                     <Tab label="Transactions" disabled />
                                 </Tabs>
                             </Box>
@@ -275,6 +274,7 @@ function Requisition() {
                                     lines={req.lines}
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
+                                    cancelLine={cancel}
                                 />
                             )}
                             {tab === 1 && (

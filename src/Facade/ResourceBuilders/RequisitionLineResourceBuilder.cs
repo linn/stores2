@@ -17,6 +17,7 @@
 
             return new RequisitionLineResource 
                        {
+                           ReqNumber = l.ReqNumber,
                            LineNumber = l.LineNumber,
                            PartNumber = l.Part?.PartNumber,
                            PartDescription = l.Part?.Description,

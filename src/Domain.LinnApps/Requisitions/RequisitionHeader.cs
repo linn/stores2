@@ -115,7 +115,8 @@
         public void BookLine(int lineNumber, Employee bookedBy)
         {
             this.Lines.First(x => x.LineNumber == lineNumber).Book();
-            if (!this.DateBooked.HasValue && Lines.All(l => l.DateBooked.HasValue))
+
+            if (!this.DateBooked.HasValue && this.Lines.All(l => l.DateBooked.HasValue))
             {
                 this.Book(bookedBy);
             }
