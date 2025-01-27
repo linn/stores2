@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
@@ -13,20 +13,26 @@ import {
     ErrorCard
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
-
+import PropTypes from 'prop-types';
 import Page from '../Page';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
-
-import useInitialise from '../../hooks/useInitialise';
+import useGet from '../../hooks/useGet';
 import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
 
-function Requisition() {
+function Requisition({ creating }) {
     const { reqNumber } = useParams();
-    const { isLoading, result } = useInitialise(itemTypes.requisitions.url, reqNumber);
+    const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
+    const [hasFetched, setHasFetched] = useState(false);
+
+    if (!creating && reqNumber && !hasFetched) {
+        fetchReq(reqNumber);
+        setHasFetched(true);
+    }
+
     const {
         send: cancel,
         isLoading: cancelLoading,
@@ -41,7 +47,21 @@ function Requisition() {
     const handleChange = (_, newValue) => {
         setTab(newValue);
     };
-    const req = cancelResult ?? result;
+
+    const [formState, setFormState] = useState();
+
+    useEffect(() => {
+        const defaultState = { dateCreated: new Date(), dateAuthorised: null };
+
+        if (cancelResult) {
+            setFormState(cancelResult);
+        } else if (result) {
+            setFormState(result);
+        } else if (creating) {
+            setFormState(defaultState);
+        }
+    }, [result, cancelResult, creating]);
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -62,17 +82,17 @@ function Requisition() {
                         <ErrorCard errorMessage={cancelError} />{' '}
                     </Grid>
                 )}
-                {(isLoading || cancelLoading) && (
+                {(fetchLoading || cancelLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
                 )}
-                {!isLoading && !cancelLoading && req && (
+                {!fetchLoading && !cancelLoading && formState && (
                     <>
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={req.reqNumber}
+                                value={formState.reqNumber}
                                 type="number"
                                 onChange={() => {}}
                                 label="Req Number"
@@ -81,7 +101,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <DatePicker
-                                value={req.dateBooked}
+                                value={formState.dateBooked}
                                 onChange={() => {}}
                                 label="Date Booked"
                                 propertyName="dateBooked"
@@ -90,7 +110,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={req.bookedByName}
+                                value={formState.bookedByName}
                                 onChange={() => {}}
                                 label="Booked By"
                                 propertyName="bookedByName"
@@ -100,7 +120,7 @@ function Requisition() {
                             <Dropdown
                                 fullWidth
                                 items={['Y', 'N']}
-                                value={req.reversed}
+                                value={formState.reversed}
                                 onChange={() => {}}
                                 label="Reversed"
                                 propertyName="reversed"
@@ -110,7 +130,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={req.functionCode}
+                                value={formState.functionCode}
                                 onChange={() => {}}
                                 label="Function Code"
                                 propertyName="functionCode"
@@ -119,7 +139,7 @@ function Requisition() {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={req.functionCodeDescription}
+                                value={formState.functionCodeDescription}
                                 onChange={() => {}}
                                 label="Function Code Description"
                                 propertyName="functionCodeDescription"
@@ -129,7 +149,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={req.createdByName}
+                                value={formState.createdByName}
                                 onChange={() => {}}
                                 label="Created By"
                                 propertyName="createdByName"
@@ -137,7 +157,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <DatePicker
-                                value={req.dateCreated}
+                                value={formState.dateCreated}
                                 onChange={() => {}}
                                 label="Date Created"
                                 propertyName="dateCreated"
@@ -147,7 +167,7 @@ function Requisition() {
                             <Dropdown
                                 fullWidth
                                 items={['Y', 'N']}
-                                value={req.cancelled}
+                                value={formState.cancelled}
                                 onChange={() => {}}
                                 label="Cancelled"
                                 propertyName="cancelled"
@@ -155,7 +175,9 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <Button
-                                disabled={req.cancelled === 'Y'}
+                                disabled={
+                                    formState.cancelled === 'Y' || formState.dateBooked || creating
+                                }
                                 variant="contained"
                                 sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
                                 onClick={() => setCancelDialogVisible(true)}
@@ -167,7 +189,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={req.department?.departmentCode}
+                                value={formState.department?.departmentCode}
                                 onChange={() => {}}
                                 label="Dept"
                                 propertyName="departmentCode"
@@ -176,7 +198,7 @@ function Requisition() {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={req.department?.description}
+                                value={formState.department?.description}
                                 onChange={() => {}}
                                 label="Desc"
                                 propertyName="departmentDescription"
@@ -185,7 +207,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={req.nominal?.nominalCode}
+                                value={formState.nominal?.nominalCode}
                                 onChange={() => {}}
                                 label="Nominal"
                                 propertyName="nominalCode"
@@ -194,7 +216,7 @@ function Requisition() {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={req.nominal?.description}
+                                value={formState.nominal?.description}
                                 onChange={() => {}}
                                 label="Desc"
                                 propertyName="nominalDescription"
@@ -203,7 +225,7 @@ function Requisition() {
                         <Grid size={2}>
                             <InputField
                                 fullWidth
-                                value={req.authorisedByName}
+                                value={formState.authorisedByName}
                                 onChange={() => {}}
                                 label="Auth By"
                                 propertyName="authorisedByName"
@@ -211,7 +233,7 @@ function Requisition() {
                         </Grid>
                         <Grid size={2}>
                             <DatePicker
-                                value={req.dateAuthorised}
+                                value={formState.dateAuthorised}
                                 onChange={() => {}}
                                 label="Date Authd"
                                 propertyName="dateAuthorised"
@@ -223,7 +245,7 @@ function Requisition() {
                                 fullWidth
                                 items={['Y', 'N']}
                                 allowNoValue
-                                value={req.manualPick}
+                                value={formState.manualPick}
                                 onChange={() => {}}
                                 label="Manual Pick"
                                 propertyName="manualPick"
@@ -234,7 +256,7 @@ function Requisition() {
                                 fullWidth
                                 items={['F', 'O']}
                                 allowNoValue
-                                value={req.reqType}
+                                value={formState.reqType}
                                 onChange={() => {}}
                                 label="Req Type"
                                 propertyName="reqType"
@@ -244,7 +266,7 @@ function Requisition() {
                         <Grid size={6}>
                             <InputField
                                 fullWidth
-                                value={req.comments}
+                                value={formState.comments}
                                 onChange={() => {}}
                                 label="Comments"
                                 propertyName="comments"
@@ -253,7 +275,7 @@ function Requisition() {
                         <Grid size={6}>
                             <InputField
                                 fullWidth
-                                value={req.reference}
+                                value={formState.reference}
                                 onChange={() => {}}
                                 label="Reference"
                                 propertyName="reference"
@@ -263,7 +285,10 @@ function Requisition() {
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tab} onChange={handleChange}>
                                     <Tab label="Lines" />
-                                    <Tab label="Moves" disabled={!req.lines || !selectedLine} />
+                                    <Tab
+                                        label="Moves"
+                                        disabled={!formState.lines || !selectedLine}
+                                    />
                                     <Tab label="Transactions" disabled />
                                 </Tabs>
                             </Box>
@@ -271,7 +296,7 @@ function Requisition() {
                         <Grid size={12}>
                             {tab === 0 && (
                                 <LinesTab
-                                    lines={req.lines}
+                                    lines={formState.lines}
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
@@ -280,7 +305,8 @@ function Requisition() {
                             {tab === 1 && (
                                 <MovesTab
                                     moves={
-                                        req.lines?.find(x => x.lineNumber === selectedLine)?.moves
+                                        formState.lines?.find(x => x.lineNumber === selectedLine)
+                                            ?.moves
                                     }
                                 />
                             )}
@@ -291,5 +317,7 @@ function Requisition() {
         </Page>
     );
 }
+
+Requisition.propTypes = { creating: PropTypes.bool.isRequired };
 
 export default Requisition;

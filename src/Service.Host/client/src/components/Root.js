@@ -31,7 +31,12 @@ function Root() {
                         element={<StoragePlaceAudit />}
                     />
                     <Route path="/requisitions" element={<SearchRequisitions />} />
-                    <Route path="/requisitions/:reqNumber" element={<Requisition />} />
+                    <Route path="/requisitions/create" element={<Requisition creating />} />
+
+                    <Route
+                        path="/requisitions/:reqNumber"
+                        element={<Requisition creating={false} />}
+                    />
 
                     <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
