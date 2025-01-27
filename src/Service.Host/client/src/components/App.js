@@ -26,6 +26,9 @@ function App() {
                         <ListItem component={Link} to="/stores2/budgets">
                             <Typography color="primary">Stores Budget Viewer</Typography>
                         </ListItem>
+                        <ListItem component={Link} to="/stores2/storage">
+                            <Typography color="primary">Storage Locations</Typography>
+                        </ListItem>
                     </List>
                 </Grid>
             </Grid>

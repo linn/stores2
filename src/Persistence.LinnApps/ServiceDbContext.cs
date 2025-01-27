@@ -36,6 +36,8 @@
         
         public DbSet<StoresBudget> StoresBudgets { get; set; }
 
+        public DbSet<StorageSite> StorageSites { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -66,6 +68,8 @@
             BuildStoresBudgets(builder);
             BuildStoresBudgetPostings(builder);
             BuildReqLinePostings(builder);
+            BuildStorageSites(builder);
+            BuildStorageAreas(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -500,6 +504,27 @@
             entity.Property(e => e.Qty).HasColumnName("QTY");
             entity.HasOne(e => e.NominalAccount).WithMany().HasForeignKey("NOMACC_ID");
             entity.Property(e => e.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT").HasMaxLength(1);
+        }
+
+        private static void BuildStorageSites(ModelBuilder builder)
+        {
+            var e = builder.Entity<StorageSite>().ToTable("STORAGE_SITES");
+            e.HasKey(l => l.SiteCode);
+            e.Property(l => l.SiteCode).HasColumnName("SITE_CODE").HasMaxLength(16);
+            e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.Property(l => l.SitePrefix).HasColumnName("SITE_PREFIX").HasMaxLength(1);
+            e.HasMany(r => r.StorageAreas).WithOne(a => a.StorageSite).HasForeignKey(r => r.SiteCode);
+        }
+
+        private static void BuildStorageAreas(ModelBuilder builder)
+        {
+            var e = builder.Entity<StorageArea>().ToTable("STORAGE_AREAS");
+            e.HasKey(l => new { l.SiteCode, l.StorageAreaCode });
+            e.Property(l => l.StorageAreaCode).HasColumnName("STORAGE_AREA_CODE").HasMaxLength(16);
+            e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
+            e.Property(l => l.SiteCode).HasColumnName("SITE_CODE").HasMaxLength(16);
+            e.Property(l => l.AreaPrefix).HasColumnName("AREA_PREFIX").HasMaxLength(3);
         }
     }
 }

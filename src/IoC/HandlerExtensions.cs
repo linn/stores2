@@ -27,7 +27,8 @@
                 .AddSingleton<IHandler, JsonResultHandler<RequisitionHeaderResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<RequisitionHeaderResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StockPoolResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StockPoolResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StockPoolResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageSiteResource>>>();
         }
     }
 }
