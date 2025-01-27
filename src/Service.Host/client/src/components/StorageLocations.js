@@ -4,7 +4,6 @@ import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
 import { 
-    CreateButton, 
     Dropdown,
     InputField,
     Loading
@@ -91,9 +90,7 @@ function StorageLocations() {
                                     propertyName="sitePrefix"
                                 />}
                         </Grid>
-                        <Grid size={2}>                            
-                            <CreateButton createUrl="/stores2/storage/site/create" />
-                        </Grid>
+                        <Grid size={2}/>
                         <Grid size={5}>
                             <Dropdown
                                 value={selectedAreaCode}
@@ -128,9 +125,7 @@ function StorageLocations() {
                                     propertyName="areaPrefix"
                                 />}
                         </Grid>
-                        <Grid size={2}>                            
-                            <CreateButton createUrl="/stores2/storage/site/{}/areas/create" />
-                        </Grid>
+                        <Grid size={2}/>
                     </>
                 )
                 }

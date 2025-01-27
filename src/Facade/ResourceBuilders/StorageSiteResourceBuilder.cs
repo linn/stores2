@@ -16,7 +16,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                 SiteCode = model.SiteCode,
                 Description = model.Description,
                 SitePrefix = model.SitePrefix,
-                StorageAreas = model.StorageAreas.Select(a => new StorageAreaResource
+                StorageAreas = model.StorageAreas.Where(a => a.DateInvalid == null).OrderBy(a => a.Description).Select(a => new StorageAreaResource
                 {
                     StorageAreaCode = a.StorageAreaCode,
                     Description = a.Description,
