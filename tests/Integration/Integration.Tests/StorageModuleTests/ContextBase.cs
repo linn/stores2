@@ -28,6 +28,7 @@
             this.DbContext = new TestServiceDbContext();
 
             var siteRepository = new StorageSiteRepository(this.DbContext);
+            var locationRepository = new StorageLocationRepository(this.DbContext);
 
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
                 storageSiteService = new StorageSiteService(
@@ -35,10 +36,17 @@
                     new TransactionManager(this.DbContext),
                     new StorageSiteResourceBuilder());
 
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
+                storageLocationService = new StorageLocationService(
+                    locationRepository,
+                    new TransactionManager(this.DbContext),
+                    new StorageLocationResourceBuilder());
+
             this.Client = TestClient.With<StorageModule>(
                 services =>
                 {
                     services.AddSingleton(storageSiteService);
+                    services.AddSingleton(storageLocationService);
                     services.AddHandlers();
                     services.AddRouting();
                 });
@@ -53,7 +61,8 @@
         [TearDown]
         public void Teardown()
         {
-            this.DbContext.Countries.RemoveAllAndSave(this.DbContext);
+            this.DbContext.StorageSites.RemoveAllAndSave(this.DbContext);
+            this.DbContext.StorageLocations.RemoveAllAndSave(this.DbContext);
         }
 
     }

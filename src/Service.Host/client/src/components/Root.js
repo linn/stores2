@@ -12,6 +12,7 @@ import SearchRequisitions from './requisitions/SearchRequisitions';
 import Requisition from './requisitions/Requisition';
 import StoresBudgetViewer from './StoresBudgetViewer';
 import StorageLocations from './StorageLocations';
+import StorageLocation from './StorageLocation';
 import StockPools from './StockPools';
 
 function Root() {
@@ -42,6 +43,11 @@ function Root() {
                     <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/storage" element={<StorageLocations />} />
+                    <Route
+                        path="/stores2/storage/locations/create"
+                        element={<StorageLocation creating />}
+                    />
+                    <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
