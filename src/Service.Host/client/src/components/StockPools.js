@@ -101,7 +101,14 @@ function StockPools() {
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
-        setStockPools(prevRows => prevRows.map(row => (row.id === newRow.id ? updatedRow : row)));
+        console.log(updatedRow);
+        setStockPools(prevRows =>
+            prevRows.map(row =>
+                row.stockPoolCode === newRow.stockPoolCode || row.stockPoolCode === ''
+                    ? updatedRow
+                    : row
+            )
+        );
         return newRow;
     };
 
@@ -250,6 +257,7 @@ function StockPools() {
                         }}
                     />
                 </Grid>
+                {console.log(stockPools)}
                 <Grid item xs={4}>
                     <Button onClick={addNewRow} variant="outlined" disabled={creating}>
                         Add Stock Pool
