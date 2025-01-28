@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
-using Linn.Common.Facade;
-using Linn.Common.Persistence;
-using Linn.Stores2.Domain.LinnApps.Stock;
-using Linn.Stores2.Facade.Common;
-using Linn.Stores2.Resources;
-
-namespace Linn.Stores2.Facade.Services
+﻿namespace Linn.Stores2.Facade.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using Linn.Common.Facade;
+    using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Facade.Common;
+    using Linn.Stores2.Resources;
+
     public class StorageLocationService : AsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
     {
         public StorageLocationService(IRepository<StorageLocation, int> repository, ITransactionManager transactionManager, IBuilder<StorageLocation> resourceBuilder) : base(repository, transactionManager, resourceBuilder)
