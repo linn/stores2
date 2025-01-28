@@ -4,6 +4,8 @@
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Service.Extensions;
@@ -20,6 +22,7 @@
             app.MapGet("/requisitions", this.Search);
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
+            app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
         }
 
         private async Task Search(
@@ -44,7 +47,6 @@
                                                 IncludeCancelled = includeCancelled.GetValueOrDefault()
                                             }));
             }
-            
         }
 
         private async Task GetById(
@@ -79,6 +81,14 @@
                                         resource.Reason,
                                         req.HttpContext.GetPrivileges()));
             }
+        }
+
+        private async Task GetFunctionCodes(
+            HttpRequest _,
+            HttpResponse res,
+            IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource, FunctionCodeResource> service)
+        {
+            await res.Negotiate(await service.GetAll());
         }
     }
 }

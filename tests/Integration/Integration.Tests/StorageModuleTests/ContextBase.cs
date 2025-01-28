@@ -64,6 +64,5 @@
             this.DbContext.StorageSites.RemoveAllAndSave(this.DbContext);
             this.DbContext.StorageLocations.RemoveAllAndSave(this.DbContext);
         }
-
     }
 }

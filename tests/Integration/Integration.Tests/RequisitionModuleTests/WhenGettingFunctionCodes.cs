@@ -1,35 +1,29 @@
-﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
 
     using FluentAssertions;
-
-    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Requisitions;
 
     using NUnit.Framework;
 
-    public class WhenGettingAllSites : ContextBase
+    public class WhenGettingFunctionCodes : ContextBase
     {
-        private StorageSite eaglesham;
+        private StoresFunctionCode ldreq;
 
         [SetUp]
         public void SetUp()
         {
-            this.eaglesham = new StorageSite()
-            {
-                SiteCode = "EAGLESHAM", Description = "EAGLESHAM", SitePrefix = "E",
-                StorageAreas = new List<StorageArea> { new StorageArea {StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA" } }
-            };
+            this.ldreq = new StoresFunctionCode("LDREQ");
 
-            this.DbContext.StorageSites.AddAndSave(this.DbContext, this.eaglesham);
-            this.DbContext.SaveChanges();
+            this.DbContext.StoresFunctionCodes.AddAndSave(this.DbContext, this.ldreq);
 
             this.Response = this.Client.Get(
-                "/stores2/storage/sites",
+                "/requisitions/function-codes",
                 with =>
                 {
                     with.Accept("application/json");
@@ -52,8 +46,8 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<StorageSiteResource>>();
-            resource.First().SiteCode.Should().Be("EAGLESHAM");
+            var resource = this.Response.DeserializeBody<IEnumerable<FunctionCodeResource>>();
+            resource.First().Id.Should().Be("LDREQ");
         }
     }
 }

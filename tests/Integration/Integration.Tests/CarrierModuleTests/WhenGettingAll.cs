@@ -20,14 +20,14 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
         {
             this.dhl = new Carrier(
                 "DHL",
-                "D H L", 
+                "D H L",
                 "Mr Dhl",
                 "line2",
                 "line2",
                 "line3",
                 "line4",
                 "postcode",
-                 new Country("GB", "Great Britain"),
+                new Country("GB", "Great Britain"),
                 "012345",
                 "123456789");
 
@@ -53,7 +53,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldReturnJsonBody()
         {
