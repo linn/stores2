@@ -89,7 +89,7 @@ function Requisition({ creating }) {
         clear: clearNominalsSearch
     } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
 
-    const simpleFieldChange = (fieldName, newValue) => {
+    const handleHeaderFieldChange = (fieldName, newValue) => {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
 
@@ -169,7 +169,7 @@ function Requisition({ creating }) {
                                     fullWidth
                                     value={formState.functionCode}
                                     items={functionCodes.map(f => f.id)}
-                                    onChange={simpleFieldChange}
+                                    onChange={handleHeaderFieldChange}
                                     label="Function Code"
                                     propertyName="functionCode"
                                 />
