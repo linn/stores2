@@ -120,7 +120,7 @@ function StockPools() {
             const currentRow = stockPools?.find(r => r.id === searchDialogOpen.forRow);
             let newRow = {
                 ...currentRow,
-                hasChanged: true
+                updated: true
             };
             c.searchUpdateFieldNames?.forEach(f => {
                 newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
