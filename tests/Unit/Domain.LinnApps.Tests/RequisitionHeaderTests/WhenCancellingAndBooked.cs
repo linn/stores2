@@ -5,6 +5,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.Requisitions;
 
     using NUnit.Framework;
