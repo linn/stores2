@@ -62,11 +62,23 @@
             CancelRequisitionResource resource,
             IRequisitionFacadeService service)
         {
-            await res.Negotiate(await service.CancelHeader(
-                                    resource.ReqNumber, 
-                                    req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
-                                    resource.Reason,
-                                    req.HttpContext.GetPrivileges()));
+            if (resource.LineNumber.HasValue)
+            {
+                await res.Negotiate(await service.CancelLine(
+                                        resource.ReqNumber,
+                                        resource.LineNumber.Value,
+                                        req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                                        resource.Reason,
+                                        req.HttpContext.GetPrivileges()));
+            }
+            else
+            {
+                await res.Negotiate(await service.CancelHeader(
+                                        resource.ReqNumber,
+                                        req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                                        resource.Reason,
+                                        req.HttpContext.GetPrivileges()));
+            }
         }
     }
 }

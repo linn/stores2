@@ -10,6 +10,10 @@
         {
             this.BookedBy = new Employee { Id = bookedBy };
             this.DateBooked = DateTime.Now;
+            this.Lines = new List<RequisitionLine>
+                             {
+                                 new BookedLine(reqNumber, 1)
+                             };
         }
     }
 }
