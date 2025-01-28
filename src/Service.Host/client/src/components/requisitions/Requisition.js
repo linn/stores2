@@ -25,8 +25,10 @@ import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
 import useSearch from '../../hooks/useSearch';
 import requisitionReducer from './reducers/requisitonReducer';
+import useUserProfile from '../../hooks/useUserProfile';
 
 function Requisition({ creating }) {
+    const { userNumber, name } = useUserProfile();
     const { reqNumber } = useParams();
     const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
     const [hasFetched, setHasFetched] = useState(false);
@@ -63,16 +65,14 @@ function Requisition({ creating }) {
     const [formState, dispatch] = useReducer(requisitionReducer, null);
 
     useEffect(() => {
-        const defaultState = { dateCreated: new Date(), dateAuthorised: null, lines: [] };
-
         if (cancelResult) {
-            dispatch({ type: 'reload', payload: cancelResult });
+            dispatch({ type: 'load_state', payload: cancelResult });
         } else if (result) {
-            dispatch({ type: 'reload', payload: result });
+            dispatch({ type: 'load_state', payload: result });
         } else if (creating) {
-            dispatch({ type: 'reload', payload: defaultState });
+            dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, creating]);
+    }, [result, cancelResult, creating, name, userNumber]);
 
     const {
         search: searchDepartments,
@@ -89,8 +89,9 @@ function Requisition({ creating }) {
     } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
 
     const simpleFieldChange = (fieldName, newValue) => {
-        dispatch({ type: 'set_header_field', payload: { fieldName, newValue } });
+        dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -104,7 +105,12 @@ function Requisition({ creating }) {
                     />
                 )}
                 <Grid size={12}>
-                    <Typography variant="h6">Requisition Viewer</Typography>
+                    <Typography variant="h6">
+                        <span>Requisition Viewer</span>
+                        {formState?.cancelled === 'Y' && (
+                            <span style={{ color: 'red' }}> [CANCELLED]</span>
+                        )}
+                    </Typography>
                 </Grid>
                 {cancelError && (
                     <Grid size={12}>
@@ -199,16 +205,6 @@ function Requisition({ creating }) {
                             />
                         </Grid>
                         <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['Y', 'N']}
-                                value={formState.cancelled}
-                                onChange={() => {}}
-                                label="Cancelled"
-                                propertyName="cancelled"
-                            />
-                        </Grid>
-                        <Grid size={2}>
                             <Button
                                 disabled={
                                     formState.cancelled === 'Y' || formState.dateBooked || creating
@@ -220,7 +216,7 @@ function Requisition({ creating }) {
                                 Cancel Req
                             </Button>
                         </Grid>
-                        <Grid size={4} />
+                        <Grid size={6} />
                         <Grid size={2}>
                             <Search
                                 propertyName="departmentCode"
@@ -231,8 +227,11 @@ function Requisition({ creating }) {
                                 value={formState.department?.departmentCode}
                                 handleValueChange={(_, newVal) => {
                                     dispatch({
-                                        type: 'update_header_department',
-                                        payload: { departmentCode: newVal }
+                                        type: 'set_header_value',
+                                        payload: {
+                                            fieldName: 'department',
+                                            newValue: { departmentCode: newVal }
+                                        }
                                     });
                                 }}
                                 search={searchDepartments}
@@ -241,8 +240,8 @@ function Requisition({ creating }) {
                                 priorityFunction="closestMatchesFirst"
                                 onResultSelect={r => {
                                     dispatch({
-                                        type: 'update_header_department',
-                                        payload: r
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'department', newValue: r }
                                     });
                                 }}
                                 clearSearch={clearDepartmentsSearch}
@@ -269,8 +268,11 @@ function Requisition({ creating }) {
                                 value={formState.nominal?.nominalCode}
                                 handleValueChange={(_, newVal) => {
                                     dispatch({
-                                        type: 'update_header_nominal',
-                                        payload: { nominalCode: newVal }
+                                        type: 'set_header_value',
+                                        payload: {
+                                            fieldName: 'nominal',
+                                            newValue: { nominalCode: newVal }
+                                        }
                                     });
                                 }}
                                 search={searchNominals}
@@ -279,8 +281,8 @@ function Requisition({ creating }) {
                                 priorityFunction="closestMatchesFirst"
                                 onResultSelect={r => {
                                     dispatch({
-                                        type: 'update_header_nominal',
-                                        payload: r
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'nominal', newValue: r }
                                     });
                                 }}
                                 clearSearch={clearNominalsSearch}
@@ -360,7 +362,7 @@ function Requisition({ creating }) {
                                 <Tabs value={tab} onChange={handleChange}>
                                     <Tab label="Lines" />
                                     <Tab
-                                        label="Moves"
+                                        label={`Moves (L${selectedLine ?? ''})`}
                                         disabled={!formState.lines || !selectedLine}
                                     />
                                     <Tab label="Transactions" disabled />
@@ -374,6 +376,8 @@ function Requisition({ creating }) {
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
+                                    canAdd={formState.cancelled === 'N' && !formState.dateBooked}
+                                    addLine={() => dispatch({ type: 'add_line' })}
                                 />
                             )}
                             {tab === 1 && (

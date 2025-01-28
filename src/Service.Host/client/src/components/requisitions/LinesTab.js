@@ -5,11 +5,13 @@ import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import CancelIcon from '@mui/icons-material/Cancel';
+import AddIcon from '@mui/icons-material/Add';
+
 import Typography from '@mui/material/Typography';
 import BudgetPostings from '../BudgetPostings';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 
-function LinesTab({ lines = [], selected = null, setSelected, cancelLine }) {
+function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd, addLine }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
 
     const linesColumns = [
@@ -116,6 +118,13 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine }) {
                 />
             </Grid>
             <Grid size={12}>
+                <Tooltip title="Add Line">
+                    <IconButton disabled={!canAdd} onClick={addLine} color="primary" size="large">
+                        <AddIcon />
+                    </IconButton>
+                </Tooltip>
+            </Grid>
+            <Grid size={12}>
                 <Typography variant="h6">
                     {!selected ? 'Click a row to view postings' : `Postings for line ${selected}`}
                 </Typography>
@@ -136,7 +145,9 @@ LinesTab.propTypes = {
     lines: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     selected: PropTypes.number,
     cancelLine: PropTypes.func.isRequired,
-    setSelected: PropTypes.func.isRequired
+    setSelected: PropTypes.func.isRequired,
+    canAdd: PropTypes.bool.isRequired,
+    addLine: PropTypes.func.isRequired
 };
 
 export default LinesTab;
