@@ -13,10 +13,10 @@ import Button from '@mui/material/Button';
 import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
-import useGet from '../hooks/useGet';
 import usePut from '../hooks/usePut';
 import useInitialise from '../hooks/useInitialise';
 import usePost from '../hooks/usePost';
+import useSearch from '../hooks/useSearch';
 
 function StockPools() {
     const { isLoading, result: stockPoolResult } = useInitialise(itemTypes.stockPools.url);
@@ -29,11 +29,11 @@ function StockPools() {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
 
     const {
-        send: getStorageLocations,
-        storageLocationsLoading,
-        result: storageLocationsResult,
-        clearData: clearStorageLocations
-    } = useGet(itemTypes.storagePlaces.url);
+        search: searchStorageLocations,
+        results: storageLocationsSearchResults,
+        loading: storageLocationsSearchLoading,
+        clear: clearStorageLocation
+    } = useSearch(itemTypes.storageLocations.url, 'locationId', 'locationCode', 'description');
 
     const {
         send: updateStockPool,
@@ -55,13 +55,7 @@ function StockPools() {
     }, [createStockPoolResult, updateResult]);
 
     useEffect(() => {
-        if (stockPoolResult) {
-            const stockPoolsWithIds = stockPoolResult.map((stockPool, index) => ({
-                ...stockPool,
-                id: stockPool.id || index + 1
-            }));
-            setStockPools(stockPoolsWithIds);
-        }
+        setStockPools(stockPoolResult);
     }, [stockPoolResult]);
 
     const [searchDialogOpen, setSearchDialogOpen] = useState({
@@ -120,7 +114,9 @@ function StockPools() {
             const currentRow = stockPools?.find(r => r.id === searchDialogOpen.forRow);
             let newRow = {
                 ...currentRow,
-                updated: true
+                updated: true,
+                defaultLocation: selected.locationId,
+                defaultLocationName: selected.locationCode
             };
             c.searchUpdateFieldNames?.forEach(f => {
                 newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
@@ -142,16 +138,13 @@ function StockPools() {
                             resultsInModal
                             resultLimit={100}
                             value={searchTerm}
-                            loading={storageLocationsLoading}
+                            loading={storageLocationsSearchLoading}
                             handleValueChange={(_, newVal) => setSearchTerm(newVal)}
-                            search={() => getStorageLocations(null, `?searchTerm=${searchTerm}`)}
-                            searchResults={storageLocationsResult?.map(s => ({
-                                ...s,
-                                id: s.name
-                            }))}
+                            search={searchStorageLocations}
+                            searchResults={storageLocationsSearchResults}
                             priorityFunction="closestMatchesFirst"
                             onResultSelect={handleSearchResultSelect}
-                            clearSearch={() => {}}
+                            clearSearch={clearStorageLocation}
                         />
                     </DialogContent>
                     <DialogActions>
@@ -177,32 +170,32 @@ function StockPools() {
             width: 175,
             valueFormatter: value => value && moment(value).format('DD-MMM-YYYY')
         },
-        { field: 'stockCategory', editable: true, headerName: 'Stock Category', width: 100 },
+        { field: 'stockCategory', editable: true, headerName: 'Stock Category', width: 130 },
         {
             field: 'accountingCompanyCode',
             editable: true,
             headerName: 'Accounting Company',
-            width: 100,
+            width: 175,
             defaultFormat: true,
             valueOptions: accountingCompany?.map(ac => ac.name),
             type: 'singleSelect'
         },
         {
-            field: 'defaultLocation',
+            field: 'defaultLocationName',
             headerName: 'Default Location',
             width: 150,
             editable: true,
             type: 'search',
-            search: getStorageLocations,
-            searchResults: storageLocationsResult,
-            searchLoading: storageLocationsLoading,
+            searchResults: storageLocationsSearchResults,
+            searchLoading: storageLocationsSearchLoading,
             searchUpdateFieldNames: [
                 { fieldName: 'defaultLocation', searchResultFieldName: 'locationId' },
                 { fieldName: 'defaultLocationName', searchResultFieldName: 'locationCode' }
             ],
-            clearSearch: clearStorageLocations,
+            clearSearch: clearStorageLocation,
             renderCell: searchRenderCell
         },
+        { field: 'availableToMrp', editable: true, headerName: 'Available to Mrp', width: 175 },
         { field: 'sequence', editable: true, headerName: 'Sequence', width: 100 }
     ];
 
@@ -241,7 +234,7 @@ function StockPools() {
                 )}
                 <Grid size={12}>
                     <DataGrid
-                        getRowId={row => row.id}
+                        getRowId={row => row.stockPoolCode}
                         rows={sortedStockPools}
                         editMode="cell"
                         processRowUpdate={processRowUpdate}
@@ -268,16 +261,12 @@ function StockPools() {
                             stockPools
                                 .filter(sp => sp.updated === true)
                                 .forEach(sp => {
-                                    const updatedStockPool = stockPools.find(
-                                        pool => pool.stockPoolCode === sp.stockPoolCode
-                                    );
-
-                                    if (updatedStockPool.creating) {
+                                    if (sp.creating) {
                                         clearCreateStockPool();
                                         createStockPool(null, sp);
                                         setCreating(false);
                                     } else {
-                                        updateStockPool(sp.stockPoolCode, updatedStockPool);
+                                        updateStockPool(sp.stockPoolCode, sp);
                                     }
                                 });
                         }}
