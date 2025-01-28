@@ -8,13 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
-import {
-    CreateButton,
-    Loading,
-    Search,
-    ErrorCard,
-    SnackbarMessage
-} from '@linn-it/linn-form-components-library';
+import { Loading, Search, ErrorCard, SnackbarMessage } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from './Page';
 import config from '../config';
@@ -113,14 +107,7 @@ function StockPools() {
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
-        setStockPools(prevRows =>
-            prevRows.map(row =>
-                // eslint-disable-next-line eqeqeq
-                row.stockPoolCode == newRow.stockPoolCode || row.stockPoolCode == ''
-                    ? updatedRow
-                    : row
-            )
-        );
+        setStockPools(prevRows => prevRows.map(row => (row.id === newRow.id ? updatedRow : row)));
         return newRow;
     };
 
@@ -130,10 +117,10 @@ function StockPools() {
         };
 
         const handleSearchResultSelect = selected => {
-            const currentRow = stockPools?.find(r => r.stockPoolCode === searchDialogOpen.forRow);
+            const currentRow = stockPools?.find(r => r.id === searchDialogOpen.forRow);
             let newRow = {
                 ...currentRow,
-                updated: true
+                hasChanged: true
             };
             c.searchUpdateFieldNames?.forEach(f => {
                 newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
@@ -176,7 +163,12 @@ function StockPools() {
     };
 
     const stockPoolColumns = [
-        { field: 'stockPoolCode', headerName: 'Code', editable: true, width: 100 },
+        {
+            field: 'stockPoolCode',
+            headerName: 'Code',
+            editable: params => params.row?.creating === true,
+            width: 100
+        },
         { field: 'stockPoolDescription', editable: true, headerName: 'Description', width: 225 },
         {
             field: 'dateInvalid',
@@ -214,23 +206,21 @@ function StockPools() {
         { field: 'sequence', editable: true, headerName: 'Sequence', width: 100 }
     ];
 
-    // const sortedStockPools = stockPools?.sort((a, b) => {
-    //     const fa = a.sequence;
-    //     const fb = b.sequence;
+    const sortedStockPools = stockPools?.slice().sort((a, b) => {
+        const fa = a.sequence;
+        const fb = b.sequence;
 
-    //     console.log(fa, fb);
-
-    //     if (fa === null && fb !== null) {
-    //         return 1;
-    //     }
-    //     if (fa !== null && fb === null) {
-    //         return -1;
-    //     }
-    //     if (fa === null && fb === null) {
-    //         return 0;
-    //     }
-    //     return fa - fb;
-    // });
+        if (fa === null && fb !== null) {
+            return 1;
+        }
+        if (fa !== null && fb === null) {
+            return -1;
+        }
+        if (fa === null && fb === null) {
+            return 0;
+        }
+        return fa - fb;
+    });
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -238,9 +228,6 @@ function StockPools() {
             <Grid container spacing={3}>
                 <Grid size={12}>
                     <Typography variant="h4">Stock Pools</Typography>
-                </Grid>
-                <Grid size={12}>
-                    <CreateButton createUrl="/stores2/stock-pools/create" />
                 </Grid>
                 {(isLoading ||
                     accountingCompanyLoading ||
@@ -255,13 +242,19 @@ function StockPools() {
                 <Grid size={12}>
                     <DataGrid
                         getRowId={row => row.id}
-                        rows={stockPools}
+                        rows={sortedStockPools}
                         editMode="cell"
                         processRowUpdate={processRowUpdate}
                         columns={stockPoolColumns}
                         rowHeight={34}
                         loading={false}
                         hideFooter
+                        isCellEditable={params => {
+                            if (params.field === 'stockPoolCode') {
+                                return params.row?.creating === true;
+                            }
+                            return true;
+                        }}
                     />
                 </Grid>
                 <Grid item xs={4}>
@@ -272,28 +265,24 @@ function StockPools() {
                 <Grid item xs={4}>
                     <Button
                         onClick={() => {
-                            const aa = stockPools.filter(sp => sp.updated === true);
-                            console.log(stockPools);
-                            aa.forEach(sp => {
-                                const updatedStockPool = stockPools.find(
-                                    pool => pool.stockPoolCode === sp.stockPoolCode
-                                );
+                            stockPools
+                                .filter(sp => sp.updated === true)
+                                .forEach(sp => {
+                                    const updatedStockPool = stockPools.find(
+                                        pool => pool.stockPoolCode === sp.stockPoolCode
+                                    );
 
-                                console.log(updatedStockPool);
-                                console.log(sp);
-
-                                if (updatedStockPool.creating) {
-                                    clearCreateStockPool();
-                                    createStockPool(null, sp);
-                                    setCreating(false);
-                                } else {
-                                    updateStockPool(sp.stockPoolCode, updatedStockPool);
-                                }
-                            });
+                                    if (updatedStockPool.creating) {
+                                        clearCreateStockPool();
+                                        createStockPool(null, sp);
+                                        setCreating(false);
+                                    } else {
+                                        updateStockPool(sp.stockPoolCode, updatedStockPool);
+                                    }
+                                });
                         }}
                         variant="outlined"
-                        // eslint-disable-next-line eqeqeq
-                        disabled={stockPoolResult == stockPools}
+                        disabled={stockPoolResult === stockPools}
                     >
                         Save
                     </Button>
