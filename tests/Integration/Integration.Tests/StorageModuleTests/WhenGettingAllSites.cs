@@ -9,7 +9,7 @@
     using System.Net;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
-    public class WhenGettingAll : ContextBase
+    public class WhenGettingAllSites : ContextBase
     {
         private StorageSite eaglesham;
 
