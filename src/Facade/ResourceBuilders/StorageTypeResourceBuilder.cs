@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
+    using System.Linq;
+
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -16,12 +18,13 @@
                        {
                            StorageTypeCode = storageType.StorageTypeCode,
                            Description = storageType.Description,
-                       };
+                           Links = this.BuildLinks(storageType, claims).ToArray()
+            };
         }
 
         public string GetLocation(StorageType model)
         {
-            return $"/stores2/stock-pool/{model.StorageTypeCode}";
+            return $"/stores2/storage-types/{model.StorageTypeCode}";
         }
 
         object IBuilder<StorageType>.Build(StorageType entity, IEnumerable<string> claims) =>

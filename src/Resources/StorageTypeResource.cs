@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Resources
 {
-    public class StorageTypeResource
+    using Linn.Common.Resources;
+
+    public class StorageTypeResource : HypermediaResource
     {
         public string StorageTypeCode { get; set; }
 

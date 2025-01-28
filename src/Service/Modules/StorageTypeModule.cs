@@ -21,6 +21,7 @@
             app.MapGet("/stores2/storage-types/{code}", this.GetById);
             app.MapPut("/stores2/storage-types/{code}", this.Update);
         }
+
         private async Task GetAll(
             HttpRequest _,
             HttpResponse res,
