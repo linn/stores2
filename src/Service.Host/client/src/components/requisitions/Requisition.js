@@ -88,6 +88,9 @@ function Requisition({ creating }) {
         clear: clearNominalsSearch
     } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
 
+    const simpleFieldChange = (fieldName, newValue) => {
+        dispatch({ type: 'set_header_field', payload: { fieldName, newValue } });
+    };
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -159,7 +162,7 @@ function Requisition({ creating }) {
                                     fullWidth
                                     value={formState.functionCode}
                                     items={functionCodes.map(f => f.id)}
-                                    onChange={() => {}}
+                                    onChange={simpleFieldChange}
                                     label="Function Code"
                                     propertyName="functionCode"
                                 />
@@ -168,7 +171,10 @@ function Requisition({ creating }) {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={formState.functionCodeDescription}
+                                value={
+                                    functionCodes?.find(x => x.id === formState.functionCode)
+                                        ?.displayText ?? null
+                                }
                                 onChange={() => {}}
                                 label="Function Code Description"
                                 propertyName="functionCodeDescription"
