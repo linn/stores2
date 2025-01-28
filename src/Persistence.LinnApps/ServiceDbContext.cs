@@ -22,6 +22,8 @@
         
         public DbSet<Country> Countries { get; set; }
 
+        public DbSet<StorageType> StorageTypes { get; set; }
+
         public DbSet<StockLocator> StockLocators { get; set; }
 
         public DbSet<StockPool> StockPools { get; set; }
