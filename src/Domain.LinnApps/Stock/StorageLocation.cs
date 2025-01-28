@@ -16,8 +16,14 @@
 
         public DateTime? DateInvalid { get; set; }
 
-        public string StorageType { get; set; }
+        public string StorageTypeCode { get; set; }
+
+        public StorageType StorageType { get; set; }
 
         public string SiteCode { get; set; }
+
+        public string StorageAreaCode { get; set; }
+
+        public StorageArea StorageArea { get; set; }
     }
 }

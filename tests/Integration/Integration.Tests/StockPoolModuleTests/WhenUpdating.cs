@@ -45,7 +45,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
                         LocationId = 6,
                         LocationType = "STANDARD",
                         SiteCode = "LINN",
-                        StorageType = "NEW"
+                        StorageTypeCode = "NEW"
                     },
                 5,
                 "Y");

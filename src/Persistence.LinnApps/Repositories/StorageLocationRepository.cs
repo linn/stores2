@@ -1,0 +1,41 @@
+﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
+{
+    using System.Threading.Tasks;
+
+    using Microsoft.EntityFrameworkCore;
+    using Linn.Common.Persistence.EntityFramework;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System;
+
+    public class StorageLocationRepository : EntityFrameworkRepository<StorageLocation, int>
+    {
+        private readonly ServiceDbContext serviceDbContext;
+
+        public StorageLocationRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.StorageLocations)
+        {
+            this.serviceDbContext = serviceDbContext;
+        }
+
+
+        public override IQueryable<StorageLocation> FindAll()
+        {
+            // dont need every old location
+            return this.serviceDbContext.StorageLocations.Where(l => l.DateInvalid == null).OrderBy(l => l.LocationCode);
+        }
+
+        public virtual IQueryable<StorageLocation> FilterBy(Expression<Func<StorageLocation, bool>> expression)
+        {
+            return this.serviceDbContext.StorageLocations.Where(expression).OrderBy(l => l.LocationCode);
+        }
+
+        public override async Task<StorageLocation> FindByIdAsync(int key)
+        {
+            var result = await this.serviceDbContext.StorageLocations
+                .Include(loc => loc.StorageArea)
+                .FirstOrDefaultAsync(loc => loc.LocationId == key);
+            return result;
+        }
+    }
+}

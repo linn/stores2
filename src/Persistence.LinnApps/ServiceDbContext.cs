@@ -70,6 +70,7 @@
             BuildReqLinePostings(builder);
             BuildStorageSites(builder);
             BuildStorageAreas(builder);
+            BuildStorageTypes(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -178,8 +179,11 @@
             e.Property(l => l.LocationCode).HasColumnName("LOCATION_CODE").HasMaxLength(16);
             e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             e.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
-            e.Property(l => l.StorageType).HasColumnName("STORAGE_TYPE").HasMaxLength(4);
+            e.Property(l => l.StorageTypeCode).HasColumnName("STORAGE_TYPE").HasMaxLength(4);
+            e.HasOne(l => l.StorageType).WithMany().HasForeignKey(l => l.StorageTypeCode);
             e.Property(l => l.SiteCode).HasColumnName("SITE_CODE").HasMaxLength(16);
+            e.Property(l => l.StorageAreaCode).HasColumnName("STORAGE_AREA_CODE").HasMaxLength(16);
+            e.HasOne(l => l.StorageArea).WithMany().HasForeignKey(a => new { a.SiteCode, a.StorageAreaCode });
             e.Property(l => l.LocationType).HasColumnName("LOCATION_TYPE").HasMaxLength(1);
             e.Property(l => l.DefaultStockPool).HasColumnName("DEFAULT_STOCK_POOL").HasMaxLength(10);
         }
@@ -525,6 +529,14 @@
             e.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
             e.Property(l => l.SiteCode).HasColumnName("SITE_CODE").HasMaxLength(16);
             e.Property(l => l.AreaPrefix).HasColumnName("AREA_PREFIX").HasMaxLength(3);
+        }
+
+        private static void BuildStorageTypes(ModelBuilder builder)
+        {
+            var e = builder.Entity<StorageType>().ToTable("STORAGE_TYPES");
+            e.HasKey(l => l.StorageTypeCode);
+            e.Property(l => l.StorageTypeCode).HasColumnName("STORAGE_TYPE").HasMaxLength(16);
+            e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
         }
     }
 }
