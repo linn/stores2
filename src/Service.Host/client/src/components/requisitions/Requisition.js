@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
@@ -24,14 +24,23 @@ import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
 import useSearch from '../../hooks/useSearch';
+import requisitionReducer from './reducers/requisitonReducer';
 
 function Requisition({ creating }) {
     const { reqNumber } = useParams();
     const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
     const [hasFetched, setHasFetched] = useState(false);
 
-    if (!creating && reqNumber && !hasFetched) {
-        fetchReq(reqNumber);
+    const {
+        send: fetchFunctionCodes,
+        isLoading: codesLoading,
+        result: functionCodes
+    } = useGet(itemTypes.functionCodes.url);
+    if (!hasFetched) {
+        if (!creating && reqNumber) {
+            fetchReq(reqNumber);
+        }
+        fetchFunctionCodes();
         setHasFetched(true);
     }
 
@@ -41,6 +50,7 @@ function Requisition({ creating }) {
         errorMessage: cancelError,
         postResult: cancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
+
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
 
@@ -50,17 +60,17 @@ function Requisition({ creating }) {
         setTab(newValue);
     };
 
-    const [formState, setFormState] = useState();
+    const [formState, dispatch] = useReducer(requisitionReducer, null);
 
     useEffect(() => {
         const defaultState = { dateCreated: new Date(), dateAuthorised: null, lines: [] };
 
         if (cancelResult) {
-            setFormState(cancelResult);
+            dispatch({ type: 'reload', payload: cancelResult });
         } else if (result) {
-            setFormState(result);
+            dispatch({ type: 'reload', payload: result });
         } else if (creating) {
-            setFormState(defaultState);
+            dispatch({ type: 'reload', payload: defaultState });
         }
     }, [result, cancelResult, creating]);
 
@@ -144,13 +154,16 @@ function Requisition({ creating }) {
                         </Grid>
                         <Grid size={4} />
                         <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.functionCode}
-                                onChange={() => {}}
-                                label="Function Code"
-                                propertyName="functionCode"
-                            />
+                            {!codesLoading && functionCodes && (
+                                <Dropdown
+                                    fullWidth
+                                    value={formState.functionCode}
+                                    items={functionCodes.map(f => f.id)}
+                                    onChange={() => {}}
+                                    label="Function Code"
+                                    propertyName="functionCode"
+                                />
+                            )}
                         </Grid>
                         <Grid size={4}>
                             <InputField
@@ -210,21 +223,21 @@ function Requisition({ creating }) {
                                 resultLimit={100}
                                 helperText="Enter a search term and press enter to look up departments"
                                 value={formState.department?.departmentCode}
-                                handleValueChange={(_, newVal) =>
-                                    setFormState(fs => ({
-                                        ...fs,
-                                        department: { departmentCode: newVal }
-                                    }))
-                                }
+                                handleValueChange={(_, newVal) => {
+                                    dispatch({
+                                        type: 'update_header_department',
+                                        payload: { departmentCode: newVal }
+                                    });
+                                }}
                                 search={searchDepartments}
                                 loading={departmentsSearchLoading}
                                 searchResults={departmentsSearchResults}
                                 priorityFunction="closestMatchesFirst"
                                 onResultSelect={r => {
-                                    setFormState(fs => ({
-                                        ...fs,
-                                        department: r
-                                    }));
+                                    dispatch({
+                                        type: 'update_header_department',
+                                        payload: r
+                                    });
                                 }}
                                 clearSearch={clearDepartmentsSearch}
                                 autoFocus={false}
@@ -248,21 +261,21 @@ function Requisition({ creating }) {
                                 resultLimit={100}
                                 helperText="Enter a search term and press enter to look up nominals"
                                 value={formState.nominal?.nominalCode}
-                                handleValueChange={(_, newVal) =>
-                                    setFormState(fs => ({
-                                        ...fs,
-                                        nominal: { nominalCode: newVal }
-                                    }))
-                                }
+                                handleValueChange={(_, newVal) => {
+                                    dispatch({
+                                        type: 'update_header_nominal',
+                                        payload: { nominalCode: newVal }
+                                    });
+                                }}
                                 search={searchNominals}
                                 loading={nominalsSearchLoading}
                                 searchResults={nominalsSearchResults}
                                 priorityFunction="closestMatchesFirst"
                                 onResultSelect={r => {
-                                    setFormState(fs => ({
-                                        ...fs,
-                                        nominal: r
-                                    }));
+                                    dispatch({
+                                        type: 'update_header_nominal',
+                                        payload: r
+                                    });
                                 }}
                                 clearSearch={clearNominalsSearch}
                                 autoFocus={false}
