@@ -4,8 +4,6 @@ namespace Linn.Stores2.Service.Modules
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Service.Models;
