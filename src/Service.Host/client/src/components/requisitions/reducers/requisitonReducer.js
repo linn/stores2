@@ -1,6 +1,5 @@
 /* eslint-disable indent */
 function reducer(state, action) {
-    console.log(action);
     switch (action.type) {
         case 'load_state': {
             // this action type is for updating the entire state of the form,
@@ -24,7 +23,7 @@ function reducer(state, action) {
         }
         case 'add_line': {
             const maxLineNumber = Math.max(...state.lines.map(line => line.lineNumber), 0);
-            const newLine = { lineNumber: maxLineNumber + 1 };
+            const newLine = { lineNumber: maxLineNumber + 1, isAddition: true };
             return { ...state, lines: [...state.lines, newLine] };
         }
         default: {

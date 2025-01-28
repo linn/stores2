@@ -26,6 +26,7 @@ import MovesTab from './MovesTab';
 import useSearch from '../../hooks/useSearch';
 import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
+import TransactionsTab from './reducers/TransactionsTab';
 
 function Requisition({ creating }) {
     const { userNumber, name } = useUserProfile();
@@ -365,7 +366,14 @@ function Requisition({ creating }) {
                                         label={`Moves (L${selectedLine ?? ''})`}
                                         disabled={!formState.lines || !selectedLine}
                                     />
-                                    <Tab label="Transactions" disabled />
+                                    <Tab
+                                        label={`Transactions (L${selectedLine ?? ''})`}
+                                        disabled={
+                                            !formState.lines?.find(
+                                                x => x.lineNumber === selectedLine
+                                            )?.moves?.length
+                                        }
+                                    />
                                 </Tabs>
                             </Box>
                         </Grid>
@@ -385,6 +393,14 @@ function Requisition({ creating }) {
                                     moves={
                                         formState.lines?.find(x => x.lineNumber === selectedLine)
                                             ?.moves
+                                    }
+                                />
+                            )}
+                            {tab === 2 && (
+                                <TransactionsTab
+                                    transactions={
+                                        formState.lines?.find(x => x.lineNumber === selectedLine)
+                                            ?.storesBudgets
                                     }
                                 />
                             )}

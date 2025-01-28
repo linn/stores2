@@ -73,7 +73,7 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd
             renderCell: params => (
                 <Tooltip title="Cancel Line">
                     <IconButton
-                        disabled={params.row.cancelled === 'Y'}
+                        disabled={params.row.cancelled === 'Y' || params.row.isAddition}
                         onClick={() => {
                             setSelected(params.row.lineNumber);
                             setCancelDialogVisible(true);
