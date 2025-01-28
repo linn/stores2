@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
 
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stores;
 
@@ -67,6 +68,11 @@
 
         public void Cancel(int by, string reason, DateTime when)
         {
+            if (this.DateBooked.HasValue)
+            {
+                throw new RequisitionException("Cannot cancel a booked req line");
+            }
+
             this.CancelledBy = by;
             this.Cancelled = "Y";
             this.CancelledReason = reason;
@@ -81,6 +87,11 @@
             {
                 reqMove.Cancel(when);
             }
+        }
+
+        public void Book()
+        {
+            this.DateBooked = DateTime.Now;
         }
     }
 }

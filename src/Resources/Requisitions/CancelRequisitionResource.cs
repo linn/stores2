@@ -6,6 +6,6 @@
 
         public string Reason { get; set; }
 
-        public int UserNumber { get; set; }
+        public int? LineNumber{ get; set; }
     }
 }

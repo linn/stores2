@@ -2,7 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.Linq;
+
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -98,6 +99,29 @@
             this.Document1Name = document1Type;
         }
 
+        public void AddLine(RequisitionLine toAdd)
+        {
+            this.Lines ??= new List<RequisitionLine>();
+
+            this.Lines.Add(toAdd);
+        }
+
+        public void Book(Employee bookedBy)
+        {
+            this.DateBooked = DateTime.Now;
+            this.BookedBy = bookedBy;
+        }
+
+        public void BookLine(int lineNumber, Employee bookedBy)
+        {
+            this.Lines.First(x => x.LineNumber == lineNumber).Book();
+
+            if (!this.DateBooked.HasValue && this.Lines.All(l => l.DateBooked.HasValue))
+            {
+                this.Book(bookedBy);
+            }
+        }
+
         public void Cancel(string reason, Employee cancelledBy)
         {
             // note: this function does not represent a complete picture
@@ -140,6 +164,28 @@
                 // But no harm in making sure
                 // (and actually updating this tracked entity so updates can be returned to the client)
                 l.Cancel(cancelledBy.Id, reason, now);
+            }
+        }
+
+        public void CancelLine(int lineNumber, string reason, Employee cancelledBy)
+        {
+            var now = DateTime.Now;
+            
+            // cancel line
+            this.Lines.First(x => x.LineNumber == lineNumber).Cancel(cancelledBy.Id, reason, now);
+
+            // cancel header if all lines are now cancelled
+            if (this.Lines.All(x => x.DateCancelled.HasValue) 
+                && !this.DateCancelled.HasValue)
+            {
+                this.Cancel(reason, cancelledBy);
+            }
+
+            // book header if all non-cancelled lines are booked
+            if (!this.DateBooked.HasValue
+                && this.Lines.Where(x => !x.DateCancelled.HasValue).All(l => l.DateBooked.HasValue))
+            {
+                this.DateBooked = now;
             }
         }
     }
