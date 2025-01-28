@@ -12,6 +12,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -22,6 +23,7 @@
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Proxy;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.GoodsIn;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
 
@@ -60,7 +62,8 @@
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>()
-                .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>();
+                .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
+                .AddScoped<IAsyncFacadeService<GoodsInLogEntry, string, GoodsInLogEntryResource, GoodsInLogEntryResource, GoodsInLogEntryResource>, GoodsInService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
@@ -74,7 +77,8 @@
                 .AddScoped<IBuilder<StorageSite>, StorageSiteResourceBuilder>()
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
-                .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
+                .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
+                .AddTransient<IBuilder<GoodsInLogEntry>, GoodsInLogEntryResourceBuilder>();
         }
     }
 }
