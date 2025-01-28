@@ -38,6 +38,8 @@
 
         public DbSet<StorageSite> StorageSites { get; set; }
 
+        public DbSet<StoresFunctionCode> StoresFunctionCodes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);

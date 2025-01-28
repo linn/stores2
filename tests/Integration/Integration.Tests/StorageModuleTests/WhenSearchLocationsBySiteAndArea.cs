@@ -1,13 +1,16 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 {
-    using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Integration.Tests.Extensions;
-    using Linn.Stores2.Resources;
-    using NUnit.Framework;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
+
+    using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Integration.Tests.Extensions;
+    using Linn.Stores2.Resources;
+
+    using NUnit.Framework;
 
     public class WhenSearchLocationsBySiteAndArea : ContextBase
     {
