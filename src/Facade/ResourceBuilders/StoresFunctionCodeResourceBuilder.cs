@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
+    using System.Linq;
+
     using Linn.Common.Facade;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -13,7 +15,12 @@
             return new FunctionCodeResource
                        {
                           Id = model.FunctionCode,
-                          DisplayText = model.Description
+                          DisplayText = model.Description,
+                          TransactionTypes = model.TransactionsTypes.Select(t => new FunctionCodeTransactionResource
+                                                                                     {
+                                                                                         ReqType = t.ReqType,
+                                                                                         TransactionDefinition = t.TransactionDefinition?.TransactionCode
+                                                                                     })
                        };
         }
 

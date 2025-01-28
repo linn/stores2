@@ -75,6 +75,7 @@
             BuildStorageSites(builder);
             BuildStorageAreas(builder);
             BuildStorageTypes(builder);
+            BuildStoresFunctionTransactions(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -411,6 +412,17 @@
             r.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
+            r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
+        }
+
+        private static void BuildStoresFunctionTransactions(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StoresFunctionTransaction>().ToTable("STORES_FUNCTION_TRANS");
+            entity.HasKey(c => new { c.FunctionCode, c.Seq});
+            entity.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
+            entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
+            entity.Property(x => x.Seq).HasColumnName("SEQ");
+            entity.Property(x => x.ReqType).HasColumnName("REQ_TYPE").HasMaxLength(1);
         }
 
         private static void BuildEmployees(ModelBuilder builder)

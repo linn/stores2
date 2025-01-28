@@ -1,5 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System.Collections.Generic;
+
     public class StoresFunctionCode
     {
         public StoresFunctionCode()
@@ -16,5 +18,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public string Description { get; set; }
 
         public string CancelFunction { get; set; }
+        
+        public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
     }
 }
