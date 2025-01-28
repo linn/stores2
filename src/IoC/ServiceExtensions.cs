@@ -63,7 +63,7 @@
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>()
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
-                .AddScoped<IAsyncFacadeService<GoodsInLogEntry, string, GoodsInLogEntryResource, GoodsInLogEntryResource, GoodsInLogEntryResource>, GoodsInService>();
+                .AddScoped<IAsyncFacadeService<GoodsInLogEntry, string, GoodsInLogEntryResource, GoodsInLogEntryResource, GoodsInLogEntrySearchResource>, GoodsInFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
