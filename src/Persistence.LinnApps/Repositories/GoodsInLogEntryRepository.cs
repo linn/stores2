@@ -21,7 +21,7 @@
             return this.serviceDbContext.GoodsInLogEntries.OrderByDescending(g => g.DateCreated);
         }
 
-        public virtual IQueryable<GoodsInLogEntry> FilterBy(Expression<Func<GoodsInLogEntry, bool>> expression)
+        public override IQueryable<GoodsInLogEntry> FilterBy(Expression<Func<GoodsInLogEntry, bool>> expression)
         {
             return this.serviceDbContext.GoodsInLogEntries.Where(expression).OrderByDescending(g => g.DateCreated);
         }
