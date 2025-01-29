@@ -437,10 +437,10 @@ function Requisition({ creating }) {
                                     addLine={() => {
                                         dispatch({ type: 'add_line' });
                                     }}
-                                    pickStock={(lineNumber, stockMove) => {
+                                    pickStock={(lineNumber, stockMoves) => {
                                         dispatch({
                                             type: 'pick_stock',
-                                            payload: { lineNumber, stockMove }
+                                            payload: { lineNumber, stockMoves }
                                         });
                                     }}
                                     showPostings={!creating}

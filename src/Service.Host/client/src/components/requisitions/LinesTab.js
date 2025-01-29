@@ -170,8 +170,9 @@ function LinesTab({
                     open={pickStockDialogVisible}
                     setOpen={setPickStockDialogVisible}
                     partNumber={lines.find(l => l.lineNumber === selected)?.part?.partNumber}
-                    onConfirm={() => {
-                        pickStock();
+                    handleConfirm={moves => {
+                        console.log(selected, moves);
+                        pickStock(selected, moves);
                     }}
                 />
             )}

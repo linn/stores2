@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Dialog from '@mui/material/Dialog';
 import { DataGrid } from '@mui/x-data-grid';
@@ -20,6 +20,13 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
         `?partNumber=${partNumber}`,
         true
     );
+    const [moves, setMoves] = useState();
+    useEffect(() => {
+        if (result?.length && !moves) {
+            setMoves(result);
+        }
+    }, [result, moves]);
+
     const columns = [
         {
             field: 'partNumber',
@@ -39,7 +46,15 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
         {
             field: 'quantity',
             headerName: 'Qty',
-            width: 100
+            width: 100,
+            type: 'number'
+        },
+        {
+            field: 'quantityToPick',
+            headerName: 'Qty To Pick',
+            width: 100,
+            type: 'number',
+            editable: true
         },
         {
             field: 'quantityAllocated',
@@ -52,32 +67,19 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
             width: 100
         }
     ];
-    // const handleSearchResultSelect = selected => {
-    //     const currentRow = stockPools?.find(r => r.id === searchDialogOpen.forRow);
-    //     let newRow = {
-    //         ...currentRow,
-    //         updated: true,
-    //         defaultLocation: selected.locationId,
-    //         defaultLocationName: selected.locationCode
-    //     };
-    //     c.searchUpdateFieldNames?.forEach(f => {
-    //         newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
-    //     });
 
-    //     processRowUpdate(newRow, currentRow);
-    //     setSearchDialogOpen({ forRow: null, forColumn: null });
-    // };
+    const processRowUpdate = newRow => {
+        setMoves(m => m.map(x => (x.id === newRow.id ? newRow : x)));
+        return newRow;
+    };
 
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
             <DialogTitle>Stock Locations</DialogTitle>
             <DialogContent>
                 <DataGrid
-                    rows={result}
-                    // rowSelectionModel={selected ? [selected] : []}
-                    // onRowClick={row => {
-                    //     setSelected(row.id);
-                    // }}
+                    rows={moves}
+                    processRowUpdate={processRowUpdate}
                     columns={columns}
                     hideFooter
                     density="compact"
@@ -86,7 +88,15 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
                 />
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose}>Close</Button>
+                <Button
+                    onClick={() => {
+                        console.log(moves);
+                        handleClose();
+                        handleConfirm(moves.filter(m => m.quantityToPick));
+                    }}
+                >
+                    Confirm
+                </Button>
             </DialogActions>
         </Dialog>
     );

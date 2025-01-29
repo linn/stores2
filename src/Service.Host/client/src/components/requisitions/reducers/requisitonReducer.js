@@ -63,7 +63,7 @@ function reducer(state, action) {
                 )
             };
         case 'pick_stock':
-            console.log(action.payload.stockMove);
+            console.log(action.payload.stockMoves);
             return {
                 ...state,
                 lines: state.lines.map(line =>
@@ -73,7 +73,7 @@ function reducer(state, action) {
                               stockPicked: true,
                               // todo - simplification: following line assumes stock can only be picked once for each line
                               // so will need to make this able to cope with subsequent changes at some point
-                              moves: [...line.moves, action.payload.stockMove]
+                              moves: [...action.payload.stockMoves]
                           }
                         : line
                 )

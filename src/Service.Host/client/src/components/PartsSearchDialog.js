@@ -19,7 +19,7 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
         'description'
     );
     return (
-        <Dialog open={searchDialogOpen} onClose={handleClose}>
+        <Dialog open={searchDialogOpen} onClose={handleClose} fullWidth maxWidth="md">
             <DialogTitle>Search</DialogTitle>
             <DialogContent>
                 <Search
