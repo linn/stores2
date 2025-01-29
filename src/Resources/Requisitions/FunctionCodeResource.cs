@@ -4,9 +4,9 @@
 
     public class FunctionCodeResource
     {
-        public string Id { get; set; }
+        public string Code { get; set; }
 
-        public string DisplayText { get; set; }
+        public string Description { get; set; }
 
         public IEnumerable<FunctionCodeTransactionResource> TransactionTypes { get; set; }
     }

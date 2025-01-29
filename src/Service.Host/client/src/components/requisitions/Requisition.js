@@ -93,6 +93,22 @@ function Requisition({ creating }) {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
 
+    const canAddLines = () => {
+        if (formState.cancelled !== 'N' || formState.dateBooked) {
+            return false;
+        }
+        if (formState.functionCode?.code === 'LDREQ') {
+            if (
+                formState.nominal?.nominalCode &&
+                formState.department?.departmentCode &&
+                formState.reqType
+            ) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -165,23 +181,45 @@ function Requisition({ creating }) {
                         <Grid size={4} />
                         <Grid size={2}>
                             {!codesLoading && functionCodes && (
-                                <Dropdown
-                                    fullWidth
-                                    value={formState.functionCode}
-                                    items={functionCodes.map(f => f.id)}
-                                    onChange={handleHeaderFieldChange}
-                                    label="Function Code"
+                                <Search
                                     propertyName="functionCode"
+                                    label="Function Code"
+                                    resultsInModal
+                                    resultLimit={100}
+                                    helperText="Enter a value, or press enter to view all function codes"
+                                    value={formState.functionCode?.code}
+                                    handleValueChange={(_, newVal) => {
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: {
+                                                fieldName: 'functionCode',
+                                                newValue: { code: newVal }
+                                            }
+                                        });
+                                    }}
+                                    search={() => {}}
+                                    loading={false}
+                                    searchResults={functionCodes.map(f => ({
+                                        ...f,
+                                        name: f.code,
+                                        description: f.description
+                                    }))}
+                                    priorityFunction="closestMatchesFirst"
+                                    onResultSelect={r => {
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: { fieldName: 'functionCode', newValue: r }
+                                        });
+                                    }}
+                                    clearSearch={() => {}}
+                                    autoFocus={false}
                                 />
                             )}
                         </Grid>
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={
-                                    functionCodes?.find(x => x.id === formState.functionCode)
-                                        ?.displayText ?? null
-                                }
+                                value={formState.functionCode?.description}
                                 onChange={() => {}}
                                 label="Function Code Description"
                                 propertyName="functionCodeDescription"
@@ -334,7 +372,7 @@ function Requisition({ creating }) {
                                 items={['F', 'O']}
                                 allowNoValue
                                 value={formState.reqType}
-                                onChange={() => {}}
+                                onChange={handleHeaderFieldChange}
                                 label="Req Type"
                                 propertyName="reqType"
                             />
@@ -361,14 +399,15 @@ function Requisition({ creating }) {
                         <Grid size={12}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tab} onChange={handleChange}>
-                                    <Tab label="Lines" />
+                                    <Tab label="Lines" disabled={!canAddLines()} />
                                     <Tab
                                         label={`Moves (L${selectedLine ?? ''})`}
-                                        disabled={!formState.lines || !selectedLine}
+                                        disabled={!canAddLines() || !selectedLine}
                                     />
                                     <Tab
                                         label={`Transactions (L${selectedLine ?? ''})`}
                                         disabled={
+                                            creating ||
                                             !formState.lines?.find(
                                                 x => x.lineNumber === selectedLine
                                             )?.moves?.length
@@ -384,7 +423,7 @@ function Requisition({ creating }) {
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
-                                    canAdd={formState.cancelled === 'N' && !formState.dateBooked}
+                                    canAdd={canAddLines()}
                                     addLine={() => dispatch({ type: 'add_line' })}
                                 />
                             )}

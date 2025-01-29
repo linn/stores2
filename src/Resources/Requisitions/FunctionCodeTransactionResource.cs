@@ -7,5 +7,7 @@ namespace Linn.Stores2.Resources.Requisitions
         public string ReqType { get; set; }
         
         public string TransactionDefinition { get; set; }
+        
+        public string TransactionDescription { get; set; }
     }
 }

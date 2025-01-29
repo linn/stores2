@@ -14,12 +14,13 @@
         {
             return new FunctionCodeResource
                        {
-                          Id = model.FunctionCode,
-                          DisplayText = model.Description,
+                          Code = model.FunctionCode,
+                          Description = model.Description,
                           TransactionTypes = model.TransactionsTypes?.Select(t => new FunctionCodeTransactionResource
                                                                                      {
                                                                                          ReqType = t.ReqType,
-                                                                                         TransactionDefinition = t.TransactionDefinition?.TransactionCode
+                                                                                         TransactionDefinition = t.TransactionDefinition?.TransactionCode,
+                                                                                         TransactionDescription = t.TransactionDefinition?.Description
                                                                                      })
                        };
         }

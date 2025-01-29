@@ -48,7 +48,7 @@
         public void ShouldReturnJsonBody()
         {
             var resource = this.Response.DeserializeBody<IEnumerable<FunctionCodeResource>>();
-            resource.First().Id.Should().Be("LDREQ");
+            resource.First().Code.Should().Be("LDREQ");
         }
     }
 }

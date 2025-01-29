@@ -13,7 +13,11 @@ function reducer(state, action) {
                 dateAuthorised: null,
                 lines: [],
                 cancelled: 'N',
-                createdByName: action.payload.userName
+                createdByName: action.payload.userName,
+                // just to make it easier to debug creating - delete everything below
+                nominal: { nominalCode: 1607 },
+                department: { departmentCode: 2963 },
+                reqType: 'F'
             };
             return defaultState;
         }
@@ -22,8 +26,25 @@ function reducer(state, action) {
             return { ...state, [action.payload.fieldName]: action.payload.newValue };
         }
         case 'add_line': {
+            // need to set the line transaction type based on the function code and req type
+            const functionCodeTransactions = state.functionCode.transactionTypes;
+            let lineTransaction = {};
+            if (state.reqType && functionCodeTransactions) {
+                const lineTransactionType = functionCodeTransactions.find(
+                    x => x.reqType === state.reqType
+                );
+                if (lineTransactionType) {
+                    lineTransaction = {
+                        transactionCode: lineTransactionType.transactionDefinition,
+                        transactionCodeDescription: lineTransactionType.transactionDescription
+                    };
+                }
+            }
+
+            // use the next available line number
             const maxLineNumber = Math.max(...state.lines.map(line => line.lineNumber), 0);
-            const newLine = { lineNumber: maxLineNumber + 1, isAddition: true };
+            const newLine = { lineNumber: maxLineNumber + 1, isAddition: true, ...lineTransaction };
+
             return { ...state, lines: [...state.lines, newLine] };
         }
         default: {
