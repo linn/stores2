@@ -55,13 +55,15 @@ function StorageTypes() {
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
+        console.log(updatedRow);
         setStorageTypes(prevRows =>
             prevRows.map(row =>
-                row.stockPoolCode === newRow.storageTypeCode || row.storageTypeCode === ''
+                row.storageTypeCode === newRow.storageTypeCode || row.storageTypeCode === ''
                     ? updatedRow
                     : row
             )
         );
+        console.log(storageTypes);
         return newRow;
     };
 
@@ -122,7 +124,7 @@ function StorageTypes() {
                                         createStorageType(null, st);
                                         setCreating(false);
                                     } else {
-                                        updateStorageType(st.stockPoolCode, st);
+                                        updateStorageType(st.storageTypeCode, st);
                                     }
                                 });
                         }}
@@ -132,7 +134,6 @@ function StorageTypes() {
                         Save
                     </Button>
                 </Grid>
-                {console.log(storageTypes)}
                 <Grid>
                     <SnackbarMessage
                         visible={snackbarVisible}
