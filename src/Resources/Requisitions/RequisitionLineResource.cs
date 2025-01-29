@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
 
+    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Stores;
 
     public class RequisitionLineResource
@@ -10,9 +11,7 @@
 
         public int LineNumber { get; set; }
 
-        public string PartNumber { get; set; }
-        
-        public string PartDescription { get; set; }
+        public PartResource Part { get; set; }
         
         public decimal Qty { get; set; }
 

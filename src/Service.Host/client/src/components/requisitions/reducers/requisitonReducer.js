@@ -47,15 +47,14 @@ function reducer(state, action) {
 
             return { ...state, lines: [...state.lines, newLine] };
         }
-        case 'set_line_part':
+        case 'set_line_value':
             return {
                 ...state,
                 lines: state.lines.map(x =>
                     x.lineNumber === action.payload.lineNumber
                         ? {
                               ...x,
-                              partNumber: action.payload.partNumber,
-                              partDescription: action.payload.description
+                              [action.payload.fieldName]: action.payload.newValue
                           }
                         : x
                 )

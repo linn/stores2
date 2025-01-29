@@ -20,7 +20,7 @@ function LinesTab({
     canAdd,
     addLine,
     showPostings,
-    setLinePart
+    updateLine
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [partsSearchDialogOpen, setPartsSearchDialogOpen] = useState();
@@ -40,14 +40,15 @@ function LinesTab({
                         style={{ cursor: 'pointer' }}
                         onClick={() => setPartsSearchDialogOpen(params.id)}
                     />
-                    {params.value}
+                    {params.row.part?.partNumber}
                 </>
             )
         },
         {
             field: 'partDescription',
             headerName: 'Desc',
-            width: 300
+            width: 300,
+            renderCell: params => params.row.part?.description
         },
         {
             field: 'qty',
@@ -140,7 +141,7 @@ function LinesTab({
                     searchDialogOpen={!!partsSearchDialogOpen}
                     setSearchDialogOpen={setPartsSearchDialogOpen}
                     handleSearchResultSelect={r => {
-                        setLinePart(partsSearchDialogOpen, r);
+                        updateLine(partsSearchDialogOpen, 'part', r);
                     }}
                 />
             )}
@@ -191,7 +192,7 @@ LinesTab.propTypes = {
     canAdd: PropTypes.bool.isRequired,
     addLine: PropTypes.func.isRequired,
     showPostings: PropTypes.func.isRequired,
-    setLinePart: PropTypes.func.isRequired
+    updateLine: PropTypes.func.isRequired
 };
 
 export default LinesTab;

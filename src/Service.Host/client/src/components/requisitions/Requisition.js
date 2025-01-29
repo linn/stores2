@@ -430,10 +430,15 @@ function Requisition({ creating }) {
                                         dispatch({ type: 'add_line' });
                                     }}
                                     showPostings={!creating}
-                                    setLinePart={(lineNumber, selectedPart) => {
+                                    updateLine={(lineNumber, fieldName, newValue) => {
+                                        console.log(lineNumber, fieldName, newValue);
                                         dispatch({
-                                            type: 'set_line_part',
-                                            payload: { lineNumber, ...selectedPart }
+                                            type: 'set_line_value',
+                                            payload: {
+                                                lineNumber,
+                                                fieldName,
+                                                newValue
+                                            }
                                         });
                                     }}
                                 />
