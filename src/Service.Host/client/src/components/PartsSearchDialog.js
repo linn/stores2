@@ -12,21 +12,6 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
         setSearchDialogOpen(false);
     };
     const [searchTerm, setSearchTerm] = useState();
-    // const handleSearchResultSelect = selected => {
-    //     const currentRow = stockPools?.find(r => r.id === searchDialogOpen.forRow);
-    //     let newRow = {
-    //         ...currentRow,
-    //         updated: true,
-    //         defaultLocation: selected.locationId,
-    //         defaultLocationName: selected.locationCode
-    //     };
-    //     c.searchUpdateFieldNames?.forEach(f => {
-    //         newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
-    //     });
-
-    //     processRowUpdate(newRow, currentRow);
-    //     setSearchDialogOpen({ forRow: null, forColumn: null });
-    // };
     const { search, results, loading, clear } = useSearch(
         itemTypes.parts.url,
         'partNumber',
