@@ -4,7 +4,7 @@
     {
         public string DateCreated { get; set; }
 
-        public int CreatedBy { get; set; }
+        public int? CreatedBy { get; set; }
 
         public string ArticleNumber { get; set; }
 

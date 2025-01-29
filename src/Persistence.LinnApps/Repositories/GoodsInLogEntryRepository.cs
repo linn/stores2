@@ -1,13 +1,10 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
-    using System.Threading.Tasks;
-
-    using Microsoft.EntityFrameworkCore;
-    using Linn.Common.Persistence.EntityFramework;
+    using System;
     using System.Linq;
     using System.Linq.Expressions;
-    using System;
 
+    using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
 
     public class GoodsInLogEntryRepository : EntityFrameworkRepository<GoodsInLogEntry, int>
@@ -28,6 +25,5 @@
         {
             return this.serviceDbContext.GoodsInLogEntries.Where(expression).OrderByDescending(g => g.DateCreated);
         }
-
     }
 }
