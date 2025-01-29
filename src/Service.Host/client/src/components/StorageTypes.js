@@ -9,22 +9,27 @@ import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import usePut from '../hooks/usePut';
-import useInitialise from '../hooks/useInitialise';
 import usePost from '../hooks/usePost';
 import useGet from '../hooks/useGet';
 
 function StorageTypes() {
-    const { isLoading, result: storageTypesResult } = useInitialise(itemTypes.storageTypes.url);
     const [creating, setCreating] = useState(false);
     const [storageTypes, setStorageTypes] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [rowUpdated, setRowUpdated] = useState();
 
     const {
-        send: getNewStorageTypes,
-        isNewStorageTypesLoading,
-        result: newStorageTypesGetResult
+        send: getStorageTypes,
+        isStorageTypesLoading,
+        result: storageTypesResult
     } = useGet(itemTypes.storageTypes.url);
+
+    const [hasFetched, setHasFetched] = useState(false);
+
+    if (!hasFetched) {
+        setHasFetched(true);
+        getStorageTypes();
+    }
 
     const {
         send: updateStorageType,
@@ -48,7 +53,7 @@ function StorageTypes() {
 
     useEffect(() => {
         if (!!updateResult || !!createStorageTypeResult) {
-            getNewStorageTypes();
+            getStorageTypes();
             setSnackbarVisible(true);
             clearCreateStorageType();
             clearUpdateResult();
@@ -56,18 +61,10 @@ function StorageTypes() {
     }, [
         clearCreateStorageType,
         updateResult,
-        getNewStorageTypes,
+        getStorageTypes,
         createStorageTypeResult,
         clearUpdateResult
     ]);
-
-    useEffect(() => {
-        if (newStorageTypesGetResult) {
-            setStorageTypes(newStorageTypesGetResult);
-        } else {
-            setStorageTypes(storageTypesResult);
-        }
-    }, [newStorageTypesGetResult, storageTypesResult]);
 
     const addNewRow = () => {
         setStorageTypes([
@@ -82,9 +79,7 @@ function StorageTypes() {
     };
 
     const handleCancelSelect = () => {
-        const oldRow = newStorageTypesGetResult
-            ? newStorageTypesGetResult.find(st => st.storageTypeCode === rowUpdated)
-            : storageTypesResult.find(st => st.storageTypeCode === rowUpdated);
+        const oldRow = storageTypesResult.find(st => st.storageTypeCode === rowUpdated);
 
         setStorageTypes(prevRows =>
             prevRows.map(row => (row.storageTypeCode === oldRow.storageTypeCode ? oldRow : row))
@@ -127,10 +122,7 @@ function StorageTypes() {
                         Please Note: You can only update/create 1 Stock Pool at a time.
                     </Typography>
                 </Grid>
-                {(isLoading ||
-                    isNewStorageTypesLoading ||
-                    createStorageTypeLoading ||
-                    updateLoading) && (
+                {(isStorageTypesLoading || createStorageTypeLoading || updateLoading) && (
                     <Grid size={12}>
                         <List>
                             <Loading />
