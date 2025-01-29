@@ -78,7 +78,7 @@
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
-                .AddTransient<IBuilder<GoodsInLogEntry>, GoodsInLogEntryResourceBuilder>();
+                .AddScoped<IBuilder<GoodsInLogEntry>, GoodsInLogEntryResourceBuilder>();
         }
     }
 }
