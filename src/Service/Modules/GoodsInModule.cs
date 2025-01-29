@@ -37,7 +37,7 @@
                 !quantity.HasValue && !orderNumber.HasValue && !reqNumber.HasValue &&
                 string.IsNullOrWhiteSpace(articleNumber) && string.IsNullOrWhiteSpace(storagePlace))
             {
-                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+                await res.Negotiate(await goodsInLogFacadeService.GetAll());
             }
             else
             {

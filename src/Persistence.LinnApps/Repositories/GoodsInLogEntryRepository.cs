@@ -18,7 +18,9 @@
 
         public override IQueryable<GoodsInLogEntry> FindAll()
         {
-            throw new NotImplementedException();
+            return this.serviceDbContext.GoodsInLogEntries
+                .Where(g => g.DateCreated >= DateTime.Now.AddDays(-14))
+                .OrderByDescending(g => g.DateCreated);
         }
 
         public override IQueryable<GoodsInLogEntry> FilterBy(Expression<Func<GoodsInLogEntry, bool>> expression)
