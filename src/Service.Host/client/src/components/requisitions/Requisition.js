@@ -409,10 +409,10 @@ function Requisition({ creating }) {
                         <Grid size={12}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tab} onChange={handleChange}>
-                                    <Tab label="Lines" disabled={!canAddLines()} />
+                                    <Tab label="Lines" />
                                     <Tab
                                         label={`Moves (L${selectedLine ?? ''})`}
-                                        disabled={!canAddLines() || !selectedLine}
+                                        disabled={!selectedLine}
                                     />
                                     <Tab
                                         label={`Transactions (L${selectedLine ?? ''})`}
