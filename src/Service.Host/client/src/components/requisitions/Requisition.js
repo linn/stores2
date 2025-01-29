@@ -65,6 +65,13 @@ function Requisition({ creating }) {
 
     const [formState, dispatch] = useReducer(requisitionReducer, null);
 
+    useEffect(
+        () => () => {
+            dispatch({ type: 'clear' });
+        },
+        []
+    );
+
     useEffect(() => {
         if (cancelResult) {
             dispatch({ type: 'load_state', payload: cancelResult });
@@ -101,7 +108,8 @@ function Requisition({ creating }) {
             if (
                 formState.nominal?.nominalCode &&
                 formState.department?.departmentCode &&
-                formState.reqType
+                formState.reqType &&
+                formState.functionCode.description
             ) {
                 return true;
             }
@@ -429,9 +437,14 @@ function Requisition({ creating }) {
                                     addLine={() => {
                                         dispatch({ type: 'add_line' });
                                     }}
+                                    pickStock={(lineNumber, stockMove) => {
+                                        dispatch({
+                                            type: 'pick_stock',
+                                            payload: { lineNumber, stockMove }
+                                        });
+                                    }}
                                     showPostings={!creating}
                                     updateLine={(lineNumber, fieldName, newValue) => {
-                                        console.log(lineNumber, fieldName, newValue);
                                         dispatch({
                                             type: 'set_line_value',
                                             payload: {

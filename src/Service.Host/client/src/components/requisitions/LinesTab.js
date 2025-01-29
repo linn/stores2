@@ -6,11 +6,12 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
-
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Typography from '@mui/material/Typography';
 import BudgetPostings from '../BudgetPostings';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import PartsSearchDialog from '../PartsSearchDialog';
+import PickStockDialog from './PickStockDialog';
 
 function LinesTab({
     lines = [],
@@ -20,10 +21,14 @@ function LinesTab({
     canAdd,
     addLine,
     showPostings,
-    updateLine
+    updateLine,
+    pickStock
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
+
     const [partsSearchDialogOpen, setPartsSearchDialogOpen] = useState();
+
     const linesColumns = [
         {
             field: 'lineNumber',
@@ -99,8 +104,24 @@ function LinesTab({
                     !params.row.dateBooked &&
                     params.row.cancelled === 'N' &&
                     !params.row.isAddition;
+
+                // just for now, only allowing stock pick for new rows onces
+                // todo - consider other scenarions e.g. changing pick after picked initially
+                const canPickStock = params.row.isAddition && !params.row.stockPicked;
                 return (
                     <>
+                        {canPickStock && (
+                            <Tooltip title="Pick Stock">
+                                <IconButton
+                                    onClick={() => {
+                                        setSelected(params.row.lineNumber);
+                                        setPickStockDialogVisible(true);
+                                    }}
+                                >
+                                    <WarehouseIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
                         {canCancel && (
                             <Tooltip title="Cancel Line">
                                 <IconButton
@@ -113,7 +134,6 @@ function LinesTab({
                                 </IconButton>
                             </Tooltip>
                         )}
-                        <div id="placeholder-for-more-actions" />
                     </>
                 );
             }
@@ -142,6 +162,16 @@ function LinesTab({
                     setSearchDialogOpen={setPartsSearchDialogOpen}
                     handleSearchResultSelect={r => {
                         updateLine(partsSearchDialogOpen, 'part', r);
+                    }}
+                />
+            )}
+            {pickStockDialogVisible && (
+                <PickStockDialog
+                    open={pickStockDialogVisible}
+                    setOpen={setPickStockDialogVisible}
+                    partId={lines.find(l => l.lineNumber === selected)?.part?.id}
+                    onConfirm={() => {
+                        pickStock();
                     }}
                 />
             )}
@@ -192,7 +222,8 @@ LinesTab.propTypes = {
     canAdd: PropTypes.bool.isRequired,
     addLine: PropTypes.func.isRequired,
     showPostings: PropTypes.func.isRequired,
-    updateLine: PropTypes.func.isRequired
+    updateLine: PropTypes.func.isRequired,
+    pickStock: PropTypes.func.isRequired
 };
 
 export default LinesTab;

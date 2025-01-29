@@ -14,7 +14,7 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
     const [searchTerm, setSearchTerm] = useState();
     const { search, results, loading, clear } = useSearch(
         itemTypes.parts.url,
-        'partNumber',
+        'id',
         'partNumber',
         'description'
     );

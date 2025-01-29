@@ -1,6 +1,9 @@
 /* eslint-disable indent */
 function reducer(state, action) {
     switch (action.type) {
+        case 'clear': {
+            return null;
+        }
         case 'load_state': {
             // this action type is for updating the entire state of the form,
             // e.g. to reflect an API result from an update or similar
@@ -59,7 +62,22 @@ function reducer(state, action) {
                         : x
                 )
             };
-
+        case 'pick_stock':
+            console.log(action.payload.stockMove);
+            return {
+                ...state,
+                lines: state.lines.map(line =>
+                    line.lineNumber === action.payload.lineNumber
+                        ? {
+                              ...line,
+                              stockPicked: true,
+                              // todo - simplification: following line assumes stock can only be picked once for each line
+                              // so will need to make this able to cope with changes at some point
+                              moves: [...line.moves, action.payload.stockMove]
+                          }
+                        : line
+                )
+            };
         default: {
             return state;
         }
