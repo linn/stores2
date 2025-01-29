@@ -13,7 +13,7 @@
 
     using NUnit.Framework;
 
-    public class WhenSearchingOnCommentsField : ContextBase
+    public class WhenSearchingOnStoragePlaceField : ContextBase
     {
         private GoodsInLogEntry firstLogEntry;
 
@@ -36,7 +36,7 @@
                 OrderNumber = 2,
                 LoanLine = 1,
                 ReqNumber = 1556,
-                StoragePlace = "SAFE/STORAGE/1/X",
+                StoragePlace = "A-LS-28220-2",
                 Processed = "Y",
                 State = "A",
                 LoanNumber = 1234,
@@ -68,7 +68,7 @@
                 OrderNumber = 1,
                 LoanLine = 2,
                 ReqNumber = 6551,
-                StoragePlace = "SAFE/STORAGE/2/X",
+                StoragePlace = "A-LS/28220-1",
                 Processed = "N",
                 State = "A",
                 LoanNumber = 1234,
@@ -91,7 +91,7 @@
             this.DbContext.SaveChanges();
 
             this.Response = this.Client.Get(
-                "/stores2/goods-in/log?quantity=85.5",
+                "/stores2/goods-in/log?StoragePlace=A-LS/28220-1",
                 with =>
                 {
                     with.Accept("application/json");
@@ -118,7 +118,7 @@
             resource.Should().NotBeNull();
             resource.Count().Should().Be(1);
             resource.SingleOrDefault().ReqNumber.Should().Be(6551);
-            resource.SingleOrDefault().Quantity.Should().Be(85.5m);
+            resource.SingleOrDefault().StoragePlace.Should().Be("A-LS/28220-1");
         }
     }
 }
