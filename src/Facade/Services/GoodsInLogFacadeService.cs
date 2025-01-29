@@ -32,7 +32,6 @@ namespace Linn.Stores2.Facade.Services
             IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
-
         }
 
         protected override async Task UpdateFromResourceAsync(
