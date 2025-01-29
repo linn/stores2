@@ -16,7 +16,7 @@
                        {
                           Id = model.FunctionCode,
                           DisplayText = model.Description,
-                          TransactionTypes = model.TransactionsTypes.Select(t => new FunctionCodeTransactionResource
+                          TransactionTypes = model.TransactionsTypes?.Select(t => new FunctionCodeTransactionResource
                                                                                      {
                                                                                          ReqType = t.ReqType,
                                                                                          TransactionDefinition = t.TransactionDefinition?.TransactionCode
