@@ -16,6 +16,7 @@ import itemTypes from '../itemTypes';
 import usePut from '../hooks/usePut';
 import useInitialise from '../hooks/useInitialise';
 import usePost from '../hooks/usePost';
+import useGet from '../hooks/useGet';
 import useSearch from '../hooks/useSearch';
 
 function StockPools() {
@@ -25,8 +26,14 @@ function StockPools() {
     );
     const [stockPools, setStockPools] = useState();
     const [searchTerm, setSearchTerm] = useState();
+    const [snackbarVisible, setSnackbarVisible] = useState();
     const [rowUpdated, setRowUpdated] = useState();
-    const [snackbarVisible, setSnackbarVisible] = useState(false);
+
+    const {
+        send: getNewStockPools,
+        isNewStockPoolsLoading,
+        result: newStockPoolsGetResult
+    } = useGet(itemTypes.stockPools.url);
 
     const {
         search: searchStorageLocations,
@@ -39,7 +46,8 @@ function StockPools() {
         send: updateStockPool,
         isLoading: updateLoading,
         errorMessage: updateError,
-        putResult: updateResult
+        putResult: updateResult,
+        clearPutResult: clearUpdateResult
     } = usePut(itemTypes.stockPools.url, true);
 
     const {
@@ -51,12 +59,27 @@ function StockPools() {
     } = usePost(itemTypes.stockPools.url);
 
     useEffect(() => {
-        setSnackbarVisible(!!updateResult || !!createStockPoolResult);
-    }, [createStockPoolResult, updateResult]);
+        if (updateResult || createStockPoolResult) {
+            getNewStockPools();
+            setSnackbarVisible(true);
+            clearCreateStockPool();
+            clearUpdateResult();
+        }
+    }, [
+        clearCreateStockPool,
+        clearUpdateResult,
+        createStockPoolResult,
+        getNewStockPools,
+        updateResult
+    ]);
 
     useEffect(() => {
-        setStockPools(stockPoolResult);
-    }, [stockPoolResult]);
+        if (newStockPoolsGetResult) {
+            setStockPools(newStockPoolsGetResult);
+        } else {
+            setStockPools(stockPoolResult);
+        }
+    }, [newStockPoolsGetResult, stockPoolResult]);
 
     const [searchDialogOpen, setSearchDialogOpen] = useState({
         forRow: null
@@ -97,7 +120,9 @@ function StockPools() {
     };
 
     const handleCancelSelect = () => {
-        const oldRow = stockPoolResult.find(sp => sp.stockPoolCode === rowUpdated);
+        const oldRow = newStockPoolsGetResult
+            ? newStockPoolsGetResult.find(sp => sp.stockPoolCode === rowUpdated)
+            : stockPoolResult.find(sp => sp.stockPoolCode === rowUpdated);
 
         setStockPools(prevRows =>
             prevRows.map(row => (row.stockPoolCode === oldRow.stockPoolCode ? oldRow : row))
@@ -252,6 +277,7 @@ function StockPools() {
                 </Grid>
                 {(isLoading ||
                     accountingCompanyLoading ||
+                    isNewStockPoolsLoading ||
                     updateLoading ||
                     createStockPoolLoading) && (
                     <Grid size={12}>
