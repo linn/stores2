@@ -43,8 +43,8 @@
 
             this.createResource = new StorageLocationResource
             {
-                LocationCode = "E-SER-TOAST",
-                Description = "SERVICE TOAST RACK",
+                LocationCode = "E-FA-TOAST",
+                Description = "COLIN TOAST RACK",
                 AccountingCompany = "LINN",
                 SiteCode = "EAGLESHAM",
                 StorageAreaCode = "FACTORY",
@@ -83,7 +83,7 @@
         {
             var resource = this.Response.DeserializeBody<StorageLocationResource>();
             resource.LocationId.Should().Be(1);
-            resource.LocationCode.Should().Be("E-SER-TOAST");
+            resource.LocationCode.Should().Be("E-FA-TOAST");
         }
     }
 }

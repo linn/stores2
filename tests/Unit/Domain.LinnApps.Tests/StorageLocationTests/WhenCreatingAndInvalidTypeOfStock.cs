@@ -19,14 +19,14 @@
             this.action = () =>
             {
                 _ = new StorageLocation(
-                    1, "E-TESTY-TEST", "TEST LOCATION", site, area, company, "Y", "Y", "Y", "Z", "A");
+                    1, "E-TESTY-TEST", "TEST LOCATION", site, area, company, "Y", "Y", "Y", "A", "Z");
             };
         }
 
         [Test]
         public void ShouldThrow()
         {
-            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - stock state should be I, Q or A");
+            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - type of stock should be R, F or A");
         }
     }
 }

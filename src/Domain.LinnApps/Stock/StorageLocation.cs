@@ -28,6 +28,15 @@
                 throw new StorageLocationException("Location needs an area");
             }
 
+            if (!string.IsNullOrEmpty(site.SitePrefix) || !string.IsNullOrEmpty(area.AreaPrefix))
+            {
+                var prefixShouldBe = $"{site.SitePrefix}-{area.AreaPrefix}-";
+                if (!locationCode.StartsWith(prefixShouldBe))
+                {
+                    throw new StorageLocationException($"Cannot create Location - Location code should start with {prefixShouldBe}");
+                }
+            }
+
             this.StorageAreaCode = area.StorageAreaCode;
             this.StorageArea = area;
 
