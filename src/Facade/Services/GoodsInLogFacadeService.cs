@@ -68,8 +68,10 @@ namespace Linn.Stores2.Facade.Services
         protected override Expression<Func<GoodsInLogEntry, bool>> FilterExpression(GoodsInLogEntrySearchResource searchResource)
         {
             return x =>
-                ((string.IsNullOrEmpty(searchResource.DateCreated)
-                  || x.DateCreated == DateTime.Parse(searchResource.DateCreated))
+                (string.IsNullOrWhiteSpace(searchResource.FromDate)
+                || x.DateCreated >= DateTime.Parse(searchResource.FromDate))
+                && (string.IsNullOrWhiteSpace(searchResource.ToDate)
+                    || x.DateCreated <= DateTime.Parse(searchResource.ToDate))
                  && (!searchResource.CreatedBy.HasValue || x.CreatedBy == searchResource.CreatedBy)
                  && (string.IsNullOrEmpty(searchResource.ArticleNumber) || x.ArticleNumber.ToUpper()
                          .Contains(searchResource.ArticleNumber.ToUpper().Trim()))
@@ -77,7 +79,7 @@ namespace Linn.Stores2.Facade.Services
                  && (!searchResource.Quantity.HasValue || x.Quantity == searchResource.Quantity)
                  && (!searchResource.ReqNumber.HasValue || x.ReqNumber == searchResource.ReqNumber)
                  && (string.IsNullOrEmpty(searchResource.StoragePlace) || x.StoragePlace.ToUpper()
-                         .Contains(searchResource.StoragePlace.ToUpper().Trim())));
+                         .Contains(searchResource.StoragePlace.ToUpper().Trim()));
         }
 
         protected override Expression<Func<GoodsInLogEntry, bool>> FindExpression(GoodsInLogEntrySearchResource searchResource)

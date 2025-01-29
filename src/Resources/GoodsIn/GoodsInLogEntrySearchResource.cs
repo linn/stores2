@@ -2,7 +2,9 @@
 {
     public class GoodsInLogEntrySearchResource
     {
-        public string DateCreated { get; set; }
+        public string FromDate { get; set; }
+
+        public string ToDate { get; set; }
 
         public int? CreatedBy { get; set; }
 

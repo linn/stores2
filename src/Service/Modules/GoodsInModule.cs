@@ -22,7 +22,8 @@
         private async Task SearchLog(
             HttpRequest _,
             HttpResponse res,
-            string dateCreated,
+            string fromDate,
+            string toDate,
             int? createdBy,
             string articleNumber,
             decimal? quantity,
@@ -31,9 +32,9 @@
             string storagePlace,
             IAsyncFacadeService<GoodsInLogEntry, int, GoodsInLogEntryResource, GoodsInLogEntryResource, GoodsInLogEntrySearchResource> goodsInLogFacadeService)
         {
-            if (string.IsNullOrWhiteSpace(dateCreated) && !createdBy.HasValue && 
-                string.IsNullOrWhiteSpace(articleNumber) && !quantity.HasValue && 
-                !orderNumber.HasValue && !reqNumber.HasValue &&
+            if (string.IsNullOrWhiteSpace(fromDate) && string.IsNullOrWhiteSpace(toDate) &&
+                !createdBy.HasValue && string.IsNullOrWhiteSpace(articleNumber) && 
+                !quantity.HasValue && !orderNumber.HasValue && !reqNumber.HasValue &&
                 string.IsNullOrWhiteSpace(articleNumber) && string.IsNullOrWhiteSpace(storagePlace))
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
@@ -49,7 +50,8 @@
                                                 OrderNumber = orderNumber,
                                                 ReqNumber = reqNumber,
                                                 StoragePlace = storagePlace,
-                                                DateCreated = dateCreated
+                                                FromDate = toDate,
+                                                ToDate = toDate
                                         }));
             }
         }
