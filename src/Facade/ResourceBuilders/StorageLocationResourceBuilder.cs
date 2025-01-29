@@ -1,7 +1,8 @@
 ﻿namespace Linn.Stores2.Facade.ResourceBuilders
 {
-    using System.Linq;
     using System.Collections.Generic;
+    using System.Linq;
+
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Stock;

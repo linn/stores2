@@ -15,13 +15,16 @@
                 SiteCode = model.SiteCode,
                 Description = model.Description,
                 SitePrefix = model.SitePrefix,
-                StorageAreas = model.StorageAreas.Where(a => a.DateInvalid == null).OrderBy(a => a.Description).Select(a => new StorageAreaResource
-                {
-                    StorageAreaCode = a.StorageAreaCode,
-                    Description = a.Description,
-                    AreaPrefix = a.AreaPrefix,
-                    DateInvalid = a.DateInvalid?.ToString("o")
-                })
+                StorageAreas = model.StorageAreas
+                    .Where(a => a.DateInvalid == null)
+                    .OrderBy(a => a.Description)
+                    .Select(a => new StorageAreaResource 
+                                     {
+                                         StorageAreaCode = a.StorageAreaCode,
+                                         Description = a.Description,
+                                         AreaPrefix = a.AreaPrefix,
+                                         DateInvalid = a.DateInvalid?.ToString("o")
+                                     })
             };
         }
 
