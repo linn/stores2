@@ -71,7 +71,7 @@ namespace Linn.Stores2.Facade.Services
                 ((string.IsNullOrEmpty(searchResource.DateCreated)
                   || x.DateCreated == DateTime.Parse(searchResource.DateCreated))
                  && (!searchResource.CreatedBy.HasValue || x.CreatedBy == searchResource.CreatedBy)
-                 && (string.IsNullOrEmpty(searchResource.ArticleNumber) || x.Comments.ToUpper()
+                 && (string.IsNullOrEmpty(searchResource.ArticleNumber) || x.ArticleNumber.ToUpper()
                          .Contains(searchResource.ArticleNumber.ToUpper().Trim()))
                  && (!searchResource.OrderNumber.HasValue || x.OrderNumber == searchResource.OrderNumber)
                  && (!searchResource.Quantity.HasValue || x.Quantity == searchResource.Quantity)
