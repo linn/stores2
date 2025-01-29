@@ -16,7 +16,7 @@ const itemTypes = {
     nominals: { url: `${config.proxyRoot}/ledgers/nominals` },
     departments: { url: `${config.proxyRoot}/ledgers/departments` },
     parts: { url: `${config.proxyRoot}/parts` },
-    stockLocators: { url: `${config.proxyRoot}/inventory/stock-locators` }
+    stockLocators: { url: `${config.proxyRoot}/inventory/stock-locators-by-location` }
 };
 
 export default itemTypes;

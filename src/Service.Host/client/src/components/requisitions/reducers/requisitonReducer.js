@@ -72,7 +72,7 @@ function reducer(state, action) {
                               ...line,
                               stockPicked: true,
                               // todo - simplification: following line assumes stock can only be picked once for each line
-                              // so will need to make this able to cope with changes at some point
+                              // so will need to make this able to cope with subsequent changes at some point
                               moves: [...line.moves, action.payload.stockMove]
                           }
                         : line

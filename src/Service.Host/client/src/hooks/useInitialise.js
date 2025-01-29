@@ -5,7 +5,7 @@ import useGet from './useGet';
 // the url is specified by the below parameters, where id and queryString are optional
 function useInitialise(url, id, queryString) {
     const [hasFetched, setHasFetched] = useState(false);
-    const { send, isLoading, errorMessage, result } = useGet(url);
+    const { send, isLoading, errorMessage, result } = useGet(url, true);
 
     if (!hasFetched) {
         send(id, queryString);

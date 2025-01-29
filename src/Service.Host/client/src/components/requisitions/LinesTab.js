@@ -169,7 +169,7 @@ function LinesTab({
                 <PickStockDialog
                     open={pickStockDialogVisible}
                     setOpen={setPickStockDialogVisible}
-                    partId={lines.find(l => l.lineNumber === selected)?.part?.id}
+                    partNumber={lines.find(l => l.lineNumber === selected)?.part?.partNumber}
                     onConfirm={() => {
                         pickStock();
                     }}
