@@ -4,6 +4,7 @@
     using Microsoft.EntityFrameworkCore;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using System.Threading.Tasks;
 
     public class StorageSiteRepository : EntityFrameworkRepository<StorageSite, string>
     {
@@ -18,6 +19,14 @@
         {
             var result = this.serviceDbContext.StorageSites
                 .Include(x => x.StorageAreas);
+            return result;
+        }
+
+        public override async Task<StorageSite> FindByIdAsync(string key)
+        {
+            var result = await this.serviceDbContext.StorageSites
+                .Include(x => x.StorageAreas)
+                .FirstOrDefaultAsync(loc => loc.SiteCode == key);
             return result;
         }
     }

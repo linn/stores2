@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
     using Linn.Common.Persistence.EntityFramework;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
@@ -29,6 +30,8 @@
 
             var siteRepository = new StorageSiteRepository(this.DbContext);
             var locationRepository = new StorageLocationRepository(this.DbContext);
+            var accountingCompanyRepository = new EntityFrameworkRepository<AccountingCompany, string>(this.DbContext.AccountingCompanies);
+            var storageSiteRepository = new StorageSiteRepository(this.DbContext);
 
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
                 storageSiteService = new StorageSiteService(
@@ -36,11 +39,14 @@
                     new TransactionManager(this.DbContext),
                     new StorageSiteResourceBuilder());
 
+            var databaseSequenceService = new TestDatabaseSequenceService();
+
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
                 storageLocationService = new StorageLocationService(
                     locationRepository,
                     new TransactionManager(this.DbContext),
-                    new StorageLocationResourceBuilder());
+                    new StorageLocationResourceBuilder(),
+                    databaseSequenceService, accountingCompanyRepository, storageSiteRepository);
 
             this.Client = TestClient.With<StorageModule>(
                 services =>

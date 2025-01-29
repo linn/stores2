@@ -80,6 +80,7 @@ function StorageLocation({ creating }) {
             storesKittable: 'Y',
             storesKittingPriority: null,
             accessibleFlag: 'Y',
+            defaultStockPool: null,
             auditFrequencyWeeks: null
         });
     }
@@ -232,8 +233,13 @@ function StorageLocation({ creating }) {
                                 />
                             </Grid>     
                             <Grid size={5}>
-                                default stock pool
-
+                                <InputField
+                                    value={formValues.defaultStockPool}
+                                    fullWidth
+                                    label="Default Stock Pool"
+                                    propertyName="defaultStockPool"
+                                    onChange={handleFieldChange}
+                                />
                             </Grid>
                             <Grid size={4}>
                                 <InputField
