@@ -17,6 +17,7 @@ function StorageTypes() {
     const [creating, setCreating] = useState(false);
     const [storageTypes, setStorageTypes] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [rowUpdated, setRowUpdated] = useState();
 
     const {
         send: updateStorageType,
@@ -53,9 +54,19 @@ function StorageTypes() {
         setCreating(true);
     };
 
+    const handleCancelSelect = () => {
+        const oldRow = storageTypesResult.find(sp => sp.storageTypeCode === rowUpdated);
+
+        setStorageTypes(prevRows =>
+            prevRows.map(row => (row.storageTypeCode === oldRow.storageTypeCode ? oldRow : row))
+        );
+
+        setRowUpdated(null);
+    };
+
     const processRowUpdate = newRow => {
+        console.log('Here');
         const updatedRow = { ...newRow, updated: true };
-        console.log(updatedRow);
         setStorageTypes(prevRows =>
             prevRows.map(row =>
                 row.storageTypeCode === newRow.storageTypeCode || row.storageTypeCode === ''
@@ -63,7 +74,8 @@ function StorageTypes() {
                     : row
             )
         );
-        console.log(storageTypes);
+        console.log(newRow);
+        setRowUpdated(newRow.storageTypeCode);
         return newRow;
     };
 
@@ -71,7 +83,7 @@ function StorageTypes() {
         {
             field: 'storageTypeCode',
             headerName: 'Code',
-            editable: params => params.row?.creating === true,
+            editable: true,
             width: 100
         },
         { field: 'description', editable: true, headerName: 'Description', width: 400 }
@@ -82,6 +94,11 @@ function StorageTypes() {
             <Grid container spacing={3}>
                 <Grid size={12}>
                     <Typography variant="h4">Storage Types</Typography>
+                </Grid>
+                <Grid size={12}>
+                    <Typography>
+                        Please Note: You can only update/create 1 Stock Pool at a time.
+                    </Typography>
                 </Grid>
                 {(isLoading || createStorageTypeLoading || updateLoading) && (
                     <Grid size={12}>
@@ -99,12 +116,19 @@ function StorageTypes() {
                         columns={StorageTypeColumns}
                         rowHeight={34}
                         loading={false}
+                        rowSelectionModel={[rowUpdated]}
                         hideFooter
                         isCellEditable={params => {
-                            if (params.field === 'storageTypeCode') {
-                                return params.row?.creating === true;
+                            if (params.field === 'storageTypeCode' && params.row.creating) {
+                                return true;
                             }
-                            return true;
+                            if (
+                                (!rowUpdated || params.id === rowUpdated) &&
+                                params.field !== 'storageTypeCode'
+                            ) {
+                                return true;
+                            }
+                            return false;
                         }}
                     />
                 </Grid>
@@ -116,22 +140,27 @@ function StorageTypes() {
                 <Grid item xs={4}>
                     <Button
                         onClick={() => {
-                            storageTypes
-                                .filter(st => st.updated === true)
-                                .forEach(st => {
-                                    if (st.creating) {
-                                        clearCreateStorageType();
-                                        createStorageType(null, st);
-                                        setCreating(false);
-                                    } else {
-                                        updateStorageType(st.storageTypeCode, st);
-                                    }
-                                });
+                            const updatedStorageType = storageTypes.find(sp => sp.updated === true);
+                            if (updatedStorageType.creating) {
+                                clearCreateStorageType();
+                                createStorageType(null, updatedStorageType);
+                            } else {
+                                updateStorageType(
+                                    updatedStorageType.storageTypeCode,
+                                    updatedStorageType
+                                );
+                            }
+                            setRowUpdated(null);
                         }}
                         variant="outlined"
                         disabled={storageTypesResult === storageTypes}
                     >
                         Save
+                    </Button>
+                </Grid>
+                <Grid size={4}>
+                    <Button onClick={handleCancelSelect} variant="outlined" disabled={!rowUpdated}>
+                        Cancel Select
                     </Button>
                 </Grid>
                 <Grid>
