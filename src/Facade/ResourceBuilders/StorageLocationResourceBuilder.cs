@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Linq;
     using System.Collections.Generic;
@@ -22,6 +24,21 @@
                 SiteCode = model.SiteCode,
                 StorageType = model.StorageTypeCode,
                 StorageAreaCode = model.StorageAreaCode,
+                AccountingCompany = model.AccountingCompany,
+                SalesAccountId = model.SalesAccountId,
+                OutletNumber = model.OutletNumber,
+                MixStatesFlag = model.MixStatesFlag,
+                StockState = model.StockState,
+                TypeOfStock = model.TypeOfStock,
+                SpecProcFlag = model.SpecProcFlag,
+                AccessibleFlag = model.AccessibleFlag,
+                StoresKittableFlag = model.StoresKittableFlag,
+                StoresKittingPriority = model.StoresKittingPriority,
+                DateLastAudited = model.DateLastAudited?.ToString("o"),
+                AuditedBy = model.AuditedBy != null ? model.AuditedBy?.Name : string.Empty,
+                AuditedByDepartmentCode = model.AuditedByDepartmentCode,
+                AuditedByDepartmentName = model.AuditedByDepartment != null ? model.AuditedByDepartment.Description : string.Empty,
+                AuditFrequencyWeeks = model.AuditFrequencyWeeks,
                 Links = this.BuildLinks(model, claims).ToArray()
             };
         }

@@ -1,4 +1,5 @@
-﻿using Linn.Common.Resources;
+﻿using System;
+using Linn.Common.Resources;
 
 namespace Linn.Stores2.Resources
 {
@@ -23,5 +24,35 @@ namespace Linn.Stores2.Resources
         public string SiteCode { get; set; }
 
         public string StorageAreaCode { get; set; }
+
+        public string AccountingCompany { get; set; }
+
+        public int? SalesAccountId { get; set; }
+
+        public int? OutletNumber { get; set; }
+
+        public string MixStatesFlag { get; set; }
+
+        public string StockState { get; set; }
+
+        public string TypeOfStock { get; set; }
+
+        public string SpecProcFlag { get; set; }
+
+        public string AccessibleFlag { get; set; }
+
+        public string StoresKittableFlag { get; set; }
+
+        public int? StoresKittingPriority { get; set; }
+
+        public int? AuditFrequencyWeeks { get; set; }
+
+        public string AuditedBy { get; set; }
+
+        public string DateLastAudited { get; set; }
+
+        public string AuditedByDepartmentCode { get; set; }
+
+        public string AuditedByDepartmentName { get; set; }
     }
 }
