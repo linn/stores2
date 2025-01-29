@@ -58,9 +58,11 @@
                 .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>, StoresBudgetFacadeService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
+                .AddScoped<IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>, StorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>()
-                .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>();
+                .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
+                .AddScoped<IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource, FunctionCodeResource>, StoresFunctionCodeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
@@ -69,9 +71,11 @@
                 .AddScoped<IBuilder<Country>, CountryResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<RequisitionHeader>, RequisitionResourceBuilder>()
+                .AddScoped<IBuilder<StoresFunctionCode>, StoresFunctionCodeResourceBuilder>()
                 .AddScoped<IBuilder<NominalAccount>, NominalAccountResourceBuilder>()
                 .AddScoped<IBuilder<StoresBudget>, StoresBudgetResourceBuilder>()
                 .AddScoped<IBuilder<StorageSite>, StorageSiteResourceBuilder>()
+                .AddScoped<IBuilder<StorageType>, StorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();

@@ -8,6 +8,7 @@ const itemTypes = {
     storagePlaces: { url: `${config.proxyRoot}/inventory/storage-places` },
     auditLocations: { url: `${config.proxyRoot}/inventory/audit-locations` },
     requisitions: { url: `${config.appRoot}/requisitions` },
+    functionCodes: { url: `${config.appRoot}/requisitions/function-codes` },
     createAuditReqs: { url: `${config.appRoot}/stores2/storage-places/create-checked-audit-reqs` },
     storesBudget: { url: `${config.appRoot}/stores2/budgets` },
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },

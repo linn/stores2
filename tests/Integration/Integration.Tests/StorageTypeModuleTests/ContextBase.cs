@@ -1,17 +1,20 @@
-﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.StorageTypeModuleTests
 {
     using System.Net.Http;
+
     using Linn.Common.Persistence.EntityFramework;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
-    using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Service.Modules;
+
     using Microsoft.Extensions.DependencyInjection;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -27,26 +30,21 @@
         {
             this.DbContext = new TestServiceDbContext();
 
-            var siteRepository = new StorageSiteRepository(this.DbContext);
-            var locationRepository = new StorageLocationRepository(this.DbContext);
+            var transactionManager = new TransactionManager(this.DbContext);
 
-            IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
-                storageSiteService = new StorageSiteService(
-                    siteRepository,
-                    new TransactionManager(this.DbContext),
-                    new StorageSiteResourceBuilder());
+            var storageTypeRepository
+                = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
 
-            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
-                storageLocationService = new StorageLocationService(
-                    locationRepository,
-                    new TransactionManager(this.DbContext),
-                    new StorageLocationResourceBuilder());
+            IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource> storageTypeFacadeService
+                = new StorageTypeFacadeService(
+                    storageTypeRepository,
+                    transactionManager,
+                    new StorageTypeResourceBuilder());
 
-            this.Client = TestClient.With<StorageModule>(
+            this.Client = TestClient.With<StorageTypeModule>(
                 services =>
                 {
-                    services.AddSingleton(storageSiteService);
-                    services.AddSingleton(storageLocationService);
+                    services.AddSingleton(storageTypeFacadeService);
                     services.AddHandlers();
                     services.AddRouting();
                 });
@@ -61,8 +59,9 @@
         [TearDown]
         public void Teardown()
         {
-            this.DbContext.StorageSites.RemoveAllAndSave(this.DbContext);
+            this.DbContext.AccountingCompanies.RemoveAllAndSave(this.DbContext);
             this.DbContext.StorageLocations.RemoveAllAndSave(this.DbContext);
+            this.DbContext.StockPools.RemoveAllAndSave(this.DbContext);
         }
     }
 }
