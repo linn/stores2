@@ -26,7 +26,7 @@ import MovesTab from './MovesTab';
 import useSearch from '../../hooks/useSearch';
 import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
-import TransactionsTab from './reducers/TransactionsTab';
+import TransactionsTab from './TransactionsTab';
 
 function Requisition({ creating }) {
     const { userNumber, name } = useUserProfile();
@@ -202,6 +202,7 @@ function Requisition({ creating }) {
                                     loading={false}
                                     searchResults={functionCodes.map(f => ({
                                         ...f,
+                                        id: f.code,
                                         name: f.code,
                                         description: f.description
                                     }))}
@@ -425,8 +426,16 @@ function Requisition({ creating }) {
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
                                     canAdd={canAddLines()}
-                                    addLine={() => dispatch({ type: 'add_line' })}
+                                    addLine={() => {
+                                        dispatch({ type: 'add_line' });
+                                    }}
                                     showPostings={!creating}
+                                    setLinePart={(lineNumber, selectedPart) => {
+                                        dispatch({
+                                            type: 'set_line_part',
+                                            payload: { lineNumber, ...selectedPart }
+                                        });
+                                    }}
                                 />
                             )}
                             {tab === 1 && (

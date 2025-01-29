@@ -14,7 +14,8 @@ const itemTypes = {
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
     storageLocations: { url: `${config.appRoot}/stores2/storage/locations` },
     nominals: { url: `${config.proxyRoot}/ledgers/nominals` },
-    departments: { url: `${config.proxyRoot}/ledgers/departments` }
+    departments: { url: `${config.proxyRoot}/ledgers/departments` },
+    parts: { url: `${config.proxyRoot}/parts` }
 };
 
 export default itemTypes;

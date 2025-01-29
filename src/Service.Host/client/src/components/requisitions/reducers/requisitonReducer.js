@@ -47,6 +47,20 @@ function reducer(state, action) {
 
             return { ...state, lines: [...state.lines, newLine] };
         }
+        case 'set_line_part':
+            return {
+                ...state,
+                lines: state.lines.map(x =>
+                    x.lineNumber === action.payload.lineNumber
+                        ? {
+                              ...x,
+                              partNumber: action.payload.partNumber,
+                              partDescription: action.payload.description
+                          }
+                        : x
+                )
+            };
+
         default: {
             return state;
         }
