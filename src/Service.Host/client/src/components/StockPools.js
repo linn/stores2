@@ -101,7 +101,6 @@ function StockPools() {
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
-        console.log(updatedRow);
         setStockPools(prevRows =>
             prevRows.map(row =>
                 row.stockPoolCode === newRow.stockPoolCode || row.stockPoolCode === ''
@@ -118,16 +117,13 @@ function StockPools() {
         };
 
         const handleSearchResultSelect = selected => {
-            const currentRow = stockPools?.find(r => r.id === searchDialogOpen.forRow);
-            let newRow = {
+            const currentRow = stockPools?.find(r => r.stockPoolCode === searchDialogOpen.forRow);
+            const newRow = {
                 ...currentRow,
                 updated: true,
                 defaultLocation: selected.locationId,
                 defaultLocationName: selected.locationCode
             };
-            c.searchUpdateFieldNames?.forEach(f => {
-                newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
-            });
 
             processRowUpdate(newRow, currentRow);
             setSearchDialogOpen({ forRow: null, forColumn: null });
@@ -193,16 +189,20 @@ function StockPools() {
             width: 150,
             editable: true,
             type: 'search',
-            searchResults: storageLocationsSearchResults,
-            searchLoading: storageLocationsSearchLoading,
             searchUpdateFieldNames: [
                 { fieldName: 'defaultLocation', searchResultFieldName: 'locationId' },
                 { fieldName: 'defaultLocationName', searchResultFieldName: 'locationCode' }
             ],
-            clearSearch: clearStorageLocation,
             renderCell: searchRenderCell
         },
-        { field: 'availableToMrp', editable: true, headerName: 'Available to Mrp', width: 175 },
+        {
+            field: 'availableToMrp',
+            editable: true,
+            headerName: 'Available to Mrp',
+            width: 175,
+            valueOptions: ['Y', 'N'],
+            type: 'singleSelect'
+        },
         { field: 'sequence', editable: true, headerName: 'Sequence', width: 100 }
     ];
 
@@ -257,7 +257,6 @@ function StockPools() {
                         }}
                     />
                 </Grid>
-                {console.log(stockPools)}
                 <Grid item xs={4}>
                     <Button onClick={addNewRow} variant="outlined" disabled={creating}>
                         Add Stock Pool
