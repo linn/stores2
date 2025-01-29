@@ -23,9 +23,9 @@ function StockPools() {
     const { isLoading: accountingCompanyLoading, result: accountingCompany } = useInitialise(
         itemTypes.accountingCompany.url
     );
-    const [creating, setCreating] = useState(false);
     const [stockPools, setStockPools] = useState();
     const [searchTerm, setSearchTerm] = useState();
+    const [rowUpdated, setRowUpdated] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
 
     const {
@@ -59,8 +59,7 @@ function StockPools() {
     }, [stockPoolResult]);
 
     const [searchDialogOpen, setSearchDialogOpen] = useState({
-        forRow: null,
-        forColumn: null
+        forRow: null
     });
     const searchRenderCell = params => (
         <>
@@ -68,8 +67,7 @@ function StockPools() {
                 style={{ cursor: 'pointer' }}
                 onClick={() =>
                     setSearchDialogOpen({
-                        forRow: params.id,
-                        forColumn: params.field
+                        forRow: params.id
                     })
                 }
             />
@@ -96,7 +94,16 @@ function StockPools() {
                 id: stockPools.length + 1
             }
         ]);
-        setCreating(true);
+    };
+
+    const handleCancelSelect = () => {
+        const oldRow = stockPoolResult.find(sp => sp.stockPoolCode === rowUpdated);
+
+        setStockPools(prevRows =>
+            prevRows.map(row => (row.stockPoolCode === oldRow.stockPoolCode ? oldRow : row))
+        );
+
+        setRowUpdated(null);
     };
 
     const processRowUpdate = newRow => {
@@ -108,12 +115,13 @@ function StockPools() {
                     : row
             )
         );
+        setRowUpdated(newRow.stockPoolCode);
         return newRow;
     };
 
-    const renderSearchDialog = c => {
+    const renderSearchDialog = () => {
         const handleClose = () => {
-            setSearchDialogOpen({ forRow: null, forColumn: null });
+            setSearchDialogOpen({ forRow: null });
         };
 
         const handleSearchResultSelect = selected => {
@@ -126,35 +134,33 @@ function StockPools() {
             };
 
             processRowUpdate(newRow, currentRow);
-            setSearchDialogOpen({ forRow: null, forColumn: null });
+            setSearchDialogOpen({ forRow: null });
         };
 
         return (
-            <div id={c.field}>
-                <Dialog open={searchDialogOpen.forColumn === c.field} onClose={handleClose}>
-                    <DialogTitle>Search</DialogTitle>
-                    <DialogContent>
-                        <Search
-                            autoFocus
-                            propertyName={`${c.field}-searchTerm`}
-                            label="defaultLocation"
-                            resultsInModal
-                            resultLimit={100}
-                            value={searchTerm}
-                            loading={storageLocationsSearchLoading}
-                            handleValueChange={(_, newVal) => setSearchTerm(newVal)}
-                            search={searchStorageLocations}
-                            searchResults={storageLocationsSearchResults}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handleSearchResultSelect}
-                            clearSearch={clearStorageLocation}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Close</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
+            <Dialog open={searchDialogOpen.forRow} onClose={handleClose}>
+                <DialogTitle>Search</DialogTitle>
+                <DialogContent>
+                    <Search
+                        autoFocus
+                        propertyName="defaultLocation"
+                        label="defaultLocation"
+                        resultsInModal
+                        resultLimit={100}
+                        value={searchTerm}
+                        loading={storageLocationsSearchLoading}
+                        handleValueChange={(_, newVal) => setSearchTerm(newVal)}
+                        search={searchStorageLocations}
+                        searchResults={storageLocationsSearchResults}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handleSearchResultSelect}
+                        clearSearch={clearStorageLocation}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
         );
     };
 
@@ -162,24 +168,34 @@ function StockPools() {
         {
             field: 'stockPoolCode',
             headerName: 'Code',
-            editable: params => params.row?.creating === true,
+            editable: true,
             width: 100
         },
-        { field: 'stockPoolDescription', editable: true, headerName: 'Description', width: 225 },
+        {
+            field: 'stockPoolDescription',
+            headerName: 'Description',
+            editable: true,
+            width: 225
+        },
         {
             field: 'dateInvalid',
             headerName: 'Date Invalid',
-            editable: true,
             width: 175,
+            editable: true,
             valueFormatter: value => value && moment(value).format('DD-MMM-YYYY')
         },
-        { field: 'stockCategory', editable: true, headerName: 'Stock Category', width: 130 },
+        {
+            field: 'stockCategory',
+            headerName: 'Stock Category',
+            editable: true,
+            width: 130
+        },
         {
             field: 'accountingCompanyCode',
-            editable: true,
             headerName: 'Accounting Company',
             width: 175,
             defaultFormat: true,
+            editable: true,
             valueOptions: accountingCompany?.map(ac => ac.name),
             type: 'singleSelect'
         },
@@ -188,22 +204,22 @@ function StockPools() {
             headerName: 'Default Location',
             width: 150,
             editable: true,
-            type: 'search',
-            searchUpdateFieldNames: [
-                { fieldName: 'defaultLocation', searchResultFieldName: 'locationId' },
-                { fieldName: 'defaultLocationName', searchResultFieldName: 'locationCode' }
-            ],
             renderCell: searchRenderCell
         },
         {
             field: 'availableToMrp',
-            editable: true,
             headerName: 'Available to Mrp',
             width: 175,
             valueOptions: ['Y', 'N'],
+            editable: true,
             type: 'singleSelect'
         },
-        { field: 'sequence', editable: true, headerName: 'Sequence', width: 100 }
+        {
+            field: 'sequence',
+            headerName: 'Sequence',
+            editable: true,
+            width: 100
+        }
     ];
 
     const sortedStockPools = stockPools?.slice().sort((a, b) => {
@@ -224,10 +240,15 @@ function StockPools() {
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
-            {stockPoolColumns?.filter(c => c.type === 'search').map(c => renderSearchDialog(c))}
+            {searchDialogOpen.forRow && renderSearchDialog()}
             <Grid container spacing={3}>
                 <Grid size={12}>
                     <Typography variant="h4">Stock Pools</Typography>
+                </Grid>
+                <Grid size={12}>
+                    <Typography>
+                        Please Note: You can only update/create 1 Stock Pool at a time.
+                    </Typography>
                 </Grid>
                 {(isLoading ||
                     accountingCompanyLoading ||
@@ -247,40 +268,46 @@ function StockPools() {
                         processRowUpdate={processRowUpdate}
                         columns={stockPoolColumns}
                         rowHeight={34}
+                        rowSelectionModel={[rowUpdated]}
                         loading={false}
                         hideFooter
                         isCellEditable={params => {
-                            if (params.field === 'stockPoolCode') {
-                                return params.row?.creating === true;
+                            if (params.field === 'stockPoolCode' && params.row.creating) {
+                                return true;
                             }
-                            return true;
+                            if (!rowUpdated || params.id === rowUpdated) {
+                                return true;
+                            }
+                            return false;
                         }}
                     />
                 </Grid>
                 <Grid item xs={4}>
-                    <Button onClick={addNewRow} variant="outlined" disabled={creating}>
+                    <Button onClick={addNewRow} variant="outlined" disabled={rowUpdated}>
                         Add Stock Pool
                     </Button>
                 </Grid>
                 <Grid item xs={4}>
                     <Button
                         onClick={() => {
-                            stockPools
-                                .filter(sp => sp.updated === true)
-                                .forEach(sp => {
-                                    if (sp.creating) {
-                                        clearCreateStockPool();
-                                        createStockPool(null, sp);
-                                        setCreating(false);
-                                    } else {
-                                        updateStockPool(sp.stockPoolCode, sp);
-                                    }
-                                });
+                            const updatedStockPool = stockPools.find(sp => sp.updated === true);
+                            if (updatedStockPool.creating) {
+                                clearCreateStockPool();
+                                createStockPool(null, updatedStockPool);
+                            } else {
+                                updateStockPool(updatedStockPool.stockPoolCode, updatedStockPool);
+                            }
+                            setRowUpdated(null);
                         }}
                         variant="outlined"
                         disabled={stockPoolResult === stockPools}
                     >
                         Save
+                    </Button>
+                </Grid>
+                <Grid size={4}>
+                    <Button onClick={handleCancelSelect} variant="outlined" disabled={!rowUpdated}>
+                        Cancel Select
                     </Button>
                 </Grid>
                 <Grid>
