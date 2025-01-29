@@ -301,7 +301,10 @@ function StockPools() {
                             if (params.field === 'stockPoolCode' && params.row.creating) {
                                 return true;
                             }
-                            if (!rowUpdated || params.id === rowUpdated) {
+                            if (
+                                (!rowUpdated || params.id === rowUpdated) &&
+                                params.field !== 'stockPoolCode'
+                            ) {
                                 return true;
                             }
                             return false;
