@@ -11,7 +11,15 @@ import Typography from '@mui/material/Typography';
 import BudgetPostings from '../BudgetPostings';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 
-function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd, addLine }) {
+function LinesTab({
+    lines = [],
+    selected = null,
+    setSelected,
+    cancelLine,
+    canAdd,
+    addLine,
+    showPostings
+}) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
 
     const linesColumns = [
@@ -130,7 +138,7 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd
                 </Typography>
             </Grid>
             <Grid size={10}>
-                {selected && (
+                {selected && showPostings && (
                     <BudgetPostings
                         budgetPostings={lines.find(l => l.lineNumber === selected)?.postings ?? []}
                     />
@@ -147,7 +155,8 @@ LinesTab.propTypes = {
     cancelLine: PropTypes.func.isRequired,
     setSelected: PropTypes.func.isRequired,
     canAdd: PropTypes.bool.isRequired,
-    addLine: PropTypes.func.isRequired
+    addLine: PropTypes.func.isRequired,
+    showPostings: PropTypes.func.isRequired
 };
 
 export default LinesTab;

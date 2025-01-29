@@ -186,6 +186,7 @@ function Requisition({ creating }) {
                                     label="Function Code"
                                     resultsInModal
                                     resultLimit={100}
+                                    disabled={formState.lines?.length}
                                     helperText="Enter a value, or press enter to view all function codes"
                                     value={formState.functionCode?.code}
                                     handleValueChange={(_, newVal) => {
@@ -425,6 +426,7 @@ function Requisition({ creating }) {
                                     cancelLine={cancel}
                                     canAdd={canAddLines()}
                                     addLine={() => dispatch({ type: 'add_line' })}
+                                    showPostings={!creating}
                                 />
                             )}
                             {tab === 1 && (
