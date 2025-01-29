@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
+    using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.GoodsIn;
     using Linn.Stores2.Service.Models;
@@ -28,7 +29,7 @@
             int? orderNumber,
             int? reqNumber,
             string storagePlace,
-            IAsyncFacadeService<GoodsInLogEntryResource, int, GoodsInLogEntryResource, GoodsInLogEntryResource, GoodsInLogEntrySearchResource> goodsInLogFacadeService)
+            IAsyncFacadeService<GoodsInLogEntry, int, GoodsInLogEntryResource, GoodsInLogEntryResource, GoodsInLogEntrySearchResource> goodsInLogFacadeService)
         {
             if (string.IsNullOrWhiteSpace(dateCreated) && !createdBy.HasValue && 
                 string.IsNullOrWhiteSpace(articleNumber) && !quantity.HasValue && 
