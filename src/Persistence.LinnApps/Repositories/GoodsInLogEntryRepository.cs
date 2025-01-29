@@ -18,7 +18,7 @@
 
         public override IQueryable<GoodsInLogEntry> FindAll()
         {
-            return this.serviceDbContext.GoodsInLogEntries.OrderByDescending(g => g.DateCreated);
+            throw new NotImplementedException();
         }
 
         public override IQueryable<GoodsInLogEntry> FilterBy(Expression<Func<GoodsInLogEntry, bool>> expression)

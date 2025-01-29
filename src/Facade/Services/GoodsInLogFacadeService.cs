@@ -67,11 +67,17 @@ namespace Linn.Stores2.Facade.Services
 
         protected override Expression<Func<GoodsInLogEntry, bool>> FilterExpression(GoodsInLogEntrySearchResource searchResource)
         {
+            var fromDate = string.IsNullOrWhiteSpace(searchResource.FromDate)
+                               ? DateTime.Now.AddDays(-14)
+                               : DateTime.Parse(searchResource.FromDate);
+
+            var toDate = string.IsNullOrWhiteSpace(searchResource.ToDate)
+                             ? DateTime.Now
+                             : DateTime.Parse(searchResource.ToDate);
+
             return x =>
-                (string.IsNullOrWhiteSpace(searchResource.FromDate)
-                || x.DateCreated >= DateTime.Parse(searchResource.FromDate))
-                && (string.IsNullOrWhiteSpace(searchResource.ToDate)
-                    || x.DateCreated <= DateTime.Parse(searchResource.ToDate))
+                x.DateCreated >= fromDate
+                && x.DateCreated <= toDate
                  && (!searchResource.CreatedBy.HasValue || x.CreatedBy == searchResource.CreatedBy)
                  && (string.IsNullOrEmpty(searchResource.ArticleNumber) || x.ArticleNumber.ToUpper()
                          .Contains(searchResource.ArticleNumber.ToUpper().Trim()))
