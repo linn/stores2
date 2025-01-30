@@ -16,13 +16,6 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override IQueryable<GoodsInLogEntry> FindAll()
-        {
-            return this.serviceDbContext.GoodsInLogEntries
-                .Where(g => g.DateCreated >= DateTime.Now.AddDays(-14))
-                .OrderByDescending(g => g.DateCreated);
-        }
-
         public override IQueryable<GoodsInLogEntry> FilterBy(Expression<Func<GoodsInLogEntry, bool>> expression)
         {
             return this.serviceDbContext.GoodsInLogEntries.Where(expression).OrderByDescending(g => g.DateCreated);

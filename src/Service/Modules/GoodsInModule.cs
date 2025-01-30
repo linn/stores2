@@ -32,28 +32,18 @@
             string storagePlace,
             IAsyncFacadeService<GoodsInLogEntry, int, GoodsInLogEntryResource, GoodsInLogEntryResource, GoodsInLogEntrySearchResource> goodsInLogFacadeService)
         {
-            if (string.IsNullOrWhiteSpace(fromDate) && string.IsNullOrWhiteSpace(toDate) &&
-                !createdBy.HasValue && string.IsNullOrWhiteSpace(articleNumber) && 
-                !quantity.HasValue && !orderNumber.HasValue && !reqNumber.HasValue &&
-                string.IsNullOrWhiteSpace(articleNumber) && string.IsNullOrWhiteSpace(storagePlace))
-            {
-                await res.Negotiate(await goodsInLogFacadeService.GetAll());
-            }
-            else
-            {
-                await res.Negotiate(await goodsInLogFacadeService.FilterBy(
-                                        new GoodsInLogEntrySearchResource
-                                        {
-                                                CreatedBy = createdBy,
-                                                ArticleNumber = articleNumber,
-                                                Quantity = quantity,
-                                                OrderNumber = orderNumber,
-                                                ReqNumber = reqNumber,
-                                                StoragePlace = storagePlace,
-                                                FromDate = toDate,
-                                                ToDate = toDate
+            await res.Negotiate(await goodsInLogFacadeService.FilterBy(
+                                    new GoodsInLogEntrySearchResource 
+                                        { 
+                                            CreatedBy = createdBy,
+                                            ArticleNumber = articleNumber,
+                                            Quantity = quantity,
+                                            OrderNumber = orderNumber,
+                                            ReqNumber = reqNumber,
+                                            StoragePlace = storagePlace,
+                                            FromDate = toDate,
+                                            ToDate = toDate
                                         }));
-            }
         }
     }
 }
