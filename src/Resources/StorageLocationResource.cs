@@ -1,8 +1,7 @@
-﻿using System;
-using Linn.Common.Resources;
-
-namespace Linn.Stores2.Resources
+﻿namespace Linn.Stores2.Resources
 {
+    using Linn.Common.Resources;
+
     public class StorageLocationResource : HypermediaResource
     {
         public int LocationId { get; set; }
