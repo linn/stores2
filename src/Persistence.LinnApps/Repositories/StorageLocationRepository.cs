@@ -34,6 +34,8 @@
         {
             var result = await this.serviceDbContext.StorageLocations
                 .Include(loc => loc.StorageArea)
+                .Include(loc => loc.AuditedBy)
+                .Include(loc => loc.AuditedByDepartment)
                 .FirstOrDefaultAsync(loc => loc.LocationId == key);
             return result;
         }

@@ -1,19 +1,29 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
     using System;
+    using System.Linq;
+    using Linn.Stores2.Domain.LinnApps.External;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
     public class StorageLocationService : AsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
     {
-        public StorageLocationService(IRepository<StorageLocation, int> repository, ITransactionManager transactionManager, IBuilder<StorageLocation> resourceBuilder) : base(repository, transactionManager, resourceBuilder)
+        private readonly IDatabaseSequenceService databaseSequenceService;
+        private readonly IRepository<AccountingCompany, string> accountingCompanyRepository;
+        private readonly IRepository<StorageSite, string> storageSiteRepository;
+
+        public StorageLocationService(IRepository<StorageLocation, int> repository, ITransactionManager transactionManager, IBuilder<StorageLocation> resourceBuilder, IDatabaseSequenceService databaseSequenceService, IRepository<AccountingCompany, string> accountingCompanyRepository, IRepository<StorageSite, string> storageSiteRepository) : base(repository, transactionManager, resourceBuilder)
         {
+            this.databaseSequenceService = databaseSequenceService;
+            this.storageSiteRepository = storageSiteRepository;
+            this.accountingCompanyRepository = accountingCompanyRepository;
         }
 
         protected override Expression<Func<StorageLocation, bool>> SearchExpression(string searchTerm)
@@ -30,6 +40,31 @@
         protected override void DeleteOrObsoleteResource(StorageLocation entity, IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
+        }
+
+        protected override async Task<StorageLocation> CreateFromResourceAsync(
+            StorageLocationResource resource,
+            IEnumerable<string> privileges = null)
+        {
+            var locationId = this.databaseSequenceService.NextStorageLocationId();
+
+            var company = await this.accountingCompanyRepository.FindByIdAsync(resource.AccountingCompany);
+            var site = await this.storageSiteRepository.FindByIdAsync(resource.SiteCode);
+            var area = site == null
+                ? null
+                : site.StorageAreas?.FirstOrDefault(a => a.StorageAreaCode == resource.StorageAreaCode);
+
+            return new StorageLocation(locationId, resource.LocationCode, resource.Description, site, area, company,
+                resource.AccessibleFlag, resource.StoresKittableFlag, resource.MixStatesFlag, resource.StockState, resource.TypeOfStock)
+            {
+                DefaultStockPool = resource.DefaultStockPool,
+                StoresKittingPriority = resource.StoresKittingPriority,
+                SpecProcFlag = resource.SpecProcFlag,
+                LocationType = resource.LocationType,
+                StorageTypeCode = resource.StorageType,
+                SalesAccountId = resource.SalesAccountId,
+                OutletNumber = resource.OutletNumber
+            };
         }
 
         protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationResource searchResource)
