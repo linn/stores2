@@ -1,8 +1,9 @@
-﻿namespace Linn.Stores2.Integration.Tests.StorageTypeModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
     using System.Net.Http;
 
     using Linn.Common.Persistence.EntityFramework;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
@@ -10,6 +11,7 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Service.Modules;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -31,22 +33,22 @@
 
             var transactionManager = new TransactionManager(this.DbContext);
 
-            var storageTypeRepository
-                = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
+            var partsStorageTypeRepository
+                = new EntityFrameworkRepository<PartsStorageType, PartsStorageTypeKey>(this.DbContext.PartsStorageTypes);
 
-            IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource> storageTypeFacadeService
-                = new StorageTypeFacadeService(
-                    storageTypeRepository,
+            IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> partsStorageTypeFacadeService
+                = new PartsStorageTypeFacadeService(
+                    partsStorageTypeRepository,
                     transactionManager,
-                    new StorageTypeResourceBuilder());
+                    new PartsStorageTypeResourceBuilder());
 
-            this.Client = TestClient.With<StorageTypeModule>(
+            this.Client = TestClient.With<PartsStorageTypesModule>(
                 services =>
-                {
-                    services.AddSingleton(storageTypeFacadeService);
-                    services.AddHandlers();
-                    services.AddRouting();
-                });
+                    {
+                        services.AddSingleton(partsStorageTypeFacadeService);
+                        services.AddHandlers();
+                        services.AddRouting();
+                    });
         }
 
         [OneTimeTearDown]

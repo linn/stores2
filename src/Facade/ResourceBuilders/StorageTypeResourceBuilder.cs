@@ -12,8 +12,6 @@
     {
         public StorageTypeResource Build(StorageType storageType, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
-
             return new StorageTypeResource
                        {
                            StorageTypeCode = storageType.StorageTypeCode,

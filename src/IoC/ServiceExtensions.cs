@@ -22,6 +22,7 @@
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Proxy;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
 
@@ -59,6 +60,7 @@
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>, StorageTypeFacadeService>()
+                .AddScoped<IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>, PartsStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>()
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
@@ -76,6 +78,7 @@
                 .AddScoped<IBuilder<StoresBudget>, StoresBudgetResourceBuilder>()
                 .AddScoped<IBuilder<StorageSite>, StorageSiteResourceBuilder>()
                 .AddScoped<IBuilder<StorageType>, StorageTypeResourceBuilder>()
+                .AddScoped<IBuilder<PartsStorageType>, PartsStorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
