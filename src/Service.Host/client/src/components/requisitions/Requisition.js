@@ -194,7 +194,7 @@ function Requisition({ creating }) {
                                     label="Function Code"
                                     resultsInModal
                                     resultLimit={100}
-                                    disabled={formState.lines?.length}
+                                    disabled={!!formState.lines?.length}
                                     helperText="Enter a value, or press enter to view all function codes"
                                     value={formState.functionCode?.code}
                                     handleValueChange={(_, newVal) => {

@@ -48,6 +48,13 @@ function reducer(state, action) {
             const maxLineNumber = Math.max(...state.lines.map(line => line.lineNumber), 0);
             const newLine = { lineNumber: maxLineNumber + 1, isAddition: true, ...lineTransaction };
 
+            // this behaviour might differ for differing codes
+            // so for now...
+            if (state.functionCode.code === 'LDREQ') {
+                newLine.document1Type = 'REQ';
+                newLine.document1Line = newLine.lineNumber;
+            }
+
             return { ...state, lines: [...state.lines, newLine] };
         }
         case 'set_line_value':
@@ -70,10 +77,31 @@ function reducer(state, action) {
                     line.lineNumber === action.payload.lineNumber
                         ? {
                               ...line,
+                              qty: action.payload.stockMoves.reduce(
+                                  (sum, move) => sum + move.quantityToPick,
+                                  0
+                              ),
                               stockPicked: true,
                               // todo - simplification: following line assumes stock can only be picked once for each line
                               // so will need to make this able to cope with subsequent changes at some point
-                              moves: [...action.payload.stockMoves]
+                              moves: [
+                                  ...action.payload.stockMoves.map(
+                                      (move, index) =>
+                                          state.reqType === 'F'
+                                              ? {
+                                                    seq: index + 1,
+                                                    locationCode: move.locationName,
+                                                    locationDescription: move.locationDescription,
+                                                    palletNumber: move.palletNumber,
+                                                    state: move.state,
+                                                    batchRef: move.batchRef,
+                                                    batchDate: move.stockRotationDate,
+                                                    qtyAtLocation: move.quantity,
+                                                    qtyAllocated: move.qtyAllocated
+                                                }
+                                              : {} // todo - behaviour for reqs onto
+                                  )
+                              ]
                           }
                         : line
                 )

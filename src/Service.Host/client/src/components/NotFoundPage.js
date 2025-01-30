@@ -1,9 +1,11 @@
 import React from 'react';
-import { NotFound, Page } from '@linn-it/linn-form-components-library';
+import { NotFound } from '@linn-it/linn-form-components-library';
+import Page from './Page';
+import config from '../config';
 
 export default function NotFoundPage() {
     return (
-        <Page>
+        <Page homeUrl={config.appRoot}>
             <NotFound />
         </Page>
     );

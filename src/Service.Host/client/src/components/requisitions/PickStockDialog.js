@@ -20,9 +20,9 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
         `?partNumber=${partNumber}`,
         true
     );
-    const [moves, setMoves] = useState();
+    const [moves, setMoves] = useState([]);
     useEffect(() => {
-        if (result?.length && !moves) {
+        if (result?.length && !moves?.length) {
             setMoves(result);
         }
     }, [result, moves]);
@@ -73,12 +73,14 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
         return newRow;
     };
 
+    const picks = moves.filter(m => m.quantityToPick);
+
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
             <DialogTitle>Stock Locations</DialogTitle>
             <DialogContent>
                 <DataGrid
-                    rows={moves}
+                    rows={moves ?? []}
                     processRowUpdate={processRowUpdate}
                     columns={columns}
                     hideFooter
@@ -89,10 +91,11 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
             </DialogContent>
             <DialogActions>
                 <Button
+                    disabled={!picks?.length}
                     onClick={() => {
                         console.log(moves);
                         handleClose();
-                        handleConfirm(moves.filter(m => m.quantityToPick));
+                        handleConfirm(picks);
                     }}
                 >
                     Confirm
