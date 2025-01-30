@@ -8,6 +8,7 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
 
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Stores;

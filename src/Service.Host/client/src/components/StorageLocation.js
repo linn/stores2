@@ -27,8 +27,8 @@ function StorageLocation({ creating }) {
     const location = useLocation();
     const query = queryString.parse(location.search);
 
-    const {  isLoading: sitesLoading, result: sitesResult } = useInitialise(itemTypes.storageSites.url);
-    const {  isLoading: accountingCompaniesLoading, result: accountingCompaniesResult } = useInitialise(itemTypes.accountingCompany.url);
+    const { result: sitesResult } = useInitialise(itemTypes.storageSites.url);
+    const { result: accountingCompaniesResult } = useInitialise(itemTypes.accountingCompany.url);
 
     const { id } = useParams();
     const {
@@ -65,8 +65,7 @@ function StorageLocation({ creating }) {
     }
 
     if (creating && !formValues) {
-        setFormValues({ 
-            locationCode: null, 
+        setFormValues({
             description: null,
             siteCode: query?.siteCode ? query?.siteCode : null,
             storageAreaCode: query?.storageAreaCode ? query?.storageAreaCode : null,
@@ -90,36 +89,36 @@ function StorageLocation({ creating }) {
             return sitesResult.find(s => s.siteCode === formValues.siteCode);
         }
         return null;
-    }
+    };
 
     const locationCodePrefix = newAreaCode => {
         const site = selectedSite();
         if (!site) {
             return '';
         }
-        const area = site.storageAreas.find(s => s.storageAreaCode === newAreaCode)
+        const area = site.storageAreas.find(s => s.storageAreaCode === newAreaCode);
         return area ? `${site.sitePrefix}-${area.areaPrefix}-` : '';
-    }
+    };
 
     const lastAuditInfo = () => {
         if (locationGetResult) {
             if (locationGetResult.dateLastAudited) {
-                return `Last audited ${moment(locationGetResult.dateLastAudited).format("DD MMM YY")} by ${locationGetResult.auditedBy} dept ${locationGetResult.auditedByDepartmentCode} ${locationGetResult.auditedByDepartmentName}`;
+                return `Last audited ${moment(locationGetResult.dateLastAudited).format('DD MMM YY')} by ${locationGetResult.auditedBy} dept ${locationGetResult.auditedByDepartmentCode} ${locationGetResult.auditedByDepartmentName}`;
             }
-            else
-            {
-                return "Not audited";
-            }
+
+            return 'Not audited';
         }
         return null;
-    }
+    };
 
     const handleFieldChange = (propertyName, newValue) => {
-        if (creating && propertyName === "storageAreaCode")
-        {
-            setFormValues(current => ({ ...current, [propertyName]: newValue, locationCode: locationCodePrefix(newValue) }));
-        }
-        else {
+        if (creating && propertyName === 'storageAreaCode') {
+            setFormValues(current => ({
+                ...current,
+                [propertyName]: newValue,
+                locationCode: locationCodePrefix(newValue)
+            }));
+        } else {
             setFormValues(current => ({ ...current, [propertyName]: newValue }));
         }
         setChangesMade(true);
@@ -134,8 +133,10 @@ function StorageLocation({ creating }) {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
-            <Grid size={12}>
-                    <Typography variant="h4">{creating ? "Create Storage Location" : "Storage Location" }</Typography>
+                <Grid size={12}>
+                    <Typography variant="h4">
+                        {creating ? 'Create Storage Location' : 'Storage Location'}
+                    </Typography>
                 </Grid>
                 {updateError && (
                     <Grid size={12}>
@@ -162,18 +163,20 @@ function StorageLocation({ creating }) {
                     formValues && (
                         <>
                             <Grid size={5}>
-                                {sitesResult && <Dropdown
-                                    value={formValues.siteCode}
-                                    fullWidth
-                                    label="Site"
-                                    propertyName="siteCode"
-                                    allowNoValue
-                                    items={sitesResult?.map(c => ({
-                                        id: c.siteCode,
-                                        displayText: c.description
-                                    }))}
-                                    onChange={handleFieldChange}
-                                />}
+                                {sitesResult && (
+                                    <Dropdown
+                                        value={formValues.siteCode}
+                                        fullWidth
+                                        label="Site"
+                                        propertyName="siteCode"
+                                        allowNoValue
+                                        items={sitesResult?.map(c => ({
+                                            id: c.siteCode,
+                                            displayText: c.description
+                                        }))}
+                                        onChange={handleFieldChange}
+                                    />
+                                )}
                             </Grid>
                             <Grid size={7}>
                                 <Dropdown
@@ -188,10 +191,14 @@ function StorageLocation({ creating }) {
                                     }))}
                                     onChange={handleFieldChange}
                                 />
-                            </Grid>   
+                            </Grid>
                             <Grid size={5}>
                                 <InputField
-                                    disabled={!creating || !formValues.siteCode || !formValues.storageAreaCode}
+                                    disabled={
+                                        !creating ||
+                                        !formValues.siteCode ||
+                                        !formValues.storageAreaCode
+                                    }
                                     value={formValues.locationCode}
                                     fullWidth
                                     label="Code"
@@ -209,19 +216,20 @@ function StorageLocation({ creating }) {
                                 />
                             </Grid>
                             <Grid size={5}>
-                                {accountingCompaniesResult && <Dropdown
-                                    value={formValues.accountingCompany}
-                                    fullWidth
-                                    label="Accounting Company"
-                                    propertyName="accountingCompany"
-                                    allowNoValue
-                                    items={accountingCompaniesResult.map(c => ({
-                                        id: c.name,
-                                        displayText: c.description
-                                    }))}
-                                    onChange={handleFieldChange}
-                                />}
-
+                                {accountingCompaniesResult && (
+                                    <Dropdown
+                                        value={formValues.accountingCompany}
+                                        fullWidth
+                                        label="Accounting Company"
+                                        propertyName="accountingCompany"
+                                        allowNoValue
+                                        items={accountingCompaniesResult.map(c => ({
+                                            id: c.name,
+                                            displayText: c.description
+                                        }))}
+                                        onChange={handleFieldChange}
+                                    />
+                                )}
                             </Grid>
                             <Grid size={7}>
                                 <InputField
@@ -231,7 +239,7 @@ function StorageLocation({ creating }) {
                                     propertyName="storageType"
                                     onChange={handleFieldChange}
                                 />
-                            </Grid>     
+                            </Grid>
                             <Grid size={5}>
                                 <InputField
                                     value={formValues.defaultStockPool}
@@ -258,7 +266,7 @@ function StorageLocation({ creating }) {
                                     propertyName="outletNumber"
                                     onChange={handleFieldChange}
                                 />
-                            </Grid>   
+                            </Grid>
                             <Grid size={2}>
                                 <Dropdown
                                     value={formValues.mixStatesFlag}
@@ -285,7 +293,7 @@ function StorageLocation({ creating }) {
                                     ]}
                                     onChange={handleFieldChange}
                                 />
-                            </Grid>                            
+                            </Grid>
                             <Grid size={4}>
                                 <Dropdown
                                     value={formValues.stockState}
@@ -308,7 +316,7 @@ function StorageLocation({ creating }) {
                                     propertyName="specProcFlag"
                                     onChange={handleFieldChange}
                                 />
-                            </Grid>  
+                            </Grid>
                             <Grid size={2}>
                                 <Dropdown
                                     value={formValues.mixStatesFlag}
@@ -326,17 +334,17 @@ function StorageLocation({ creating }) {
                             <Grid size={3}>
                                 <InputField
                                     value={formValues.salesAccountId}
-                                    type="number"                                      
+                                    type="number"
                                     fullWidth
                                     label="Stores Kit Priority"
                                     propertyName="storesKittingPriority"
                                     onChange={handleFieldChange}
                                 />
-                            </Grid>                            
+                            </Grid>
                             <Grid size={4}>
                                 <InputField
                                     value={formValues.auditFrequencyWeeks}
-                                    type="number"                                    
+                                    type="number"
                                     fullWidth
                                     label="Audit Freq (wks)"
                                     propertyName="auditFrequencyWeeks"
@@ -356,7 +364,7 @@ function StorageLocation({ creating }) {
                                     ]}
                                     onChange={handleFieldChange}
                                 />
-                            </Grid>                                                                                                                                                                      
+                            </Grid>
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/storage')}
@@ -366,7 +374,7 @@ function StorageLocation({ creating }) {
                                         if (creating) {
                                             createLocation(null, formValues);
                                         } else {
-                                            updateLocation(code, formValues);
+                                            updateLocation(id, formValues);
                                         }
                                     }}
                                     saveDisabled={!changesMade}
@@ -375,14 +383,16 @@ function StorageLocation({ creating }) {
                                         if (creating) {
                                             setFormValues({ countryCode: 'GB' });
                                         } else {
-                                            setFormValues(carrierGetResult);
+                                            setFormValues(locationGetResult);
                                         }
                                     }}
                                 />
                             </Grid>
-                            {!creating && <Grid size={12}>
-                                <Typography variant="body2">{ lastAuditInfo() }</Typography>                                
-                            </Grid>}
+                            {!creating && (
+                                <Grid size={12}>
+                                    <Typography variant="body2">{lastAuditInfo()}</Typography>
+                                </Grid>
+                            )}
                         </>
                     )
                 )}
@@ -390,6 +400,7 @@ function StorageLocation({ creating }) {
         </Page>
     );
 }
+
 StorageLocation.propTypes = { creating: PropTypes.bool };
 StorageLocation.defaultProps = { creating: false };
 

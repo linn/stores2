@@ -6,6 +6,7 @@
 
     using Linn.Common.Facade;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionLineResourceBuilder : IBuilder<RequisitionLine>
@@ -19,8 +20,11 @@
                        {
                            ReqNumber = l.ReqNumber,
                            LineNumber = l.LineNumber,
-                           PartNumber = l.Part?.PartNumber,
-                           PartDescription = l.Part?.Description,
+                           Part = new PartResource
+                                      {
+                                          PartNumber = l.Part?.PartNumber,
+                                          Description = l.Part?.Description
+                                      },
                            Qty = l.Qty,
                            TransactionCode = l.TransactionDefinition?.TransactionCode,
                            TransactionCodeDescription = l.TransactionDefinition?.Description,
