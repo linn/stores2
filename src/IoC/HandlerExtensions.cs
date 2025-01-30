@@ -35,7 +35,6 @@
                 .AddSingleton<IHandler, JsonResultHandler<StorageLocationResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageLocationResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageLocationResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<GoodsInLogEntryResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<GoodsInLogEntryResource>>>();
         }
     }

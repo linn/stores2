@@ -39,8 +39,7 @@
                     r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees))
                 .AddScoped<IRepository<StorageSite, string>, StorageSiteRepository>()
                 .AddScoped<IRepository<StoresFunctionCode, string>, EntityFrameworkRepository<StoresFunctionCode, string>>(
-                    r => new EntityFrameworkRepository<StoresFunctionCode, string>(r.GetService<ServiceDbContext>()?.StoresFunctionCodes))
-                .AddScoped<IRepository<GoodsInLogEntry, int>, GoodsInLogEntryRepository>();
+                    r => new EntityFrameworkRepository<StoresFunctionCode, string>(r.GetService<ServiceDbContext>()?.StoresFunctionCodes));
         }
     }
 }

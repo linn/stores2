@@ -1,11 +1,10 @@
 ﻿namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
+
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps.GoodsIn;
-    using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Resources.GoodsIn;
+    using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
@@ -16,10 +15,16 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/goods-in/log", this.SearchLog);
+            app.MapGet("/stores2/goods-in-log-report", this.GoodsInLogReport);
+            app.MapGet("/stores2/goods-in-log", this.GetApp);
         }
 
-        private async Task SearchLog(
+        private async Task GetApp(HttpRequest req, HttpResponse res)
+        {
+            await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+        }
+
+        private async Task GoodsInLogReport(
             HttpRequest _,
             HttpResponse res,
             string fromDate,
@@ -30,20 +35,17 @@
             int? orderNumber,
             int? reqNumber,
             string storagePlace,
-            IAsyncFacadeService<GoodsInLogEntry, int, GoodsInLogEntryResource, GoodsInLogEntryResource, GoodsInLogEntrySearchResource> goodsInLogFacadeService)
+            IGoodsInLogReportFacadeService facadeService)
         {
-            await res.Negotiate(await goodsInLogFacadeService.FilterBy(
-                                    new GoodsInLogEntrySearchResource 
-                                        { 
-                                            CreatedBy = createdBy,
-                                            ArticleNumber = articleNumber,
-                                            Quantity = quantity,
-                                            OrderNumber = orderNumber,
-                                            ReqNumber = reqNumber,
-                                            StoragePlace = storagePlace,
-                                            FromDate = toDate,
-                                            ToDate = toDate
-                                        }));
+            await res.Negotiate(facadeService.GetGoodsInLogReport(
+                fromDate,
+                toDate,
+                createdBy,
+                articleNumber,
+                quantity,
+                orderNumber,
+                reqNumber,
+                storagePlace));
         }
     }
 }
