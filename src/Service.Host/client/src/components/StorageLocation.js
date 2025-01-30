@@ -28,7 +28,7 @@ function StorageLocation({ creating }) {
     const query = queryString.parse(location.search);
 
     const {  isLoading: sitesLoading, result: sitesResult } = useInitialise(itemTypes.storageSites.url);
-    const {  isLoading: accountingCompaniesLoading, result: accountingCompaniesResult } = useInitialise(itemTypes.accountingCompanies.url);
+    const {  isLoading: accountingCompaniesLoading, result: accountingCompaniesResult } = useInitialise(itemTypes.accountingCompany.url);
 
     const { id } = useParams();
     const {
