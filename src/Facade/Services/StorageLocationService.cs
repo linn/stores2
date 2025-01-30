@@ -48,7 +48,7 @@
         {
             var locationId = this.databaseSequenceService.NextStorageLocationId();
 
-            var company = this.accountingCompanyRepository.FindById(resource.AccountingCompany);
+            var company = await this.accountingCompanyRepository.FindByIdAsync(resource.AccountingCompany);
             var site = await this.storageSiteRepository.FindByIdAsync(resource.SiteCode);
             var area = site == null
                 ? null
