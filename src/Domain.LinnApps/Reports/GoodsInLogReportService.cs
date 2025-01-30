@@ -45,11 +45,6 @@
                              ? DateTime.Now
                              : DateTime.Parse(toDate);
 
-            var report = new ResultsModel
-                             {
-                                 ReportTitle = new NameModel("Goods In Log")
-                             };
-
             var data = this.goodsInLogRepository.FilterBy(
                 x => x.DateCreated >= fromDateSearch && x.DateCreated <= toDateSearch
                                                      && (!createdBy.HasValue || x.CreatedBy == createdBy)
@@ -62,9 +57,17 @@
                                                              .Contains(storagePlace.ToUpper().Trim()))).OrderByDescending(x => x.Id);
 
 
-            var columns = 
+            var model = new ResultsModel { ReportTitle = new NameModel("Goods In Log") };
 
-            report.AddSortedColumns(columns);
+            var columns = this.ModelColumns();
+
+            model.AddSortedColumns(columns);
+
+            var values = this.SetModelRows(data);
+
+            this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Quantity, true);
+
+            return model;
         }
 
         private List<CalculationValueModel> SetModelRows(IEnumerable<GoodsInLogEntry> goodsInLogEntries)
@@ -79,6 +82,11 @@
                     new CalculationValueModel
                         {
                             RowId = rowId, TextDisplay = goodsInLogEntry.BookInRef.ToString(), ColumnId = "BookInRef"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, TextDisplay = goodsInLogEntry.DateCreated.ToString("dd/MM/yyyy"), ColumnId = "DateCreated"
                     });
                 values.Add(
                     new CalculationValueModel
@@ -122,8 +130,134 @@
                         {
                             RowId = rowId,
                             TextDisplay = goodsInLogEntry.SerialNumber.ToString(),
-                            ColumnId = "StoragePlace"
+                            ColumnId = "SerialNumber"
                         });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.ArticleNumber,
+                            ColumnId = "ArticleNumber"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.LoanNumber.ToString(),
+                            ColumnId = "LoanNumber"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.LoanLine.ToString(),
+                            ColumnId = "LoanLine"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.RsnNumber.ToString(),
+                            ColumnId = "RsnNumber"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.RsnAccessories.ToString(),
+                            ColumnId = "RsnAccessories"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.LogCondition,
+                            ColumnId = "LogCondition"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.State,
+                            ColumnId = "State"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.DemLocation,
+                            ColumnId = "DemLocation"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.ReqNumber.ToString(),
+                            ColumnId = "ReqNumber"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.ReqLine.ToString(),
+                            ColumnId = "ReqLine"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.WandString.ToString(),
+                            ColumnId = "WandString"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.ManufacturersPartNumber,
+                            ColumnId = "ManufacturersPartNumber"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.Comments,
+                            ColumnId = "Comments"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.Processed,
+                            ColumnId = "Processed"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.ErrorMessage,
+                            ColumnId = "ErrorMessage"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.Id.ToString(),
+                            ColumnId = "Id"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.SernosTref.ToString(),
+                            ColumnId = "SernosTref"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = goodsInLogEntry.ProductAnalysisCode,
+                            ColumnId = "ProductAnalysisCode"
+                    });
             }
 
             return values;
@@ -147,7 +281,6 @@
                                   new AxisDetailsModel("LoanNumber", "Loan Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("LoanLine", "Line", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("RsnNumber", "Rsn Number", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("RsnAccessories", "Rsn Accessories", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("RsnAccessories", "Rsn Accessories", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("LogCondition", "Condition", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("State", "State", GridDisplayType.TextValue, 100),
