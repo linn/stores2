@@ -4,7 +4,7 @@ import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import {
-    Dropdown,
+    // Dropdown, unused
     ErrorCard,
     InputField,
     Loading,
@@ -15,7 +15,7 @@ import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
-import useInitialise from '../hooks/useInitialise';
+// import useInitialise from '../hooks/useInitialise'; // unused
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
 
@@ -29,7 +29,7 @@ function StorageLocation({ creating }) {
     } = useGet(itemTypes.storageLocations.url);
 
     const {
-        send: updateLocation,
+        // send: updateLocation, never used?
         isLoading: updateLoading,
         errorMessage: updateError,
         putResult: updateResult
@@ -56,9 +56,9 @@ function StorageLocation({ creating }) {
     }
 
     if (creating && !formValues) {
-        setFormValues({ 
-            locationCode: null, 
-            description: null 
+        setFormValues({
+            locationCode: null,
+            description: null
         });
     }
 
@@ -76,8 +76,10 @@ function StorageLocation({ creating }) {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
-            <Grid size={12}>
-                    <Typography variant="h4">{creating ? "Create Storage Location" : "Storage Location" }</Typography>
+                <Grid size={12}>
+                    <Typography variant="h4">
+                        {creating ? 'Create Storage Location' : 'Storage Location'}
+                    </Typography>
                 </Grid>
                 {updateError && (
                     <Grid size={12}>
@@ -131,7 +133,7 @@ function StorageLocation({ creating }) {
                                         if (creating) {
                                             createLocation(null, formValues);
                                         } else {
-                                            updateLocation(code, formValues);
+                                            // updateLocation(code, formValues); code isn't defined
                                         }
                                     }}
                                     saveDisabled={!changesMade}
@@ -140,7 +142,7 @@ function StorageLocation({ creating }) {
                                         if (creating) {
                                             setFormValues({ countryCode: 'GB' });
                                         } else {
-                                            setFormValues(carrierGetResult);
+                                            // setFormValues(carrierGetResult); carrierGetResult isn't defined?
                                         }
                                     }}
                                 />

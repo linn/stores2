@@ -11,18 +11,17 @@ function reducer(state, action) {
         }
         case 'load_create': {
             // this action type initialses the state for when creating a new record
-            const defaultState = {
+            return {
                 dateCreated: new Date(),
                 dateAuthorised: null,
                 lines: [],
                 cancelled: 'N',
-                createdByName: action.payload.userName,
+                createdByName: action.payload.userName
                 // just to make it easier to debug creating - delete everything below
-                nominal: { nominalCode: 1607 },
-                department: { departmentCode: 2963 },
-                reqType: 'F'
+                // nominal: {nominalCode: 1607},
+                // department: {departmentCode: 2963},
+                // reqType: 'F'
             };
-            return defaultState;
         }
         case 'set_header_value': {
             // this action type combines header field value updates, for the sake of brevity
@@ -70,7 +69,6 @@ function reducer(state, action) {
                 )
             };
         case 'pick_stock':
-            console.log(action.payload.stockMoves);
             return {
                 ...state,
                 lines: state.lines.map(line =>
@@ -90,14 +88,20 @@ function reducer(state, action) {
                                           state.reqType === 'F'
                                               ? {
                                                     seq: index + 1,
-                                                    locationCode: move.locationName,
-                                                    locationDescription: move.locationDescription,
-                                                    palletNumber: move.palletNumber,
-                                                    state: move.state,
-                                                    batchRef: move.batchRef,
-                                                    batchDate: move.stockRotationDate,
-                                                    qtyAtLocation: move.quantity,
-                                                    qtyAllocated: move.qtyAllocated
+                                                    part: move.partNumber,
+                                                    qty: move.quantityToPick,
+                                                    from: {
+                                                        seq: index + 1,
+                                                        locationCode: move.locationName,
+                                                        locationDescription:
+                                                            move.locationDescription,
+                                                        palletNumber: move.palletNumber,
+                                                        state: move.state,
+                                                        batchRef: move.batchRef,
+                                                        batchDate: move.stockRotationDate,
+                                                        qtyAtLocation: move.quantity,
+                                                        qtyAllocated: move.qtyAllocated
+                                                    }
                                                 }
                                               : {} // todo - behaviour for reqs onto
                                   )

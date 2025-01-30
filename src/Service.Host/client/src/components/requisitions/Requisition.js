@@ -131,7 +131,7 @@ function Requisition({ creating }) {
                 )}
                 <Grid size={12}>
                     <Typography variant="h6">
-                        <span>Requisition Viewer</span>
+                        <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}

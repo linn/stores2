@@ -23,7 +23,7 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
     const [moves, setMoves] = useState([]);
     useEffect(() => {
         if (result?.length && !moves?.length) {
-            setMoves(result);
+            setMoves(result.map((x, i) => ({ ...x, id: i })));
         }
     }, [result, moves]);
 
@@ -93,7 +93,6 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
                 <Button
                     disabled={!picks?.length}
                     onClick={() => {
-                        console.log(moves);
                         handleClose();
                         handleConfirm(picks);
                     }}
