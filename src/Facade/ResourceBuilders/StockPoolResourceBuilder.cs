@@ -28,6 +28,7 @@
                          Sequence = stockPool.Sequence,
                          StockCategory = stockPool.StockCategory,
                          DefaultLocation = stockPool.DefaultLocation,
+                         DefaultLocationName = stockPool.StorageLocation?.LocationCode,
                          StorageLocation = stockPool.StorageLocation == null ? null : storageLocationResourceBuilder.Build(stockPool.StorageLocation, claims),
                          BridgeId = stockPool.BridgeId,
                          AvailableToMrp = stockPool.AvailableToMrp

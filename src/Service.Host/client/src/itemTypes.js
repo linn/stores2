@@ -12,11 +12,14 @@ const itemTypes = {
     createAuditReqs: { url: `${config.appRoot}/stores2/storage-places/create-checked-audit-reqs` },
     storesBudget: { url: `${config.appRoot}/stores2/budgets` },
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
+    storageTypes: { url: `${config.appRoot}/stores2/storage-types` },
     storageLocations: { url: `${config.appRoot}/stores2/storage/locations` },
     nominals: { url: `${config.proxyRoot}/ledgers/nominals` },
     departments: { url: `${config.proxyRoot}/ledgers/departments` },
     parts: { url: `${config.proxyRoot}/parts` },
-    stockLocators: { url: `${config.proxyRoot}/inventory/stock-locators-by-location` }
+    stockLocators: { url: `${config.proxyRoot}/inventory/stock-locators-by-location` },
+    stockPools: { url: `${config.appRoot}/stores2/stock-pools` },
+    accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` }
 };
 
 export default itemTypes;
