@@ -4,7 +4,7 @@ import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import {
-    // Dropdown, unused
+    Dropdown,
     ErrorCard,
     InputField,
     Loading,
@@ -15,7 +15,7 @@ import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
-// import useInitialise from '../hooks/useInitialise'; // unused
+import useInitialise from '../hooks/useInitialise';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
 
@@ -29,7 +29,7 @@ function StorageLocation({ creating }) {
     } = useGet(itemTypes.storageLocations.url);
 
     const {
-        // send: updateLocation, never used?
+        send: updateLocation,
         isLoading: updateLoading,
         errorMessage: updateError,
         putResult: updateResult
@@ -133,7 +133,7 @@ function StorageLocation({ creating }) {
                                         if (creating) {
                                             createLocation(null, formValues);
                                         } else {
-                                            // updateLocation(code, formValues); code isn't defined
+                                            updateLocation(code, formValues);
                                         }
                                     }}
                                     saveDisabled={!changesMade}
@@ -142,7 +142,7 @@ function StorageLocation({ creating }) {
                                         if (creating) {
                                             setFormValues({ countryCode: 'GB' });
                                         } else {
-                                            // setFormValues(carrierGetResult); carrierGetResult isn't defined?
+                                            setFormValues(carrierGetResult);
                                         }
                                     }}
                                 />
