@@ -1,40 +1,29 @@
-namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.StorageTypeModuleTests
 {
-    using System.Collections.Generic;
-    using System.Linq;
+    using System;
     using System.Net;
 
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
 
     using NUnit.Framework;
 
-    public class WhenGettingAll : ContextBase
+    public class WhenGettingById : ContextBase
     {
-        private Carrier dhl;
+        private StorageType storageType;
 
         [SetUp]
         public void SetUp()
         {
-            this.dhl = new Carrier(
-                "DHL",
-                "D H L",
-                "Mr Dhl",
-                "line2",
-                "line2",
-                "line3",
-                "line4",
-                "postcode",
-                new Country("GB", "Great Britain"),
-                "012345",
-                "123456789");
+            this.storageType = new StorageType("ST1", "StorageType 1 Description");
 
-            this.DbContext.Carriers.AddAndSave(this.DbContext, this.dhl);
+            this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
 
             this.Response = this.Client.Get(
-                "/stores2/carriers",
+                "/stores2/storage-types/ST1",
                 with =>
                     {
                         with.Accept("application/json");
@@ -57,8 +46,9 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<CarrierResource>>();
-            resource.First().Code.Should().Be("DHL");
+            var resource = this.Response.DeserializeBody<StorageTypeResource>();
+            resource.StorageTypeCode.Should().Be("ST1");
+            resource.Description.Should().Be("StorageType 1 Description");
         }
     }
 }

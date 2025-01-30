@@ -23,6 +23,8 @@
         
         public DbSet<Country> Countries { get; set; }
 
+        public DbSet<StorageType> StorageTypes { get; set; }
+
         public DbSet<StockLocator> StockLocators { get; set; }
 
         public DbSet<StockPool> StockPools { get; set; }
@@ -38,6 +40,8 @@
         public DbSet<StoresBudget> StoresBudgets { get; set; }
 
         public DbSet<StorageSite> StorageSites { get; set; }
+
+        public DbSet<StoresFunctionCode> StoresFunctionCodes { get; set; }
 
         public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
 

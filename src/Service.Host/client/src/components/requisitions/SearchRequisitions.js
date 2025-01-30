@@ -4,7 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
 import { DataGrid } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid2';
-import { utilities, InputField, Dropdown } from '@linn-it/linn-form-components-library';
+import {
+    utilities,
+    InputField,
+    Dropdown,
+    CreateButton
+} from '@linn-it/linn-form-components-library';
 import Page from '../Page';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
@@ -57,8 +62,11 @@ function SearchRequisitions() {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
-                <Grid size={12}>
+                <Grid size={11}>
                     <Typography variant="h4">Search Requisitions</Typography>
+                </Grid>
+                <Grid size={1}>
+                    <CreateButton createUrl="/requisitions/create" />
                 </Grid>
                 <Grid size={3}>
                     <InputField

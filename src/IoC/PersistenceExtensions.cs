@@ -26,6 +26,8 @@
                 .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
                 .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
                 .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>()
+                .AddScoped<IRepository<StorageType, string>, EntityFrameworkRepository<StorageType, string>>(
+                    r => new EntityFrameworkRepository<StorageType, string>(r.GetService<ServiceDbContext>()?.StorageTypes))
                 .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
                 .AddScoped<IRepository<StoresBudget, int>, StoresBudgetRepository>()
                 .AddScoped<IQueryRepository<StoragePlace>, EntityFrameworkQueryRepository<StoragePlace>>(
@@ -36,7 +38,8 @@
                 .AddScoped<IRepository<Employee, int>, EntityFrameworkRepository<Employee, int>>(
                     r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees))
                 .AddScoped<IRepository<StorageSite, string>, StorageSiteRepository>()
-                .AddScoped<IRepository<StorageLocation, int>, StorageLocationRepository>()
+                .AddScoped<IRepository<StoresFunctionCode, string>, EntityFrameworkRepository<StoresFunctionCode, string>>(
+                    r => new EntityFrameworkRepository<StoresFunctionCode, string>(r.GetService<ServiceDbContext>()?.StoresFunctionCodes))
                 .AddScoped<IRepository<GoodsInLogEntry, int>, GoodsInLogEntryRepository>();
         }
     }

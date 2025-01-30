@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
@@ -24,14 +24,26 @@ import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
 import useSearch from '../../hooks/useSearch';
+import requisitionReducer from './reducers/requisitonReducer';
+import useUserProfile from '../../hooks/useUserProfile';
+import TransactionsTab from './reducers/TransactionsTab';
 
 function Requisition({ creating }) {
+    const { userNumber, name } = useUserProfile();
     const { reqNumber } = useParams();
     const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
     const [hasFetched, setHasFetched] = useState(false);
 
-    if (!creating && reqNumber && !hasFetched) {
-        fetchReq(reqNumber);
+    const {
+        send: fetchFunctionCodes,
+        isLoading: codesLoading,
+        result: functionCodes
+    } = useGet(itemTypes.functionCodes.url);
+    if (!hasFetched) {
+        if (!creating && reqNumber) {
+            fetchReq(reqNumber);
+        }
+        fetchFunctionCodes();
         setHasFetched(true);
     }
 
@@ -41,6 +53,7 @@ function Requisition({ creating }) {
         errorMessage: cancelError,
         postResult: cancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
+
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
 
@@ -50,19 +63,17 @@ function Requisition({ creating }) {
         setTab(newValue);
     };
 
-    const [formState, setFormState] = useState();
+    const [formState, dispatch] = useReducer(requisitionReducer, null);
 
     useEffect(() => {
-        const defaultState = { dateCreated: new Date(), dateAuthorised: null, lines: [] };
-
         if (cancelResult) {
-            setFormState(cancelResult);
+            dispatch({ type: 'load_state', payload: cancelResult });
         } else if (result) {
-            setFormState(result);
+            dispatch({ type: 'load_state', payload: result });
         } else if (creating) {
-            setFormState(defaultState);
+            dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, creating]);
+    }, [result, cancelResult, creating, name, userNumber]);
 
     const {
         search: searchDepartments,
@@ -78,6 +89,10 @@ function Requisition({ creating }) {
         clear: clearNominalsSearch
     } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
 
+    const handleHeaderFieldChange = (fieldName, newValue) => {
+        dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -91,7 +106,12 @@ function Requisition({ creating }) {
                     />
                 )}
                 <Grid size={12}>
-                    <Typography variant="h6">Requisition Viewer</Typography>
+                    <Typography variant="h6">
+                        <span>Requisition Viewer</span>
+                        {formState?.cancelled === 'Y' && (
+                            <span style={{ color: 'red' }}> [CANCELLED]</span>
+                        )}
+                    </Typography>
                 </Grid>
                 {cancelError && (
                     <Grid size={12}>
@@ -144,18 +164,24 @@ function Requisition({ creating }) {
                         </Grid>
                         <Grid size={4} />
                         <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.functionCode}
-                                onChange={() => {}}
-                                label="Function Code"
-                                propertyName="functionCode"
-                            />
+                            {!codesLoading && functionCodes && (
+                                <Dropdown
+                                    fullWidth
+                                    value={formState.functionCode}
+                                    items={functionCodes.map(f => f.id)}
+                                    onChange={handleHeaderFieldChange}
+                                    label="Function Code"
+                                    propertyName="functionCode"
+                                />
+                            )}
                         </Grid>
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={formState.functionCodeDescription}
+                                value={
+                                    functionCodes?.find(x => x.id === formState.functionCode)
+                                        ?.displayText ?? null
+                                }
                                 onChange={() => {}}
                                 label="Function Code Description"
                                 propertyName="functionCodeDescription"
@@ -180,16 +206,6 @@ function Requisition({ creating }) {
                             />
                         </Grid>
                         <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['Y', 'N']}
-                                value={formState.cancelled}
-                                onChange={() => {}}
-                                label="Cancelled"
-                                propertyName="cancelled"
-                            />
-                        </Grid>
-                        <Grid size={2}>
                             <Button
                                 disabled={
                                     formState.cancelled === 'Y' || formState.dateBooked || creating
@@ -201,7 +217,7 @@ function Requisition({ creating }) {
                                 Cancel Req
                             </Button>
                         </Grid>
-                        <Grid size={4} />
+                        <Grid size={6} />
                         <Grid size={2}>
                             <Search
                                 propertyName="departmentCode"
@@ -210,21 +226,24 @@ function Requisition({ creating }) {
                                 resultLimit={100}
                                 helperText="Enter a search term and press enter to look up departments"
                                 value={formState.department?.departmentCode}
-                                handleValueChange={(_, newVal) =>
-                                    setFormState(fs => ({
-                                        ...fs,
-                                        department: { departmentCode: newVal }
-                                    }))
-                                }
+                                handleValueChange={(_, newVal) => {
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: {
+                                            fieldName: 'department',
+                                            newValue: { departmentCode: newVal }
+                                        }
+                                    });
+                                }}
                                 search={searchDepartments}
                                 loading={departmentsSearchLoading}
                                 searchResults={departmentsSearchResults}
                                 priorityFunction="closestMatchesFirst"
                                 onResultSelect={r => {
-                                    setFormState(fs => ({
-                                        ...fs,
-                                        department: r
-                                    }));
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'department', newValue: r }
+                                    });
                                 }}
                                 clearSearch={clearDepartmentsSearch}
                                 autoFocus={false}
@@ -248,21 +267,24 @@ function Requisition({ creating }) {
                                 resultLimit={100}
                                 helperText="Enter a search term and press enter to look up nominals"
                                 value={formState.nominal?.nominalCode}
-                                handleValueChange={(_, newVal) =>
-                                    setFormState(fs => ({
-                                        ...fs,
-                                        nominal: { nominalCode: newVal }
-                                    }))
-                                }
+                                handleValueChange={(_, newVal) => {
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: {
+                                            fieldName: 'nominal',
+                                            newValue: { nominalCode: newVal }
+                                        }
+                                    });
+                                }}
                                 search={searchNominals}
                                 loading={nominalsSearchLoading}
                                 searchResults={nominalsSearchResults}
                                 priorityFunction="closestMatchesFirst"
                                 onResultSelect={r => {
-                                    setFormState(fs => ({
-                                        ...fs,
-                                        nominal: r
-                                    }));
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'nominal', newValue: r }
+                                    });
                                 }}
                                 clearSearch={clearNominalsSearch}
                                 autoFocus={false}
@@ -341,10 +363,17 @@ function Requisition({ creating }) {
                                 <Tabs value={tab} onChange={handleChange}>
                                     <Tab label="Lines" />
                                     <Tab
-                                        label="Moves"
+                                        label={`Moves (L${selectedLine ?? ''})`}
                                         disabled={!formState.lines || !selectedLine}
                                     />
-                                    <Tab label="Transactions" disabled />
+                                    <Tab
+                                        label={`Transactions (L${selectedLine ?? ''})`}
+                                        disabled={
+                                            !formState.lines?.find(
+                                                x => x.lineNumber === selectedLine
+                                            )?.moves?.length
+                                        }
+                                    />
                                 </Tabs>
                             </Box>
                         </Grid>
@@ -355,6 +384,8 @@ function Requisition({ creating }) {
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
+                                    canAdd={formState.cancelled === 'N' && !formState.dateBooked}
+                                    addLine={() => dispatch({ type: 'add_line' })}
                                 />
                             )}
                             {tab === 1 && (
@@ -362,6 +393,14 @@ function Requisition({ creating }) {
                                     moves={
                                         formState.lines?.find(x => x.lineNumber === selectedLine)
                                             ?.moves
+                                    }
+                                />
+                            )}
+                            {tab === 2 && (
+                                <TransactionsTab
+                                    transactions={
+                                        formState.lines?.find(x => x.lineNumber === selectedLine)
+                                            ?.storesBudgets
                                     }
                                 />
                             )}

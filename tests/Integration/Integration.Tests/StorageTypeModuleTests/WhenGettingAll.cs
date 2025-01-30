@@ -1,39 +1,35 @@
-﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.StorageTypeModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
 
     using FluentAssertions;
-
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
 
     using NUnit.Framework;
 
-    public class WhenGettingAllSites : ContextBase
+    public class WhenGettingCountries : ContextBase
     {
-        private StorageSite eaglesham;
+        private StorageType storageType;
 
         [SetUp]
         public void SetUp()
         {
-            this.eaglesham = new StorageSite()
-            {
-                SiteCode = "EAGLESHAM", Description = "EAGLESHAM", SitePrefix = "E",
-                StorageAreas = new List<StorageArea> { new StorageArea {StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA" } }
-            };
+            this.storageType = new StorageType("ST1", "Storage Type Description");
 
-            this.DbContext.StorageSites.AddAndSave(this.DbContext, this.eaglesham);
+            this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
             this.DbContext.SaveChanges();
 
             this.Response = this.Client.Get(
-                "/stores2/storage/sites",
+                "/stores2/storage-types",
                 with =>
-                {
-                    with.Accept("application/json");
-                }).Result;
+                    {
+                        with.Accept("application/json");
+                    }).Result;
         }
 
         [Test]
@@ -52,8 +48,8 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<StorageSiteResource>>();
-            resource.First().SiteCode.Should().Be("EAGLESHAM");
+            var resource = this.Response.DeserializeBody<IEnumerable<StorageTypeResource>>();
+            resource.First().StorageTypeCode.Should().Be("ST1");
         }
     }
 }
