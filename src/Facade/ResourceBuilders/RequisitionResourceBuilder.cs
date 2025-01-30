@@ -32,8 +32,18 @@
                            CancelledByName = header.CancelledBy?.Name,
                            DateCancelled = header.DateCancelled?.ToString("o"),
                            CancelledReason = header.CancelledReason,
-                           FunctionCode = header.FunctionCode?.FunctionCode,
-                           FunctionCodeDescription = header.FunctionCode?.Description,
+                           FunctionCode = new FunctionCodeResource
+                                              {
+                                                  Code = header.FunctionCode?.FunctionCode,
+                                                  Description = header.FunctionCode?.Description,
+                                                  TransactionTypes = header.FunctionCode?.TransactionsTypes?.Select(
+                                                      t => new FunctionCodeTransactionResource
+                                                               {
+                                                                   ReqType = t.ReqType,
+                                                                   TransactionDefinition = t.TransactionDefinition?.TransactionCode,
+                                                                   TransactionDescription = t.TransactionDefinition?.Description
+                                                               })
+                                              },
                            Comments = header.Comments,
                            DateBooked = header.DateBooked?.ToString("o"),
                            BookedBy = header.BookedBy?.Id,

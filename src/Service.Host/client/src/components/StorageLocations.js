@@ -51,6 +51,15 @@ function StorageLocations() {
         return null;
     }
 
+    const locationCodePrefix = () => {
+        const site = selectedSite();
+        if (!site) {
+            return '';
+        }
+        const area = site.storageAreas.find(s => s.storageAreaCode === selectedAreaCode)
+        return area ? `${site.sitePrefix}-${area.areaPrefix}-` : '';
+    }
+
     const {
         send: getStorageLocations,
         storageLocationsLoading,
@@ -94,6 +103,17 @@ function StorageLocations() {
             width: 100
         }
     ];
+
+    const createUrl = () => {
+        if (selectedSiteCode && selectedAreaCode) {
+            return `/stores2/storage/locations/create?siteCode=${selectedSiteCode}&storageAreaCode=${selectedAreaCode}&prefix=${locationCodePrefix()}`;
+        }
+        else if (selectedSiteCode)
+        {
+            return `/stores2/storage/locations/create?siteCode=${selectedSiteCode}&prefix=${locationCodePrefix()}`;
+        }
+        return "/stores2/storage/locations/create";
+    };
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -200,7 +220,7 @@ function StorageLocations() {
                         </Button>
                         </Grid>
                         <Grid size={6}>
-                            <CreateButton createUrl="/stores2/storage/locations/create" />
+                            <CreateButton createUrl={createUrl()} />
                         </Grid>
                         <Grid size={12}>
                             {storageLocationsLoading && <Loading />}

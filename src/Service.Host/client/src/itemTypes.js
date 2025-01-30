@@ -16,6 +16,8 @@ const itemTypes = {
     storageLocations: { url: `${config.appRoot}/stores2/storage/locations` },
     nominals: { url: `${config.proxyRoot}/ledgers/nominals` },
     departments: { url: `${config.proxyRoot}/ledgers/departments` },
+    parts: { url: `${config.proxyRoot}/parts` },
+    stockLocators: { url: `${config.proxyRoot}/inventory/stock-locators-by-location` },
     stockPools: { url: `${config.appRoot}/stores2/stock-pools` },
     accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` }
 };

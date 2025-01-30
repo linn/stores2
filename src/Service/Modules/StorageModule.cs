@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Service.Modules
+﻿using Linn.Stores2.Service.Extensions;
+
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
     using Linn.Common.Service.Core;
@@ -19,6 +21,7 @@
             app.MapGet("/stores2/storage/locations", this.SearchLocations);
             app.MapGet("/stores2/storage/locations/{id:int}", this.GetLocationById);
             app.MapGet("/stores2/storage/sites", this.GetSites);
+            app.MapPost("/stores2/storage/locations", this.CreateLocation);
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -69,6 +72,15 @@
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource> service)
         {
             await res.Negotiate(await service.GetAll());
+        }
+
+        private async Task CreateLocation(
+            HttpRequest req,
+            HttpResponse res,
+            StorageLocationResource resource,
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> service)
+        {
+            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
         }
     }
 }

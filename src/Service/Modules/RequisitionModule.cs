@@ -5,6 +5,7 @@
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources.Requisitions;

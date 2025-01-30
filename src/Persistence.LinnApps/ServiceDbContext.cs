@@ -77,6 +77,7 @@
             BuildStorageSites(builder);
             BuildStorageAreas(builder);
             BuildStorageTypes(builder);
+            BuildStoresFunctionTransactions(builder);
             BuildPartsStorageTypes(builder);
         }
 
@@ -193,6 +194,22 @@
             e.HasOne(l => l.StorageArea).WithMany().HasForeignKey(a => new { a.SiteCode, a.StorageAreaCode });
             e.Property(l => l.LocationType).HasColumnName("LOCATION_TYPE").HasMaxLength(1);
             e.Property(l => l.DefaultStockPool).HasColumnName("DEFAULT_STOCK_POOL").HasMaxLength(10);
+            e.Property(l => l.AccountingCompany).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
+            e.Property(l => l.SalesAccountId).HasColumnName("ACCOUNT_ID");
+            e.Property(l => l.OutletNumber).HasColumnName("OUTLET_NUMBER");
+            e.Property(l => l.MixStatesFlag).HasColumnName("MIX_STATES").HasMaxLength(1);
+            e.Property(l => l.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
+            e.Property(l => l.TypeOfStock).HasColumnName("TYPE_OF_STOCK").HasMaxLength(1);
+            e.Property(l => l.AccessibleFlag).HasColumnName("ACCESSIBLE").HasMaxLength(1);
+            e.Property(l => l.StoresKittableFlag).HasColumnName("STORES_KITTABLE").HasMaxLength(1);
+            e.Property(l => l.SpecProcFlag).HasColumnName("SPEC_PROC_FLAG").HasMaxLength(10);
+            e.Property(l => l.StoresKittingPriority).HasColumnName("STORES_KITTING_PRIORITY");
+            e.Property(l => l.AuditFrequencyWeeks).HasColumnName("AUDIT_FREQUENCY_WEEKS");
+            e.Property(l => l.DateLastAudited).HasColumnName("DATE_LAST_AUDITED");
+            e.Property(l => l.AuditedByEmployeeId).HasColumnName("AUDITED_BY");
+            e.HasOne(l => l.AuditedBy).WithMany().HasForeignKey(l => l.AuditedByEmployeeId);
+            e.Property(l => l.AuditedByDepartmentCode).HasColumnName("AUDITED_BY_DEPARTMENT_CODE").HasMaxLength(10);
+            e.HasOne(l => l.AuditedByDepartment).WithMany().HasForeignKey(l => l.AuditedByDepartmentCode);
         }
 
         private static void BuildParts(ModelBuilder builder)
@@ -414,6 +431,17 @@
             r.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
+            r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
+        }
+
+        private static void BuildStoresFunctionTransactions(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StoresFunctionTransaction>().ToTable("STORES_FUNCTION_TRANS");
+            entity.HasKey(c => new { c.FunctionCode, c.Seq});
+            entity.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
+            entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
+            entity.Property(x => x.Seq).HasColumnName("SEQ");
+            entity.Property(x => x.ReqType).HasColumnName("REQ_TYPE").HasMaxLength(1);
         }
 
         private static void BuildEmployees(ModelBuilder builder)

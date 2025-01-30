@@ -26,7 +26,7 @@ import MovesTab from './MovesTab';
 import useSearch from '../../hooks/useSearch';
 import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
-import TransactionsTab from './reducers/TransactionsTab';
+import TransactionsTab from './TransactionsTab';
 
 function Requisition({ creating }) {
     const { userNumber, name } = useUserProfile();
@@ -65,6 +65,13 @@ function Requisition({ creating }) {
 
     const [formState, dispatch] = useReducer(requisitionReducer, null);
 
+    useEffect(
+        () => () => {
+            dispatch({ type: 'clear' });
+        },
+        []
+    );
+
     useEffect(() => {
         if (cancelResult) {
             dispatch({ type: 'load_state', payload: cancelResult });
@@ -93,6 +100,23 @@ function Requisition({ creating }) {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
 
+    const canAddLines = () => {
+        if (formState.cancelled !== 'N' || formState.dateBooked) {
+            return false;
+        }
+        if (formState.functionCode?.code === 'LDREQ') {
+            if (
+                formState.nominal?.nominalCode &&
+                formState.department?.departmentCode &&
+                formState.reqType &&
+                formState.functionCode.description
+            ) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -107,7 +131,7 @@ function Requisition({ creating }) {
                 )}
                 <Grid size={12}>
                     <Typography variant="h6">
-                        <span>Requisition Viewer</span>
+                        <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
@@ -165,23 +189,47 @@ function Requisition({ creating }) {
                         <Grid size={4} />
                         <Grid size={2}>
                             {!codesLoading && functionCodes && (
-                                <Dropdown
-                                    fullWidth
-                                    value={formState.functionCode}
-                                    items={functionCodes.map(f => f.id)}
-                                    onChange={handleHeaderFieldChange}
-                                    label="Function Code"
+                                <Search
                                     propertyName="functionCode"
+                                    label="Function Code"
+                                    resultsInModal
+                                    resultLimit={100}
+                                    disabled={!!formState.lines?.length}
+                                    helperText="Enter a value, or press enter to view all function codes"
+                                    value={formState.functionCode?.code}
+                                    handleValueChange={(_, newVal) => {
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: {
+                                                fieldName: 'functionCode',
+                                                newValue: { code: newVal }
+                                            }
+                                        });
+                                    }}
+                                    search={() => {}}
+                                    loading={false}
+                                    searchResults={functionCodes.map(f => ({
+                                        ...f,
+                                        id: f.code,
+                                        name: f.code,
+                                        description: f.description
+                                    }))}
+                                    priorityFunction="closestMatchesFirst"
+                                    onResultSelect={r => {
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: { fieldName: 'functionCode', newValue: r }
+                                        });
+                                    }}
+                                    clearSearch={() => {}}
+                                    autoFocus={false}
                                 />
                             )}
                         </Grid>
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={
-                                    functionCodes?.find(x => x.id === formState.functionCode)
-                                        ?.displayText ?? null
-                                }
+                                value={formState.functionCode?.description}
                                 onChange={() => {}}
                                 label="Function Code Description"
                                 propertyName="functionCodeDescription"
@@ -334,7 +382,7 @@ function Requisition({ creating }) {
                                 items={['F', 'O']}
                                 allowNoValue
                                 value={formState.reqType}
-                                onChange={() => {}}
+                                onChange={handleHeaderFieldChange}
                                 label="Req Type"
                                 propertyName="reqType"
                             />
@@ -364,11 +412,12 @@ function Requisition({ creating }) {
                                     <Tab label="Lines" />
                                     <Tab
                                         label={`Moves (L${selectedLine ?? ''})`}
-                                        disabled={!formState.lines || !selectedLine}
+                                        disabled={!selectedLine}
                                     />
                                     <Tab
                                         label={`Transactions (L${selectedLine ?? ''})`}
                                         disabled={
+                                            creating ||
                                             !formState.lines?.find(
                                                 x => x.lineNumber === selectedLine
                                             )?.moves?.length
@@ -384,8 +433,27 @@ function Requisition({ creating }) {
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
-                                    canAdd={formState.cancelled === 'N' && !formState.dateBooked}
-                                    addLine={() => dispatch({ type: 'add_line' })}
+                                    canAdd={canAddLines()}
+                                    addLine={() => {
+                                        dispatch({ type: 'add_line' });
+                                    }}
+                                    pickStock={(lineNumber, stockMoves) => {
+                                        dispatch({
+                                            type: 'pick_stock',
+                                            payload: { lineNumber, stockMoves }
+                                        });
+                                    }}
+                                    showPostings={!creating}
+                                    updateLine={(lineNumber, fieldName, newValue) => {
+                                        dispatch({
+                                            type: 'set_line_value',
+                                            payload: {
+                                                lineNumber,
+                                                fieldName,
+                                                newValue
+                                            }
+                                        });
+                                    }}
                                 />
                             )}
                             {tab === 1 && (

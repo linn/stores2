@@ -42,10 +42,8 @@
 
         public string CancelledReason { get; set; }
 
-        public string FunctionCode { get; set; }
+        public FunctionCodeResource FunctionCode { get; set; }
         
-        public string FunctionCodeDescription { get; set; }
-
         public string Comments { get; set; }
         
         public int? BookedBy { get; set; }
