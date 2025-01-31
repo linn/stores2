@@ -5,6 +5,7 @@ import queryString from 'query-string';
 import moment from 'moment';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {
     Dropdown,
@@ -132,6 +133,10 @@ function StorageLocation({ creating }) {
             return formValues.siteCode && formValues.storageAreaCode && formValues.accountingCompany && formValues.description;
         }
         return true;
+    }
+
+    const makeInvalid = () => {
+        handleFieldChange("dateInvalid", new Date());
     }
 
     useEffect(() => {
@@ -377,7 +382,30 @@ function StorageLocation({ creating }) {
                                     ]}
                                     onChange={handleFieldChange}
                                 />
-                            </Grid>                                                                                                                                                                      
+                            </Grid> 
+                            {!creating && <>
+                                <Grid size={2}>
+                                    <InputField
+                                        value={formValues.locationId} 
+                                        disabled                                    
+                                        fullWidth
+                                        label="Location Id"
+                                        propertyName="locationId"
+                                    />
+                                </Grid>
+                                <Grid size={3}>
+                                    <InputField
+                                        value={formValues.dateInvalid ? moment(formValues.dateInvalid).format('DD MMM YYYY') : ""} 
+                                        disabled                                    
+                                        fullWidth
+                                        label="Date Invalid"
+                                        propertyName="locationId"
+                                    />
+                                </Grid>                            
+                                <Grid size={7}>
+                                    {!formValues.dateInvalid && <Button onClick={makeInvalid}>Make Invalid</Button>}
+                                </Grid>                            
+                            </>}                                                                                                                                                                       
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/storage')}
