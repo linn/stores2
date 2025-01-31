@@ -1,7 +1,4 @@
-﻿using System.Diagnostics.Metrics;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-namespace Linn.Stores2.Domain.LinnApps.Stock
+﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System;
     using Linn.Stores2.Domain.LinnApps.Accounts;

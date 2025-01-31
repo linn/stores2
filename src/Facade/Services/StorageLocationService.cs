@@ -13,7 +13,6 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
-    using Amazon.Auth.AccessControlPolicy;
 
     public class StorageLocationService : AsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
     {
