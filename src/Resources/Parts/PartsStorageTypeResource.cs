@@ -6,7 +6,11 @@
     {
             public string PartNumber { get; set; }
 
+            public PartResource Part { get; set; }
+
             public string StorageTypeCode { get; set; }
+
+            public StorageTypeResource StorageType { get; set; }
 
             public string Remarks { get; set; }
 

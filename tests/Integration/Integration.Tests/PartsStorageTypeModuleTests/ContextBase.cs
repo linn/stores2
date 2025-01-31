@@ -4,12 +4,14 @@
 
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
+    using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Service.Modules;
@@ -33,6 +35,8 @@
 
             var transactionManager = new TransactionManager(this.DbContext);
 
+            var partRepository = new EntityFrameworkRepository<Part, int>(this.DbContext.Parts);
+            var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
             var partsStorageTypeRepository
                 = new EntityFrameworkRepository<PartsStorageType, PartsStorageTypeKey>(this.DbContext.PartsStorageTypes);
 
@@ -40,7 +44,9 @@
                 = new PartsStorageTypeFacadeService(
                     partsStorageTypeRepository,
                     transactionManager,
-                    new PartsStorageTypeResourceBuilder());
+                    new PartsStorageTypeResourceBuilder(),
+                    partRepository,
+                    storageTypeRepository);
 
             this.Client = TestClient.With<PartsStorageTypesModule>(
                 services =>

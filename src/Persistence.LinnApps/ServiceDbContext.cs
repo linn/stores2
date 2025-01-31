@@ -26,6 +26,8 @@
 
         public DbSet<PartsStorageType> PartsStorageTypes { get; set; }
 
+        public DbSet<Part> Parts { get; set; }
+
         public DbSet<StockLocator> StockLocators { get; set; }
 
         public DbSet<StockPool> StockPools { get; set; }
