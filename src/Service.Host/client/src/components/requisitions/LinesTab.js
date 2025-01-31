@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { Link } from 'react-router';
+import { utilities } from '@linn-it/linn-form-components-library';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
@@ -45,7 +47,13 @@ function LinesTab({
                         style={{ cursor: 'pointer' }}
                         onClick={() => setPartsSearchDialogOpen(params.id)}
                     />
-                    {params.row.part?.partNumber}
+                    {params.row.isAddition ? (
+                        params.row.part?.partNumber
+                    ) : (
+                        <Link to={utilities.getHref(params.row, 'part')}>
+                            {params.row.part?.partNumber}
+                        </Link>
+                    )}
                 </>
             )
         },

@@ -2,10 +2,11 @@
 {
     using System.Collections.Generic;
 
+    using Linn.Common.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Stores;
 
-    public class RequisitionLineResource
+    public class RequisitionLineResource : HypermediaResource
     {
         public int ReqNumber { get; set; }
 
