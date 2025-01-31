@@ -2,6 +2,7 @@
 {
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
 
     using NUnit.Framework;
@@ -13,7 +14,17 @@
         [SetUp]
         public void SetUp()
         {
-            this.req = new RequisitionHeader(123, "comments", new StoresFunctionCode("F"), 123, "REQ");
+            this.req = new RequisitionHeader(
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "F1" },
+                "F",
+                12345678,
+                "TYPE",
+                new Department(),
+                new Nominal(),
+                null,
+                null,
+                "Goodbye Reqs");
             var line1 = new RequisitionLine(this.req.ReqNumber, 1);
             line1.Book();
 

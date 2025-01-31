@@ -21,7 +21,7 @@
                            Document1 = header.Document1,
                            Qty = header.Qty,
                            Document1Name = header.Document1Name,
-                           PartNumber = header.PartNumber,
+                           PartNumber = header.Part?.PartNumber,
                            ToLocationId = header.ToLocation?.LocationId,
                            ToLocationCode = header.ToLocation?.LocationCode,
                            FromLocationCode = header.FromLocation?.LocationCode,

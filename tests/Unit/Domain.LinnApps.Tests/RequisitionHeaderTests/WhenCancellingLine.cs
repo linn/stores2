@@ -1,9 +1,11 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
+    using System.Collections.Generic;
     using System.Linq;
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.Requisitions;
 
@@ -16,8 +18,18 @@
         [SetUp]
         public void SetUp()
         {
-            this.sut = new ReqWithLines(
-                123, new StoresFunctionCode { FunctionCode = "CODE" });
+            this.sut = new RequisitionHeader(
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "F1" },
+                "F",
+                12345678,
+                "TYPE",
+                new Department(),
+                new Nominal(),
+                new List<RequisitionLine> { new LineWithMoves(1, 1) },
+                null,
+                "Goodbye Reqs");
+
             this.sut.CancelLine(1, "reason", new Employee());
         }
 

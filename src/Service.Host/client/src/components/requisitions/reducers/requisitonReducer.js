@@ -16,11 +16,11 @@ function reducer(state, action) {
                 dateAuthorised: null,
                 lines: [],
                 cancelled: 'N',
-                createdByName: action.payload.userName
+                createdByName: action.payload.userName,
                 // just to make it easier to debug creating - delete everything below
-                // nominal: {nominalCode: 1607},
-                // department: {departmentCode: 2963},
-                // reqType: 'F'
+                nominal: { nominalCode: 1607 },
+                department: { departmentCode: 2963 },
+                reqType: 'F'
             };
         }
         case 'set_header_value': {
@@ -47,12 +47,10 @@ function reducer(state, action) {
             const maxLineNumber = Math.max(...state.lines.map(line => line.lineNumber), 0);
             const newLine = { lineNumber: maxLineNumber + 1, isAddition: true, ...lineTransaction };
 
-            // this behaviour might differ for differing codes
-            // so for now...
-            if (state.functionCode.code === 'LDREQ') {
-                newLine.document1Type = 'REQ';
-                newLine.document1Line = newLine.lineNumber;
-            }
+            // this behaviour might differ for differing function code parameters
+            // but for now...
+            newLine.document1Type = 'REQ';
+            newLine.document1Line = newLine.lineNumber;
 
             return { ...state, lines: [...state.lines, newLine] };
         }

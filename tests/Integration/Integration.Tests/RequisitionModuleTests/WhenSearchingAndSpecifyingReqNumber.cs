@@ -7,9 +7,11 @@
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
+    using Linn.Stores2.TestData.Requisitions;
 
     using NUnit.Framework;
 
@@ -22,18 +24,26 @@
         [SetUp]
         public void SetUp()
         {
-            this.req123 = new RequisitionHeader(
-                123, 
-                "Hello Requisitions",
-                new StoresFunctionCode { FunctionCode = "F1" },
-                12345678,
-                "TYPE");
-            this.req456 = new RequisitionHeader(
-                456, 
-                "Goodbye Requisitions",
-                new StoresFunctionCode { FunctionCode = "F2" },
-                12345678,
-                "TYPE");
+
+            this.req123 = new ReqWithReqNumber(
+                123,
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "FUNC1" },
+                "F",
+                123,
+                "REQ",
+                new Department(),
+                new Nominal());
+
+            this.req456 = new ReqWithReqNumber(
+                456,
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "FUNC2" },
+                "F",
+                123,
+                "REQ",
+                new Department(),
+                new Nominal());
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);

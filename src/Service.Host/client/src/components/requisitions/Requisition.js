@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -11,7 +11,8 @@ import {
     DatePicker,
     Dropdown,
     ErrorCard,
-    Search
+    Search,
+    SaveBackCancelButtons
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
@@ -29,6 +30,7 @@ import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
 
 function Requisition({ creating }) {
+    const navigate = useNavigate();
     const { userNumber, name } = useUserProfile();
     const { reqNumber } = useParams();
     const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
@@ -53,6 +55,12 @@ function Requisition({ creating }) {
         errorMessage: cancelError,
         postResult: cancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
+
+    const {
+        send: createReq,
+        isLoading: createLoading,
+        errorMessage: createError
+    } = usePost(itemTypes.requisitions.url, true, true);
 
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
@@ -117,6 +125,13 @@ function Requisition({ creating }) {
         return false;
     };
 
+    const saveIsValid = () => {
+        if (creating) {
+            return !!formState?.lines?.length;
+        }
+        return false;
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -139,15 +154,20 @@ function Requisition({ creating }) {
                 </Grid>
                 {cancelError && (
                     <Grid size={12}>
-                        <ErrorCard errorMessage={cancelError} />{' '}
+                        <ErrorCard errorMessage={cancelError} />
                     </Grid>
                 )}
-                {(fetchLoading || cancelLoading) && (
+                {createError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={createError} />
+                    </Grid>
+                )}
+                {(fetchLoading || cancelLoading || createLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
                 )}
-                {!fetchLoading && !cancelLoading && formState && (
+                {!fetchLoading && !cancelLoading && !createLoading && formState && (
                     <>
                         <Grid size={2}>
                             <InputField
@@ -472,6 +492,22 @@ function Requisition({ creating }) {
                                     }
                                 />
                             )}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <SaveBackCancelButtons
+                                saveDisabled={!saveIsValid()}
+                                cancelClick={() => {
+                                    if (creating) {
+                                        dispatch({ type: 'load_create' });
+                                    }
+                                }}
+                                saveClick={() => {
+                                    createReq(formState);
+                                }}
+                                backClick={() => {
+                                    navigate('/requisitions');
+                                }}
+                            />
                         </Grid>
                     </>
                 )}

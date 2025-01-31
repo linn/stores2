@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Stores;
@@ -53,8 +54,12 @@
                                    Building = a.Building,
                                    Vehicle = a.Vehicle,
                                    Person = a.Person
-                               })
-            };
+                               }),
+                           Links = new LinkResource[1]
+                                       {
+                                           new LinkResource("self", $"/stores2/budgets/{storesBudget.BudgetId}")
+                                       }
+                        };
         }
     }
 }

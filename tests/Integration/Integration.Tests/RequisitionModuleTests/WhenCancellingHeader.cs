@@ -6,6 +6,8 @@
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.TestData.Requisitions;
@@ -26,8 +28,19 @@
                                           Reason = "Just cos",
                                           ReqNumber = 123
                                       };
+
+            var req = new ReqWithReqNumber(
+                11827635,
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "FUNC" },
+                "F",
+                123,
+                "REQ",
+                new Department(),
+                new Nominal());
+            req.Cancel("just cos", new Employee());
             this.DomainService.CancelHeader(this.resource.ReqNumber, Arg.Any<User>(), this.resource.Reason)
-                .Returns(new CancelledRequisitionHeader(this.resource.ReqNumber));
+                .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/cancel", this.resource).Result;
         }
 

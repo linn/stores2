@@ -9,6 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
 import itemTypes from '../../itemTypes';
 import useInitialise from '../../hooks/useInitialise';
+import { Typography } from '@mui/material';
 
 function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
     const handleClose = () => {
@@ -88,6 +89,9 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
                     editMode="cell"
                     loading={isLoading}
                 />
+                <Typography>
+                    Note: your stock will not be allocated until you click save on the main form
+                </Typography>
             </DialogContent>
             <DialogActions>
                 <Button

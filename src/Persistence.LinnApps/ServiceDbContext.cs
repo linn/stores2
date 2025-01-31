@@ -364,12 +364,11 @@
             e.HasOne(r => r.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
             e.Property(r => r.Qty).HasColumnName("QTY");
             e.Property(r => r.Document1Name).HasColumnName("DOC1_NAME");
-            e.Property(r => r.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.Property(r => r.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
             e.Property(r => r.DateCancelled).HasColumnName("DATE_CANCELLED");
             e.Property(r => r.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
             e.HasOne(r => r.CancelledBy).WithMany().HasForeignKey("CANCELLED_BY");
-            e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
+            e.HasOne(r => r.Part).WithMany().HasForeignKey("PART_NUMBER");
             e.HasMany(r => r.Lines).WithOne(a => a.RequisitionHeader).HasForeignKey(d => d.ReqNumber);
             e.HasOne(r => r.ToLocation).WithMany().HasForeignKey("TO_LOCATION_ID");
             e.HasOne(r => r.FromLocation).WithMany().HasForeignKey("FROM_LOCATION_ID");

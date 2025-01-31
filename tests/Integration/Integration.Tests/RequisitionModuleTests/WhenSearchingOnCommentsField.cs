@@ -7,6 +7,7 @@
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
@@ -22,21 +23,34 @@
         [SetUp]
         public void SetUp()
         {
+            var code = new StoresFunctionCode { FunctionCode = "F1" };
             this.req123 = new RequisitionHeader(
-                123, 
-                "Hello Requisitions", 
-                new StoresFunctionCode { FunctionCode = "F1" },
+                new Employee(),
+                code,
+                "F",
                 12345678,
-                "TYPE");
+                "TYPE",
+                new Department(),
+                new Nominal(),
+                null,
+                null,
+                "Hello Requisitions");
             this.req456 = new RequisitionHeader(
-                456, 
-                "Goodbye Requisitions",
-                new StoresFunctionCode { FunctionCode = "F2" },
+                new Employee(),
+                code,
+                "F",
                 12345678,
-                "TYPE");
+                "TYPE",
+                new Department(),
+                new Nominal(),
+                null,
+                null,
+                "Goodbye Requisitions");
 
-            this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
-            this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);
+            this.DbContext.RequisitionHeaders.AddAndSave(
+                this.DbContext, this.req123);
+            this.DbContext.RequisitionHeaders.AddAndSave(
+                this.DbContext, this.req456);
 
             this.Response = this.Client.Get(
                 "/requisitions?comments=Hello",

@@ -20,9 +20,7 @@
         private readonly IRequisitionService requisitionService;
 
         private readonly ITransactionManager transactionManager;
-
-        private readonly IRepository<RequisitionHeader, int> repository;
-
+        
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -32,9 +30,15 @@
         {
             this.requisitionService = requisitionService;
             this.transactionManager = transactionManager;
-            this.repository = repository;
         }
 
+        protected override async Task<RequisitionHeader> CreateFromResourceAsync(
+            RequisitionHeaderResource resource,
+            IEnumerable<string> privileges = null)
+        {
+            return new RequisitionHeader();
+        }
+        
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
             int reqNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
         {
@@ -61,7 +65,12 @@
             }
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> CancelLine(int reqNumber, int lineNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
+        public async Task<IResult<RequisitionHeaderResource>> CancelLine(
+            int reqNumber, 
+            int lineNumber,
+            int cancelledBy,
+            string reason,
+            IEnumerable<string> privileges)
         {
             try
             {
