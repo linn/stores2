@@ -7,8 +7,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
     using FluentAssertions;
 
     using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
 
@@ -23,12 +25,15 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         [SetUp]
         public void SetUp()
         {
-            this.req = new RequisitionHeader(
-                123,
-                "comment",
-                new StoresFunctionCode { FunctionCode = "FUNC" },
-                12345678,
-                "TYPE", new Department(), new Nominal(), null);
+            this.req = new ReqWithReqNumber(
+                    123,
+                    new Employee(),
+                    new StoresFunctionCode { FunctionCode = "FUNC" },
+                    "F",
+                    123,
+                    "REQ",
+                    new Department(),
+                    new Nominal());
             var requisitionLine = new RequisitionLine(this.req.ReqNumber, 1);
             this.req.AddLine(requisitionLine);
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);

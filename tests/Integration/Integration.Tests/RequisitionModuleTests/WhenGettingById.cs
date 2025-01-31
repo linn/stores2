@@ -1,14 +1,15 @@
-﻿using Linn.Stores2.Domain.LinnApps.Accounts;
-
-namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+﻿ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Net;
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
+    using Linn.Stores2.TestData.Requisitions;
 
     using NUnit.Framework;
 
@@ -19,15 +20,15 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
         [SetUp]
         public void SetUp()
         {
-            this.req = new RequisitionHeader(
-                123, 
-                "Hello Requisitions",
-                new StoresFunctionCode { FunctionCode = "F" },
-                12345678,
-                "TYPE",
-                new Department(), 
-                new Nominal(), 
-                null);
+            this.req = new ReqWithReqNumber(
+                123,
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "FUNC" },
+                "F",
+                123,
+                "REQ",
+                new Department(),
+                new Nominal());
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req);
 
@@ -56,7 +57,7 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
         public void ShouldReturnJsonBody()
         {
             var resource = this.Response.DeserializeBody<RequisitionHeaderResource>();
-            resource.Comments.Should().Be("Hello Requisitions");
+            resource.ReqNumber.Should().Be(123);
         }
     }
 }

@@ -3,6 +3,7 @@ using Linn.Stores2.Domain.LinnApps.Accounts;
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
+    using System.Collections.Generic;
 
     using FluentAssertions;
 
@@ -19,16 +20,19 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
         [SetUp]
         public void SetUp()
         {
-            this.action = () => new RequisitionHeader(
-                123, 
-                "comm", 
-                new StoresFunctionCode { FunctionCode = "C" },
-                123,
-                "REQ",
+            var req = new RequisitionHeader(
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "F1" },
+                "F",
+                12345678,
+                "TYPE",
                 new Department(),
                 new Nominal(),
-                null)
-                .Cancel("reason", new Employee());
+                new List<RequisitionLine> { new LineWithMoves(1, 1) },
+                null,
+                "Goodbye Reqs");
+            req.Book(new Employee());
+            this.action = () => req.Cancel("trying", new Employee());
         }
 
         [Test]

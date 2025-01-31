@@ -102,12 +102,21 @@
             this.FunctionCode = functionCode;
             this.Document1 = document1Number;
             this.Document1Name = document1Type;
+
+            if (lines != null)
+            {
+                foreach (var l in lines)
+                {
+                    this.AddLine(l);
+                }
+            }
+
         }
 
         public void AddLine(RequisitionLine toAdd)
         {
             this.Lines ??= new List<RequisitionLine>();
-
+            toAdd.RequisitionHeader = this;
             this.Lines.Add(toAdd);
         }
 
