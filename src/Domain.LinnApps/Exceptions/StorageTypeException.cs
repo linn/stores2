@@ -4,14 +4,14 @@
 
     using Linn.Common.Domain.Exceptions;
 
-    public class StorageTypeExceptions : DomainException
+    public class StorageTypeException : DomainException
     {
-        public StorageTypeExceptions(string message)
+        public StorageTypeException(string message)
             : base(message)
         {
         }
 
-        public StorageTypeExceptions(string message, Exception innerException)
+        public StorageTypeException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

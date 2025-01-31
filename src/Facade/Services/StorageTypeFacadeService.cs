@@ -35,7 +35,7 @@
 
             if (storageType != null)
             {
-                throw new StorageTypeExceptions("Storage Type Code is either empty or already exists!");
+                throw new StorageTypeException("Storage Type Code already exists!");
             }
 
             return new StorageType(
