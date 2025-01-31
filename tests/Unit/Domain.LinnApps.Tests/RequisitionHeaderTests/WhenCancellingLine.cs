@@ -30,7 +30,6 @@
                 null,
                 "Goodbye Reqs");
 
-            // add line with moves
             this.sut.CancelLine(1, "reason", new Employee());
         }
 
