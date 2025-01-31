@@ -2,13 +2,18 @@ import React from 'react';
 import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
+import { utilities } from '@linn-it/linn-form-components-library';
+import { Link } from 'react-router';
 
 function TransactionsTab({ transactions = [] }) {
     const columns = [
         {
             field: 'budgetId',
             headerName: 'Budget Id',
-            width: 200
+            width: 200,
+            renderCell: params => (
+                <Link to={utilities.getSelfHref(params.row)}>{params.row.budgetId}</Link>
+            )
         },
         { field: 'partNumber', headerName: 'Part', width: 150 },
         { field: 'transactionCode', headerName: 'Trans Code', width: 150 },

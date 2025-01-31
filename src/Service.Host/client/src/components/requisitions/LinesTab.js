@@ -1,18 +1,35 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import { Link } from 'react-router';
+import { utilities } from '@linn-it/linn-form-components-library';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AddIcon from '@mui/icons-material/Add';
-
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Typography from '@mui/material/Typography';
 import BudgetPostings from '../BudgetPostings';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
+import PartsSearchDialog from '../PartsSearchDialog';
+import PickStockDialog from './PickStockDialog';
 
-function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd, addLine }) {
+function LinesTab({
+    lines = [],
+    selected = null,
+    setSelected,
+    cancelLine,
+    canAdd,
+    addLine,
+    showPostings,
+    updateLine,
+    pickStock
+}) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
+    const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
+
+    const [partsSearchDialogOpen, setPartsSearchDialogOpen] = useState();
 
     const linesColumns = [
         {
@@ -20,11 +37,31 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd
             headerName: '#',
             width: 100
         },
-        { field: 'partNumber', headerName: 'Part', width: 150 },
+        {
+            field: 'partNumber',
+            headerName: 'Part',
+            width: 150,
+            renderCell: params => (
+                <>
+                    <GridSearchIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => setPartsSearchDialogOpen(params.id)}
+                    />
+                    {params.row.isAddition ? (
+                        params.row.part?.partNumber
+                    ) : (
+                        <Link to={utilities.getHref(params.row, 'part')}>
+                            {params.row.part?.partNumber}
+                        </Link>
+                    )}
+                </>
+            )
+        },
         {
             field: 'partDescription',
             headerName: 'Desc',
-            width: 300
+            width: 300,
+            renderCell: params => params.row.part?.description
         },
         {
             field: 'qty',
@@ -70,19 +107,44 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd
             field: 'actions',
             headerName: 'Actions',
             width: 150,
-            renderCell: params => (
-                <Tooltip title="Cancel Line">
-                    <IconButton
-                        disabled={params.row.cancelled === 'Y' || params.row.isAddition}
-                        onClick={() => {
-                            setSelected(params.row.lineNumber);
-                            setCancelDialogVisible(true);
-                        }}
-                    >
-                        <CancelIcon />
-                    </IconButton>
-                </Tooltip>
-            )
+            renderCell: params => {
+                const canCancel =
+                    !params.row.dateBooked &&
+                    params.row.cancelled === 'N' &&
+                    !params.row.isAddition;
+
+                // just for now, only allowing stock pick for new rows onces
+                // todo - consider other scenarions e.g. changing pick after picked initially
+                const canPickStock = params.row.isAddition && !params.row.stockPicked;
+                return (
+                    <>
+                        {canPickStock && (
+                            <Tooltip title="Pick Stock">
+                                <IconButton
+                                    onClick={() => {
+                                        setSelected(params.row.lineNumber);
+                                        setPickStockDialogVisible(true);
+                                    }}
+                                >
+                                    <WarehouseIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                        {canCancel && (
+                            <Tooltip title="Cancel Line">
+                                <IconButton
+                                    onClick={() => {
+                                        setSelected(params.row.lineNumber);
+                                        setCancelDialogVisible(true);
+                                    }}
+                                >
+                                    <CancelIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </>
+                );
+            }
         }
     ];
 
@@ -99,6 +161,25 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd
                             reqNumber: lines[0].reqNumber,
                             lineNumber: selected
                         });
+                    }}
+                />
+            )}
+            {partsSearchDialogOpen && (
+                <PartsSearchDialog
+                    searchDialogOpen={!!partsSearchDialogOpen}
+                    setSearchDialogOpen={setPartsSearchDialogOpen}
+                    handleSearchResultSelect={r => {
+                        updateLine(partsSearchDialogOpen, 'part', r);
+                    }}
+                />
+            )}
+            {pickStockDialogVisible && (
+                <PickStockDialog
+                    open={pickStockDialogVisible}
+                    setOpen={setPickStockDialogVisible}
+                    partNumber={lines.find(l => l.lineNumber === selected)?.part?.partNumber}
+                    handleConfirm={moves => {
+                        pickStock(selected, moves);
                     }}
                 />
             )}
@@ -130,7 +211,7 @@ function LinesTab({ lines = [], selected = null, setSelected, cancelLine, canAdd
                 </Typography>
             </Grid>
             <Grid size={10}>
-                {selected && (
+                {selected && showPostings && (
                     <BudgetPostings
                         budgetPostings={lines.find(l => l.lineNumber === selected)?.postings ?? []}
                     />
@@ -147,7 +228,10 @@ LinesTab.propTypes = {
     cancelLine: PropTypes.func.isRequired,
     setSelected: PropTypes.func.isRequired,
     canAdd: PropTypes.bool.isRequired,
-    addLine: PropTypes.func.isRequired
+    addLine: PropTypes.func.isRequired,
+    showPostings: PropTypes.func.isRequired,
+    updateLine: PropTypes.func.isRequired,
+    pickStock: PropTypes.func.isRequired
 };
 
 export default LinesTab;

@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import Typography from '@mui/material/Typography';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -11,7 +11,8 @@ import {
     DatePicker,
     Dropdown,
     ErrorCard,
-    Search
+    Search,
+    SaveBackCancelButtons
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
@@ -26,9 +27,10 @@ import MovesTab from './MovesTab';
 import useSearch from '../../hooks/useSearch';
 import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
-import TransactionsTab from './reducers/TransactionsTab';
+import TransactionsTab from './TransactionsTab';
 
 function Requisition({ creating }) {
+    const navigate = useNavigate();
     const { userNumber, name } = useUserProfile();
     const { reqNumber } = useParams();
     const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
@@ -54,6 +56,12 @@ function Requisition({ creating }) {
         postResult: cancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
 
+    const {
+        send: createReq,
+        isLoading: createLoading,
+        errorMessage: createError
+    } = usePost(itemTypes.requisitions.url, true, true);
+
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
 
@@ -64,6 +72,13 @@ function Requisition({ creating }) {
     };
 
     const [formState, dispatch] = useReducer(requisitionReducer, null);
+
+    useEffect(
+        () => () => {
+            dispatch({ type: 'clear' });
+        },
+        []
+    );
 
     useEffect(() => {
         if (cancelResult) {
@@ -93,6 +108,30 @@ function Requisition({ creating }) {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
 
+    const canAddLines = () => {
+        if (formState.cancelled !== 'N' || formState.dateBooked) {
+            return false;
+        }
+        if (formState.functionCode?.code === 'LDREQ') {
+            if (
+                formState.nominal?.nominalCode &&
+                formState.department?.departmentCode &&
+                formState.reqType &&
+                formState.functionCode.description
+            ) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    const saveIsValid = () => {
+        if (creating) {
+            return !!formState?.lines?.length;
+        }
+        return false;
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -107,7 +146,7 @@ function Requisition({ creating }) {
                 )}
                 <Grid size={12}>
                     <Typography variant="h6">
-                        <span>Requisition Viewer</span>
+                        <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
@@ -115,15 +154,20 @@ function Requisition({ creating }) {
                 </Grid>
                 {cancelError && (
                     <Grid size={12}>
-                        <ErrorCard errorMessage={cancelError} />{' '}
+                        <ErrorCard errorMessage={cancelError} />
                     </Grid>
                 )}
-                {(fetchLoading || cancelLoading) && (
+                {createError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={createError} />
+                    </Grid>
+                )}
+                {(fetchLoading || cancelLoading || createLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
                 )}
-                {!fetchLoading && !cancelLoading && formState && (
+                {!fetchLoading && !cancelLoading && !createLoading && formState && (
                     <>
                         <Grid size={2}>
                             <InputField
@@ -165,23 +209,47 @@ function Requisition({ creating }) {
                         <Grid size={4} />
                         <Grid size={2}>
                             {!codesLoading && functionCodes && (
-                                <Dropdown
-                                    fullWidth
-                                    value={formState.functionCode}
-                                    items={functionCodes.map(f => f.id)}
-                                    onChange={handleHeaderFieldChange}
-                                    label="Function Code"
+                                <Search
                                     propertyName="functionCode"
+                                    label="Function Code"
+                                    resultsInModal
+                                    resultLimit={100}
+                                    disabled={!!formState.lines?.length}
+                                    helperText="Enter a value, or press enter to view all function codes"
+                                    value={formState.functionCode?.code}
+                                    handleValueChange={(_, newVal) => {
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: {
+                                                fieldName: 'functionCode',
+                                                newValue: { code: newVal }
+                                            }
+                                        });
+                                    }}
+                                    search={() => {}}
+                                    loading={false}
+                                    searchResults={functionCodes.map(f => ({
+                                        ...f,
+                                        id: f.code,
+                                        name: f.code,
+                                        description: f.description
+                                    }))}
+                                    priorityFunction="closestMatchesFirst"
+                                    onResultSelect={r => {
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: { fieldName: 'functionCode', newValue: r }
+                                        });
+                                    }}
+                                    clearSearch={() => {}}
+                                    autoFocus={false}
                                 />
                             )}
                         </Grid>
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={
-                                    functionCodes?.find(x => x.id === formState.functionCode)
-                                        ?.displayText ?? null
-                                }
+                                value={formState.functionCode?.description}
                                 onChange={() => {}}
                                 label="Function Code Description"
                                 propertyName="functionCodeDescription"
@@ -334,7 +402,7 @@ function Requisition({ creating }) {
                                 items={['F', 'O']}
                                 allowNoValue
                                 value={formState.reqType}
-                                onChange={() => {}}
+                                onChange={handleHeaderFieldChange}
                                 label="Req Type"
                                 propertyName="reqType"
                             />
@@ -364,11 +432,12 @@ function Requisition({ creating }) {
                                     <Tab label="Lines" />
                                     <Tab
                                         label={`Moves (L${selectedLine ?? ''})`}
-                                        disabled={!formState.lines || !selectedLine}
+                                        disabled={!selectedLine}
                                     />
                                     <Tab
                                         label={`Transactions (L${selectedLine ?? ''})`}
                                         disabled={
+                                            creating ||
                                             !formState.lines?.find(
                                                 x => x.lineNumber === selectedLine
                                             )?.moves?.length
@@ -384,8 +453,27 @@ function Requisition({ creating }) {
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
-                                    canAdd={formState.cancelled === 'N' && !formState.dateBooked}
-                                    addLine={() => dispatch({ type: 'add_line' })}
+                                    canAdd={canAddLines()}
+                                    addLine={() => {
+                                        dispatch({ type: 'add_line' });
+                                    }}
+                                    pickStock={(lineNumber, stockMoves) => {
+                                        dispatch({
+                                            type: 'pick_stock',
+                                            payload: { lineNumber, stockMoves }
+                                        });
+                                    }}
+                                    showPostings={!creating}
+                                    updateLine={(lineNumber, fieldName, newValue) => {
+                                        dispatch({
+                                            type: 'set_line_value',
+                                            payload: {
+                                                lineNumber,
+                                                fieldName,
+                                                newValue
+                                            }
+                                        });
+                                    }}
                                 />
                             )}
                             {tab === 1 && (
@@ -404,6 +492,22 @@ function Requisition({ creating }) {
                                     }
                                 />
                             )}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <SaveBackCancelButtons
+                                saveDisabled={!saveIsValid()}
+                                cancelClick={() => {
+                                    if (creating) {
+                                        dispatch({ type: 'load_create' });
+                                    }
+                                }}
+                                saveClick={() => {
+                                    createReq(formState);
+                                }}
+                                backClick={() => {
+                                    navigate('/requisitions');
+                                }}
+                            />
                         </Grid>
                     </>
                 )}

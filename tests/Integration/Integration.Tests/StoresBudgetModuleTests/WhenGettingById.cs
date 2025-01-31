@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
 {
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Net;
@@ -7,7 +8,9 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Stores;
@@ -24,9 +27,17 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
         [SetUp]
         public void SetUp()
         {
-            var req = new ReqWithLines(123, new StoresFunctionCode("F"));
-            var line = req.Lines.First();
-            line.RequisitionHeader = req;
+            var req = new ReqWithReqNumber(
+                456,
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "FUNC" },
+                "F",
+                123,
+                "REQ",
+                new Department(),
+                new Nominal(),
+                new List<RequisitionLine> { new RequisitionLine(123, 1) });
+
             this.budgetId = 234978;
             this.budget = new StoresBudget
                               {
