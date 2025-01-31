@@ -11,7 +11,7 @@
                 "A cancelled req", 
                 new StoresFunctionCode { FunctionCode = "C" },
                 12345678, 
-                "TYPE")
+                "TYPE", new Department(), new Nominal(), null)
         {
             this.Cancelled = "Y";
             this.DateCancelled = DateTime.Now;

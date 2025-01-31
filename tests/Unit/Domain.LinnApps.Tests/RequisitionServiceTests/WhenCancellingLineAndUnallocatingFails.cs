@@ -28,7 +28,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                 "comment",
                 new StoresFunctionCode { FunctionCode = "FUNC" },
                 12345678,
-                "TYPE");
+                "TYPE", new Department(), new Nominal(), null);
             var requisitionLine = new RequisitionLine(this.req.ReqNumber, 1);
             this.req.AddLine(requisitionLine);
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);

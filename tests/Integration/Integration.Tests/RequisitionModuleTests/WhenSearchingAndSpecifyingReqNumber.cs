@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+﻿using Linn.Stores2.Domain.LinnApps.Accounts;
+
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -6,7 +8,6 @@
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
@@ -27,13 +28,17 @@
                 "Hello Requisitions",
                 new StoresFunctionCode { FunctionCode = "F1" },
                 12345678,
-                "TYPE");
+                "TYPE", 
+                new Department(), 
+                new Nominal(), null);
             this.req456 = new RequisitionHeader(
                 456, 
                 "Goodbye Requisitions",
                 new StoresFunctionCode { FunctionCode = "F2" },
                 12345678,
-                "TYPE");
+                "TYPE", 
+                new Department(),
+                new Nominal(), null);
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);

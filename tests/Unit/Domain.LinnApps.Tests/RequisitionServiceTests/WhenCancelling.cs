@@ -23,7 +23,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                 "comment",
                 new StoresFunctionCode { FunctionCode = "FUNC" },
                 12345678,
-                "TYPE");
+                "TYPE", new Department(), new Nominal(), null);
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
 
             var user = new User

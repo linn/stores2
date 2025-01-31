@@ -6,7 +6,7 @@ namespace Linn.Stores2.TestData.Requisitions
     public class ReqWithLines : RequisitionHeader
     {
         public ReqWithLines(int reqNumber, StoresFunctionCode functionCode)
-            : base(reqNumber, "A cancelled req", functionCode, 12345678, "TYPE")
+            : base(reqNumber, "A cancelled req", functionCode, 12345678, "TYPE", new Department(), new Nominal(), null)
         {
             this.CreatedBy = new Employee { Id = 100 };
             this.Lines = new List<RequisitionLine>

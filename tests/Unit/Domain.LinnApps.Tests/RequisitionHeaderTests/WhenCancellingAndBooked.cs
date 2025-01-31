@@ -1,3 +1,5 @@
+using Linn.Stores2.Domain.LinnApps.Accounts;
+
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
@@ -17,8 +19,15 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
         [SetUp]
         public void SetUp()
         {
-            this.action = () => new BookedRequisitionHeader(
-                123, 33087, new StoresFunctionCode { FunctionCode = "C" })
+            this.action = () => new RequisitionHeader(
+                123, 
+                "comm", 
+                new StoresFunctionCode { FunctionCode = "C" },
+                123,
+                "REQ",
+                new Department(),
+                new Nominal(),
+                null)
                 .Cancel("reason", new Employee());
         }
 

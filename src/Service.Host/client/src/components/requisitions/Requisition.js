@@ -60,7 +60,7 @@ function Requisition({ creating }) {
         send: createReq,
         isLoading: createLoading,
         errorMessage: createError
-    } = usePost(itemTypes.storageLocations.url, true, true);
+    } = usePost(itemTypes.requisitions.url, true, true);
 
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
@@ -121,6 +121,13 @@ function Requisition({ creating }) {
             ) {
                 return true;
             }
+        }
+        return false;
+    };
+
+    const saveIsValid = () => {
+        if (creating) {
+            return !!formState?.lines?.length;
         }
         return false;
     };
@@ -488,6 +495,7 @@ function Requisition({ creating }) {
                         </Grid>
                         <Grid item xs={12}>
                             <SaveBackCancelButtons
+                                saveDisabled={!saveIsValid()}
                                 cancelClick={() => {
                                     if (creating) {
                                         dispatch({ type: 'load_create' });

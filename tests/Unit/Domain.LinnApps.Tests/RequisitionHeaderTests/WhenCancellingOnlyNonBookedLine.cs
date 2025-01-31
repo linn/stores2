@@ -13,7 +13,7 @@
         [SetUp]
         public void SetUp()
         {
-            this.req = new RequisitionHeader(123, "comments", new StoresFunctionCode("F"), 123, "REQ");
+            this.req = new RequisitionHeader(123, "comments", new StoresFunctionCode("F"), 123, "REQ", new Department(), new Nominal(), null);
             var line1 = new RequisitionLine(this.req.ReqNumber, 1);
             line1.Book();
 

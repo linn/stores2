@@ -23,6 +23,7 @@
             app.MapGet("/requisitions", this.Search);
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
+            app.MapPost("/requisitions", this.Create);
             app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
         }
 
@@ -84,6 +85,14 @@
             }
         }
 
+        private async Task Create(HttpResponse res, 
+            HttpRequest req,
+            RequisitionHeaderResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(service.Add(resource, req.HttpContext.GetPrivileges()));
+        }
+        
         private async Task GetFunctionCodes(
             HttpRequest _,
             HttpResponse res,
