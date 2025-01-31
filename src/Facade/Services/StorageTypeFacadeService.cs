@@ -23,7 +23,7 @@
 
         protected override async Task<StorageType> CreateFromResourceAsync(
             StorageTypeResource resource,
-            IEnumerable<string> privileges = null)
+            IEnumerable<string> privileges = null) 
         {
             return new StorageType(
                             resource.StorageTypeCode,
