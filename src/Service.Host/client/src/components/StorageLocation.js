@@ -28,10 +28,10 @@ function StorageLocation({ creating }) {
     const location = useLocation();
     const query = queryString.parse(location.search);
 
-    const {  isLoading: sitesLoading, result: sitesResult } = useInitialise(itemTypes.storageSites.url);
-    const {  isLoading: accountingCompaniesLoading, result: accountingCompaniesResult } = useInitialise(itemTypes.accountingCompany.url);
-    const {  isLoading: stockPoolsLoading, result: stockPoolsResult } = useInitialise(itemTypes.stockPools.url);
-    const {  isLoading: storageTypesLoading, result: storageTypesResult } = useInitialise(itemTypes.storageTypes.url);
+    const { result: sitesResult } = useInitialise(itemTypes.storageSites.url);
+    const { result: accountingCompaniesResult } = useInitialise(itemTypes.accountingCompany.url);
+    const { result: stockPoolsResult } = useInitialise(itemTypes.stockPools.url);
+    const { result: storageTypesResult } = useInitialise(itemTypes.storageTypes.url);
 
     const { id } = useParams();
     const {
@@ -129,14 +129,19 @@ function StorageLocation({ creating }) {
 
     const okToSave = () => {
         if (creating) {
-            return formValues.siteCode && formValues.storageAreaCode && formValues.accountingCompany && formValues.description;
+            return (
+                formValues.siteCode &&
+                formValues.storageAreaCode &&
+                formValues.accountingCompany &&
+                formValues.description
+            );
         }
         return true;
-    }
+    };
 
     const makeInvalid = () => {
-        handleFieldChange("dateInvalid", new Date());
-    }
+        handleFieldChange('dateInvalid', new Date());
+    };
 
     useEffect(() => {
         if (updateResult) {
@@ -177,19 +182,21 @@ function StorageLocation({ creating }) {
                     formValues && (
                         <>
                             <Grid size={5}>
-                                {sitesResult && <Dropdown
-                                    value={formValues.siteCode}
-                                    fullWidth
-                                    label="Site"
-                                    propertyName="siteCode"
-                                    disabled={!creating}
-                                    allowNoValue
-                                    items={sitesResult?.map(c => ({
-                                        id: c.siteCode,
-                                        displayText: c.description
-                                    }))}
-                                    onChange={handleFieldChange}
-                                />}
+                                {sitesResult && (
+                                    <Dropdown
+                                        value={formValues.siteCode}
+                                        fullWidth
+                                        label="Site"
+                                        propertyName="siteCode"
+                                        disabled={!creating}
+                                        allowNoValue
+                                        items={sitesResult?.map(c => ({
+                                            id: c.siteCode,
+                                            displayText: c.description
+                                        }))}
+                                        onChange={handleFieldChange}
+                                    />
+                                )}
                             </Grid>
                             <Grid size={7}>
                                 <Dropdown
@@ -246,32 +253,36 @@ function StorageLocation({ creating }) {
                                 )}
                             </Grid>
                             <Grid size={7}>
-                                {storageTypesResult && <Dropdown
-                                    value={formValues.storageType}
-                                    fullWidth
-                                    label="Storage Type"
-                                    propertyName="storageType"
-                                    allowNoValue
-                                    items={storageTypesResult.map(c => ({
-                                        id: c.storageTypeCode,
-                                        displayText: `${c.storageTypeCode} - ${c.description}` 
-                                    }))}
-                                    onChange={handleFieldChange}
-                                />}
+                                {storageTypesResult && (
+                                    <Dropdown
+                                        value={formValues.storageType}
+                                        fullWidth
+                                        label="Storage Type"
+                                        propertyName="storageType"
+                                        allowNoValue
+                                        items={storageTypesResult.map(c => ({
+                                            id: c.storageTypeCode,
+                                            displayText: `${c.storageTypeCode} - ${c.description}`
+                                        }))}
+                                        onChange={handleFieldChange}
+                                    />
+                                )}
                             </Grid>
                             <Grid size={5}>
-                                {stockPoolsResult && <Dropdown
-                                    value={formValues.defaultStockPool}
-                                    fullWidth
-                                    label="Default Stock Pool"
-                                    propertyName="defaultStockPool"
-                                    allowNoValue
-                                    items={stockPoolsResult.map(c => ({
-                                        id: c.stockPoolCode,
-                                        displayText: c.stockPoolDescription
-                                    }))}
-                                    onChange={handleFieldChange}
-                                />}
+                                {stockPoolsResult && (
+                                    <Dropdown
+                                        value={formValues.defaultStockPool}
+                                        fullWidth
+                                        label="Default Stock Pool"
+                                        propertyName="defaultStockPool"
+                                        allowNoValue
+                                        items={stockPoolsResult.map(c => ({
+                                            id: c.stockPoolCode,
+                                            displayText: c.stockPoolDescription
+                                        }))}
+                                        onChange={handleFieldChange}
+                                    />
+                                )}
                             </Grid>
                             <Grid size={4}>
                                 <InputField
@@ -388,30 +399,40 @@ function StorageLocation({ creating }) {
                                     ]}
                                     onChange={handleFieldChange}
                                 />
-                            </Grid> 
-                            {!creating && <>
-                                <Grid size={2}>
-                                    <InputField
-                                        value={formValues.locationId} 
-                                        disabled                                    
-                                        fullWidth
-                                        label="Location Id"
-                                        propertyName="locationId"
-                                    />
-                                </Grid>
-                                <Grid size={3}>
-                                    <InputField
-                                        value={formValues.dateInvalid ? moment(formValues.dateInvalid).format('DD MMM YYYY') : ""} 
-                                        disabled                                    
-                                        fullWidth
-                                        label="Date Invalid"
-                                        propertyName="locationId"
-                                    />
-                                </Grid>                            
-                                <Grid size={7}>
-                                    {!formValues.dateInvalid && <Button onClick={makeInvalid}>Make Invalid</Button>}
-                                </Grid>                            
-                            </>}  
+                            </Grid>
+                            {!creating && (
+                                <>
+                                    <Grid size={2}>
+                                        <InputField
+                                            value={formValues.locationId}
+                                            disabled
+                                            fullWidth
+                                            label="Location Id"
+                                            propertyName="locationId"
+                                        />
+                                    </Grid>
+                                    <Grid size={3}>
+                                        <InputField
+                                            value={
+                                                formValues.dateInvalid
+                                                    ? moment(formValues.dateInvalid).format(
+                                                        'DD MMM YYYY'
+                                                    )
+                                                    : ''
+                                            }
+                                            disabled
+                                            fullWidth
+                                            label="Date Invalid"
+                                            propertyName="locationId"
+                                        />
+                                    </Grid>
+                                    <Grid size={7}>
+                                        {!formValues.dateInvalid && (
+                                            <Button onClick={makeInvalid}>Make Invalid</Button>
+                                        )}
+                                    </Grid>
+                                </>
+                            )}
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/storage')}
