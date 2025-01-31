@@ -31,7 +31,7 @@
             StorageTypeResource resource,
             IEnumerable<string> privileges = null)
         {
-            var storageType = this.repository.FindById(resource.StorageTypeCode);
+            var storageType = await this.repository.FindByIdAsync(resource.StorageTypeCode);
 
             if (storageType != null)
             {
