@@ -1,4 +1,7 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stock
+﻿using System.Diagnostics.Metrics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -11,7 +14,7 @@
             // for ef       
         }
 
-        public StorageLocation(int locationId, string locationCode, string description, StorageSite site, StorageArea area, AccountingCompany company, string accessible, string storesKittable, string mixStates, string stockState, string typeOfStock)
+        public StorageLocation(int locationId, string locationCode, string description, StorageSite site, StorageArea area, AccountingCompany company, string accessible, string storesKittable, string mixStates, string stockState, string typeOfStock, StockPool stockPool, StorageType storageType)
         {
             this.LocationId = locationId;
             this.LocationCode = locationCode;
@@ -45,50 +48,27 @@
                 throw new StorageLocationException("Location needs an accounting company");
             }
 
-            if (accessible == "Y" || accessible == "N")
-            {
-                this.AccessibleFlag = accessible;
-            }
-            else if (!string.IsNullOrEmpty(accessible))
-            {
-                throw new StorageLocationException("Cannot create Location - accessible should be Y, N or blank");
-            }
+            this.AccountingCompany = company.Name;
 
-            if (storesKittable == "Y" || storesKittable == "N")
-            {
-                this.StoresKittableFlag = storesKittable;
-            }
-            else if (!string.IsNullOrEmpty(storesKittable))
-            {
-                throw new StorageLocationException("Cannot create Location - stores kittable should be Y, N or blank");
-            }
+            this.CheckYesNoFlag(accessible, "Cannot create Location - accessible should be Y or N");
+            this.AccessibleFlag = accessible;
 
-            if (mixStates == "Y" || mixStates == "N")
-            {
-                this.MixStatesFlag = mixStates;
-            }
-            else
-            {
-                throw new StorageLocationException("Cannot create Location - mix states should be Y or N");
-            }
+            this.CheckYesNoFlag(storesKittable, "Cannot create Location - stores kittable should be Y, N or blank", true);
+            this.StoresKittableFlag = storesKittable;
 
-            if (stockState == "I" || stockState == "Q" || stockState == "A")
-            {
-                this.StockState = stockState;
-            }
-            else
-            {
-                throw new StorageLocationException("Cannot create Location - stock state should be I, Q or A");
-            }
+            this.CheckYesNoFlag(mixStates, "Cannot create Location - mix states should be Y or N");
+            this.MixStatesFlag = mixStates;
 
-            if (typeOfStock == "A" || typeOfStock == "R" || typeOfStock == "F")
-            {
-                this.TypeOfStock = typeOfStock;
-            }
-            else
-            {
-                throw new StorageLocationException("Cannot create Location - type of stock should be R, F or A");
-            }
+            this.CheckThreeValueFlag(stockState, "I", "Q", "A", "Cannot create Location - stock state should be I, Q or A");
+            this.StockState = stockState;
+
+            this.CheckThreeValueFlag(typeOfStock, "A", "R", "F", "Cannot create Location - type of stock should be R, F or A");
+            this.TypeOfStock = typeOfStock;
+
+            this.DefaultStockPool = stockPool?.StockPoolCode;
+
+            this.StorageTypeCode = storageType?.StorageTypeCode;
+            this.StorageType = storageType;
         }
 
         public int LocationId { get; set; }
@@ -150,5 +130,60 @@
         public bool Accessible() => AccessibleFlag == "Y";
 
         public bool StoresKittable() => StoresKittableFlag == "Y";
+
+        public void Update(string description, AccountingCompany company, string accessible, string storesKittable,
+            string mixStates, string stockState, string typeOfStock, StockPool stockPool, StorageType storageType, DateTime? dateInvalid)
+        {
+            this.Description = description;
+
+            if (company == null)
+            {
+                throw new StorageLocationException("Location needs an accounting company");
+            }
+
+            this.AccountingCompany = company.Name;
+
+            this.CheckYesNoFlag(accessible, "Cannot update Location - accessible should be Y or N");
+            this.AccessibleFlag = accessible;
+
+            this.CheckYesNoFlag(storesKittable, "Cannot update Location - stores kittable should be Y, N or blank", true);
+            this.StoresKittableFlag = storesKittable;
+
+            this.CheckYesNoFlag(mixStates, "Cannot update Location - mix states should be Y or N");
+            this.MixStatesFlag = mixStates;
+
+            this.CheckThreeValueFlag(stockState, "I", "Q", "A", "Cannot update Location - stock state should be I, Q or A");
+            this.StockState = stockState;
+
+            this.CheckThreeValueFlag(typeOfStock, "A", "R", "F", "Cannot update Location - type of stock should be R, F or A");
+            this.TypeOfStock = typeOfStock;
+
+            this.DefaultStockPool = stockPool?.StockPoolCode;
+
+            this.StorageTypeCode = storageType?.StorageTypeCode;
+            this.StorageType = storageType;
+
+            this.DateInvalid = dateInvalid;
+        }
+
+        private void CheckYesNoFlag(string field, string errorMessage, bool allowNull = false)
+        {
+            if (string.IsNullOrEmpty(field) && allowNull)
+            {
+                return;
+            }
+            if (!(field == "Y" || field == "N"))
+            {
+                throw new StorageLocationException(errorMessage);
+            }
+        }
+
+        private void CheckThreeValueFlag(string field, string value1, string value2, string value3, string errorMessage)
+        {
+            if (!(field == value1 || field == value2 || field == value3))
+            {
+                throw new StorageLocationException(errorMessage);
+            }
+        }
     }
 }

@@ -18,7 +18,7 @@
             this.action = () =>
             {
                 _ = new StorageLocation(
-                    1, "E-TESTY-TEST", "TEST LOCATION", null, area, company, "Y", "Y", "Y", "A", "A");
+                    1, "E-TESTY-TEST", "TEST LOCATION", null, area, company, "Y", "Y", "Y", "A", "A", null, null);
             };
         }
 
