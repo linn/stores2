@@ -336,7 +336,7 @@ function StockPools() {
                 </Grid>
                 <Grid size={4}>
                     <Button onClick={handleCancelSelect} variant="outlined" disabled={!rowUpdated}>
-                        Cancel Select
+                        Cancel
                     </Button>
                 </Grid>
                 <Grid>

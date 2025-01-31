@@ -6,25 +6,38 @@
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
+
     public class StorageTypeFacadeService : AsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>
     {
-        public StorageTypeFacadeService(
+        private readonly IRepository<StorageType, string> repository;
 
+        public StorageTypeFacadeService(
             IRepository<StorageType, string> repository,
             ITransactionManager transactionManager,
             IBuilder<StorageType> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
+            this.repository = repository;
         }
 
         protected override async Task<StorageType> CreateFromResourceAsync(
             StorageTypeResource resource,
             IEnumerable<string> privileges = null)
         {
+            var storageType = this.repository.FindById(resource.StorageTypeCode);
+
+            if (storageType != null)
+            {
+                throw new StorageTypeExceptions("Storage Type Code is either empty or already exists!");
+            }
+
             return new StorageType(
                             resource.StorageTypeCode,
                             resource.Description);
