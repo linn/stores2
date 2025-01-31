@@ -19,14 +19,14 @@
             this.action = () =>
             {
                 _ = new StorageLocation(
-                    1, "E-TESTY-TEST", "TEST LOCATION", site, area, company, "Z", "Y", "Y", "A", "A");
+                    1, "E-TESTY-TEST", "TEST LOCATION", site, area, company, "Z", "Y", "Y", "A", "A", null, null);
             };
         }
 
         [Test]
         public void ShouldThrow()
         {
-            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - accessible should be Y, N or blank");
+            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - accessible should be Y or N");
         }
     }
 }

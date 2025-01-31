@@ -6,7 +6,7 @@
     using System;
     using FluentAssertions;
 
-    public class WhenCreatingAndInvalidStoresKittable
+    public class WhenUpdatingAndInvalidAccessible
     {
         private Action action;
 
@@ -15,18 +15,17 @@
         {
             var site = new StorageSite { SiteCode = "TEST" };
             var area = new StorageArea { StorageAreaCode = "TEST" };
-            var company = new AccountingCompany { Name = "TRENT" };
+            var location = new StorageLocation();
             this.action = () =>
             {
-                _ = new StorageLocation(
-                    1, "E-TESTY-TEST", "TEST LOCATION", site, area, company, "Y", "Z", "Y", "A", "A", null, null);
+                location.Update("New Description", new AccountingCompany(), "Z", "Y", "Y", "A", "A", null, null, null);
             };
         }
 
         [Test]
         public void ShouldThrow()
         {
-            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - stores kittable should be Y, N or blank");
+            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot update Location - accessible should be Y or N");
         }
     }
 }

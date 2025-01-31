@@ -22,6 +22,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/storage/locations/{id:int}", this.GetLocationById);
             app.MapGet("/stores2/storage/sites", this.GetSites);
             app.MapPost("/stores2/storage/locations", this.CreateLocation);
+            app.MapPut("/stores2/storage/locations/{id:int}", this.UpdateLocation);
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -81,6 +82,16 @@ namespace Linn.Stores2.Service.Modules
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> service)
         {
             await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task UpdateLocation(
+            HttpRequest req,
+            HttpResponse res,
+            int id,
+            StorageLocationResource resource,
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> facadeService)
+        {
+            await res.Negotiate(await facadeService.Update(id, resource, req.HttpContext.GetPrivileges()));
         }
     }
 }

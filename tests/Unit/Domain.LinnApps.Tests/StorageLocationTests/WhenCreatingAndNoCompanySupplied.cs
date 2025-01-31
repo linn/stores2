@@ -18,7 +18,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
             this.action = () =>
             {
                 _ = new StorageLocation(
-                    1, "E-TESTY-TEST", "TEST LOCATION", site, area, null, "Y", "Y", "Y", "A", "A");
+                    1, "E-TESTY-TEST", "TEST LOCATION", site, area, null, "Y", "Y", "Y", "A", "A", null, null);
             };
         }
 
