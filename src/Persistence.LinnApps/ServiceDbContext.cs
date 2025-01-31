@@ -579,7 +579,7 @@
         private static void BuildPartsStorageTypes(ModelBuilder builder)
         {
             var e = builder.Entity<PartsStorageType>().ToTable("PARTS_STORAGE_TYPES");
-            e.HasKey(l => new {l.PartNumber, l.StorageTypeCode});
+            e.HasKey(l => new { l.PartNumber, l.StorageTypeCode });
             e.Property(l => l.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.Property(l => l.StorageTypeCode).HasColumnName("STORAGE_TYPE").HasMaxLength(4);
             e.Property(l => l.Remarks).HasColumnName("REMARKS").HasMaxLength(30);
@@ -587,6 +587,8 @@
             e.Property(l => l.Incr).HasColumnName("INCR").HasMaxLength(14);
             e.Property(l => l.Preference).HasColumnName("PREFERENCE").HasMaxLength(1);
             e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID").HasMaxLength(14);
+            e.HasOne(l => l.Part).WithMany().HasForeignKey("PART_NUMBER");
+            e.HasOne(l => l.StorageType).WithMany().HasForeignKey("STORAGE_TYPE");
         }
     }
 }

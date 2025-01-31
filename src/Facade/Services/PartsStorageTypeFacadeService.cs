@@ -64,8 +64,8 @@
             }
 
             return new PartsStorageType(
-                resource.PartNumber,
-                resource.StorageTypeCode,
+                part,
+                storageType,
                 resource.Remarks,
                 resource.Maximum,
                 resource.Incr,
