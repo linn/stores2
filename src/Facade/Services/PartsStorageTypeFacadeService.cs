@@ -116,7 +116,7 @@
 
         protected override Expression<Func<PartsStorageType, bool>> FindExpression(PartsStorageTypeResource searchResource)
         {
-            throw new NotImplementedException();
+            return x => x.PartNumber == searchResource.PartNumber && x.StorageTypeCode == searchResource.StorageTypeCode;
         }
     }
 }

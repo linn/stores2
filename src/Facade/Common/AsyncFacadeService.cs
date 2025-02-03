@@ -77,11 +77,19 @@
             throw new NotImplementedException();
         }
 
-        public Task<IResult<TResource>> FindBy(
+        public async Task<IResult<TResource>> FindBy(
             TSearchResource searchResource,
             IEnumerable<string> privileges = null)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var entity = await this.repository.FindByAsync(this.FindExpression(searchResource));
+                return new SuccessResult<TResource>(this.BuildResource(entity, privileges));
+            }
+            catch (NotImplementedException ex)
+            {
+                return new BadRequestResult<TResource>("Find is not implemented");
+            }
         }
 
         public virtual async Task<IResult<IEnumerable<TResource>>> Search(

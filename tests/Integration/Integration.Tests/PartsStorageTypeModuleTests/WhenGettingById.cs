@@ -1,12 +1,9 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
 
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
@@ -14,9 +11,9 @@
 
     using NUnit.Framework;
 
-    public class WhenGettingAll : ContextBase
+    public class WhenGettingById : ContextBase
     {
-        private PartsStorageType partStorageType;
+        private PartsStorageType partsStorageType;
 
         private Part part;
 
@@ -30,32 +27,28 @@
                                 Id = 1,
                                 PartNumber = "Part No 1",
                                 Description = "Part 1"
-            };
+                            };
 
-            this.storageType = new StorageType
-                                   {
-                                       StorageTypeCode = "Storage Type No 1",
-                                       Description = "Storage Type 1"
-            };
+            this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
 
 
-            this.partStorageType = new PartsStorageType(
-                this.part,
-                this.storageType,
-                "a",
+            this.partsStorageType = new PartsStorageType(
+                this.part, 
+                this.storageType, 
+                "a", 
                 100,
                 50,
-                "1",
+                "1", 
                 400);
 
-            this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partStorageType);
+            this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
 
             this.Response = this.Client.Get(
-                "/stores2/parts-storage-types",
+                $"/stores2/parts-storage-types/{this.partsStorageType.PartNumber}/{this.partsStorageType.StorageTypeCode}",
                 with =>
-                {
-                    with.Accept("application/json");
-                }).Result;
+                    { 
+                        with.Accept("application/json");
+                    }).Result;
         }
 
         [Test]
@@ -74,10 +67,10 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<PartsStorageTypeResource>>();
-            resource.First().StorageTypeCode.Should().Be("Storage Type No 1");
-            resource.First().PartNumber.Should().Be("Part No 1");
-            resource.First().BridgeId.Should().Be(400);
+            var resource = this.Response.DeserializeBody<PartsStorageTypeResource>();
+            resource.StorageTypeCode.Should().Be("Storage Type No 1");
+            resource.PartNumber.Should().Be("Part No 1");
         }
     }
 }
+    

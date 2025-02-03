@@ -39,9 +39,13 @@
             string storageTypeCode,
             IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
-            var key = new PartsStorageTypeKey(partNumber, storageTypeCode);
+            var searchResource = new PartsStorageTypeResource
+                          {
+                              PartNumber = partNumber,
+                              StorageTypeCode = storageTypeCode
+                          };
 
-            await res.Negotiate(await service.GetById(key));
+            await res.Negotiate(await service.FindBy(searchResource));
         }
 
         private async Task Create(

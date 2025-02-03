@@ -10,17 +10,16 @@
 
         public PartsStorageType(Part part, StorageType storageType, string remarks, int maximum, int incr, string preference, int bridgeId)
         {
-            this.Key = new PartsStorageTypeKey(part.PartNumber, storageType.StorageTypeCode);
             this.Part = part;
+            this.PartNumber = part.PartNumber;
             this.StorageType = storageType;
+            this.StorageTypeCode = storageType.StorageTypeCode;
             this.Remarks = remarks;
             this.Maximum = maximum;
             this.Incr = incr;
             this.Preference = preference;
             this.BridgeId = bridgeId;
         }
-
-        public PartsStorageTypeKey Key { get; set; }
 
         public string PartNumber { get; set; }
 
