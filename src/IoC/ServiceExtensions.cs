@@ -13,6 +13,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -49,7 +50,8 @@
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
-                .AddTransient<IDatabaseService, DatabaseService>();
+                .AddTransient<IDatabaseService, DatabaseService>()
+                .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -65,7 +67,8 @@
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>()
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
-                .AddScoped<IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource, FunctionCodeResource>, StoresFunctionCodeService>();
+                .AddScoped<IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource, FunctionCodeResource>, StoresFunctionCodeService>()
+                .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

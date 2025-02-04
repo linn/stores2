@@ -3,6 +3,7 @@
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -42,6 +43,8 @@
 
         public DbSet<StoresFunctionCode> StoresFunctionCodes { get; set; }
 
+        public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -76,6 +79,7 @@
             BuildStorageAreas(builder);
             BuildStorageTypes(builder);
             BuildStoresFunctionTransactions(builder);
+            BuildGoodsInLog(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -568,6 +572,40 @@
             e.HasKey(l => l.StorageTypeCode);
             e.Property(l => l.StorageTypeCode).HasColumnName("STORAGE_TYPE").HasMaxLength(16);
             e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+        }
+
+        private static void BuildGoodsInLog(ModelBuilder builder)
+        {
+            var e = builder.Entity<GoodsInLogEntry>().ToTable("GOODS_IN_LOG");
+            e.HasKey(g => g.Id);
+            e.Property(g => g.Id).HasColumnName("GILOG_ID");
+            e.Property(g => g.TransactionType).HasColumnName("TRANS_TYPE").HasMaxLength(1);
+            e.Property(g => g.DateCreated).HasColumnName("DATE_CREATED");
+            e.Property(g => g.CreatedBy).HasColumnName("CREATED_BY");
+            e.Property(g => g.WandString).HasColumnName("WAND_STRING").HasMaxLength(20);
+            e.Property(g => g.ArticleNumber).HasColumnName("ARTICLE_NUMBER").HasMaxLength(14);
+            e.Property(g => g.Quantity).HasColumnName("QTY");
+            e.Property(g => g.SerialNumber).HasColumnName("SERIAL_NUMBER");
+            e.Property(g => g.OrderNumber).HasColumnName("ORDER_NUMBER");
+            e.Property(g => g.OrderLine).HasColumnName("ORDER_LINE");
+            e.Property(g => g.LoanNumber).HasColumnName("LOAN_NUMBER");
+            e.Property(g => g.LoanLine).HasColumnName("LOAN_LINE");
+            e.Property(g => g.RsnNumber).HasColumnName("RSN_NUMBER");
+            e.Property(g => g.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(g => g.ReqLine).HasColumnName("REQ_LINE");
+            e.Property(g => g.SernosTref).HasColumnName("SERNOS_TREF");
+            e.Property(g => g.ProductAnalysisCode).HasColumnName("PRODUCT_ANALYSIS_CODE").HasMaxLength(10);
+            e.Property(g => g.StoragePlace).HasColumnName("STORAGE_PLACE").HasMaxLength(16);
+            e.Property(g => g.Processed).HasColumnName("PROCESSED").HasMaxLength(1);
+            e.Property(g => g.ErrorMessage).HasColumnName("ERROR_MESSAGE").HasMaxLength(2000);
+            e.Property(g => g.BookInRef).HasColumnName("BOOKIN_REF");
+            e.Property(g => g.DemLocation).HasColumnName("DEM_LOCATION").HasMaxLength(16);
+            e.Property(g => g.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
+            e.Property(g => g.State).HasColumnName("STATE").HasMaxLength(10);
+            e.Property(g => g.StorageType).HasColumnName("STORAGE_TYPE").HasMaxLength(4);
+            e.Property(g => g.ManufacturersPartNumber).HasColumnName("MANUF_PART_NUMBER").HasMaxLength(20);
+            e.Property(g => g.LogCondition).HasColumnName("CONDITION").HasMaxLength(2000);
+            e.Property(g => g.RsnAccessories).HasColumnName("RSN_ACCESSORIES").HasMaxLength(2000);
         }
     }
 }
