@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+﻿using System;
+
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using FluentAssertions;
 
@@ -26,7 +28,7 @@
                 null,
                 "Goodbye Reqs");
             var line1 = new RequisitionLine(this.req.ReqNumber, 1);
-            line1.Book();
+            line1.Book(new DateTime(2024,1,1));
 
             var unbookedLine = new RequisitionLine(this.req.ReqNumber, 2);
 

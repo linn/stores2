@@ -1,24 +1,20 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
-    using System;
     using System.Collections.Generic;
-
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-
+    using Linn.Stores2.TestData.Requisitions;
     using NUnit.Framework;
 
-    public class WhenCancellingLineAndBooked
+    public class WhenTryingToBookAndAlreadyCancelled
     {
-        private Action action;
+        private RequisitionHeader sut;
 
         [SetUp]
         public void SetUp()
         {
-            var req = new RequisitionHeader(
+            this.sut = new RequisitionHeader(
                 new Employee(),
                 new StoresFunctionCode { FunctionCode = "F1" },
                 "F",
@@ -26,18 +22,16 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine> { new RequisitionLine(null, 1) },
+                new List<RequisitionLine> { new LineWithMoves(123, 1) },
                 null,
                 "Goodbye Reqs");
-            req.BookLine(1, new Employee(), new DateTime(2024,1,1));
-            this.action = () => req.CancelLine(1, "reason", new Employee());
+            this.sut.Cancel("Test Porpoises", new Employee());
         }
 
         [Test]
-        public void ShouldThrow()
+        public void ShouldNotBeAbleToBook()
         {
-            this.action.Should().Throw<RequisitionException>()
-                .WithMessage("Cannot cancel a booked req line");
+            this.sut.CanBookReq(null).Should().BeFalse();
         }
     }
 }

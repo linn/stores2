@@ -330,6 +330,10 @@
             q.Property(d => d.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             q.Property(d => d.QcType).HasColumnName("QC_TYPE").HasMaxLength(1);
             q.Property(d => d.DocType).HasColumnName("DOC1_TYPE").HasMaxLength(6);
+            q.Property(d => d.StockAllocations).HasColumnName("STOCK_ALLOCATIONS").HasMaxLength(1);
+            q.Property(d => d.OntoTransactions).HasColumnName("ONTO_TRANSACTIONS").HasMaxLength(1);
+            q.Property(d => d.DecrementTransaction).HasColumnName("DECREMENT_TRANSACTION").HasMaxLength(1);
+            q.Property(d => d.TakePriceFrom).HasColumnName("TAKE_PRICE_FROM").HasMaxLength(1);
         }
 
         private static void BuildReqMoves(ModelBuilder builder)
@@ -351,6 +355,7 @@
             r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
             r.Property(l => l.DateCancelled).HasColumnName("DATE_CANCELLED");
             r.Property(l => l.State).HasColumnName("STATE").HasMaxLength(6);
+            r.Property(l => l.Category).HasColumnName("CATEGORY").HasMaxLength(6);
             r.Property(l => l.SerialNumber).HasColumnName("SERIAL_NUMBER");
         }
 
