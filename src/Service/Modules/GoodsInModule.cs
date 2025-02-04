@@ -15,7 +15,7 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/goods-in-log-report", this.GoodsInLogReport);
+            app.MapGet("/stores2/goods-in-log/report", this.GoodsInLogReport);
             app.MapGet("/stores2/goods-in-log", this.GetApp);
         }
 

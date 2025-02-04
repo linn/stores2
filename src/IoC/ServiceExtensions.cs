@@ -48,7 +48,8 @@
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<IRequisitionService, RequisitionService>()
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
-                .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>();
+                .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
+                .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -82,8 +83,7 @@
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
-                .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
-                .AddScoped<IBuilder<GoodsInLogEntry>, GoodsInLogEntryResourceBuilder>();
+                .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
         }
     }
 }

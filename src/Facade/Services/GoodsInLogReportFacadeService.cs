@@ -42,7 +42,7 @@
                 orderNumber,
                 reqNumber,
                 storagePlace);
-            
+
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }
     }
