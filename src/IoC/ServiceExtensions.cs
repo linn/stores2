@@ -24,7 +24,6 @@
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Proxy;
     using Linn.Stores2.Resources;
-    using Linn.Stores2.Resources.GoodsIn;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
 

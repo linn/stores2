@@ -6,7 +6,6 @@
     using Linn.Common.Resources;
     using Linn.Common.Service.Core.Handlers;
     using Linn.Stores2.Resources;
-    using Linn.Stores2.Resources.GoodsIn;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
 
@@ -34,8 +33,7 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageSiteResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StorageLocationResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageLocationResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageLocationResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<GoodsInLogEntryResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<FunctionCodeResource>>>();
         }
     }
 }

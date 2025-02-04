@@ -7,7 +7,6 @@
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Resources;
-    using Linn.Stores2.Resources.GoodsIn;
 
     public interface IGoodsInLogReportFacadeService
     {
