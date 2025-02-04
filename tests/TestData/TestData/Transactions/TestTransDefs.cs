@@ -1,7 +1,7 @@
-﻿using Linn.Stores2.Domain.LinnApps.Requisitions;
-
-namespace Linn.Stores2.TestData.Transactions
+﻿namespace Linn.Stores2.TestData.Transactions
 {
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+
     public static class TestTransDefs
     {
         public static readonly StoresTransactionDefinition SuppToMatVarTrans =

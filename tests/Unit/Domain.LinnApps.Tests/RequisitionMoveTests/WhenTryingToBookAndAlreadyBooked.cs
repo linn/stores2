@@ -1,11 +1,10 @@
-﻿using Linn.Stores2.TestData.Transactions;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionMoveTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionMoveTests
 {
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using NUnit.Framework;
     using System;
     using FluentAssertions;
+    using Linn.Stores2.TestData.Transactions;
 
     public class WhenTryingToBookAndAlreadyBooked
     {

@@ -1,7 +1,6 @@
-﻿using System;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
+    using System;
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Accounts;

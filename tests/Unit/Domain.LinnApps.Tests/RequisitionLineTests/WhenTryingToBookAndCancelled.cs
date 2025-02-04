@@ -1,7 +1,4 @@
-﻿
-using Linn.Stores2.TestData.Transactions;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
 {
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using NUnit.Framework;
