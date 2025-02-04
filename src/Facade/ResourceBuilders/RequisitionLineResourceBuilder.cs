@@ -5,7 +5,9 @@
     using System.Linq;
 
     using Linn.Common.Facade;
+    using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionLineResourceBuilder : IBuilder<RequisitionLine>
@@ -19,8 +21,11 @@
                        {
                            ReqNumber = l.ReqNumber,
                            LineNumber = l.LineNumber,
-                           PartNumber = l.Part?.PartNumber,
-                           PartDescription = l.Part?.Description,
+                           Part = new PartResource
+                                      {
+                                          PartNumber = l.Part?.PartNumber,
+                                          Description = l.Part?.Description
+                                      },
                            Qty = l.Qty,
                            TransactionCode = l.TransactionDefinition?.TransactionCode,
                            TransactionCodeDescription = l.TransactionDefinition?.Description,
@@ -72,8 +77,8 @@
                                                                         ? new MoveToResource
                                                                                 {
                                                                                     Seq = m.Sequence,
-                                                                                    LocationCode = m.Location.LocationCode,
-                                                                                    LocationDescription = m.Location.Description,
+                                                                                    LocationCode = m.Location?.LocationCode,
+                                                                                    LocationDescription = m.Location?.Description,
                                                                                     PalletNumber = m.PalletNumber,
                                                                                     StockPool = m.StockPoolCode,
                                                                                     State = m.State,
@@ -81,7 +86,8 @@
                                                                                                         Remarks = m.Remarks
                                                                                                     }
                                                                                             : null
-                                                                                })
+                                                                                }),
+                           Links = this.BuildLinks(l).ToArray()
                        };
         }
 
@@ -92,5 +98,13 @@
 
         object IBuilder<RequisitionLine>.Build(RequisitionLine entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
+
+        private IEnumerable<LinkResource> BuildLinks(RequisitionLine model)
+        {
+            if (model.Part != null)
+            {
+                yield return new LinkResource("part", $"/parts/{model.Part.Id}");
+            }
+        }
     }
 }

@@ -25,9 +25,7 @@
         public decimal? Qty { get; protected set; }
 
         public string Document1Name { get; protected set; }
-
-        public string PartNumber { get; protected set; }
-
+        
         public Part Part { get; protected set; }
 
         public StorageLocation ToLocation { get; protected set; }
@@ -81,28 +79,44 @@
         }
 
         public RequisitionHeader(
-            int? reqNumber,
-            string comments,
+            Employee createdBy,
             StoresFunctionCode functionCode,
+            string reqType,
             int? document1Number,
-            string document1Type)
+            string document1Type,
+            Department department,
+            Nominal nominal, 
+            IEnumerable<RequisitionLine> lines = null,
+            string reference = null,
+            string comments = null,
+            string manualPick = null,
+            string fromStockPool = null,
+            string toStockPool = null,
+            int? fromPalletNumber = null,
+            int? toPalletNumber = null,
+            StorageLocation fromLocation = null,
+            StorageLocation toLocation = null)
         {
-            if (reqNumber.HasValue)
-            {
-                this.ReqNumber = reqNumber.Value;
-            }
-
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.FunctionCode = functionCode;
             this.Document1 = document1Number;
             this.Document1Name = document1Type;
+
+            if (lines != null)
+            {
+                foreach (var l in lines)
+                {
+                    this.AddLine(l);
+                }
+            }
+
         }
 
         public void AddLine(RequisitionLine toAdd)
         {
             this.Lines ??= new List<RequisitionLine>();
-
+            toAdd.RequisitionHeader = this;
             this.Lines.Add(toAdd);
         }
 

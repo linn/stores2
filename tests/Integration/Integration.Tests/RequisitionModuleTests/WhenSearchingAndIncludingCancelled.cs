@@ -7,6 +7,7 @@
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
@@ -24,19 +25,38 @@
         [SetUp]
         public void SetUp()
         {
-            this.req123 = new RequisitionHeader(
-                123, 
-                "Hello Requisitions",
-                new StoresFunctionCode { FunctionCode = "F" },
-                12345678,
-                "TYPE");
-            this.req456 = new CancelledRequisitionHeader(456);
+            this.req123 = new ReqWithReqNumber(
+                123,
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "FUNC1" },
+                "F",
+                123,
+                "REQ",
+                new Department(),
+                new Nominal(),
+                null,
+                null,
+                "comment");
+
+            this.req456 = new ReqWithReqNumber(
+                456,
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "FUNC2" },
+                "F",
+                123,
+                "REQ",
+                new Department(),
+                new Nominal(),
+                null,
+                null,
+                "comment");
+            this.req456.Cancel("reason", new Employee());
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);
 
             this.Response = this.Client.Get(
-                "/requisitions?includeCancelled=True&comments=req",
+                "/requisitions?includeCancelled=True&comments=comm",
                 with =>
                     {
                         with.Accept("application/json");

@@ -1,19 +1,40 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
     using System;
+    using System.Linq;
+    using Linn.Stores2.Domain.LinnApps.External;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
     public class StorageLocationService : AsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
     {
-        public StorageLocationService(IRepository<StorageLocation, int> repository, ITransactionManager transactionManager, IBuilder<StorageLocation> resourceBuilder) : base(repository, transactionManager, resourceBuilder)
+        private readonly IDatabaseSequenceService databaseSequenceService;
+        private readonly IRepository<AccountingCompany, string> accountingCompanyRepository;
+        private readonly IRepository<StorageSite, string> storageSiteRepository;
+        private readonly IRepository<StockPool, string> stockPoolRepository;
+        private readonly IRepository<StorageType, string> storageTypeRepository;
+
+        public StorageLocationService(IRepository<StorageLocation, int> repository,
+            ITransactionManager transactionManager, IBuilder<StorageLocation> resourceBuilder,
+            IDatabaseSequenceService databaseSequenceService,
+            IRepository<AccountingCompany, string> accountingCompanyRepository,
+            IRepository<StorageSite, string> storageSiteRepository, IRepository<StockPool, string> stockPoolRepository,
+            IRepository<StorageType, string> storageTypeRepository) : base(repository, transactionManager,
+            resourceBuilder)
         {
+            this.databaseSequenceService = databaseSequenceService;
+            this.storageSiteRepository = storageSiteRepository;
+            this.accountingCompanyRepository = accountingCompanyRepository;
+            this.stockPoolRepository = stockPoolRepository;
+            this.storageTypeRepository = storageTypeRepository;
         }
 
         protected override Expression<Func<StorageLocation, bool>> SearchExpression(string searchTerm)
@@ -30,6 +51,59 @@
         protected override void DeleteOrObsoleteResource(StorageLocation entity, IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
+        }
+
+        protected override async Task<StorageLocation> CreateFromResourceAsync(
+            StorageLocationResource resource,
+            IEnumerable<string> privileges = null)
+        {
+            var locationId = this.databaseSequenceService.NextStorageLocationId();
+
+            var company = await this.accountingCompanyRepository.FindByIdAsync(resource.AccountingCompany);
+            var site = await this.storageSiteRepository.FindByIdAsync(resource.SiteCode);
+            var area = site == null
+                ? null
+                : site.StorageAreas?.FirstOrDefault(a => a.StorageAreaCode == resource.StorageAreaCode);
+
+            var stockPool = await this.GetDefaultStockPool(resource.DefaultStockPool);
+
+            var storageType = await this.GetStorageType(resource.StorageType);
+
+            return new StorageLocation(locationId, resource.LocationCode, resource.Description, site, area, company,
+                resource.AccessibleFlag, resource.StoresKittableFlag, resource.MixStatesFlag, resource.StockState, resource.TypeOfStock, 
+                stockPool, storageType)
+            {
+                DefaultStockPool = resource.DefaultStockPool,
+                StoresKittingPriority = resource.StoresKittingPriority,
+                SpecProcFlag = resource.SpecProcFlag,
+                LocationType = resource.LocationType,
+                StorageTypeCode = resource.StorageType,
+                SalesAccountId = resource.SalesAccountId,
+                OutletNumber = resource.OutletNumber
+            };
+        }
+
+        protected override async Task UpdateFromResourceAsync(
+            StorageLocation entity,
+            StorageLocationResource updateResource,
+            IEnumerable<string> privileges = null)
+        {
+            var company = await this.accountingCompanyRepository.FindByIdAsync(updateResource.AccountingCompany);
+
+            var stockPool = await this.GetDefaultStockPool(updateResource.DefaultStockPool);
+
+            var storageType = await this.GetStorageType(updateResource.StorageType);
+
+            var dateInvalid = string.IsNullOrEmpty(updateResource.DateInvalid)
+                ? (DateTime?)null
+                : DateTime.Parse(updateResource.DateInvalid);
+
+            entity.Update(updateResource.Description, company, updateResource.AccessibleFlag,
+                updateResource.StoresKittableFlag, updateResource.MixStatesFlag, updateResource.StockState,
+                updateResource.TypeOfStock, stockPool, storageType, dateInvalid);
+
+            entity.AuditFrequencyWeeks = updateResource.AuditFrequencyWeeks;
+            entity.StoresKittingPriority = updateResource.StoresKittingPriority;
         }
 
         protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationResource searchResource)
@@ -72,6 +146,38 @@
             );
 
             return Expression.Lambda<Func<StorageLocation, bool>>(body, parameter);
+        }
+
+        private async Task<StockPool> GetDefaultStockPool(string stockPoolCode)
+        {
+            if (string.IsNullOrEmpty(stockPoolCode))
+            {
+                return null;
+            }
+            var stockPool = await this.stockPoolRepository.FindByIdAsync(stockPoolCode);
+
+            if (stockPool == null)
+            {
+                throw new StorageLocationException($"Cannot find stock pool {stockPoolCode}");
+            }
+
+            return stockPool;
+        }
+
+        private async Task<StorageType> GetStorageType(string storageTypeCode)
+        {
+            if (string.IsNullOrEmpty(storageTypeCode))
+            {
+                return null;
+            }
+            var storageType = await this.storageTypeRepository.FindByIdAsync(storageTypeCode);
+
+            if (storageType == null)
+            {
+                throw new StorageLocationException($"Cannot find storage type {storageTypeCode}");
+            }
+
+            return storageType;
         }
     }
 }

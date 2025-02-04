@@ -6,6 +6,7 @@
     using Linn.Common.Configuration;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
+    using Linn.Common.Proxy.LinnApps;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
@@ -49,6 +50,8 @@
                 .AddScoped<IRequisitionService, RequisitionService>()
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
+                .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
+                .AddTransient<IDatabaseService, DatabaseService>()
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>();
         }
 

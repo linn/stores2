@@ -119,7 +119,7 @@ function StorageTypes() {
                 </Grid>
                 <Grid size={12}>
                     <Typography>
-                        Please Note: You can only update/create 1 Stock Pool at a time.
+                        Please Note: You can only update/create 1 Storage Type at a time.
                     </Typography>
                 </Grid>
                 {(isStorageTypesLoading || createStorageTypeLoading || updateLoading) && (
@@ -182,7 +182,7 @@ function StorageTypes() {
                 </Grid>
                 <Grid size={4}>
                     <Button onClick={handleCancelSelect} variant="outlined" disabled={!rowUpdated}>
-                        Cancel Select
+                        Cancel
                     </Button>
                 </Grid>
                 <Grid>

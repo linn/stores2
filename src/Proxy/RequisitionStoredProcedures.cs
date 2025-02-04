@@ -8,7 +8,6 @@
     using Linn.Stores2.Domain.LinnApps.External;
 
     using Oracle.ManagedDataAccess.Client;
-    using Oracle.ManagedDataAccess.Types;
 
     public class RequisitionStoredProcedures : IRequisitionStoredProcedures
     {

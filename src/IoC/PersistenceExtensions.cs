@@ -15,9 +15,9 @@
 
     public static class PersistenceExtensions
     {
-        public static IServiceCollection AddPersistence(this IServiceCollection services)
+        public static void AddPersistence(this IServiceCollection services)
         {
-            return services
+            services
                 .AddScoped<ServiceDbContext>()
                 .AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
                 .AddScoped<ITransactionManager, TransactionManager>()
@@ -38,8 +38,7 @@
                 .AddScoped<IRepository<Employee, int>, EntityFrameworkRepository<Employee, int>>(
                     r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees))
                 .AddScoped<IRepository<StorageSite, string>, StorageSiteRepository>()
-                .AddScoped<IRepository<StoresFunctionCode, string>, EntityFrameworkRepository<StoresFunctionCode, string>>(
-                    r => new EntityFrameworkRepository<StoresFunctionCode, string>(r.GetService<ServiceDbContext>()?.StoresFunctionCodes));
+                .AddScoped<IRepository<StoresFunctionCode, string>, StoresFunctionCodeRepository>();
         }
     }
 }
