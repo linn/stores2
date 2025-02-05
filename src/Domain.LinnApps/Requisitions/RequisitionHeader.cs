@@ -95,14 +95,19 @@
             int? fromPalletNumber = null,
             int? toPalletNumber = null,
             StorageLocation fromLocation = null,
-            StorageLocation toLocation = null)
+            StorageLocation toLocation = null,
+            Part part = null,
+            decimal? qty = null)
         {
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.FunctionCode = functionCode;
             this.Document1 = document1Number;
             this.Document1Name = document1Type;
+            this.Qty = qty;
+            this.Part = part;
 
+            this.Lines = new List<RequisitionLine>();
             if (lines != null)
             {
                 foreach (var l in lines)
@@ -120,17 +125,21 @@
             this.Lines.Add(toAdd);
         }
 
+        public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
+
+        public bool IsBooked() => this.DateBooked != null;
+
         public void Book(Employee bookedBy)
         {
             this.DateBooked = DateTime.Now;
             this.BookedBy = bookedBy;
         }
 
-        public void BookLine(int lineNumber, Employee bookedBy)
+        public void BookLine(int lineNumber, Employee bookedBy, DateTime when)
         {
-            this.Lines.First(x => x.LineNumber == lineNumber).Book();
+            this.Lines.First(x => x.LineNumber == lineNumber).Book(when);
 
-            if (!this.DateBooked.HasValue && this.Lines.All(l => l.DateBooked.HasValue))
+            if (!this.IsBooked() && this.Lines.All(l => l.IsBooked()))
             {
                 this.Book(bookedBy);
             }
@@ -146,7 +155,7 @@
                 throw new RequisitionException("Must provide a cancel reason");
             }
 
-            if (this.DateBooked.HasValue)
+            if (this.IsBooked())
             {
                 throw new RequisitionException("Cannot cancel a booked req");
             }
@@ -190,7 +199,7 @@
 
             // cancel header if all lines are now cancelled
             if (this.Lines.All(x => x.DateCancelled.HasValue) 
-                && !this.DateCancelled.HasValue)
+                && !this.IsCancelled())
             {
                 this.Cancel(reason, cancelledBy);
             }
@@ -202,5 +211,45 @@
                 this.DateBooked = now;
             }
         }
+
+        public bool CanBookReq(int? lineNumber)
+        {
+            if (!this.IsBooked() && !this.IsCancelled())
+            {
+                var lines = this.Lines.Where(l => l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled());
+                if (lines.Any())
+                {
+                    if (lines.All(l => l.OkToBook()))
+                    {
+                        var linesQty = this.Lines.Where(l => !l.HasDecrementTransaction() && !l.HasMaterialVarianceTransaction()).Sum(l => l.Qty);
+
+                        if (linesQty > 0)
+                        {
+                            if (this.Qty == null)
+                            {
+                                // no header qty to check thus true
+                                return true;
+                            }
+                            else if (this.FunctionCode.FunctionCode == "PARTNO CH" ||
+                                     this.FunctionCode.FunctionCode == "BOOKWO" ||
+                                     this.FunctionCode.FunctionCode == "SUKIT")
+                            {
+                                // you guys are exempt from this check although most times BOOKWO should pass it
+                                return true;
+                            }
+                            return linesQty == this.Qty.Value;
+                        }
+                    }
+                }
+                else if (this.FunctionCode.AuditFunction())
+                {
+                    // audit functions don't need lines or checks
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

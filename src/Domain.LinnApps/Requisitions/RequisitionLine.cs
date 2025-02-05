@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -24,6 +26,20 @@
             {
                 this.LineNumber = lineNumber.Value;
             }
+
+            this.NominalAccountPostings = new List<RequisitionLinePosting>();
+        }
+
+        public RequisitionLine(int reqNumber, int lineNumber, Part part, decimal qty, StoresTransactionDefinition transaction)
+        {
+            this.ReqNumber = reqNumber;
+            this.LineNumber = lineNumber;
+            this.Part = part;
+            this.Qty = qty;
+            this.Moves = new List<ReqMove>();
+            this.NominalAccountPostings = new List<RequisitionLinePosting>();
+            this.TransactionDefinition = transaction;
+            this.Cancelled = "N";
         }
 
         public int ReqNumber { get; protected init; }
@@ -66,9 +82,39 @@
 
         public RequisitionHeader RequisitionHeader { get; set; }
 
+        public void AddPosting(string debitOrCredit, decimal qty, NominalAccount nominalAccount)
+        {
+            if (!(debitOrCredit == "D" || debitOrCredit == "C"))
+            {
+                throw new RequisitionException("Debit or credit for posting should be D or C");
+            }
+
+            this.NominalAccountPostings.Add(new RequisitionLinePosting()
+            {
+                ReqNumber = this.ReqNumber,
+                LineNumber = this.LineNumber,
+                DebitOrCredit = debitOrCredit,
+                Qty = qty,
+                NominalAccount = nominalAccount
+            });
+        }
+
+        public decimal GetPostingQty(string debitOrCredit)
+        {
+            return this.NominalAccountPostings.Where(p => p.DebitOrCredit == debitOrCredit && p.Qty != null).Sum(p => p.Qty.Value);
+        }
+
+        public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
+
+        public bool IsBooked() => this.DateBooked != null;
+
+        public bool HasDecrementTransaction() => this.TransactionDefinition?.IsDecrementTransaction ?? false;
+
+        public bool HasMaterialVarianceTransaction() => this.TransactionDefinition?.MaterialVarianceTransaction ?? false;
+
         public void Cancel(int by, string reason, DateTime when)
         {
-            if (this.DateBooked.HasValue)
+            if (this.IsBooked())
             {
                 throw new RequisitionException("Cannot cancel a booked req line");
             }
@@ -89,9 +135,31 @@
             }
         }
 
-        public void Book()
+        public bool OkToBook()
         {
-            this.DateBooked = DateTime.Now;
+            if (!this.IsCancelled() && !this.IsBooked())
+            {
+                var creditQty = this.GetPostingQty("D");
+                var debitQty = this.GetPostingQty("C");
+                if (creditQty == this.Qty && debitQty == this.Qty)
+                {
+                    if (this.TransactionDefinition != null && this.TransactionDefinition.RequiresMoves)
+                    {
+                        var moveQty = this.Moves.Sum(m => m.Quantity);
+                        return moveQty == this.Qty; // ensure moves have the qty 
+                    }
+
+                    // some transactions dont require moves e.g. SUMVI
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void Book(DateTime when)
+        {
+            this.DateBooked = when;
         }
     }
 }

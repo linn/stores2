@@ -87,6 +87,11 @@
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
+
+                if (model.Lines != null && model.CanBookReq(null))
+                {
+                    yield return new LinkResource { Rel = "book", Href = "/requisitions/book" };
+                }
             }
         }
     }

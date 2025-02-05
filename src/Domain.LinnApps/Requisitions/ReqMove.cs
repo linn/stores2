@@ -6,6 +6,28 @@
 
     public class ReqMove
     {
+        public ReqMove()
+        {
+                
+        }
+
+        public ReqMove(int reqNumber , int lineNumber, int seq, decimal qty, int? stockLocatorId, int? palletNumber, int? locationId, string stockPool, string state, string category)
+        {
+            this.ReqNumber = reqNumber;
+            this.LineNumber = lineNumber;
+            this.Sequence = Sequence;
+            this.Quantity = qty;
+            this.StockLocatorId = stockLocatorId;
+            this.PalletNumber = palletNumber;
+            this.LocationId = locationId;
+            this.StockPoolCode = stockPool;
+            this.State = state;
+            this.Category = category;
+            this.DateBooked = null;
+            this.DateCancelled = null;
+            this.Booked = "N";
+        }
+
         public int ReqNumber { get; protected init; }
 
         public int LineNumber { get; protected init; }
@@ -37,12 +59,46 @@
         public DateTime? DateCancelled { get; protected set; }
         
         public string State { get; protected set; }
-        
+
+        public string Category { get; protected set; }
+
         public int? SerialNumber { get; protected set; }
 
         public void Cancel(DateTime when)
         {
             this.DateCancelled = when;
+        }
+
+        public void Book(DateTime when)
+        {
+            this.DateBooked = when;
+            this.Booked = "Y";
+        }
+
+        public bool HasValidAllocation() => (this.StockLocatorId != null);
+
+        public bool HasValidOnto() => (this.PalletNumber != null || this.LocationId != null) && !string.IsNullOrEmpty(this.StockPoolCode) && !string.IsNullOrEmpty(this.State) && !string.IsNullOrEmpty(this.Category);
+
+        public bool IsCancelled() => this.DateCancelled != null;
+
+        public bool IsBooked() => this.DateBooked != null || this.Booked == "Y";
+
+        public bool OkToBook(StoresTransactionDefinition transaction)
+        {
+            if (!this.IsBooked() && !this.IsCancelled())
+            {
+                if (transaction.RequiresStockAllocations)
+                {
+                    return this.HasValidAllocation();
+                }
+
+                if (transaction.RequiresOntoTransactions)
+                {
+                    return this.HasValidOnto();
+                }
+            }
+
+            return false;
         }
     }
 }

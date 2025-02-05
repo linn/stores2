@@ -1,0 +1,36 @@
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+{
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.Requisitions;
+    using NUnit.Framework;
+    using System.Collections.Generic;
+    using FluentAssertions;
+
+    public class WhenTryingToBookAndNoMatchingLine
+    {
+        private RequisitionHeader sut;
+
+        [SetUp]
+        public void SetUp()
+        {
+            this.sut = new RequisitionHeader(
+                new Employee(),
+                new StoresFunctionCode { FunctionCode = "F1" },
+                "F",
+                12345678,
+                "TYPE",
+                new Department(),
+                new Nominal(),
+                new List<RequisitionLine> { new LineWithMoves(123, 1) },
+                null,
+                "A Good Book");
+        }
+
+        [Test]
+        public void ShouldNotBeAbleToBook()
+        {
+            this.sut.CanBookReq(2).Should().BeFalse();
+        }
+    }
+}
