@@ -96,6 +96,29 @@
             }
         }
 
+        public async Task<IResult<RequisitionHeaderResource>> BookRequisition(int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges)
+        {
+            try
+            {
+                var privilegeList = privileges.ToList();
+
+                var req = await this.requisitionService.BookRequisition(
+                    reqNumber,
+                    lineNumber,
+                    new User
+                    {
+                        UserNumber = bookedBy,
+                        Privileges = privilegeList
+                    });
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(req, privilegeList));
+            }
+            catch (Exception e)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(e.Message);
+            }
+        }
+
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
             string searchTerm)
         {

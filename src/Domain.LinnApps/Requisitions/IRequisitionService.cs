@@ -14,5 +14,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int lineNumber,
             User cancelledBy,
             string reason);
+
+        Task<RequisitionHeader> BookRequisition(
+            int reqNumber,
+            int? lineNumber,
+            User bookedBy);
     }
 }

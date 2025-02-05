@@ -17,5 +17,8 @@
 
         Task<IResult<RequisitionHeaderResource>> CancelLine(
             int reqNumber, int lineNumber, int cancelledBy, string reason, IEnumerable<string> privileges);
+
+        Task<IResult<RequisitionHeaderResource>> BookRequisition(
+            int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges);
     }
 }

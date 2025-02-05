@@ -125,5 +125,29 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             return req;
         }
+
+        public async Task<RequisitionHeader> BookRequisition(int reqNumber, int? lineNumber, User bookedBy)
+        {
+            if (!this.authService.HasPermissionFor(
+                    AuthorisedActions.BookRequisition, bookedBy.Privileges))
+            {
+                throw new UnauthorizedAccessException(
+                    "You do not have permission to book a requisition");
+            }
+
+            var doRequisitionResult = await this.requisitionStoredProcedures.DoRequisition(
+                reqNumber,
+                lineNumber,
+                bookedBy.UserNumber);
+
+            if (!doRequisitionResult.Success)
+            {
+                throw new RequisitionException(doRequisitionResult.Message);
+            }
+
+            var req = await this.repository.FindByIdAsync(reqNumber);
+
+            return req;
+        }
     }
 }

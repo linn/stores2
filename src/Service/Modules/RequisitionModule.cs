@@ -23,6 +23,7 @@
             app.MapGet("/requisitions", this.Search);
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
+            app.MapPost("/requisitions/book", this.Book);
             app.MapPost("/requisitions", this.Create);
             app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
         }
@@ -83,6 +84,19 @@
                                         resource.Reason,
                                         req.HttpContext.GetPrivileges()));
             }
+        }
+
+        private async Task Book(
+            HttpRequest req,
+            HttpResponse res,
+            BookRequisitionResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.BookRequisition(
+                resource.ReqNumber,
+                resource.LineNumber,
+                req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                req.HttpContext.GetPrivileges()));
         }
 
         private async Task Create(HttpResponse res, 
