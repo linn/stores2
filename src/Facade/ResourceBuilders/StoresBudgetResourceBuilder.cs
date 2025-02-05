@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+﻿using Linn.Common.Authorisation;
+
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -10,6 +12,13 @@
 
     public class StoresBudgetResourceBuilder : IBuilder<StoresBudget>
     {
+        private readonly IAuthorisationService authService;
+
+        public StoresBudgetResourceBuilder(IAuthorisationService authService)
+        {
+            this.authService = authService;
+        }
+
         public StoresBudgetResource Build(StoresBudget storesBudget, IEnumerable<string> claims)
         {
             if (storesBudget == null)
@@ -18,7 +27,7 @@
             }
             
             var reqLineBuilder = new RequisitionLineResourceBuilder();
-            var reqBuilder = new RequisitionResourceBuilder();
+            var reqBuilder = new RequisitionResourceBuilder(this.authService);
             var builder = new StoresBudgetResourceWithoutReqLineBuilder();
             var claimsList = claims?.ToList();
 
