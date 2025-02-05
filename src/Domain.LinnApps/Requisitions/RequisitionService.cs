@@ -44,12 +44,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var req = await this.repository.FindByIdAsync(reqNumber);
             
-            if (string.IsNullOrEmpty(req.FunctionCode.CancelFunction))
+            if (string.IsNullOrEmpty(req.Function.CancelFunction))
             {
                 var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
                 req.Cancel(reason, by);
             }
-            else if (req.FunctionCode.CancelFunction == "UNALLOC_REQ")
+            else if (req.Function.CancelFunction == "UNALLOC_REQ")
             {
                 var unallocateReqResult = await this.requisitionStoredProcedures.UnallocateRequisition(
                     reqNumber, null, cancelledBy.UserNumber);
@@ -91,12 +91,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var req = await this.repository.FindByIdAsync(reqNumber);
 
-            if (string.IsNullOrEmpty(req.FunctionCode.CancelFunction))
+            if (string.IsNullOrEmpty(req.Function.CancelFunction))
             {
                 var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
                 req.CancelLine(lineNumber, reason, by);
             }
-            else if (req.FunctionCode.CancelFunction == "UNALLOC_REQ")
+            else if (req.Function.CancelFunction == "UNALLOC_REQ")
             {
                 var unallocateReqResult = await this.requisitionStoredProcedures.UnallocateRequisition(
                                               reqNumber, lineNumber, cancelledBy.UserNumber);

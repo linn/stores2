@@ -7,7 +7,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
 
     using Microsoft.EntityFrameworkCore;
 
-    public class StoresFunctionCodeRepository : EntityFrameworkRepository<StoresFunctionCode, string>
+    public class StoresFunctionCodeRepository : EntityFrameworkRepository<StoresFunction, string>
     {
         private readonly ServiceDbContext serviceDbContext;
         
@@ -17,7 +17,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override IQueryable<StoresFunctionCode> FindAll()
+        public override IQueryable<StoresFunction> FindAll()
         {
             return this.serviceDbContext.StoresFunctionCodes
                              .Include(x => x.TransactionsTypes).ThenInclude(d => d.TransactionDefinition);

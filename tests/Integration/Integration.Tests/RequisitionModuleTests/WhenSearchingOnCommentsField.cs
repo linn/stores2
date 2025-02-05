@@ -23,7 +23,7 @@
         [SetUp]
         public void SetUp()
         {
-            var code = new StoresFunctionCode { FunctionCode = "F1" };
+            var code = new StoresFunction { FunctionCode = "F1" };
             this.req123 = new RequisitionHeader(
                 new Employee(),
                 code,

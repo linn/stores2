@@ -44,11 +44,11 @@
                     new RequisitionResourceBuilder(),
                     this.DomainService);
 
-            IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource,
-                FunctionCodeResource> functionCodeService = new StoresFunctionCodeService(
-                new EntityFrameworkRepository<StoresFunctionCode, string>(this.DbContext.StoresFunctionCodes),
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
+                StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(
+                new EntityFrameworkRepository<StoresFunction, string>(this.DbContext.StoresFunctionCodes),
                 transactionManager,
-                new StoresFunctionCodeResourceBuilder());
+                new StoresFunctionResourceBuilder());
 
             this.Client = TestClient.With<RequisitionModule>(
                 services =>

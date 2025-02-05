@@ -28,7 +28,7 @@
             this.req123 = new ReqWithReqNumber(
                 123,
                 new Employee(),
-                new StoresFunctionCode { FunctionCode = "FUNC1" },
+                new StoresFunction { FunctionCode = "FUNC1" },
                 "F",
                 123,
                 "REQ",
@@ -38,7 +38,7 @@
             this.req456 = new ReqWithReqNumber(
                 456,
                 new Employee(),
-                new StoresFunctionCode { FunctionCode = "FUNC2" },
+                new StoresFunction { FunctionCode = "FUNC2" },
                 "F",
                 123,
                 "REQ",
