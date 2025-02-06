@@ -33,7 +33,7 @@
                            CancelledByName = header.CancelledBy?.Name,
                            DateCancelled = header.DateCancelled?.ToString("o"),
                            CancelledReason = header.CancelledReason,
-                           FunctionCode = storeFunctionBuilder.Build(header.Function, null),
+                           StoresFunction = storeFunctionBuilder.Build(header.StoresFunction, null),
                            Comments = header.Comments,
                            DateBooked = header.DateBooked?.ToString("o"),
                            BookedBy = header.BookedBy?.Id,

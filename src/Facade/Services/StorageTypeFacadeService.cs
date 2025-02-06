@@ -6,13 +6,10 @@
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
-
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     public class StorageTypeFacadeService : AsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>
     {

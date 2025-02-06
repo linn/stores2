@@ -44,7 +44,7 @@
 
         public string CancelledReason { get; protected set; }
         
-        public StoresFunction Function { get; protected set;}
+        public StoresFunction StoresFunction { get; protected set;}
         
         public string Comments { get; protected set; }
         
@@ -101,7 +101,7 @@
         {
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
-            this.Function = function;
+            this.StoresFunction = function;
             this.Document1 = document1Number;
             this.Document1Name = document1Type;
             this.Qty = qty;
@@ -230,9 +230,9 @@
                                 // no header qty to check thus true
                                 return true;
                             }
-                            else if (this.Function.FunctionCode == "PARTNO CH" ||
-                                     this.Function.FunctionCode == "BOOKWO" ||
-                                     this.Function.FunctionCode == "SUKIT")
+                            else if (this.StoresFunction.FunctionCode == "PARTNO CH" ||
+                                     this.StoresFunction.FunctionCode == "BOOKWO" ||
+                                     this.StoresFunction.FunctionCode == "SUKIT")
                             {
                                 // you guys are exempt from this check although most times BOOKWO should pass it
                                 return true;
@@ -241,7 +241,7 @@
                         }
                     }
                 }
-                else if (this.Function.AuditFunction())
+                else if (this.StoresFunction.AuditFunction())
                 {
                     // audit functions don't need lines or checks
                     return true;

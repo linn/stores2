@@ -382,7 +382,7 @@
             e.HasOne(r => r.ToLocation).WithMany().HasForeignKey("TO_LOCATION_ID");
             e.HasOne(r => r.FromLocation).WithMany().HasForeignKey("FROM_LOCATION_ID");
             e.Property(r => r.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
-            e.HasOne(r => r.Function).WithMany().HasForeignKey("FUNCTION_CODE");
+            e.HasOne(r => r.StoresFunction).WithMany().HasForeignKey("FUNCTION_CODE");
             e.HasOne(r => r.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
             e.Property(r => r.DateBooked).HasColumnName("DATE_BOOKED");
             e.Property(r => r.Reversed).HasColumnName("REVERSED").HasMaxLength(1);
