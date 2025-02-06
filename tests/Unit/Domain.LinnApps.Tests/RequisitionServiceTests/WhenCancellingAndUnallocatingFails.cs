@@ -28,7 +28,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee(),
-                new StoresFunctionCode { FunctionCode = "FUNC" },
+                new StoresFunction { FunctionCode = "FUNC" },
                 "F",
                 123,
                 "REQ",

@@ -20,7 +20,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
         {
             this.sut = new RequisitionHeader(
                 new Employee(),
-                new StoresFunctionCode { FunctionCode = "F1" },
+                new StoresFunction { FunctionCode = "F1" },
                 "F",
                 12345678,
                 "TYPE",

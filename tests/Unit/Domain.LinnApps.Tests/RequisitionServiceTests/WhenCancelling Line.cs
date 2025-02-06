@@ -23,7 +23,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee(),
-                new StoresFunctionCode { FunctionCode = "F1" },
+                new StoresFunction { FunctionCode = "F1" },
                 "F",
                 12345678,
                 "TYPE",

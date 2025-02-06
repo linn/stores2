@@ -96,7 +96,7 @@
         private async Task GetFunctionCodes(
             HttpRequest _,
             HttpResponse res,
-            IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource, FunctionCodeResource> service)
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
         {
             await res.Negotiate(await service.GetAll());
         }
