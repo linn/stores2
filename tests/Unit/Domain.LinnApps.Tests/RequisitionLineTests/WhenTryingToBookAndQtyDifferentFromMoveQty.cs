@@ -1,11 +1,13 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
 {
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.NominalAccounts;
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Transactions;
+
     using NUnit.Framework;
-    using Linn.Stores2.TestData.NominalAccounts;
 
     public class WhenTryingToBookAndQtyDifferentFromMoveQty
     {

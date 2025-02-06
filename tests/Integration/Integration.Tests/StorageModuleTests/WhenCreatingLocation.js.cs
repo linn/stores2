@@ -1,15 +1,18 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Net;
-    using Linn.Stores2.Domain.LinnApps.Stock;
+    using System.Net.Http.Json;
+
     using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
+
     using NUnit.Framework;
-    using System.Linq;
-    using System.Net.Http.Json;
-    using Linn.Stores2.Domain.LinnApps;
 
     public class WhenCreatingLocation : ContextBase
     {
@@ -27,7 +30,16 @@
                 SiteCode = "EAGLESHAM",
                 Description = "EAGLESHAM",
                 SitePrefix = "E",
-                StorageAreas = new List<StorageArea> { new StorageArea { StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA" } }
+                StorageAreas = new List<StorageArea>
+                                   {
+                                       new StorageArea
+                                           {
+                                               StorageAreaCode = "FACTORY",
+                                               Description = "FACTORY AREA",
+                                               SiteCode = "EAGLESHAM",
+                                               AreaPrefix = "FA"
+                                           }
+                                   }
             };
 
             this.linn = new AccountingCompany
@@ -74,8 +86,8 @@
         public void ShouldAdd()
         {
             this.DbContext.StorageLocations
-                .FirstOrDefault(x => x.LocationCode == this.createResource.LocationCode)
-                .Description.Should().Be(this.createResource.Description);
+                .First(x => x.LocationCode == this.createResource.LocationCode).Description
+                .Should().Be(this.createResource.Description);
         }
 
         [Test]

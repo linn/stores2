@@ -1,15 +1,16 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
     using System;
-    using System.Linq;
-    using Linn.Stores2.Domain.LinnApps.External;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
@@ -22,13 +23,16 @@
         private readonly IRepository<StockPool, string> stockPoolRepository;
         private readonly IRepository<StorageType, string> storageTypeRepository;
 
-        public StorageLocationService(IRepository<StorageLocation, int> repository,
-            ITransactionManager transactionManager, IBuilder<StorageLocation> resourceBuilder,
+        public StorageLocationService(
+            IRepository<StorageLocation, int> repository,
+            ITransactionManager transactionManager,
+            IBuilder<StorageLocation> resourceBuilder,
             IDatabaseSequenceService databaseSequenceService,
             IRepository<AccountingCompany, string> accountingCompanyRepository,
-            IRepository<StorageSite, string> storageSiteRepository, IRepository<StockPool, string> stockPoolRepository,
-            IRepository<StorageType, string> storageTypeRepository) : base(repository, transactionManager,
-            resourceBuilder)
+            IRepository<StorageSite, string> storageSiteRepository,
+            IRepository<StockPool, string> stockPoolRepository,
+            IRepository<StorageType, string> storageTypeRepository)
+            : base(repository, transactionManager, resourceBuilder)
         {
             this.databaseSequenceService = databaseSequenceService;
             this.storageSiteRepository = storageSiteRepository;
@@ -42,7 +46,11 @@
             return l => l.DateInvalid == null && l.LocationCode.Contains(searchTerm.ToUpper());
         }
 
-        protected override Task SaveToLogTable(string actionType, int userNumber, StorageLocation entity, StorageLocationResource resource,
+        protected override Task SaveToLogTable(
+            string actionType,
+            int userNumber,
+            StorageLocation entity,
+            StorageLocationResource resource,
             StorageLocationResource updateResource)
         {
             throw new NotImplementedException();
@@ -61,26 +69,35 @@
 
             var company = await this.accountingCompanyRepository.FindByIdAsync(resource.AccountingCompany);
             var site = await this.storageSiteRepository.FindByIdAsync(resource.SiteCode);
-            var area = site == null
-                ? null
-                : site.StorageAreas?.FirstOrDefault(a => a.StorageAreaCode == resource.StorageAreaCode);
+            var area = site?.StorageAreas?.FirstOrDefault(a => a.StorageAreaCode == resource.StorageAreaCode);
 
             var stockPool = await this.GetDefaultStockPool(resource.DefaultStockPool);
 
             var storageType = await this.GetStorageType(resource.StorageType);
 
-            return new StorageLocation(locationId, resource.LocationCode, resource.Description, site, area, company,
-                resource.AccessibleFlag, resource.StoresKittableFlag, resource.MixStatesFlag, resource.StockState, resource.TypeOfStock, 
-                stockPool, storageType)
-            {
-                DefaultStockPool = resource.DefaultStockPool,
-                StoresKittingPriority = resource.StoresKittingPriority,
-                SpecProcFlag = resource.SpecProcFlag,
-                LocationType = resource.LocationType,
-                StorageTypeCode = resource.StorageType,
-                SalesAccountId = resource.SalesAccountId,
-                OutletNumber = resource.OutletNumber
-            };
+            return new StorageLocation(
+                       locationId,
+                       resource.LocationCode,
+                       resource.Description,
+                       site,
+                       area,
+                       company,
+                       resource.AccessibleFlag,
+                       resource.StoresKittableFlag,
+                       resource.MixStatesFlag,
+                       resource.StockState,
+                       resource.TypeOfStock,
+                       stockPool,
+                       storageType)
+                       {
+                           DefaultStockPool = resource.DefaultStockPool,
+                           StoresKittingPriority = resource.StoresKittingPriority,
+                           SpecProcFlag = resource.SpecProcFlag,
+                           LocationType = resource.LocationType,
+                           StorageTypeCode = resource.StorageType,
+                           SalesAccountId = resource.SalesAccountId,
+                           OutletNumber = resource.OutletNumber
+                       };
         }
 
         protected override async Task UpdateFromResourceAsync(
@@ -98,9 +115,17 @@
                 ? (DateTime?)null
                 : DateTime.Parse(updateResource.DateInvalid);
 
-            entity.Update(updateResource.Description, company, updateResource.AccessibleFlag,
-                updateResource.StoresKittableFlag, updateResource.MixStatesFlag, updateResource.StockState,
-                updateResource.TypeOfStock, stockPool, storageType, dateInvalid);
+            entity.Update(
+                updateResource.Description,
+                company,
+                updateResource.AccessibleFlag,
+                updateResource.StoresKittableFlag,
+                updateResource.MixStatesFlag,
+                updateResource.StockState,
+                updateResource.TypeOfStock,
+                stockPool,
+                storageType,
+                dateInvalid);
 
             entity.AuditFrequencyWeeks = updateResource.AuditFrequencyWeeks;
             entity.StoresKittingPriority = updateResource.StoresKittingPriority;
@@ -142,8 +167,7 @@
 
             var body = Expression.AndAlso(
                 Expression.Invoke(first, parameter),
-                Expression.Invoke(second, parameter)
-            );
+                Expression.Invoke(second, parameter));
 
             return Expression.Lambda<Func<StorageLocation, bool>>(body, parameter);
         }
@@ -170,6 +194,7 @@
             {
                 return null;
             }
+
             var storageType = await this.storageTypeRepository.FindByIdAsync(storageTypeCode);
 
             if (storageType == null)

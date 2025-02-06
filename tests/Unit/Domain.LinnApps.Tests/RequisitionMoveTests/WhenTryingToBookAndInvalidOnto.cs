@@ -1,9 +1,11 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionMoveTests
 {
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using NUnit.Framework;
     using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.Transactions;
+
+    using NUnit.Framework;
 
     public class WhenTryingToBookAndInvalidOnto
     {

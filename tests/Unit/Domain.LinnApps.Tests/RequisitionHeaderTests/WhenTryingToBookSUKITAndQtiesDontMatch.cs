@@ -53,8 +53,7 @@
                 null,
                 null,
                 kittedAss,
-                200
-            );
+                200);
         }
 
         [Test]

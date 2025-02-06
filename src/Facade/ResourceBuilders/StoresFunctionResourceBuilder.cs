@@ -15,12 +15,14 @@
             {
                 return null;
             }
+
             return new StoresFunctionResource
                        {
                           Code = model.FunctionCode,
                           Description = model.Description,
                           CancelFunction = model.CancelFunction,
                           DepartmentNominalRequired = model.DepartmentNominalRequired,
+                          ManualPickRequired = model.ManualPickRequired,
                           TransactionTypes = model.TransactionsTypes?.Select(
                               t => new FunctionCodeTransactionResource
                                        {

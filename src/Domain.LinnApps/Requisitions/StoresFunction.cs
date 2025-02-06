@@ -21,6 +21,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string DepartmentNominalRequired { get; set; }
 
+        public string ManualPickRequired { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public bool AuditFunction() => this.FunctionCode == "AUDIT" || this.FunctionCode == "KOUNT";

@@ -45,8 +45,8 @@
         public void ShouldAdd()
         {
             this.DbContext.StorageTypes
-                .FirstOrDefault(x => x.StorageTypeCode == this.createResource.StorageTypeCode)
-                .Description.Should().Be(this.createResource.Description);
+                .First(x => x.StorageTypeCode == this.createResource.StorageTypeCode).Description
+                .Should().Be(this.createResource.Description);
         }
 
         [Test]

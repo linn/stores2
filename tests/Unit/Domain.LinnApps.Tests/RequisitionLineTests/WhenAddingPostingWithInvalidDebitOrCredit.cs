@@ -1,13 +1,15 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
 {
     using System;
-    using Linn.Stores2.TestData.NominalAccounts;
+
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
+
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.NominalAccounts;
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Transactions;
+
     using NUnit.Framework;
 
     public class WhenAddingPostingWithInvalidDebitOrCredit

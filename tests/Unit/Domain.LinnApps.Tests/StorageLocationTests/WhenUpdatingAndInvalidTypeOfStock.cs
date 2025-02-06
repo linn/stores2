@@ -1,10 +1,13 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
+    using System;
+
+    using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+
     using NUnit.Framework;
-    using System;
-    using FluentAssertions;
 
     public class WhenUpdatingAndInvalidTypeOfStock
     {
@@ -18,7 +21,17 @@
             var location = new StorageLocation();
             this.action = () =>
             {
-                location.Update("New Description", new AccountingCompany(), "Y", "Y", "Y", "Y", "Z", null, null, null);
+                location.Update(
+                    "New Description",
+                    new AccountingCompany(),
+                    "Y",
+                    "Y",
+                    "Y",
+                    "Y",
+                    "Z",
+                    null,
+                    null,
+                    null);
             };
         }
 
