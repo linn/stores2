@@ -11,6 +11,10 @@
     {
         public StoresFunctionResource Build(StoresFunction model, IEnumerable<string> claims)
         {
+            if (model == null)
+            {
+                return null;
+            }
             return new StoresFunctionResource
                        {
                           Code = model.FunctionCode,
