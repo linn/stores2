@@ -12,6 +12,8 @@
 
         public string DepartmentNominalRequired { get; set; }
 
+        public string ManualPickRequired { get; set; }
+
         public IEnumerable<FunctionCodeTransactionResource> TransactionTypes { get; set; }
     }
 }

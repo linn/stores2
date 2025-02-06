@@ -437,13 +437,14 @@
             r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
             r.Property(c => c.DepartmentNominalRequired).HasColumnName("DEPT_NOMINAL_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ManualPickRequired).HasColumnName("MANUAL_PICK_REQUIRED").HasMaxLength(1);
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 
         private static void BuildStoresFunctionTransactions(ModelBuilder builder)
         {
             var entity = builder.Entity<StoresFunctionTransaction>().ToTable("STORES_FUNCTION_TRANS");
-            entity.HasKey(c => new { c.FunctionCode, c.Seq});
+            entity.HasKey(c => new { c.FunctionCode, c.Seq });
             entity.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
             entity.Property(x => x.Seq).HasColumnName("SEQ");
