@@ -6,13 +6,13 @@ import itemTypes from '../../../itemTypes';
 import useSearch from '../../../hooks/useSearch';
 
 function DepartmentNominal({
-    departmentCode,
-    departmentDescription,
+    departmentCode = null,
+    departmentDescription = null,
     setDepartment,
-    nominalCode,
-    nominalDescription,
+    nominalCode = null,
+    nominalDescription = null,
     setNominal,
-    shouldRender
+    shouldRender = true
 }) {
     const {
         search: searchDepartments,
