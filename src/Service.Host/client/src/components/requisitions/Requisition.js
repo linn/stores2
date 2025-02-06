@@ -32,6 +32,7 @@ import TransactionsTab from './TransactionsTab';
 import BookedBy from './components/BookedBy';
 import AuthBy from './components/AuthBy';
 import DepartmentNominal from './components/DepartmentNominal';
+import PartNumberQuantity from './components/PartNumberQuantity';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -132,7 +133,7 @@ function Requisition({ creating }) {
         }
 
         if (formState.storesFunction?.code === 'MOVE') {
-            if (!formState.partNumber) {
+            if (!formState.part?.partNumber) {
                 return true;
             }
         }
@@ -398,6 +399,25 @@ function Requisition({ creating }) {
                             />
                         </Grid>
                         <Grid size={8} />
+                        <PartNumberQuantity
+                            partNumber={formState.part?.partNumber}
+                            partDescription={formState.part?.description}
+                            showQuantity
+                            quantity={formState.quantity}
+                            setPart={newPart =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'part', newValue: newPart }
+                                })
+                            }
+                            setQuantity={newQty =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'quantity', newValue: newQty }
+                                })
+                            }
+                            shouldRender
+                        />
                         <Grid size={6}>
                             <InputField
                                 fullWidth
