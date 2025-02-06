@@ -30,10 +30,10 @@ function reducer(state, action) {
         }
         case 'add_line': {
             // need to set the line transaction type based on the function code and req type
-            const functionCodeTransactions = state.functionCode.transactionTypes;
+            const storesFunctionTransactions = state.storesFunction.transactionTypes;
             let lineTransaction = {};
-            if (state.reqType && functionCodeTransactions) {
-                const lineTransactionType = functionCodeTransactions.find(
+            if (state.reqType && storesFunctionTransactions) {
+                const lineTransactionType = storesFunctionTransactions.find(
                     x => x.reqType === state.reqType
                 );
                 if (lineTransactionType) {

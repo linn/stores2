@@ -24,11 +24,11 @@ import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
-import useSearch from '../../hooks/useSearch';
 import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
 import BookedBy from './components/BookedBy';
+import DepartmentNominal from './components/DepartmentNominal';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -91,20 +91,6 @@ function Requisition({ creating }) {
         }
     }, [result, cancelResult, creating, name, userNumber]);
 
-    const {
-        search: searchDepartments,
-        results: departmentsSearchResults,
-        loading: departmentsSearchLoading,
-        clear: clearDepartmentsSearch
-    } = useSearch(itemTypes.departments.url, 'departmentCode', 'departmentCode', 'description');
-
-    const {
-        search: searchNominals,
-        results: nominalsSearchResults,
-        loading: nominalsSearchLoading,
-        clear: clearNominalsSearch
-    } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
-
     const handleHeaderFieldChange = (fieldName, newValue) => {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
@@ -113,12 +99,12 @@ function Requisition({ creating }) {
         if (formState.cancelled !== 'N' || formState.dateBooked) {
             return false;
         }
-        if (formState.functionCode?.code === 'LDREQ') {
+        if (formState.storesFunction?.code === 'LDREQ') {
             if (
                 formState.nominal?.nominalCode &&
                 formState.department?.departmentCode &&
                 formState.reqType &&
-                formState.functionCode.description
+                formState.storesFunction.description
             ) {
                 return true;
             }
@@ -134,15 +120,15 @@ function Requisition({ creating }) {
     };
 
     const getAndSetFunctionCode = () => {
-        if (formState.functionCode?.code) {
+        if (formState.storesFunction?.code) {
             const code = functionCodes.find(
-                a => a.code === formState.functionCode.code.toUpperCase()
+                a => a.code === formState.storesFunction.code.toUpperCase()
             );
             if (code) {
                 dispatch({
                     type: 'set_header_value',
                     payload: {
-                        fieldName: 'functionCode',
+                        fieldName: 'storesFunction',
                         newValue: code
                     }
                 });
@@ -150,8 +136,8 @@ function Requisition({ creating }) {
         }
     };
 
-    const shouldRender = (functionCodeDisplay, showOnCreate = true) => {
-        if (functionCodeDisplay === 'N' || (!showOnCreate && creating)) {
+    const shouldRender = (renderFunction, showOnCreate = true) => {
+        if ((renderFunction && !renderFunction()) || (!showOnCreate && creating)) {
             return false;
         }
 
@@ -224,18 +210,18 @@ function Requisition({ creating }) {
                         <Grid size={2}>
                             {!codesLoading && functionCodes && (
                                 <Search
-                                    propertyName="functionCode"
+                                    propertyName="storesFunction"
                                     label="Function Code"
                                     resultsInModal
                                     resultLimit={100}
                                     disabled={!!formState.lines?.length}
                                     helperText="Enter a value, or press enter to view all function codes"
-                                    value={formState.functionCode?.code}
+                                    value={formState.storesFunction?.code}
                                     handleValueChange={(_, newVal) => {
                                         dispatch({
                                             type: 'set_header_value',
                                             payload: {
-                                                fieldName: 'functionCode',
+                                                fieldName: 'storesFunction',
                                                 newValue: { code: newVal }
                                             }
                                         });
@@ -255,7 +241,7 @@ function Requisition({ creating }) {
                                     onResultSelect={r => {
                                         dispatch({
                                             type: 'set_header_value',
-                                            payload: { fieldName: 'functionCode', newValue: r }
+                                            payload: { fieldName: 'storesFunction', newValue: r }
                                         });
                                     }}
                                     clearSearch={() => {}}
@@ -266,10 +252,10 @@ function Requisition({ creating }) {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={formState.functionCode?.description}
+                                value={formState.storesFunction?.description}
                                 onChange={() => {}}
                                 label="Function Code Description"
-                                propertyName="functionCodeDescription"
+                                propertyName="storesFunctionDescription"
                             />
                         </Grid>
                         <Grid size={6} />
@@ -303,87 +289,29 @@ function Requisition({ creating }) {
                             </Button>
                         </Grid>
                         <Grid size={6} />
-                        <Grid size={2}>
-                            <Search
-                                propertyName="departmentCode"
-                                label="Department"
-                                resultsInModal
-                                resultLimit={100}
-                                helperText="Enter a search term and press enter to look up departments"
-                                value={formState.department?.departmentCode}
-                                handleValueChange={(_, newVal) => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: {
-                                            fieldName: 'department',
-                                            newValue: { departmentCode: newVal }
-                                        }
-                                    });
-                                }}
-                                search={searchDepartments}
-                                loading={departmentsSearchLoading}
-                                searchResults={departmentsSearchResults}
-                                priorityFunction="closestMatchesFirst"
-                                onResultSelect={r => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: { fieldName: 'department', newValue: r }
-                                    });
-                                }}
-                                clearSearch={clearDepartmentsSearch}
-                                autoFocus={false}
-                            />
-                        </Grid>
-
-                        <Grid size={4}>
-                            <InputField
-                                fullWidth
-                                value={formState.department?.description}
-                                onChange={() => {}}
-                                label="Desc"
-                                propertyName="departmentDescription"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <Search
-                                propertyName="nominalCode"
-                                label="Nominal"
-                                resultsInModal
-                                resultLimit={100}
-                                helperText="Enter a search term and press enter to look up nominals"
-                                value={formState.nominal?.nominalCode}
-                                handleValueChange={(_, newVal) => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: {
-                                            fieldName: 'nominal',
-                                            newValue: { nominalCode: newVal }
-                                        }
-                                    });
-                                }}
-                                search={searchNominals}
-                                loading={nominalsSearchLoading}
-                                searchResults={nominalsSearchResults}
-                                priorityFunction="closestMatchesFirst"
-                                onResultSelect={r => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: { fieldName: 'nominal', newValue: r }
-                                    });
-                                }}
-                                clearSearch={clearNominalsSearch}
-                                autoFocus={false}
-                            />
-                        </Grid>
-                        <Grid size={4}>
-                            <InputField
-                                fullWidth
-                                value={formState.nominal?.description}
-                                onChange={() => {}}
-                                label="Desc"
-                                propertyName="nominalDescription"
-                            />
-                        </Grid>
+                        <DepartmentNominal
+                            departmentCode={formState.department?.departmentCode}
+                            departmentDescription={formState.department?.description}
+                            setDepartment={newDept =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'department', newValue: newDept }
+                                })
+                            }
+                            nominalCode={formState.nominal?.nominalCode}
+                            nominalDescription={formState.nominal?.description}
+                            setNominal={newNominal =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'nominal', newValue: newNominal }
+                                })
+                            }
+                            shouldRender={shouldRender(
+                                () =>
+                                    !formState.storesFunction?.departmentNominalRequired ||
+                                    formState.storesFunction?.departmentNominalRequired !== 'N'
+                            )}
+                        />
                         <Grid size={2}>
                             <InputField
                                 fullWidth
