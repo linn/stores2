@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Facade.Services
+﻿using Linn.Common.Domain.Exceptions;
+
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -113,7 +115,7 @@
                 return new SuccessResult<RequisitionHeaderResource>(
                     this.BuildResource(req, privilegeList));
             }
-            catch (Exception e)
+            catch (DomainException e)
             {
                 return new BadRequestResult<RequisitionHeaderResource>(e.Message);
             }
