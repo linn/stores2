@@ -108,7 +108,7 @@
 
             if (model.OkToBook())
             {
-                yield return new LinkResource("book-line", $"/requisitions/book");
+                yield return new LinkResource("book-line", "/requisitions/book");
             }
         }
     }

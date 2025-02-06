@@ -1,6 +1,4 @@
-﻿using Linn.Common.Domain.Exceptions;
-
-namespace Linn.Stores2.Facade.Services
+﻿namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -8,6 +6,7 @@ namespace Linn.Stores2.Facade.Services
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
