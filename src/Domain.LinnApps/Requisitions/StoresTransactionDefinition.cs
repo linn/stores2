@@ -27,6 +27,8 @@
 
         public string TakePriceFrom { get; set; }
 
+        public string RequiresAuth { get; set; }
+
         public bool RequiresStockAllocations => this.StockAllocations == "Y";
 
         public bool RequiresOntoTransactions => this.OntoTransactions == "Y";
@@ -34,6 +36,8 @@
         public bool IsDecrementTransaction => this.DecrementTransaction == "Y";
 
         public bool RequiresMoves => this.RequiresStockAllocations || this.RequiresOntoTransactions;
+
+        public bool RequiresAuthorisation => this.RequiresAuth == "Y";
 
         public bool MaterialVarianceTransaction => this.TakePriceFrom == "M";
     }

@@ -18,5 +18,8 @@
 
         public static readonly StoresFunction SupplierKit =
             new StoresFunction("SUKIT") { Description = "KIT PARTS TO SUPPLIER STORE" };
+
+        public static readonly StoresFunction LoanOut =
+            new StoresFunction("LOAN OUT") { Description = "BOOK OUT PRODUCTS TO LOAN ACCOUNT" };
     }
 }
