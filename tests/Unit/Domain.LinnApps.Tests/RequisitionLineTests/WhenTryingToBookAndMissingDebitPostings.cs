@@ -1,10 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
 {
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using NUnit.Framework;
     using FluentAssertions;
-    using Linn.Stores2.TestData.Parts;
+
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.NominalAccounts;
+    using Linn.Stores2.TestData.Parts;
+
+    using NUnit.Framework;
 
     public class WhenTryingToBookAndMissingDebitPostings
     {

@@ -1,10 +1,13 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using NUnit.Framework;
     using System;
+
+    using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+
+    using NUnit.Framework;
 
     public class WhenCreatingAndNoSiteSupplied
     {
@@ -18,7 +21,19 @@
             this.action = () =>
             {
                 _ = new StorageLocation(
-                    1, "E-TESTY-TEST", "TEST LOCATION", null, area, company, "Y", "Y", "Y", "A", "A", null, null);
+                    1,
+                    "E-TESTY-TEST",
+                    "TEST LOCATION",
+                    null,
+                    area,
+                    company,
+                    "Y",
+                    "Y",
+                    "Y",
+                    "A",
+                    "A",
+                    null,
+                    null);
             };
         }
 

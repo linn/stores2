@@ -21,8 +21,7 @@
             throw new NotImplementedException();
         }
 
-        protected override Task SaveToLogTable(string actionType, int userNumber, StorageSite entity, StorageSiteResource resource,
-            StorageSiteResource updateResource)
+        protected override Task SaveToLogTable(string actionType, int userNumber, StorageSite entity, StorageSiteResource resource, StorageSiteResource updateResource)
         {
             throw new NotImplementedException();
         }

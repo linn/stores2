@@ -48,7 +48,11 @@
                     locationRepository,
                     new TransactionManager(this.DbContext),
                     new StorageLocationResourceBuilder(),
-                    databaseSequenceService, accountingCompanyRepository, storageSiteRepository, stockPoolRepository, storageTypeRepository);
+                    databaseSequenceService,
+                    accountingCompanyRepository,
+                    storageSiteRepository,
+                    stockPoolRepository,
+                    storageTypeRepository);
 
             this.Client = TestClient.With<StorageModule>(
                 services =>

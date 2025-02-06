@@ -32,13 +32,6 @@
             this.requisitionService = requisitionService;
             this.transactionManager = transactionManager;
         }
-
-        protected override async Task<RequisitionHeader> CreateFromResourceAsync(
-            RequisitionHeaderResource resource,
-            IEnumerable<string> privileges = null)
-        {
-            return new RequisitionHeader();
-        }
         
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
             int reqNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
@@ -118,6 +111,13 @@
             {
                 return new BadRequestResult<RequisitionHeaderResource>(e.Message);
             }
+        }
+
+        protected override async Task<RequisitionHeader> CreateFromResourceAsync(
+            RequisitionHeaderResource resource,
+            IEnumerable<string> privileges = null)
+        {
+            return new RequisitionHeader();
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(

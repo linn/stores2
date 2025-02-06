@@ -6,9 +6,7 @@
 
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
-    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
-    using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class GoodsInLogReportService : IGoodsInLogReportService
     {
@@ -18,9 +16,7 @@
 
         public GoodsInLogReportService(
             IReportingHelper reportingHelper,
-            IRepository<GoodsInLogEntry, int> goodsInLogRepository,
-            IStoragePlaceAuditPack storagePlaceAuditPack,
-            IQueryRepository<StoragePlace> storagePlaceRepository)
+            IRepository<GoodsInLogEntry, int> goodsInLogRepository)
         {
             this.reportingHelper = reportingHelper;
             this.goodsInLogRepository = goodsInLogRepository;

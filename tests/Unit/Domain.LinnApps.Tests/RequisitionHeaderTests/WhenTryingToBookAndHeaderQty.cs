@@ -1,13 +1,16 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
+    using System.Collections.Generic;
+
+    using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.NominalAccounts;
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Transactions;
+
     using NUnit.Framework;
-    using System.Collections.Generic;
-    using FluentAssertions;
 
     public class WhenTryingToBookAndHeaderQty
     {
@@ -38,7 +41,7 @@
                 "PO",
                 null,
                 null,
-                new List<RequisitionLine> { line1 ,line2 },
+                new List<RequisitionLine> { line1 , line2 },
                 null,
                 "Bought in bits",
                 null, 
@@ -49,8 +52,7 @@
                 null, 
                 null,
                 TestParts.Cap003,
-                1
-                );
+                1);
         }
 
         [Test]

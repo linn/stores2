@@ -1,17 +1,18 @@
-﻿using Linn.Stores2.Service.Extensions;
-
-namespace Linn.Stores2.Service.Modules
+﻿namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
+
     using Linn.Common.Service.Core;
-    using Linn.Stores2.Service.Models;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Routing;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Service.Extensions;
+    using Linn.Stores2.Service.Models;
+
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Routing;
 
     public class StorageModule : IModule
     {

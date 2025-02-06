@@ -21,8 +21,19 @@
         {
             this.eaglesham = new StorageSite()
             {
-                SiteCode = "EAGLESHAM", Description = "EAGLESHAM", SitePrefix = "E",
-                StorageAreas = new List<StorageArea> { new StorageArea {StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA" } }
+                SiteCode = "EAGLESHAM",
+                Description = "EAGLESHAM",
+                SitePrefix = "E",
+                StorageAreas = new List<StorageArea>
+                                   {
+                                       new StorageArea
+                                           {
+                                               StorageAreaCode = "FACTORY",
+                                               Description = "FACTORY AREA",
+                                               SiteCode = "EAGLESHAM",
+                                               AreaPrefix = "FA"
+                                           }
+                                   }
             };
 
             this.DbContext.StorageSites.AddAndSave(this.DbContext, this.eaglesham);

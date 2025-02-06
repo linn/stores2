@@ -115,8 +115,8 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resources = this.Response.DeserializeBody<IEnumerable<StorageLocationResource>>();
-            resources.Count().Should().Be(1);
+            var resources = this.Response.DeserializeBody<IEnumerable<StorageLocationResource>>().ToList();
+            resources.Count.Should().Be(1);
             resources.SingleOrDefault(loc => loc.LocationCode == "E-FA-FLOOR").Should().NotBeNull();
         }
     }

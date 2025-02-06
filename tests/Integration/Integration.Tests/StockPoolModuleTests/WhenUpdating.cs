@@ -99,8 +99,9 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
         [Test]
         public void ShouldUpdateEntity()
         {
-            this.DbContext.StockPools.FirstOrDefault(x => x.StockPoolCode == this.stockPool.StockPoolCode)
-                .StockPoolDescription.Should().Be(this.updateResource.StockPoolDescription);
+            this.DbContext.StockPools
+                .First(x => x.StockPoolCode == this.stockPool.StockPoolCode).StockPoolDescription
+                .Should().Be(this.updateResource.StockPoolDescription);
         }
         
         [Test]

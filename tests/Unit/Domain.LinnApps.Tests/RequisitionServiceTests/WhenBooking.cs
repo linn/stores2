@@ -1,8 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -16,8 +15,6 @@
         private User user;
 
         private RequisitionHeader result;
-
-        private Func<Task> action;
 
         [SetUp]
         public void SetUp()
@@ -47,9 +44,9 @@
             this.ReqStoredProcedures.DoRequisition(
                 123,
                 null,
-                user.UserNumber).Returns(new ProcessResult(true, "Success"));
+                this.user.UserNumber).Returns(new ProcessResult(true, "Success"));
 
-            this.result = this.Sut.BookRequisition(123, null, user).Result;
+            this.result = this.Sut.BookRequisition(123, null, this.user).Result;
         }
 
         [Test]
