@@ -105,6 +105,11 @@
             {
                 yield return new LinkResource("part", $"/parts/{model.Part.Id}");
             }
+
+            if (model.OkToBook())
+            {
+                yield return new LinkResource("book-line", $"/requisitions/book");
+            }
         }
     }
 }

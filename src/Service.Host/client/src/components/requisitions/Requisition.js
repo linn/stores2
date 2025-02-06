@@ -145,6 +145,13 @@ function Requisition({ creating }) {
         return false;
     };
 
+    const canBookLines = () => {
+        if (result && utilities.getHref(result, 'book')) {
+            return true;
+        }
+        return false;
+    };
+
     const saveIsValid = () => {
         if (creating) {
             return !!formState?.lines?.length;
@@ -498,6 +505,7 @@ function Requisition({ creating }) {
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
+                                    canBook={canBookLines()}
                                     canAdd={canAddLines()}
                                     addLine={() => {
                                         dispatch({ type: 'add_line' });
@@ -518,6 +526,9 @@ function Requisition({ creating }) {
                                                 newValue
                                             }
                                         });
+                                    }}
+                                    bookLine={lineNumber => {
+                                        book(null, { reqNumber, lineNumber });
                                     }}
                                 />
                             )}
