@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -29,6 +30,8 @@
 
         protected IRequisitionService DomainService { get; private set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -37,11 +40,12 @@
             var requisitionRepository
                 = new EntityFrameworkRepository<RequisitionHeader, int>(this.DbContext.RequisitionHeaders);
             this.DomainService = Substitute.For<IRequisitionService>();
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
             IRequisitionFacadeService
                 requisitionService = new RequisitionFacadeService(
                     requisitionRepository,
                     transactionManager,
-                    new RequisitionResourceBuilder(),
+                    new RequisitionResourceBuilder(this.AuthorisationService),
                     this.DomainService);
 
             IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource,

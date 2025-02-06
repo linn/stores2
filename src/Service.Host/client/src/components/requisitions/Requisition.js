@@ -1,4 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
+import { useAuth } from 'react-oidc-context';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
@@ -33,15 +34,23 @@ function Requisition({ creating }) {
     const navigate = useNavigate();
     const { userNumber, name } = useUserProfile();
     const { reqNumber } = useParams();
-    const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
+
+    const {
+        send: fetchReq,
+        isLoading: fetchLoading,
+        result
+    } = useGet(itemTypes.requisitions.url, true);
     const [hasFetched, setHasFetched] = useState(false);
+
+    const auth = useAuth();
+    const token = auth.user?.access_token;
 
     const {
         send: fetchFunctionCodes,
         isLoading: codesLoading,
         result: functionCodes
     } = useGet(itemTypes.functionCodes.url);
-    if (!hasFetched) {
+    if (!hasFetched && token) {
         if (!creating && reqNumber) {
             fetchReq(reqNumber);
         }

@@ -4,7 +4,6 @@
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
@@ -53,12 +52,13 @@
         }
 
         private async Task GetById(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             int reqNumber,
             IRequisitionFacadeService service)
         {
-            await res.Negotiate(await service.GetById(reqNumber));
+            var privs = req.HttpContext.GetPrivileges();
+            await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
         }
 
         private async Task Cancel(
