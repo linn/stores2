@@ -6,6 +6,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
@@ -91,6 +92,29 @@
                     this.BuildResource(req, privilegeList));
             }
             catch (Exception e)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(e.Message);
+            }
+        }
+
+        public async Task<IResult<RequisitionHeaderResource>> BookRequisition(int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges)
+        {
+            try
+            {
+                var privilegeList = privileges.ToList();
+
+                var req = await this.requisitionService.BookRequisition(
+                    reqNumber,
+                    lineNumber,
+                    new User
+                    {
+                        UserNumber = bookedBy,
+                        Privileges = privilegeList
+                    });
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(req, privilegeList));
+            }
+            catch (DomainException e)
             {
                 return new BadRequestResult<RequisitionHeaderResource>(e.Message);
             }

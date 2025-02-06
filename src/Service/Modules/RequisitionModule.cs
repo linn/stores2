@@ -4,7 +4,6 @@
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
@@ -23,6 +22,7 @@
             app.MapGet("/requisitions", this.Search);
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
+            app.MapPost("/requisitions/book", this.Book);
             app.MapPost("/requisitions", this.Create);
             app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
         }
@@ -52,12 +52,13 @@
         }
 
         private async Task GetById(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             int reqNumber,
             IRequisitionFacadeService service)
         {
-            await res.Negotiate(await service.GetById(reqNumber));
+            var privs = req.HttpContext.GetPrivileges();
+            await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
         }
 
         private async Task Cancel(
@@ -83,6 +84,19 @@
                                         resource.Reason,
                                         req.HttpContext.GetPrivileges()));
             }
+        }
+
+        private async Task Book(
+            HttpRequest req,
+            HttpResponse res,
+            BookRequisitionResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.BookRequisition(
+                resource.ReqNumber,
+                resource.LineNumber,
+                req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                req.HttpContext.GetPrivileges()));
         }
 
         private async Task Create(HttpResponse res, 

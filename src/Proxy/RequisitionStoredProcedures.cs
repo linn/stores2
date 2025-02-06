@@ -149,5 +149,59 @@
                 successParameter.Value.ToString() == "TRUE",
                 messageParameter.Value.ToString());
         }
+
+        public async Task<ProcessResult> DoRequisition(int reqNumber, int? lineNumber, int bookedBy)
+        {
+            using var connection = new OracleConnection(
+                ConnectionStrings.ManagedConnectionString());
+
+            var cmd = new OracleCommand("STORES_OO.DO_REQUISITION_WRAPPER", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            var reqNumberParameter = new OracleParameter("p_req_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = reqNumber
+            };
+            cmd.Parameters.Add(reqNumberParameter);
+
+            var lineNumberParameter = new OracleParameter("p_line_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = lineNumber
+            };
+            cmd.Parameters.Add(lineNumberParameter);
+
+            var bookedByParameter = new OracleParameter("p_booked_by", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = bookedBy
+            };
+            cmd.Parameters.Add(bookedByParameter);
+
+            var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Value = 1
+            };
+            cmd.Parameters.Add(successParameter);
+
+            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Size = 500
+            };
+            cmd.Parameters.Add(messageParameter);
+
+            await connection.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+
+            return new ProcessResult(
+                successParameter.Value.ToString() == "1",
+                messageParameter.Value.ToString());
+        }
     }
 }

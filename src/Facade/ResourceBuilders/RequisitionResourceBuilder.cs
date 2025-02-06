@@ -3,14 +3,23 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionResourceBuilder : IBuilder<RequisitionHeader>
     {
+        private readonly IAuthorisationService authService;
+
+        public RequisitionResourceBuilder(IAuthorisationService authService)
+        {
+            this.authService = authService;
+        }
+
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
             var reqLineBuilder = new RequisitionLineResourceBuilder();
@@ -78,7 +87,7 @@
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
 
-                if (model.Lines != null && model.CanBookReq(null))
+                if (model.Lines != null && model.CanBookReq(null) && this.authService.HasPermissionFor(AuthorisedActions.BookRequisition, claims))
                 {
                     yield return new LinkResource { Rel = "book", Href = "/requisitions/book" };
                 }

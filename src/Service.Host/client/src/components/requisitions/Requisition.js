@@ -1,4 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
+import { useAuth } from 'react-oidc-context';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
@@ -12,7 +13,8 @@ import {
     Dropdown,
     ErrorCard,
     Search,
-    SaveBackCancelButtons
+    SaveBackCancelButtons,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
@@ -34,15 +36,23 @@ function Requisition({ creating }) {
     const navigate = useNavigate();
     const { userNumber, name } = useUserProfile();
     const { reqNumber } = useParams();
-    const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
+
+    const {
+        send: fetchReq,
+        isLoading: fetchLoading,
+        result
+    } = useGet(itemTypes.requisitions.url, true);
     const [hasFetched, setHasFetched] = useState(false);
+
+    const auth = useAuth();
+    const token = auth.user?.access_token;
 
     const {
         send: fetchFunctionCodes,
         isLoading: codesLoading,
         result: functionCodes
     } = useGet(itemTypes.functionCodes.url);
-    if (!hasFetched) {
+    if (!hasFetched && token) {
         if (!creating && reqNumber) {
             fetchReq(reqNumber);
         }
@@ -56,6 +66,13 @@ function Requisition({ creating }) {
         errorMessage: cancelError,
         postResult: cancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
+
+    const {
+        send: book,
+        isLoading: bookLoading,
+        errorMessage: bookError,
+        postResult: bookResult
+    } = usePost(`${itemTypes.requisitions.url}/book`, true);
 
     const {
         send: createReq,
@@ -84,12 +101,14 @@ function Requisition({ creating }) {
     useEffect(() => {
         if (cancelResult) {
             dispatch({ type: 'load_state', payload: cancelResult });
+        } else if (bookResult) {
+            dispatch({ type: 'load_state', payload: bookResult });
         } else if (result) {
             dispatch({ type: 'load_state', payload: result });
         } else if (creating) {
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, creating, name, userNumber]);
+    }, [result, cancelResult, bookResult, creating, name, userNumber]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
@@ -108,6 +127,13 @@ function Requisition({ creating }) {
             ) {
                 return true;
             }
+        }
+        return false;
+    };
+
+    const canBookLines = () => {
+        if (result && utilities.getHref(result, 'book')) {
+            return true;
         }
         return false;
     };
@@ -169,12 +195,17 @@ function Requisition({ creating }) {
                         <ErrorCard errorMessage={cancelError} />
                     </Grid>
                 )}
+                {bookError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={bookError} />
+                    </Grid>
+                )}
                 {createError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={createError} />
                     </Grid>
                 )}
-                {(fetchLoading || cancelLoading || createLoading) && (
+                {(fetchLoading || cancelLoading || bookLoading || createLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -191,11 +222,6 @@ function Requisition({ creating }) {
                                 propertyName="reqNumber"
                             />
                         </Grid>
-                        <BookedBy
-                            shouldRender={shouldRender(null, false)}
-                            dateBooked={formState.dateBooked}
-                            bookedByName={formState.bookedByName}
-                        />
                         <Grid size={2}>
                             <Dropdown
                                 fullWidth
@@ -206,7 +232,16 @@ function Requisition({ creating }) {
                                 propertyName="reversed"
                             />
                         </Grid>
-                        <Grid size={4} />
+                        <BookedBy
+                            shouldRender={shouldRender(null, false)}
+                            dateBooked={formState.dateBooked}
+                            bookedByName={formState.bookedByName}
+                            bookUrl={utilities.getHref(result, 'book')}
+                            onBook={() => {
+                                book(null, { reqNumber });
+                            }}
+                        />
+                        <Grid size={2} />
                         <Grid size={2}>
                             {!codesLoading && functionCodes && (
                                 <Search
@@ -398,6 +433,7 @@ function Requisition({ creating }) {
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
+                                    canBook={canBookLines()}
                                     canAdd={canAddLines()}
                                     addLine={() => {
                                         dispatch({ type: 'add_line' });
@@ -418,6 +454,9 @@ function Requisition({ creating }) {
                                                 newValue
                                             }
                                         });
+                                    }}
+                                    bookLine={lineNumber => {
+                                        book(null, { reqNumber, lineNumber });
                                     }}
                                 />
                             )}

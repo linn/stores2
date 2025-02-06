@@ -9,5 +9,7 @@
         Task<ProcessResult> UnallocateRequisition(int reqNumber, int? lineNumber, int cancelledBy);
 
         Task<ProcessResult> DeleteAllocOntos(int reqNumber, int? lineNumber, int? docNumber, string docType);
+
+        Task<ProcessResult> DoRequisition(int reqNumber, int? lineNumber, int bookedBy);
     }
 }

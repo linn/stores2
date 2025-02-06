@@ -7,6 +7,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { Link } from 'react-router';
 import { utilities } from '@linn-it/linn-form-components-library';
 import CancelIcon from '@mui/icons-material/Cancel';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AddIcon from '@mui/icons-material/Add';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Typography from '@mui/material/Typography';
@@ -24,7 +25,9 @@ function LinesTab({
     addLine,
     showPostings,
     updateLine,
-    pickStock
+    pickStock,
+    bookLine,
+    canBook
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -142,6 +145,18 @@ function LinesTab({
                                 </IconButton>
                             </Tooltip>
                         )}
+                        {canBook && utilities.getHref(params.row, 'book-line') && (
+                            <Tooltip title="Book Line">
+                                <IconButton
+                                    onClick={() => {
+                                        setSelected(params.row.lineNumber);
+                                        bookLine(params.row.lineNumber);
+                                    }}
+                                >
+                                    <CheckCircleIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
                     </>
                 );
             }
@@ -231,7 +246,9 @@ LinesTab.propTypes = {
     addLine: PropTypes.func.isRequired,
     showPostings: PropTypes.func.isRequired,
     updateLine: PropTypes.func.isRequired,
-    pickStock: PropTypes.func.isRequired
+    pickStock: PropTypes.func.isRequired,
+    bookLine: PropTypes.func.isRequired,
+    canBook: PropTypes.bool.isRequired
 };
 
 export default LinesTab;
