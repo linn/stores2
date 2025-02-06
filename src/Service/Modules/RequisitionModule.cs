@@ -20,6 +20,7 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/requisitions", this.Search);
+            app.MapGet("/requisitions/create", this.GetApp);
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
             app.MapPost("/requisitions/book", this.Book);
@@ -99,7 +100,8 @@
                 req.HttpContext.GetPrivileges()));
         }
 
-        private async Task Create(HttpResponse res, 
+        private async Task Create(
+            HttpResponse res, 
             HttpRequest req,
             RequisitionHeaderResource resource,
             IRequisitionFacadeService service)
@@ -113,6 +115,11 @@
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
         {
             await res.Negotiate(await service.GetAll());
+        }
+
+        private async Task GetApp(HttpRequest req, HttpResponse res)
+        {
+            await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
         }
     }
 }

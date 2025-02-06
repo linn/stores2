@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Linn.Common.Domain;
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.External;

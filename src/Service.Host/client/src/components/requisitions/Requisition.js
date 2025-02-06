@@ -30,6 +30,7 @@ import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
 import BookedBy from './components/BookedBy';
+import AuthBy from './components/AuthBy';
 import DepartmentNominal from './components/DepartmentNominal';
 
 function Requisition({ creating }) {
@@ -118,6 +119,7 @@ function Requisition({ creating }) {
         if (formState.cancelled !== 'N' || formState.dateBooked) {
             return false;
         }
+
         if (formState.storesFunction?.code === 'LDREQ') {
             if (
                 formState.nominal?.nominalCode &&
@@ -128,6 +130,13 @@ function Requisition({ creating }) {
                 return true;
             }
         }
+
+        if (formState.storesFunction?.code === 'MOVE') {
+            if (!formState.partNumber) {
+                return true;
+            }
+        }
+
         return false;
     };
 
@@ -347,24 +356,11 @@ function Requisition({ creating }) {
                                     formState.storesFunction?.departmentNominalRequired !== 'N'
                             )}
                         />
-                        <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.authorisedByName}
-                                onChange={() => {}}
-                                label="Auth By"
-                                propertyName="authorisedByName"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <DatePicker
-                                value={formState.dateAuthorised}
-                                onChange={() => {}}
-                                label="Date Authd"
-                                propertyName="dateAuthorised"
-                            />
-                        </Grid>
-                        <Grid size={8} />
+                        <AuthBy
+                            dateAuthorised={formState.dateAuthorised}
+                            authorisedByName={formState.authorisedByName}
+                            shouldRender={shouldRender(null, false)}
+                        />
                         <Grid size={2}>
                             <Dropdown
                                 fullWidth
@@ -392,7 +388,7 @@ function Requisition({ creating }) {
                             <InputField
                                 fullWidth
                                 value={formState.comments}
-                                onChange={() => {}}
+                                onChange={handleHeaderFieldChange}
                                 label="Comments"
                                 propertyName="comments"
                             />
@@ -401,7 +397,7 @@ function Requisition({ creating }) {
                             <InputField
                                 fullWidth
                                 value={formState.reference}
-                                onChange={() => {}}
+                                onChange={handleHeaderFieldChange}
                                 label="Reference"
                                 propertyName="reference"
                             />
