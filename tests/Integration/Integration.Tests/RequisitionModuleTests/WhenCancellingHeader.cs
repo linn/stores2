@@ -32,7 +32,7 @@
             var req = new ReqWithReqNumber(
                 11827635,
                 new Employee(),
-                new StoresFunctionCode { FunctionCode = "FUNC" },
+                new StoresFunction { FunctionCode = "FUNC" },
                 "F",
                 123,
                 "REQ",

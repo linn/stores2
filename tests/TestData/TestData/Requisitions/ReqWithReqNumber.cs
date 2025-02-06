@@ -10,7 +10,7 @@
         public ReqWithReqNumber(
             int reqNumber,
             Employee createdBy,
-            StoresFunctionCode functionCode,
+            StoresFunction function,
             string reqType,
             int? document1Number,
             string document1Type,
@@ -28,7 +28,7 @@
             StorageLocation toLocation = null) 
             : base(
                 createdBy,
-                functionCode,
+                function,
                 reqType,
                 document1Number,
                 document1Type, 

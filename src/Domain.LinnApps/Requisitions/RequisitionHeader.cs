@@ -44,7 +44,7 @@
 
         public string CancelledReason { get; protected set; }
         
-        public StoresFunctionCode FunctionCode { get; protected set;}
+        public StoresFunction Function { get; protected set;}
         
         public string Comments { get; protected set; }
         
@@ -80,7 +80,7 @@
 
         public RequisitionHeader(
             Employee createdBy,
-            StoresFunctionCode functionCode,
+            StoresFunction function,
             string reqType,
             int? document1Number,
             string document1Type,
@@ -101,7 +101,7 @@
         {
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
-            this.FunctionCode = functionCode;
+            this.Function = function;
             this.Document1 = document1Number;
             this.Document1Name = document1Type;
             this.Qty = qty;
@@ -230,9 +230,9 @@
                                 // no header qty to check thus true
                                 return true;
                             }
-                            else if (this.FunctionCode.FunctionCode == "PARTNO CH" ||
-                                     this.FunctionCode.FunctionCode == "BOOKWO" ||
-                                     this.FunctionCode.FunctionCode == "SUKIT")
+                            else if (this.Function.FunctionCode == "PARTNO CH" ||
+                                     this.Function.FunctionCode == "BOOKWO" ||
+                                     this.Function.FunctionCode == "SUKIT")
                             {
                                 // you guys are exempt from this check although most times BOOKWO should pass it
                                 return true;
@@ -241,7 +241,7 @@
                         }
                     }
                 }
-                else if (this.FunctionCode.AuditFunction())
+                else if (this.Function.AuditFunction())
                 {
                     // audit functions don't need lines or checks
                     return true;

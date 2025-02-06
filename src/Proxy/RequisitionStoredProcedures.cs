@@ -174,16 +174,17 @@
             };
             cmd.Parameters.Add(lineNumberParameter);
 
-            var cancelledByParameter = new OracleParameter("p_booked_by", OracleDbType.Int32)
+            var bookedByParameter = new OracleParameter("p_booked_by", OracleDbType.Int32)
             {
                 Direction = ParameterDirection.Input,
                 Value = bookedBy
             };
-            cmd.Parameters.Add(cancelledByParameter);
+            cmd.Parameters.Add(bookedByParameter);
 
             var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
             {
-                Direction = ParameterDirection.InputOutput
+                Direction = ParameterDirection.InputOutput,
+                Value = 1
             };
             cmd.Parameters.Add(successParameter);
 
@@ -199,7 +200,7 @@
             await connection.CloseAsync();
 
             return new ProcessResult(
-                (int)successParameter.Value == 1,
+                successParameter.Value.ToString() == "1",
                 messageParameter.Value.ToString());
         }
     }

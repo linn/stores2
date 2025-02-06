@@ -13,7 +13,8 @@ import {
     Dropdown,
     ErrorCard,
     Search,
-    SaveBackCancelButtons
+    SaveBackCancelButtons,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
@@ -29,6 +30,7 @@ import useSearch from '../../hooks/useSearch';
 import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
+import BookedBy from './components/BookedBy';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -66,6 +68,13 @@ function Requisition({ creating }) {
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
 
     const {
+        send: book,
+        isLoading: bookLoading,
+        errorMessage: bookError,
+        postResult: bookResult
+    } = usePost(`${itemTypes.requisitions.url}/book`, true);
+
+    const {
         send: createReq,
         isLoading: createLoading,
         errorMessage: createError
@@ -92,12 +101,14 @@ function Requisition({ creating }) {
     useEffect(() => {
         if (cancelResult) {
             dispatch({ type: 'load_state', payload: cancelResult });
+        } else if (bookResult) {
+            dispatch({ type: 'load_state', payload: bookResult });
         } else if (result) {
             dispatch({ type: 'load_state', payload: result });
         } else if (creating) {
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, creating, name, userNumber]);
+    }, [result, cancelResult, bookResult, creating, name, userNumber]);
 
     const {
         search: searchDepartments,
@@ -141,6 +152,31 @@ function Requisition({ creating }) {
         return false;
     };
 
+    const getAndSetFunctionCode = () => {
+        if (formState.functionCode?.code) {
+            const code = functionCodes.find(
+                a => a.code === formState.functionCode.code.toUpperCase()
+            );
+            if (code) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: {
+                        fieldName: 'functionCode',
+                        newValue: code
+                    }
+                });
+            }
+        }
+    };
+
+    const shouldRender = (functionCodeDisplay, showOnCreate = true) => {
+        if (functionCodeDisplay === 'N' || (!showOnCreate && creating)) {
+            return false;
+        }
+
+        return true;
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -166,12 +202,17 @@ function Requisition({ creating }) {
                         <ErrorCard errorMessage={cancelError} />
                     </Grid>
                 )}
+                {bookError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={bookError} />
+                    </Grid>
+                )}
                 {createError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={createError} />
                     </Grid>
                 )}
-                {(fetchLoading || cancelLoading || createLoading) && (
+                {(fetchLoading || cancelLoading || bookLoading || createLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -189,23 +230,6 @@ function Requisition({ creating }) {
                             />
                         </Grid>
                         <Grid size={2}>
-                            <DatePicker
-                                value={formState.dateBooked}
-                                onChange={() => {}}
-                                label="Date Booked"
-                                propertyName="dateBooked"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.bookedByName}
-                                onChange={() => {}}
-                                label="Booked By"
-                                propertyName="bookedByName"
-                            />
-                        </Grid>
-                        <Grid size={2}>
                             <Dropdown
                                 fullWidth
                                 items={['Y', 'N']}
@@ -215,7 +239,16 @@ function Requisition({ creating }) {
                                 propertyName="reversed"
                             />
                         </Grid>
-                        <Grid size={4} />
+                        <BookedBy
+                            shouldRender={shouldRender(null, false)}
+                            dateBooked={formState.dateBooked}
+                            bookedByName={formState.bookedByName}
+                            bookUrl={utilities.getHref(result, 'book')}
+                            onBook={() => {
+                                book(null, { reqNumber });
+                            }}
+                        />
+                        <Grid size={2} />
                         <Grid size={2}>
                             {!codesLoading && functionCodes && (
                                 <Search
@@ -243,6 +276,9 @@ function Requisition({ creating }) {
                                         name: f.code,
                                         description: f.description
                                     }))}
+                                    onKeyPressFunctions={[
+                                        { keyCode: 9, action: getAndSetFunctionCode }
+                                    ]}
                                     priorityFunction="closestMatchesFirst"
                                     onResultSelect={r => {
                                         dispatch({

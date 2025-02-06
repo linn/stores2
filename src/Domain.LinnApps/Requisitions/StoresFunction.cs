@@ -2,13 +2,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System.Collections.Generic;
 
-    public class StoresFunctionCode
+    public class StoresFunction
     {
-        public StoresFunctionCode()
+        public StoresFunction()
         {
         }
 
-        public StoresFunctionCode(string functionCode)
+        public StoresFunction(string functionCode)
         {
             this.FunctionCode = functionCode;
         }
@@ -18,7 +18,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public string Description { get; set; }
 
         public string CancelFunction { get; set; }
-        
+
+        public string DepartmentNominalRequired { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public bool AuditFunction() => this.FunctionCode == "AUDIT" || this.FunctionCode == "KOUNT";

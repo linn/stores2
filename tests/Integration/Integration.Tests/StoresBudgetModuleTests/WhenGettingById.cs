@@ -30,7 +30,7 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
             var req = new ReqWithReqNumber(
                 456,
                 new Employee(),
-                new StoresFunctionCode { FunctionCode = "FUNC" },
+                new StoresFunction { FunctionCode = "FUNC" },
                 "F",
                 123,
                 "REQ",

@@ -42,7 +42,7 @@
 
         public string CancelledReason { get; set; }
 
-        public FunctionCodeResource FunctionCode { get; set; }
+        public StoresFunctionResource FunctionCode { get; set; }
         
         public string Comments { get; set; }
         

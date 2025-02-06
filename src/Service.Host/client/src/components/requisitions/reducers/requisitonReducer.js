@@ -14,6 +14,7 @@ function reducer(state, action) {
             return {
                 dateCreated: new Date(),
                 dateAuthorised: null,
+                dateBooked: null,
                 lines: [],
                 cancelled: 'N',
                 createdByName: action.payload.userName,

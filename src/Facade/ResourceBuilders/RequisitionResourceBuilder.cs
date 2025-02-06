@@ -23,6 +23,7 @@
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
             var reqLineBuilder = new RequisitionLineResourceBuilder();
+            var storeFunctionBuilder = new StoresFunctionResourceBuilder();
 
             return new RequisitionHeaderResource
                        {
@@ -41,18 +42,7 @@
                            CancelledByName = header.CancelledBy?.Name,
                            DateCancelled = header.DateCancelled?.ToString("o"),
                            CancelledReason = header.CancelledReason,
-                           FunctionCode = new FunctionCodeResource
-                                              {
-                                                  Code = header.FunctionCode?.FunctionCode,
-                                                  Description = header.FunctionCode?.Description,
-                                                  TransactionTypes = header.FunctionCode?.TransactionsTypes?.Select(
-                                                      t => new FunctionCodeTransactionResource
-                                                               {
-                                                                   ReqType = t.ReqType,
-                                                                   TransactionDefinition = t.TransactionDefinition?.TransactionCode,
-                                                                   TransactionDescription = t.TransactionDefinition?.Description
-                                                               })
-                                              },
+                           FunctionCode = storeFunctionBuilder.Build(header.Function, null),
                            Comments = header.Comments,
                            DateBooked = header.DateBooked?.ToString("o"),
                            BookedBy = header.BookedBy?.Id,
