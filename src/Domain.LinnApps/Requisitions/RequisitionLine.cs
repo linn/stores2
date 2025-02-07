@@ -34,11 +34,17 @@
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
-            this.Part = part;
+
+            this.Part = part ?? throw new RequisitionException("Requisition line requires a part");
+            this.TransactionDefinition = transaction ?? throw new RequisitionException("Requisition line requires a transaction");
+
             this.Qty = qty;
+
             this.Moves = new List<ReqMove>();
+
             this.NominalAccountPostings = new List<RequisitionLinePosting>();
-            this.TransactionDefinition = transaction;
+            // TODO work out how to derive postings see STORES_OO.CREATENOMINALS and Post-Insert/RL trig in REQ UT
+
             this.Cancelled = "N";
         }
 
