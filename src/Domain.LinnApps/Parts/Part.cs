@@ -161,5 +161,7 @@
         public string AltiumValueRkm { get; set; }
 
         public decimal? ResistorTolerance { get; set; }
+
+        public bool IsFinishedGoods() => this.RawOrFinished == "F";
     }
 }

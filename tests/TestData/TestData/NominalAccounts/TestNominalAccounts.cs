@@ -14,6 +14,16 @@
                 new Nominal("0000007617", "RAW MATERIALS"), "Y");
 
         // any stock transaction for Parts that are Finished Goods will have this for one side
+        public static readonly NominalAccount AssetsFinGoods =
+            new NominalAccount(new Department("0000002508", "ASSETS", "N"),
+                new Nominal("0000007635", "FINISHED GOODS"), "Y");
+
+        // any stock transactions for loan stock will have this
+        public static readonly NominalAccount AssetsLoanGoods =
+            new NominalAccount(new Department("0000002508", "ASSETS", "N"),
+                new Nominal("0000012087", "LOAN STOCK"), "Y");
+
+        // any stock transaction for Parts that are Finished Goods will have this for one side
         public static readonly NominalAccount FinAssWipUsed =
             new NominalAccount(new Department("0000042808", "FINAL ASSEMBLY", "N"),
                 new Nominal("0000000435", "WIP USED"), "Y");

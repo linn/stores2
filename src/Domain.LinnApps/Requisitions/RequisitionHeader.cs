@@ -129,6 +129,8 @@
 
         public bool IsBooked() => this.DateBooked != null;
 
+        public bool IsAuthorised() => this.DateAuthorised != null || this.AuthorisedBy != null;
+
         public void Book(Employee bookedBy)
         {
             this.DateBooked = DateTime.Now;
@@ -212,6 +214,24 @@
             }
         }
 
+        public void Authorise(Employee authorisedBy)
+        {
+            if (!this.IsAuthorised())
+            {
+                this.DateAuthorised = DateTime.Now;
+                this.AuthorisedBy = authorisedBy;
+            }
+        }
+
+        public bool RequiresAuthorisation()
+        {
+            if (!this.IsBooked() && !this.IsCancelled() && !this.IsAuthorised())
+            {
+                return this.Lines.Any(l => l.RequiresAuthorisation());
+            }
+            return false;
+        }
+
         public bool CanBookReq(int? lineNumber)
         {
             if (!this.IsBooked() && !this.IsCancelled())
@@ -221,23 +241,26 @@
                 {
                     if (lines.All(l => l.OkToBook()))
                     {
-                        var linesQty = this.Lines.Where(l => !l.HasDecrementTransaction() && !l.HasMaterialVarianceTransaction()).Sum(l => l.Qty);
-
-                        if (linesQty > 0)
+                        if (!this.RequiresAuthorisation())
                         {
-                            if (this.Qty == null)
+                            var linesQty = this.Lines.Where(l => !l.HasDecrementTransaction() && !l.HasMaterialVarianceTransaction()).Sum(l => l.Qty);
+
+                            if (linesQty > 0)
                             {
-                                // no header qty to check thus true
-                                return true;
+                                if (this.Qty == null)
+                                {
+                                    // no header qty to check thus true
+                                    return true;
+                                }
+                                else if (this.StoresFunction.FunctionCode == "PARTNO CH" ||
+                                         this.StoresFunction.FunctionCode == "BOOKWO" ||
+                                         this.StoresFunction.FunctionCode == "SUKIT")
+                                {
+                                    // you guys are exempt from this check although most times BOOKWO should pass it
+                                    return true;
+                                }
+                                return linesQty == this.Qty.Value;
                             }
-                            else if (this.StoresFunction.FunctionCode == "PARTNO CH" ||
-                                     this.StoresFunction.FunctionCode == "BOOKWO" ||
-                                     this.StoresFunction.FunctionCode == "SUKIT")
-                            {
-                                // you guys are exempt from this check although most times BOOKWO should pass it
-                                return true;
-                            }
-                            return linesQty == this.Qty.Value;
                         }
                     }
                 }

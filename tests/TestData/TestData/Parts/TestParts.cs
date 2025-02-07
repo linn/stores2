@@ -8,7 +8,16 @@
             new Part()
             {
                 PartNumber = "CAP 003",
-                Description = "Test Capacitor"
+                Description = "Test Capacitor",
+                RawOrFinished = "R"
+            };
+
+        public static readonly Part SelektHub =
+            new Part()
+            {
+                PartNumber = "SK HUB",
+                Description = "SELEKT DSM HUB",
+                RawOrFinished = "F"
             };
     }
 }

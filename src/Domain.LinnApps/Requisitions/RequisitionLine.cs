@@ -157,6 +157,20 @@
             return false;
         }
 
+        public bool RequiresAuthorisation()
+        {
+            if (!this.IsCancelled() && !this.IsBooked())
+            {
+                if (this.TransactionDefinition != null && this.TransactionDefinition.RequiresAuthorisation && this.Part != null)
+                {
+                    // only have to authorise Finished Goods on transactions that require auth
+                    return this.Part.IsFinishedGoods();
+                }
+            }
+
+            return false;
+        }
+
         public void Book(DateTime when)
         {
             this.DateBooked = when;

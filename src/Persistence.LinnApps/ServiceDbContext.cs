@@ -338,6 +338,7 @@
             q.Property(d => d.OntoTransactions).HasColumnName("ONTO_TRANSACTIONS").HasMaxLength(1);
             q.Property(d => d.DecrementTransaction).HasColumnName("DECREMENT_TRANSACTION").HasMaxLength(1);
             q.Property(d => d.TakePriceFrom).HasColumnName("TAKE_PRICE_FROM").HasMaxLength(1);
+            q.Property(d => d.RequiresAuth).HasColumnName("REQUIRES_AUTH").HasMaxLength(1);
         }
 
         private static void BuildReqMoves(ModelBuilder builder)
