@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dropdown, DatePicker, utilities } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid2';
+import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
+import PickStockDialog from '../PickStockDialog';
 
 function StockOptions({
     stockStates,
@@ -17,8 +19,13 @@ function StockOptions({
     toStockPool = null,
     setToStockPool,
     disabled = false,
-    shouldRender = true
+    shouldRender = true,
+    partNumber = null,
+    quantity = null,
+    doPickStock = null
 }) {
+    const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
+
     if (!shouldRender) {
         return '';
     }
@@ -68,7 +75,17 @@ function StockOptions({
                     propertyName="batchDate"
                 />
             </Grid>
-            <Grid size={6} />
+            <Grid item xs={2}>
+                <Button
+                    onClick={() => setPickStockDialogVisible(true)}
+                    variant="outlined"
+                    style={{ marginTop: '32px' }}
+                    disabled={disabled || !doPickStock}
+                >
+                    Pick Stock
+                </Button>
+            </Grid>
+            <Grid size={4} />
             <Grid size={2}>
                 <Dropdown
                     value={toState}
@@ -100,6 +117,17 @@ function StockOptions({
                 />
             </Grid>
             <Grid size={8} />
+            {pickStockDialogVisible && (
+                <PickStockDialog
+                    open={pickStockDialogVisible}
+                    setOpen={setPickStockDialogVisible}
+                    partNumber={partNumber}
+                    quantity={quantity}
+                    handleConfirm={moves => {
+                        doPickStock(moves);
+                    }}
+                />
+            )}
         </>
     );
 }
@@ -118,7 +146,10 @@ StockOptions.propTypes = {
     batchDate: PropTypes.string,
     setBatchDate: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
-    shouldRender: PropTypes.bool
+    shouldRender: PropTypes.bool,
+    partNumber: PropTypes.string,
+    quantity: PropTypes.number,
+    doPickStock: PropTypes.func
 };
 
 StockOptions.defaultProps = {
@@ -128,7 +159,10 @@ StockOptions.defaultProps = {
     toStockPool: null,
     batchDate: null,
     disabled: false,
-    shouldRender: true
+    shouldRender: true,
+    partNumber: null,
+    quantity: null,
+    doPickStock: null
 };
 
 export default StockOptions;

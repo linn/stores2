@@ -202,6 +202,15 @@ function Requisition({ creating }) {
         return true;
     };
 
+    const doPickStock = moves => {
+        if (moves?.length) {
+            dispatch({
+                type: 'set_options_from_pick',
+                payload: moves[0]
+            });
+        }
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -435,6 +444,9 @@ function Requisition({ creating }) {
                             toStockPool={formState.toStockPool}
                             stockStates={stockStates}
                             stockPools={stockPools}
+                            partNumber={formState.part?.partNumber}
+                            quantity={formState.quantity}
+                            doPickStock={doPickStock}
                             setBatchDate={newBatchDate =>
                                 dispatch({
                                     type: 'set_header_value',

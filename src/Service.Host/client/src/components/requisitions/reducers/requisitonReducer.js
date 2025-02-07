@@ -109,6 +109,19 @@ function reducer(state, action) {
                         : line
                 )
             };
+        case 'set_options_from_pick': {
+            if (action.payload) {
+                return {
+                    ...state,
+                    fromState: action.payload.state,
+                    fromStockPool: action.payload.stockPoolCode,
+                    toState: action.payload.state,
+                    toStockPool: action.payload.stockPoolCode
+                };
+            }
+
+            return state;
+        }
         default: {
             return state;
         }
