@@ -22,17 +22,19 @@ import Page from '../Page';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
+import useInitialise from '../../hooks/useInitialise';
+import usePost from '../../hooks/usePost';
+import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
-import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
-import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
 import BookedBy from './components/BookedBy';
 import AuthBy from './components/AuthBy';
 import DepartmentNominal from './components/DepartmentNominal';
 import PartNumberQuantity from './components/PartNumberQuantity';
+import StockOptions from './components/StockOptions';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -48,6 +50,13 @@ function Requisition({ creating }) {
 
     const auth = useAuth();
     const token = auth.user?.access_token;
+
+    const { result: stockStates, loading: stockStatesLoading } = useInitialise(
+        itemTypes.stockStates.url
+    );
+    const { result: stockPools, loading: stockPoolsLoading } = useInitialise(
+        itemTypes.stockPools.url
+    );
 
     const {
         send: fetchFunctionCodes,
@@ -417,6 +426,49 @@ function Requisition({ creating }) {
                                 })
                             }
                             shouldRender
+                        />
+                        <StockOptions
+                            fromState={formState.fromState}
+                            fromStockPool={formState.fromStockPool}
+                            batchDate={formState.batchDate}
+                            toState={formState.toState}
+                            toStockPool={formState.toStockPool}
+                            stockStates={stockStates}
+                            stockPools={stockPools}
+                            setBatchDate={newBatchDate =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'batchDate', newValue: newBatchDate }
+                                })
+                            }
+                            setFromState={newState =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'fromState', newValue: newState }
+                                })
+                            }
+                            setFromStockPool={newState =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'fromStockPool', newValue: newState }
+                                })
+                            }
+                            setToState={newState =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'toState', newValue: newState }
+                                })
+                            }
+                            setToStockPool={newState =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'toStockPool', newValue: newState }
+                                })
+                            }
+                            disabled={stockStatesLoading || stockPoolsLoading}
+                            shouldRender={shouldRender(
+                                () => formState.storesFunction?.code === 'MOVE'
+                            )}
                         />
                         <Grid size={6}>
                             <InputField

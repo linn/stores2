@@ -460,7 +460,7 @@
 
         private static void BuildStockStates(ModelBuilder builder)
         {
-            var entity = builder.Entity<StockState>().ToTable("INSPECTION_STATES");
+            var entity = builder.Entity<StockState>().ToTable("INSPECTED_STATES");
             entity.HasKey(c => c.State);
             entity.Property(c => c.State).HasColumnName("STATE").HasMaxLength(6);
             entity.Property(x => x.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
