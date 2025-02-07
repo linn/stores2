@@ -45,6 +45,8 @@
 
         public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
 
+        public DbSet<StockState> StockStates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -80,6 +82,7 @@
             BuildStorageTypes(builder);
             BuildStoresFunctionTransactions(builder);
             BuildGoodsInLog(builder);
+            BuildStockStates(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -400,6 +403,9 @@
             e.Property(r => r.ToPalletNumber).HasColumnName("PALLET_NUMBER");
             e.Property(r => r.FromStockPool).HasColumnName("FROM_STOCK_POOL").HasMaxLength(10);
             e.Property(r => r.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
+            e.Property(r => r.FromState).HasColumnName("FROM_STATE").HasMaxLength(6);
+            e.Property(r => r.ToState).HasColumnName("STATE").HasMaxLength(6);
+            e.Property(r => r.BatchDate).HasColumnName("BATCH_DATE");
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)
@@ -450,6 +456,15 @@
             entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
             entity.Property(x => x.Seq).HasColumnName("SEQ");
             entity.Property(x => x.ReqType).HasColumnName("REQ_TYPE").HasMaxLength(1);
+        }
+
+        private static void BuildStockStates(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StockState>().ToTable("INSPECTION_STATES");
+            entity.HasKey(c => c.State);
+            entity.Property(c => c.State).HasColumnName("STATE").HasMaxLength(6);
+            entity.Property(x => x.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            entity.Property(x => x.QCRequired).HasColumnName("QC_REQUIRED").HasMaxLength(1);
         }
 
         private static void BuildEmployees(ModelBuilder builder)

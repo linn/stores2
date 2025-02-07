@@ -76,5 +76,11 @@
         public string FromStockPool { get; set; }
 
         public string ToStockPool { get; set; }
+
+        public string FromState { get; set; }
+
+        public string ToState { get; set; }
+
+        public string BatchDate { get; set; }
     }
 }
