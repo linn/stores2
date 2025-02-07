@@ -16,7 +16,7 @@
             using var connection = new OracleConnection(
                 ConnectionStrings.ManagedConnectionString());
 
-            var cmd = new OracleCommand("STORES_OO.UNALLOC_REQ_WRAPPER", connection)
+            var cmd = new OracleCommand("STORES_WRAPPER.UNALLOC_REQ_WRAPPER", connection)
                           {
                               CommandType = CommandType.StoredProcedure
                           };
@@ -91,7 +91,7 @@
             using var connection = new OracleConnection(
                 ConnectionStrings.ManagedConnectionString());
 
-            var cmd = new OracleCommand("STORES_OO.DELETE_ALLOCS_ONTO_WRAPPER", connection)
+            var cmd = new OracleCommand("STORES_WRAPPER.DELETE_ALLOCS_ONTO_WRAPPER", connection)
             {
                 CommandType = CommandType.StoredProcedure
             };
@@ -155,7 +155,7 @@
             using var connection = new OracleConnection(
                 ConnectionStrings.ManagedConnectionString());
 
-            var cmd = new OracleCommand("STORES_OO.DO_REQUISITION_WRAPPER", connection)
+            var cmd = new OracleCommand("STORES_WRAPPER.DO_REQUISITION_WRAPPER", connection)
             {
                 CommandType = CommandType.StoredProcedure
             };
