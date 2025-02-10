@@ -25,6 +25,8 @@
 
         public string ToLocationCode { get; set; }
 
+        public int? FromLocationId { get; set; }
+
         public string FromLocationCode { get; set; }
 
         public int? ToPalletNumber { get; set; }

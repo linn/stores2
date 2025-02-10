@@ -115,6 +115,9 @@ function reducer(state, action) {
                     ...state,
                     fromState: action.payload.state,
                     fromStockPool: action.payload.stockPoolCode,
+                    fromLocationId: action.payload.locatonId,
+                    fromLocationDescription: action.payload.locationDescription,
+                    fromPalletNumber: action.payload.palletNumber,
                     toState: action.payload.state,
                     toStockPool: action.payload.stockPoolCode
                 };

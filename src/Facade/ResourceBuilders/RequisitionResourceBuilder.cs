@@ -34,6 +34,7 @@
                            PartNumber = header.Part?.PartNumber,
                            ToLocationId = header.ToLocation?.LocationId,
                            ToLocationCode = header.ToLocation?.LocationCode,
+                           FromLocationId = header.FromLocation?.LocationId,
                            FromLocationCode = header.FromLocation?.LocationCode,
                            ToPalletNumber = header.ToPalletNumber,
                            FromPalletNumber = header.FromPalletNumber,

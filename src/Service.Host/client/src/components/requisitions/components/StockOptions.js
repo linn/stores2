@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dropdown, DatePicker, utilities } from '@linn-it/linn-form-components-library';
+import { Dropdown, DatePicker, utilities, InputField } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
@@ -9,20 +9,17 @@ function StockOptions({
     stockStates,
     stockPools,
     fromState = null,
-    setFromState,
     fromStockPool = null,
-    setFromStockPool,
     batchDate = null,
-    setBatchDate,
     toState = null,
-    setToState,
     toStockPool = null,
-    setToStockPool,
     disabled = false,
     shouldRender = true,
     partNumber = null,
     quantity = null,
-    doPickStock = null
+    doPickStock = null,
+    setItemValue,
+    fromPalletNumber = null
 }) {
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
 
@@ -48,7 +45,7 @@ function StockOptions({
                         id: s.state,
                         displayText: s.state
                     }))}
-                    onChange={(_, newValue) => setFromState(newValue)}
+                    onChange={setItemValue}
                 />
             </Grid>
             <Grid size={2}>
@@ -63,14 +60,14 @@ function StockOptions({
                         id: s.stockPoolCode,
                         displayText: s.stockPoolCode
                     }))}
-                    onChange={(_, newValue) => setFromStockPool(newValue)}
+                    onChange={setItemValue}
                 />
             </Grid>
             <Grid size={2}>
                 <DatePicker
                     value={batchDate}
                     disabled={disabled}
-                    onChange={setBatchDate}
+                    onChange={newVal => setItemValue('batchDate', newVal)}
                     label="Batch Date"
                     propertyName="batchDate"
                 />
@@ -86,6 +83,17 @@ function StockOptions({
                 </Button>
             </Grid>
             <Grid size={4} />
+            <Grid size={2} />
+            <Grid size={2}>
+                <InputField
+                    value={fromPalletNumber}
+                    onChange={setItemValue}
+                    disabled={disabled}
+                    label="From Pallet"
+                    propertyName="fromPalletNumber"
+                />
+            </Grid>
+            <Grid size={8} />
             <Grid size={2}>
                 <Dropdown
                     value={toState}
@@ -98,7 +106,7 @@ function StockOptions({
                         id: s.state,
                         displayText: s.state
                     }))}
-                    onChange={(_, newValue) => setToState(newValue)}
+                    onChange={setItemValue}
                 />
             </Grid>
             <Grid size={2}>
@@ -113,7 +121,7 @@ function StockOptions({
                         id: s.stockPoolCode,
                         displayText: s.stockPoolCode
                     }))}
-                    onChange={(_, newValue) => setToStockPool(newValue)}
+                    onChange={setItemValue}
                 />
             </Grid>
             <Grid size={8} />
@@ -136,20 +144,17 @@ StockOptions.propTypes = {
     stockStates: PropTypes.arrayOf(PropTypes.shape({ state: PropTypes.string })).isRequired,
     stockPools: PropTypes.arrayOf(PropTypes.shape({ stockPoolCode: PropTypes.string })).isRequired,
     fromState: PropTypes.string,
-    setFromState: PropTypes.func.isRequired,
+    setItemValue: PropTypes.func.isRequired,
     fromStockPool: PropTypes.string,
-    setFromStockPool: PropTypes.func.isRequired,
     toState: PropTypes.string,
-    setToState: PropTypes.func.isRequired,
     toStockPool: PropTypes.string,
-    setToStockPool: PropTypes.func.isRequired,
     batchDate: PropTypes.string,
-    setBatchDate: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
     shouldRender: PropTypes.bool,
     partNumber: PropTypes.string,
     quantity: PropTypes.number,
-    doPickStock: PropTypes.func
+    doPickStock: PropTypes.func,
+    fromPalletNumber: PropTypes.number
 };
 
 StockOptions.defaultProps = {
@@ -162,7 +167,8 @@ StockOptions.defaultProps = {
     shouldRender: true,
     partNumber: null,
     quantity: null,
-    doPickStock: null
+    doPickStock: null,
+    fromPalletNumber: null
 };
 
 export default StockOptions;

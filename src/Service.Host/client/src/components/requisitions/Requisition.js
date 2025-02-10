@@ -446,35 +446,14 @@ function Requisition({ creating }) {
                             stockPools={stockPools}
                             partNumber={formState.part?.partNumber}
                             quantity={formState.quantity}
+                            fromLocationId={formState.fromLocationId}
+                            fromLocationDescription={formState.fromLocationDescription}
+                            fromPalletNumber={formState.fromPalletNumber}
                             doPickStock={doPickStock}
-                            setBatchDate={newBatchDate =>
+                            setItemValue={(fieldName, newValue) =>
                                 dispatch({
                                     type: 'set_header_value',
-                                    payload: { fieldName: 'batchDate', newValue: newBatchDate }
-                                })
-                            }
-                            setFromState={newState =>
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName: 'fromState', newValue: newState }
-                                })
-                            }
-                            setFromStockPool={newState =>
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName: 'fromStockPool', newValue: newState }
-                                })
-                            }
-                            setToState={newState =>
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName: 'toState', newValue: newState }
-                                })
-                            }
-                            setToStockPool={newState =>
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName: 'toStockPool', newValue: newState }
+                                    payload: { fieldName, newValue }
                                 })
                             }
                             disabled={stockStatesLoading || stockPoolsLoading}
