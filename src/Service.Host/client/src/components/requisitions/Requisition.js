@@ -157,10 +157,79 @@ function Requisition({ creating }) {
         return false;
     };
 
+    const optionalOrNeeded = code => {
+        if (code === 'O' || code === 'Y') {
+            return true;
+        }
+
+        return false;
+    };
+
+    const okToSaveFrontPageMove = () => {
+        if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
+            if (
+                optionalOrNeeded(formState.storesFunction.fromLocationRequired) &&
+                !formState.fromLocationCode &&
+                !formState.fromPalletNumber
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.fromStockPoolRequired) &&
+                !formState.fromStockPool
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.fromStateRequired) &&
+                !formState.fromState
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.quantityRequired) &&
+                !formState.quantity
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.toLocationRequired) &&
+                !formState.toLocationCode &&
+                !formState.toPalletNumber
+            ) {
+                return false;
+            }
+
+            if (optionalOrNeeded(formState.storesFunction.toStateRequired) && !formState.toState) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.toStockPoolRequired) &&
+                !formState.toStockPool
+            ) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    };
+
     const saveIsValid = () => {
         if (creating) {
+            if (formState.part?.partNumber) {
+                return okToSaveFrontPageMove();
+            }
+
             return !!formState?.lines?.length;
         }
+
         return false;
     };
 
@@ -394,29 +463,33 @@ function Requisition({ creating }) {
                             authorisedByName={formState.authorisedByName}
                             shouldRender={shouldRender(null, false)}
                         />
-                        <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['Y', 'N']}
-                                allowNoValue
-                                value={formState.manualPick}
-                                onChange={() => {}}
-                                label="Manual Pick"
-                                propertyName="manualPick"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['F', 'O']}
-                                allowNoValue
-                                value={formState.reqType}
-                                onChange={handleHeaderFieldChange}
-                                label="Req Type"
-                                propertyName="reqType"
-                            />
-                        </Grid>
-                        <Grid size={8} />
+                        {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
+                            <>
+                                <Grid size={2}>
+                                    <Dropdown
+                                        fullWidth
+                                        items={['Y', 'N']}
+                                        allowNoValue
+                                        value={formState.manualPick}
+                                        onChange={() => {}}
+                                        label="Manual Pick"
+                                        propertyName="manualPick"
+                                    />
+                                </Grid>
+                                <Grid size={2}>
+                                    <Dropdown
+                                        fullWidth
+                                        items={['F', 'O']}
+                                        allowNoValue
+                                        value={formState.reqType}
+                                        onChange={handleHeaderFieldChange}
+                                        label="Req Type"
+                                        propertyName="reqType"
+                                    />
+                                </Grid>
+                                <Grid size={8} />
+                            </>
+                        )}
                         <PartNumberQuantity
                             partNumber={formState.part?.partNumber}
                             partDescription={formState.part?.description}
@@ -446,10 +519,11 @@ function Requisition({ creating }) {
                             stockPools={stockPools}
                             partNumber={formState.part?.partNumber}
                             quantity={formState.quantity}
-                            fromLocationId={formState.fromLocationId}
-                            fromLocationDescription={formState.fromLocationDescription}
+                            fromLocationCode={formState.fromLocationCode}
                             fromPalletNumber={formState.fromPalletNumber}
                             doPickStock={doPickStock}
+                            toLocationCode={formState.toLocationCode}
+                            toPalletNumber={formState.toPalletNumber}
                             setItemValue={(fieldName, newValue) =>
                                 dispatch({
                                     type: 'set_header_value',
@@ -559,7 +633,7 @@ function Requisition({ creating }) {
                                     }
                                 }}
                                 saveClick={() => {
-                                    createReq(formState);
+                                    createReq(null, formState);
                                 }}
                                 backClick={() => {
                                     navigate('/requisitions');

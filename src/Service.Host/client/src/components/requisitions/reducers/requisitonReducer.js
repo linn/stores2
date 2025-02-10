@@ -17,11 +17,11 @@ function reducer(state, action) {
                 dateBooked: null,
                 lines: [],
                 cancelled: 'N',
-                createdByName: action.payload.userName,
-                // just to make it easier to debug creating - delete everything below
-                nominal: { nominalCode: 1607 },
-                department: { departmentCode: 2963 },
-                reqType: 'F'
+                createdByName: action.payload.userName
+                // // just to make it easier to debug creating - delete everything below
+                // nominal: { nominalCode: 1607 },
+                // department: { departmentCode: 2963 },
+                // reqType: 'F'
             };
         }
         case 'set_header_value': {
@@ -115,11 +115,12 @@ function reducer(state, action) {
                     ...state,
                     fromState: action.payload.state,
                     fromStockPool: action.payload.stockPoolCode,
-                    fromLocationId: action.payload.locatonId,
-                    fromLocationDescription: action.payload.locationDescription,
+                    fromLocationId: action.payload.locationId,
+                    fromLocationCode: action.payload.locationName,
                     fromPalletNumber: action.payload.palletNumber,
                     toState: action.payload.state,
-                    toStockPool: action.payload.stockPoolCode
+                    toStockPool: action.payload.stockPoolCode,
+                    quantity: action.payload.quantityToPick
                 };
             }
 

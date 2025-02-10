@@ -445,6 +445,13 @@
             r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
             r.Property(c => c.DepartmentNominalRequired).HasColumnName("DEPT_NOMINAL_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ManualPickRequired).HasColumnName("MANUAL_PICK_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromLocationRequired).HasColumnName("FROM_LOC_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromStateRequired).HasColumnName("FROM_STATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromStockPoolRequired).HasColumnName("FROM_STOCK_POOL_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.QuantityRequired).HasColumnName("QTY_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToLocationRequired).HasColumnName("ONTO_LOC_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToStateRequired).HasColumnName("STATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToStockPoolRequired).HasColumnName("TO_STOCK_POOL_REQUIRED").HasMaxLength(1);
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 
