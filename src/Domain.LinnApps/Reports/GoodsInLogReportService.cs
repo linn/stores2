@@ -159,7 +159,7 @@
                     new CalculationValueModel
                         {
                             RowId = rowId,
-                            TextDisplay = goodsInLogEntry.RsnAccessories.ToString(),
+                            TextDisplay = goodsInLogEntry.RsnAccessories,
                             ColumnId = "RsnAccessories"
                         });
                 values.Add(
@@ -201,7 +201,7 @@
                     new CalculationValueModel
                         {
                             RowId = rowId,
-                            TextDisplay = goodsInLogEntry.WandString.ToString(),
+                            TextDisplay = goodsInLogEntry.WandString,
                             ColumnId = "WandString"
                         });
                 values.Add(
