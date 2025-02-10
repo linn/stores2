@@ -248,7 +248,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // todo - commit again
             // todo - call stores_oo.create_nominals to create nominal postings
             // todo - possibly some inserts into stores_move_logs (although could also try facade MaybeSaveToLogTable())
-            // todo - fetch the req again with nominal postings .Include()'d
+            // todo - fetch the req again with the real moves and the nominal postings .Include()'d
             return req;
         }
     }
