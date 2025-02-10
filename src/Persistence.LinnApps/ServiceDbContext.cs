@@ -45,6 +45,8 @@
 
         public DbSet<Part> Parts { get; set; }
 
+        public DbSet<StockState> StockStates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -79,6 +81,7 @@
             BuildStorageTypes(builder);
             BuildStoresFunctionTransactions(builder);
             BuildGoodsInLog(builder);
+            BuildStockStates(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -399,6 +402,9 @@
             e.Property(r => r.ToPalletNumber).HasColumnName("PALLET_NUMBER");
             e.Property(r => r.FromStockPool).HasColumnName("FROM_STOCK_POOL").HasMaxLength(10);
             e.Property(r => r.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
+            e.Property(r => r.FromState).HasColumnName("FROM_STATE").HasMaxLength(6);
+            e.Property(r => r.ToState).HasColumnName("STATE").HasMaxLength(6);
+            e.Property(r => r.BatchDate).HasColumnName("BATCH_DATE");
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)
@@ -438,6 +444,13 @@
             r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
             r.Property(c => c.DepartmentNominalRequired).HasColumnName("DEPT_NOMINAL_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ManualPickRequired).HasColumnName("MANUAL_PICK_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromLocationRequired).HasColumnName("FROM_LOC_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromStateRequired).HasColumnName("FROM_STATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromStockPoolRequired).HasColumnName("FROM_STOCK_POOL_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.QuantityRequired).HasColumnName("QTY_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToLocationRequired).HasColumnName("ONTO_LOC_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToStateRequired).HasColumnName("STATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToStockPoolRequired).HasColumnName("TO_STOCK_POOL_REQUIRED").HasMaxLength(1);
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 
@@ -449,6 +462,15 @@
             entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
             entity.Property(x => x.Seq).HasColumnName("SEQ");
             entity.Property(x => x.ReqType).HasColumnName("REQ_TYPE").HasMaxLength(1);
+        }
+
+        private static void BuildStockStates(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StockState>().ToTable("INSPECTED_STATES");
+            entity.HasKey(c => c.State);
+            entity.Property(c => c.State).HasColumnName("STATE").HasMaxLength(6);
+            entity.Property(x => x.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            entity.Property(x => x.QCRequired).HasColumnName("QC_REQUIRED").HasMaxLength(1);
         }
 
         private static void BuildEmployees(ModelBuilder builder)

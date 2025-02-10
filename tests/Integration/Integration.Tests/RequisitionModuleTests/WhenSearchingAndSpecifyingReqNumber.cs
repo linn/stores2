@@ -72,10 +72,10 @@
         [Test]
         public void ShouldReturnNoResults()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<RequisitionHeaderResource>>();
+            var resource = this.Response.DeserializeBody<IEnumerable<RequisitionHeaderResource>>().ToList();
             resource.Should().NotBeNull();
-            resource.Count().Should().Be(1);
-            resource.SingleOrDefault().ReqNumber.Should().Be(456);
+            resource.Count.Should().Be(1);
+            resource.Single().ReqNumber.Should().Be(456);
         }
     }
 }

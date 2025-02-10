@@ -7,15 +7,18 @@
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
-    using Linn.Stores2.Service.Modules;
-    using Microsoft.Extensions.DependencyInjection;
-    using NSubstitute;
-    using NUnit.Framework;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources.Stores;
+    using Linn.Stores2.Service.Modules;
+
+    using Microsoft.Extensions.DependencyInjection;
+
+    using NSubstitute;
+
+    using NUnit.Framework;
 
     public class ContextBase
     {

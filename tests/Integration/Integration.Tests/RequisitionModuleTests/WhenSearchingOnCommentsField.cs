@@ -76,9 +76,9 @@
         [Test]
         public void ShouldOnlyReturnOneMatchingResult()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<RequisitionHeaderResource>>();
+            var resource = this.Response.DeserializeBody<IEnumerable<RequisitionHeaderResource>>().ToList();
             resource.Should().NotBeNull();
-            resource.Count().Should().Be(1);
+            resource.Count.Should().Be(1);
             resource.First().Comments.Should().Be("Hello Requisitions");
         }
     }

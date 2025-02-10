@@ -22,17 +22,19 @@ import Page from '../Page';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
+import useInitialise from '../../hooks/useInitialise';
+import usePost from '../../hooks/usePost';
+import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
-import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
-import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
 import BookedBy from './components/BookedBy';
 import AuthBy from './components/AuthBy';
 import DepartmentNominal from './components/DepartmentNominal';
 import PartNumberQuantity from './components/PartNumberQuantity';
+import StockOptions from './components/StockOptions';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -48,6 +50,13 @@ function Requisition({ creating }) {
 
     const auth = useAuth();
     const token = auth.user?.access_token;
+
+    const { result: stockStates, loading: stockStatesLoading } = useInitialise(
+        itemTypes.stockStates.url
+    );
+    const { result: stockPools, loading: stockPoolsLoading } = useInitialise(
+        itemTypes.stockPools.url
+    );
 
     const {
         send: fetchFunctionCodes,
@@ -148,10 +157,79 @@ function Requisition({ creating }) {
         return false;
     };
 
+    const optionalOrNeeded = code => {
+        if (code === 'O' || code === 'Y') {
+            return true;
+        }
+
+        return false;
+    };
+
+    const okToSaveFrontPageMove = () => {
+        if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
+            if (
+                optionalOrNeeded(formState.storesFunction.fromLocationRequired) &&
+                !formState.fromLocationCode &&
+                !formState.fromPalletNumber
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.fromStockPoolRequired) &&
+                !formState.fromStockPool
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.fromStateRequired) &&
+                !formState.fromState
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.quantityRequired) &&
+                !formState.quantity
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.toLocationRequired) &&
+                !formState.toLocationCode &&
+                !formState.toPalletNumber
+            ) {
+                return false;
+            }
+
+            if (optionalOrNeeded(formState.storesFunction.toStateRequired) && !formState.toState) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.toStockPoolRequired) &&
+                !formState.toStockPool
+            ) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    };
+
     const saveIsValid = () => {
         if (creating) {
+            if (formState.part?.partNumber) {
+                return okToSaveFrontPageMove();
+            }
+
             return !!formState?.lines?.length;
         }
+
         return false;
     };
 
@@ -191,6 +269,15 @@ function Requisition({ creating }) {
         }
 
         return true;
+    };
+
+    const doPickStock = moves => {
+        if (moves?.length) {
+            dispatch({
+                type: 'set_options_from_pick',
+                payload: moves[0]
+            });
+        }
     };
 
     return (
@@ -376,29 +463,33 @@ function Requisition({ creating }) {
                             authorisedByName={formState.authorisedByName}
                             shouldRender={shouldRender(null, false)}
                         />
-                        <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['Y', 'N']}
-                                allowNoValue
-                                value={formState.manualPick}
-                                onChange={() => {}}
-                                label="Manual Pick"
-                                propertyName="manualPick"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['F', 'O']}
-                                allowNoValue
-                                value={formState.reqType}
-                                onChange={handleHeaderFieldChange}
-                                label="Req Type"
-                                propertyName="reqType"
-                            />
-                        </Grid>
-                        <Grid size={8} />
+                        {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
+                            <>
+                                <Grid size={2}>
+                                    <Dropdown
+                                        fullWidth
+                                        items={['Y', 'N']}
+                                        allowNoValue
+                                        value={formState.manualPick}
+                                        onChange={() => {}}
+                                        label="Manual Pick"
+                                        propertyName="manualPick"
+                                    />
+                                </Grid>
+                                <Grid size={2}>
+                                    <Dropdown
+                                        fullWidth
+                                        items={['F', 'O']}
+                                        allowNoValue
+                                        value={formState.reqType}
+                                        onChange={handleHeaderFieldChange}
+                                        label="Req Type"
+                                        propertyName="reqType"
+                                    />
+                                </Grid>
+                                <Grid size={8} />
+                            </>
+                        )}
                         <PartNumberQuantity
                             partNumber={formState.part?.partNumber}
                             partDescription={formState.part?.description}
@@ -417,6 +508,32 @@ function Requisition({ creating }) {
                                 })
                             }
                             shouldRender
+                        />
+                        <StockOptions
+                            fromState={formState.fromState}
+                            fromStockPool={formState.fromStockPool}
+                            batchDate={formState.batchDate}
+                            toState={formState.toState}
+                            toStockPool={formState.toStockPool}
+                            stockStates={stockStates}
+                            stockPools={stockPools}
+                            partNumber={formState.part?.partNumber}
+                            quantity={formState.quantity}
+                            fromLocationCode={formState.fromLocationCode}
+                            fromPalletNumber={formState.fromPalletNumber}
+                            doPickStock={doPickStock}
+                            toLocationCode={formState.toLocationCode}
+                            toPalletNumber={formState.toPalletNumber}
+                            setItemValue={(fieldName, newValue) =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName, newValue }
+                                })
+                            }
+                            disabled={stockStatesLoading || stockPoolsLoading}
+                            shouldRender={shouldRender(
+                                () => formState.storesFunction?.code === 'MOVE'
+                            )}
                         />
                         <Grid size={6}>
                             <InputField
@@ -516,7 +633,7 @@ function Requisition({ creating }) {
                                     }
                                 }}
                                 saveClick={() => {
-                                    createReq(formState);
+                                    createReq(null, formState);
                                 }}
                                 backClick={() => {
                                     navigate('/requisitions');

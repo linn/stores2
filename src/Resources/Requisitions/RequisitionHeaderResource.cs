@@ -25,6 +25,8 @@
 
         public string ToLocationCode { get; set; }
 
+        public int? FromLocationId { get; set; }
+
         public string FromLocationCode { get; set; }
 
         public int? ToPalletNumber { get; set; }
@@ -76,5 +78,11 @@
         public string FromStockPool { get; set; }
 
         public string ToStockPool { get; set; }
+
+        public string FromState { get; set; }
+
+        public string ToState { get; set; }
+
+        public string BatchDate { get; set; }
     }
 }

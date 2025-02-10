@@ -13,7 +13,6 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;
-    using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -67,6 +66,7 @@
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>()
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
+                .AddScoped<IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>, StockStateFacadeService>()
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>();
         }
@@ -80,6 +80,7 @@
                 .AddScoped<IBuilder<StoresFunction>, StoresFunctionResourceBuilder>()
                 .AddScoped<IBuilder<NominalAccount>, NominalAccountResourceBuilder>()
                 .AddScoped<IBuilder<StoresBudget>, StoresBudgetResourceBuilder>()
+                .AddScoped<IBuilder<StockState>, StockStateResourceBuilder>()
                 .AddScoped<IBuilder<StorageSite>, StorageSiteResourceBuilder>()
                 .AddScoped<IBuilder<StorageType>, StorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()

@@ -3,7 +3,6 @@
     using System.Net.Http;
 
     using Linn.Common.Persistence.EntityFramework;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;

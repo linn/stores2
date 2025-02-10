@@ -5,7 +5,6 @@
 	  <AssemblyName>Linn.Stores2.TestData</AssemblyName>
 	  <RootNamespace>Linn.Stores2.TestData</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>

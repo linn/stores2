@@ -24,6 +24,8 @@
             app.MapGet("/stores2/storage/sites", this.GetSites);
             app.MapPost("/stores2/storage/locations", this.CreateLocation);
             app.MapPut("/stores2/storage/locations/{id:int}", this.UpdateLocation);
+            app.MapGet("/stores2/stock/states", this.GetStockStates);
+            app.MapGet("/stores2/stock/states/{id}", this.GetStockState);
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -93,6 +95,23 @@
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> facadeService)
         {
             await res.Negotiate(await facadeService.Update(id, resource, req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task GetStockStates(
+            HttpRequest req,
+            HttpResponse res,
+            IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService)
+        {
+            await res.Negotiate(await facadeService.GetAll());
+        }
+
+        private async Task GetStockState(
+            HttpRequest _,
+            HttpResponse res,
+            string id,
+            IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService)
+        {
+            await res.Negotiate(await facadeService.GetById(id));
         }
     }
 }

@@ -34,6 +34,8 @@
                     r => new EntityFrameworkQueryRepository<StoragePlace>(r.GetService<ServiceDbContext>()?.StoragePlaces))
                 .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
                     r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
+                .AddScoped<IRepository<StockState, string>, EntityFrameworkRepository<StockState, string>>(
+                    r => new EntityFrameworkRepository<StockState, string>(r.GetService<ServiceDbContext>()?.StockStates))
                 .AddScoped<IRepository<StorageLocation, int>, StorageLocationRepository>()
                 .AddScoped<IRepository<Employee, int>, EntityFrameworkRepository<Employee, int>>(
                     r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees))

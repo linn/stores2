@@ -19,6 +19,7 @@ const itemTypes = {
     parts: { url: `${config.proxyRoot}/parts` },
     stockLocators: { url: `${config.proxyRoot}/inventory/stock-locators-by-location` },
     stockPools: { url: `${config.appRoot}/stores2/stock-pools` },
+    stockStates: { url: `${config.appRoot}/stores2/stock/states` },
     accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` }
 };
 

@@ -23,6 +23,13 @@
                           CancelFunction = model.CancelFunction,
                           DepartmentNominalRequired = model.DepartmentNominalRequired,
                           ManualPickRequired = model.ManualPickRequired,
+                          FromLocationRequired = model.FromLocationRequired,
+                          FromStateRequired = model.FromStateRequired,
+                          FromStockPoolRequired = model.FromStockPoolRequired,
+                          QuantityRequired = model.QuantityRequired,
+                          ToLocationRequired = model.ToLocationRequired,
+                          ToStateRequired = model.ToStateRequired,
+                          ToStockPoolRequired = model.ToStockPoolRequired,
                           TransactionTypes = model.TransactionsTypes?.Select(
                               t => new FunctionCodeTransactionResource
                                        {

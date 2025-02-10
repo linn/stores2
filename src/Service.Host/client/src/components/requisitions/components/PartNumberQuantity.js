@@ -10,8 +10,9 @@ function PartNumberQuantity({
     partDescription = null,
     setPart,
     quantity = null,
+    disabled = false,
     setQuantity,
-    showQuantity,
+    showQuantity = true,
     shouldRender = true
 }) {
     const {
@@ -35,6 +36,7 @@ function PartNumberQuantity({
                     resultLimit={100}
                     helperText="Enter a search term and press enter or TAB"
                     value={partNumber}
+                    disabled={disabled}
                     handleValueChange={(_, newVal) => {
                         setPart({ partNumber: newVal });
                     }}
@@ -59,6 +61,7 @@ function PartNumberQuantity({
                 <InputField
                     fullWidth
                     value={partDescription}
+                    disabled={disabled}
                     onChange={() => {}}
                     label="Desc"
                     propertyName="partDescription"
@@ -69,6 +72,7 @@ function PartNumberQuantity({
                     <InputField
                         value={quantity}
                         onChange={(_, val) => setQuantity(val)}
+                        disabled={disabled}
                         label="Qty"
                         propertyName="quantity"
                     />
@@ -85,6 +89,7 @@ PartNumberQuantity.propTypes = {
     partNumber: PropTypes.string,
     partDescription: PropTypes.string,
     setPart: PropTypes.func.isRequired,
+    disabled: PropTypes.bool,
     quantity: PropTypes.number,
     setQuantity: PropTypes.func.isRequired,
     showQuantity: PropTypes.bool,
@@ -96,7 +101,8 @@ PartNumberQuantity.defaultProps = {
     partDescription: null,
     quantity: null,
     showQuantity: true,
-    shouldRender: true
+    shouldRender: true,
+    disabled: false
 };
 
 export default PartNumberQuantity;

@@ -5,7 +5,13 @@ import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 
-function BookedBy({ dateBooked, bookedByName, bookUrl, onBook, shouldRender }) {
+function BookedBy({
+    dateBooked = null,
+    bookedByName = null,
+    bookUrl = null,
+    onBook,
+    shouldRender = true
+}) {
     if (!shouldRender) {
         return <Grid size={6} />;
     }
@@ -41,15 +47,17 @@ function BookedBy({ dateBooked, bookedByName, bookUrl, onBook, shouldRender }) {
 }
 
 BookedBy.propTypes = {
-    bookedByName: PropTypes.string.isRequired,
-    dateBooked: PropTypes.string.isRequired,
+    bookedByName: PropTypes.string,
+    dateBooked: PropTypes.string,
     bookUrl: PropTypes.string,
     onBook: PropTypes.func.isRequired,
     shouldRender: PropTypes.bool
 };
 
 BookedBy.defaultProps = {
-    shouldRender: false,
+    shouldRender: true,
+    bookedByName: null,
+    dateBooked: null,
     bookUrl: null
 };
 

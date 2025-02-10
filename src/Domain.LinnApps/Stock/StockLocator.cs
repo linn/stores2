@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System;
-    using System.Collections.Generic;
 
     using Linn.Stores2.Domain.LinnApps.Parts;
 
