@@ -43,7 +43,7 @@
 
         public DbSet<StoresFunction> StoresFunctionCodes { get; set; }
 
-        public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
+        public DbSet<Part> Parts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -60,7 +60,6 @@
             BuildStockPool(builder);
             BuildStockLocators(builder);
             BuildStorageLocations(builder);
-            BuildParts(builder);
             BuildStoresTransactionDefinitions(builder);
             BuildReqMoves(builder);
             BuildRequisitionHeaders(builder);

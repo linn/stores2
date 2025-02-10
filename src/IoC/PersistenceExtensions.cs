@@ -3,7 +3,7 @@
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.GoodsIn;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -38,7 +38,9 @@
                 .AddScoped<IRepository<Employee, int>, EntityFrameworkRepository<Employee, int>>(
                     r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees))
                 .AddScoped<IRepository<StorageSite, string>, StorageSiteRepository>()
-                .AddScoped<IRepository<StoresFunction, string>, StoresFunctionCodeRepository>();
+                .AddScoped<IRepository<StoresFunction, string>, StoresFunctionCodeRepository>()
+                .AddScoped<IRepository<Part, string>, EntityFrameworkRepository<Part, string>>(
+                    r => new EntityFrameworkRepository<Part, string>(r.GetService<ServiceDbContext>()?.Parts));
         }
     }
 }

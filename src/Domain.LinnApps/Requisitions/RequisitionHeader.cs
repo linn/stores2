@@ -74,7 +74,7 @@
 
         public string ToStockPool { get; set; }
 
-        public RequisitionHeader()
+        protected RequisitionHeader()
         {
         }
 
@@ -115,7 +115,6 @@
                     this.AddLine(l);
                 }
             }
-
         }
 
         public void AddLine(RequisitionLine toAdd)
