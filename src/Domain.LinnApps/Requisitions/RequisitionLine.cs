@@ -34,11 +34,17 @@
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
-            this.Part = part;
+
+            this.Part = part ?? throw new RequisitionException("Requisition line requires a part");
+            this.TransactionDefinition = transaction ?? throw new RequisitionException("Requisition line requires a transaction");
+
             this.Qty = qty;
+
             this.Moves = new List<ReqMove>();
+
             this.NominalAccountPostings = new List<RequisitionLinePosting>();
-            this.TransactionDefinition = transaction;
+            // TODO work out how to derive postings see STORES_OO.CREATENOMINALS and Post-Insert/RL trig in REQ UT
+
             this.Cancelled = "N";
         }
 
@@ -137,35 +143,42 @@
 
         public bool OkToBook()
         {
-            if (!this.IsCancelled() && !this.IsBooked())
+            if (this.IsCancelled() || this.IsBooked())
             {
-                var creditQty = this.GetPostingQty("D");
-                var debitQty = this.GetPostingQty("C");
-                if (creditQty == this.Qty && debitQty == this.Qty)
-                {
-                    if (this.TransactionDefinition != null && this.TransactionDefinition.RequiresMoves)
-                    {
-                        var moveQty = this.Moves.Sum(m => m.Quantity);
-                        return moveQty == this.Qty; // ensure moves have the qty 
-                    }
-
-                    // some transactions dont require moves e.g. SUMVI
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            var creditQty = this.GetPostingQty("D");
+            var debitQty = this.GetPostingQty("C");
+
+            if (creditQty != this.Qty || debitQty != this.Qty)
+            {
+                return false;
+            }
+
+            if (this.TransactionDefinition == null || !this.TransactionDefinition.RequiresMoves)
+            {
+                return true;
+            }
+
+            var moveQty = this.Moves.Sum(m => m.Quantity);
+            return moveQty == this.Qty; // ensure moves have the qty 
+
+            // some transactions dont require moves e.g. SUMVI
+
         }
 
         public bool RequiresAuthorisation()
         {
-            if (!this.IsCancelled() && !this.IsBooked())
+            if (this.IsCancelled() || this.IsBooked())
             {
-                if (this.TransactionDefinition != null && this.TransactionDefinition.RequiresAuthorisation && this.Part != null)
-                {
-                    // only have to authorise Finished Goods on transactions that require auth
-                    return this.Part.IsFinishedGoods();
-                }
+                return false;
+            }
+
+            if (this.TransactionDefinition != null && this.TransactionDefinition.RequiresAuthorisation && this.Part != null)
+            {
+                // only have to authorise Finished Goods on transactions that require auth
+                return this.Part.IsFinishedGoods();
             }
 
             return false;

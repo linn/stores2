@@ -117,7 +117,31 @@
             RequisitionHeaderResource resource,
             IEnumerable<string> privileges = null)
         {
-            return new RequisitionHeader();
+            var result = await this.requisitionService.CreateRequisition(
+                             new User
+                                 {
+                                     UserNumber = resource.CreatedBy.GetValueOrDefault(),
+                                     Privileges = privileges,
+                                 }, 
+                             resource.StoresFunction?.Code, 
+                             resource.ReqType,
+                             resource.Document1, 
+                             resource.Document1Name, 
+                             resource.Department?.DepartmentCode, 
+                             resource.Nominal?.NominalCode, 
+                             resource.Lines?.Select(BuildLineCandidateFromResource), 
+                             resource.Reference, 
+                             resource.Comments, 
+                             resource.ManualPick, 
+                             resource.FromStockPool, 
+                             resource.ToStockPool, 
+                             resource.FromPalletNumber, 
+                             resource.ToPalletNumber, 
+                             resource.FromLocationCode, 
+                             resource.ToLocationCode, 
+                             resource.PartNumber, 
+                             resource.Qty);
+            return result;
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
@@ -156,6 +180,28 @@
             RequisitionSearchResource searchResource)
         {
             throw new NotImplementedException();
+        }
+
+        private static LineCandidate BuildLineCandidateFromResource(RequisitionLineResource resource)
+        {
+            return new LineCandidate
+                       {
+                           StockPicks = resource.Moves.Select(
+                               m => new MoveSpecification
+                                        {
+                                            PartNumber = m.Part,
+                                            Qty = m.Qty.GetValueOrDefault(), 
+                                            FromLocation = m.From.LocationCode,
+                                            FromPallet = m.From.PalletNumber
+                                        }),
+                           LineNumber = resource.LineNumber,
+                           PartNumber = resource.Part?.PartNumber,
+                           Document1 = resource.Document1Number,
+                           Document1Line = resource.Document1Line,
+                           Document1Type = resource.Document1Type,
+                           Qty = resource.Qty,
+                           TransactionDefinition = resource.TransactionCode
+                       };
         }
     }
 }

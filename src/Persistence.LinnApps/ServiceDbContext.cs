@@ -43,7 +43,7 @@
 
         public DbSet<StoresFunction> StoresFunctionCodes { get; set; }
 
-        public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
+        public DbSet<Part> Parts { get; set; }
 
         public DbSet<StockState> StockStates { get; set; }
 
@@ -62,7 +62,6 @@
             BuildStockPool(builder);
             BuildStockLocators(builder);
             BuildStorageLocations(builder);
-            BuildParts(builder);
             BuildStoresTransactionDefinitions(builder);
             BuildReqMoves(builder);
             BuildRequisitionHeaders(builder);

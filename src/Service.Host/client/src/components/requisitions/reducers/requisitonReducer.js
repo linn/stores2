@@ -18,10 +18,6 @@ function reducer(state, action) {
                 lines: [],
                 cancelled: 'N',
                 createdByName: action.payload.userName
-                // // just to make it easier to debug creating - delete everything below
-                // nominal: { nominalCode: 1607 },
-                // department: { departmentCode: 2963 },
-                // reqType: 'F'
             };
         }
         case 'set_header_value': {
