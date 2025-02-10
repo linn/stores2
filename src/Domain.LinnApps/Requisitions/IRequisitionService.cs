@@ -23,12 +23,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         Task<RequisitionHeader> CreateRequisition(
             User createdBy,
-            string function,
+            string functionCode,
             string reqType,
             int? document1Number,
             string document1Type,
-            string department,
-            string nominal,
+            string departmentCode,
+            string nominalCode,
             IEnumerable<LineCandidate> lines = null,
             string reference = null,
             string comments = null,
@@ -37,9 +37,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string toStockPool = null,
             int? fromPalletNumber = null,
             int? toPalletNumber = null,
-            string fromLocation = null,
-            string toLocation = null,
-            string part = null,
+            string fromLocationCode = null,
+            string toLocationCode = null,
+            string partNumber = null,
             decimal? qty = null);
     }
 }

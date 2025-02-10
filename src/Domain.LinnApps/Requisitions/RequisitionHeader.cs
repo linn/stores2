@@ -115,7 +115,6 @@
                     this.AddLine(l);
                 }
             }
-
         }
 
         public void AddLine(RequisitionLine toAdd)
