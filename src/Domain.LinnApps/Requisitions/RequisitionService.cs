@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
@@ -148,6 +149,30 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var req = await this.repository.FindByIdAsync(reqNumber);
 
             return req;
+        }
+
+        public async Task<RequisitionHeader> CreateRequisition(
+            User createdBy,
+            string function,
+            string reqType,
+            int? document1Number,
+            string document1Type,
+            string department,
+            string nominal,
+            IEnumerable<LineCandidate> lines = null,
+            string reference = null,
+            string comments = null,
+            string manualPick = null,
+            string fromStockPool = null,
+            string toStockPool = null,
+            int? fromPalletNumber = null,
+            int? toPalletNumber = null,
+            string fromLocation = null,
+            string toLocation = null,
+            string part = null,
+            decimal? qty = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }
