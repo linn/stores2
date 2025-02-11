@@ -74,6 +74,12 @@
 
         public string ToStockPool { get; set; }
 
+        public string FromState { get; set; }
+
+        public string ToState { get; set; }
+
+        public DateTime? BatchDate { get; set; }
+
         protected RequisitionHeader()
         {
         }

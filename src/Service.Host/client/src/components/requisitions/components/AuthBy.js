@@ -3,7 +3,7 @@ import { InputField, DatePicker } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid2';
 import PropTypes from 'prop-types';
 
-function AuthBy({ dateAuthorised, authorisedByName, shouldRender }) {
+function AuthBy({ dateAuthorised, authorisedByName, shouldRender = true }) {
     if (!shouldRender) {
         return '';
     }
@@ -39,7 +39,7 @@ AuthBy.propTypes = {
 };
 
 AuthBy.defaultProps = {
-    shouldRender: false
+    shouldRender: true
 };
 
 export default AuthBy;

@@ -34,6 +34,7 @@
                            PartNumber = header.Part?.PartNumber,
                            ToLocationId = header.ToLocation?.LocationId,
                            ToLocationCode = header.ToLocation?.LocationCode,
+                           FromLocationId = header.FromLocation?.LocationId,
                            FromLocationCode = header.FromLocation?.LocationCode,
                            ToPalletNumber = header.ToPalletNumber,
                            FromPalletNumber = header.FromPalletNumber,
@@ -69,6 +70,9 @@
                            AuthorisedBy = header.AuthorisedBy?.Id,
                            AuthorisedByName = header.AuthorisedBy?.Name,
                            DateAuthorised = header.DateAuthorised?.ToString("o"),
+                           BatchDate = header.BatchDate?.ToString("o"),
+                           FromState = header.FromState,
+                           ToState = header.ToState,    
                            Links = this.BuildLinks(header, claims).ToArray()
                         };
         }

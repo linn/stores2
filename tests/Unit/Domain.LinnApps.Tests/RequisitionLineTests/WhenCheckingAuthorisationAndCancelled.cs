@@ -15,7 +15,7 @@
         public void SetUp()
         {
             this.sut = new RequisitionLine(1, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLoan);
-            this.sut.Cancel(100, "For Test", new DateTime(2024,1,1));
+            this.sut.Cancel(100, "For Test", new DateTime(2024, 1, 1));
         }
 
         [Test]

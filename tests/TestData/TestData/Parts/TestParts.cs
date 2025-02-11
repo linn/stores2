@@ -5,16 +5,16 @@
     public static class TestParts
     {
         public static readonly Part Cap003 =
-            new Part()
-            {
+            new Part
+                {
                 PartNumber = "CAP 003",
                 Description = "Test Capacitor",
                 RawOrFinished = "R"
             };
 
         public static readonly Part SelektHub =
-            new Part()
-            {
+            new Part
+                {
                 PartNumber = "SK HUB",
                 Description = "SELEKT DSM HUB",
                 RawOrFinished = "F"

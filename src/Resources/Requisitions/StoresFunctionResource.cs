@@ -14,6 +14,20 @@
 
         public string ManualPickRequired { get; set; }
 
+        public string FromStateRequired { get; set; }
+
+        public string FromLocationRequired { get; set; }
+
+        public string FromStockPoolRequired { get; set; }
+
+        public string QuantityRequired { get; set; }
+
+        public string ToStateRequired { get; set; }
+
+        public string ToStockPoolRequired { get; set; }
+
+        public string ToLocationRequired { get; set; }
+
         public IEnumerable<FunctionCodeTransactionResource> TransactionTypes { get; set; }
     }
 }

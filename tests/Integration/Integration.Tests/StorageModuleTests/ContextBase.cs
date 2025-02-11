@@ -34,6 +34,7 @@
             var storageSiteRepository = new StorageSiteRepository(this.DbContext);
             var stockPoolRepository = new StockPoolRepository(this.DbContext);
             var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
+            var stockStateRepository = new EntityFrameworkRepository<StockState, string>(this.DbContext.StockStates);
 
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
                 storageSiteService = new StorageSiteService(
@@ -54,11 +55,18 @@
                     stockPoolRepository,
                     storageTypeRepository);
 
+            IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>
+                stockStateFacadeService = new StockStateFacadeService(
+                    stockStateRepository,
+                    new TransactionManager(this.DbContext),
+                    new StockStateResourceBuilder());
+
             this.Client = TestClient.With<StorageModule>(
                 services =>
                 {
                     services.AddSingleton(storageSiteService);
                     services.AddSingleton(storageLocationService);
+                    services.AddSingleton(stockStateFacadeService);
                     services.AddHandlers();
                     services.AddRouting();
                 });
