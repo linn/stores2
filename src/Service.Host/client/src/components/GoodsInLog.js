@@ -1,5 +1,11 @@
 import React, { useState, useMemo } from 'react';
-import { DatePicker, InputField, Loading, Search } from '@linn-it/linn-form-components-library';
+import {
+    DatePicker,
+    Dropdown,
+    InputField,
+    Loading,
+    Search
+} from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -8,6 +14,7 @@ import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
+import useInitialise from '../hooks/useInitialise';
 import ReportDataGrids from './ReportDataGrids';
 
 function GoodsInLog() {
@@ -31,6 +38,10 @@ function GoodsInLog() {
     } = useGet(itemTypes.storagePlaces.url);
 
     const { send: getReport, isLoading, result: reportResult } = useGet(itemTypes.goodsInLog.url);
+
+    const { data: employees, isGetLoading: isEmployeesLoading } = useInitialise(
+        itemTypes.employees.url
+    );
 
     const getQueryString = () => {
         let queryString = '?';
@@ -72,6 +83,10 @@ function GoodsInLog() {
         return queryString;
     };
 
+    const handleEmployeeDropDownChange = (propertyName, newValue) => {
+        setCreatedBy(newValue);
+    };
+
     const reports = useMemo(
         () => (
             <ReportDataGrids
@@ -89,16 +104,17 @@ function GoodsInLog() {
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
                 <Grid size={12}>
                     <Typography variant="h4">Goods In Log</Typography>
                 </Grid>
-                {isLoading && (
-                    <Grid size={12}>
-                        <Loading />
-                    </Grid>
-                )}
-                <Grid item xs={6}>
+                {isLoading ||
+                    (isEmployeesLoading && (
+                        <Grid size={12}>
+                            <Loading />
+                        </Grid>
+                    ))}
+                <Grid item xs={3}>
                     <DatePicker
                         label="From Date"
                         value={fromDate}
@@ -106,7 +122,7 @@ function GoodsInLog() {
                         onChange={setFromDate}
                     />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={3}>
                     <DatePicker
                         label="To Date"
                         value={toDate}
@@ -114,17 +130,20 @@ function GoodsInLog() {
                         onChange={setToDate}
                     />
                 </Grid>
-                <Grid item xs={5}>
-                    <InputField
+                <Grid item xs={3}>
+                    <Dropdown
                         propertyName="createdBy"
+                        items={employees?.items.map(employee => ({
+                            id: employee.id,
+                            displayText: `${employee?.firstName} ${employee?.lastName}`
+                        }))}
                         label="Created By"
-                        type="number"
                         fullWidth
+                        onChange={handleEmployeeDropDownChange}
                         value={createdBy}
-                        onChange={(_, newValue) => setCreatedBy(newValue)}
                     />
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={3}>
                     <InputField
                         propertyName="orderNumber"
                         label="Order Number"
@@ -134,7 +153,7 @@ function GoodsInLog() {
                         onChange={(_, newValue) => setOrderNumber(newValue)}
                     />
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={3}>
                     <InputField
                         propertyName="reqNumber"
                         label="Req Number"
@@ -144,7 +163,7 @@ function GoodsInLog() {
                         onChange={(_, newValue) => setReqNumber(newValue)}
                     />
                 </Grid>
-                <Grid item xs={5}>
+                <Grid item xs={3}>
                     <InputField
                         propertyName="quantity"
                         label="Quantity"
@@ -154,7 +173,7 @@ function GoodsInLog() {
                         onChange={(_, newValue) => setQuantity(newValue)}
                     />
                 </Grid>
-                <Grid size={4}>
+                <Grid size={3}>
                     <InputField
                         fullWidth
                         value={articleNumber}
