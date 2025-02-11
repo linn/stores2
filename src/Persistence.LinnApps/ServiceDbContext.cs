@@ -47,6 +47,8 @@
 
         public DbSet<StockState> StockStates { get; set; }
 
+        public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -618,7 +620,7 @@
             e.Property(g => g.OrderNumber).HasColumnName("ORDER_NUMBER");
             e.Property(g => g.OrderLine).HasColumnName("ORDER_LINE");
             e.Property(g => g.LoanNumber).HasColumnName("LOAN_NUMBER");
-            e.Property(g => g.LoanLine).HasColumnName("LOAN_LINE");
+            e.Property(g => g.LoanLine).HasColumnName("LINE_NUMBER");
             e.Property(g => g.RsnNumber).HasColumnName("RSN_NUMBER");
             e.Property(g => g.ReqNumber).HasColumnName("REQ_NUMBER");
             e.Property(g => g.ReqLine).HasColumnName("REQ_LINE");
