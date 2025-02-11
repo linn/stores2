@@ -33,23 +33,24 @@
             string storagePlace)
         {
             var fromDateSearch = string.IsNullOrWhiteSpace(fromDate)
-                               ? DateTime.Now.AddDays(-14)
+                               ? (DateTime?)null
                                : DateTime.Parse(fromDate);
 
-            var toDateSearch = string.IsNullOrWhiteSpace(toDate)
-                             ? DateTime.Now
+            var toDateSearch = string.IsNullOrWhiteSpace(toDate) ? (DateTime?)null
                              : DateTime.Parse(toDate);
 
             var data = this.goodsInLogRepository.FilterBy(
-                x => x.DateCreated >= fromDateSearch && x.DateCreated <= toDateSearch
-                                                     && (!createdBy.HasValue || x.CreatedBy == createdBy)
-                                                     && (string.IsNullOrEmpty(articleNumber) || x.ArticleNumber
-                                                             .ToUpper().Contains(articleNumber.ToUpper().Trim()))
-                                                     && (!orderNumber.HasValue || x.OrderNumber == orderNumber)
-                                                     && (!quantity.HasValue || x.Quantity == quantity)
-                                                     && (!reqNumber.HasValue || x.ReqNumber == reqNumber)
-                                                     && (string.IsNullOrEmpty(storagePlace) || x.StoragePlace.ToUpper()
-                                                             .Contains(storagePlace.ToUpper().Trim()))).OrderByDescending(x => x.Id);
+                    x => (fromDateSearch == null || x.DateCreated >= fromDateSearch)
+                         && (toDateSearch == null || x.DateCreated <= toDateSearch)
+                         && (!createdBy.HasValue || x.CreatedBy == createdBy)
+                         && (string.IsNullOrEmpty(articleNumber) || x.ArticleNumber
+                                 .ToUpper().Contains(articleNumber.ToUpper().Trim()))
+                         && (!orderNumber.HasValue || x.OrderNumber == orderNumber)
+                         && (!quantity.HasValue || x.Quantity == quantity)
+                         && (!reqNumber.HasValue || x.ReqNumber == reqNumber)
+                         && (string.IsNullOrEmpty(storagePlace) || x.StoragePlace.ToUpper()
+                                 .Contains(storagePlace.ToUpper().Trim())))
+                .OrderByDescending(x => x.Id);
 
 
             var model = new ResultsModel { ReportTitle = new NameModel("Goods In Log") };
@@ -71,7 +72,7 @@
 
             foreach (var goodsInLogEntry in goodsInLogEntries)
             {
-                var rowId = $"{goodsInLogEntry.Id}";
+                var rowId = $"{goodsInLogEntry.Id}/{goodsInLogEntry.BookInRef}";
 
                 values.Add(
                     new CalculationValueModel
@@ -263,9 +264,9 @@
             return new List<AxisDetailsModel>
                               {
                                   new AxisDetailsModel("BookInRef", "Book In Ref", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("TransactionType", "Type", GridDisplayType.TextValue, 90),
+                                  new AxisDetailsModel("Type", "Type", GridDisplayType.TextValue, 90),
                                   new AxisDetailsModel("DateCreated", "Date Created", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("CreatedBy", "CreatedBy", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("CreatedBy", "Created By", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("OrderNumber", "Order Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("OrderLine", "Line", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("Quantity", "Qty", GridDisplayType.Value, 100) { DecimalPlaces = 2 },
@@ -288,7 +289,7 @@
                                   new AxisDetailsModel("Processed", "Processed", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("ErrorMessage", "Error Message", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("Id", "Id", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("Sernos Tref", "SernosTref", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("SernosTref", "SernosTref", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("ProductAnalysisCode", "Product Analysis Code", GridDisplayType.TextValue, 100)
                               };
         }

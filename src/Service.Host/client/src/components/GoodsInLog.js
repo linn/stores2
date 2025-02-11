@@ -78,8 +78,6 @@ function GoodsInLog() {
             queryString += `storagePlace=${storagePlace.toUpperCase()}`;
         }
 
-        console.log(queryString);
-
         return queryString;
     };
 
