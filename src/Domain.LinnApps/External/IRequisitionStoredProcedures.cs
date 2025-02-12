@@ -11,5 +11,7 @@
         Task<ProcessResult> DeleteAllocOntos(int reqNumber, int? lineNumber, int? docNumber, string docType);
 
         Task<ProcessResult> DoRequisition(int reqNumber, int? lineNumber, int bookedBy);
+
+        Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber);
     }
 }

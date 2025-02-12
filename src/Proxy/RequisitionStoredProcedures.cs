@@ -152,8 +152,7 @@
 
         public async Task<ProcessResult> DoRequisition(int reqNumber, int? lineNumber, int bookedBy)
         {
-            using var connection = new OracleConnection(
-                ConnectionStrings.ManagedConnectionString());
+            using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
 
             var cmd = new OracleCommand("STORES_WRAPPER.DO_REQUISITION_WRAPPER", connection)
             {
@@ -202,6 +201,47 @@
             return new ProcessResult(
                 successParameter.Value.ToString() == "1",
                 messageParameter.Value.ToString());
+        }
+
+        public async Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber)
+        {
+            await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
+
+            var cmd = new OracleCommand("STORES_WRAPPER.CREATE_REQ_LINES", connection)
+                          {
+                              CommandType = CommandType.StoredProcedure
+                          };
+
+            cmd.Parameters.Add(new OracleParameter("p_req_number", OracleDbType.Int32)
+                                   {
+                                       Direction = ParameterDirection.Input,
+                                       Value = reqNumber
+                                   });
+
+            cmd.Parameters.Add(new OracleParameter("p_serial_number", OracleDbType.Int32)
+                                   {
+                                       Direction = ParameterDirection.Input,
+                                       Value = serialNumber
+                                   });
+
+            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+                                       {
+                                           Direction = ParameterDirection.Output,
+                                           Size = 500
+                                       };
+            cmd.Parameters.Add(messageParameter);
+
+            var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
+                                       {
+                                           Direction = ParameterDirection.Output
+                                       };
+            cmd.Parameters.Add(successParameter);
+
+            await connection.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+
+            return new ProcessResult(successParameter.Value?.ToString() == "1", messageParameter.Value?.ToString());
         }
     }
 }

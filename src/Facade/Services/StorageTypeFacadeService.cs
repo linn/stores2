@@ -40,7 +40,7 @@
                             resource.Description);
         }
 
-        protected override async Task UpdateFromResourceAsync(
+        protected override void UpdateFromResource(
             StorageType entity,
             StorageTypeResource updateResource,
             IEnumerable<string> privileges = null)
