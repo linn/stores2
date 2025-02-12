@@ -23,7 +23,7 @@
             this.resourceBuilder = resourceBuilder;
         }
 
-        public IResult<ReportReturnResource> GetGoodsInLogReport(
+        public async Task<IResult<ReportReturnResource>> GetGoodsInLogReport(
             string fromDate,
             string toDate,
             int? createdBy,
@@ -33,7 +33,7 @@
             int? reqNumber,
             string storagePlace)
         {
-            var result = this.goodsInLogReportService.GoodsInLogReport(
+            var result = await this.goodsInLogReportService.GoodsInLogReport(
                 fromDate,
                 toDate,
                 createdBy,
