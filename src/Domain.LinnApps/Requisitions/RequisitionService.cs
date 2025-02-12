@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -245,8 +244,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             // todo - might need to commit here as req probably needs to exist for pick_stock to work
             // todo - call stores_oo.pick_stock for each line
-            // todo - commit again
+
             // todo - call stores_oo.create_nominals to create nominal postings
+
             // todo - possibly some inserts into stores_move_logs (although could also try facade MaybeSaveToLogTable())
             // todo - fetch the req again with the real moves and the nominal postings .Include()'d
             return req;
