@@ -47,6 +47,8 @@
 
         public DbSet<StockState> StockStates { get; set; }
 
+        public DbSet<StoresTransactionDefinition> StoresTransactionDefinition { get; protected set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);

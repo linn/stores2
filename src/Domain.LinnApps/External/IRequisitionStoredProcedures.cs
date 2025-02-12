@@ -28,8 +28,6 @@
             decimal lineQty,
             int? locationId,
             int? palletNumber,
-            DateTime? batchDate,
-            string batchRef,
             string stockPoolCode,
             string transactionCode);
     }

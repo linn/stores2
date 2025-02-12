@@ -42,7 +42,9 @@
                 .AddScoped<IRepository<StorageSite, string>, StorageSiteRepository>()
                 .AddScoped<IRepository<StoresFunction, string>, StoresFunctionCodeRepository>()
                 .AddScoped<IRepository<Part, string>, EntityFrameworkRepository<Part, string>>(
-                    r => new EntityFrameworkRepository<Part, string>(r.GetService<ServiceDbContext>()?.Parts));
+                    r => new EntityFrameworkRepository<Part, string>(r.GetService<ServiceDbContext>()?.Parts))
+                .AddScoped<IRepository<StoresTransactionDefinition, string>, EntityFrameworkRepository<StoresTransactionDefinition, string>>(
+                    r => new EntityFrameworkRepository<StoresTransactionDefinition, string>(r.GetService<ServiceDbContext>()?.StoresTransactionDefinition));
         }
     }
 }

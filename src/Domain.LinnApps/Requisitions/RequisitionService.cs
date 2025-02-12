@@ -1,7 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
@@ -32,6 +30,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<StorageLocation, int> storageLocationRepository;
 
+        private readonly IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository;
+
+        private readonly ITransactionManager transactionManager;
+
         public RequisitionService(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -42,6 +44,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<Nominal, string> nominalRepository,
             IRepository<Part, string> partRepository,
             IRepository<StorageLocation, int> storageLocationRepository,
+            IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository,
             ITransactionManager transactionManager)
         {
             this.authService = authService;
@@ -53,10 +56,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.nominalRepository = nominalRepository;
             this.partRepository = partRepository;
             this.storageLocationRepository = storageLocationRepository;
+            this.transactionDefinitionRepository = transactionDefinitionRepository;
+            this.transactionManager = transactionManager;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
-            int reqNumber, 
+            int reqNumber,
             User cancelledBy,
             string reason)
         {
@@ -183,7 +188,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string document1Type,
             string departmentCode,
             string nominalCode,
-            IEnumerable<LineCandidate> lines = null,
+            LineCandidate firstLine = null,
             string reference = null,
             string comments = null,
             string manualPick = null,
@@ -230,7 +235,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 document1Type,
                 department, 
                 nominal,
-                lines.Select(x => new RequisitionLine(null, x.LineNumber)), // todo - add lines properly
+                null, // not passing any lines, they will be added later
                 reference,
                 comments,
                 manualPick,
@@ -242,16 +247,54 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 toLocation,
                 part,
                 qty);
+
+
             await this.repository.AddAsync(req);
 
-            // todo - might need to commit here as req probably needs to exist for pick_stock to work
-            // todo - call stores_oo.pick_stock for each line
+            await this.AddRequisitionLine(req, firstLine);
 
-            // todo - call stores_oo.create_nominals to create nominal postings
-
-            // todo - possibly some inserts into stores_move_logs (although could also try facade MaybeSaveToLogTable())
-            // todo - fetch the req again with the real moves and the nominal postings .Include()'d
             return req;
+        }
+
+        public async Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd)
+        {
+            var part = await this.partRepository.FindByIdAsync(toAdd.PartNumber);
+            var transactionDefinition =
+                await this.transactionDefinitionRepository.FindByIdAsync(toAdd.TransactionDefinition);
+            header.AddLine(new RequisitionLine(header.ReqNumber, toAdd.LineNumber, part, toAdd.Qty, transactionDefinition));
+
+            // we need this so the line exists for the stored procedure calls coming next
+            await this.transactionManager.CommitAsync();
+
+            foreach (var pick in toAdd.StockPicks)
+            {
+                var pickResult = await this.requisitionStoredProcedures.PickStock(
+                                     toAdd.PartNumber,
+                                     header.ReqNumber,
+                                     toAdd.LineNumber,
+                                     pick.Qty,
+                                     123,
+                                     pick.FromPallet,
+                                     header.FromStockPool, // todo - don't hardcode this?
+                                     toAdd.TransactionDefinition);
+
+                if (!pickResult.Success)
+                {
+                    throw new PickStockException("failed in pick_stock: " + pickResult.Message);
+                }
+            }
+
+            var createPostingsResult = await this.requisitionStoredProcedures.CreateNominals(
+                                           header.ReqNumber,
+                                           toAdd.Qty,
+                                           toAdd.LineNumber,
+                                           header.Nominal.NominalCode,
+                                           header.Department.DepartmentCode);
+
+            if (!createPostingsResult.Success)
+            {
+                throw new CreateNominalPostingException("failed in create_nominals: " + createPostingsResult.Message);
+            }
         }
     }
 }
