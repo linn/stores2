@@ -39,8 +39,8 @@ function GoodsInLog() {
 
     const { send: getReport, isLoading, result: reportResult } = useGet(itemTypes.goodsInLog.url);
 
-    const { data: employees, isGetLoading: isEmployeesLoading } = useInitialise(
-        itemTypes.employees.url
+    const { data: currentEmployees, isGetLoading: isCurrentEmployeesLoading } = useInitialise(
+        itemTypes.currentEmployees.url
     );
 
     const getQueryString = () => {
@@ -107,7 +107,7 @@ function GoodsInLog() {
                     <Typography variant="h4">Goods In Log</Typography>
                 </Grid>
                 {isLoading ||
-                    (isEmployeesLoading && (
+                    (isCurrentEmployeesLoading && (
                         <Grid size={12}>
                             <Loading />
                         </Grid>
@@ -131,7 +131,7 @@ function GoodsInLog() {
                 <Grid item xs={3}>
                     <Dropdown
                         propertyName="createdBy"
-                        items={employees?.items.map(employee => ({
+                        items={currentEmployees?.items.map(employee => ({
                             id: employee.id,
                             displayText: `${employee?.firstName} ${employee?.lastName}`
                         }))}

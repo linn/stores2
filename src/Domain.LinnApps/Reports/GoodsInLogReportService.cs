@@ -3,10 +3,13 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
+
+    using Microsoft.EntityFrameworkCore;
 
     public class GoodsInLogReportService : IGoodsInLogReportService
     {
@@ -22,7 +25,7 @@
             this.goodsInLogRepository = goodsInLogRepository;
         }
 
-        public ResultsModel GoodsInLogReport(
+        public async Task <ResultsModel> GoodsInLogReport(
             string fromDate,
             string toDate,
             int? createdBy,
@@ -52,12 +55,13 @@
                                  .Contains(storagePlace.ToUpper().Trim())))
                 .OrderByDescending(x => x.Id);
 
-
             var model = new ResultsModel { ReportTitle = new NameModel("Goods In Log") };
 
             var columns = this.ModelColumns();
 
             model.AddSortedColumns(columns);
+
+            await data.ToListAsync();
 
             var values = this.SetModelRows(data);
 
@@ -72,7 +76,7 @@
 
             foreach (var goodsInLogEntry in goodsInLogEntries)
             {
-                var rowId = $"{goodsInLogEntry.Id}/{goodsInLogEntry.BookInRef}";
+                var rowId = $"{goodsInLogEntry.Id}";
 
                 values.Add(
                     new CalculationValueModel
