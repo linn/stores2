@@ -53,7 +53,7 @@
                 return new SuccessResult<RequisitionHeaderResource>(
                     this.BuildResource(cancelled, privilegeList));
             }
-            catch (Exception e)
+            catch (DomainException e)
             {
                 return new BadRequestResult<RequisitionHeaderResource>(e.Message);
             }
@@ -84,7 +84,7 @@
                 return new SuccessResult<RequisitionHeaderResource>(
                     this.BuildResource(req, privilegeList));
             }
-            catch (Exception e)
+            catch (DomainException e)
             {
                 return new BadRequestResult<RequisitionHeaderResource>(e.Message);
             }
