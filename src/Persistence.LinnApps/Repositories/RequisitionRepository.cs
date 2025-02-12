@@ -39,5 +39,14 @@
                        .Include(r => r.Lines).ThenInclude(r => r.Moves).ThenInclude(m => m.StockLocator).ThenInclude(l => l.StorageLocation)
                        .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
+
+        public override async Task AddAsync(RequisitionHeader entity)
+        {
+            await base.AddAsync(entity);
+
+            // always want to save after adding a req, since subsequent stored procedure calls
+            // will need to the req to exist in the db
+            await this.serviceDbContext.SaveChangesAsync();
+        }
     }
 }

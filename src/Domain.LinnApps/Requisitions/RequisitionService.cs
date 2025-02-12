@@ -41,7 +41,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<Department, string> departmentRepository,
             IRepository<Nominal, string> nominalRepository,
             IRepository<Part, string> partRepository,
-            IRepository<StorageLocation, int> storageLocationRepository)
+            IRepository<StorageLocation, int> storageLocationRepository,
+            ITransactionManager transactionManager)
         {
             this.authService = authService;
             this.repository = repository;
@@ -241,6 +242,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 toLocation,
                 part,
                 qty);
+            await this.repository.AddAsync(req);
 
             // todo - might need to commit here as req probably needs to exist for pick_stock to work
             // todo - call stores_oo.pick_stock for each line
