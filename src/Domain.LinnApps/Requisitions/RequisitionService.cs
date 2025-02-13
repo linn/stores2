@@ -252,7 +252,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             await this.AddRequisitionLine(req, firstLine);
 
-            return req;
+            return await this.repository.FindByIdAsync(req.ReqNumber);
         }
 
         public async Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd)

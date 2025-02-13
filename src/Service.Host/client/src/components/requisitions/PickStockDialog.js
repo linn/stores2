@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import Dialog from '@mui/material/Dialog';
 import { DataGrid } from '@mui/x-data-grid';
 
 import DialogTitle from '@mui/material/DialogTitle';
@@ -129,12 +127,5 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
         </Dialog>
     );
 }
-
-PickStockDialog.propTypes = {
-    open: PropTypes.bool.isRequired,
-    setOpen: PropTypes.func.isRequired,
-    handleConfirm: PropTypes.func.isRequired,
-    partNumber: PropTypes.string.isRequired
-};
 
 export default PickStockDialog;

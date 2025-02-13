@@ -103,7 +103,8 @@
             TResource resource, 
             IEnumerable<string> privileges = null, 
             int? userNumber = null,
-            bool? addAndCommit = true)
+            bool doAdd = true,
+            bool doCommit = true)
         {
             T entity;
 
@@ -118,7 +119,7 @@
                 return new BadRequestResult<TResource>(exception.Message);
             }
 
-            if (addAndCommit.GetValueOrDefault())
+            if (doAdd)
             {
                 await this.repository.AddAsync(entity);
             }
@@ -128,8 +129,11 @@
                 await this.MaybeSaveLog("Create", userNumber, entity, resource, default);
             }
 
-            await this.transactionManager.CommitAsync();
-
+            if (doCommit)
+            {
+                await this.transactionManager.CommitAsync();
+            }
+            
             return new CreatedResult<TResource>(this.BuildResource(entity, privilegesList));
         }
 

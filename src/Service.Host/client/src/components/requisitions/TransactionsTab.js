@@ -1,6 +1,5 @@
 import React from 'react';
 import Grid from '@mui/material/Grid2';
-import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
 import { utilities } from '@linn-it/linn-form-components-library';
 import { Link } from 'react-router';
@@ -40,9 +39,5 @@ function TransactionsTab({ transactions = [] }) {
         </Grid>
     );
 }
-
-TransactionsTab.propTypes = {
-    transactions: PropTypes.arrayOf(PropTypes.shape({})).isRequired
-};
 
 export default TransactionsTab;

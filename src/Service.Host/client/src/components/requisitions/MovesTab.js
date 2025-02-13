@@ -1,6 +1,5 @@
 import React from 'react';
 import Grid from '@mui/material/Grid2';
-import PropTypes from 'prop-types';
 import { DataGrid } from '@mui/x-data-grid';
 import { Typography } from '@mui/material';
 
@@ -174,7 +173,5 @@ function MovesTab({ moves = [] }) {
         </Grid>
     );
 }
-
-MovesTab.propTypes = { moves: PropTypes.arrayOf(PropTypes.shape({})) };
 
 export default MovesTab;
