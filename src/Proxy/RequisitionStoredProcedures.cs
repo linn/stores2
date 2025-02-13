@@ -256,7 +256,7 @@
             var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
             {
                 Direction = ParameterDirection.InputOutput,
-                Value = 0
+                Value = 1
             };
             cmd.Parameters.Add(successParameter);
             var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)

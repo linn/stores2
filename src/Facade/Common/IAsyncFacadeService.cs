@@ -32,7 +32,7 @@
             string searchTerm, 
             IEnumerable<string> privileges = null);
 
-        Task<IResult<TResource>> Add(TResource resource, IEnumerable<string> privileges = null, int? userNumber = null);
+        Task<IResult<TResource>> Add(TResource resource, IEnumerable<string> privileges = null, int? userNumber = null, bool? addAndCommit = true);
 
         Task<IResult<TResource>> Update(
             TKey id,

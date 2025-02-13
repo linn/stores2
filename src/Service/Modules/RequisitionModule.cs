@@ -107,7 +107,7 @@
             IRequisitionFacadeService service)
         {
             resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
-            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
+            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges(), null, false));
         }
         
         private async Task GetFunctionCodes(
