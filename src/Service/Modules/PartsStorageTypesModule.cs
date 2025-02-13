@@ -60,12 +60,12 @@
         private async Task Update(
             HttpRequest _,
             HttpResponse res,
-            string partNumber,
-            string storageTypeCode,
+            string PartNumber,
+            string StorageTypeCode,
             PartsStorageTypeResource resource,
             IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
-            var key = new PartsStorageTypeKey(partNumber, storageTypeCode);
+            var key = new PartsStorageTypeKey(partNumber: PartNumber, storageTypeCode: StorageTypeCode);
 
             await res.Negotiate(await service.Update(key, resource));
         }

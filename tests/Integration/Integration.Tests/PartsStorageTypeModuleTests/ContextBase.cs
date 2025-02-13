@@ -38,7 +38,7 @@
             var partRepository = new EntityFrameworkRepository<Part, int>(this.DbContext.Parts);
             var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
             var partsStorageTypeRepository
-                = new EntityFrameworkRepository<PartsStorageType, PartsStorageTypeKey>(this.DbContext.PartsStorageTypes);
+                = new PartsStorageTypeRepository(this.DbContext);
 
             IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> partsStorageTypeFacadeService
                 = new PartsStorageTypeFacadeService(

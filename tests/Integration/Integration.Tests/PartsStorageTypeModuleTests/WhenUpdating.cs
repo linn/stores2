@@ -51,9 +51,6 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 
             this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
 
-            this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
-
-
             this.updateResource = new PartsStorageTypeResource
                                       { 
                                           Part = new PartResource
