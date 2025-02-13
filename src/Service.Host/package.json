@@ -51,7 +51,6 @@
     "prettier": "^3.4.2",
     "raf": "^3.4.1",
     "regenerator-runtime": "^0.14.1",
-    "sass-loader": "^16.0.4",
     "style-loader": "^4.0.0",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
