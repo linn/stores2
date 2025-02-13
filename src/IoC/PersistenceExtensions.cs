@@ -3,6 +3,8 @@
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.GoodsIn;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -34,11 +36,17 @@
                     r => new EntityFrameworkQueryRepository<StoragePlace>(r.GetService<ServiceDbContext>()?.StoragePlaces))
                 .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
                     r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
+                .AddScoped<IRepository<StockState, string>, EntityFrameworkRepository<StockState, string>>(
+                    r => new EntityFrameworkRepository<StockState, string>(r.GetService<ServiceDbContext>()?.StockStates))
                 .AddScoped<IRepository<StorageLocation, int>, StorageLocationRepository>()
                 .AddScoped<IRepository<Employee, int>, EntityFrameworkRepository<Employee, int>>(
                     r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees))
                 .AddScoped<IRepository<StorageSite, string>, StorageSiteRepository>()
-                .AddScoped<IRepository<StoresFunctionCode, string>, StoresFunctionCodeRepository>();
+                .AddScoped<IRepository<StoresFunction, string>, StoresFunctionCodeRepository>()
+                .AddScoped<IRepository<Part, string>, EntityFrameworkRepository<Part, string>>(
+                    r => new EntityFrameworkRepository<Part, string>(r.GetService<ServiceDbContext>()?.Parts))
+                .AddScoped<IRepository<GoodsInLogEntry, int>, EntityFrameworkRepository<GoodsInLogEntry, int>>(
+                    r => new EntityFrameworkRepository<GoodsInLogEntry, int>(r.GetService<ServiceDbContext>()?.GoodsInLogEntries));
         }
     }
 }

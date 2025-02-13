@@ -1,17 +1,18 @@
-﻿using Linn.Stores2.Service.Extensions;
-
-namespace Linn.Stores2.Service.Modules
+﻿namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
+
     using Linn.Common.Service.Core;
-    using Linn.Stores2.Service.Models;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Routing;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Service.Extensions;
+    using Linn.Stores2.Service.Models;
+
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Routing;
 
     public class StorageModule : IModule
     {
@@ -22,6 +23,9 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/storage/locations/{id:int}", this.GetLocationById);
             app.MapGet("/stores2/storage/sites", this.GetSites);
             app.MapPost("/stores2/storage/locations", this.CreateLocation);
+            app.MapPut("/stores2/storage/locations/{id:int}", this.UpdateLocation);
+            app.MapGet("/stores2/stock/states", this.GetStockStates);
+            app.MapGet("/stores2/stock/states/{id}", this.GetStockState);
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -81,6 +85,33 @@ namespace Linn.Stores2.Service.Modules
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> service)
         {
             await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task UpdateLocation(
+            HttpRequest req,
+            HttpResponse res,
+            int id,
+            StorageLocationResource resource,
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> facadeService)
+        {
+            await res.Negotiate(await facadeService.Update(id, resource, req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task GetStockStates(
+            HttpRequest req,
+            HttpResponse res,
+            IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService)
+        {
+            await res.Negotiate(await facadeService.GetAll());
+        }
+
+        private async Task GetStockState(
+            HttpRequest _,
+            HttpResponse res,
+            string id,
+            IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService)
+        {
+            await res.Negotiate(await facadeService.GetById(id));
         }
     }
 }

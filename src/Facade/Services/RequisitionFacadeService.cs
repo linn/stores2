@@ -6,6 +6,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
@@ -20,9 +21,7 @@
         private readonly IRequisitionService requisitionService;
 
         private readonly ITransactionManager transactionManager;
-
-        private readonly IRepository<RequisitionHeader, int> repository;
-
+        
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -32,9 +31,8 @@
         {
             this.requisitionService = requisitionService;
             this.transactionManager = transactionManager;
-            this.repository = repository;
         }
-
+        
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
             int reqNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
         {
@@ -55,13 +53,18 @@
                 return new SuccessResult<RequisitionHeaderResource>(
                     this.BuildResource(cancelled, privilegeList));
             }
-            catch (Exception e)
+            catch (DomainException e)
             {
                 return new BadRequestResult<RequisitionHeaderResource>(e.Message);
             }
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> CancelLine(int reqNumber, int lineNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
+        public async Task<IResult<RequisitionHeaderResource>> CancelLine(
+            int reqNumber, 
+            int lineNumber,
+            int cancelledBy,
+            string reason,
+            IEnumerable<string> privileges)
         {
             try
             {
@@ -81,10 +84,64 @@
                 return new SuccessResult<RequisitionHeaderResource>(
                     this.BuildResource(req, privilegeList));
             }
-            catch (Exception e)
+            catch (DomainException e)
             {
                 return new BadRequestResult<RequisitionHeaderResource>(e.Message);
             }
+        }
+
+        public async Task<IResult<RequisitionHeaderResource>> BookRequisition(int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges)
+        {
+            try
+            {
+                var privilegeList = privileges.ToList();
+
+                var req = await this.requisitionService.BookRequisition(
+                    reqNumber,
+                    lineNumber,
+                    new User
+                    {
+                        UserNumber = bookedBy,
+                        Privileges = privilegeList
+                    });
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(req, privilegeList));
+            }
+            catch (DomainException e)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(e.Message);
+            }
+        }
+
+        protected override async Task<RequisitionHeader> CreateFromResourceAsync(
+            RequisitionHeaderResource resource,
+            IEnumerable<string> privileges = null)
+        {
+            var result = await this.requisitionService.CreateRequisition(
+                             new User
+                                 {
+                                     UserNumber = resource.CreatedBy.GetValueOrDefault(),
+                                     Privileges = privileges,
+                                 }, 
+                             resource.StoresFunction?.Code, 
+                             resource.ReqType,
+                             resource.Document1, 
+                             resource.Document1Name, 
+                             resource.Department?.DepartmentCode, 
+                             resource.Nominal?.NominalCode, 
+                             resource.Lines?.Select(BuildLineCandidateFromResource), 
+                             resource.Reference, 
+                             resource.Comments, 
+                             resource.ManualPick, 
+                             resource.FromStockPool, 
+                             resource.ToStockPool, 
+                             resource.FromPalletNumber, 
+                             resource.ToPalletNumber, 
+                             resource.FromLocationCode, 
+                             resource.ToLocationCode, 
+                             resource.PartNumber, 
+                             resource.Qty);
+            return result;
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
@@ -123,6 +180,28 @@
             RequisitionSearchResource searchResource)
         {
             throw new NotImplementedException();
+        }
+
+        private static LineCandidate BuildLineCandidateFromResource(RequisitionLineResource resource)
+        {
+            return new LineCandidate
+                       {
+                           StockPicks = resource.Moves.Select(
+                               m => new MoveSpecification
+                                        {
+                                            PartNumber = m.Part,
+                                            Qty = m.Qty.GetValueOrDefault(), 
+                                            FromLocation = m.From.LocationCode,
+                                            FromPallet = m.From.PalletNumber
+                                        }),
+                           LineNumber = resource.LineNumber,
+                           PartNumber = resource.Part?.PartNumber,
+                           Document1 = resource.Document1Number,
+                           Document1Line = resource.Document1Line,
+                           Document1Type = resource.Document1Type,
+                           Qty = resource.Qty,
+                           TransactionDefinition = resource.TransactionCode
+                       };
         }
     }
 }

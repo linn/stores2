@@ -5,6 +5,7 @@
     using System.Linq;
 
     using Linn.Common.Facade;
+    using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
@@ -76,8 +77,8 @@
                                                                         ? new MoveToResource
                                                                                 {
                                                                                     Seq = m.Sequence,
-                                                                                    LocationCode = m.Location.LocationCode,
-                                                                                    LocationDescription = m.Location.Description,
+                                                                                    LocationCode = m.Location?.LocationCode,
+                                                                                    LocationDescription = m.Location?.Description,
                                                                                     PalletNumber = m.PalletNumber,
                                                                                     StockPool = m.StockPoolCode,
                                                                                     State = m.State,
@@ -85,7 +86,8 @@
                                                                                                         Remarks = m.Remarks
                                                                                                     }
                                                                                             : null
-                                                                                })
+                                                                                }),
+                           Links = this.BuildLinks(l).ToArray()
                        };
         }
 
@@ -96,5 +98,18 @@
 
         object IBuilder<RequisitionLine>.Build(RequisitionLine entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
+
+        private IEnumerable<LinkResource> BuildLinks(RequisitionLine model)
+        {
+            if (model.Part != null)
+            {
+                yield return new LinkResource("part", $"/parts/{model.Part.Id}");
+            }
+
+            if (model.OkToBook())
+            {
+                yield return new LinkResource("book-line", "/requisitions/book");
+            }
+        }
     }
 }

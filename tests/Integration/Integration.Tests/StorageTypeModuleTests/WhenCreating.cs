@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StorageTypeModuleTests
 {
-    using System;
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
@@ -45,8 +44,8 @@
         public void ShouldAdd()
         {
             this.DbContext.StorageTypes
-                .FirstOrDefault(x => x.StorageTypeCode == this.createResource.StorageTypeCode)
-                .Description.Should().Be(this.createResource.Description);
+                .First(x => x.StorageTypeCode == this.createResource.StorageTypeCode).Description
+                .Should().Be(this.createResource.Description);
         }
 
         [Test]

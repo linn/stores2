@@ -5,7 +5,7 @@
     using System.Net;
 
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps;
+
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
@@ -14,12 +14,12 @@
 
     public class WhenGettingFunctionCodes : ContextBase
     {
-        private StoresFunctionCode ldreq;
+        private StoresFunction ldreq;
 
         [SetUp]
         public void SetUp()
         {
-            this.ldreq = new StoresFunctionCode("LDREQ");
+            this.ldreq = new StoresFunction("LDREQ");
 
             this.DbContext.StoresFunctionCodes.AddAndSave(this.DbContext, this.ldreq);
 
@@ -47,7 +47,7 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<FunctionCodeResource>>();
+            var resource = this.Response.DeserializeBody<IEnumerable<StoresFunctionResource>>();
             resource.First().Code.Should().Be("LDREQ");
         }
     }

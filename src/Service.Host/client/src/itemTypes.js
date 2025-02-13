@@ -4,11 +4,13 @@ const itemTypes = {
     health: { url: `${config.appRoot}/healthcheck` },
     countries: { url: `${config.appRoot}/stores2/countries` },
     carriers: { url: `${config.appRoot}/stores2/carriers` },
+    currentEmployees: { url: `${config.proxyRoot}/employees?currentEmployees=true` },
     storagePlaceAudit: { url: `${config.appRoot}/stores2/reports/storage-place-audit/report` },
     storagePlaces: { url: `${config.proxyRoot}/inventory/storage-places` },
     auditLocations: { url: `${config.proxyRoot}/inventory/audit-locations` },
     requisitions: { url: `${config.appRoot}/requisitions` },
     functionCodes: { url: `${config.appRoot}/requisitions/function-codes` },
+    goodsInLog: { url: `${config.appRoot}/stores2/goods-in-log/report` },
     createAuditReqs: { url: `${config.appRoot}/stores2/storage-places/create-checked-audit-reqs` },
     storesBudget: { url: `${config.appRoot}/stores2/budgets` },
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
@@ -19,6 +21,7 @@ const itemTypes = {
     parts: { url: `${config.proxyRoot}/parts` },
     stockLocators: { url: `${config.proxyRoot}/inventory/stock-locators-by-location` },
     stockPools: { url: `${config.appRoot}/stores2/stock-pools` },
+    stockStates: { url: `${config.appRoot}/stores2/stock/states` },
     accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` }
 };
 

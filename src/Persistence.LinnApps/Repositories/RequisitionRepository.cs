@@ -22,7 +22,7 @@
         {
             return await this.serviceDbContext
                        .RequisitionHeaders
-                       .Include(r => r.FunctionCode)
+                       .Include(r => r.StoresFunction)
                        .Include(r => r.Lines).ThenInclude(l => l.Part)
                        .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition)
                        .Include(r => r.Lines).ThenInclude(l => l.NominalAccountPostings).ThenInclude(p => p.NominalAccount).ThenInclude(a => a.Nominal)

@@ -3,17 +3,27 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionResourceBuilder : IBuilder<RequisitionHeader>
     {
+        private readonly IAuthorisationService authService;
+
+        public RequisitionResourceBuilder(IAuthorisationService authService)
+        {
+            this.authService = authService;
+        }
+
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
             var reqLineBuilder = new RequisitionLineResourceBuilder();
+            var storeFunctionBuilder = new StoresFunctionResourceBuilder();
 
             return new RequisitionHeaderResource
                        {
@@ -21,9 +31,10 @@
                            Document1 = header.Document1,
                            Qty = header.Qty,
                            Document1Name = header.Document1Name,
-                           PartNumber = header.PartNumber,
+                           PartNumber = header.Part?.PartNumber,
                            ToLocationId = header.ToLocation?.LocationId,
                            ToLocationCode = header.ToLocation?.LocationCode,
+                           FromLocationId = header.FromLocation?.LocationId,
                            FromLocationCode = header.FromLocation?.LocationCode,
                            ToPalletNumber = header.ToPalletNumber,
                            FromPalletNumber = header.FromPalletNumber,
@@ -32,18 +43,7 @@
                            CancelledByName = header.CancelledBy?.Name,
                            DateCancelled = header.DateCancelled?.ToString("o"),
                            CancelledReason = header.CancelledReason,
-                           FunctionCode = new FunctionCodeResource
-                                              {
-                                                  Code = header.FunctionCode?.FunctionCode,
-                                                  Description = header.FunctionCode?.Description,
-                                                  TransactionTypes = header.FunctionCode?.TransactionsTypes?.Select(
-                                                      t => new FunctionCodeTransactionResource
-                                                               {
-                                                                   ReqType = t.ReqType,
-                                                                   TransactionDefinition = t.TransactionDefinition?.TransactionCode,
-                                                                   TransactionDescription = t.TransactionDefinition?.Description
-                                                               })
-                                              },
+                           StoresFunction = storeFunctionBuilder.Build(header.StoresFunction, null),
                            Comments = header.Comments,
                            DateBooked = header.DateBooked?.ToString("o"),
                            BookedBy = header.BookedBy?.Id,
@@ -70,6 +70,9 @@
                            AuthorisedBy = header.AuthorisedBy?.Id,
                            AuthorisedByName = header.AuthorisedBy?.Name,
                            DateAuthorised = header.DateAuthorised?.ToString("o"),
+                           BatchDate = header.BatchDate?.ToString("o"),
+                           FromState = header.FromState,
+                           ToState = header.ToState,    
                            Links = this.BuildLinks(header, claims).ToArray()
                         };
         }
@@ -87,6 +90,11 @@
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
+
+                if (model.Lines != null && model.CanBookReq(null) && this.authService.HasPermissionFor(AuthorisedActions.BookRequisition, claims))
+                {
+                    yield return new LinkResource { Rel = "book", Href = "/requisitions/book" };
+                }
             }
         }
     }

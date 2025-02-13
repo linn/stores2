@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
+import { useAuth } from 'react-oidc-context';
 import Typography from '@mui/material/Typography';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid2';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -11,7 +12,9 @@ import {
     DatePicker,
     Dropdown,
     ErrorCard,
-    Search
+    Search,
+    SaveBackCancelButtons,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
@@ -19,27 +22,48 @@ import Page from '../Page';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
+import useInitialise from '../../hooks/useInitialise';
+import usePost from '../../hooks/usePost';
+import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
-import usePost from '../../hooks/usePost';
 import MovesTab from './MovesTab';
-import useSearch from '../../hooks/useSearch';
-import requisitionReducer from './reducers/requisitonReducer';
 import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
+import BookedBy from './components/BookedBy';
+import AuthBy from './components/AuthBy';
+import DepartmentNominal from './components/DepartmentNominal';
+import PartNumberQuantity from './components/PartNumberQuantity';
+import StockOptions from './components/StockOptions';
 
 function Requisition({ creating }) {
+    const navigate = useNavigate();
     const { userNumber, name } = useUserProfile();
     const { reqNumber } = useParams();
-    const { send: fetchReq, isLoading: fetchLoading, result } = useGet(itemTypes.requisitions.url);
+
+    const {
+        send: fetchReq,
+        isLoading: fetchLoading,
+        result
+    } = useGet(itemTypes.requisitions.url, true);
     const [hasFetched, setHasFetched] = useState(false);
+
+    const auth = useAuth();
+    const token = auth.user?.access_token;
+
+    const { result: stockStates, loading: stockStatesLoading } = useInitialise(
+        itemTypes.stockStates.url
+    );
+    const { result: stockPools, loading: stockPoolsLoading } = useInitialise(
+        itemTypes.stockPools.url
+    );
 
     const {
         send: fetchFunctionCodes,
         isLoading: codesLoading,
         result: functionCodes
     } = useGet(itemTypes.functionCodes.url);
-    if (!hasFetched) {
+    if (!hasFetched && token) {
         if (!creating && reqNumber) {
             fetchReq(reqNumber);
         }
@@ -53,6 +77,19 @@ function Requisition({ creating }) {
         errorMessage: cancelError,
         postResult: cancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
+
+    const {
+        send: book,
+        isLoading: bookLoading,
+        errorMessage: bookError,
+        postResult: bookResult
+    } = usePost(`${itemTypes.requisitions.url}/book`, true);
+
+    const {
+        send: createReq,
+        isLoading: createLoading,
+        errorMessage: createError
+    } = usePost(itemTypes.requisitions.url, true, true);
 
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
@@ -75,26 +112,14 @@ function Requisition({ creating }) {
     useEffect(() => {
         if (cancelResult) {
             dispatch({ type: 'load_state', payload: cancelResult });
+        } else if (bookResult) {
+            dispatch({ type: 'load_state', payload: bookResult });
         } else if (result) {
             dispatch({ type: 'load_state', payload: result });
         } else if (creating) {
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, creating, name, userNumber]);
-
-    const {
-        search: searchDepartments,
-        results: departmentsSearchResults,
-        loading: departmentsSearchLoading,
-        clear: clearDepartmentsSearch
-    } = useSearch(itemTypes.departments.url, 'departmentCode', 'departmentCode', 'description');
-
-    const {
-        search: searchNominals,
-        results: nominalsSearchResults,
-        loading: nominalsSearchLoading,
-        clear: clearNominalsSearch
-    } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
+    }, [result, cancelResult, bookResult, creating, name, userNumber]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
@@ -104,17 +129,155 @@ function Requisition({ creating }) {
         if (formState.cancelled !== 'N' || formState.dateBooked) {
             return false;
         }
-        if (formState.functionCode?.code === 'LDREQ') {
+
+        if (formState.storesFunction?.code === 'LDREQ') {
             if (
                 formState.nominal?.nominalCode &&
                 formState.department?.departmentCode &&
                 formState.reqType &&
-                formState.functionCode.description
+                formState.storesFunction.description
             ) {
                 return true;
             }
         }
+
+        if (formState.storesFunction?.code === 'MOVE') {
+            if (!formState.part?.partNumber) {
+                return true;
+            }
+        }
+
         return false;
+    };
+
+    const canBookLines = () => {
+        if (result && utilities.getHref(result, 'book')) {
+            return true;
+        }
+        return false;
+    };
+
+    const optionalOrNeeded = code => {
+        if (code === 'O' || code === 'Y') {
+            return true;
+        }
+
+        return false;
+    };
+
+    const okToSaveFrontPageMove = () => {
+        if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
+            if (
+                optionalOrNeeded(formState.storesFunction.fromLocationRequired) &&
+                !formState.fromLocationCode &&
+                !formState.fromPalletNumber
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.fromStockPoolRequired) &&
+                !formState.fromStockPool
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.fromStateRequired) &&
+                !formState.fromState
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.quantityRequired) &&
+                !formState.quantity
+            ) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.toLocationRequired) &&
+                !formState.toLocationCode &&
+                !formState.toPalletNumber
+            ) {
+                return false;
+            }
+
+            if (optionalOrNeeded(formState.storesFunction.toStateRequired) && !formState.toState) {
+                return false;
+            }
+
+            if (
+                optionalOrNeeded(formState.storesFunction.toStockPoolRequired) &&
+                !formState.toStockPool
+            ) {
+                return false;
+            }
+
+            return true;
+        }
+
+        return false;
+    };
+
+    const saveIsValid = () => {
+        if (creating) {
+            if (formState.part?.partNumber) {
+                return okToSaveFrontPageMove();
+            }
+
+            return !!formState?.lines?.length;
+        }
+
+        return false;
+    };
+
+    const setDefaultHeaderFieldsForFunctionCode = selectedFunction => {
+        if (selectedFunction.manualPickRequired === 'M') {
+            dispatch({
+                type: 'set_header_value',
+                payload: {
+                    fieldName: 'manualPick',
+                    newValue: 'Y'
+                }
+            });
+        }
+    };
+
+    const getAndSetFunctionCode = () => {
+        if (formState.storesFunction?.code) {
+            const code = functionCodes.find(
+                a => a.code === formState.storesFunction.code.toUpperCase()
+            );
+            if (code) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: {
+                        fieldName: 'storesFunction',
+                        newValue: code
+                    }
+                });
+                setDefaultHeaderFieldsForFunctionCode(code);
+            }
+        }
+    };
+
+    const shouldRender = (renderFunction, showOnCreate = true) => {
+        if ((renderFunction && !renderFunction()) || (!showOnCreate && creating)) {
+            return false;
+        }
+
+        return true;
+    };
+
+    const doPickStock = moves => {
+        if (moves?.length) {
+            dispatch({
+                type: 'set_options_from_pick',
+                payload: moves[0]
+            });
+        }
     };
 
     return (
@@ -139,15 +302,25 @@ function Requisition({ creating }) {
                 </Grid>
                 {cancelError && (
                     <Grid size={12}>
-                        <ErrorCard errorMessage={cancelError} />{' '}
+                        <ErrorCard errorMessage={cancelError} />
                     </Grid>
                 )}
-                {(fetchLoading || cancelLoading) && (
+                {bookError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={bookError} />
+                    </Grid>
+                )}
+                {createError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={createError} />
+                    </Grid>
+                )}
+                {(fetchLoading || cancelLoading || bookLoading || createLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
                 )}
-                {!fetchLoading && !cancelLoading && formState && (
+                {!fetchLoading && !cancelLoading && !createLoading && formState && (
                     <>
                         <Grid size={2}>
                             <InputField
@@ -160,23 +333,6 @@ function Requisition({ creating }) {
                             />
                         </Grid>
                         <Grid size={2}>
-                            <DatePicker
-                                value={formState.dateBooked}
-                                onChange={() => {}}
-                                label="Date Booked"
-                                propertyName="dateBooked"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.bookedByName}
-                                onChange={() => {}}
-                                label="Booked By"
-                                propertyName="bookedByName"
-                            />
-                        </Grid>
-                        <Grid size={2}>
                             <Dropdown
                                 fullWidth
                                 items={['Y', 'N']}
@@ -186,22 +342,31 @@ function Requisition({ creating }) {
                                 propertyName="reversed"
                             />
                         </Grid>
-                        <Grid size={4} />
+                        <BookedBy
+                            shouldRender={shouldRender(null, false)}
+                            dateBooked={formState.dateBooked}
+                            bookedByName={formState.bookedByName}
+                            bookUrl={utilities.getHref(result, 'book')}
+                            onBook={() => {
+                                book(null, { reqNumber });
+                            }}
+                        />
+                        <Grid size={2} />
                         <Grid size={2}>
                             {!codesLoading && functionCodes && (
                                 <Search
-                                    propertyName="functionCode"
-                                    label="Function Code"
+                                    propertyName="storesFunction"
+                                    label="Function"
                                     resultsInModal
                                     resultLimit={100}
-                                    disabled={!!formState.lines?.length}
+                                    disabled={!creating || !!formState.lines?.length}
                                     helperText="Enter a value, or press enter to view all function codes"
-                                    value={formState.functionCode?.code}
+                                    value={formState.storesFunction?.code}
                                     handleValueChange={(_, newVal) => {
                                         dispatch({
                                             type: 'set_header_value',
                                             payload: {
-                                                fieldName: 'functionCode',
+                                                fieldName: 'storesFunction',
                                                 newValue: { code: newVal }
                                             }
                                         });
@@ -214,12 +379,16 @@ function Requisition({ creating }) {
                                         name: f.code,
                                         description: f.description
                                     }))}
+                                    onKeyPressFunctions={[
+                                        { keyCode: 9, action: getAndSetFunctionCode }
+                                    ]}
                                     priorityFunction="closestMatchesFirst"
                                     onResultSelect={r => {
                                         dispatch({
                                             type: 'set_header_value',
-                                            payload: { fieldName: 'functionCode', newValue: r }
+                                            payload: { fieldName: 'storesFunction', newValue: r }
                                         });
+                                        setDefaultHeaderFieldsForFunctionCode(r);
                                     }}
                                     clearSearch={() => {}}
                                     autoFocus={false}
@@ -229,10 +398,10 @@ function Requisition({ creating }) {
                         <Grid size={4}>
                             <InputField
                                 fullWidth
-                                value={formState.functionCode?.description}
+                                value={formState.storesFunction?.description}
                                 onChange={() => {}}
                                 label="Function Code Description"
-                                propertyName="functionCodeDescription"
+                                propertyName="storesFunctionDescription"
                             />
                         </Grid>
                         <Grid size={6} />
@@ -266,133 +435,111 @@ function Requisition({ creating }) {
                             </Button>
                         </Grid>
                         <Grid size={6} />
-                        <Grid size={2}>
-                            <Search
-                                propertyName="departmentCode"
-                                label="Department"
-                                resultsInModal
-                                resultLimit={100}
-                                helperText="Enter a search term and press enter to look up departments"
-                                value={formState.department?.departmentCode}
-                                handleValueChange={(_, newVal) => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: {
-                                            fieldName: 'department',
-                                            newValue: { departmentCode: newVal }
-                                        }
-                                    });
-                                }}
-                                search={searchDepartments}
-                                loading={departmentsSearchLoading}
-                                searchResults={departmentsSearchResults}
-                                priorityFunction="closestMatchesFirst"
-                                onResultSelect={r => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: { fieldName: 'department', newValue: r }
-                                    });
-                                }}
-                                clearSearch={clearDepartmentsSearch}
-                                autoFocus={false}
-                            />
-                        </Grid>
-
-                        <Grid size={4}>
-                            <InputField
-                                fullWidth
-                                value={formState.department?.description}
-                                onChange={() => {}}
-                                label="Desc"
-                                propertyName="departmentDescription"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <Search
-                                propertyName="nominalCode"
-                                label="Nominal"
-                                resultsInModal
-                                resultLimit={100}
-                                helperText="Enter a search term and press enter to look up nominals"
-                                value={formState.nominal?.nominalCode}
-                                handleValueChange={(_, newVal) => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: {
-                                            fieldName: 'nominal',
-                                            newValue: { nominalCode: newVal }
-                                        }
-                                    });
-                                }}
-                                search={searchNominals}
-                                loading={nominalsSearchLoading}
-                                searchResults={nominalsSearchResults}
-                                priorityFunction="closestMatchesFirst"
-                                onResultSelect={r => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: { fieldName: 'nominal', newValue: r }
-                                    });
-                                }}
-                                clearSearch={clearNominalsSearch}
-                                autoFocus={false}
-                            />
-                        </Grid>
-                        <Grid size={4}>
-                            <InputField
-                                fullWidth
-                                value={formState.nominal?.description}
-                                onChange={() => {}}
-                                label="Desc"
-                                propertyName="nominalDescription"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.authorisedByName}
-                                onChange={() => {}}
-                                label="Auth By"
-                                propertyName="authorisedByName"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <DatePicker
-                                value={formState.dateAuthorised}
-                                onChange={() => {}}
-                                label="Date Authd"
-                                propertyName="dateAuthorised"
-                            />
-                        </Grid>
-                        <Grid size={8} />
-                        <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['Y', 'N']}
-                                allowNoValue
-                                value={formState.manualPick}
-                                onChange={() => {}}
-                                label="Manual Pick"
-                                propertyName="manualPick"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['F', 'O']}
-                                allowNoValue
-                                value={formState.reqType}
-                                onChange={handleHeaderFieldChange}
-                                label="Req Type"
-                                propertyName="reqType"
-                            />
-                        </Grid>
-                        <Grid size={8} />
+                        <DepartmentNominal
+                            departmentCode={formState.department?.departmentCode}
+                            departmentDescription={formState.department?.description}
+                            setDepartment={newDept =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'department', newValue: newDept }
+                                })
+                            }
+                            nominalCode={formState.nominal?.nominalCode}
+                            nominalDescription={formState.nominal?.description}
+                            setNominal={newNominal =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'nominal', newValue: newNominal }
+                                })
+                            }
+                            shouldRender={shouldRender(
+                                () =>
+                                    !formState.storesFunction?.departmentNominalRequired ||
+                                    formState.storesFunction?.departmentNominalRequired !== 'N'
+                            )}
+                        />
+                        <AuthBy
+                            dateAuthorised={formState.dateAuthorised}
+                            authorisedByName={formState.authorisedByName}
+                            shouldRender={shouldRender(null, false)}
+                        />
+                        {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
+                            <>
+                                <Grid size={2}>
+                                    <Dropdown
+                                        fullWidth
+                                        items={['Y', 'N']}
+                                        allowNoValue
+                                        value={formState.manualPick}
+                                        onChange={() => {}}
+                                        label="Manual Pick"
+                                        propertyName="manualPick"
+                                    />
+                                </Grid>
+                                <Grid size={2}>
+                                    <Dropdown
+                                        fullWidth
+                                        items={['F', 'O']}
+                                        allowNoValue
+                                        value={formState.reqType}
+                                        onChange={handleHeaderFieldChange}
+                                        label="Req Type"
+                                        propertyName="reqType"
+                                    />
+                                </Grid>
+                                <Grid size={8} />
+                            </>
+                        )}
+                        <PartNumberQuantity
+                            partNumber={formState.part?.partNumber}
+                            partDescription={formState.part?.description}
+                            showQuantity
+                            quantity={formState.quantity}
+                            setPart={newPart =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'part', newValue: newPart }
+                                })
+                            }
+                            setQuantity={newQty =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName: 'quantity', newValue: newQty }
+                                })
+                            }
+                            shouldRender
+                        />
+                        <StockOptions
+                            fromState={formState.fromState}
+                            fromStockPool={formState.fromStockPool}
+                            batchDate={formState.batchDate}
+                            toState={formState.toState}
+                            toStockPool={formState.toStockPool}
+                            stockStates={stockStates}
+                            stockPools={stockPools}
+                            partNumber={formState.part?.partNumber}
+                            quantity={formState.quantity}
+                            fromLocationCode={formState.fromLocationCode}
+                            fromPalletNumber={formState.fromPalletNumber}
+                            doPickStock={doPickStock}
+                            toLocationCode={formState.toLocationCode}
+                            toPalletNumber={formState.toPalletNumber}
+                            setItemValue={(fieldName, newValue) =>
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: { fieldName, newValue }
+                                })
+                            }
+                            disabled={stockStatesLoading || stockPoolsLoading}
+                            shouldRender={shouldRender(
+                                () => formState.storesFunction?.code === 'MOVE'
+                            )}
+                        />
                         <Grid size={6}>
                             <InputField
                                 fullWidth
                                 value={formState.comments}
-                                onChange={() => {}}
+                                onChange={handleHeaderFieldChange}
                                 label="Comments"
                                 propertyName="comments"
                             />
@@ -401,7 +548,7 @@ function Requisition({ creating }) {
                             <InputField
                                 fullWidth
                                 value={formState.reference}
-                                onChange={() => {}}
+                                onChange={handleHeaderFieldChange}
                                 label="Reference"
                                 propertyName="reference"
                             />
@@ -433,6 +580,7 @@ function Requisition({ creating }) {
                                     selected={selectedLine}
                                     setSelected={setSelectedLine}
                                     cancelLine={cancel}
+                                    canBook={canBookLines()}
                                     canAdd={canAddLines()}
                                     addLine={() => {
                                         dispatch({ type: 'add_line' });
@@ -454,6 +602,9 @@ function Requisition({ creating }) {
                                             }
                                         });
                                     }}
+                                    bookLine={lineNumber => {
+                                        book(null, { reqNumber, lineNumber });
+                                    }}
                                 />
                             )}
                             {tab === 1 && (
@@ -472,6 +623,22 @@ function Requisition({ creating }) {
                                     }
                                 />
                             )}
+                        </Grid>
+                        <Grid item xs={12}>
+                            <SaveBackCancelButtons
+                                saveDisabled={!saveIsValid()}
+                                cancelClick={() => {
+                                    if (creating) {
+                                        dispatch({ type: 'load_create' });
+                                    }
+                                }}
+                                saveClick={() => {
+                                    createReq(null, formState);
+                                }}
+                                backClick={() => {
+                                    navigate('/requisitions');
+                                }}
+                            />
                         </Grid>
                     </>
                 )}

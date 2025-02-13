@@ -3,6 +3,7 @@
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -44,7 +45,13 @@
 
         public DbSet<StorageSite> StorageSites { get; set; }
 
-        public DbSet<StoresFunctionCode> StoresFunctionCodes { get; set; }
+        public DbSet<StoresFunction> StoresFunctionCodes { get; set; }
+
+        public DbSet<Part> Parts { get; set; }
+
+        public DbSet<StockState> StockStates { get; set; }
+
+        public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -61,7 +68,6 @@
             BuildStockPool(builder);
             BuildStockLocators(builder);
             BuildStorageLocations(builder);
-            BuildParts(builder);
             BuildStoresTransactionDefinitions(builder);
             BuildReqMoves(builder);
             BuildRequisitionHeaders(builder);
@@ -80,6 +86,8 @@
             BuildStorageAreas(builder);
             BuildStorageTypes(builder);
             BuildStoresFunctionTransactions(builder);
+            BuildGoodsInLog(builder);
+            BuildStockStates(builder);
             BuildPartsStorageTypes(builder);
         }
 
@@ -335,6 +343,11 @@
             q.Property(d => d.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             q.Property(d => d.QcType).HasColumnName("QC_TYPE").HasMaxLength(1);
             q.Property(d => d.DocType).HasColumnName("DOC1_TYPE").HasMaxLength(6);
+            q.Property(d => d.StockAllocations).HasColumnName("STOCK_ALLOCATIONS").HasMaxLength(1);
+            q.Property(d => d.OntoTransactions).HasColumnName("ONTO_TRANSACTIONS").HasMaxLength(1);
+            q.Property(d => d.DecrementTransaction).HasColumnName("DECREMENT_TRANSACTION").HasMaxLength(1);
+            q.Property(d => d.TakePriceFrom).HasColumnName("TAKE_PRICE_FROM").HasMaxLength(1);
+            q.Property(d => d.RequiresAuth).HasColumnName("REQUIRES_AUTH").HasMaxLength(1);
         }
 
         private static void BuildReqMoves(ModelBuilder builder)
@@ -356,6 +369,7 @@
             r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
             r.Property(l => l.DateCancelled).HasColumnName("DATE_CANCELLED");
             r.Property(l => l.State).HasColumnName("STATE").HasMaxLength(6);
+            r.Property(l => l.Category).HasColumnName("CATEGORY").HasMaxLength(6);
             r.Property(l => l.SerialNumber).HasColumnName("SERIAL_NUMBER");
         }
 
@@ -369,17 +383,16 @@
             e.HasOne(r => r.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
             e.Property(r => r.Qty).HasColumnName("QTY");
             e.Property(r => r.Document1Name).HasColumnName("DOC1_NAME");
-            e.Property(r => r.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.Property(r => r.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
             e.Property(r => r.DateCancelled).HasColumnName("DATE_CANCELLED");
             e.Property(r => r.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);
             e.HasOne(r => r.CancelledBy).WithMany().HasForeignKey("CANCELLED_BY");
-            e.HasOne(r => r.Part).WithMany().HasForeignKey(r => r.PartNumber);
+            e.HasOne(r => r.Part).WithMany().HasForeignKey("PART_NUMBER");
             e.HasMany(r => r.Lines).WithOne(a => a.RequisitionHeader).HasForeignKey(d => d.ReqNumber);
             e.HasOne(r => r.ToLocation).WithMany().HasForeignKey("TO_LOCATION_ID");
             e.HasOne(r => r.FromLocation).WithMany().HasForeignKey("FROM_LOCATION_ID");
             e.Property(r => r.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
-            e.HasOne(r => r.FunctionCode).WithMany().HasForeignKey("FUNCTION_CODE");
+            e.HasOne(r => r.StoresFunction).WithMany().HasForeignKey("FUNCTION_CODE");
             e.HasOne(r => r.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
             e.Property(r => r.DateBooked).HasColumnName("DATE_BOOKED");
             e.Property(r => r.Reversed).HasColumnName("REVERSED").HasMaxLength(1);
@@ -396,6 +409,9 @@
             e.Property(r => r.ToPalletNumber).HasColumnName("PALLET_NUMBER");
             e.Property(r => r.FromStockPool).HasColumnName("FROM_STOCK_POOL").HasMaxLength(10);
             e.Property(r => r.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
+            e.Property(r => r.FromState).HasColumnName("FROM_STATE").HasMaxLength(6);
+            e.Property(r => r.ToState).HasColumnName("STATE").HasMaxLength(6);
+            e.Property(r => r.BatchDate).HasColumnName("BATCH_DATE");
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)
@@ -428,22 +444,40 @@
         
         private static void BuildStoresFunctionCodes(ModelBuilder builder)
         {
-            var r = builder.Entity<StoresFunctionCode>().ToTable("STORES_FUNCTIONS");
+            var r = builder.Entity<StoresFunction>().ToTable("STORES_FUNCTIONS");
             r.HasKey(c => c.FunctionCode);
             r.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
+            r.Property(c => c.DepartmentNominalRequired).HasColumnName("DEPT_NOMINAL_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ManualPickRequired).HasColumnName("MANUAL_PICK_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromLocationRequired).HasColumnName("FROM_LOC_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromStateRequired).HasColumnName("FROM_STATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromStockPoolRequired).HasColumnName("FROM_STOCK_POOL_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.QuantityRequired).HasColumnName("QTY_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToLocationRequired).HasColumnName("ONTO_LOC_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToStateRequired).HasColumnName("STATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.ToStockPoolRequired).HasColumnName("TO_STOCK_POOL_REQUIRED").HasMaxLength(1);
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 
         private static void BuildStoresFunctionTransactions(ModelBuilder builder)
         {
             var entity = builder.Entity<StoresFunctionTransaction>().ToTable("STORES_FUNCTION_TRANS");
-            entity.HasKey(c => new { c.FunctionCode, c.Seq});
+            entity.HasKey(c => new { c.FunctionCode, c.Seq });
             entity.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
             entity.Property(x => x.Seq).HasColumnName("SEQ");
             entity.Property(x => x.ReqType).HasColumnName("REQ_TYPE").HasMaxLength(1);
+        }
+
+        private static void BuildStockStates(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StockState>().ToTable("INSPECTED_STATES");
+            entity.HasKey(c => c.State);
+            entity.Property(c => c.State).HasColumnName("STATE").HasMaxLength(6);
+            entity.Property(x => x.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            entity.Property(x => x.QCRequired).HasColumnName("QC_REQUIRED").HasMaxLength(1);
         }
 
         private static void BuildEmployees(ModelBuilder builder)
@@ -574,6 +608,40 @@
             e.HasKey(l => l.StorageTypeCode);
             e.Property(l => l.StorageTypeCode).HasColumnName("STORAGE_TYPE").HasMaxLength(16);
             e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+        }
+
+        private static void BuildGoodsInLog(ModelBuilder builder)
+        {
+            var e = builder.Entity<GoodsInLogEntry>().ToTable("GOODS_IN_LOG");
+            e.HasKey(g => g.Id);
+            e.Property(g => g.Id).HasColumnName("GILOG_ID");
+            e.Property(g => g.TransactionType).HasColumnName("TRANS_TYPE").HasMaxLength(1);
+            e.Property(g => g.DateCreated).HasColumnName("DATE_CREATED");
+            e.Property(g => g.CreatedBy).HasColumnName("CREATED_BY");
+            e.Property(g => g.WandString).HasColumnName("WAND_STRING").HasMaxLength(20);
+            e.Property(g => g.ArticleNumber).HasColumnName("ARTICLE_NUMBER").HasMaxLength(14);
+            e.Property(g => g.Quantity).HasColumnName("QTY");
+            e.Property(g => g.SerialNumber).HasColumnName("SERIAL_NUMBER");
+            e.Property(g => g.OrderNumber).HasColumnName("ORDER_NUMBER");
+            e.Property(g => g.OrderLine).HasColumnName("ORDER_LINE");
+            e.Property(g => g.LoanNumber).HasColumnName("LOAN_NUMBER");
+            e.Property(g => g.LoanLine).HasColumnName("LINE_NUMBER");
+            e.Property(g => g.RsnNumber).HasColumnName("RSN_NUMBER");
+            e.Property(g => g.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(g => g.ReqLine).HasColumnName("REQ_LINE");
+            e.Property(g => g.SernosTref).HasColumnName("SERNOS_TREF");
+            e.Property(g => g.ProductAnalysisCode).HasColumnName("PRODUCT_ANALYSIS_CODE").HasMaxLength(10);
+            e.Property(g => g.StoragePlace).HasColumnName("STORAGE_PLACE").HasMaxLength(16);
+            e.Property(g => g.Processed).HasColumnName("PROCESSED").HasMaxLength(1);
+            e.Property(g => g.ErrorMessage).HasColumnName("ERROR_MESSAGE").HasMaxLength(2000);
+            e.Property(g => g.BookInRef).HasColumnName("BOOKIN_REF");
+            e.Property(g => g.DemLocation).HasColumnName("DEM_LOCATION").HasMaxLength(16);
+            e.Property(g => g.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
+            e.Property(g => g.State).HasColumnName("STATE").HasMaxLength(10);
+            e.Property(g => g.StorageType).HasColumnName("STORAGE_TYPE").HasMaxLength(4);
+            e.Property(g => g.ManufacturersPartNumber).HasColumnName("MANUF_PART_NUMBER").HasMaxLength(20);
+            e.Property(g => g.LogCondition).HasColumnName("CONDITION").HasMaxLength(2000);
+            e.Property(g => g.RsnAccessories).HasColumnName("RSN_ACCESSORIES").HasMaxLength(2000);
         }
 
         private static void BuildPartsStorageTypes(ModelBuilder builder)

@@ -4,7 +4,6 @@
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
@@ -21,8 +20,11 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/requisitions", this.Search);
+            app.MapGet("/requisitions/create", this.GetApp);
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
+            app.MapPost("/requisitions/book", this.Book);
+            app.MapPost("/requisitions", this.Create);
             app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
         }
 
@@ -51,12 +53,13 @@
         }
 
         private async Task GetById(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             int reqNumber,
             IRequisitionFacadeService service)
         {
-            await res.Negotiate(await service.GetById(reqNumber));
+            var privs = req.HttpContext.GetPrivileges();
+            await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
         }
 
         private async Task Cancel(
@@ -84,12 +87,39 @@
             }
         }
 
+        private async Task Book(
+            HttpRequest req,
+            HttpResponse res,
+            BookRequisitionResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.BookRequisition(
+                resource.ReqNumber,
+                resource.LineNumber,
+                req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task Create(
+            HttpResponse res, 
+            HttpRequest req,
+            RequisitionHeaderResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(service.Add(resource, req.HttpContext.GetPrivileges()));
+        }
+        
         private async Task GetFunctionCodes(
             HttpRequest _,
             HttpResponse res,
-            IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource, FunctionCodeResource> service)
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
         {
             await res.Negotiate(await service.GetAll());
+        }
+
+        private async Task GetApp(HttpRequest req, HttpResponse res)
+        {
+            await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
         }
     }
 }

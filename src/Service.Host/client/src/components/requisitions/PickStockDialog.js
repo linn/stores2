@@ -7,6 +7,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@mui/material/Button';
+import { Typography } from '@mui/material';
 import itemTypes from '../../itemTypes';
 import useInitialise from '../../hooks/useInitialise';
 
@@ -44,6 +45,16 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
             width: 100
         },
         {
+            field: 'locationName',
+            headerName: 'Location',
+            width: 120
+        },
+        {
+            field: 'palletNumber',
+            headerName: 'Pallet',
+            width: 100
+        },
+        {
             field: 'quantity',
             headerName: 'Qty',
             width: 100,
@@ -65,6 +76,11 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
             field: 'state',
             headerName: 'State',
             width: 100
+        },
+        {
+            field: 'stockPoolCode',
+            headerName: 'Stock Pool',
+            width: 110
         }
     ];
 
@@ -87,7 +103,17 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber }) {
                     density="compact"
                     editMode="cell"
                     loading={isLoading}
+                    initialState={{
+                        columns: {
+                            columnVisibilityModel: {
+                                partUnitOfMeasure: false
+                            }
+                        }
+                    }}
                 />
+                <Typography>
+                    Note: your stock will not be allocated until you click save on the main form
+                </Typography>
             </DialogContent>
             <DialogActions>
                 <Button

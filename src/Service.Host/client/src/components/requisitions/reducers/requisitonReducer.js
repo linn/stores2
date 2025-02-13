@@ -14,13 +14,10 @@ function reducer(state, action) {
             return {
                 dateCreated: new Date(),
                 dateAuthorised: null,
+                dateBooked: null,
                 lines: [],
                 cancelled: 'N',
                 createdByName: action.payload.userName
-                // just to make it easier to debug creating - delete everything below
-                // nominal: {nominalCode: 1607},
-                // department: {departmentCode: 2963},
-                // reqType: 'F'
             };
         }
         case 'set_header_value': {
@@ -29,10 +26,10 @@ function reducer(state, action) {
         }
         case 'add_line': {
             // need to set the line transaction type based on the function code and req type
-            const functionCodeTransactions = state.functionCode.transactionTypes;
+            const storesFunctionTransactions = state.storesFunction.transactionTypes;
             let lineTransaction = {};
-            if (state.reqType && functionCodeTransactions) {
-                const lineTransactionType = functionCodeTransactions.find(
+            if (state.reqType && storesFunctionTransactions) {
+                const lineTransactionType = storesFunctionTransactions.find(
                     x => x.reqType === state.reqType
                 );
                 if (lineTransactionType) {
@@ -47,12 +44,10 @@ function reducer(state, action) {
             const maxLineNumber = Math.max(...state.lines.map(line => line.lineNumber), 0);
             const newLine = { lineNumber: maxLineNumber + 1, isAddition: true, ...lineTransaction };
 
-            // this behaviour might differ for differing codes
-            // so for now...
-            if (state.functionCode.code === 'LDREQ') {
-                newLine.document1Type = 'REQ';
-                newLine.document1Line = newLine.lineNumber;
-            }
+            // this behaviour might differ for differing function code parameters
+            // but for now...
+            newLine.document1Type = 'REQ';
+            newLine.document1Line = newLine.lineNumber;
 
             return { ...state, lines: [...state.lines, newLine] };
         }
@@ -110,6 +105,23 @@ function reducer(state, action) {
                         : line
                 )
             };
+        case 'set_options_from_pick': {
+            if (action.payload) {
+                return {
+                    ...state,
+                    fromState: action.payload.state,
+                    fromStockPool: action.payload.stockPoolCode,
+                    fromLocationId: action.payload.locationId,
+                    fromLocationCode: action.payload.locationName,
+                    fromPalletNumber: action.payload.palletNumber,
+                    toState: action.payload.state,
+                    toStockPool: action.payload.stockPoolCode,
+                    quantity: action.payload.quantityToPick
+                };
+            }
+
+            return state;
+        }
         default: {
             return state;
         }

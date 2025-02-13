@@ -74,7 +74,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<StockPoolResource>>();
+            var resource = this.Response.DeserializeBody<IEnumerable<StockPoolResource>>().ToList();
             resource.First().StockPoolCode.Should().Be("TESTCODE");
             resource.First().StockPoolDescription.Should().Be("A TEST STOCKPOOL");
             resource.First().BridgeId.Should().Be(5);

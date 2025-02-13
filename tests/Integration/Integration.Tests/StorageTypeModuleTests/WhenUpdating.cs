@@ -50,8 +50,8 @@
         [Test]
         public void ShouldUpdateEntity()
         {
-            this.DbContext.StorageTypes.FirstOrDefault(x => x.StorageTypeCode == this.storageType.StorageTypeCode)
-                .Description.Should().Be(this.updateResource.Description);
+            this.DbContext.StorageTypes.First(x => x.StorageTypeCode == this.storageType.StorageTypeCode).Description
+                .Should().Be(this.updateResource.Description);
         }
 
         [Test]

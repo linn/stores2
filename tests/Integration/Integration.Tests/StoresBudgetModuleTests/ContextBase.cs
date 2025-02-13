@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
@@ -15,6 +16,8 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -25,6 +28,8 @@
         
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -32,12 +37,13 @@
 
             var storesBudgetRepository = new StoresBudgetRepository(this.DbContext);
             var transactionManager = new TransactionManager(this.DbContext);
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
 
             IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>
                 storesBudgetFacadeService = new StoresBudgetFacadeService(
                     storesBudgetRepository,
                     transactionManager,
-                    new StoresBudgetResourceBuilder());
+                    new StoresBudgetResourceBuilder(this.AuthorisationService));
             
             this.Client = TestClient.With<StoresBudgetModule>(
                 services =>

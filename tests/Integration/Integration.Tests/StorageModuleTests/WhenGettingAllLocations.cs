@@ -105,13 +105,12 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resources = this.Response.DeserializeBody<IEnumerable<StorageLocationResource>>();
-            resources.Count().Should().Be(3);
-            resources.SingleOrDefault(loc => loc.LocationCode == "E-FA-FLOOR").Should().NotBeNull();
-            resources.SingleOrDefault(loc => loc.LocationCode == "E-PCB-ATE").Should().NotBeNull();
-            resources.SingleOrDefault(loc => loc.LocationCode == "B-VA-ULT").Should().NotBeNull();
-            resources.SingleOrDefault(loc => loc.LocationCode == "E-FA-FLOOR").Description.Should()
-                .Be("FINAL ASSEMBLY FLOOR");
+            var resources = this.Response.DeserializeBody<IEnumerable<StorageLocationResource>>().ToList();
+            resources.Count.Should().Be(3);
+            resources.Single(loc => loc.LocationCode == "E-FA-FLOOR").Should().NotBeNull();
+            resources.Single(loc => loc.LocationCode == "E-PCB-ATE").Should().NotBeNull();
+            resources.Single(loc => loc.LocationCode == "B-VA-ULT").Should().NotBeNull();
+            resources.Single(loc => loc.LocationCode == "E-FA-FLOOR").Description.Should().Be("FINAL ASSEMBLY FLOOR");
         }
     }
 }

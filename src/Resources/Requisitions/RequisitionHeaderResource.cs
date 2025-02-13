@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Resources.Requisitions
 {
-    using System;
     using System.Collections.Generic;
 
     using Linn.Common.Resources;
@@ -26,6 +25,8 @@
 
         public string ToLocationCode { get; set; }
 
+        public int? FromLocationId { get; set; }
+
         public string FromLocationCode { get; set; }
 
         public int? ToPalletNumber { get; set; }
@@ -42,7 +43,7 @@
 
         public string CancelledReason { get; set; }
 
-        public FunctionCodeResource FunctionCode { get; set; }
+        public StoresFunctionResource StoresFunction { get; set; }
         
         public string Comments { get; set; }
         
@@ -77,5 +78,11 @@
         public string FromStockPool { get; set; }
 
         public string ToStockPool { get; set; }
+
+        public string FromState { get; set; }
+
+        public string ToState { get; set; }
+
+        public string BatchDate { get; set; }
     }
 }

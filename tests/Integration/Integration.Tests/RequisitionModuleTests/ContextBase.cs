@@ -2,8 +2,8 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Persistence.EntityFramework;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
@@ -29,6 +29,8 @@
 
         protected IRequisitionService DomainService { get; private set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -37,18 +39,19 @@
             var requisitionRepository
                 = new EntityFrameworkRepository<RequisitionHeader, int>(this.DbContext.RequisitionHeaders);
             this.DomainService = Substitute.For<IRequisitionService>();
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
             IRequisitionFacadeService
                 requisitionService = new RequisitionFacadeService(
                     requisitionRepository,
                     transactionManager,
-                    new RequisitionResourceBuilder(),
+                    new RequisitionResourceBuilder(this.AuthorisationService),
                     this.DomainService);
 
-            IAsyncFacadeService<StoresFunctionCode, string, FunctionCodeResource, FunctionCodeResource,
-                FunctionCodeResource> functionCodeService = new StoresFunctionCodeService(
-                new EntityFrameworkRepository<StoresFunctionCode, string>(this.DbContext.StoresFunctionCodes),
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
+                StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(
+                new EntityFrameworkRepository<StoresFunction, string>(this.DbContext.StoresFunctionCodes),
                 transactionManager,
-                new StoresFunctionCodeResourceBuilder());
+                new StoresFunctionResourceBuilder());
 
             this.Client = TestClient.With<RequisitionModule>(
                 services =>

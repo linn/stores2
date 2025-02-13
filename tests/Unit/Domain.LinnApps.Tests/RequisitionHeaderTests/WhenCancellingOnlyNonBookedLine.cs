@@ -1,7 +1,9 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
+    using System;
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
 
     using NUnit.Framework;
@@ -13,9 +15,19 @@
         [SetUp]
         public void SetUp()
         {
-            this.req = new RequisitionHeader(123, "comments", new StoresFunctionCode("F"), 123, "REQ");
+            this.req = new RequisitionHeader(
+                new Employee(),
+                new StoresFunction { FunctionCode = "F1" },
+                "F",
+                12345678,
+                "TYPE",
+                new Department(),
+                new Nominal(),
+                null,
+                null,
+                "Goodbye Reqs");
             var line1 = new RequisitionLine(this.req.ReqNumber, 1);
-            line1.Book();
+            line1.Book(new DateTime(2024,1,1));
 
             var unbookedLine = new RequisitionLine(this.req.ReqNumber, 2);
 

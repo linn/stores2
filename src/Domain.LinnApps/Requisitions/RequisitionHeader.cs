@@ -25,9 +25,7 @@
         public decimal? Qty { get; protected set; }
 
         public string Document1Name { get; protected set; }
-
-        public string PartNumber { get; protected set; }
-
+        
         public Part Part { get; protected set; }
 
         public StorageLocation ToLocation { get; protected set; }
@@ -46,7 +44,7 @@
 
         public string CancelledReason { get; protected set; }
         
-        public StoresFunctionCode FunctionCode { get; protected set;}
+        public StoresFunction StoresFunction { get; protected set;}
         
         public string Comments { get; protected set; }
         
@@ -76,35 +74,67 @@
 
         public string ToStockPool { get; set; }
 
-        public RequisitionHeader()
+        public string FromState { get; set; }
+
+        public string ToState { get; set; }
+
+        public DateTime? BatchDate { get; set; }
+
+        protected RequisitionHeader()
         {
         }
 
         public RequisitionHeader(
-            int? reqNumber,
-            string comments,
-            StoresFunctionCode functionCode,
+            Employee createdBy,
+            StoresFunction function,
+            string reqType,
             int? document1Number,
-            string document1Type)
+            string document1Type,
+            Department department,
+            Nominal nominal, 
+            IEnumerable<RequisitionLine> lines = null,
+            string reference = null,
+            string comments = null,
+            string manualPick = null,
+            string fromStockPool = null,
+            string toStockPool = null,
+            int? fromPalletNumber = null,
+            int? toPalletNumber = null,
+            StorageLocation fromLocation = null,
+            StorageLocation toLocation = null,
+            Part part = null,
+            decimal? qty = null)
         {
-            if (reqNumber.HasValue)
-            {
-                this.ReqNumber = reqNumber.Value;
-            }
-
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
-            this.FunctionCode = functionCode;
+            this.StoresFunction = function;
             this.Document1 = document1Number;
             this.Document1Name = document1Type;
+            this.Qty = qty;
+            this.Part = part;
+
+            this.Lines = new List<RequisitionLine>();
+            if (lines != null)
+            {
+                foreach (var l in lines)
+                {
+                    this.AddLine(l);
+                }
+            }
         }
 
         public void AddLine(RequisitionLine toAdd)
         {
             this.Lines ??= new List<RequisitionLine>();
-
+            toAdd.RequisitionHeader = this;
             this.Lines.Add(toAdd);
         }
+
+        public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
+
+        public bool IsBooked() => this.DateBooked != null;
+
+        public bool IsAuthorised() => this.DateAuthorised != null || this.AuthorisedBy != null;
 
         public void Book(Employee bookedBy)
         {
@@ -112,11 +142,11 @@
             this.BookedBy = bookedBy;
         }
 
-        public void BookLine(int lineNumber, Employee bookedBy)
+        public void BookLine(int lineNumber, Employee bookedBy, DateTime when)
         {
-            this.Lines.First(x => x.LineNumber == lineNumber).Book();
+            this.Lines.First(x => x.LineNumber == lineNumber).Book(when);
 
-            if (!this.DateBooked.HasValue && this.Lines.All(l => l.DateBooked.HasValue))
+            if (!this.IsBooked() && this.Lines.All(l => l.IsBooked()))
             {
                 this.Book(bookedBy);
             }
@@ -132,7 +162,7 @@
                 throw new RequisitionException("Must provide a cancel reason");
             }
 
-            if (this.DateBooked.HasValue)
+            if (this.IsBooked())
             {
                 throw new RequisitionException("Cannot cancel a booked req");
             }
@@ -176,7 +206,7 @@
 
             // cancel header if all lines are now cancelled
             if (this.Lines.All(x => x.DateCancelled.HasValue) 
-                && !this.DateCancelled.HasValue)
+                && !this.IsCancelled())
             {
                 this.Cancel(reason, cancelledBy);
             }
@@ -188,5 +218,66 @@
                 this.DateBooked = now;
             }
         }
+
+        public void Authorise(Employee authorisedBy)
+        {
+            if (!this.IsAuthorised())
+            {
+                this.DateAuthorised = DateTime.Now;
+                this.AuthorisedBy = authorisedBy;
+            }
+        }
+
+        public bool RequiresAuthorisation()
+        {
+            if (!this.IsBooked() && !this.IsCancelled() && !this.IsAuthorised())
+            {
+                return this.Lines.Any(l => l.RequiresAuthorisation());
+            }
+            return false;
+        }
+
+        public bool CanBookReq(int? lineNumber)
+        {
+            if (!this.IsBooked() && !this.IsCancelled())
+            {
+                var lines = this.Lines.Where(l => l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled());
+                if (lines.Any())
+                {
+                    if (lines.All(l => l.OkToBook()))
+                    {
+                        if (!this.RequiresAuthorisation())
+                        {
+                            var linesQty = this.Lines.Where(l => !l.HasDecrementTransaction() && !l.HasMaterialVarianceTransaction()).Sum(l => l.Qty);
+
+                            if (linesQty > 0)
+                            {
+                                if (this.Qty == null)
+                                {
+                                    // no header qty to check thus true
+                                    return true;
+                                }
+                                else if (this.StoresFunction.FunctionCode == "PARTNO CH" ||
+                                         this.StoresFunction.FunctionCode == "BOOKWO" ||
+                                         this.StoresFunction.FunctionCode == "SUKIT")
+                                {
+                                    // you guys are exempt from this check although most times BOOKWO should pass it
+                                    return true;
+                                }
+                                return linesQty == this.Qty.Value;
+                            }
+                        }
+                    }
+                }
+                else if (this.StoresFunction.AuditFunction())
+                {
+                    // audit functions don't need lines or checks
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

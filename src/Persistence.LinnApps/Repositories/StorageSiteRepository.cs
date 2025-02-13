@@ -1,10 +1,12 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System.Linq;
-    using Microsoft.EntityFrameworkCore;
+    using System.Threading.Tasks;
+
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using System.Threading.Tasks;
+
+    using Microsoft.EntityFrameworkCore;
 
     public class StorageSiteRepository : EntityFrameworkRepository<StorageSite, string>
     {
