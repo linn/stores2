@@ -9,8 +9,6 @@
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
 
-    using Microsoft.EntityFrameworkCore;
-
     public class GoodsInLogReportService : IGoodsInLogReportService
     {
         private readonly IReportingHelper reportingHelper;
@@ -60,8 +58,6 @@
             var columns = this.ModelColumns();
 
             model.AddSortedColumns(columns);
-
-            await data.ToListAsync();
 
             var values = this.SetModelRows(data);
 
