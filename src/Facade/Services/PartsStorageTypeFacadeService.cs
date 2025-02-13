@@ -35,6 +35,7 @@
         {
             this.partRepository = partRepository;
             this.storageTypeRepository = storageTypeRepository;
+            this.partStorageTypeRepository = partStorageTypeRepository;
         }
 
         protected override async Task<PartsStorageType> CreateFromResourceAsync(
@@ -55,8 +56,9 @@
                 throw new PartsStorageTypeException("Storage Type is empty or doesn't exist!");
             }
 
-            PartsStorageType partStorageTypeAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
-                                                                pst => pst.StorageTypeCode == resource.StorageTypeCode && pst.PartNumber == resource.PartNumber)
+            var partStorageTypeAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
+                                                                pst => pst.StorageTypeCode == resource.StorageTypeCode
+                                                                       && pst.PartNumber == resource.PartNumber);
 
             if (partStorageTypeAlreadyExists != null)
             {

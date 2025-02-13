@@ -41,18 +41,14 @@
 
 
             this.partsStorageType = new PartsStorageType(
-                new Part
-                    {
-                        Id = 1,
-                        PartNumber = "Part No 1",
-                        Description = "Part 1"
-                    },
-                new StorageType { StorageTypeCode = "Storage Type No 1", },
+                this.part,
+                this.storageType,
                 "a",
                 100,
                 50,
                 "1",
                 400);
+
 
             this.Response = this.Client.PostAsJsonAsync($"/stores2/parts-storage-types", this.partsStorageType).Result;
         }
