@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.External
 {
-    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Domain;
@@ -18,8 +17,7 @@
             decimal qty,
             int lineNumber,
             string nominal,
-            string department,
-            bool preCommit = true);
+            string department);
 
         Task<ProcessResult> PickStock(
             string partNumber,

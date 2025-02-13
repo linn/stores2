@@ -120,7 +120,9 @@
             this.Department = department;
             this.Nominal = nominal;
             this.Reference = reference;
-
+            
+            this.FromStockPool = fromStockPool; // will probably need to be conditional depending on req type
+            
             this.Lines = new List<RequisitionLine>();
             if (lines != null)
             {

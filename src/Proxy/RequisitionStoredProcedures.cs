@@ -210,8 +210,7 @@
             decimal qty,
             int lineNumber,
             string nominal,
-            string department,
-            bool preCommit = true)
+            string department)
         {
             using var connection = new OracleConnection(
                ConnectionStrings.ManagedConnectionString());
