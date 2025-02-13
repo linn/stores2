@@ -12,7 +12,7 @@
     {
         public PartsStorageTypeResource Build(PartsStorageType partsStorageType, IEnumerable<string> claims)
         {
-            return new PartsStorageTypeResource()
+            return new PartsStorageTypeResource
                        {
                            StorageTypeCode = partsStorageType.StorageTypeCode,
                            PartNumber = partsStorageType.PartNumber,
