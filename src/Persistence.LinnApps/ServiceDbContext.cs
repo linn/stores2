@@ -47,8 +47,6 @@
 
         public DbSet<StoresFunction> StoresFunctionCodes { get; set; }
 
-        public DbSet<Part> Parts { get; set; }
-
         public DbSet<StockState> StockStates { get; set; }
 
         public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }

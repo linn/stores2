@@ -55,8 +55,8 @@
                 throw new PartsStorageTypeException("Storage Type is empty or doesn't exist!");
             }
 
-            var partStorageTypeAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
-                pst => pst.StorageTypeCode == resource.StorageTypeCode && pst.PartNumber == resource.PartNumber);
+            PartsStorageType partStorageTypeAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
+                                                                pst => pst.StorageTypeCode == resource.StorageTypeCode && pst.PartNumber == resource.PartNumber)
 
             if (partStorageTypeAlreadyExists != null)
             {

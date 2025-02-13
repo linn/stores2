@@ -26,14 +26,18 @@
         [SetUp]
         public void SetUp()
         {
-            //this.part = new Part
-            //                {
-            //                    Id = 1,
-            //                    PartNumber = "Part No 1",
-            //                    Description = "Part 1"
-            //                };
+            this.part = new Part
+            {
+                Id = 1,
+                PartNumber = "Part No 1",
+                Description = "Part 1"
+            };
 
-            //this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
+            this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
+
+            this.DbContext.Parts.AddAndSave(this.DbContext, this.part);
+
+            this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
 
 
             this.partsStorageType = new PartsStorageType(
