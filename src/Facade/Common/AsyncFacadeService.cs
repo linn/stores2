@@ -118,7 +118,6 @@
             }
 
             await this.repository.AddAsync(entity);
-
             if (userNumber.HasValue)
             {
                 await this.MaybeSaveLog("Create", userNumber, entity, resource, default);

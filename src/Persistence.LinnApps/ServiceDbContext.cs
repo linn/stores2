@@ -48,6 +48,10 @@
         public DbSet<StockState> StockStates { get; set; }
 
         public DbSet<StoresTransactionDefinition> StoresTransactionDefinition { get; protected set; }
+        
+        public DbSet<Department> Departments { get; protected set; }
+        
+        public DbSet<Nominal> Nominals { get; protected set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -378,6 +382,7 @@
             e.HasOne(r => r.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
             e.Property(r => r.Qty).HasColumnName("QTY");
             e.Property(r => r.Document1Name).HasColumnName("DOC1_NAME");
+            e.Property(r => r.Document1Line).HasColumnName("DOCUMENT_1_LINE");
             e.Property(r => r.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
             e.Property(r => r.DateCancelled).HasColumnName("DATE_CANCELLED");
             e.Property(r => r.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(2000);

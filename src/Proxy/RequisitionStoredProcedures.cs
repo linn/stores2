@@ -258,6 +258,7 @@
                 Direction = ParameterDirection.InputOutput,
                 Value = 0
             };
+            cmd.Parameters.Add(successParameter);
             var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
             {
                 Direction = ParameterDirection.InputOutput,
@@ -292,7 +293,7 @@
                               CommandType = CommandType.StoredProcedure
                           };
 
-            var partNumberParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+            var partNumberParameter = new OracleParameter("p_part_number", OracleDbType.Varchar2)
                                        {
                                            Direction = ParameterDirection.InputOutput,
                                            Size = 500,
@@ -300,7 +301,7 @@
                                        };
             cmd.Parameters.Add(partNumberParameter);
 
-            var reqNumberParameter = new OracleParameter("p_part_number", OracleDbType.Int32)
+            var reqNumberParameter = new OracleParameter("p_req_number", OracleDbType.Int32)
                                          {
                                              Direction = ParameterDirection.Input,
                                              Value = reqNumber

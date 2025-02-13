@@ -26,11 +26,18 @@
             {
                 this.LineNumber = lineNumber.Value;
             }
-
             this.NominalAccountPostings = new List<RequisitionLinePosting>();
         }
 
-        public RequisitionLine(int reqNumber, int lineNumber, Part part, decimal qty, StoresTransactionDefinition transaction)
+        public RequisitionLine(
+            int reqNumber, 
+            int lineNumber, 
+            Part part, 
+            decimal qty, 
+            StoresTransactionDefinition transaction,
+            int? document1Number = null,
+            int document1Line = 1,
+            string document1Name = null)
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
@@ -46,8 +53,12 @@
             // TODO work out how to derive postings see STORES_OO.CREATENOMINALS and Post-Insert/RL trig in REQ UT
 
             this.Cancelled = "N";
+            
+            this.Document1Number = document1Number ?? reqNumber;
+            this.Document1Line = document1Line;
+            this.Document1Type = string.IsNullOrEmpty(document1Name) ? "REQ" : document1Name;
         }
-
+        
         public int ReqNumber { get; protected init; }
 
         public int LineNumber { get; protected init; }

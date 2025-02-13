@@ -176,7 +176,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var req = await this.repository.FindByIdAsync(reqNumber);
-
             return req;
         }
 
@@ -259,8 +258,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public async Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd)
         {
             var part = await this.partRepository.FindByIdAsync(toAdd.PartNumber);
-            var transactionDefinition =
-                await this.transactionDefinitionRepository.FindByIdAsync(toAdd.TransactionDefinition);
+            var transactionDefinition = await this.transactionDefinitionRepository.FindByIdAsync(toAdd.TransactionDefinition);
 
             header.AddLine(new RequisitionLine(header.ReqNumber, toAdd.LineNumber, part, toAdd.Qty, transactionDefinition));
 
@@ -269,12 +267,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             foreach (var pick in toAdd.StockPicks)
             {
+                var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
+                    ? null
+                    : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.FromLocation);
                 var pickResult = await this.requisitionStoredProcedures.PickStock(
                                      toAdd.PartNumber,
                                      header.ReqNumber,
                                      toAdd.LineNumber,
                                      pick.Qty,
-                                     123,
+                                     fromLocation?.LocationId,
                                      pick.FromPallet,
                                      header.FromStockPool, // todo - don't hardcode this?
                                      toAdd.TransactionDefinition);

@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.IoC
+﻿using Linn.Stores2.Domain.LinnApps.Accounts;
+
+namespace Linn.Stores2.IoC
 {
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
@@ -44,7 +46,11 @@
                 .AddScoped<IRepository<Part, string>, EntityFrameworkRepository<Part, string>>(
                     r => new EntityFrameworkRepository<Part, string>(r.GetService<ServiceDbContext>()?.Parts))
                 .AddScoped<IRepository<StoresTransactionDefinition, string>, EntityFrameworkRepository<StoresTransactionDefinition, string>>(
-                    r => new EntityFrameworkRepository<StoresTransactionDefinition, string>(r.GetService<ServiceDbContext>()?.StoresTransactionDefinition));
+                    r => new EntityFrameworkRepository<StoresTransactionDefinition, string>(r.GetService<ServiceDbContext>()?.StoresTransactionDefinition))
+                .AddScoped<IRepository<Department, string>, EntityFrameworkRepository<Department, string>>(
+                r => new EntityFrameworkRepository<Department, string>(r.GetService<ServiceDbContext>()?.Departments))
+                .AddScoped<IRepository<Nominal, string>, EntityFrameworkRepository<Nominal, string>>(
+                r => new EntityFrameworkRepository<Nominal, string>(r.GetService<ServiceDbContext>()?.Nominals));
         }
     }
 }

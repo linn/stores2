@@ -123,7 +123,7 @@
                              new User
                                  {
                                      UserNumber = resource.CreatedBy.GetValueOrDefault(),
-                                     Privileges = privileges,
+                                     Privileges = privileges
                                  }, 
                              resource.StoresFunction?.Code, 
                              resource.ReqType,
