@@ -26,7 +26,7 @@ function GoodsInLog() {
     const [storagePlaceSelect, setStoragePlaceSelect] = useState(null);
     const [storagePlace, setStoragePlace] = useState(null);
 
-    const defaultStartDate = moment().subtract(2, 'weeks');
+    const defaultStartDate = moment().subtract(1, 'days');
     const [fromDate, setFromDate] = useState(defaultStartDate);
     const [toDate, setToDate] = useState(new Date());
 
@@ -39,7 +39,7 @@ function GoodsInLog() {
 
     const { send: getReport, isLoading, result: reportResult } = useGet(itemTypes.goodsInLog.url);
 
-    const { data: currentEmployees, isGetLoading: isCurrentEmployeesLoading } = useInitialise(
+    const { result: currentEmployees, isLoading: isCurrentEmployeesLoading } = useInitialise(
         itemTypes.currentEmployees.url
     );
 
@@ -206,8 +206,8 @@ function GoodsInLog() {
                         clearSearch={clearStoragePlaces}
                     />
                 </Grid>
-                <Grid size={1} />
-                <Grid size={1}>
+                <Grid size={12} />
+                <Grid size={4}>
                     <Button
                         disabled={isLoading}
                         variant="contained"

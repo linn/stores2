@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading.Tasks;
 
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
@@ -23,7 +22,7 @@
             this.resourceBuilder = resourceBuilder;
         }
 
-        public async Task<IResult<ReportReturnResource>> GetGoodsInLogReport(
+        public IResult<ReportReturnResource> GetGoodsInLogReport(
             string fromDate,
             string toDate,
             int? createdBy,
@@ -33,7 +32,7 @@
             int? reqNumber,
             string storagePlace)
         {
-            var result = await this.goodsInLogReportService.GoodsInLogReport(
+            var result = this.goodsInLogReportService.GoodsInLogReport(
                 fromDate,
                 toDate,
                 createdBy,
