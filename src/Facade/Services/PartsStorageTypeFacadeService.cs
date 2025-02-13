@@ -4,7 +4,6 @@
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using Amazon.Auth.AccessControlPolicy;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
@@ -12,7 +11,6 @@
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
 
     using Microsoft.CodeAnalysis.CSharp.Syntax;

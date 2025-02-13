@@ -26,7 +26,7 @@
 
         protected override async Task<StorageType> CreateFromResourceAsync(
             StorageTypeResource resource,
-            IEnumerable<string> privileges = null) 
+            IEnumerable<string> privileges = null)
         {
             var storageType = await this.repository.FindByIdAsync(resource.StorageTypeCode);
 

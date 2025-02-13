@@ -5,16 +5,14 @@
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
 
-    public class PartsStorageTypesModule : IModule
+    public class PartsStorageTypeModule : IModule
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {

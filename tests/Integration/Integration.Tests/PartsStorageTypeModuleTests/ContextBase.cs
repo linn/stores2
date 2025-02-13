@@ -12,7 +12,6 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Service.Modules;
 
@@ -48,7 +47,7 @@
                     partRepository,
                     storageTypeRepository);
 
-            this.Client = TestClient.With<PartsStorageTypesModule>(
+            this.Client = TestClient.With<PartsStorageTypeModule>(
                 services =>
                     {
                         services.AddSingleton(partsStorageTypeFacadeService);

@@ -5,7 +5,6 @@
 
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Persistence.LinnApps;
 
     using Microsoft.EntityFrameworkCore;

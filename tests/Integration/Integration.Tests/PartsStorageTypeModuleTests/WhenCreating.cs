@@ -7,10 +7,10 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
 
     using NUnit.Framework;

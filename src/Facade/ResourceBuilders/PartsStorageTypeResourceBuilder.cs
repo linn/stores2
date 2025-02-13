@@ -5,8 +5,7 @@
 
     using Linn.Common.Facade;
     using Linn.Common.Resources;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Resources;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Resources.Parts;
 
     public class PartsStorageTypeResourceBuilder : IBuilder<PartsStorageType>

@@ -8,10 +8,6 @@
             this DbSet<T> set, DbContext context, T entity) where T : class
         {
             set.Add(entity);
-
-
-
-
             context.SaveChanges();
         }
 
