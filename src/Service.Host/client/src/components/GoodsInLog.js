@@ -26,7 +26,7 @@ function GoodsInLog() {
     const [storagePlaceSelect, setStoragePlaceSelect] = useState(null);
     const [storagePlace, setStoragePlace] = useState(null);
 
-    const defaultStartDate = moment().subtract(2, 'weeks');
+    const defaultStartDate = moment().subtract(1, 'days');
     const [fromDate, setFromDate] = useState(defaultStartDate);
     const [toDate, setToDate] = useState(new Date());
 
@@ -39,7 +39,7 @@ function GoodsInLog() {
 
     const { send: getReport, isLoading, result: reportResult } = useGet(itemTypes.goodsInLog.url);
 
-    const { data: currentEmployees, isGetLoading: isCurrentEmployeesLoading } = useInitialise(
+    const { result: currentEmployees, isLoading: isCurrentEmployeesLoading } = useInitialise(
         itemTypes.currentEmployees.url
     );
 
@@ -112,7 +112,7 @@ function GoodsInLog() {
                             <Loading />
                         </Grid>
                     ))}
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <DatePicker
                         label="From Date"
                         value={fromDate}
@@ -120,7 +120,7 @@ function GoodsInLog() {
                         onChange={setFromDate}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <DatePicker
                         label="To Date"
                         value={toDate}
@@ -128,7 +128,7 @@ function GoodsInLog() {
                         onChange={setToDate}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <Dropdown
                         propertyName="createdBy"
                         items={currentEmployees?.items.map(employee => ({
@@ -136,44 +136,39 @@ function GoodsInLog() {
                             displayText: `${employee?.firstName} ${employee?.lastName}`
                         }))}
                         label="Created By"
-                        fullWidth
                         onChange={handleEmployeeDropDownChange}
                         value={createdBy}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <InputField
                         propertyName="orderNumber"
                         label="Order Number"
                         type="number"
-                        fullWidth
                         value={orderNumber}
                         onChange={(_, newValue) => setOrderNumber(newValue)}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <InputField
                         propertyName="reqNumber"
                         label="Req Number"
                         type="number"
-                        fullWidth
                         value={reqNumber}
                         onChange={(_, newValue) => setReqNumber(newValue)}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <InputField
                         propertyName="quantity"
                         label="Quantity"
                         type="number"
-                        fullWidth
                         value={quantity}
                         onChange={(_, newValue) => setQuantity(newValue)}
                     />
                 </Grid>
                 <Grid size={3}>
                     <InputField
-                        fullWidth
                         value={articleNumber}
                         onChange={(_, newValue) => setArticleNumber(newValue)}
                         label="Article Number"
@@ -206,8 +201,7 @@ function GoodsInLog() {
                         clearSearch={clearStoragePlaces}
                     />
                 </Grid>
-                <Grid size={1} />
-                <Grid size={1}>
+                <Grid size={4}>
                     <Button
                         disabled={isLoading}
                         variant="contained"
