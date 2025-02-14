@@ -91,7 +91,7 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
         [Test]
         public void ShouldUpdateEntity()
         {
-            this.DbContext.PartsStorageTypes.FirstOrDefault(x => x.PartNumber == this.partsStorageType.PartNumber && x.StorageTypeCode == this.partsStorageType.StorageTypeCode)
+            this.DbContext.PartsStorageTypes.First(x => x.PartNumber == this.partsStorageType.PartNumber && x.StorageTypeCode == this.partsStorageType.StorageTypeCode)
                 .Remarks.Should().Be(this.updateResource.Remarks);
         }
         

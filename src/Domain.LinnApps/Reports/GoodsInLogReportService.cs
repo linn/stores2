@@ -9,8 +9,6 @@
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
 
-    using Microsoft.EntityFrameworkCore;
-
     public class GoodsInLogReportService : IGoodsInLogReportService
     {
         private readonly IReportingHelper reportingHelper;
@@ -25,7 +23,7 @@
             this.goodsInLogRepository = goodsInLogRepository;
         }
 
-        public async Task <ResultsModel> GoodsInLogReport(
+        public ResultsModel GoodsInLogReport(
             string fromDate,
             string toDate,
             int? createdBy,
@@ -60,8 +58,6 @@
             var columns = this.ModelColumns();
 
             model.AddSortedColumns(columns);
-
-            await data.ToListAsync();
 
             var values = this.SetModelRows(data);
 
@@ -111,7 +107,7 @@
                 values.Add(
                     new CalculationValueModel
                         { 
-                            RowId = rowId, Value = goodsInLogEntry.Quantity ?? 0, ColumnId = "Quantity"
+                            RowId = rowId, TextDisplay = goodsInLogEntry.Quantity.ToString(), ColumnId = "Quantity"
                     });
                 values.Add(
                     new CalculationValueModel
@@ -273,7 +269,7 @@
                                   new AxisDetailsModel("CreatedBy", "Created By", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("OrderNumber", "Order Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("OrderLine", "Line", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("Quantity", "Qty", GridDisplayType.Value, 100) { DecimalPlaces = 2 },
+                                  new AxisDetailsModel("Quantity", "Qty", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("StorageType", "Storage Type", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("StoragePlace", "Onto", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("SerialNumber", "Serial Number", GridDisplayType.TextValue, 100),

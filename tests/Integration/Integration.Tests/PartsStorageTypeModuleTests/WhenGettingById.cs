@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
-    using System;
     using System.Net;
 
     using FluentAssertions;
@@ -75,4 +74,3 @@
         }
     }
 }
-    

@@ -51,6 +51,8 @@
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
                 .AddTransient<IDatabaseService, DatabaseService>()
+                .AddTransient<IStockService, StockService>()
+                .AddTransient<IStoresService, StoresService>()
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>();
         }
 

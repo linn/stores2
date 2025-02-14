@@ -1,8 +1,10 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
 
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -24,6 +26,20 @@
             return this.serviceDbContext.StockLocators.Where(expression)
                 .Include(l => l.StorageLocation)
                 .Include(l => l.Part);
+        }
+
+        public override async Task<IList<StockLocator>> FilterByAsync(
+            Expression<Func<StockLocator, bool>> filterByExpression,
+            Expression<Func<StockLocator, object>> orderByExpression = null)
+        {
+            var query = this.serviceDbContext.StockLocators.Where(filterByExpression);
+
+            var results = await query
+                              .Include(l => l.StorageLocation)
+                              .Include(l => l.Part)
+                              .ToListAsync();
+
+            return results;
         }
     }
 }

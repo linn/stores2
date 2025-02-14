@@ -42,17 +42,7 @@
         {
             var part = await this.partRepository.FindByAsync(p => p.PartNumber == resource.PartNumber);
 
-            if (part == null || string.IsNullOrEmpty(resource.PartNumber))
-            {
-                throw new PartsStorageTypeException("Part Number is empty or doesn't exist!");
-            }
-
-            var storageType = await this.storageTypeRepository.FindByAsync(st => st.StorageTypeCode == resource.StorageTypeCode);
-
-            if (storageType == null || string.IsNullOrEmpty(resource.StorageTypeCode))
-            {
-                throw new PartsStorageTypeException("Storage Type is empty or doesn't exist!");
-            }
+            var storageType = await this.storageTypeRepository.FindByIdAsync(resource.StorageTypeCode);
 
             var partStorageTypeAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
                                                                 pst => pst.StorageTypeCode == resource.StorageTypeCode
@@ -73,7 +63,7 @@
                 resource.BridgeId);
         }
 
-        protected override async Task UpdateFromResourceAsync(
+        protected override void UpdateFromResource(
             PartsStorageType entity,
             PartsStorageTypeResource updateResource,
             IEnumerable<string> privileges = null)
