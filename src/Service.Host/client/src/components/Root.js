@@ -16,6 +16,7 @@ import StorageLocations from './StorageLocations';
 import StorageLocation from './StorageLocation';
 import StockPools from './StockPools';
 import StorageTypes from './StorageTypes';
+import PartsStorageTypes from './PartsStorageTypes';
 
 function Root() {
     useSignIn();
@@ -47,6 +48,7 @@ function Root() {
                     <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/storage" element={<StorageLocations />} />
                     <Route path="/stores2/storage-types" element={<StorageTypes />} />
+                    <Route path="/stores2/parts-storage-types" element={<PartsStorageTypes />} />
                     <Route
                         path="/stores2/storage/locations/create"
                         element={<StorageLocation creating />}
