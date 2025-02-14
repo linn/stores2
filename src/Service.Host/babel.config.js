@@ -3,9 +3,9 @@ module.exports = {
         '@babel/preset-env',
         [
             '@babel/preset-react',
-            {
-                runtime: 'automatic' // React 17+ automatic JSX transform
-            }
+            // {
+            //     runtime: 'automatic' // React 17+ automatic JSX transform
+            // }
         ]
     ],
     plugins: ['@babel/plugin-proposal-class-properties'],

@@ -3,7 +3,7 @@ const path = require('path');
 
 const Server = require('webpack-dev-server');
 
-const config = require('./webpack.config');
+const config = require('./webpack.prod.config');
 
 const devServer = new Server(
     {
