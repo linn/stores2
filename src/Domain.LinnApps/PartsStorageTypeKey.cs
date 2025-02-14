@@ -11,6 +11,5 @@
         public string PartNumber { get; set; }
 
         public string StorageTypeCode { get; set; }
-
     }
 }
