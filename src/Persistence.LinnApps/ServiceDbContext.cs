@@ -49,6 +49,8 @@
 
         public DbSet<StockState> StockStates { get; set; }
 
+        public DbSet<StoresPallet> StoresPallets { get; set; }
+
         public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -87,6 +89,7 @@
             BuildGoodsInLog(builder);
             BuildStockStates(builder);
             BuildPartsStorageTypes(builder);
+            BuildStoresPallets(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -476,6 +479,19 @@
             entity.Property(c => c.State).HasColumnName("STATE").HasMaxLength(6);
             entity.Property(x => x.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             entity.Property(x => x.QCRequired).HasColumnName("QC_REQUIRED").HasMaxLength(1);
+        }
+
+        private static void BuildStoresPallets(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StoresPallet>().ToTable("STORES_PALLETS");
+            entity.HasKey(c => c.PalletNumber);
+            entity.Property(c => c.PalletNumber).HasColumnName("PALLET_NUMBER");
+            entity.Property(c => c.LocationId).HasColumnName("LOCATION_ID");
+            entity.Property(x => x.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            entity.Property(x => x.DateInvalid).HasColumnName("DATE_INVALID");
+            entity.Property(x => x.TypeOfStock).HasColumnName("TYPE_OF_STOCK").HasMaxLength(1);
+            entity.Property(x => x.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
+            entity.Property(x => x.MixStates).HasColumnName("MIX_STATES").HasMaxLength(1);
         }
 
         private static void BuildEmployees(ModelBuilder builder)

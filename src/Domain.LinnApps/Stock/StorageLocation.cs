@@ -11,7 +11,20 @@
             // for ef       
         }
 
-        public StorageLocation(int locationId, string locationCode, string description, StorageSite site, StorageArea area, AccountingCompany company, string accessible, string storesKittable, string mixStates, string stockState, string typeOfStock, StockPool stockPool, StorageType storageType)
+        public StorageLocation(
+            int locationId,
+            string locationCode,
+            string description,
+            StorageSite site,
+            StorageArea area,
+            AccountingCompany company,
+            string accessible,
+            string storesKittable,
+            string mixStates,
+            string stockState,
+            string typeOfStock,
+            StockPool stockPool,
+            StorageType storageType)
         {
             this.LocationId = locationId;
             this.LocationCode = locationCode;
