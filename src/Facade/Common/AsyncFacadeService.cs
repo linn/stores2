@@ -86,7 +86,7 @@
                 var entity = await this.repository.FindByAsync(this.FindExpression(searchResource));
                 return new SuccessResult<TResource>(this.BuildResource(entity, privileges));
             }
-            catch (NotImplementedException ex)
+            catch (NotImplementedException)
             {
                 return new BadRequestResult<TResource>("Find is not implemented");
             }
