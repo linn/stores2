@@ -27,7 +27,6 @@ public class WhenCreatingLdreqFrom : ContextBase
     [SetUp]
     public void Setup()
     {
-        
         this.user = new User { Privileges = new List<string> { "ldreq" }, UserNumber = 33087 };
         var employee = new Employee { Id = this.user.UserNumber };
         this.ldreq = new StoresFunction { FunctionCode = "LDREQ" };

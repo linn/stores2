@@ -277,7 +277,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                      pick.Qty,
                                      fromLocation?.LocationId,
                                      pick.FromPallet,
-                                     header.FromStockPool, // todo - don't hardcode this?
+                                     header.FromStockPool,
                                      toAdd.TransactionDefinition);
 
                 if (!pickResult.Success)
