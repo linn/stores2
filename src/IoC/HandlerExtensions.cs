@@ -5,8 +5,8 @@
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Resources;
     using Linn.Common.Service.Core.Handlers;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
 
@@ -29,6 +29,8 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<RequisitionHeaderResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StorageTypeResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageTypeResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<PartsStorageTypeResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PartsStorageTypeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StockPoolResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StockPoolResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageSiteResource>>>()

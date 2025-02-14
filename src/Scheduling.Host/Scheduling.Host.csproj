@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="5.1.0" />
 	  <PackageReference Include="Linn.Common.Scheduling" Version="3.0.0" />
 	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
   </ItemGroup>

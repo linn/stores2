@@ -25,6 +25,10 @@
 
         public DbSet<StorageType> StorageTypes { get; set; }
 
+        public DbSet<PartsStorageType> PartsStorageTypes { get; set; }
+
+        public DbSet<Part> Parts { get; set; }
+
         public DbSet<StockLocator> StockLocators { get; set; }
 
         public DbSet<StockPool> StockPools { get; set; }
@@ -43,8 +47,6 @@
 
         public DbSet<StoresFunction> StoresFunctionCodes { get; set; }
 
-        public DbSet<Part> Parts { get; set; }
-
         public DbSet<StockState> StockStates { get; set; }
 
         public DbSet<StoresTransactionDefinition> StoresTransactionDefinition { get; protected set; }
@@ -52,6 +54,10 @@
         public DbSet<Department> Departments { get; protected set; }
         
         public DbSet<Nominal> Nominals { get; protected set; }
+        
+        public DbSet<StoresPallet> StoresPallets { get; set; }
+
+        public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -88,6 +94,8 @@
             BuildStoresFunctionTransactions(builder);
             BuildGoodsInLog(builder);
             BuildStockStates(builder);
+            BuildPartsStorageTypes(builder);
+            BuildStoresPallets(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -480,6 +488,19 @@
             entity.Property(x => x.QCRequired).HasColumnName("QC_REQUIRED").HasMaxLength(1);
         }
 
+        private static void BuildStoresPallets(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StoresPallet>().ToTable("STORES_PALLETS");
+            entity.HasKey(c => c.PalletNumber);
+            entity.Property(c => c.PalletNumber).HasColumnName("PALLET_NUMBER");
+            entity.Property(c => c.LocationId).HasColumnName("LOCATION_ID");
+            entity.Property(x => x.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            entity.Property(x => x.DateInvalid).HasColumnName("DATE_INVALID");
+            entity.Property(x => x.TypeOfStock).HasColumnName("TYPE_OF_STOCK").HasMaxLength(1);
+            entity.Property(x => x.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
+            entity.Property(x => x.MixStates).HasColumnName("MIX_STATES").HasMaxLength(1);
+        }
+
         private static void BuildEmployees(ModelBuilder builder)
         {
             var r = builder.Entity<Employee>().ToTable("AUTH_USER_NAME_VIEW");
@@ -625,7 +646,7 @@
             e.Property(g => g.OrderNumber).HasColumnName("ORDER_NUMBER");
             e.Property(g => g.OrderLine).HasColumnName("ORDER_LINE");
             e.Property(g => g.LoanNumber).HasColumnName("LOAN_NUMBER");
-            e.Property(g => g.LoanLine).HasColumnName("LOAN_LINE");
+            e.Property(g => g.LoanLine).HasColumnName("LINE_NUMBER");
             e.Property(g => g.RsnNumber).HasColumnName("RSN_NUMBER");
             e.Property(g => g.ReqNumber).HasColumnName("REQ_NUMBER");
             e.Property(g => g.ReqLine).HasColumnName("REQ_LINE");
@@ -642,6 +663,19 @@
             e.Property(g => g.ManufacturersPartNumber).HasColumnName("MANUF_PART_NUMBER").HasMaxLength(20);
             e.Property(g => g.LogCondition).HasColumnName("CONDITION").HasMaxLength(2000);
             e.Property(g => g.RsnAccessories).HasColumnName("RSN_ACCESSORIES").HasMaxLength(2000);
+        }
+
+        private static void BuildPartsStorageTypes(ModelBuilder builder)
+        {
+            var e = builder.Entity<PartsStorageType>().ToTable("PARTS_STORAGE_TYPES");
+            e.HasKey(l => new { l.PartNumber,l.StorageTypeCode});
+            e.Property(l => l.Remarks).HasColumnName("REMARKS").HasMaxLength(30);
+            e.Property(l => l.Maximum).HasColumnName("MAXIMUM").HasMaxLength(14);
+            e.Property(l => l.Incr).HasColumnName("INCR").HasMaxLength(14);
+            e.Property(l => l.Preference).HasColumnName("PREFERENCE").HasMaxLength(1);
+            e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID").HasMaxLength(14);
+            e.HasOne(l => l.Part).WithMany().HasForeignKey("PART_NUMBER");
+            e.HasOne(l => l.StorageType).WithMany().HasForeignKey("STORAGE_TYPE");
         }
     }
 }

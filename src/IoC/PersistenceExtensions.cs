@@ -5,6 +5,7 @@ namespace Linn.Stores2.IoC
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -31,6 +32,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IRepository<StorageType, string>, EntityFrameworkRepository<StorageType, string>>(
                     r => new EntityFrameworkRepository<StorageType, string>(r.GetService<ServiceDbContext>()?.StorageTypes))
                 .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
+                .AddScoped<IRepository<PartsStorageType, PartsStorageTypeKey>, PartsStorageTypeRepository>()
                 .AddScoped<IRepository<StoresBudget, int>, StoresBudgetRepository>()
                 .AddScoped<IQueryRepository<StoragePlace>, EntityFrameworkQueryRepository<StoragePlace>>(
                     r => new EntityFrameworkQueryRepository<StoragePlace>(r.GetService<ServiceDbContext>()?.StoragePlaces))
@@ -43,6 +45,8 @@ namespace Linn.Stores2.IoC
                     r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees))
                 .AddScoped<IRepository<StorageSite, string>, StorageSiteRepository>()
                 .AddScoped<IRepository<StoresFunction, string>, StoresFunctionCodeRepository>()
+                .AddScoped<IRepository<StoresPallet, int>, EntityFrameworkRepository<StoresPallet, int>>(
+                    r => new EntityFrameworkRepository<StoresPallet, int>(r.GetService<ServiceDbContext>()?.StoresPallets))
                 .AddScoped<IRepository<Part, string>, EntityFrameworkRepository<Part, string>>(
                     r => new EntityFrameworkRepository<Part, string>(r.GetService<ServiceDbContext>()?.Parts))
                 .AddScoped<IRepository<StoresTransactionDefinition, string>, EntityFrameworkRepository<StoresTransactionDefinition, string>>(
@@ -50,7 +54,9 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IRepository<Department, string>, EntityFrameworkRepository<Department, string>>(
                 r => new EntityFrameworkRepository<Department, string>(r.GetService<ServiceDbContext>()?.Departments))
                 .AddScoped<IRepository<Nominal, string>, EntityFrameworkRepository<Nominal, string>>(
-                r => new EntityFrameworkRepository<Nominal, string>(r.GetService<ServiceDbContext>()?.Nominals));
+                r => new EntityFrameworkRepository<Nominal, string>(r.GetService<ServiceDbContext>()?.Nominals))
+                .AddScoped<IRepository<GoodsInLogEntry, int>, EntityFrameworkRepository<GoodsInLogEntry, int>>(
+                    r => new EntityFrameworkRepository<GoodsInLogEntry, int>(r.GetService<ServiceDbContext>()?.GoodsInLogEntries));
         }
     }
 }
