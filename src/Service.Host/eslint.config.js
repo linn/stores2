@@ -30,7 +30,6 @@ module.exports = [
             'react-hooks/exhaustive-deps': 'warn',
             'no-unused-vars': 'error'
         }
-        // ... others are omitted for brevity
     },
     eslintPluginPrettierRecommended
 ];
