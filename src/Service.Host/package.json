@@ -58,7 +58,7 @@
     "@date-io/moment": "^3.2.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@linn-it/linn-form-components-library": "24.0.0-alpha.2",
+    "@linn-it/linn-form-components-library": "24.0.0-alpha.4",
     "@mui/icons-material": "^6.4.4",
     "@mui/material": "^6.4.4",
     "@mui/styles": "^6.4.4",
