@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Proxy
 {
+    using System;
     using System.Data;
     using System.Threading.Tasks;
 
@@ -203,38 +204,214 @@
                 messageParameter.Value.ToString());
         }
 
-        public async Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber)
+        public async Task<ProcessResult> CreateNominals(
+            int reqNumber,
+            decimal qty,
+            int lineNumber,
+            string nominal,
+            string department)
         {
-            await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
+            using var connection = new OracleConnection(
+               ConnectionStrings.ManagedConnectionString());
 
-            var cmd = new OracleCommand("STORES_WRAPPER.CREATE_REQ_LINES", connection)
+            var cmd = new OracleCommand("stores_wrapper.create_nominals", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+            var reqNumberParameter = new OracleParameter("p_req_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = reqNumber
+            };
+            cmd.Parameters.Add(reqNumberParameter);
+            var qtyParameter = new OracleParameter("p_qty", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = qty
+            };
+            cmd.Parameters.Add(qtyParameter);
+            var lineNumberParameter = new OracleParameter("p_line_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = lineNumber
+            };
+            cmd.Parameters.Add(lineNumberParameter);
+
+            var nominalParameter = new OracleParameter("p_nominal", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.Input,
+                Size = 500,
+                Value = nominal
+            };
+            cmd.Parameters.Add(nominalParameter);
+            var deptParameter = new OracleParameter("p_department", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.Input,
+                Size = 500,
+                Value = department
+            };
+            cmd.Parameters.Add(deptParameter);
+            var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Value = 1
+            };
+            cmd.Parameters.Add(successParameter);
+            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.InputOutput,
+                Size = 500
+            };
+            cmd.Parameters.Add(messageParameter);
+
+            await connection.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+
+            return new ProcessResult(
+                successParameter.Value.ToString() == "1",
+                messageParameter.Value.ToString());
+        }
+
+        public async Task<ProcessResult> PickStock(
+            string partNumber,
+            int reqNumber,
+            int lineNumber,
+            decimal lineQty,
+            int? locationId,
+            int? palletNumber,
+            string stockPoolCode,
+            string transactionCode)
+        {
+            using var connection = new OracleConnection(
+                ConnectionStrings.ManagedConnectionString());
+
+            var cmd = new OracleCommand("stores_wrapper.pick_stock", connection)
                           {
                               CommandType = CommandType.StoredProcedure
                           };
 
-            cmd.Parameters.Add(new OracleParameter("p_req_number", OracleDbType.Int32)
-                                   {
-                                       Direction = ParameterDirection.Input,
-                                       Value = reqNumber
-                                   });
-
-            cmd.Parameters.Add(new OracleParameter("p_serial_number", OracleDbType.Int32)
-                                   {
-                                       Direction = ParameterDirection.Input,
-                                       Value = serialNumber
-                                   });
-
-            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+            var partNumberParameter = new OracleParameter("p_part_number", OracleDbType.Varchar2)
                                        {
-                                           Direction = ParameterDirection.Output,
-                                           Size = 500
+                                           Direction = ParameterDirection.InputOutput,
+                                           Size = 500,
+                                           Value = partNumber
                                        };
-            cmd.Parameters.Add(messageParameter);
+            cmd.Parameters.Add(partNumberParameter);
+
+            var reqNumberParameter = new OracleParameter("p_req_number", OracleDbType.Int32)
+                                         {
+                                             Direction = ParameterDirection.Input,
+                                             Value = reqNumber
+                                         };
+            cmd.Parameters.Add(reqNumberParameter);
+
+            var lineNumberParameter = new OracleParameter("p_line_number", OracleDbType.Int32)
+                                          {
+                                              Direction = ParameterDirection.Input,
+                                              Value = lineNumber
+                                          };
+            cmd.Parameters.Add(lineNumberParameter);
+
+            var lineQtyParameter = new OracleParameter("p_line_qty", OracleDbType.Decimal)
+                                          {
+                                              Direction = ParameterDirection.Input,
+                                              Value = lineQty
+                                          };
+            cmd.Parameters.Add(lineQtyParameter);
+
+            var locIdParameter = new OracleParameter("p_location_id", OracleDbType.Int32)
+                                          {
+                                              Direction = ParameterDirection.Input,
+                                              Value = locationId
+                                          };
+            cmd.Parameters.Add(locIdParameter);
+
+            var palletNumberParameter = new OracleParameter("p_pallet_number", OracleDbType.Int32)
+                                     {
+                                         Direction = ParameterDirection.Input,
+                                         Value = palletNumber
+                                     };
+            cmd.Parameters.Add(palletNumberParameter);
+
+            var stockPoolParameter = new OracleParameter("p_stock_pool", OracleDbType.Varchar2)
+                                          {
+                                              Direction = ParameterDirection.InputOutput,
+                                              Size = 500,
+                                              Value = stockPoolCode
+                                          };
+            cmd.Parameters.Add(stockPoolParameter);
+
+            var transCodeParameter = new OracleParameter("p_transaction_code", OracleDbType.Varchar2)
+                                         {
+                                             Direction = ParameterDirection.InputOutput,
+                                             Size = 500,
+                                             Value = transactionCode
+                                         };
+            cmd.Parameters.Add(transCodeParameter);
 
             var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
                                        {
                                            Direction = ParameterDirection.Output
                                        };
+            cmd.Parameters.Add(successParameter);
+
+            var qtyPickedParameter = new OracleParameter("p_qty_picked", OracleDbType.Decimal)
+                                       {
+                                           Direction = ParameterDirection.Output
+                                       };
+
+            cmd.Parameters.Add(qtyPickedParameter);
+
+            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+                                       {
+                                           Direction = ParameterDirection.InputOutput,
+                                           Size = 500
+                                       };
+            cmd.Parameters.Add(messageParameter);
+
+            await connection.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+            var isSuccess = successParameter.Value.ToString() == "1";
+
+            return new ProcessResult(
+                isSuccess,
+                isSuccess ? $"Picked {qtyPickedParameter.Value} successfully." : messageParameter.Value.ToString());
+        }
+
+        public async Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber)
+        {
+            await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
+
+            var cmd = new OracleCommand("STORES_WRAPPER.CREATE_REQ_LINES", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.Add(new OracleParameter("p_req_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = reqNumber
+            });
+
+            cmd.Parameters.Add(new OracleParameter("p_serial_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = serialNumber
+            });
+
+            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.Output,
+                Size = 500
+            };
+            cmd.Parameters.Add(messageParameter);
+
+            var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Output
+            };
             cmd.Parameters.Add(successParameter);
 
             await connection.OpenAsync();

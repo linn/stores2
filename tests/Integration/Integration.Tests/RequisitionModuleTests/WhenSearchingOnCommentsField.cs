@@ -30,8 +30,8 @@
                 "F",
                 12345678,
                 "TYPE",
-                new Department(),
-                new Nominal(),
+                new Department { DepartmentCode = "DEP1"},
+                new Nominal { NominalCode = "NOM1"},
                 null,
                 null,
                 "Hello Requisitions");
@@ -41,8 +41,8 @@
                 "F",
                 12345678,
                 "TYPE",
-                new Department(),
-                new Nominal(),
+                new Department { DepartmentCode = "DEP2" },
+                new Nominal { NominalCode = "NOM2" },
                 null,
                 null,
                 "Goodbye Requisitions");

@@ -33,8 +33,8 @@ module.exports = {
                         presets: [
                             ['@babel/preset-env', { modules: 'commonjs' }],
                             '@babel/preset-react'
-                        ].map(localResolve),
-                        plugins: ['@babel/plugin-transform-runtime'].map(localResolve)
+                        ].map(localResolve)
+                        // plugins: ['@babel/plugin-transform-runtime'].map(localResolve)
                     }
                 },
                 exclude: /node_modules/

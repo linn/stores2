@@ -14,6 +14,8 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Requisitions;
 
+    using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
     public class RequisitionFacadeService
         : AsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource>,
           IRequisitionFacadeService
@@ -121,7 +123,7 @@
                              new User
                                  {
                                      UserNumber = resource.CreatedBy.GetValueOrDefault(),
-                                     Privileges = privileges,
+                                     Privileges = privileges
                                  }, 
                              resource.StoresFunction?.Code, 
                              resource.ReqType,
@@ -129,7 +131,7 @@
                              resource.Document1Name, 
                              resource.Department?.DepartmentCode, 
                              resource.Nominal?.NominalCode, 
-                             resource.Lines?.Select(BuildLineCandidateFromResource), 
+                             BuildLineCandidateFromResource(resource.Lines.First()), 
                              resource.Reference, 
                              resource.Comments, 
                              resource.ManualPick, 

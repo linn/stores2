@@ -26,6 +26,8 @@
 
         public string Document1Name { get; protected set; }
         
+        public int Document1Line { get; protected set; }
+        
         public Part Part { get; protected set; }
 
         public StorageLocation ToLocation { get; protected set; }
@@ -103,16 +105,24 @@
             StorageLocation fromLocation = null,
             StorageLocation toLocation = null,
             Part part = null,
-            decimal? qty = null)
+            decimal? qty = null,
+            int? document1Line = null)
         {
+            this.CreatedBy = createdBy;
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
-            this.Document1 = document1Number;
-            this.Document1Name = document1Type;
+            this.Document1 = document1Number ?? this.ReqNumber;
+            this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? string.Empty : "REQ";
+            this.Document1Line = document1Line ?? 1;
             this.Qty = qty;
             this.Part = part;
-
+            this.Department = department;
+            this.Nominal = nominal;
+            this.Reference = reference;
+            
+            this.FromStockPool = fromStockPool; // will probably need to be conditional depending on req type
+            
             this.Lines = new List<RequisitionLine>();
             if (lines != null)
             {
@@ -122,14 +132,14 @@
                 }
             }
         }
-
+        
         public void AddLine(RequisitionLine toAdd)
         {
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
             this.Lines.Add(toAdd);
         }
-
+        
         public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
 
         public bool IsBooked() => this.DateBooked != null;

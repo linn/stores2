@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
-    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public interface IRequisitionService
@@ -28,8 +27,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? document1Number,
             string document1Type,
             string departmentCode,
-            string nominalCode,
-            IEnumerable<LineCandidate> lines = null,
+            string nominalCode, 
+            LineCandidate firstLine = null,
             string reference = null,
             string comments = null,
             string manualPick = null,

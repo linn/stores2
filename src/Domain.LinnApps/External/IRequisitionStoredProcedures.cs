@@ -12,6 +12,23 @@
 
         Task<ProcessResult> DoRequisition(int reqNumber, int? lineNumber, int bookedBy);
 
+        Task<ProcessResult> CreateNominals(
+            int reqNumber,
+            decimal qty,
+            int lineNumber,
+            string nominal,
+            string department);
+
+        Task<ProcessResult> PickStock(
+            string partNumber,
+            int reqNumber,
+            int lineNumber,
+            decimal lineQty,
+            int? locationId,
+            int? palletNumber,
+            string stockPoolCode,
+            string transactionCode);
+            
         Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber);
     }
 }

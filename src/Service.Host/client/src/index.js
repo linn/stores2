@@ -1,6 +1,4 @@
-﻿/* eslint-disable react/jsx-props-no-spreading */
-
-import React from 'react';
+﻿import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';

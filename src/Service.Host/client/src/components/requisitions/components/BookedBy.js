@@ -3,7 +3,6 @@ import { InputField } from '@linn-it/linn-form-components-library';
 import moment from 'moment';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
-import PropTypes from 'prop-types';
 
 function BookedBy({
     dateBooked = null,
@@ -45,20 +44,5 @@ function BookedBy({
         </>
     );
 }
-
-BookedBy.propTypes = {
-    bookedByName: PropTypes.string,
-    dateBooked: PropTypes.string,
-    bookUrl: PropTypes.string,
-    onBook: PropTypes.func.isRequired,
-    shouldRender: PropTypes.bool
-};
-
-BookedBy.defaultProps = {
-    shouldRender: true,
-    bookedByName: null,
-    dateBooked: null,
-    bookUrl: null
-};
 
 export default BookedBy;

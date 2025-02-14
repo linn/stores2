@@ -17,7 +17,6 @@ import {
     utilities
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
-import PropTypes from 'prop-types';
 import Page from '../Page';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
@@ -646,7 +645,5 @@ function Requisition({ creating }) {
         </Page>
     );
 }
-
-Requisition.propTypes = { creating: PropTypes.bool.isRequired };
 
 export default Requisition;

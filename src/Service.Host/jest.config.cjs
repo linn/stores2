@@ -9,7 +9,7 @@ module.exports = {
     coverageDirectory: './coverage/',
     collectCoverageFrom: ['client/src/**/*.{js}'],
     collectCoverage: true,
-    setupFiles: ['./setupJest.js', 'raf/polyfill'],
+    setupFiles: ['./setupJest.js'],
     testPathIgnorePatterns: ['./client/src/components/__tests__/fakeData/*'],
     transform: {
         '^.+\\.js$': 'babel-jest',

@@ -32,8 +32,8 @@
                 "F",
                 123,
                 "REQ",
-                new Department(),
-                new Nominal());
+                new Department { DepartmentCode = "DEPT1" },
+                new Nominal { NominalCode = "NOM1" });
 
             this.req456 = new ReqWithReqNumber(
                 456,
@@ -42,8 +42,8 @@
                 "F",
                 123,
                 "REQ",
-                new Department(),
-                new Nominal());
+                new Department { DepartmentCode = "DEPT" },
+                new Nominal { NominalCode = "NOM" });
 
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(this.DbContext, this.req456);

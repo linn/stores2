@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 import React from 'react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import render from '../../test-utils';
 import App from '../App';
 

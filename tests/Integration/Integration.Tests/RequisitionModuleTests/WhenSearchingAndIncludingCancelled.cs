@@ -32,8 +32,8 @@
                 "F",
                 123,
                 "REQ",
-                new Department(),
-                new Nominal(),
+                new Department { DepartmentCode = "DEPT1" },
+                new Nominal { NominalCode = "NOM1" },
                 null,
                 null,
                 "comment");
@@ -45,8 +45,8 @@
                 "F",
                 123,
                 "REQ",
-                new Department(),
-                new Nominal(),
+                new Department { DepartmentCode = "DEPT2" },
+                new Nominal { NominalCode = "NOM2" },
                 null,
                 null,
                 "comment");

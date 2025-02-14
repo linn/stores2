@@ -106,7 +106,8 @@
             RequisitionHeaderResource resource,
             IRequisitionFacadeService service)
         {
-            await res.Negotiate(service.Add(resource, req.HttpContext.GetPrivileges()));
+            resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
+            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges(), null, false, false));
         }
         
         private async Task GetFunctionCodes(
