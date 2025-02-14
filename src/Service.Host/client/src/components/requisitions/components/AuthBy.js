@@ -1,7 +1,6 @@
 import React from 'react';
 import { InputField, DatePicker } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid2';
-import PropTypes from 'prop-types';
 
 function AuthBy({ dateAuthorised, authorisedByName, shouldRender = true }) {
     if (!shouldRender) {
@@ -31,15 +30,5 @@ function AuthBy({ dateAuthorised, authorisedByName, shouldRender = true }) {
         </>
     );
 }
-
-AuthBy.propTypes = {
-    dateAuthorised: PropTypes.string.isRequired,
-    authorisedByName: PropTypes.string.isRequired,
-    shouldRender: PropTypes.bool
-};
-
-AuthBy.defaultProps = {
-    shouldRender: true
-};
 
 export default AuthBy;
