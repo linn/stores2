@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
@@ -26,18 +25,12 @@
         [SetUp]
         public void SetUp()
         {
-            this.part = new Part
-                            {
-                                Id = 1,
-                                PartNumber = "Part No 1",
-                                Description = "Part 1"
-            };
+            this.part = new Part { Id = 1, PartNumber = "Part No 1", Description = "Part 1" };
 
             this.storageType = new StorageType
                                    {
-                                       StorageTypeCode = "Storage Type No 1",
-                                       Description = "Storage Type 1"
-            };
+                                       StorageTypeCode = "Storage Type No 1", Description = "Storage Type 1"
+                                   };
 
 
             this.partStorageType = new PartsStorageType(
@@ -75,7 +68,7 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<PartsStorageTypeResource>>();
+            var resource = this.Response.DeserializeBody<IEnumerable<PartsStorageTypeResource>>().ToList();
             resource.First().StorageTypeCode.Should().Be("Storage Type No 1");
             resource.First().PartNumber.Should().Be("Part No 1");
             resource.First().BridgeId.Should().Be(400);
