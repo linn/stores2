@@ -2,7 +2,7 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
 import App from './App';
 import 'typeface-roboto';
-// import NotFoundPage from './NotFoundPage';
+import NotFoundPage from './NotFoundPage';
 import useSignIn from '../hooks/useSignIn';
 import Navigation from '../containers/Navigation';
 import Carriers from './Carriers';
@@ -53,7 +53,7 @@ function Root() {
                     />
                     <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
-                    {/* <Route path="*" element={<NotFoundPage />} /> */}
+                    <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>
         </div>

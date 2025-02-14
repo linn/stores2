@@ -1,4 +1,3 @@
-// @ts-check
 const react = require('eslint-plugin-react');
 const globals = require('globals');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
