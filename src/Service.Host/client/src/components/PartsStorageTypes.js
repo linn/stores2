@@ -35,7 +35,7 @@ function PartsStorageTypes() {
                 )}
                 <Grid size={12}>
                     <DataGrid
-                        getRowId={row => row.storageTypeCode}
+                        getRowId={row => row.bridgeId}
                         rows={partsStorageTypes}
                         editMode="cell"
                         columns={StorageTypeColumns}

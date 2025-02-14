@@ -29,6 +29,8 @@
                 .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>()
                 .AddScoped<IRepository<StorageType, string>, EntityFrameworkRepository<StorageType, string>>(
                     r => new EntityFrameworkRepository<StorageType, string>(r.GetService<ServiceDbContext>()?.StorageTypes))
+                .AddScoped<IRepository<Part, int>, EntityFrameworkRepository<Part, int>>(
+                    r => new EntityFrameworkRepository<Part, int>(r.GetService<ServiceDbContext>()?.Parts))
                 .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
                 .AddScoped<IRepository<PartsStorageType, PartsStorageTypeKey>, PartsStorageTypeRepository>()
                 .AddScoped<IRepository<StoresBudget, int>, StoresBudgetRepository>()
