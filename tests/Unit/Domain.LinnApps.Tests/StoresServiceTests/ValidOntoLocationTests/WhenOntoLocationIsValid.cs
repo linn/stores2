@@ -21,7 +21,7 @@
         }
 
         [Test]
-        public void ShouldReturnBookedReq()
+        public void ShouldReturnTrue()
         {
             this.Result.Success.Should().BeTrue();
         }

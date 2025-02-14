@@ -41,7 +41,7 @@
                 {
                     return new ProcessResult(
                         false,
-                        $"Pallet is for {typeOfStock} but part {part.PartNumber} is {part.RawOrFinished}");
+                        $"Location/Pallet is for {typeOfStock} but part {part.PartNumber} is {part.RawOrFinished}");
                 }
             }
 

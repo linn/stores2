@@ -2,6 +2,17 @@
 {
     public class StockState
     {
+        public StockState()
+        {
+        }
+
+        public StockState(string state, string description)
+        {
+            this.State = state;
+            this.Description = description;
+            this.QCRequired = "N";
+        }
+
         public string State { get; set; }
 
         public string Description { get; set; }
