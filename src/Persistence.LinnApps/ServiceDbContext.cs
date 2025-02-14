@@ -25,6 +25,10 @@
 
         public DbSet<StorageType> StorageTypes { get; set; }
 
+        public DbSet<PartsStorageType> PartsStorageTypes { get; set; }
+
+        public DbSet<Part> Parts { get; set; }
+
         public DbSet<StockLocator> StockLocators { get; set; }
 
         public DbSet<StockPool> StockPools { get; set; }
@@ -42,8 +46,6 @@
         public DbSet<StorageSite> StorageSites { get; set; }
 
         public DbSet<StoresFunction> StoresFunctionCodes { get; set; }
-
-        public DbSet<Part> Parts { get; set; }
 
         public DbSet<StockState> StockStates { get; set; }
 
@@ -86,6 +88,7 @@
             BuildStoresFunctionTransactions(builder);
             BuildGoodsInLog(builder);
             BuildStockStates(builder);
+            BuildPartsStorageTypes(builder);
             BuildStoresPallets(builder);
         }
 
@@ -653,6 +656,19 @@
             e.Property(g => g.ManufacturersPartNumber).HasColumnName("MANUF_PART_NUMBER").HasMaxLength(20);
             e.Property(g => g.LogCondition).HasColumnName("CONDITION").HasMaxLength(2000);
             e.Property(g => g.RsnAccessories).HasColumnName("RSN_ACCESSORIES").HasMaxLength(2000);
+        }
+
+        private static void BuildPartsStorageTypes(ModelBuilder builder)
+        {
+            var e = builder.Entity<PartsStorageType>().ToTable("PARTS_STORAGE_TYPES");
+            e.HasKey(l => new { l.PartNumber,l.StorageTypeCode});
+            e.Property(l => l.Remarks).HasColumnName("REMARKS").HasMaxLength(30);
+            e.Property(l => l.Maximum).HasColumnName("MAXIMUM").HasMaxLength(14);
+            e.Property(l => l.Incr).HasColumnName("INCR").HasMaxLength(14);
+            e.Property(l => l.Preference).HasColumnName("PREFERENCE").HasMaxLength(1);
+            e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID").HasMaxLength(14);
+            e.HasOne(l => l.Part).WithMany().HasForeignKey("PART_NUMBER");
+            e.HasOne(l => l.StorageType).WithMany().HasForeignKey("STORAGE_TYPE");
         }
     }
 }

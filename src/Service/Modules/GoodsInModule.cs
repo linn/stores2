@@ -37,7 +37,7 @@
             string storagePlace,
             IGoodsInLogReportFacadeService facadeService)
         {
-            await res.Negotiate(await facadeService.GetGoodsInLogReport(
+            await res.Negotiate(facadeService.GetGoodsInLogReport(
                 fromDate,
                 toDate,
                 createdBy,

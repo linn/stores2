@@ -10,7 +10,7 @@
 
     public interface IGoodsInLogReportFacadeService
     {
-        Task<IResult<ReportReturnResource>> GetGoodsInLogReport(
+        IResult<ReportReturnResource> GetGoodsInLogReport(
             string fromDate,
             string toDate,
             int? createdBy,

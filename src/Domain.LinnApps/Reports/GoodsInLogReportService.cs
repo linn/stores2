@@ -23,7 +23,7 @@
             this.goodsInLogRepository = goodsInLogRepository;
         }
 
-        public async Task <ResultsModel> GoodsInLogReport(
+        public ResultsModel GoodsInLogReport(
             string fromDate,
             string toDate,
             int? createdBy,
@@ -107,7 +107,7 @@
                 values.Add(
                     new CalculationValueModel
                         { 
-                            RowId = rowId, Value = goodsInLogEntry.Quantity ?? 0, ColumnId = "Quantity"
+                            RowId = rowId, TextDisplay = goodsInLogEntry.Quantity.ToString(), ColumnId = "Quantity"
                     });
                 values.Add(
                     new CalculationValueModel
@@ -269,7 +269,7 @@
                                   new AxisDetailsModel("CreatedBy", "Created By", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("OrderNumber", "Order Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("OrderLine", "Line", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("Quantity", "Qty", GridDisplayType.Value, 100) { DecimalPlaces = 2 },
+                                  new AxisDetailsModel("Quantity", "Qty", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("StorageType", "Storage Type", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("StoragePlace", "Onto", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("SerialNumber", "Serial Number", GridDisplayType.TextValue, 100),
