@@ -276,11 +276,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
                 catch (CancelRequisitionException x)
                 {
-                    var cancelFailedMessage =
-                        $"Warning - req failed to create: {ex.Message}. Header also failed to cancel: {x.Message}. Some cleanup may be required!";
-                    this.logger.Error(cancelFailedMessage);
+                    var cancelAlsoFailedMessage =
+                        $"Warning - req failed to create: {ex.Message}. Header also failed to cancel: {x.Message}. Cleanup may be required!";
+                    this.logger.Error(cancelAlsoFailedMessage);
                     throw new CreateRequisitionException(
-                        cancelFailedMessage,
+                        cancelAlsoFailedMessage,
                         ex);
                 }
 
