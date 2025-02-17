@@ -27,7 +27,8 @@
 
             return new RequisitionHeaderResource
                        {
-                           ReqNumber = header.ReqNumber, DateCreated = header.DateCreated.ToString("o"), 
+                           ReqNumber = header.ReqNumber, 
+                           DateCreated = header.DateCreated.ToString("o"), 
                            Document1 = header.Document1,
                            Qty = header.Qty,
                            Document1Name = header.Document1Name,

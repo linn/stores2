@@ -110,7 +110,9 @@
         public async Task<IResult<TResource>> Add(
             TResource resource, 
             IEnumerable<string> privileges = null, 
-            int? userNumber = null)
+            int? userNumber = null,
+            bool doAdd = true,
+            bool doCommit = true)
         {
             T entity;
 
@@ -125,15 +127,21 @@
                 return new BadRequestResult<TResource>(exception.Message);
             }
 
-            await this.repository.AddAsync(entity);
-
+            if (doAdd)
+            {
+                await this.repository.AddAsync(entity);
+            }
+            
             if (userNumber.HasValue)
             {
                 await this.MaybeSaveLog("Create", userNumber, entity, resource, default);
             }
 
-            await this.transactionManager.CommitAsync();
-
+            if (doCommit)
+            {
+                await this.transactionManager.CommitAsync();
+            }
+            
             return new CreatedResult<TResource>(this.BuildResource(entity, privilegesList));
         }
 
