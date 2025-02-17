@@ -26,7 +26,7 @@
 
         public string Document1Name { get; protected set; }
         
-        public int Document1Line { get; protected set; }
+        public int? Document1Line { get; protected set; }
         
         public Part Part { get; protected set; }
 
