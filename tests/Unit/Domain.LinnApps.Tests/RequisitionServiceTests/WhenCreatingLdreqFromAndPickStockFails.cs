@@ -1,13 +1,15 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -17,7 +19,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
     using NUnit.Framework;
 
-    public class WhenCreatingLdreqFrom : ContextBase
+    public class WhenCreatingLdreqFromAndPickStockFails : ContextBase
     {
         private User user;
         private StoresFunction ldreq;
@@ -27,6 +29,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         private StorageLocation from;
         private RequisitionHeader result;
         private StoresTransactionDefinition transactionDefinition;
+
+        private Func<Task> action;
+
 
         [SetUp]
         public void Setup()
@@ -58,7 +63,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                     null,
                     "LINN",
                     this.transactionDefinition.TransactionCode)
-                .Returns(new ProcessResult(true, null));
+                .Returns(new ProcessResult(false, "no stock available"));
 
             this.ReqStoredProcedures.CreateNominals(
                     Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode)
@@ -75,9 +80,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                     this.department,
                     this.nominal));
 
-            this.result = this.Sut.CreateRequisition(
-                this.user, 
-                this.ldreq.FunctionCode,
+            this.action = async () => await this.Sut.CreateRequisition(
+                this.user,
+                this.ldreq.FunctionCode, 
                 "F", 
                 null,
                 null,
@@ -100,35 +105,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                 "ref",
                 "comments",
                 null,
-                "LINN").Result;
+                "LINN");
         }
 
         [Test]
-        public void ShouldReturnCreated()
+        public async Task ShouldThrowError()
         {
-            this.result.ReqNumber.Should().Be(123);
-        }
-
-        [Test]
-        public void ShouldPickStock()
-        {
-            this.ReqStoredProcedures.Received(1)
-                .PickStock(
-                    this.part.PartNumber,
-                    Arg.Any<int>(),
-                    1,
-                    1,
-                    this.from.LocationId,
-                    null,
-                    "LINN",
-                    this.transactionDefinition.TransactionCode);
-        }
-
-        [Test]
-        public void ShouldCreateNominalPostings()
-        {
-            this.ReqStoredProcedures.Received(1).CreateNominals(
-                Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode);
+            await this.action.Should().ThrowAsync<CreateRequisitionException>()
+                .WithMessage("Some stores-y message");
         }
     }
 }
