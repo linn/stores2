@@ -2,7 +2,7 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid2';
 import { DataGrid } from '@mui/x-data-grid';
-import { Loading, utilities } from '@linn-it/linn-form-components-library';
+import { Loading, CreateButton, utilities } from '@linn-it/linn-form-components-library';
 import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
@@ -25,8 +25,11 @@ function PartsStorageTypes() {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
-                <Grid size={12}>
+                <Grid size={11}>
                     <Typography variant="h4">Part Storage Types</Typography>
+                </Grid>
+                <Grid item xs={1}>
+                    <CreateButton createUrl="/stores2/parts-storage-types/create" />
                 </Grid>
                 {isPartsStorageTypesLoading && (
                     <Grid size={12}>
@@ -40,7 +43,7 @@ function PartsStorageTypes() {
                         editMode="cell"
                         columns={StorageTypeColumns}
                         onRowClick={clicked => {
-                            utilities.getSelfHref(clicked.row);
+                            (utilities.getSelfHref(clicked.row));
                         }}
                         rowHeight={34}
                         loading={false}

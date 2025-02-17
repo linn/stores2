@@ -108,6 +108,7 @@ function PartStorageType({ creating }) {
                         {creating ? 'Create a Part Storage Type' : 'Part Storage Type'}
                     </Typography>
                 </Grid>
+
                 {(isPartStorageTypesLoading ||
                     updateLoading ||
                     createStorageTypeLoading ||
@@ -216,8 +217,12 @@ function PartStorageType({ creating }) {
                 <Grid item xs={12}>
                     <Button
                         variant="contained"
-                        fullWidth={false} // Optional: Use fullWidth if button should stretch
-                        disabled={partStorageType === partStorageTypeResult}
+                        fullWidth
+                        disabled={
+                            partStorageType === partStorageTypeResult ||
+                            !partStorageType?.partNumber ||
+                            !partStorageType?.storageTypeCode
+                        }
                         onClick={() => {
                             if (creating) {
                                 createPartStorageType(null, partStorageType);
