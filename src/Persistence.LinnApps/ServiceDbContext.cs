@@ -661,7 +661,7 @@
         private static void BuildPartsStorageTypes(ModelBuilder builder)
         {
             var e = builder.Entity<PartsStorageType>().ToTable("PARTS_STORAGE_TYPES");
-            e.HasKey(l => new { l.PartNumber,l.StorageTypeCode});
+            e.HasKey(l => new { l.PartNumber, l.StorageTypeCode });
             e.Property(l => l.Remarks).HasColumnName("REMARKS").HasMaxLength(30);
             e.Property(l => l.Maximum).HasColumnName("MAXIMUM").HasMaxLength(14);
             e.Property(l => l.Incr).HasColumnName("INCR").HasMaxLength(14);
