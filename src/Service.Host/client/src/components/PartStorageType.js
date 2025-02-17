@@ -24,7 +24,7 @@ function PartStorageType({ creating }) {
     const { partNumber, storageTypeCode } = useParams();
 
     const { isPartStorageTypesLoading, result: partStorageTypeResult } = useInitialise(
-        `${itemTypes.partsStorageTypes.url}?partNumber=${partNumber}&storageTypeCode=${storageTypeCode}`
+        `${itemTypes.partsStorageTypes.url}/${partNumber}/${storageTypeCode}`
     );
 
     const {
@@ -121,7 +121,7 @@ function PartStorageType({ creating }) {
                     <InputField
                         propertyName="partNumber"
                         label="Part Number"
-                        value={partStorageType?.partNumber}
+                        value={partStorageType}
                         fullWidth
                         onChange={handleFieldChange}
                         disabled
