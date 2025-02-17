@@ -260,28 +260,31 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 await this.AddRequisitionLine(req, firstLine);
             }
-            catch (Exception ex) when (ex is PickStockException or CreateNominalPostingException)
+            catch (Exception ex)
+                when (ex is PickStockException or CreateNominalPostingException)
             {
+                var createFailedMessage =
+                    $"Req failed to create since first line could not be added. Reason: {ex.Message}";
+
                 // Try to cancel the header if adding the line fails
                 try
                 {
                     await this.CancelHeader(
                         req.ReqNumber,
                         createdBy,
-                        $"Header was cancelled because create with initial line failed: {ex.Message}");
+                        createFailedMessage);
                 }
                 catch (CancelRequisitionException x)
                 {
                     var cancelFailedMessage =
-                        $"Warning - req failed to create because: {ex.Message}. Header also failed to cancel: {x.Message}. Some cleanup may be required!";
+                        $"Warning - req failed to create: {ex.Message}. Header also failed to cancel: {x.Message}. Some cleanup may be required!";
                     this.logger.Error(cancelFailedMessage);
                     throw new CreateRequisitionException(
                         cancelFailedMessage,
                         ex);
                 }
 
-                var createFailedMessage =
-                    $"Req failed to create since first line could not be added. The header has been cancelled. Reason: {ex.Message}";
+                
                 this.logger.Error(createFailedMessage);
                 throw new CreateRequisitionException(
                     createFailedMessage,
