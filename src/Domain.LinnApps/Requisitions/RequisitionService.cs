@@ -1,8 +1,10 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
+    using Linn.Common.Logging;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -34,6 +36,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly ITransactionManager transactionManager;
 
+        private readonly ILog logger;
+
         public RequisitionService(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -45,7 +49,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<Part, string> partRepository,
             IRepository<StorageLocation, int> storageLocationRepository,
             IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository,
-            ITransactionManager transactionManager)
+            ITransactionManager transactionManager,
+            ILog logger)
         {
             this.authService = authService;
             this.repository = repository;
@@ -58,6 +63,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.storageLocationRepository = storageLocationRepository;
             this.transactionDefinitionRepository = transactionDefinitionRepository;
             this.transactionManager = transactionManager;
+            this.logger = logger;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -86,12 +92,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (!unallocateReqResult.Success)
                 {
-                    throw new RequisitionException(unallocateReqResult.Message);
+                    throw new CancelRequisitionException(unallocateReqResult.Message);
                 }
             }
             else
             {
-                throw new RequisitionException(
+                throw new CancelRequisitionException(
                     "Cannot cancel req - invalid cancel function");
             }
 
@@ -103,7 +109,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (!deleteAllocsOntoResult.Success)
             {
-                throw new RequisitionException(deleteAllocsOntoResult.Message);
+                throw new CancelRequisitionException(deleteAllocsOntoResult.Message);
             }
 
             return req;
@@ -250,7 +256,37 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             await this.repository.AddAsync(req);
 
-            await this.AddRequisitionLine(req, firstLine);
+            try
+            {
+                await this.AddRequisitionLine(req, firstLine);
+            }
+            catch (Exception ex) when (ex is PickStockException or CreateNominalPostingException)
+            {
+                // Try to cancel the header if adding the line fails
+                try
+                {
+                    await this.CancelHeader(
+                        req.ReqNumber,
+                        createdBy,
+                        $"Header was cancelled because create with initial line failed: {ex.Message}");
+                }
+                catch (CancelRequisitionException x)
+                {
+                    var cancelFailedMessage =
+                        $"Warning - req failed to create because: {ex.Message}. Header also failed to cancel: {x.Message}. Some cleanup may be required!";
+                    this.logger.Error(cancelFailedMessage);
+                    throw new CreateRequisitionException(
+                        cancelFailedMessage,
+                        ex);
+                }
+
+                var createFailedMessage =
+                    $"Req failed to create since first line could not be added. The header has been cancelled. Reason: {ex.Message}";
+                this.logger.Error(createFailedMessage);
+                throw new CreateRequisitionException(
+                    createFailedMessage,
+                    ex);
+            }
 
             return await this.repository.FindByIdAsync(req.ReqNumber);
         }

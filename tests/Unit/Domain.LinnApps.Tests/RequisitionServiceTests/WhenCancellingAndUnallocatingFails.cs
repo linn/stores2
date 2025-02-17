@@ -55,9 +55,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         }
 
         [Test]
-        public async Task ShouldThrowError()
+        public async Task ShouldThrow()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>()
+            await this.action.Should().ThrowAsync<CancelRequisitionException>()
                 .WithMessage("Some stores-y message");
         }
     }
