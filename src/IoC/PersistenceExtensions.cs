@@ -1,10 +1,9 @@
-﻿using Linn.Stores2.Domain.LinnApps.Accounts;
-
-namespace Linn.Stores2.IoC
+﻿namespace Linn.Stores2.IoC
 {
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
