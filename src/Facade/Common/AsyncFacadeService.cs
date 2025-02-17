@@ -83,7 +83,7 @@
         {
             try
             {
-                var entity = await this.repository.FindByAsync(this.FindExpression(searchResource));
+                var entity = this.repository.FindBy(this.FindExpression(searchResource));
                 return new SuccessResult<TResource>(this.BuildResource(entity, privileges));
             }
             catch (NotImplementedException)

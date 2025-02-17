@@ -205,7 +205,7 @@ function PartStorageType({ creating }) {
                         onChange={handleFieldChange}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={13}>
                     <InputField
                         propertyName="preference"
                         label="Preference"
