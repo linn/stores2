@@ -1,6 +1,7 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid2';
+import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { Loading, utilities } from '@linn-it/linn-form-components-library';
 import Page from './Page';
@@ -12,6 +13,8 @@ function PartsStorageTypes() {
     const { isPartsStorageTypesLoading, result: partsStorageTypes } = useInitialise(
         itemTypes.partsStorageTypes.url
     );
+
+    const navigate = useNavigate();
 
     const StorageTypeColumns = [
         { field: 'storageTypeCode', headerName: 'Code', width: 100 },
@@ -40,7 +43,7 @@ function PartsStorageTypes() {
                         editMode="cell"
                         columns={StorageTypeColumns}
                         onRowClick={clicked => {
-                            utilities.getSelfHref(clicked.row);
+                            navigate(utilities.getSelfHref(clicked.row));
                         }}
                         rowHeight={34}
                         loading={false}
