@@ -1,12 +1,6 @@
 ﻿const path = require('path');
 const webpack = require('webpack');
 
-function localResolve(preset) {
-    return Array.isArray(preset)
-        ? [require.resolve(preset[0]), preset[1]]
-        : require.resolve(preset);
-}
-
 module.exports = {
     mode: 'development',
     entry: {
@@ -28,14 +22,7 @@ module.exports = {
             {
                 test: /.js$/,
                 use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: [
-                            ['@babel/preset-env', { modules: 'commonjs' }],
-                            '@babel/preset-react'
-                        ].map(localResolve)
-                        // plugins: ['@babel/plugin-transform-runtime'].map(localResolve)
-                    }
+                    loader: 'babel-loader'
                 },
                 exclude: /node_modules/
             },
