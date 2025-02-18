@@ -249,11 +249,7 @@
 
         public string AuthorisePrivilege()
         {
-            if (this.RequiresAuthorisation())
-            {
-                return this.Lines.First(l => l.RequiresAuthorisation()).AuthorisePrivilege();
-            }
-            return null;
+            return this.RequiresAuthorisation() ? this.Lines.First(l => l.RequiresAuthorisation()).AuthorisePrivilege() : null;
         }
 
         public bool CanBookReq(int? lineNumber)
