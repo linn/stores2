@@ -34,8 +34,8 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
                 "F",
                 123,
                 "REQ",
-                new Department(),
-                new Nominal(),
+                new Department { DepartmentCode = "DEP" },
+                new Nominal { NominalCode = "NOM" },
                 new List<RequisitionLine> { new RequisitionLine(123, 1) });
 
             this.budgetId = 234978;

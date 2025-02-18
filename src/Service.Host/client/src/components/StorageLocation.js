@@ -29,6 +29,7 @@ function StorageLocation({ creating }) {
     const query = queryString.parse(location.search);
 
     const { result: sitesResult } = useInitialise(itemTypes.storageSites.url);
+
     const { result: accountingCompaniesResult } = useInitialise(itemTypes.accountingCompany.url);
     const { result: stockPoolsResult } = useInitialise(itemTypes.stockPools.url);
     const { result: storageTypesResult } = useInitialise(itemTypes.storageTypes.url);
@@ -416,8 +417,8 @@ function StorageLocation({ creating }) {
                                             value={
                                                 formValues.dateInvalid
                                                     ? moment(formValues.dateInvalid).format(
-                                                        'DD MMM YYYY'
-                                                    )
+                                                          'DD MMM YYYY'
+                                                      )
                                                     : ''
                                             }
                                             disabled

@@ -34,6 +34,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
         protected IRepository<StorageLocation, int> StorageLocationRepository { get; set; }
 
+        protected ITransactionManager TransactionManager { get; set; }
+
+        protected IRepository<StoresTransactionDefinition, string> TransactionDefinitionRepository { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -46,6 +50,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.NominalRepository = Substitute.For<IRepository<Nominal, string>>();
             this.PartRepository = Substitute.For<IRepository<Part, string>>();
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
+            this.TransactionDefinitionRepository = Substitute.For<IRepository<StoresTransactionDefinition, string>>();
+            this.TransactionManager = Substitute.For<ITransactionManager>();
             this.Sut = new RequisitionService(
                 this.AuthService, 
                 this.ReqRepository,
@@ -55,7 +61,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                 this.DepartmentRepository,
                 this.NominalRepository,
                 this.PartRepository,
-                this.StorageLocationRepository);
+                this.StorageLocationRepository,
+                this.TransactionDefinitionRepository,
+                this.TransactionManager);
         }
     }
 }
