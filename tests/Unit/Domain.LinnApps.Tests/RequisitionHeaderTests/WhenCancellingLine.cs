@@ -25,9 +25,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Goodbye Reqs");
+                reference: null,
+                comments: "Goodbye Reqs");
             this.sut.AddLine(new LineWithMoves(1, 1));
             this.sut.CancelLine(1, "reason", new Employee());
         }

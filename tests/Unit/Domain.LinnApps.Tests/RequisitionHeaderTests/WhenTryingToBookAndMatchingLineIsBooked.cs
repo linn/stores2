@@ -27,9 +27,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Good book");
+                reference: null,
+                comments: "Good book");
             this.sut.AddLine(line);
             line.Book(new DateTime(2024, 1, 1));
         }

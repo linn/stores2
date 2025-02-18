@@ -43,18 +43,17 @@
                 "PO",
                 null,
                 null,
-                null,
-                null,
-                "Kitting parts",
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                kittedAss,
-                200);
+                reference: null,
+                comments: "Kitting parts",
+                manualPick: null,
+                fromStockPool: null,
+                toStockPool: null,
+                fromPalletNumber: null,
+                toPalletNumber: null,
+                fromLocation: null,
+                toLocation: null,
+                part: kittedAss,
+                qty: 200);
             this.sut.AddLine(line1);
             this.sut.AddLine(line2);
         }

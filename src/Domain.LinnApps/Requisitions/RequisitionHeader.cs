@@ -93,8 +93,7 @@
             int? document1Number,
             string document1Type,
             Department department,
-            Nominal nominal, 
-            IEnumerable<RequisitionLine> lines = null,
+            Nominal nominal,
             string reference = null,
             string comments = null,
             string manualPick = null,
@@ -147,14 +146,6 @@
             }
 
             this.Lines = new List<RequisitionLine>();
-
-            if (lines != null)
-            {
-                foreach (var l in lines)
-                {
-                    this.AddLine(l);
-                }
-            }
         }
         
         public void AddLine(RequisitionLine toAdd)

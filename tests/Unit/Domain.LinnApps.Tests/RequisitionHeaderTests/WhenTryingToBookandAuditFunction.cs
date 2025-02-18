@@ -25,9 +25,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine>(),
-                null,
-                "A Good Book");
+                reference: null,
+                comments: "A Good Book");
         }
 
         [Test]

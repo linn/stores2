@@ -33,17 +33,16 @@
                 document1Number,
                 document1Type, 
                 department, 
-                nominal, 
-                lines,
-                reference,
-                comments,
-                manualPick, 
-                fromStockPool, 
-                toStockPool, 
-                fromPalletNumber, 
-                toPalletNumber,
-                fromLocation, 
-                toLocation)
+                nominal,
+                reference: reference,
+                comments: comments,
+                manualPick: manualPick, 
+                fromStockPool: fromStockPool, 
+                toStockPool: toStockPool, 
+                fromPalletNumber: fromPalletNumber, 
+                toPalletNumber: toPalletNumber,
+                fromLocation: fromLocation, 
+                toLocation: toLocation)
         {
             this.ReqNumber = reqNumber;
         }
