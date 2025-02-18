@@ -67,13 +67,9 @@
                 this.StoresFunctionRepository,
                 this.DepartmentRepository,
                 this.NominalRepository,
-                this.AuthService,
-                this.RequisitionManager,
-                this.ReqRepository,
                 this.EmployeeRepository,
                 this.PartRepository,
-                this.StorageLocationRepository,
-                this.Logger);
+                this.StorageLocationRepository);
         }
     }
 }

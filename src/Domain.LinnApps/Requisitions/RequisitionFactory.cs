@@ -1,17 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
-    using System;
     using System.Threading.Tasks;
 
-    using Linn.Common.Authorisation;
-    using Linn.Common.Logging;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using Org.BouncyCastle.Asn1.Ocsp;
 
     public class RequisitionFactory : IRequisitionFactory
     {
@@ -21,9 +16,6 @@
 
         private readonly IRepository<Nominal, string> nominalRepository;
 
-        private readonly IAuthorisationService authService;
-
-        private readonly IRepository<RequisitionHeader, int> repository;
 
         private readonly IRepository<Employee, int> employeeRepository;
 
@@ -31,9 +23,6 @@
 
         private readonly IRepository<StorageLocation, int> storageLocationRepository;
 
-        private readonly ILog logger;
-
-        private readonly IRequisitionManager requisitionManager;
 
         private readonly ICreationStrategyResolver creationStrategyResolver;
 
@@ -42,25 +31,17 @@
             IRepository<StoresFunction, string> storesFunctionRepository,
             IRepository<Department, string> departmentRepository,
             IRepository<Nominal, string> nominalRepository,
-            IAuthorisationService authService,
-            IRequisitionManager requisitionManager,
-            IRepository<RequisitionHeader, int> repository,
             IRepository<Employee, int> employeeRepository,
             IRepository<Part, string> partRepository,
-            IRepository<StorageLocation, int> storageLocationRepository,
-            ILog logger)
+            IRepository<StorageLocation, int> storageLocationRepository)
         {
             this.creationStrategyResolver = createStrategyResolver;
             this.storesFunctionRepository = storesFunctionRepository;
             this.departmentRepository = departmentRepository;
             this.nominalRepository = nominalRepository;
-            this.authService = authService;
-            this.requisitionManager = requisitionManager;
-            this.repository = repository;
             this.employeeRepository = employeeRepository;
             this.partRepository = partRepository;
             this.storageLocationRepository = storageLocationRepository;
-            this.logger = logger;
         }
 
         public async Task<RequisitionHeader> CreateRequisition(
@@ -84,15 +65,7 @@
              string partNumber = null,
              decimal? qty = null)
         {
-            // might make sense to have in IReqAuthService.HasPermissionFor(StoresFunction function, IEnumerable<string> privileges)
-            // if this gets more complicated
-            // so for now...
-            if (functionCode == "LDREQ"
-                && !this.authService.HasPermissionFor(AuthorisedActions.Ldreq, createdBy.Privileges))
-            {
-                throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
-            }
-
+           
             var who = await this.employeeRepository.FindByIdAsync(createdBy.UserNumber);
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode);
             var department = await this.departmentRepository.FindByIdAsync(departmentCode);
@@ -106,10 +79,8 @@
             var toLocation = string.IsNullOrEmpty(fromLocationCode)
                                    ? null
                                    : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode);
-
-            // todo - potentially some validation here
-            // ideally most will be in the constructor called below, or if that gets to complicated we
-            // delegate to factory class or similar?
+            
+            // pass stuff common to all function codes, do basic validation in the constructor
             var req = new RequisitionHeader(
                 who,
                 function,
@@ -117,7 +88,7 @@
                 document1Number,
                 document1Type,
                 department,
-                nominal, // not passing any lines, they will be added later 
+                nominal,
                 reference: reference,
                 comments: comments,
                 manualPick: manualPick,
@@ -130,12 +101,14 @@
                 part: part,
                 qty: qty);
 
-            await this.repository.AddAsync(req);
-
+            // now resolve the correct strategy for the function code at hand
             var strategy = this.creationStrategyResolver.Resolve(functionCode);
 
+            // and apply it
             await strategy.Apply(req, firstLine);
 
+            // return the newly created and validated req
+            // assuming the strategy has done all the necessary business
             return req;
         }
     }
