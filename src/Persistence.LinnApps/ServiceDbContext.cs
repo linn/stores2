@@ -456,6 +456,7 @@
             r.HasKey(c => c.FunctionCode);
             r.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            r.Property(c => c.FunctionType).HasColumnName("FUNCTION_TYPE").HasMaxLength(1);
             r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
             r.Property(c => c.DepartmentNominalRequired).HasColumnName("DEPT_NOMINAL_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ManualPickRequired).HasColumnName("MANUAL_PICK_REQUIRED").HasMaxLength(1);

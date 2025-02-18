@@ -17,6 +17,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         
         public string Description { get; set; }
 
+        public string FunctionType { get; set; }
+
         public string CancelFunction { get; set; }
 
         public string DepartmentNominalRequired { get; set; }
