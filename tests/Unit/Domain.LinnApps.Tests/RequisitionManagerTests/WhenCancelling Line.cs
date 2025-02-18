@@ -1,26 +1,22 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests;
     using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
 
     using NUnit.Framework;
 
-    public class WhenCancellingAndUnallocatingFails : ContextBase
+    public class WhenCancellingLine : ContextBase
     {
         private RequisitionHeader req;
-        
-        private Func<Task> action;
 
         [SetUp]
         public void SetUp()
@@ -28,12 +24,17 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee(),
-                new StoresFunction { FunctionCode = "FUNC" },
+                new StoresFunction { FunctionCode = "F1" },
                 "F",
-                123,
-                "REQ",
+                12345678,
+                "TYPE",
                 new Department(),
-                new Nominal());
+                new Nominal(),
+                null,
+                null,
+                "Goodbye Reqs");
+            var requisitionLine = new RequisitionLine(this.req.ReqNumber, 1);
+            this.req.AddLine(requisitionLine);
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
 
             var user = new User
@@ -45,20 +46,35 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
             this.ReqStoredProcedures.DeleteAllocOntos(
                 this.req.ReqNumber,
-                null,
+                1,
                 this.req.Document1.GetValueOrDefault(),
-                this.req.Document1Name).Returns(new ProcessResult(false, "Some stores-y message"));
+                this.req.Document1Name).Returns(new ProcessResult(true, string.Empty));
 
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
-            this.action = async () => await this.Sut.CancelHeader(123, user, "REASON");
+            this.req = this.Sut.CancelLine(
+                123, 
+                1,
+                user,
+                "REASON").Result;
         }
 
         [Test]
-        public async Task ShouldThrow()
+        public void ShouldUnallocateStock()
         {
-            await this.action.Should().ThrowAsync<CancelRequisitionException>()
-                .WithMessage("Some stores-y message");
+            this.ReqStoredProcedures.Received()
+                .DeleteAllocOntos(
+                    this.req.ReqNumber,
+                    1,
+                    this.req.Document1.GetValueOrDefault(),
+                    this.req.Document1Name);
+        }
+
+        [Test]
+        public void ShouldReturnCancelled()
+        {
+            this.req.Cancelled.Should().Be("Y");
+            this.req.CancelDetails.Count.Should().Be(1);
         }
     }
 }

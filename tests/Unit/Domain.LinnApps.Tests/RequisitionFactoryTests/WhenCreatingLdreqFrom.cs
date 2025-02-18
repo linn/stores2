@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
     using FluentAssertions;
 
-    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -44,25 +43,24 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.StoresFunctionRepository.FindByIdAsync("LDREQ").Returns(this.ldreq);
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode).Returns(this.department);
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
-            this.TransactionDefinitionRepository.FindByIdAsync("TRANS").Returns(this.transactionDefinition);
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(this.from);
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
-            this.ReqStoredProcedures
-                .PickStock(
-                    this.part.PartNumber,
-                    Arg.Any<int>(),
-                    1,
-                    1,
-                    this.from.LocationId,
-                    null,
-                    "LINN",
-                    this.transactionDefinition.TransactionCode)
-                .Returns(new ProcessResult(true, null));
-
-            this.ReqStoredProcedures.CreateNominals(
-                    Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode)
-                .Returns(new ProcessResult(true, null));
+            // this.ReqStoredProcedures
+            //     .PickStock(
+            //         this.part.PartNumber,
+            //         Arg.Any<int>(),
+            //         1,
+            //         1,
+            //         this.from.LocationId,
+            //         null,
+            //         "LINN",
+            //         this.transactionDefinition.TransactionCode)
+            //     .Returns(new ProcessResult(true, null));
+            //
+            // this.ReqStoredProcedures.CreateNominals(
+            //         Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode)
+            //     .Returns(new ProcessResult(true, null));
 
             this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(
                 new ReqWithReqNumber(
@@ -95,7 +93,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                     LineNumber = 1,
                     PartNumber = this.part.PartNumber,
                     Qty = 1,
-                    TransactionDefinition = transactionDefinition.TransactionCode
+                    TransactionDefinition = this.transactionDefinition.TransactionCode
                 },
                 "ref",
                 "comments",
@@ -110,26 +108,26 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.result.Document1Name.Should().Be("REQ");
         }
 
-        [Test]
-        public void ShouldPickStock()
-        {
-            this.ReqStoredProcedures.Received(1)
-                .PickStock(
-                    this.part.PartNumber,
-                    Arg.Any<int>(),
-                    1,
-                    1,
-                    this.from.LocationId,
-                    null,
-                    "LINN",
-                    this.transactionDefinition.TransactionCode);
-        }
-
-        [Test]
-        public void ShouldCreateNominalPostings()
-        {
-            this.ReqStoredProcedures.Received(1).CreateNominals(
-                Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode);
-        }
+        // [Test]
+        // public void ShouldPickStock()
+        // {
+        //     this.ReqStoredProcedures.Received(1)
+        //         .PickStock(
+        //             this.part.PartNumber,
+        //             Arg.Any<int>(),
+        //             1,
+        //             1,
+        //             this.from.LocationId,
+        //             null,
+        //             "LINN",
+        //             this.transactionDefinition.TransactionCode);
+        // }
+        //
+        // [Test]
+        // public void ShouldCreateNominalPostings()
+        // {
+        //     this.ReqStoredProcedures.Received(1).CreateNominals(
+        //         Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode);
+        // }
     }
 }

@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -10,13 +10,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests;
     using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
 
     using NUnit.Framework;
 
-    public class WhenCancellingLineAndUnallocatingFails : ContextBase
+    public class WhenCancellingAndUnallocatingFails : ContextBase
     {
         private RequisitionHeader req;
         
@@ -26,16 +27,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         public void SetUp()
         {
             this.req = new ReqWithReqNumber(
-                    123,
-                    new Employee(),
-                    new StoresFunction { FunctionCode = "FUNC" },
-                    "F",
-                    123,
-                    "REQ",
-                    new Department(),
-                    new Nominal());
-            var requisitionLine = new RequisitionLine(this.req.ReqNumber, 1);
-            this.req.AddLine(requisitionLine);
+                123,
+                new Employee(),
+                new StoresFunction { FunctionCode = "FUNC" },
+                "F",
+                123,
+                "REQ",
+                new Department(),
+                new Nominal());
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
 
             var user = new User
@@ -47,19 +46,19 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
             this.ReqStoredProcedures.DeleteAllocOntos(
                 this.req.ReqNumber,
-                1,
+                null,
                 this.req.Document1.GetValueOrDefault(),
                 this.req.Document1Name).Returns(new ProcessResult(false, "Some stores-y message"));
 
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
-            this.action = async () => await this.Sut.CancelLine(123, 1, user, "REASON");
+            this.action = async () => await this.Sut.CancelHeader(123, user, "REASON");
         }
 
         [Test]
-        public async Task ShouldThrowError()
+        public async Task ShouldThrow()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>()
+            await this.action.Should().ThrowAsync<CancelRequisitionException>()
                 .WithMessage("Some stores-y message");
         }
     }

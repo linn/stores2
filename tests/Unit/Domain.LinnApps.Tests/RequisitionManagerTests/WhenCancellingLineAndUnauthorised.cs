@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -12,7 +12,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
     using NUnit.Framework;
 
-    public class WhenCancellingAndUnauthorised : ContextBase
+    public class WhenCancellingLineAndUnauthorised : ContextBase
     {
         private Func<Task> action;
         
@@ -28,7 +28,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>())
                 .Returns(false);
-            this.action = async () => await this.Sut.CancelHeader(123, user, "REASON");
+            this.action = async () => await this.Sut.CancelLine(123, 1, user, "REASON");
         }
 
         [Test]

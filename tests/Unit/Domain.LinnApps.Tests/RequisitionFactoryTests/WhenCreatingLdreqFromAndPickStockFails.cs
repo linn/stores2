@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 {
     using System;
     using System.Collections.Generic;
@@ -13,9 +13,11 @@
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests;
     using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
 
     using NUnit.Framework;
 
@@ -61,8 +63,6 @@
 
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
 
-            this.TransactionDefinitionRepository.FindByIdAsync("TRANS").Returns(this.transactionDefinition);
-
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(this.from);
 
@@ -78,25 +78,9 @@
                 this.department,
                 this.nominal);
 
-            this.ReqStoredProcedures
-                .PickStock(
-                    this.part.PartNumber,
-                    Arg.Any<int>(),
-                    1,
-                    1,
-                    this.from.LocationId,
-                    null,
-                    "LINN",
-                    this.transactionDefinition.TransactionCode)
-                .Returns(new ProcessResult(false, "no stock available"));
+            this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), Arg.Any<LineCandidate>())
+                .Throws(new PickStockException("failed in pick_stock - no stock found"));
 
-            this.ReqStoredProcedures.CreateNominals(
-                    Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode)
-                .Returns(new ProcessResult(true, null));
-            
-            this.ReqStoredProcedures.DeleteAllocOntos(Arg.Any<int>(), null, Arg.Any<int>(), this.createdReq.Document1Name)
-                .Returns(new ProcessResult(true, string.Empty));
-            
             this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.createdReq);
 
             this.action = async () => await this.Sut.CreateRequisition(
@@ -119,7 +103,7 @@
                     LineNumber = 1,
                     PartNumber = this.part.PartNumber,
                     Qty = 1,
-                    TransactionDefinition = transactionDefinition.TransactionCode
+                    TransactionDefinition = this.transactionDefinition.TransactionCode
                 },
                 "ref",
                 "comments",
@@ -133,16 +117,18 @@
             await this.action.Should()
                 .ThrowAsync<CreateRequisitionException>()
                 .WithMessage(
-                    "Req failed to create since first line could not be added. Reason: failed in pick_stock: no stock available");
+                    "Req failed to create since first line could not be added. Reason: failed in pick_stock - no stock found");
         }
 
         [Test]
         public void ShouldCancelHeader()
         {
             this.action();
-            this.ReqStoredProcedures
-                .Received()
-                .DeleteAllocOntos(Arg.Any<int>(), null, Arg.Any<int>(), "REQ");
+            this.RequisitionManager.Received(1).CancelHeader(
+                Arg.Any<int>(),
+                Arg.Any<User>(),
+                "Req failed to create since first line could not be added. Reason: failed in pick_stock - no stock found",
+                false);
         }
     }
 }

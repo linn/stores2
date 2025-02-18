@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using Linn.Common.Authorisation;
     using Linn.Common.Logging;
@@ -15,7 +15,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
     public class ContextBase
     {
-        protected IRequisitionService Sut { get; set; }
+        protected IRequisitionManager Sut { get; set; }
         
         protected IAuthorisationService AuthService { get; set; }
         
@@ -56,14 +56,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.TransactionDefinitionRepository = Substitute.For<IRepository<StoresTransactionDefinition, string>>();
             this.Logger = Substitute.For<ILog>();
             this.TransactionManager = Substitute.For<ITransactionManager>();
-            this.Sut = new RequisitionService(
+            this.Sut = new RequisitionManager(
                 this.AuthService, 
                 this.ReqRepository,
                 this.ReqStoredProcedures,
                 this.EmployeeRepository,
-                this.StoresFunctionRepository,
-                this.DepartmentRepository,
-                this.NominalRepository,
                 this.PartRepository,
                 this.StorageLocationRepository,
                 this.TransactionDefinitionRepository,

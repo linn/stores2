@@ -18,7 +18,9 @@
         : AsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource, RequisitionHeaderResource, RequisitionSearchResource>,
           IRequisitionFacadeService
     {
-        private readonly IRequisitionService requisitionService;
+        private readonly IRequisitionManager requisitionManager;
+
+        private readonly IRequisitionFactory requisitionFactory;
 
         private readonly ITransactionManager transactionManager;
         
@@ -26,11 +28,13 @@
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
             IBuilder<RequisitionHeader> resourceBuilder,
-            IRequisitionService requisitionService)
+            IRequisitionManager requisitionManager,
+            IRequisitionFactory requisitionFactory)
             : base(repository, transactionManager, resourceBuilder)
         {
-            this.requisitionService = requisitionService;
+            this.requisitionManager = requisitionManager;
             this.transactionManager = transactionManager;
+            this.requisitionFactory = requisitionFactory;
         }
         
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -40,7 +44,7 @@
             {
                 var privilegeList = privileges.ToList();
 
-                var cancelled = await this.requisitionService.CancelHeader(
+                var cancelled = await this.requisitionManager.CancelHeader(
                                  reqNumber,
                                  new User
                                      {
@@ -70,7 +74,7 @@
             {
                 var privilegeList = privileges.ToList();
 
-                var req = await this.requisitionService.CancelLine(
+                var req = await this.requisitionManager.CancelLine(
                                     reqNumber,
                                     lineNumber,
                                     new User
@@ -96,7 +100,7 @@
             {
                 var privilegeList = privileges.ToList();
 
-                var req = await this.requisitionService.BookRequisition(
+                var req = await this.requisitionManager.BookRequisition(
                     reqNumber,
                     lineNumber,
                     new User
@@ -117,7 +121,7 @@
             RequisitionHeaderResource resource,
             IEnumerable<string> privileges = null)
         {
-            var result = await this.requisitionService.CreateRequisition(
+            var result = await this.requisitionFactory.CreateRequisition(
                              new User
                                  {
                                      UserNumber = resource.CreatedBy.GetValueOrDefault(),

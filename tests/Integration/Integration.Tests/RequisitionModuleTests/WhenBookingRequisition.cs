@@ -38,7 +38,7 @@
                 new Department(),
                 new Nominal());
             req.Cancel("just cos", new Employee());
-            this.DomainService.BookRequisition(this.resource.ReqNumber, null, Arg.Any<User>())
+            this.ReqManager.BookRequisition(this.resource.ReqNumber, null, Arg.Any<User>())
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/book", this.resource).Result;
         }
@@ -46,7 +46,7 @@
         [Test]
         public void ShouldCancelHeader()
         {
-            this.DomainService.Received(1).BookRequisition(
+            this.ReqManager.Received(1).BookRequisition(
                 this.resource.ReqNumber, null, Arg.Any<User>());
         }
 

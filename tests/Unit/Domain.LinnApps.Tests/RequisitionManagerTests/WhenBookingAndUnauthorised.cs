@@ -1,15 +1,18 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
-    using Linn.Common.Domain;
+
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+
     using NSubstitute;
+
     using NUnit.Framework;
 
-    public class WhenBookingAndDoRequisitionFails : ContextBase
+    public class WhenBookingAndUnauthorised : ContextBase
     {
         private Func<Task> action;
 
@@ -24,20 +27,14 @@
 
             this.AuthService.HasPermissionFor(
                     AuthorisedActions.BookRequisition, Arg.Any<IEnumerable<string>>())
-                .Returns(true);
-
-            this.ReqStoredProcedures.DoRequisition(
-                123,
-                null,
-                user.UserNumber).Returns(new ProcessResult(false, "Stores failure"));
-
+                .Returns(false);
             this.action = async () => await this.Sut.BookRequisition(123, null, user);
         }
 
         [Test]
         public async Task ShouldThrow()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>();
+            await this.action.Should().ThrowAsync<UnauthorisedActionException>();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,6 @@
 
     using FluentAssertions;
 
-    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -16,10 +15,11 @@
     using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
 
     using NUnit.Framework;
 
-    public class WhenCreatingLdreqFromAndCreateNominalPostingStockFails : ContextBase
+    public class WhenFailToCreateAndFailToCancelHeader : ContextBase
     {
         private User user;
         private StoresFunction ldreq;
@@ -61,12 +61,21 @@
 
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
 
-            this.TransactionDefinitionRepository.FindByIdAsync("TRANS").Returns(this.transactionDefinition);
-
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(this.from);
 
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
+
+
+            this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), Arg.Any<LineCandidate>())
+                .Throws(new PickStockException("failed in pick_stock: no stock found"));
+
+            this.RequisitionManager.CancelHeader(
+                    Arg.Any<int>(), 
+                    Arg.Any<User>(),
+                    "Req failed to create since first line could not be added. Reason: failed in pick_stock - no stock found",
+                    false)
+                .Throws(new CancelRequisitionException("Could not cancel."));
 
             this.createdReq = new ReqWithReqNumber(
                 123,
@@ -77,25 +86,6 @@
                 "REQ",
                 this.department,
                 this.nominal);
-
-            this.ReqStoredProcedures
-                .PickStock(
-                    this.part.PartNumber,
-                    Arg.Any<int>(),
-                    1,
-                    1,
-                    this.from.LocationId,
-                    null,
-                    "LINN",
-                    this.transactionDefinition.TransactionCode)
-                .Returns(new ProcessResult(true, string.Empty));
-
-            this.ReqStoredProcedures.CreateNominals(
-                    Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode)
-                .Returns(new ProcessResult(false, "can't post to that"));
-
-            this.ReqStoredProcedures.DeleteAllocOntos(Arg.Any<int>(), null, Arg.Any<int>(), this.createdReq.Document1Name)
-                .Returns(new ProcessResult(true, string.Empty));
 
             this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.createdReq);
 
@@ -119,7 +109,7 @@
                     LineNumber = 1,
                     PartNumber = this.part.PartNumber,
                     Qty = 1,
-                    TransactionDefinition = transactionDefinition.TransactionCode
+                    TransactionDefinition = this.transactionDefinition.TransactionCode
                 },
                 "ref",
                 "comments",
@@ -133,16 +123,8 @@
             await this.action.Should()
                 .ThrowAsync<CreateRequisitionException>()
                 .WithMessage(
-                    "Req failed to create since first line could not be added. Reason: failed in create_nominals: can't post to that");
-        }
-
-        [Test]
-        public void ShouldCancelHeader()
-        {
-            this.action();
-            this.ReqStoredProcedures
-                .Received()
-                .DeleteAllocOntos(Arg.Any<int>(), null, Arg.Any<int>(), "REQ");
+                    "Req failed to create since first line could not be added. "
+                    + "Reason: failed in pick_stock: no stock found");
         }
     }
 }

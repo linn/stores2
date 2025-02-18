@@ -46,7 +46,8 @@
                     x => new HtmlTemplateService<StoragePlaceAuditReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoragePlaceAudit.cshtml",
                         x.GetService<ITemplateEngine>()))
-                .AddScoped<IRequisitionService, RequisitionService>()
+                .AddScoped<IRequisitionManager, RequisitionManager>()
+                .AddScoped<IRequisitionFactory, RequisitionFactory>()
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()

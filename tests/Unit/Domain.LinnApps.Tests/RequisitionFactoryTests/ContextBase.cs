@@ -1,0 +1,65 @@
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
+{
+    using Linn.Common.Authorisation;
+    using Linn.Common.Logging;
+    using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+
+    using NSubstitute;
+
+    using NUnit.Framework;
+
+    public class ContextBase
+    {
+        protected IRequisitionFactory Sut { get; set; }
+
+        protected IAuthorisationService AuthService { get; set; }
+
+        protected IRepository<RequisitionHeader, int> ReqRepository { get; set; }
+
+        protected IRepository<Employee, int> EmployeeRepository { get; set; }
+
+        protected IRepository<StoresFunction, string> StoresFunctionRepository { get; set; }
+
+        protected IRepository<Department, string> DepartmentRepository { get; set; }
+
+        protected IRepository<Nominal, string> NominalRepository { get; set; }
+
+        protected IRepository<Part, string> PartRepository { get; set; }
+
+        protected IRepository<StorageLocation, int> StorageLocationRepository { get; set; }
+
+        protected ILog Logger { get; set; }
+
+        protected IRequisitionManager RequisitionManager { get; set; }
+
+        [SetUp]
+        public void SetUpContext()
+        {
+            this.AuthService = Substitute.For<IAuthorisationService>();
+            this.ReqRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
+            this.EmployeeRepository = Substitute.For<IRepository<Employee, int>>();
+            this.StoresFunctionRepository = Substitute.For<IRepository<StoresFunction, string>>();
+            this.DepartmentRepository = Substitute.For<IRepository<Department, string>>();
+            this.NominalRepository = Substitute.For<IRepository<Nominal, string>>();
+            this.PartRepository = Substitute.For<IRepository<Part, string>>();
+            this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
+            this.Logger = Substitute.For<ILog>();
+            this.RequisitionManager = Substitute.For<IRequisitionManager>();
+            this.Sut = new RequisitionFactory(
+                this.StoresFunctionRepository,
+                this.DepartmentRepository,
+                this.NominalRepository,
+                this.AuthService,
+                this.RequisitionManager,
+                this.ReqRepository,
+                this.EmployeeRepository,
+                this.PartRepository,
+                this.StorageLocationRepository,
+                this.Logger);
+        }
+    }
+}

@@ -39,7 +39,7 @@
                 new Department(),
                 new Nominal());
             req.Cancel("just cos", new Employee());
-            this.DomainService.CancelHeader(this.resource.ReqNumber, Arg.Any<User>(), this.resource.Reason)
+            this.ReqManager.CancelHeader(this.resource.ReqNumber, Arg.Any<User>(), this.resource.Reason)
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/cancel", this.resource).Result;
         }
@@ -47,7 +47,7 @@
         [Test]
         public void ShouldCancelHeader()
         {
-            this.DomainService.Received(1).CancelHeader(
+            this.ReqManager.Received(1).CancelHeader(
                 this.resource.ReqNumber, Arg.Any<User>(), this.resource.Reason);
         }
 

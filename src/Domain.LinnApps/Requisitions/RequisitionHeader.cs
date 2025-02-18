@@ -86,7 +86,7 @@
         {
         }
 
-        public RequisitionHeader(
+        public RequisitionHeader( // todo - make this protected
             Employee createdBy,
             StoresFunction function,
             string reqType,
@@ -147,7 +147,7 @@
 
             this.Lines = new List<RequisitionLine>();
         }
-        
+
         public void AddLine(RequisitionLine toAdd)
         {
             this.Lines ??= new List<RequisitionLine>();
