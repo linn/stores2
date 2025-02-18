@@ -27,32 +27,57 @@
         private Department department;
         private Part part;
         private StorageLocation from;
-        private RequisitionHeader result;
         private StoresTransactionDefinition transactionDefinition;
 
         private Func<Task> action;
 
+        private RequisitionHeader createdReq;
 
         [SetUp]
         public void Setup()
         {
             this.user = new User { Privileges = new List<string> { "ldreq" }, UserNumber = 33087 };
             var employee = new Employee { Id = this.user.UserNumber };
+
             this.ldreq = new StoresFunction { FunctionCode = "LDREQ" };
+
             this.department = new Department { DepartmentCode = "DEPT" };
+
             this.nominal = new Nominal { NominalCode = "NOM" };
+
             this.from = new StorageLocation { LocationCode = "FROM", LocationId = 123 };
+
             this.part = new Part { PartNumber = "PART" };
+
             this.transactionDefinition = new StoresTransactionDefinition { TransactionCode = "TRANS" };
+
             this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, this.user.Privileges).Returns(true);
+
             this.EmployeeRepository.FindByIdAsync(this.user.UserNumber).Returns(employee);
+
             this.StoresFunctionRepository.FindByIdAsync("LDREQ").Returns(this.ldreq);
+
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode).Returns(this.department);
+
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
+
             this.TransactionDefinitionRepository.FindByIdAsync("TRANS").Returns(this.transactionDefinition);
+
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(this.from);
+
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
+
+            this.createdReq = new ReqWithReqNumber(
+                123,
+                employee,
+                this.ldreq,
+                "F",
+                123,
+                "REQ",
+                this.department,
+                this.nominal);
+
             this.ReqStoredProcedures
                 .PickStock(
                     this.part.PartNumber,
@@ -68,17 +93,11 @@
             this.ReqStoredProcedures.CreateNominals(
                     Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode)
                 .Returns(new ProcessResult(true, null));
-
-            this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(
-                new ReqWithReqNumber(
-                    123,
-                    employee,
-                    this.ldreq,
-                    "F",
-                    123,
-                    "REQ",
-                    this.department,
-                    this.nominal));
+            
+            this.ReqStoredProcedures.DeleteAllocOntos(Arg.Any<int>(), null, Arg.Any<int>(), this.createdReq.Document1Name)
+                .Returns(new ProcessResult(true, string.Empty));
+            
+            this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.createdReq);
 
             this.action = async () => await this.Sut.CreateRequisition(
                 this.user,
@@ -111,8 +130,19 @@
         [Test]
         public async Task ShouldThrowError()
         {
-            await this.action.Should().ThrowAsync<CreateRequisitionException>()
-                .WithMessage("Some stores-y message");
+            await this.action.Should()
+                .ThrowAsync<CreateRequisitionException>()
+                .WithMessage(
+                    "Req failed to create since first line could not be added. Reason: failed in pick_stock: no stock available");
+        }
+
+        [Test]
+        public void ShouldCancelHeader()
+        {
+            this.action();
+            this.ReqStoredProcedures
+                .Received()
+                .DeleteAllocOntos(Arg.Any<int>(), null, Arg.Any<int>(), "REQ");
         }
     }
 }

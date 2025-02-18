@@ -113,7 +113,7 @@
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
             this.Document1 = document1Number ?? this.ReqNumber;
-            this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? string.Empty : "REQ";
+            this.Document1Name = string.IsNullOrEmpty(Document1Name) ? "REQ" : document1Type;
             this.Document1Line = document1Line ?? 1;
             this.Qty = qty;
             this.Part = part;

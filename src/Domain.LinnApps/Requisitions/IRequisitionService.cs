@@ -7,7 +7,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task<RequisitionHeader> CancelHeader(
             int reqNumber, 
             User cancelledBy,
-            string reason);
+            string reason,
+            bool requiresAuth = true);
 
         Task<RequisitionHeader> CancelLine(
             int reqNumber,

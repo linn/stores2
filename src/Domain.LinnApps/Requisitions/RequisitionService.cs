@@ -69,9 +69,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public async Task<RequisitionHeader> CancelHeader(
             int reqNumber,
             User cancelledBy,
-            string reason)
+            string reason,
+            bool requiresAuth = true)
         {
-            if (!this.authService.HasPermissionFor(
+            if (requiresAuth && !this.authService.HasPermissionFor(
                     AuthorisedActions.CancelRequisition, cancelledBy.Privileges))
             {
                 throw new UnauthorisedActionException(
@@ -266,10 +267,27 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 var createFailedMessage =
                     $"Req failed to create since first line could not be added. Reason: {ex.Message}";
 
-               req.Cancel(createFailedMessage, who);
-               
-                this.logger.Error(createFailedMessage);
+                // Try to cancel the header if adding the line fails
+                try
+                {
+                    await this.CancelHeader(
+                        req.ReqNumber,
+                        createdBy,
+                        createFailedMessage,
+                        false);
+                }
+                catch (CancelRequisitionException x)
+                {
+                    var cancelAlsoFailedMessage =
+                        $"Warning - req failed to create: {ex.Message}. Header also failed to cancel: {x.Message}. Some cleanup may be required!";
+                    this.logger.Error(cancelAlsoFailedMessage);
+                    throw new CreateRequisitionException(
+                        cancelAlsoFailedMessage,
+                        ex);
+                }
 
+
+                this.logger.Error(createFailedMessage);
                 throw new CreateRequisitionException(
                     createFailedMessage,
                     ex);

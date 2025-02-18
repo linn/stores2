@@ -70,8 +70,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                     employee,
                     this.ldreq,
                     "F",
-                    123,
-                    "REQ",
+                    null,
+                    null,
                     this.department,
                     this.nominal));
 
@@ -107,6 +107,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         public void ShouldReturnCreated()
         {
             this.result.ReqNumber.Should().Be(123);
+            this.result.Document1Name.Should().Be("REQ");
         }
 
         [Test]
