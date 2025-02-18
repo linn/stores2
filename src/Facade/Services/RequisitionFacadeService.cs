@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Facade.Services
+﻿using Linn.Stores2.Domain.LinnApps.Exceptions;
+
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -113,6 +115,29 @@
             }
         }
 
+        public async Task<IResult<RequisitionHeaderResource>> AuthoriseRequisition(int reqNumber, int authorisedBy, IEnumerable<string> privileges)
+        {
+            try
+            {
+                var privilegeList = privileges.ToList();
+
+                var req = await this.requisitionService.AuthoriseRequisition(
+                    reqNumber,
+                    new User
+                    {
+                        UserNumber = authorisedBy,
+                        Privileges = privilegeList
+                    });
+                await this.transactionManager.CommitAsync();
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(req, privilegeList));
+            }
+            catch (DomainException e)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(e.Message);
+            }
+        }
+
         protected override async Task<RequisitionHeader> CreateFromResourceAsync(
             RequisitionHeaderResource resource,
             IEnumerable<string> privileges = null)
@@ -170,6 +195,11 @@
         protected override Expression<Func<RequisitionHeader, bool>> FilterExpression(
             RequisitionSearchResource searchResource)
         {
+            if (searchResource.Pending == true)
+            {
+                return x => x.Cancelled != "Y" && x.DateBooked == null;
+            }
+
             return x => (string.IsNullOrEmpty(searchResource.Comments) 
                          || x.Comments.ToUpper().Contains(searchResource.Comments.ToUpper().Trim())) 
                         && (searchResource.IncludeCancelled || x.Cancelled != "Y")

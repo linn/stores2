@@ -20,6 +20,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? lineNumber,
             User bookedBy);
 
+        Task<RequisitionHeader> AuthoriseRequisition(
+            int reqNumber,
+            User authorisedBy);
+
         Task<RequisitionHeader> CreateRequisition(
             User createdBy,
             string functionCode,

@@ -179,6 +179,34 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return req;
         }
 
+        public async Task<RequisitionHeader> AuthoriseRequisition(int reqNumber, User authorisedBy)
+        {
+            var req = await this.repository.FindByIdAsync(reqNumber);
+
+            if (req == null)
+            {
+                throw new RequisitionException("Req not found");
+            }
+
+            if (!this.authService.HasPermissionFor(
+                    req.AuthorisePrivilege(), authorisedBy.Privileges))
+            {
+                throw new UnauthorisedActionException(
+                    "You do not have permission to authorise this requisition");
+            }
+
+            var by = await this.employeeRepository.FindByIdAsync(authorisedBy.UserNumber);
+
+            if (by == null)
+            {
+                throw new RequisitionException("Authorised by not found");
+            }
+
+            req.Authorise(by);
+
+            return req;
+        }
+
         public async Task<RequisitionHeader> CreateRequisition(
             User createdBy,
             string functionCode,

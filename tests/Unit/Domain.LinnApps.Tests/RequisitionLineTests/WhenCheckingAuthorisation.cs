@@ -23,5 +23,11 @@
         {
             this.sut.RequiresAuthorisation().Should().BeTrue();
         }
+
+        [Test]
+        public void ShouldHaveAuthorisePrivilege()
+        {
+            this.sut.AuthorisePrivilege().Should().Be("stores.requisitions.AUTH");
+        }
     }
 }
