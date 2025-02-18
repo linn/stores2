@@ -7,5 +7,7 @@
         public string Comments { get; set; }
 
         public bool IncludeCancelled { get; set; }
+
+        public bool? Pending { get; set; }
     }
 }

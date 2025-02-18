@@ -85,6 +85,13 @@ function Requisition({ creating }) {
     } = usePost(`${itemTypes.requisitions.url}/book`, true);
 
     const {
+        send: authorise,
+        isLoading: authoriseLoading,
+        errorMessage: authoriseError,
+        postResult: authoriseResult
+    } = usePost(`${itemTypes.requisitions.url}/authorise`, true);
+
+    const {
         send: createReq,
         isLoading: createLoading,
         errorMessage: createError
@@ -461,6 +468,10 @@ function Requisition({ creating }) {
                             dateAuthorised={formState.dateAuthorised}
                             authorisedByName={formState.authorisedByName}
                             shouldRender={shouldRender(null, false)}
+                            authoriseUrl={utilities.getHref(result, 'authorise')}
+                            onAuthorise={() => {
+                                authorise(null, { reqNumber });
+                            }}
                         />
                         {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
                             <>

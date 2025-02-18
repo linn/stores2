@@ -20,5 +20,8 @@
 
         Task<IResult<RequisitionHeaderResource>> BookRequisition(
             int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges);
+
+        Task<IResult<RequisitionHeaderResource>> AuthoriseRequisition(
+            int reqNumber, int authorisedBy, IEnumerable<string> privileges);
     }
 }

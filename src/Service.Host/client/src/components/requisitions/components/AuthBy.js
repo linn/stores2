@@ -1,8 +1,16 @@
 import React from 'react';
-import { InputField, DatePicker } from '@linn-it/linn-form-components-library';
+import { InputField } from '@linn-it/linn-form-components-library';
+import moment from 'moment';
 import Grid from '@mui/material/Grid2';
+import Button from '@mui/material/Button';
 
-function AuthBy({ dateAuthorised, authorisedByName, shouldRender = true }) {
+function AuthBy({ 
+    dateAuthorised, 
+    authorisedByName, 
+    authoriseUrl = null,
+    onAuthorise,    
+    shouldRender = true 
+}) {
     if (!shouldRender) {
         return '';
     }
@@ -11,6 +19,14 @@ function AuthBy({ dateAuthorised, authorisedByName, shouldRender = true }) {
         <>
             <Grid size={2}>
                 <InputField
+                    value={dateAuthorised ? moment(dateAuthorised).format('DD-MMM-YYYY') : null}
+                    disabled
+                    label="Date Authd"
+                    propertyName="dateBooked"
+                />
+            </Grid>        
+            <Grid size={4}>
+                <InputField
                     fullWidth
                     value={authorisedByName}
                     onChange={() => {}}
@@ -18,15 +34,13 @@ function AuthBy({ dateAuthorised, authorisedByName, shouldRender = true }) {
                     propertyName="authorisedByName"
                 />
             </Grid>
-            <Grid size={2}>
-                <DatePicker
-                    value={dateAuthorised}
-                    onChange={() => {}}
-                    label="Date Authd"
-                    propertyName="dateAuthorised"
-                />
+            <Grid size={6}>
+                {authoriseUrl && !dateAuthorised && (
+                    <Button variant="contained" sx={{ marginTop: '30px' }} onClick={onAuthorise}>
+                        Authorise Req
+                    </Button>
+                )}
             </Grid>
-            <Grid size={8} />
         </>
     );
 }
