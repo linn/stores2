@@ -21,9 +21,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Legit loan");
+                reference: null,
+                comments: "Legit loan");
             this.sut.Authorise(new Employee());
         }
 

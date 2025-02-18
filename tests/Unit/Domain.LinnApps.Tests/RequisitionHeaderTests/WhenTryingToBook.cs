@@ -33,9 +33,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "A Good Book");
+                reference: null,
+                comments: "A Good Book");
 
             this.sut.AddLine(line);
         }

@@ -22,9 +22,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Goodbye Reqs");
+                reference: null,
+                comments: "Goodbye Reqs");
             this.sut.Book(new Employee());
         }
 

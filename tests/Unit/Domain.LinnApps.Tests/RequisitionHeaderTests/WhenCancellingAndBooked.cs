@@ -26,8 +26,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                "Goodbye Reqs");
+                reference: "Goodbye Reqs");
             req.AddLine(new LineWithMoves(1, 1));
             req.Book(new Employee());
 

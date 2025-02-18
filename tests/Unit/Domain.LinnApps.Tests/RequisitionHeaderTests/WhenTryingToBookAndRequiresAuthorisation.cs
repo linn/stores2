@@ -23,9 +23,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Dont steal the loan stock!");
+                reference: null,
+                comments: "Dont steal the loan stock!");
         }
 
         [Test]

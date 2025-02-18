@@ -240,19 +240,18 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 document1Number,
                 document1Type,
                 department, 
-                nominal,
-                null, // not passing any lines, they will be added later
-                reference,
-                comments,
-                manualPick,
-                fromStockPool,
-                toStockPool,
-                fromPalletNumber,
-                toPalletNumber,
-                fromLocation,
-                toLocation,
-                part,
-                qty);
+                nominal, // not passing any lines, they will be added later
+                reference: reference,
+                comments: comments,
+                manualPick: manualPick,
+                fromStockPool: fromStockPool,
+                toStockPool: toStockPool,
+                fromPalletNumber: fromPalletNumber,
+                toPalletNumber: toPalletNumber,
+                fromLocation: fromLocation,
+                toLocation: toLocation,
+                part: part,
+                qty: qty);
 
 
             await this.repository.AddAsync(req);

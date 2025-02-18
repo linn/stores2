@@ -25,9 +25,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Goodbye Reqs");
+                reference: null,
+                comments: "Goodbye Reqs");
             this.sut.AddLine(new LineWithMoves(123, 1));
             this.sut.Cancel("reason", new Employee());
         }

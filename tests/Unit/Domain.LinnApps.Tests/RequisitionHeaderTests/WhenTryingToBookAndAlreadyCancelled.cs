@@ -20,9 +20,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Goodbye Reqs");
+                reference: null,
+                comments: "Goodbye Reqs");
             this.sut.Cancel("Test Porpoises", new Employee());
         }
 

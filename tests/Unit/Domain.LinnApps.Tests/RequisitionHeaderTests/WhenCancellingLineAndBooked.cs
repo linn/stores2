@@ -25,9 +25,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Goodbye Reqs");
+                reference: null,
+                comments: "Goodbye Reqs");
             req.AddLine(new RequisitionLine(null, 1));
             req.BookLine(1, new Employee(), new DateTime(2024,1,1));
             this.action = () => req.CancelLine(1, "reason", new Employee());
