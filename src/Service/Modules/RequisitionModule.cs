@@ -24,6 +24,7 @@
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
             app.MapPost("/requisitions/book", this.Book);
+            app.MapPost("/requisitions/authorise", this.Authorise);
             app.MapPost("/requisitions", this.Create);
             app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
         }
@@ -34,6 +35,7 @@
             string comments,
             int? reqNumber,
             bool? includeCancelled,
+            bool? pending,
             IRequisitionFacadeService service)
         {
             if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments))
@@ -42,13 +44,15 @@
             }
             else
             {
-                await res.Negotiate(await service.FilterBy(
-                                        new RequisitionSearchResource
-                                            {
-                                                Comments = comments,
-                                                ReqNumber = reqNumber,
-                                                IncludeCancelled = includeCancelled.GetValueOrDefault()
-                                            }));
+                var requisitions = await service.FilterBy(
+                    new RequisitionSearchResource
+                    {
+                        Comments = comments,
+                        ReqNumber = reqNumber,
+                        IncludeCancelled = includeCancelled.GetValueOrDefault(),
+                        Pending = pending.GetValueOrDefault()
+                    });
+                await res.Negotiate(requisitions);
             }
         }
 
@@ -96,6 +100,18 @@
             await res.Negotiate(await service.BookRequisition(
                 resource.ReqNumber,
                 resource.LineNumber,
+                req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task Authorise(
+            HttpRequest req,
+            HttpResponse res,
+            AuthoriseRequisitionResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.AuthoriseRequisition(
+                resource.ReqNumber,
                 req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
                 req.HttpContext.GetPrivileges()));
         }

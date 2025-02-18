@@ -96,6 +96,12 @@
                 {
                     yield return new LinkResource { Rel = "book", Href = "/requisitions/book" };
                 }
+
+                if (model.RequiresAuthorisation() &&
+                    this.authService.HasPermissionFor(model.AuthorisePrivilege(), claims))
+                {
+                    yield return new LinkResource { Rel = "authorise", Href = "/requisitions/auth" };
+                }
             }
         }
     }

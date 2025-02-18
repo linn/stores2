@@ -247,6 +247,11 @@
             return false;
         }
 
+        public string AuthorisePrivilege()
+        {
+            return this.RequiresAuthorisation() ? this.Lines.First(l => l.RequiresAuthorisation()).AuthorisePrivilege() : null;
+        }
+
         public bool CanBookReq(int? lineNumber)
         {
             if (!this.IsBooked() && !this.IsCancelled())

@@ -36,7 +36,8 @@
                 OntoTransactions = "N",
                 DecrementTransaction = "N",
                 TakePriceFrom = "P",
-                RequiresAuth = "Y"
+                RequiresAuth = "Y",
+                AuthOpCode = "AUTH"
             };
 
         // used in BOOKWO function to decrement stock
@@ -101,7 +102,8 @@
                 OntoTransactions = "Y",
                 DecrementTransaction = "N",
                 TakePriceFrom = "P",
-                RequiresAuth = "Y"
+                RequiresAuth = "Y",
+                AuthOpCode = "AUTH"
             };
     }
 }
