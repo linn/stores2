@@ -505,12 +505,19 @@ function Requisition({ creating }) {
                             partDescription={formState.part?.description}
                             showQuantity
                             quantity={formState.quantity}
-                            setPart={newPart =>
+                            setPart={newPart => {
                                 dispatch({
                                     type: 'set_header_value',
                                     payload: { fieldName: 'part', newValue: newPart }
-                                })
-                            }
+                                });
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: {
+                                        fieldName: 'partNumber',
+                                        newValue: newPart?.partNumber
+                                    }
+                                });
+                            }}
                             setQuantity={newQty =>
                                 dispatch({
                                     type: 'set_header_value',

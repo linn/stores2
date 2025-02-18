@@ -7,6 +7,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Stores;
 
     using NSubstitute;
 
@@ -32,11 +33,17 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
         protected IRepository<Part, string> PartRepository { get; set; }
 
+        protected IRepository<StoresPallet, int> PalletRepository { get; set; }
+
+        protected IRepository<StockState, string> StateRepository { get; set; }
+
         protected IRepository<StorageLocation, int> StorageLocationRepository { get; set; }
 
         protected ITransactionManager TransactionManager { get; set; }
 
         protected IRepository<StoresTransactionDefinition, string> TransactionDefinitionRepository { get; set; }
+
+        protected IStoresService StoresService { get; private set; }
 
         [SetUp]
         public void SetUpContext()
@@ -52,6 +59,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
             this.TransactionDefinitionRepository = Substitute.For<IRepository<StoresTransactionDefinition, string>>();
             this.TransactionManager = Substitute.For<ITransactionManager>();
+            this.StoresService = Substitute.For<IStoresService>();
+            this.StateRepository = Substitute.For<IRepository<StockState, string>>();
+            this.PalletRepository = Substitute.For<IRepository<StoresPallet, int>>();
+
             this.Sut = new RequisitionService(
                 this.AuthService, 
                 this.ReqRepository,
@@ -63,7 +74,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
                 this.PartRepository,
                 this.StorageLocationRepository,
                 this.TransactionDefinitionRepository,
-                this.TransactionManager);
+                this.TransactionManager,
+                this.StoresService,
+                this.PalletRepository,
+                this.StateRepository);
         }
     }
 }

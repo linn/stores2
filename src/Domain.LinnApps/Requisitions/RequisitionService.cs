@@ -9,6 +9,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Stores;
 
     public class RequisitionService : IRequisitionService
     {
@@ -34,6 +35,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly ITransactionManager transactionManager;
 
+        private readonly IStoresService storesService;
+
+        private readonly IRepository<StoresPallet, int> palletRepository;
+
+        private readonly IRepository<StockState, string> stateRepository;
+
         public RequisitionService(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -45,7 +52,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<Part, string> partRepository,
             IRepository<StorageLocation, int> storageLocationRepository,
             IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository,
-            ITransactionManager transactionManager)
+            ITransactionManager transactionManager,
+            IStoresService storesService,
+            IRepository<StoresPallet, int> palletRepository,
+            IRepository<StockState, string> stateRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -58,6 +68,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.storageLocationRepository = storageLocationRepository;
             this.transactionDefinitionRepository = transactionDefinitionRepository;
             this.transactionManager = transactionManager;
+            this.storesService = storesService;
+            this.palletRepository = palletRepository;
+            this.stateRepository = stateRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -278,7 +291,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             await this.repository.AddAsync(req);
 
-            await this.AddRequisitionLine(req, firstLine);
+            if (!string.IsNullOrEmpty(partNumber) && function.FunctionType == "A")
+            {
+                // function automatically booked from the header info
+                await this.CheckAndBookRequisitionHeader(req);
+            } 
+            else
+            {
+                await this.AddRequisitionLine(req, firstLine);
+            }
 
             return await this.repository.FindByIdAsync(req.ReqNumber);
         }
@@ -325,6 +346,32 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateNominalPostingException("failed in create_nominals: " + createPostingsResult.Message);
             }
+        }
+
+        private async Task CheckAndBookRequisitionHeader(RequisitionHeader header)
+        {
+            StoresPallet toPallet = null;
+            if (header.ToPalletNumber.HasValue)
+            {
+                toPallet = await this.palletRepository.FindByIdAsync(header.ToPalletNumber.Value);
+            }
+
+            var toState = await this.stateRepository.FindByIdAsync(header.ToState);
+
+            var checkOnto = await this.storesService.ValidOntoLocation(header.Part, header.ToLocation, toPallet, toState);
+            if (!checkOnto.Success)
+            {
+                throw new RequisitionException(checkOnto.Message);
+            }
+
+            var createLinesResult = await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null);
+
+            if (!createLinesResult.Success)
+            {
+                throw new RequisitionException(createLinesResult.Message);
+            }
+
+            await this.transactionManager.CommitAsync();
         }
     }
 }
