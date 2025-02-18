@@ -1,16 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
+    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
     using Linn.Common.Logging;
     using Linn.Common.Persistence;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using Linn.Stores2.Domain.LinnApps.External;
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using Org.BouncyCastle.Ocsp;
 
     public class LdreqCreationStrategy : ICreationStrategy
     {
@@ -18,39 +14,27 @@
 
         private readonly IRepository<RequisitionHeader, int> repository;
 
-        private readonly IRequisitionStoredProcedures requisitionStoredProcedures;
-
-        private readonly IRepository<Employee, int> employeeRepository;
-
-        private readonly IRepository<StoresFunction, string> storesFunctionRepository;
-
-        private readonly IRepository<Department, string> departmentRepository;
-
-        private readonly IRepository<Nominal, string> nominalRepository;
-
-        private readonly IRepository<Part, string> partRepository;
-
-        private readonly IRepository<StorageLocation, int> storageLocationRepository;
-
-        private readonly IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository;
-
-        private readonly ITransactionManager transactionManager;
-
         private readonly ILog logger;
+
+        private readonly IRequisitionManager requisitionManager;
 
         private readonly User creationBy;
 
         public LdreqCreationStrategy(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
+            IRequisitionManager requisitionManager,
+            ILog logger,
             User creationBy)
         {
             this.authService = authService;
             this.repository = repository;
             this.creationBy = creationBy;
+            this.requisitionManager = requisitionManager;
+            this.logger = logger;
         }
 
-        public async Task Apply(RequisitionHeader requisition)
+        public async Task Apply(RequisitionHeader requisition, LineCandidate firstLine)
         {
             if (!this.authService.HasPermissionFor(AuthorisedActions.Ldreq, this.creationBy?.Privileges))
             {
@@ -59,10 +43,43 @@
 
             await this.repository.AddAsync(requisition);
 
+            try
+            {
+                await this.requisitionManager.AddRequisitionLine(requisition, firstLine);
+            }
+            catch (Exception ex)
+                when (ex is PickStockException or CreateNominalPostingException)
+            {
+                var createFailedMessage =
+                    $"Req failed to create since first line could not be added. Reason: {ex.Message}";
+
+                // Try to cancel the header if adding the line fails
+                try
+                {
+                    await this.requisitionManager.CancelHeader(
+                        requisition.ReqNumber,
+                        this.creationBy,
+                        createFailedMessage,
+                        false);
+                }
+                catch (CancelRequisitionException x)
+                {
+                    var cancelAlsoFailedMessage =
+                        $"Warning - req failed to create: {ex.Message}. Header also failed to cancel: {x.Message}. Some cleanup may be required!";
+                    this.logger.Error(cancelAlsoFailedMessage);
+                    throw new CreateRequisitionException(
+                        cancelAlsoFailedMessage,
+                        ex);
+                }
+
+
+                this.logger.Error(createFailedMessage);
+                throw new CreateRequisitionException(
+                    createFailedMessage,
+                    ex);
+            }
+
             requisition = await this.repository.FindByIdAsync(requisition.ReqNumber);
-
-
-            throw new System.NotImplementedException();
         }
     }
 }

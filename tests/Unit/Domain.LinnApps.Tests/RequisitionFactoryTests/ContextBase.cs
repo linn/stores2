@@ -1,11 +1,14 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 {
+    using System.Collections.Generic;
+
     using Linn.Common.Authorisation;
     using Linn.Common.Logging;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     using NSubstitute;
@@ -36,6 +39,8 @@
 
         protected IRequisitionManager RequisitionManager { get; set; }
 
+        protected ICreationStrategyResolver CreationStrategyResolver { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -49,7 +54,16 @@
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
             this.Logger = Substitute.For<ILog>();
             this.RequisitionManager = Substitute.For<IRequisitionManager>();
+            this.CreationStrategyResolver = Substitute.For<ICreationStrategyResolver>();
+            this.CreationStrategyResolver.Resolve("LDREQ").Returns(
+                new LdreqCreationStrategy(
+                    this.AuthService,
+                    this.ReqRepository,
+                    this.RequisitionManager,
+                    this.Logger,
+                    new User { Privileges = new List<string> { "ldreq" }, UserNumber = 33087 }));
             this.Sut = new RequisitionFactory(
+                this.CreationStrategyResolver,
                 this.StoresFunctionRepository,
                 this.DepartmentRepository,
                 this.NominalRepository,

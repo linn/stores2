@@ -9,7 +9,9 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Org.BouncyCastle.Asn1.Ocsp;
 
     public class RequisitionFactory : IRequisitionFactory
     {
@@ -33,7 +35,10 @@
 
         private readonly IRequisitionManager requisitionManager;
 
+        private readonly ICreationStrategyResolver creationStrategyResolver;
+
         public RequisitionFactory(
+            ICreationStrategyResolver createStrategyResolver,
             IRepository<StoresFunction, string> storesFunctionRepository,
             IRepository<Department, string> departmentRepository,
             IRepository<Nominal, string> nominalRepository,
@@ -45,6 +50,7 @@
             IRepository<StorageLocation, int> storageLocationRepository,
             ILog logger)
         {
+            this.creationStrategyResolver = createStrategyResolver;
             this.storesFunctionRepository = storesFunctionRepository;
             this.departmentRepository = departmentRepository;
             this.nominalRepository = nominalRepository;
@@ -111,7 +117,7 @@
                 document1Number,
                 document1Type,
                 department,
-                nominal, // not passing any lines, they will be added later
+                nominal, // not passing any lines, they will be added later 
                 reference: reference,
                 comments: comments,
                 manualPick: manualPick,
@@ -124,47 +130,13 @@
                 part: part,
                 qty: qty);
 
-
             await this.repository.AddAsync(req);
 
-            try
-            {
-                await this.requisitionManager.AddRequisitionLine(req, firstLine);
-            }
-            catch (Exception ex)
-                when (ex is PickStockException or CreateNominalPostingException)
-            {
-                var createFailedMessage =
-                    $"Req failed to create since first line could not be added. Reason: {ex.Message}";
+            var strategy = this.creationStrategyResolver.Resolve(functionCode);
 
-                // Try to cancel the header if adding the line fails
-                try
-                {
-                    await this.requisitionManager.CancelHeader(
-                        req.ReqNumber,
-                        createdBy,
-                        createFailedMessage,
-                        false);
-                }
-                catch (CancelRequisitionException x)
-                {
-                    var cancelAlsoFailedMessage =
-                        $"Warning - req failed to create: {ex.Message}. Header also failed to cancel: {x.Message}. Some cleanup may be required!";
-                    this.logger.Error(cancelAlsoFailedMessage);
-                    throw new CreateRequisitionException(
-                        cancelAlsoFailedMessage,
-                        ex);
-                }
+            await strategy.Apply(req, firstLine);
 
-
-                this.logger.Error(createFailedMessage);
-                throw new CreateRequisitionException(
-                    createFailedMessage,
-                    ex);
-            }
-
-            return await this.repository.FindByIdAsync(req.ReqNumber);
+            return req;
         }
-
     }
 }

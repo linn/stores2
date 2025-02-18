@@ -4,6 +4,6 @@
 
     public interface ICreationStrategy
     {
-        Task Apply(RequisitionHeader requisition);
+        Task Apply(RequisitionHeader requisition, LineCandidate firstLine);
     }
 }
