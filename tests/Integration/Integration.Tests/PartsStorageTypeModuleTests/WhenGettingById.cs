@@ -45,7 +45,7 @@
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
 
             this.Response = this.Client.Get(
-                $"/stores2/parts-storage-types/{this.partsStorageType.PartNumber}/{this.partsStorageType.StorageTypeCode}",
+                $"/stores2/parts-storage-types/{this.partsStorageType.StorageTypeCode}/{this.partsStorageType.PartNumber}",
                 with =>
                     { 
                         with.Accept("application/json");

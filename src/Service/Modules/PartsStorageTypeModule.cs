@@ -18,8 +18,8 @@
         {
             app.MapGet("/stores2/parts-storage-types", this.GetAll);
             app.MapPost("/stores2/parts-storage-types", this.Create);
-            app.MapGet("/stores2/parts-storage-types/{partNumber}/{storageTypeCode}", this.GetById);
-            app.MapPut("/stores2/parts-storage-types/{partNumber}/{storageTypeCode}", this.Update);
+            app.MapGet("/stores2/parts-storage-types/{storageTypeCode}/{partNumber}", this.GetById);
+            app.MapPut("/stores2/parts-storage-types/{storageTypeCode}/{partNumber}", this.Update);
         }
 
         private async Task GetAll(
@@ -43,7 +43,9 @@
                               StorageTypeCode = storageTypeCode
                           };
 
-            await res.Negotiate(await service.FindBy(searchResource));
+            var key = new PartsStorageTypeKey(partNumber: partNumber, storageTypeCode: storageTypeCode);
+
+            await res.Negotiate(await service.GetById(key));
         }
 
         private async Task Create(

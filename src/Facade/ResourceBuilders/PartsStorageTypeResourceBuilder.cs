@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+﻿using Linn.Stores2.Resources;
+
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -7,6 +9,7 @@
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Resources.Parts;
+    using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
     public class PartsStorageTypeResourceBuilder : IBuilder<PartsStorageType>
     {
@@ -15,7 +18,17 @@
             return new PartsStorageTypeResource
                        {
                            StorageTypeCode = partsStorageType.StorageTypeCode,
+                           StorageType = new StorageTypeResource
+                           {
+                               StorageTypeCode = partsStorageType.StorageType.StorageTypeCode,
+                               Description = partsStorageType.StorageType.Description
+                           },
                            PartNumber = partsStorageType.PartNumber,
+                           Part = new PartResource 
+                            {
+                               PartNumber = partsStorageType.Part.PartNumber,
+                               Description = partsStorageType.Part.Description
+                            },
                            Remarks = partsStorageType.Remarks,
                            Maximum = partsStorageType.Maximum,
                            BridgeId = partsStorageType.BridgeId,

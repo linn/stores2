@@ -17,12 +17,22 @@ function PartsStorageTypes() {
     const navigate = useNavigate();
 
     const StorageTypeColumns = [
-        { field: 'storageTypeCode', headerName: 'Code', width: 100 },
         { field: 'partNumber', headerName: 'Part Number', width: 100 },
-        { field: 'maximum', headerName: 'Maximum', width: 400 },
+        {
+            field: 'storageTypeCode',
+            headerName: 'Storage Type Code',
+            width: 150
+        },
+        {
+            field: 'storageTypeDescription',
+            headerName: 'Storage Type Description',
+            width: 300
+        },
+        { field: 'maximum', headerName: 'Maximum', width: 100 },
         { field: 'bridgeId', headerName: 'Bridge ID', width: 100 },
-        { field: 'incr', headerName: 'Incr', width: 400 },
-        { field: 'preference', headerName: 'Preference', width: 400 }
+        { field: 'incr', headerName: 'Incr', width: 100 },
+        { field: 'preference', headerName: 'Preference', width: 100 },
+        { field: 'remarks', headerName: 'Remarks', width: 100 }
     ];
 
     return (

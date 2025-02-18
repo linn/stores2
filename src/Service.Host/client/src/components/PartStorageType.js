@@ -18,7 +18,6 @@ import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
-import useGet from '../hooks/useGet';
 
 function PartStorageType({ creating }) {
     const { partNumber, storageTypeCode } = useParams();
@@ -27,17 +26,15 @@ function PartStorageType({ creating }) {
         `${itemTypes.partsStorageTypes.url}/${partNumber}/${storageTypeCode}`
     );
 
-    const {
-        send: getNewPartStorageType,
-        isNewPartStorageTypeLoading,
-        result: newPartStorageTypeGetResult
-    } = useGet(itemTypes.stockPools.url);
-
     const [partStorageType, setPartStorageType] = useState(partStorageTypeResult);
 
     const [partSearchTerm, setPartSearchTerm] = useState('');
     const [storageTypeSearchTerm, setStorageTypeSearchTerm] = useState('');
     const [snackbarVisible, setSnackbarVisible] = useState();
+
+    useEffect(() => {
+        setPartStorageType(partStorageTypeResult);
+    }, [partStorageTypeResult]);
 
     const {
         search: searchParts,
@@ -59,7 +56,7 @@ function PartStorageType({ creating }) {
         errorMessage: updateError,
         putResult: updateResult,
         clearPutResult: clearUpdateResult
-    } = usePut(itemTypes.storageTypes.url, true);
+    } = usePut(itemTypes.partsStorageTypes.url, true);
 
     const {
         send: createPartStorageType,
@@ -67,27 +64,18 @@ function PartStorageType({ creating }) {
         errorMessage: createError,
         postResult: createResult,
         clearPostResult: clearCreateResult
-    } = usePost(itemTypes.storageTypes.url);
+    } = usePost(itemTypes.partsStorageTypes.url);
 
     useEffect(() => {
         if (updateResult || createResult) {
-            getNewPartStorageType();
             setSnackbarVisible(true);
             clearCreateResult();
             clearUpdateResult();
         }
-    }, [updateResult, createResult, getNewPartStorageType, clearCreateResult, clearUpdateResult]);
-
-    useEffect(() => {
-        if (newPartStorageTypeGetResult) {
-            setPartStorageType(newPartStorageTypeGetResult);
-        } else {
-            setPartStorageType(partStorageTypeResult);
-        }
-    }, [newPartStorageTypeGetResult, partStorageTypeResult]);
+    }, [updateResult, createResult, setPartStorageType, clearCreateResult, clearUpdateResult]);
 
     const handlePartSearchResultSelect = selected => {
-        setPartStorageType(c => ({ ...c, partNumber: selected.partNumber }));
+        setPartStorageType(c => ({ ...c, partNumber: selected.partNumber, part: selected }));
         setPartSearchTerm(selected.description);
     };
 
@@ -109,10 +97,7 @@ function PartStorageType({ creating }) {
                     </Typography>
                 </Grid>
 
-                {(isPartStorageTypesLoading ||
-                    updateLoading ||
-                    createStorageTypeLoading ||
-                    isNewPartStorageTypeLoading) && (
+                {(isPartStorageTypesLoading || updateLoading || createStorageTypeLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -121,9 +106,18 @@ function PartStorageType({ creating }) {
                     <InputField
                         propertyName="partNumber"
                         label="Part Number"
-                        value={partStorageType}
+                        value={partStorageType?.partNumber}
                         fullWidth
-                        onChange={handleFieldChange}
+                        disabled
+                    />
+                </Grid>
+                {console.log(partStorageType)}
+                <Grid item xs={4}>
+                    <InputField
+                        propertyName="partDescription"
+                        label="Part Description"
+                        value={partStorageType?.part?.description}
+                        fullWidth
                         disabled
                     />
                 </Grid>
@@ -228,7 +222,7 @@ function PartStorageType({ creating }) {
                                 createPartStorageType(null, partStorageType);
                             } else {
                                 updatePartStorageType(
-                                    `?partNumber=${partNumber}&storageTypeCode=${storageTypeCode}`,
+                                    `${partNumber}/${storageTypeCode}`,
                                     partStorageType
                                 );
                             }
