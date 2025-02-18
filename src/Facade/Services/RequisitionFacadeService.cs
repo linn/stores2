@@ -153,7 +153,7 @@
                              resource.Document1Name, 
                              resource.Department?.DepartmentCode, 
                              resource.Nominal?.NominalCode, 
-                             BuildLineCandidateFromResource(resource.Lines.First()), 
+                             BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()), 
                              resource.Reference, 
                              resource.Comments, 
                              resource.ManualPick, 
@@ -213,6 +213,11 @@
 
         private static LineCandidate BuildLineCandidateFromResource(RequisitionLineResource resource)
         {
+            if (resource == null)
+            {
+                return null;
+            }
+
             return new LineCandidate
                        {
                            StockPicks = resource.Moves.Select(
