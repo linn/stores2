@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
-    using System.Collections.Generic;
 
     using FluentAssertions;
 
@@ -19,7 +18,6 @@
         public void SetUp()
         {
             var line = new LineWithMoves(123, 1);
-            line.Book(new DateTime(2024, 1, 1));
 
             this.sut = new RequisitionHeader(
                 new Employee(),
@@ -29,10 +27,11 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine> { line },
+                null,
                 null,
                 "Good book");
-            this.sut.Book(new Employee());
+            this.sut.AddLine(line);
+            line.Book(new DateTime(2024, 1, 1));
         }
 
         [Test]

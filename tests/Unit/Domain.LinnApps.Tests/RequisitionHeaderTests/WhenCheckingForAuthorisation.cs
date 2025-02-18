@@ -32,9 +32,10 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine> { line },
+                null,
                 null,
                 "Legit loan");
+            this.sut.AddLine(line);
         }
 
         [Test]

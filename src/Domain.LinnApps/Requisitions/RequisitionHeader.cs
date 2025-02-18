@@ -46,7 +46,7 @@
 
         public string CancelledReason { get; protected set; }
         
-        public StoresFunction StoresFunction { get; protected set;}
+        public StoresFunction StoresFunction { get; protected init; }
         
         public string Comments { get; protected set; }
         
@@ -58,9 +58,9 @@
 
         public ICollection<CancelDetails> CancelDetails { get; protected set; }
 
-        public Department Department { get; protected set; }
+        public Department Department { get; protected init; }
 
-        public Nominal Nominal { get; protected set; }
+        public Nominal Nominal { get; protected init; }
 
         public Employee AuthorisedBy { get; protected set; }
 
@@ -117,13 +117,37 @@
             this.Document1Line = document1Line ?? 1;
             this.Qty = qty;
             this.Part = part;
+
+            if (this.StoresFunction.DepartmentNominalRequired == "Y")
+            {
+                if (department == null || nominal == null)
+                {
+                    throw new CreateRequisitionException(
+                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req");
+                }
+            }
+
             this.Department = department;
             this.Nominal = nominal;
+
             this.Reference = reference;
-            
-            this.FromStockPool = fromStockPool; // will probably need to be conditional depending on req type
-            
+
+            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(fromStockPool))
+            {
+                throw new CreateRequisitionException(
+                    $"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
+            }
+
+            this.FromStockPool = fromStockPool;
+
+            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(toStockPool))
+            {
+                throw new CreateRequisitionException(
+                    $"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
+            }
+
             this.Lines = new List<RequisitionLine>();
+
             if (lines != null)
             {
                 foreach (var l in lines)
@@ -252,9 +276,10 @@
             if (!this.IsBooked() && !this.IsCancelled())
             {
                 var lines = this.Lines.Where(l => l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled());
-                if (lines.Any())
+                var requisitionLines = lines as RequisitionLine[] ?? lines.ToArray();
+                if (requisitionLines.Any())
                 {
-                    if (lines.All(l => l.OkToBook()))
+                    if (requisitionLines.All(l => l.OkToBook()))
                     {
                         if (!this.RequiresAuthorisation())
                         {

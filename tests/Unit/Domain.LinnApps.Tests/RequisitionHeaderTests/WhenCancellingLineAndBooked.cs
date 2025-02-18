@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
-    using System.Collections.Generic;
 
     using FluentAssertions;
 
@@ -26,9 +25,10 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine> { new RequisitionLine(null, 1) },
+                null,
                 null,
                 "Goodbye Reqs");
+            req.AddLine(new RequisitionLine(null, 1));
             req.BookLine(1, new Employee(), new DateTime(2024,1,1));
             this.action = () => req.CancelLine(1, "reason", new Employee());
         }
