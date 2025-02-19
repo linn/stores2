@@ -16,6 +16,9 @@
             this.strategies = new Dictionary<string, ICreationStrategy>
                                   {
                                       { "LDREQ", serviceProvider.GetRequiredService<LdreqCreationStrategy>() },
+
+                                      // todo - replace below with real strategy / function codes
+                                      { "PLACEHOLDER", serviceProvider.GetRequiredService<PlaceholderStrategyForWhenHeaderHasPartNumber>() },
                                   };
         }
 

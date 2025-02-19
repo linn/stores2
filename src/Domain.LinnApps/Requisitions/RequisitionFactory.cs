@@ -9,6 +9,8 @@
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
+    // this class really just calls the req constructor
+    // and then delegates further operations to the relevant CreationStrategy
     public class RequisitionFactory : IRequisitionFactory
     {
         private readonly IRepository<StoresFunction, string> storesFunctionRepository;
@@ -79,7 +81,7 @@
                                    ? null
                                    : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode);
             
-            // pass stuff common to all function codes, do basic validation in the constructor
+            // pass stuff common to all function codes and do basic validation in the constructor
             // todo - maybe some of this is still function specific and could move into strategies
             var req = new RequisitionHeader(
                 who,
@@ -101,26 +103,33 @@
                 part: part,
                 qty: qty);
 
-            // todo - move below into its own strategy
-            // if (!string.IsNullOrEmpty(partNumber) && function.FunctionType == "A")
-            // {
-            //     // function automatically booked from the header info
-            //     await this..CheckAndBookRequisitionHeader(req);
-            // }
-            // else
-            // {
-            //     await this.AddRequisitionLine(req, firstLine);
-            // }
+            ICreationStrategy strategy;
 
-
-            // now resolve the correct strategy for the function code at hand
-            var strategy = this.creationStrategyResolver.Resolve(functionCode);
+            // placeholder to include richards code as a placeholder strategy for now
+            // need to decide what function code(s) this logic will apply to?
+            if (!string.IsNullOrEmpty(partNumber) && function.FunctionType == "A")
+            {
+                strategy = this.creationStrategyResolver.Resolve("PLACEHOLDER");
+            }
+            else
+            {
+                // this will always happen once the above is removed
+                // resolve the correct strategy for the function code at hand
+                strategy = this.creationStrategyResolver.Resolve(functionCode);
+            }
 
             // and apply it
-            await strategy.Apply(req, firstLine, who.Id, privileges);
+            await strategy.Apply(new RequisitionCreationContext
+                                     {
+                                         CreatedByUserNumber = createdBy,
+                                         UserPrivileges = privileges,
+                                         FirstLineCandidate = firstLine,
+                                         Header = req
+                                     });
 
             // return the newly created and validated req
             // assuming the strategy has done all the necessary business
+            // and updated its context.ReqHeader if requierd
             return req;
         }
     }

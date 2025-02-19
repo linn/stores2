@@ -271,7 +271,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        private async Task CheckAndBookRequisitionHeader(RequisitionHeader header)
+        public async Task CheckAndBookRequisitionHeader(RequisitionHeader header)
         {
             StoresPallet toPallet = null;
             if (header.ToPalletNumber.HasValue)

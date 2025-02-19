@@ -6,7 +6,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     public interface IRequisitionManager
     {
         Task<RequisitionHeader> CancelHeader(
-            int reqNumber, 
+            int reqNumber,
             int cancelledBy,
             IEnumerable<string> privileges,
             string reason,
@@ -25,12 +25,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int bookedBy,
             IEnumerable<string> privileges);
 
-        Task<RequisitionHeader> AuthoriseRequisition(
-            int reqNumber,
-            int authorisedBy,
-            IEnumerable<string> privileges);
+        Task<RequisitionHeader> AuthoriseRequisition(int reqNumber, int authorisedBy, IEnumerable<string> privileges);
 
 
         Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd);
+
+        Task CheckAndBookRequisitionHeader(RequisitionHeader header);
     }
 }

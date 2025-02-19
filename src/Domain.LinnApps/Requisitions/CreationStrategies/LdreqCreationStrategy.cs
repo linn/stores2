@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -33,22 +32,19 @@
         }
 
         public async Task Apply(
-            RequisitionHeader requisition, 
-            LineCandidate firstLine, 
-            int creationBy, 
-            IEnumerable<string> privileges)
+           RequisitionCreationContext context)
         {
-            var enumerable = privileges.ToList();
-            if (!this.authService.HasPermissionFor(AuthorisedActions.Ldreq, enumerable))
+            var privilegesList = context.UserPrivileges.ToList();
+            if (!this.authService.HasPermissionFor(AuthorisedActions.Ldreq, privilegesList))
             {
                 throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
             }
 
-            await this.repository.AddAsync(requisition);
+            await this.repository.AddAsync(context.Header);
 
             try
             {
-                await this.requisitionManager.AddRequisitionLine(requisition, firstLine);
+                await this.requisitionManager.AddRequisitionLine(context.Header, context.FirstLineCandidate);
             }
             catch (Exception ex)
                 when (ex is PickStockException or CreateNominalPostingException)
@@ -60,9 +56,9 @@
                 try
                 {
                     await this.requisitionManager.CancelHeader(
-                        requisition.ReqNumber,
-                        creationBy,
-                        enumerable,
+                        context.Header.ReqNumber,
+                        context.CreatedByUserNumber,
+                        privilegesList,
                         createFailedMessage,
                         false);
                 }
@@ -83,7 +79,8 @@
                     ex);
             }
 
-            requisition = await this.repository.FindByIdAsync(requisition.ReqNumber);
+            // reload the latest state since stored procedures will have ran and written data
+            context.Header = await this.repository.FindByIdAsync(context.Header.ReqNumber);
         }
     }
 }
