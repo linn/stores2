@@ -2,6 +2,6 @@
 {
     public interface ICreationStrategyResolver
     {
-        ICreationStrategy Resolve(StoresFunction functionCode);
+        ICreationStrategy Resolve(RequisitionHeader header);
     }
 }

@@ -1,7 +1,7 @@
-﻿namespace Linn.Stores2.IoC
+﻿
+namespace Linn.Stores2.IoC
 {
     using System;
-    using System.Collections.Generic;
 
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
@@ -10,24 +10,26 @@
 
     public class RequisitionCreationStrategyResolver : ICreationStrategyResolver
     {
-        private readonly Dictionary<string, ICreationStrategy> strategies;
+        private readonly IServiceProvider serviceProvider;
 
         public RequisitionCreationStrategyResolver(IServiceProvider serviceProvider)
         {
-            this.strategies = new Dictionary<string, ICreationStrategy>
-                                  {
-                                      { "LDREQ", serviceProvider.GetRequiredService<LdreqCreationStrategy>() },
-
-                                      // todo - replace below with real strategy / function codes
-                                      { "PLACEHOLDER", serviceProvider.GetRequiredService<PlaceholderStrategyForWhenHeaderHasPartNumber>() },
-                                  };
+            this.serviceProvider = serviceProvider;
         }
 
-        public ICreationStrategy Resolve(StoresFunction functionCode)
+        public ICreationStrategy Resolve(RequisitionHeader header)
         {
-            return this.strategies.TryGetValue(functionCode.FunctionCode, out var strategy)
-                       ? strategy
-                       : throw new InvalidOperationException($"No strategy found for function code: {functionCode.FunctionCode}");
+            if (header.StoresFunction.FunctionCode == "LDREQ")
+            {
+               return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
+            }
+            
+            if (header.Part != null && header.StoresFunction.FunctionCode == "A")
+            {
+                return this.serviceProvider.GetRequiredService<PlaceholderStrategyForWhenHeaderHasPartNumber>();
+            }
+
+            throw new InvalidOperationException($"No strategy found for given scenario");
         }
     }
 }

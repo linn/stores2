@@ -65,8 +65,9 @@
 
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
 
-            this.CreationStrategyResolver.Resolve(this.ldreq).Returns(
-                new LdreqCreationStrategy(
+            this.CreationStrategyResolver.Resolve(Arg.Is<RequisitionHeader>(h => h.StoresFunction.FunctionCode == "LDREQ"))
+                .Returns(
+                    new LdreqCreationStrategy(
                     this.AuthService,
                     this.ReqRepository,
                     this.RequisitionManager,

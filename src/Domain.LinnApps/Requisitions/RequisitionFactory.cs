@@ -103,21 +103,11 @@
                 part: part,
                 qty: qty);
 
-            ICreationStrategy strategy;
 
-            // placeholder to include richards code as a placeholder strategy for now
-            // need to decide what function code(s) this logic will apply to?
-            if (!string.IsNullOrEmpty(partNumber) && function.FunctionType == "A")
-            {
-                strategy = this.creationStrategyResolver.Resolve(new StoresFunction("PLACEHOLDER"));
-            }
-            else
-            {
-                // this will always happen once the above is removed
-                // resolve the correct strategy for the function code at hand
-                strategy = this.creationStrategyResolver.Resolve(function);
-            }
-
+            // this will always happen once the above is removed
+            // resolve the correct strategy for the function code at hand
+            var strategy = this.creationStrategyResolver.Resolve(req);
+            
             // and apply it
             await strategy.Apply(new RequisitionCreationContext
                                      {

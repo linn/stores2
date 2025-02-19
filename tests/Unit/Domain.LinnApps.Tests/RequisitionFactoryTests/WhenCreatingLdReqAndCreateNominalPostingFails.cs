@@ -81,12 +81,14 @@
 
             this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), Arg.Any<LineCandidate>())
                 .Throws(new CreateNominalPostingException("failed in create_nominals - cant post this to that"));
-            this.CreationStrategyResolver.Resolve(this.ldreq).Returns(
-                new LdreqCreationStrategy(
-                    this.AuthService,
-                    this.ReqRepository,
-                    this.RequisitionManager,
-                    this.Logger));
+
+            this.CreationStrategyResolver.Resolve(Arg.Is<RequisitionHeader>(h => h.StoresFunction.FunctionCode == "LDREQ"))
+                .Returns(
+                    new LdreqCreationStrategy(
+                        this.AuthService,
+                        this.ReqRepository,
+                        this.RequisitionManager,
+                        this.Logger));
 
             this.action = async () => await this.Sut.CreateRequisition(
                 employee.Id,
