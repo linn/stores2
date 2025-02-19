@@ -20,8 +20,22 @@
         {
             var line = new RequisitionLine(123, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLoan)
             {
-                Moves = { new ReqMove(123, 1, 1, 1, 1, null, 18414, "LN ON LOAN", "STORES", "FREE") },
+                Moves =
+                    {
+                        new ReqMove(
+                            123,
+                            1, 
+                            1, 
+                            1,
+                            1, 
+                            null, 
+                            18414, 
+                            "LN ON LOAN",
+                            "STORES",
+                            "FREE")
+                    },
             };
+
             line.AddPosting("D", 1, TestNominalAccounts.AssetsLoanGoods);
             line.AddPosting("C", 1, TestNominalAccounts.AssetsFinGoods);
 
@@ -35,6 +49,8 @@
                 new Nominal(),
                 null,
                 "Can I steal the loan stock!");
+
+            this.sut.AddLine(line);
         }
 
         [Test]

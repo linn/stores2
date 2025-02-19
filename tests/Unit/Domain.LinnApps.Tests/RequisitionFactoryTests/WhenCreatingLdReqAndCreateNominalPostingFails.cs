@@ -49,7 +49,9 @@
 
             this.transactionDefinition = new StoresTransactionDefinition { TransactionCode = "TRANS" };
 
-            this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, new List<string>()).Returns(true);
+            var privileges = new List<string> { "ldreq" };
+
+            this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, Arg.Any<IEnumerable<string>>()).Returns(true);
 
             this.EmployeeRepository.FindByIdAsync(employee.Id).Returns(employee);
 
@@ -81,7 +83,7 @@
 
             this.action = async () => await this.Sut.CreateRequisition(
                 employee.Id,
-                new List<string>(),
+                privileges,
                 this.ldreq.FunctionCode,
                 "F",
                 null,

@@ -83,7 +83,7 @@
 
             this.action = async () => await this.Sut.CreateRequisition(
                 employee.Id,
-                Arg.Any<IEnumerable<string>>(),
+                new List<string>(),
                 this.ldreq.FunctionCode, 
                 "F", 
                 null,
