@@ -12,6 +12,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests;
     using Linn.Stores2.TestData.Requisitions;
@@ -80,6 +81,13 @@
                 .Throws(new PickStockException("failed in pick_stock - no stock found"));
 
             this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.createdReq);
+
+            this.CreationStrategyResolver.Resolve(this.ldreq).Returns(
+                new LdreqCreationStrategy(
+                    this.AuthService,
+                    this.ReqRepository,
+                    this.RequisitionManager,
+                    this.Logger));
 
             this.action = async () => await this.Sut.CreateRequisition(
                 employee.Id,

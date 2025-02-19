@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
 
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -22,11 +23,11 @@
                                   };
         }
 
-        public ICreationStrategy Resolve(string functionCode)
+        public ICreationStrategy Resolve(StoresFunction functionCode)
         {
-            return this.strategies.TryGetValue(functionCode, out var strategy)
+            return this.strategies.TryGetValue(functionCode.FunctionCode, out var strategy)
                        ? strategy
-                       : throw new InvalidOperationException($"No strategy found for function code: {functionCode}");
+                       : throw new InvalidOperationException($"No strategy found for function code: {functionCode.FunctionCode}");
         }
     }
 }

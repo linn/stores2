@@ -9,6 +9,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.Requisitions;
 
@@ -44,7 +45,12 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(this.from);
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
-           
+            this.CreationStrategyResolver.Resolve(this.ldreq).Returns(
+                new LdreqCreationStrategy(
+                    this.AuthService,
+                    this.ReqRepository,
+                    this.RequisitionManager,
+                    this.Logger));
             this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(
                 new ReqWithReqNumber(
                     123,

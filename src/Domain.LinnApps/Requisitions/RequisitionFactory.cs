@@ -109,13 +109,13 @@
             // need to decide what function code(s) this logic will apply to?
             if (!string.IsNullOrEmpty(partNumber) && function.FunctionType == "A")
             {
-                strategy = this.creationStrategyResolver.Resolve("PLACEHOLDER");
+                strategy = this.creationStrategyResolver.Resolve(new StoresFunction("PLACEHOLDER"));
             }
             else
             {
                 // this will always happen once the above is removed
                 // resolve the correct strategy for the function code at hand
-                strategy = this.creationStrategyResolver.Resolve(functionCode);
+                strategy = this.creationStrategyResolver.Resolve(function);
             }
 
             // and apply it

@@ -55,12 +55,7 @@
             this.Logger = Substitute.For<ILog>();
             this.RequisitionManager = Substitute.For<IRequisitionManager>();
             this.CreationStrategyResolver = Substitute.For<ICreationStrategyResolver>();
-            this.CreationStrategyResolver.Resolve("LDREQ").Returns(
-                new LdreqCreationStrategy(
-                    this.AuthService,
-                    this.ReqRepository,
-                    this.RequisitionManager,
-                    this.Logger));
+            
             this.Sut = new RequisitionFactory(
                 this.CreationStrategyResolver,
                 this.StoresFunctionRepository,

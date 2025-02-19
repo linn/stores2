@@ -11,6 +11,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.Requisitions;
 
@@ -80,6 +81,12 @@
 
             this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), Arg.Any<LineCandidate>())
                 .Throws(new CreateNominalPostingException("failed in create_nominals - cant post this to that"));
+            this.CreationStrategyResolver.Resolve(this.ldreq).Returns(
+                new LdreqCreationStrategy(
+                    this.AuthService,
+                    this.ReqRepository,
+                    this.RequisitionManager,
+                    this.Logger));
 
             this.action = async () => await this.Sut.CreateRequisition(
                 employee.Id,
