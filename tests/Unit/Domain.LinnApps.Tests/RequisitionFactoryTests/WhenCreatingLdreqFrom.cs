@@ -88,10 +88,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
         [Test]
         public void ShouldReturnCreated()
         {
-            // this.result.ReqNumber.Should().Be(123);
             this.result.Document1Name.Should().Be("REQ");
         }
 
+        // this should move to unit tests of the relevant strategy itself
         // [Test]
         // public void ShouldPickStock()
         // {
