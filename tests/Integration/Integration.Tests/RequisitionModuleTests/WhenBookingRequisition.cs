@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
+    using System.Collections.Generic;
     using System.Net;
     using System.Net.Http.Json;
 
@@ -38,7 +39,7 @@
                 new Department(),
                 new Nominal());
             req.Cancel("just cos", new Employee());
-            this.DomainService.BookRequisition(this.resource.ReqNumber, null, Arg.Any<User>())
+            this.ReqManager.BookRequisition(this.resource.ReqNumber, null, Arg.Any<int>(), Arg.Any<IEnumerable<string>>())
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/book", this.resource).Result;
         }
@@ -46,8 +47,8 @@
         [Test]
         public void ShouldCancelHeader()
         {
-            this.DomainService.Received(1).BookRequisition(
-                this.resource.ReqNumber, null, Arg.Any<User>());
+            this.ReqManager.Received(1).BookRequisition(
+                this.resource.ReqNumber, null, Arg.Any<int>(), Arg.Any<IEnumerable<string>>());
         }
 
         [Test]

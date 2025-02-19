@@ -1,7 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
-    using System.Collections.Generic;
-
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -25,9 +23,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine>(),
-                null,
-                "A Good Book");
+                reference: null,
+                comments: "A Good Book");
         }
 
         [Test]

@@ -1,15 +1,19 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System.Collections.Generic;
+
+    using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Requisitions;
     using Linn.Stores2.TestData.Transactions;
+
     using NSubstitute;
+
     using NUnit.Framework;
-    using System.Collections.Generic;
-    using FluentAssertions;
 
     public class WhenAuthorising : ContextBase
     {
@@ -18,12 +22,6 @@
         [SetUp]
         public void SetUp()
         {
-            var user = new User
-            {
-                UserNumber = 33087,
-                Privileges = new List<string>()
-            };
-
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee(),
@@ -41,9 +39,11 @@
                     this.req.AuthorisePrivilege(), Arg.Any<IEnumerable<string>>())
                 .Returns(true);
 
+            var employee = new Employee { Id = 33087 };
+
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee { Id = 33087 });
 
-            this.Sut.AuthoriseRequisition(123, user);
+            this.Sut.AuthoriseRequisition(123, employee.Id, new List<string>());
         }
 
         [Test]

@@ -1,8 +1,5 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
-    using System.Collections.Generic;
-    using System.IO;
-
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Reporting.Resources.ResourceBuilders;

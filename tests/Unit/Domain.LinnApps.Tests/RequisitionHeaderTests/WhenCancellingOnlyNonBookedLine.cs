@@ -23,9 +23,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                null,
-                null,
-                "Goodbye Reqs");
+                reference: null,
+                comments: "Goodbye Reqs");
             var line1 = new RequisitionLine(this.req.ReqNumber, 1);
             line1.Book(new DateTime(2024,1,1));
 

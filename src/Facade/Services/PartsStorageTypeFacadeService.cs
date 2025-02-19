@@ -13,8 +13,6 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Parts;
 
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-
     public class PartsStorageTypeFacadeService : AsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>
     {
         private readonly IRepository<Part, int> partRepository;

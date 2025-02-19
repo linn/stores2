@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
+    using System.Collections.Generic;
     using System.Net;
     using System.Net.Http.Json;
 
@@ -39,8 +40,8 @@
                 new Department(),
                 new Nominal());
             req.Cancel("reasonable reason", new Employee());
-            this.DomainService.CancelLine(
-                    this.resource.ReqNumber, this.resource.LineNumber.Value, Arg.Any<User>(), this.resource.Reason)
+            this.ReqManager.CancelLine(
+                    this.resource.ReqNumber, this.resource.LineNumber.Value, Arg.Any<int>(), Arg.Any<IEnumerable<string>>(), this.resource.Reason)
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/cancel", this.resource).Result;
         }
@@ -48,10 +49,11 @@
         [Test]
         public void ShouldCancelLine()
         {
-            this.DomainService.Received(1).CancelLine(
+            this.ReqManager.Received(1).CancelLine(
                 this.resource.ReqNumber, 
-                this.resource.LineNumber.Value, 
-                Arg.Any<User>(), 
+                this.resource.LineNumber.Value,
+                Arg.Any<int>(), 
+                Arg.Any<IEnumerable<string>>(),
                 this.resource.Reason);
         }
 

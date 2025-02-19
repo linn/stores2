@@ -1,7 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
-    using System.Collections.Generic;
 
     using FluentAssertions;
 
@@ -27,10 +26,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine> { new LineWithMoves(1, 1) },
-                null,
-                "Goodbye Reqs");
+                reference: "Goodbye Reqs");
+            req.AddLine(new LineWithMoves(1, 1));
             req.Book(new Employee());
+
             this.action = () => req.Cancel("trying", new Employee());
         }
 

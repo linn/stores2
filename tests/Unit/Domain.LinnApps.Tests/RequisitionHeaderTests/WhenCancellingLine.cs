@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
-    using System.Collections.Generic;
     using System.Linq;
 
     using FluentAssertions;
@@ -26,10 +25,9 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine> { new LineWithMoves(1, 1) },
-                null,
-                "Goodbye Reqs");
-
+                reference: null,
+                comments: "Goodbye Reqs");
+            this.sut.AddLine(new LineWithMoves(1, 1));
             this.sut.CancelLine(1, "reason", new Employee());
         }
 

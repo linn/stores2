@@ -32,9 +32,8 @@
                 "TYPE",
                 new Department { DepartmentCode = "DEP1"},
                 new Nominal { NominalCode = "NOM1"},
-                null,
-                null,
-                "Hello Requisitions");
+                reference: null,
+                comments: "Hello Requisitions");
             this.req456 = new RequisitionHeader(
                 new Employee(),
                 code,
@@ -43,9 +42,8 @@
                 "TYPE",
                 new Department { DepartmentCode = "DEP2" },
                 new Nominal { NominalCode = "NOM2" },
-                null,
-                null,
-                "Goodbye Requisitions");
+                reference: null,
+                comments: "Goodbye Requisitions");
 
             this.DbContext.RequisitionHeaders.AddAndSave(
                 this.DbContext, this.req123);

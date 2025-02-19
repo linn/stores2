@@ -1,11 +1,14 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using NUnit.Framework;
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using System;
+
     using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+
+    using NUnit.Framework;
 
     public class WhenAuthorisingAndReqDoesntExist : ContextBase
     {
@@ -14,13 +17,7 @@
         [SetUp]
         public void SetUp()
         {
-            var user = new User
-            {
-                UserNumber = 33087,
-                Privileges = new List<string>()
-            };
-
-            this.action = async () => await this.Sut.AuthoriseRequisition(123, user);
+            this.action = async () => await this.Sut.AuthoriseRequisition(123, 33087, new List<string>());
         }
 
         [Test]

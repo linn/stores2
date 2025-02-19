@@ -1,12 +1,9 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
-    using System.Collections.Generic;
-
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.TestData.Requisitions;
 
     using NUnit.Framework;
 
@@ -25,9 +22,8 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine> { new LineWithMoves(123, 1) },
-                null,
-                "Goodbye Reqs");
+                reference: null,
+                comments: "Goodbye Reqs");
             this.sut.Book(new Employee());
         }
 
