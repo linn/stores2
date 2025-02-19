@@ -21,7 +21,6 @@
 
     public class WhenCreatingLdreqFromAndCreateNominalPostingStockFails : ContextBase
     {
-        private User user;
         private StoresFunction ldreq;
         private Nominal nominal;
         private Department department;
@@ -36,8 +35,7 @@
         [SetUp]
         public void Setup()
         {
-            this.user = new User { Privileges = new List<string> { "ldreq" }, UserNumber = 33087 };
-            var employee = new Employee { Id = this.user.UserNumber };
+            var employee = new Employee { Id = 33087 };
 
             this.ldreq = new StoresFunction { FunctionCode = "LDREQ" };
 
@@ -51,9 +49,9 @@
 
             this.transactionDefinition = new StoresTransactionDefinition { TransactionCode = "TRANS" };
 
-            this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, this.user.Privileges).Returns(true);
+            this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, new List<string>()).Returns(true);
 
-            this.EmployeeRepository.FindByIdAsync(this.user.UserNumber).Returns(employee);
+            this.EmployeeRepository.FindByIdAsync(employee.Id).Returns(employee);
 
             this.StoresFunctionRepository.FindByIdAsync("LDREQ").Returns(this.ldreq);
 
@@ -82,7 +80,8 @@
                 .Throws(new CreateNominalPostingException("failed in create_nominals - cant post this to that"));
 
             this.action = async () => await this.Sut.CreateRequisition(
-                this.user,
+                employee.Id,
+                new List<string>(),
                 this.ldreq.FunctionCode,
                 "F",
                 null,
@@ -124,7 +123,8 @@
             this.action();
             this.RequisitionManager.Received(1).CancelHeader(
                 Arg.Any<int>(),
-                Arg.Any<User>(),
+                33087,
+                Arg.Any<IEnumerable<string>>(),
                 "Req failed to create since first line could not be added. Reason: failed in create_nominals - cant post this to that",
                 false);
         }

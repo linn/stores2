@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
@@ -18,25 +20,26 @@
 
         private readonly IRequisitionManager requisitionManager;
 
-        private readonly User creationBy;
-
         public LdreqCreationStrategy(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
             IRequisitionManager requisitionManager,
-            ILog logger,
-            User creationBy)
+            ILog logger)
         {
             this.authService = authService;
             this.repository = repository;
-            this.creationBy = creationBy;
             this.requisitionManager = requisitionManager;
             this.logger = logger;
         }
 
-        public async Task Apply(RequisitionHeader requisition, LineCandidate firstLine)
+        public async Task Apply(
+            RequisitionHeader requisition, 
+            LineCandidate firstLine, 
+            int creationBy, 
+            IEnumerable<string> privileges)
         {
-            if (!this.authService.HasPermissionFor(AuthorisedActions.Ldreq, this.creationBy?.Privileges))
+            var enumerable = privileges.ToList();
+            if (!this.authService.HasPermissionFor(AuthorisedActions.Ldreq, enumerable))
             {
                 throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
             }
@@ -58,7 +61,8 @@
                 {
                     await this.requisitionManager.CancelHeader(
                         requisition.ReqNumber,
-                        this.creationBy,
+                        creationBy,
+                        enumerable,
                         createFailedMessage,
                         false);
                 }

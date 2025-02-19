@@ -1,7 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
-    using System.Collections.Generic;
-
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Accounts;

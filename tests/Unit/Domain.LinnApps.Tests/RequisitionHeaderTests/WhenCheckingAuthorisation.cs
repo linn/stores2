@@ -1,15 +1,17 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.NominalAccounts;
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Transactions;
+
     using NUnit.Framework;
 
-    public class WhenCheckingForAuthorisation
+    public class WhenCheckingAuthorisation
     {
         private RequisitionHeader sut;
 
@@ -31,15 +33,20 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                reference: null,
-                comments: "Legit loan");
-            this.sut.AddLine(line);
+                null,
+                "Can I steal the loan stock!");
         }
 
         [Test]
         public void ShouldRequireAuthorisation()
         {
             this.sut.RequiresAuthorisation().Should().BeTrue();
+        }
+
+        [Test]
+        public void ShouldHaveAuthorisePrivilege()
+        {
+            this.sut.AuthorisePrivilege().Should().Be("stores.requisitions.AUTH");
         }
     }
 }

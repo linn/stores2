@@ -8,47 +8,57 @@
 
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
     using NUnit.Framework;
 
-    public class WhenBookingRequisition : ContextBase
+    public class WhenAuthorisingRequisition : ContextBase
     {
-        private BookRequisitionResource resource;
+        private AuthoriseRequisitionResource resource;
 
         [SetUp]
         public void SetUp()
         {
-            this.resource = new BookRequisitionResource
+            this.resource = new AuthoriseRequisitionResource
             {
                 ReqNumber = 123
             };
 
+            var authorisedBy = new Employee
+            {
+                Id = 1, Name = "Thomas The Tank"
+            };
+
             var req = new ReqWithReqNumber(
-                11827635,
+                123,
                 new Employee(),
-                TestFunctionCodes.Audit,
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 123,
                 "REQ",
                 new Department(),
                 new Nominal());
-            req.Cancel("just cos", new Employee());
-            this.ReqManager.BookRequisition(this.resource.ReqNumber, null, Arg.Any<int>(), Arg.Any<IEnumerable<string>>())
+            req.Lines.Add(new RequisitionLine(123, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLinnDept));
+            req.Authorise(authorisedBy);
+
+            this.ReqManager.AuthoriseRequisition(this.resource.ReqNumber, Arg.Any<int>(), Arg.Any<IEnumerable<string>>())
                 .Returns(req);
-            this.Response = this.Client.PostAsJsonAsync("/requisitions/book", this.resource).Result;
+            this.Response = this.Client.PostAsJsonAsync("/requisitions/authorise", this.resource).Result;
         }
 
         [Test]
-        public void ShouldCancelHeader()
+        public void ShouldAuthoriseHeader()
         {
-            this.ReqManager.Received(1).BookRequisition(
-                this.resource.ReqNumber, null, Arg.Any<int>(), Arg.Any<IEnumerable<string>>());
+            this.ReqManager.Received(1).AuthoriseRequisition(
+                this.resource.ReqNumber, Arg.Any<int>(), Arg.Any<IEnumerable<string>>());
         }
 
         [Test]
@@ -65,10 +75,11 @@
         }
 
         [Test]
-        public void ShouldReturnCancelled()
+        public void ShouldReturnAuthorisedReq()
         {
             var result = this.Response.DeserializeBody<RequisitionHeaderResource>();
-            result.DateCancelled.Should().NotBe(null);
+            result.DateAuthorised.Should().NotBe(null);
+            result.AuthorisedBy.Should().Be(1);
         }
     }
 }

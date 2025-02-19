@@ -26,7 +26,7 @@
 
         public string Document1Name { get; protected set; }
         
-        public int Document1Line { get; protected set; }
+        public int? Document1Line { get; protected set; }
         
         public Part Part { get; protected set; }
 
@@ -260,6 +260,11 @@
                 return this.Lines.Any(l => l.RequiresAuthorisation());
             }
             return false;
+        }
+
+        public string AuthorisePrivilege()
+        {
+            return this.RequiresAuthorisation() ? this.Lines.First(l => l.RequiresAuthorisation()).AuthorisePrivilege() : null;
         }
 
         public bool CanBookReq(int? lineNumber)

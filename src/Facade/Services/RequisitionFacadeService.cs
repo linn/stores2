@@ -46,11 +46,8 @@
 
                 var cancelled = await this.requisitionManager.CancelHeader(
                                  reqNumber,
-                                 new User
-                                     {
-                                         UserNumber = cancelledBy,
-                                         Privileges = privilegeList
-                                 }, 
+                                 cancelledBy,
+                                 privilegeList,                               
                                  reason);
                 await this.transactionManager.CommitAsync();
 
@@ -77,11 +74,8 @@
                 var req = await this.requisitionManager.CancelLine(
                                     reqNumber,
                                     lineNumber,
-                                    new User
-                                        {
-                                            UserNumber = cancelledBy,
-                                            Privileges = privilegeList
-                                        },
+                                    cancelledBy,
+                                    privilegeList,
                                     reason);
                 await this.transactionManager.CommitAsync();
 
@@ -103,11 +97,28 @@
                 var req = await this.requisitionManager.BookRequisition(
                     reqNumber,
                     lineNumber,
-                    new User
-                    {
-                        UserNumber = bookedBy,
-                        Privileges = privilegeList
-                    });
+                    bookedBy,
+                    privilegeList);
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(req, privilegeList));
+            }
+            catch (DomainException e)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(e.Message);
+            }
+        }
+
+        public async Task<IResult<RequisitionHeaderResource>> AuthoriseRequisition(int reqNumber, int authorisedBy, IEnumerable<string> privileges)
+        {
+            try
+            {
+                var privilegeList = privileges.ToList();
+
+                var req = await this.requisitionManager.AuthoriseRequisition(
+                    reqNumber,
+                    authorisedBy,
+                    privilegeList);
+                await this.transactionManager.CommitAsync();
                 return new SuccessResult<RequisitionHeaderResource>(
                     this.BuildResource(req, privilegeList));
             }
@@ -122,18 +133,15 @@
             IEnumerable<string> privileges = null)
         {
             var result = await this.requisitionFactory.CreateRequisition(
-                             new User
-                                 {
-                                     UserNumber = resource.CreatedBy.GetValueOrDefault(),
-                                     Privileges = privileges
-                                 }, 
+                             resource.CreatedBy.GetValueOrDefault(),
+                             privileges,
                              resource.StoresFunction?.Code, 
                              resource.ReqType,
                              resource.Document1, 
                              resource.Document1Name, 
                              resource.Department?.DepartmentCode, 
                              resource.Nominal?.NominalCode, 
-                             BuildLineCandidateFromResource(resource.Lines.First()), 
+                             BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()), 
                              resource.Reference, 
                              resource.Comments, 
                              resource.ManualPick, 
@@ -174,6 +182,11 @@
         protected override Expression<Func<RequisitionHeader, bool>> FilterExpression(
             RequisitionSearchResource searchResource)
         {
+            if (searchResource.Pending == true)
+            {
+                return x => x.Cancelled != "Y" && x.DateBooked == null;
+            }
+
             return x => (string.IsNullOrEmpty(searchResource.Comments) 
                          || x.Comments.ToUpper().Contains(searchResource.Comments.ToUpper().Trim())) 
                         && (searchResource.IncludeCancelled || x.Cancelled != "Y")
@@ -188,6 +201,11 @@
 
         private static LineCandidate BuildLineCandidateFromResource(RequisitionLineResource resource)
         {
+            if (resource == null)
+            {
+                return null;
+            }
+
             return new LineCandidate
                        {
                            StockPicks = resource.Moves.Select(

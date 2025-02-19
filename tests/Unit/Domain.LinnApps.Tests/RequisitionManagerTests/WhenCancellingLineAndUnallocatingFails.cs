@@ -10,7 +10,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests;
     using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
@@ -39,11 +38,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.req.AddLine(requisitionLine);
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
 
-            var user = new User
-                           {
-                               UserNumber = 33087,
-                               Privileges = new List<string>()
-                           };
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee { Id = 33087 });
 
             this.ReqStoredProcedures.DeleteAllocOntos(
@@ -54,7 +48,12 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
-            this.action = async () => await this.Sut.CancelLine(123, 1, user, "REASON");
+            this.action = async () => await this.Sut.CancelLine(
+                                          123, 
+                                          1,
+                                          33087, 
+                                          new List<string>(),
+                                          "REASON");
         }
 
         [Test]

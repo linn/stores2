@@ -18,7 +18,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 
     public class WhenCreatingLdreqFrom : ContextBase
     {
-        private User user;
         private StoresFunction ldreq;
         private Nominal nominal;
         private Department department;
@@ -58,7 +57,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
                     this.nominal));
 
             this.result = this.Sut.CreateRequisition(
-                new User { UserNumber = 33087 }, 
+                employee.Id,
+                new List<string>(),
                 this.ldreq.FunctionCode,
                 "F", 
                 null,

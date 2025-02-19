@@ -20,6 +20,7 @@
                        {
                           Code = model.FunctionCode,
                           Description = model.Description,
+                          FunctionType = model.FunctionType,
                           CancelFunction = model.CancelFunction,
                           DepartmentNominalRequired = model.DepartmentNominalRequired,
                           ManualPickRequired = model.ManualPickRequired,

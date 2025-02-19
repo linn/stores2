@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
@@ -9,6 +10,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Stores;
 
     public class RequisitionManager : IRequisitionManager
     {
@@ -30,6 +32,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly ILog logger;
 
+        private readonly IStoresService storesService;
+
+        private readonly IRepository<StoresPallet, int> palletRepository;
+
+        private readonly IRepository<StockState, string> stateRepository;
+
         public RequisitionManager(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -39,7 +47,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<StorageLocation, int> storageLocationRepository,
             IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository,
             ITransactionManager transactionManager,
-            ILog logger)
+            ILog logger,
+            IStoresService storesService,
+            IRepository<StoresPallet, int> palletRepository,
+            IRepository<StockState, string> stateRepository)
+
         {
             this.authService = authService;
             this.repository = repository;
@@ -50,16 +62,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.transactionDefinitionRepository = transactionDefinitionRepository;
             this.transactionManager = transactionManager;
             this.logger = logger;
+            this.storesService = storesService;
+            this.palletRepository = palletRepository;
+            this.stateRepository = stateRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
             int reqNumber,
-            User cancelledBy,
+            int cancelledBy,
+            IEnumerable<string> privileges,
             string reason,
             bool requiresAuth = true)
         {
             if (requiresAuth && !this.authService.HasPermissionFor(
-                    AuthorisedActions.CancelRequisition, cancelledBy.Privileges))
+                    AuthorisedActions.CancelRequisition, privileges))
             {
                 throw new UnauthorisedActionException(
                     "You do not have permission to cancel a requisition");
@@ -69,13 +85,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             
             if (string.IsNullOrEmpty(req.StoresFunction.CancelFunction))
             {
-                var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
+                var by = await this.employeeRepository.FindByIdAsync(cancelledBy);
                 req.Cancel(reason, by);
             }
             else if (req.StoresFunction.CancelFunction == "UNALLOC_REQ")
             {
                 var unallocateReqResult = await this.requisitionStoredProcedures.UnallocateRequisition(
-                    reqNumber, null, cancelledBy.UserNumber);
+                    reqNumber, null, cancelledBy);
 
                 if (!unallocateReqResult.Success)
                 {
@@ -103,10 +119,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         }
 
         public async Task<RequisitionHeader> CancelLine(
-            int reqNumber, int lineNumber, User cancelledBy, string reason)
+            int reqNumber, 
+            int lineNumber,
+            int cancelledBy,
+            IEnumerable<string> privileges,
+            string reason)
         {
             if (!this.authService.HasPermissionFor(
-                    AuthorisedActions.CancelRequisition, cancelledBy.Privileges))
+                    AuthorisedActions.CancelRequisition, privileges))
             {
                 throw new UnauthorisedActionException(
                     "You do not have permission to cancel a requisition");
@@ -116,13 +136,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (string.IsNullOrEmpty(req.StoresFunction.CancelFunction))
             {
-                var by = await this.employeeRepository.FindByIdAsync(cancelledBy.UserNumber);
+                var by = await this.employeeRepository.FindByIdAsync(cancelledBy);
                 req.CancelLine(lineNumber, reason, by);
             }
             else if (req.StoresFunction.CancelFunction == "UNALLOC_REQ")
             {
                 var unallocateReqResult = await this.requisitionStoredProcedures.UnallocateRequisition(
-                                              reqNumber, lineNumber, cancelledBy.UserNumber);
+                                              reqNumber, lineNumber, cancelledBy);
 
                 if (!unallocateReqResult.Success)
                 {
@@ -149,10 +169,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return req;
         }
 
-        public async Task<RequisitionHeader> BookRequisition(int reqNumber, int? lineNumber, User bookedBy)
+        public async Task<RequisitionHeader> BookRequisition(
+            int reqNumber, 
+            int? lineNumber,
+            int bookedBy,
+            IEnumerable<string> privileges)
         {
             if (!this.authService.HasPermissionFor(
-                    AuthorisedActions.BookRequisition, bookedBy.Privileges))
+                    AuthorisedActions.BookRequisition, privileges))
             {
                 throw new UnauthorisedActionException(
                     "You do not have permission to book a requisition");
@@ -161,7 +185,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var doRequisitionResult = await this.requisitionStoredProcedures.DoRequisition(
                 reqNumber,
                 lineNumber,
-                bookedBy.UserNumber);
+                bookedBy);
 
             if (!doRequisitionResult.Success)
             {
@@ -169,6 +193,37 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var req = await this.repository.FindByIdAsync(reqNumber);
+            return req;
+        }
+
+        public async Task<RequisitionHeader> AuthoriseRequisition(
+            int reqNumber, 
+            int authorisedBy,
+            IEnumerable<string> privileges)
+        {
+            var req = await this.repository.FindByIdAsync(reqNumber);
+
+            if (req == null)
+            {
+                throw new RequisitionException("Req not found");
+            }
+
+            if (!this.authService.HasPermissionFor(
+                    req.AuthorisePrivilege(), privileges))
+            {
+                throw new UnauthorisedActionException(
+                    "You do not have permission to authorise this requisition");
+            }
+
+            var by = await this.employeeRepository.FindByIdAsync(authorisedBy);
+
+            if (by == null)
+            {
+                throw new RequisitionException("Authorised by not found");
+            }
+
+            req.Authorise(by);
+
             return req;
         }
 
@@ -214,6 +269,32 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateNominalPostingException("failed in create_nominals: " + createPostingsResult.Message);
             }
+        }
+
+        private async Task CheckAndBookRequisitionHeader(RequisitionHeader header)
+        {
+            StoresPallet toPallet = null;
+            if (header.ToPalletNumber.HasValue)
+            {
+                toPallet = await this.palletRepository.FindByIdAsync(header.ToPalletNumber.Value);
+            }
+
+            var toState = await this.stateRepository.FindByIdAsync(header.ToState);
+
+            var checkOnto = await this.storesService.ValidOntoLocation(header.Part, header.ToLocation, toPallet, toState);
+            if (!checkOnto.Success)
+            {
+                throw new RequisitionException(checkOnto.Message);
+            }
+
+            var createLinesResult = await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null);
+
+            if (!createLinesResult.Success)
+            {
+                throw new RequisitionException(createLinesResult.Message);
+            }
+
+            await this.transactionManager.CommitAsync();
         }
     }
 }

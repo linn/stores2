@@ -20,12 +20,6 @@
         [SetUp]
         public void SetUp()
         {
-            var user = new User
-            {
-                UserNumber = 33087,
-                Privileges = new List<string>()
-            };
-
             this.AuthService.HasPermissionFor(
                     AuthorisedActions.BookRequisition, Arg.Any<IEnumerable<string>>())
                 .Returns(true);
@@ -33,9 +27,9 @@
             this.ReqStoredProcedures.DoRequisition(
                 123,
                 null,
-                user.UserNumber).Returns(new ProcessResult(false, "Stores failure"));
+                33087).Returns(new ProcessResult(false, "Stores failure"));
 
-            this.action = async () => await this.Sut.BookRequisition(123, null, user);
+            this.action = async () => await this.Sut.BookRequisition(123, null, 33087, new List<string>());
         }
 
         [Test]

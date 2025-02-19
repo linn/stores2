@@ -1,11 +1,13 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     public interface IRequisitionFactory
     {
         Task<RequisitionHeader> CreateRequisition(
-            User createdBy,
+            int createdBy,
+            IEnumerable<string> privileges,
             string functionCode,
             string reqType,
             int? document1Number,

@@ -60,8 +60,7 @@
                     this.AuthService,
                     this.ReqRepository,
                     this.RequisitionManager,
-                    this.Logger,
-                    new User { Privileges = new List<string> { "ldreq" }, UserNumber = 33087 }));
+                    this.Logger));
             this.Sut = new RequisitionFactory(
                 this.CreationStrategyResolver,
                 this.StoresFunctionRepository,

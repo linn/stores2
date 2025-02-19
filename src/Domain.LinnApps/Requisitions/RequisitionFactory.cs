@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
@@ -16,13 +17,11 @@
 
         private readonly IRepository<Nominal, string> nominalRepository;
 
-
         private readonly IRepository<Employee, int> employeeRepository;
 
         private readonly IRepository<Part, string> partRepository;
 
         private readonly IRepository<StorageLocation, int> storageLocationRepository;
-
 
         private readonly ICreationStrategyResolver creationStrategyResolver;
 
@@ -45,7 +44,8 @@
         }
 
         public async Task<RequisitionHeader> CreateRequisition(
-             User createdBy,
+             int createdBy,
+             IEnumerable<string> privileges,
              string functionCode,
              string reqType,
              int? document1Number,
@@ -65,8 +65,7 @@
              string partNumber = null,
              decimal? qty = null)
         {
-           
-            var who = await this.employeeRepository.FindByIdAsync(createdBy.UserNumber);
+            var who = await this.employeeRepository.FindByIdAsync(createdBy);
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode);
             var department = await this.departmentRepository.FindByIdAsync(departmentCode);
             var nominal = await this.nominalRepository.FindByIdAsync(nominalCode);
@@ -102,11 +101,23 @@
                 part: part,
                 qty: qty);
 
+            // todo - move below into its own strategy
+            // if (!string.IsNullOrEmpty(partNumber) && function.FunctionType == "A")
+            // {
+            //     // function automatically booked from the header info
+            //     await this..CheckAndBookRequisitionHeader(req);
+            // }
+            // else
+            // {
+            //     await this.AddRequisitionLine(req, firstLine);
+            // }
+
+
             // now resolve the correct strategy for the function code at hand
             var strategy = this.creationStrategyResolver.Resolve(functionCode);
 
             // and apply it
-            await strategy.Apply(req, firstLine);
+            await strategy.Apply(req, firstLine, who.Id, privileges);
 
             // return the newly created and validated req
             // assuming the strategy has done all the necessary business

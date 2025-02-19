@@ -29,6 +29,8 @@
 
         public string RequiresAuth { get; set; }
 
+        public string AuthOpCode { get; set; }
+
         public bool RequiresStockAllocations => this.StockAllocations == "Y";
 
         public bool RequiresOntoTransactions => this.OntoTransactions == "Y";
@@ -40,5 +42,15 @@
         public bool RequiresAuthorisation => this.RequiresAuth == "Y";
 
         public bool MaterialVarianceTransaction => this.TakePriceFrom == "M";
+
+        public string AuthorisePrivilege()
+        {
+            if (this.RequiresAuthorisation && !string.IsNullOrEmpty(this.AuthOpCode))
+            {
+                return $"stores.requisitions.{this.AuthOpCode}";
+            }
+
+            return string.Empty;
+        }
     }
 }
