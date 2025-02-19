@@ -19,12 +19,12 @@ namespace Linn.Stores2.IoC
 
         public ICreationStrategy Resolve(RequisitionHeader header)
         {
-            if (header.StoresFunction.FunctionCode == "LDREQ")
+            if (header.StoresFunction?.FunctionCode == "LDREQ")
             {
                return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
             }
             
-            if (header.Part != null && header.StoresFunction.FunctionCode == "A")
+            if (header.Part != null && header.StoresFunction?.FunctionCode == "A")
             {
                 return this.serviceProvider.GetRequiredService<PlaceholderStrategyForWhenHeaderHasPartNumber>();
             }

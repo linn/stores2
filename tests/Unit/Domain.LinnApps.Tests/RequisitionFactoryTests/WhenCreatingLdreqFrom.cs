@@ -17,6 +17,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 
     using NUnit.Framework;
 
+    using Org.BouncyCastle.Ocsp;
+
     public class WhenCreatingLdreqFrom : ContextBase
     {
         private StoresFunction ldreq;
@@ -45,7 +47,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(this.from);
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
-            this.CreationStrategyResolver.Resolve(this.ldreq).Returns(
+            this.CreationStrategyResolver.Resolve(Arg.Is<RequisitionHeader>(h => h.StoresFunction.FunctionCode == "LDREQ")).Returns(
                 new LdreqCreationStrategy(
                     this.AuthService,
                     this.ReqRepository,

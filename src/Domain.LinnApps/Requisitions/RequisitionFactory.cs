@@ -71,7 +71,7 @@
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode);
             var department = await this.departmentRepository.FindByIdAsync(departmentCode);
             var nominal = await this.nominalRepository.FindByIdAsync(nominalCode);
-            var part = await this.partRepository.FindByIdAsync(partNumber);
+            var part = string.IsNullOrEmpty(partNumber) ? null : await this.partRepository.FindByIdAsync(partNumber);
 
             var fromLocation = string.IsNullOrEmpty(fromLocationCode)
                                    ? null
