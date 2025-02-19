@@ -30,7 +30,7 @@
                            ReqNumber = header.ReqNumber, 
                            DateCreated = header.DateCreated.ToString("o"), 
                            Document1 = header.Document1,
-                           Qty = header.Qty,
+                           Quantity = header.Quantity,
                            Document1Name = header.Document1Name,
                            PartNumber = header.Part?.PartNumber,
                            ToLocationId = header.ToLocation?.LocationId,

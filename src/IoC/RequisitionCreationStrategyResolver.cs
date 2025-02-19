@@ -24,12 +24,12 @@ namespace Linn.Stores2.IoC
                return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
             }
             
-            if (header.Part != null && header.StoresFunction?.FunctionCode == "A")
+            if (header.Part != null && header.StoresFunction?.FunctionType == "A")
             {
                 return this.serviceProvider.GetRequiredService<PlaceholderStrategyForWhenHeaderHasPartNumber>();
             }
 
-            throw new InvalidOperationException($"No strategy found for given scenario");
+            throw new InvalidOperationException("No strategy found for given scenario");
         }
     }
 }

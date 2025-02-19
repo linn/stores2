@@ -152,7 +152,9 @@
                              resource.FromLocationCode, 
                              resource.ToLocationCode, 
                              resource.PartNumber, 
-                             resource.Qty);
+                             resource.Quantity,
+                             resource.FromState,
+                             resource.ToState);
             return result;
         }
 

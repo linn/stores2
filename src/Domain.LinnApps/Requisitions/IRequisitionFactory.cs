@@ -25,6 +25,8 @@
             string fromLocationCode = null,
             string toLocationCode = null,
             string partNumber = null,
-            decimal? qty = null);
+            decimal? quantity = null,
+            string fromState = null,
+            string toState = null);
     }
 }

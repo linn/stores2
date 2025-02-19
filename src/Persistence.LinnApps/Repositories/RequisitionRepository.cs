@@ -1,8 +1,8 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
-    using System.Linq.Expressions;
-    using System.Linq;
     using System;
+    using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence.EntityFramework;
@@ -14,8 +14,7 @@
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public RequisitionRepository(
-            ServiceDbContext serviceDbContext)
+        public RequisitionRepository(ServiceDbContext serviceDbContext)
             : base(serviceDbContext.RequisitionHeaders)
         {
             this.serviceDbContext = serviceDbContext;
@@ -45,6 +44,7 @@
                 .ThenInclude(l => l.StorageLocation)
                 .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
+
         public override IQueryable<RequisitionHeader> FilterBy(Expression<Func<RequisitionHeader, bool>> expression)
         {
             return this.serviceDbContext.RequisitionHeaders.Where(expression)

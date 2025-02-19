@@ -20,7 +20,6 @@
 
         public async Task Apply(RequisitionCreationContext context)
         {
-            // just do the stuff Richard was doing when part number was set on the header
             await this.requisitionManager.CheckAndBookRequisitionHeader(context.Header);
 
             context.Header = await this.repository.FindByIdAsync(context.Header.ReqNumber);

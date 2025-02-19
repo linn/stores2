@@ -30,5 +30,7 @@
             string transactionCode);
             
         Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber);
+
+        Task<ProcessResult> CanBookRequisition(int reqNumber, int? reqLine, decimal quantity);
     }
 }

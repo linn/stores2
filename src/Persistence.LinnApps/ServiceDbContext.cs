@@ -389,7 +389,7 @@
             e.Property(r => r.Document1).HasColumnName("DOCUMENT_1");
             e.Property(r => r.DateCreated).HasColumnName("DATE_CREATED");
             e.HasOne(r => r.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
-            e.Property(r => r.Qty).HasColumnName("QTY");
+            e.Property(r => r.Quantity).HasColumnName("QTY");
             e.Property(r => r.Document1Name).HasColumnName("DOC1_NAME");
             e.Property(r => r.Document1Line).HasColumnName("DOCUMENT_1_LINE");
             e.Property(r => r.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);

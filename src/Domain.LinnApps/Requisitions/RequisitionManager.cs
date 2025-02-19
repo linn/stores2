@@ -281,20 +281,46 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var toState = await this.stateRepository.FindByIdAsync(header.ToState);
 
-            var checkOnto = await this.storesService.ValidOntoLocation(header.Part, header.ToLocation, toPallet, toState);
+            var checkOnto = await this.storesService.ValidOntoLocation(
+                                header.Part,
+                                header.ToLocation,
+                                toPallet,
+                                toState);
             if (!checkOnto.Success)
             {
                 throw new RequisitionException(checkOnto.Message);
             }
 
-            var createLinesResult = await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null);
+            await this.repository.AddAsync(header);
 
-            if (!createLinesResult.Success)
+            var proxyResult =
+                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null);
+
+            if (!proxyResult.Success)
             {
-                throw new RequisitionException(createLinesResult.Message);
+                throw new RequisitionException(proxyResult.Message);
             }
 
-            await this.transactionManager.CommitAsync();
+
+            proxyResult = await this.requisitionStoredProcedures.CanBookRequisition(
+                              header.ReqNumber,
+                              null,
+                              header.Quantity.GetValueOrDefault());
+
+            if (!proxyResult.Success)
+            {
+                throw new RequisitionException(proxyResult.Message);
+            }
+
+            proxyResult = await this.requisitionStoredProcedures.DoRequisition(
+                              header.ReqNumber,
+                              null,
+                              header.CreatedBy.Id);
+
+            if (!proxyResult.Success)
+            {
+                throw new RequisitionException(proxyResult.Message);
+            }
         }
     }
 }

@@ -49,7 +49,7 @@
                 fromLocation: null, 
                 toLocation: null,
                 part: TestParts.Cap003,
-                qty: 1);
+                quantity: 1);
             this.sut.AddLine(line1);
             this.sut.AddLine(line2);
         }
