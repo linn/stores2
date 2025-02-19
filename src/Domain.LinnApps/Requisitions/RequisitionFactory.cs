@@ -81,6 +81,7 @@
                                    : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode);
             
             // pass stuff common to all function codes, do basic validation in the constructor
+            // todo - maybe some of this is still function specific and could move into strategies
             var req = new RequisitionHeader(
                 who,
                 function,
