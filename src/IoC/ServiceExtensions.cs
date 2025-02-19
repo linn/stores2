@@ -56,7 +56,9 @@
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>()
-                .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>();
+                .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
+                .AddScoped<LdreqCreationStrategy>()
+                .AddScoped<PlaceholderStrategyForWhenHeaderHasPartNumber>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

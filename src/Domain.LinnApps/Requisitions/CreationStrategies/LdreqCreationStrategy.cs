@@ -12,7 +12,6 @@
     public class LdreqCreationStrategy : ICreationStrategy
     {
         private readonly IAuthorisationService authService;
-
         private readonly IRepository<RequisitionHeader, int> repository;
 
         private readonly ILog logger;

@@ -1,5 +1,7 @@
 ﻿namespace Linn.Stores2.IoC
 {
+    using System;
+
     using Amazon;
     using Amazon.Runtime;
 

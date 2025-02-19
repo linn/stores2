@@ -69,8 +69,8 @@
         {
             var who = await this.employeeRepository.FindByIdAsync(createdBy);
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode);
-            var department = await this.departmentRepository.FindByIdAsync(departmentCode);
-            var nominal = await this.nominalRepository.FindByIdAsync(nominalCode);
+            var department = string.IsNullOrEmpty(departmentCode) ? null : await this.departmentRepository.FindByIdAsync(departmentCode);
+            var nominal = string.IsNullOrEmpty(nominalCode) ? null : await this.nominalRepository.FindByIdAsync(nominalCode);
             var part = string.IsNullOrEmpty(partNumber) ? null : await this.partRepository.FindByIdAsync(partNumber);
 
             var fromLocation = string.IsNullOrEmpty(fromLocationCode)
@@ -82,7 +82,7 @@
                                    : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode);
             
             // pass stuff common to all function codes and do basic validation in the constructor
-            // todo - maybe some of this is still function specific and could move into strategies
+            // todo - maybe some of this is still scenario-specific and could move into strategies
             var req = new RequisitionHeader(
                 who,
                 function,
@@ -103,7 +103,6 @@
                 part: part,
                 qty: qty);
 
-
             // this will always happen once the above is removed
             // resolve the correct strategy for the function code at hand
             var strategy = this.creationStrategyResolver.Resolve(req);
@@ -119,7 +118,7 @@
 
             // return the newly created and validated req
             // assuming the strategy has done all the necessary business
-            // and updated its context.ReqHeader if requierd
+            // and updated its context.ReqHeader if required
             return req;
         }
     }
