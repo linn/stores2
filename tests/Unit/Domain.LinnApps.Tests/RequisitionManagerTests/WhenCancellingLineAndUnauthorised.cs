@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -19,16 +19,16 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         [SetUp]
         public void SetUp()
         {
-            var user = new User
-                           {
-                               UserNumber = 33087,
-                               Privileges = new List<string>()
-                           };
-            
+           
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>())
                 .Returns(false);
-            this.action = async () => await this.Sut.CancelLine(123, 1, user, "REASON");
+            this.action = async () => await this.Sut.CancelLine(
+                                          123,
+                                          1, 
+                                          33087,
+                                          new List<string>(),
+                                          "REASON");
         }
 
         [Test]

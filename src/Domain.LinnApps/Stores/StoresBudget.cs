@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Stores
 {
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
 
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -44,6 +45,6 @@
 
         public DateTime? DateBooked { get; set; }
 
-        public Collection<StoresBudgetPosting> StoresBudgetPostings { get; set; }
+        public ICollection<StoresBudgetPosting> StoresBudgetPostings { get; set; }
     }
 }

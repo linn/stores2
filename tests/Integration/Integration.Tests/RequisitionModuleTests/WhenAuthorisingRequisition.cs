@@ -1,19 +1,24 @@
 ﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
-    using System.Net.Http.Json;
+    using System.Collections.Generic;
     using System.Net;
+    using System.Net.Http.Json;
+
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
+
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
-    using Linn.Stores2.TestData.Requisitions;
-    using NSubstitute;
-    using NUnit.Framework;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.Parts;
+    using Linn.Stores2.TestData.Requisitions;
     using Linn.Stores2.TestData.Transactions;
+
+    using NSubstitute;
+
+    using NUnit.Framework;
 
     public class WhenAuthorisingRequisition : ContextBase
     {
@@ -27,7 +32,7 @@
                 ReqNumber = 123
             };
 
-            var authorisedBy = new Employee()
+            var authorisedBy = new Employee
             {
                 Id = 1, Name = "Thomas The Tank"
             };
@@ -44,7 +49,7 @@
             req.Lines.Add(new RequisitionLine(123, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLinnDept));
             req.Authorise(authorisedBy);
 
-            this.DomainService.AuthoriseRequisition(this.resource.ReqNumber, Arg.Any<User>())
+            this.ReqManager.AuthoriseRequisition(this.resource.ReqNumber, Arg.Any<int>(), Arg.Any<IEnumerable<string>>())
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/authorise", this.resource).Result;
         }
@@ -52,8 +57,8 @@
         [Test]
         public void ShouldAuthoriseHeader()
         {
-            this.DomainService.Received(1).AuthoriseRequisition(
-                this.resource.ReqNumber, Arg.Any<User>());
+            this.ReqManager.Received(1).AuthoriseRequisition(
+                this.resource.ReqNumber, Arg.Any<int>(), Arg.Any<IEnumerable<string>>());
         }
 
         [Test]

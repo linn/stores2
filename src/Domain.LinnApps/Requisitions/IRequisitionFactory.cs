@@ -1,37 +1,19 @@
-namespace Linn.Stores2.Domain.LinnApps.Requisitions
+﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    public interface IRequisitionService
+    public interface IRequisitionFactory
     {
-        Task<RequisitionHeader> CancelHeader(
-            int reqNumber, 
-            User cancelledBy,
-            string reason);
-
-        Task<RequisitionHeader> CancelLine(
-            int reqNumber,
-            int lineNumber,
-            User cancelledBy,
-            string reason);
-
-        Task<RequisitionHeader> BookRequisition(
-            int reqNumber,
-            int? lineNumber,
-            User bookedBy);
-
-        Task<RequisitionHeader> AuthoriseRequisition(
-            int reqNumber,
-            User authorisedBy);
-
         Task<RequisitionHeader> CreateRequisition(
-            User createdBy,
+            int createdBy,
+            IEnumerable<string> privileges,
             string functionCode,
             string reqType,
             int? document1Number,
             string document1Type,
             string departmentCode,
-            string nominalCode, 
+            string nominalCode,
             LineCandidate firstLine = null,
             string reference = null,
             string comments = null,

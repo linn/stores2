@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
 
     using NUnit.Framework;
 
-    public class WhenCancellingLine : ContextBase
+    public class WhenCancelling : ContextBase
     {
         private RequisitionHeader req;
 
@@ -23,38 +23,29 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee(),
-                new StoresFunction { FunctionCode = "F1" },
+                new StoresFunction { FunctionCode = "FUNC" },
                 "F",
-                12345678,
-                "TYPE",
-                new Department(),
-                new Nominal(),
-                null,
-                null,
-                "Goodbye Reqs");
-            var requisitionLine = new RequisitionLine(this.req.ReqNumber, 1);
-            this.req.AddLine(requisitionLine);
-            this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
+                123,
+                "REQ",
+                new Department(), 
+                new Nominal());
 
-            var user = new User
-                           {
-                               UserNumber = 33087,
-                               Privileges = new List<string>()
-                           };
-            this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee { Id = 33087 });
+            this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
+            var employee = new Employee { Id = 33087 };
+            this.EmployeeRepository.FindByIdAsync(33087).Returns(employee);
 
             this.ReqStoredProcedures.DeleteAllocOntos(
                 this.req.ReqNumber,
-                1,
+                null,
                 this.req.Document1.GetValueOrDefault(),
                 this.req.Document1Name).Returns(new ProcessResult(true, string.Empty));
 
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
-            this.req = this.Sut.CancelLine(
-                123, 
-                1,
-                user,
+            this.req = this.Sut.CancelHeader(
+                this.req.ReqNumber, 
+                employee.Id,
+                new List<string>(),
                 "REASON").Result;
         }
 
@@ -64,7 +55,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
             this.ReqStoredProcedures.Received()
                 .DeleteAllocOntos(
                     this.req.ReqNumber,
-                    1,
+                    null,
                     this.req.Document1.GetValueOrDefault(),
                     this.req.Document1Name);
         }
@@ -72,6 +63,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
         [Test]
         public void ShouldReturnCancelled()
         {
+            this.req.ReqNumber.Should().Be(123);
             this.req.Cancelled.Should().Be("Y");
             this.req.CancelDetails.Count.Should().Be(1);
         }

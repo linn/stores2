@@ -1,7 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
-    using System.Collections.Generic;
-
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -41,18 +39,19 @@
                 "PO",
                 null,
                 null,
-                new List<RequisitionLine> { line1 , line2 },
-                null,
-                "Bought in bits",
-                null, 
-                null, 
-                null, 
-                null, 
-                null, 
-                null, 
-                null,
-                TestParts.Cap003,
-                1);
+                reference: null,
+                comments: "Bought in bits",
+                manualPick: null, 
+                fromStockPool: null, 
+                toStockPool: null, 
+                fromPalletNumber: null, 
+                toPalletNumber: null, 
+                fromLocation: null, 
+                toLocation: null,
+                part: TestParts.Cap003,
+                qty: 1);
+            this.sut.AddLine(line1);
+            this.sut.AddLine(line2);
         }
 
         [Test]
