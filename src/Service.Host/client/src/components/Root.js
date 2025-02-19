@@ -10,6 +10,7 @@ import Carrier from './Carrier';
 import GoodsInLog from './GoodsInLog';
 import StoragePlaceAudit from './StoragePlaceAudit';
 import SearchRequisitions from './requisitions/SearchRequisitions';
+import PendingRequisitions from './requisitions/PendingRequisitions';
 import Requisition from './requisitions/Requisition';
 import StoresBudgetViewer from './StoresBudgetViewer';
 import StorageLocations from './StorageLocations';
@@ -36,6 +37,7 @@ function Root() {
                         element={<StoragePlaceAudit />}
                     />
                     <Route path="/requisitions" element={<SearchRequisitions />} />
+                    <Route path="/requisitions/pending" element={<PendingRequisitions />} />
                     <Route path="/requisitions/create" element={<Requisition creating />} />
 
                     <Route

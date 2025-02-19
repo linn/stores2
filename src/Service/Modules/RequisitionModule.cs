@@ -21,6 +21,7 @@
         {
             app.MapGet("/requisitions", this.Search);
             app.MapGet("/requisitions/create", this.GetApp);
+            app.MapGet("/requisitions/pending", this.GetApp);
             app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
             app.MapPost("/requisitions/book", this.Book);
@@ -38,7 +39,7 @@
             bool? pending,
             IRequisitionFacadeService service)
         {
-            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments))
+            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && pending != true)
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
             }

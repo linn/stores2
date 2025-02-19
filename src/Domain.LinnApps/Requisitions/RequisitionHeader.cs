@@ -254,7 +254,7 @@
 
         public bool CanBookReq(int? lineNumber)
         {
-            if (!this.IsBooked() && !this.IsCancelled())
+            if (!this.IsBooked() && !this.IsCancelled() && this.StoresFunction != null)
             {
                 var lines = this.Lines.Where(l => l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled());
                 if (lines.Any())

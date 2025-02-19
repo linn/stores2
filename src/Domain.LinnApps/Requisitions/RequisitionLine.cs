@@ -118,7 +118,7 @@
 
         public decimal GetPostingQty(string debitOrCredit)
         {
-            return this.NominalAccountPostings.Where(p => p.DebitOrCredit == debitOrCredit && p.Qty != null).Sum(p => p.Qty.Value);
+            return this.NominalAccountPostings == null ? 0 : this.NominalAccountPostings.Where(p => p.DebitOrCredit == debitOrCredit && p.Qty != null).Sum(p => p.Qty.Value);
         }
 
         public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
@@ -154,7 +154,7 @@
 
         public bool OkToBook()
         {
-            if (this.IsCancelled() || this.IsBooked())
+            if (this.IsCancelled() || this.IsBooked() || this.Moves == null )
             {
                 return false;
             }
