@@ -1,4 +1,7 @@
-﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
+﻿using Linn.Common.Proxy.LinnApps;
+using NSubstitute;
+
+namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
     using System.Net.Http;
 
@@ -27,6 +30,8 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IDatabaseService DatabaseService { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -39,13 +44,16 @@
             var partsStorageTypeRepository
                 = new PartsStorageTypeRepository(this.DbContext);
 
-            IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> partsStorageTypeFacadeService
+            this.DatabaseService = Substitute.For<IDatabaseService>();
+
+            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> partsStorageTypeFacadeService
                 = new PartsStorageTypeFacadeService(
                     partsStorageTypeRepository,
                     transactionManager,
                     new PartsStorageTypeResourceBuilder(),
                     partRepository,
-                    storageTypeRepository);
+                    storageTypeRepository,
+                    this.DatabaseService);
 
             this.Client = TestClient.With<PartsStorageTypeModule>(
                 services =>

@@ -41,13 +41,12 @@
 
         public int BridgeId { get; set; }
 
-        public void Update(string remarks, int? maximum, int? incr, string preference, int bridgeId)
+        public void Update(string remarks, int? maximum, int? incr, string preference)
         {
             this.Remarks = remarks;
             this.Maximum = maximum;
             this.Incr = incr;
             this.Preference = preference;
-            this.BridgeId = bridgeId;
         }
     }
 }

@@ -16,6 +16,8 @@ function PartsStorageTypes() {
 
     const navigate = useNavigate();
 
+    console.log(partsStorageTypes);
+
     const StorageTypeColumns = [
         { field: 'partNumber', headerName: 'Part Number', width: 100 },
         {
@@ -24,9 +26,13 @@ function PartsStorageTypes() {
             width: 150
         },
         {
-            field: 'storageTypeDescription',
+            field: 'storageType.description',
             headerName: 'Storage Type Description',
-            width: 300
+            width: 300,
+            valueGetter: row  => {
+                console.log(row?.storageType?.description);
+                return row?.storageType?.description || 'N/A';
+            }
         },
         { field: 'maximum', headerName: 'Maximum', width: 100 },
         { field: 'bridgeId', headerName: 'Bridge ID', width: 100 },

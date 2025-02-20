@@ -72,7 +72,7 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
                                         };
 
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
-            this.Response = this.Client.PutAsJsonAsync($"/stores2/parts-storage-types/{this.storageType.StorageTypeCode}/{this.part.PartNumber}", this.updateResource).Result;
+            this.Response = this.Client.PutAsJsonAsync($"/stores2/parts-storage-types/{this.partsStorageType.BridgeId}", this.updateResource).Result;
         }
 
         [Test]

@@ -111,7 +111,6 @@ function PartStorageType({ creating }) {
                         disabled
                     />
                 </Grid>
-                {console.log(partStorageType)}
                 <Grid item xs={4}>
                     <InputField
                         propertyName="partDescription"
@@ -170,6 +169,15 @@ function PartStorageType({ creating }) {
                         />
                     </Grid>
                 )}
+                <Grid item xs={8}>
+                    <InputField
+                        propertyName="storageTypeDescription"
+                        label="Storage Type Description"
+                        value={partStorageType?.storageType?.description}
+                        fullWidth
+                        disabled
+                    />
+                </Grid>
             </Grid>
             <Grid container spacing={3}>
                 <Grid item xs={3}>
@@ -208,6 +216,8 @@ function PartStorageType({ creating }) {
                         onChange={handleFieldChange}
                     />
                 </Grid>
+            </Grid>
+            <Grid container spacing={3}>
                 <Grid item xs={12}>
                     <Button
                         variant="contained"
@@ -228,7 +238,7 @@ function PartStorageType({ creating }) {
                             }
                         }}
                     >
-                        Create Alloc Code
+                        {creating ? 'Create ' : 'Save'}
                     </Button>
                 </Grid>
                 <Grid item xs={12}>

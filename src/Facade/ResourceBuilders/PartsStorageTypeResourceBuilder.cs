@@ -40,7 +40,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
 
         public string GetLocation(PartsStorageType model)
         {
-            return $"/stores2/parts-storage-types/{model.StorageTypeCode}/{model.PartNumber}";
+            return $"/stores2/parts-storage-types/{model.BridgeId}";
         }
 
         object IBuilder<PartsStorageType>.Build(PartsStorageType entity, IEnumerable<string> claims) =>
