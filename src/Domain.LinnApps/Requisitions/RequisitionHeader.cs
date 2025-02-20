@@ -140,6 +140,8 @@
 
             this.Reference = reference;
 
+            this.ReqType = reqType;
+
             if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(fromStockPool))
             {
                 throw new CreateRequisitionException(

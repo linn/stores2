@@ -32,5 +32,17 @@
         Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber);
 
         Task<ProcessResult> CanBookRequisition(int reqNumber, int? reqLine, decimal quantity);
+
+        Task<ProcessResult> InsertReqOntos(
+            int reqNumber,
+            decimal qty,
+            int lineNumber,
+            int? locationId,
+            int? palletNumber,
+            string stockPool,
+            string state,
+            string category);
+
+        public Task<bool> CanPutPartOnPallet(string partNumber, string palletNumber);
     }
 }

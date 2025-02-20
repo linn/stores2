@@ -53,16 +53,21 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
                     this.ReqRepository,
                     this.RequisitionManager,
                     this.Logger));
-            this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(
-                new ReqWithReqNumber(
-                    123,
-                    employee,
-                    this.ldreq,
-                    "F",
-                    null,
-                    null,
-                    this.department,
-                    this.nominal));
+            var req = new ReqWithReqNumber(123, employee, this.ldreq, "F", null, null, this.department, this.nominal);
+
+            // this.RequisitionManager.When(r => r.AddRequisitionLine(Arg.Any<RequisitionHeader>(), Arg.Any<LineCandidate>()))
+            //     .Do(
+            //         _ =>
+            //             {
+            //                 req.AddLine(new RequisitionLine(
+            //                     req.ReqNumber,
+            //                     1,
+            //                     new Part(),
+            //                     1,
+            //                     new StoresTransactionDefinition("CODE")));
+            //             });
+
+            this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(req);
 
             this.result = this.Sut.CreateRequisition(
                 employee.Id,
@@ -79,7 +84,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
                     {
                     new ()
                     {
-                        PartNumber = this.part.PartNumber, Qty = 1, FromLocation = this.from.LocationCode
+                        PartNumber = this.part.PartNumber, Qty = 1, Location = this.from.LocationCode
                     }
                     },
                     LineNumber = 1,

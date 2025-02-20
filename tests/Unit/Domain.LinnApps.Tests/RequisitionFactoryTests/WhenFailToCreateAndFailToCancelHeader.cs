@@ -111,7 +111,7 @@
                     {
                     new ()
                     {
-                        PartNumber = this.part.PartNumber, Qty = 1, FromLocation = this.from.LocationCode
+                        PartNumber = this.part.PartNumber, Qty = 1, Location = this.from.LocationCode
                     }
                     },
                     LineNumber = 1,

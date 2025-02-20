@@ -51,7 +51,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IStoresService storesService,
             IRepository<StoresPallet, int> palletRepository,
             IRepository<StockState, string> stateRepository)
-
         {
             this.authService = authService;
             this.repository = repository;
@@ -239,16 +238,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             foreach (var pick in toAdd.StockPicks)
             {
-                var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
+                var fromLocation = string.IsNullOrEmpty(pick.Location)
                     ? null
-                    : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.FromLocation);
+                    : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.Location);
                 var pickResult = await this.requisitionStoredProcedures.PickStock(
                                      toAdd.PartNumber,
                                      header.ReqNumber,
                                      toAdd.LineNumber,
                                      pick.Qty,
-                                     fromLocation?.LocationId,
-                                     pick.FromPallet,
+                                     fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
+                                     pick.Pallet,
                                      header.FromStockPool,
                                      toAdd.TransactionDefinition);
 
@@ -258,6 +257,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
             }
 
+            foreach (var moveOnto in toAdd.MovesOnto)
+            {
+                // todo - check if part can be put on pallet (pallet_analysis_pack)
+            }
+
+            // I'm assuming this knows which way round the debits and credits go based on the direction of the req?
             var createPostingsResult = await this.requisitionStoredProcedures.CreateNominals(
                                            header.ReqNumber,
                                            toAdd.Qty,
