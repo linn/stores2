@@ -310,5 +310,15 @@
             return false;
         }
 
+        public string AccountingCompanyCode()
+        {
+            if (this.Lines != null && this.Lines.Any())
+            {
+                var part = this.Lines.First(l => l.Part != null)?.Part;
+                return part?.AccountingCompanyCode;
+            }
+            return null;
+        }
+
     }
 }

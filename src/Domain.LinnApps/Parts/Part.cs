@@ -12,6 +12,8 @@
 
         public string RootProduct { get; set; }
 
+        public string AccountingCompanyCode { get; set; }
+
         public string StockControlled { get; set; }
 
         public string SafetyCriticalPart { get; set; }

@@ -9,7 +9,8 @@
                 {
                 PartNumber = "CAP 003",
                 Description = "Test Capacitor",
-                RawOrFinished = "R"
+                RawOrFinished = "R",
+                AccountingCompanyCode = "LINN"
             };
 
         public static readonly Part SelektHub =
@@ -17,7 +18,8 @@
                 {
                 PartNumber = "SK HUB",
                 Description = "SELEKT DSM HUB",
-                RawOrFinished = "F"
+                RawOrFinished = "F",
+                AccountingCompanyCode = "LINN"
             };
     }
 }

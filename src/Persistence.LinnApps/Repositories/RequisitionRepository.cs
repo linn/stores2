@@ -48,6 +48,9 @@
         public override IQueryable<RequisitionHeader> FilterBy(Expression<Func<RequisitionHeader, bool>> expression)
         {
             return this.serviceDbContext.RequisitionHeaders.Where(expression)
+                .Include(r => r.StoresFunction)
+                .Include(r => r.CreatedBy)
+                .Include(r => r.Department)
                 .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition)
                 .Include(r => r.Lines).ThenInclude(l => l.Part);
         }
