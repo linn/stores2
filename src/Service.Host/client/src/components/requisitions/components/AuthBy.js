@@ -4,12 +4,12 @@ import moment from 'moment';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
 
-function AuthBy({ 
-    dateAuthorised, 
-    authorisedByName, 
+function AuthBy({
+    dateAuthorised,
+    authorisedByName,
     authoriseUrl = null,
-    onAuthorise,    
-    shouldRender = true 
+    onAuthorise,
+    shouldRender = true
 }) {
     if (!shouldRender) {
         return '';
@@ -24,7 +24,7 @@ function AuthBy({
                     label="Date Authd"
                     propertyName="dateBooked"
                 />
-            </Grid>        
+            </Grid>
             <Grid size={4}>
                 <InputField
                     fullWidth
