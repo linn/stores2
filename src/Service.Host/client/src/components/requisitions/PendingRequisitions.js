@@ -47,6 +47,7 @@ function PendingRequisitions() {
         functionCode: null,
         daysAgo: 0,
         docType: null,
+        needsAuth: null,
         department: null, 
         departmentCode: null, 
         departmentName: null,
@@ -68,10 +69,6 @@ function PendingRequisitions() {
     };
 
     const handleFiltersChange = (propertyName, newValue) => {
-        console.log(propertyName)
-        if (propertyName == "daysAgo") {
-            console.log(newValue);
-        }
         setFilters(current => ({ ...current, [propertyName]: newValue }));
     };
 
@@ -102,6 +99,7 @@ function PendingRequisitions() {
             accountingCompany: "LINN", 
             functionCode: null,
             docType: null,
+            needsAuth: null,
             daysAgo: 0,
             department: null, 
             departmentCode: null, 
@@ -146,12 +144,19 @@ function PendingRequisitions() {
         return true;
     }
 
+    const matchesNeedsAuth = requiresAuthorisation => {
+        if (filters.needsAuth !== null) {
+            return filters.needsAuth ? requiresAuthorisation : !requiresAuthorisation;
+        }
+        return true;
+    }
+
     const filteredReqs = reqs => {
         return reqs ? reqs.filter(r => (!filteredReqs.accountingCompany || r.accountingCompanyCode === filters.accountingCompany) 
             && (!filters.departmentCode || !filters.department || r.department?.departmentCode === filters.departmentCode)
             && (!filters.employeeId || !filters.employee || r.createdBy === filters.employeeId)
             && (!filters.functionCode || r.storesFunction?.code === filters.functionCode)
-            && overDaysAgo(r.dateCreated) && matchesDocType(r.document1Name)
+            && overDaysAgo(r.dateCreated) && matchesDocType(r.document1Name) && matchesNeedsAuth(r.requiresAuthorisation)
         ) : [];
     }
 
@@ -162,7 +167,7 @@ function PendingRequisitions() {
             created: moment(r.dateCreated).format('DD-MMM-YYYY'),
             department: r.department?.description,
             functionCode: r.storesFunction?.code,
-            requiresAuth: r.requiresAuth ? "Yes" : "No",
+            requiresAuth: r.requiresAuthorisation === true ? "Yes" : "No",
             document1: `${r.document1Name}${r.document1 ? r.document1 : ''}`
         })) || [];
     };
@@ -282,13 +287,24 @@ function PendingRequisitions() {
                     />
                 </Grid>
                 <Grid size={3}>
-                    <Button variant="outlined" sx={{ marginTop: '30px' }} onClick={clearFilters}>
-                        Clear
-                    </Button>
+                    <Dropdown
+                        label="Needs Auth"
+                        propertyName="needsAuth"
+                        value={filters.needsAuth}
+                        onChange={handleFiltersChange}
+                        items={[
+                            { id: true, displayText: 'Yes' },
+                            { id: false, displayText: 'No' }
+                        ]}
+                        allowNoValue
+                    />
                 </Grid>
                 <Grid size={3}>
                     <Button variant="contained" sx={{ marginTop: '30px' }} onClick={getReqs}>
                         View Reqs
+                    </Button>
+                    <Button variant="outlined" sx={{ marginTop: '30px' }} onClick={clearFilters}>
+                        Clear
                     </Button>
                 </Grid>
 
