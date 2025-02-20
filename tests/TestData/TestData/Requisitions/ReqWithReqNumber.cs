@@ -2,6 +2,7 @@
 {
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
@@ -25,7 +26,9 @@
             int? fromPalletNumber = null,
             int? toPalletNumber = null,
             StorageLocation fromLocation = null,
-            StorageLocation toLocation = null) 
+            StorageLocation toLocation = null,
+            Part part = null,
+            decimal? quantity = null) 
             : base(
                 createdBy,
                 function,
@@ -42,7 +45,9 @@
                 fromPalletNumber: fromPalletNumber, 
                 toPalletNumber: toPalletNumber,
                 fromLocation: fromLocation, 
-                toLocation: toLocation)
+                toLocation: toLocation,
+                part: part,
+                quantity: quantity)
         {
             this.ReqNumber = reqNumber;
         }

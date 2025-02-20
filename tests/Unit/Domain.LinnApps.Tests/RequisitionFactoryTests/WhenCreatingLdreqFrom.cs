@@ -17,8 +17,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 
     using NUnit.Framework;
 
-    using Org.BouncyCastle.Ocsp;
-
     public class WhenCreatingLdreqFrom : ContextBase
     {
         private StoresFunction ldreq;

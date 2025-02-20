@@ -58,7 +58,7 @@
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>()
                 .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
                 .AddScoped<LdreqCreationStrategy>()
-                .AddScoped<PlaceholderStrategyForWhenHeaderHasPartNumber>();
+                .AddScoped<AutomaticBookFromHeaderStrategy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
