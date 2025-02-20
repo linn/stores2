@@ -65,7 +65,9 @@
              string fromLocationCode = null,
              string toLocationCode = null,
              string partNumber = null,
-             decimal? qty = null)
+             decimal? quantity = null,
+             string fromState = null,
+             string toState = null)
         {
             var who = await this.employeeRepository.FindByIdAsync(createdBy);
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode);
@@ -101,7 +103,9 @@
                 fromLocation: fromLocation,
                 toLocation: toLocation,
                 part: part,
-                qty: qty);
+                quantity: quantity,
+                fromState: fromState,
+                toState: toState);
 
             // this will always happen once the above is removed
             // resolve the correct strategy for the function code at hand

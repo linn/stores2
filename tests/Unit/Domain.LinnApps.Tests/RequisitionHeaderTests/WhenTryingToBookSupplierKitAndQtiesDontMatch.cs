@@ -53,7 +53,7 @@
                 fromLocation: null,
                 toLocation: null,
                 part: kittedAss,
-                qty: 200);
+                quantity: 200);
             this.sut.AddLine(line1);
             this.sut.AddLine(line2);
         }

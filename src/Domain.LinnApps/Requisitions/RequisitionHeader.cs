@@ -22,7 +22,7 @@
 
         public ICollection<RequisitionLine> Lines { get; protected set; }
         
-        public decimal? Qty { get; protected set; }
+        public decimal? Quantity { get; protected set; }
 
         public string Document1Name { get; protected set; }
         
@@ -104,18 +104,27 @@
             StorageLocation fromLocation = null,
             StorageLocation toLocation = null,
             Part part = null,
-            decimal? qty = null,
-            int? document1Line = null)
+            decimal? quantity = null,
+            int? document1Line = null,
+            string toState = null,
+            string fromState = null)
         {
             this.CreatedBy = createdBy;
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
             this.Document1 = document1Number ?? this.ReqNumber;
-            this.Document1Name = string.IsNullOrEmpty(Document1Name) ? "REQ" : document1Type;
+            this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? "REQ" : document1Type;
             this.Document1Line = document1Line ?? 1;
-            this.Qty = qty;
+            this.Quantity = quantity;
             this.Part = part;
+            this.ToPalletNumber = toPalletNumber;
+            this.FromPalletNumber = fromPalletNumber;
+            this.ToState = toState;
+            this.FromState = fromState;
+            this.ManualPick = manualPick;
+            this.FromLocation = fromLocation;
+            this.ToLocation = toLocation;
 
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
@@ -283,7 +292,7 @@
 
                             if (linesQty > 0)
                             {
-                                if (this.Qty == null)
+                                if (this.Quantity == null)
                                 {
                                     // no header qty to check thus true
                                     return true;
@@ -295,7 +304,7 @@
                                     // you guys are exempt from this check although most times BOOKWO should pass it
                                     return true;
                                 }
-                                return linesQty == this.Qty.Value;
+                                return linesQty == this.Quantity.Value;
                             }
                         }
                     }
