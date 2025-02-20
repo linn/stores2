@@ -9,7 +9,6 @@
     using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Requisitions;
@@ -22,6 +21,8 @@
 
         private readonly IRequisitionFactory requisitionFactory;
 
+        private readonly IRepository<RequisitionHistory, int> reqHistoryRepository;
+
         private readonly ITransactionManager transactionManager;
         
         public RequisitionFacadeService(
@@ -29,12 +30,14 @@
             ITransactionManager transactionManager, 
             IBuilder<RequisitionHeader> resourceBuilder,
             IRequisitionManager requisitionManager,
-            IRequisitionFactory requisitionFactory)
+            IRequisitionFactory requisitionFactory,
+            IRepository<RequisitionHistory, int> reqHistoryRepository)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionManager = requisitionManager;
             this.transactionManager = transactionManager;
             this.requisitionFactory = requisitionFactory;
+            this.reqHistoryRepository = reqHistoryRepository;
         }
         
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -164,14 +167,22 @@
             throw new NotImplementedException();
         }
 
-        protected override Task SaveToLogTable(
+        protected override async Task SaveToLogTable(
             string actionType,
             int userNumber,
             RequisitionHeader entity,
             RequisitionHeaderResource resource,
             RequisitionHeaderResource updateResource)
         {
-            throw new NotImplementedException();
+            var history = new RequisitionHistory
+                              {
+                                  ReqNumber = entity.ReqNumber,
+                                  Action = actionType,
+                                  DateChanged = DateTime.Now,
+                                  By = userNumber,
+                                  FunctionCode = entity.StoresFunction?.FunctionCode
+                              };
+            await this.reqHistoryRepository.AddAsync(history);
         }
 
         protected override void DeleteOrObsoleteResource(

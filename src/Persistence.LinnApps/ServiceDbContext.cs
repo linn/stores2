@@ -59,6 +59,8 @@
 
         public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
 
+        public DbSet<RequisitionHistory> RequisitionHistory { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -96,6 +98,7 @@
             BuildStockStates(builder);
             BuildPartsStorageTypes(builder);
             BuildStoresPallets(builder);
+            BuildRequisitionHistory(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -421,7 +424,20 @@
             e.Property(r => r.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
             e.Property(r => r.FromState).HasColumnName("FROM_STATE").HasMaxLength(6);
             e.Property(r => r.ToState).HasColumnName("STATE").HasMaxLength(6);
+            e.Property(r => r.ReqSource).HasColumnName("WO_QUALITY_ISSUES").HasMaxLength(50);
             e.Property(r => r.BatchDate).HasColumnName("BATCH_DATE");
+        }
+
+        private static void BuildRequisitionHistory(ModelBuilder builder)
+        {
+            var e = builder.Entity<RequisitionHistory>().ToTable("REQ_HIST");
+            e.HasKey(r => r.Id);
+            e.Property(r => r.Id).HasColumnName("ID");
+            e.Property(r => r.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(r => r.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
+            e.Property(r => r.DateChanged).HasColumnName("DATE_CHANGED");
+            e.Property(r => r.Action).HasColumnName("ACTION").HasMaxLength(20);
+            e.Property(r => r.By).HasColumnName("CHANGED_BY");
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)

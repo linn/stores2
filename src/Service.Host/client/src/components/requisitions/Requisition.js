@@ -45,7 +45,7 @@ function Requisition({ creating }) {
         isLoading: fetchLoading,
         result
     } = useGet(itemTypes.requisitions.url, true);
-    const [hasFetched, setHasFetched] = useState(false);
+    const [hasFetched, setHasFetched] = useState(0);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -62,12 +62,14 @@ function Requisition({ creating }) {
         isLoading: codesLoading,
         result: functionCodes
     } = useGet(itemTypes.functionCodes.url);
-    if (!hasFetched && token) {
+
+    if ((!hasFetched || (reqNumber && hasFetched !== reqNumber)) && token) {
         if (!creating && reqNumber) {
             fetchReq(reqNumber);
         }
+
         fetchFunctionCodes();
-        setHasFetched(true);
+        setHasFetched(reqNumber ?? 1);
     }
 
     const {
