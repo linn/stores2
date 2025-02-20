@@ -29,10 +29,7 @@ function PartsStorageTypes() {
             field: 'storageType.description',
             headerName: 'Storage Type Description',
             width: 300,
-            valueGetter: row  => {
-                console.log(row?.storageType?.description);
-                return row?.storageType?.description || 'N/A';
-            }
+            valueGetter: params => params?.row?.storageType?.description || ''
         },
         { field: 'maximum', headerName: 'Maximum', width: 100 },
         { field: 'bridgeId', headerName: 'Bridge ID', width: 100 },

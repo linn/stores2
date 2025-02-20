@@ -64,8 +64,8 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
                                                                 Description = this.storageType.Description
                                                             },
                                           StorageTypeCode = this.storageType.StorageTypeCode,
-                                          BridgeId = 4,
                                           Preference = "2",
+                                          BridgeId = 400,
                                           Incr = 30,
                                           Maximum = 50,
                                           Remarks = "b"

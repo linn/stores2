@@ -20,10 +20,10 @@ import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
 
 function PartStorageType({ creating }) {
-    const { partNumber, storageTypeCode } = useParams();
+    const { id } = useParams();
 
     const { isPartStorageTypesLoading, result: partStorageTypeResult } = useInitialise(
-        `${itemTypes.partsStorageTypes.url}/${partNumber}/${storageTypeCode}`
+        `${itemTypes.partsStorageTypes.url}/${id}`
     );
 
     const [partStorageType, setPartStorageType] = useState(partStorageTypeResult);
@@ -231,10 +231,7 @@ function PartStorageType({ creating }) {
                             if (creating) {
                                 createPartStorageType(null, partStorageType);
                             } else {
-                                updatePartStorageType(
-                                    `${partNumber}/${storageTypeCode}`,
-                                    partStorageType
-                                );
+                                updatePartStorageType(`${id}`, partStorageType);
                             }
                         }}
                     >

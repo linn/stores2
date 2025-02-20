@@ -39,6 +39,7 @@ namespace Linn.Stores2.Facade.Services
             this.partRepository = partRepository;
             this.storageTypeRepository = storageTypeRepository;
             this.partStorageTypeRepository = partStorageTypeRepository;
+            this.databaseService = databaseService;
         }
 
         protected override async Task<PartsStorageType> CreateFromResourceAsync(
