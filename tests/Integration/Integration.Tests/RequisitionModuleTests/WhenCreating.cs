@@ -56,8 +56,9 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                                                 },
                                     FromStockPool = "LINN"
                                 };
-            this.DomainService.CreateRequisition(
-                Arg.Any<User>(),
+            this.RequisitionFactory.CreateRequisition(
+                Arg.Any<int>(), 
+                Arg.Any<IEnumerable<string>>(),
                 this.resource.StoresFunction.Code,
                 this.resource.ReqType,
                 null,

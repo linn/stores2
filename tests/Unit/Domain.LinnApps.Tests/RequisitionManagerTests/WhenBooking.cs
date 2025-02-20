@@ -1,33 +1,29 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
 
     using FluentAssertions;
+
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.Requisitions;
+
     using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenBooking : ContextBase
     {
-        private User user;
-
         private RequisitionHeader result;
 
         [SetUp]
         public void SetUp()
         {
-            this.user = new User
-            {
-                UserNumber = 33087,
-                Privileges = new List<string>()
-            };
-
-             var bookedReq = new ReqWithReqNumber(
+            var employee = new Employee() { Id = 33087 };
+            var bookedReq = new ReqWithReqNumber(
                 123,
-                new Employee(),
+                employee,
                 new StoresFunction { FunctionCode = "FUNC" },
                 "F",
                 123,
@@ -44,9 +40,9 @@
             this.ReqStoredProcedures.DoRequisition(
                 123,
                 null,
-                this.user.UserNumber).Returns(new ProcessResult(true, "Success"));
+                employee.Id).Returns(new ProcessResult(true, "Success"));
 
-            this.result = this.Sut.BookRequisition(123, null, this.user).Result;
+            this.result = this.Sut.BookRequisition(123, null, employee.Id, new List<string>()).Result;
         }
 
         [Test]

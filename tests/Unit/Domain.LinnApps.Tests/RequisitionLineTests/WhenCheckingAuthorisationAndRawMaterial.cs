@@ -21,5 +21,11 @@
         {
             this.sut.RequiresAuthorisation().Should().BeFalse();
         }
+
+        [Test]
+        public void ShouldNotHaveAuthorisePrivilege()
+        {
+            this.sut.AuthorisePrivilege().Should().BeNull();
+        }
     }
 }

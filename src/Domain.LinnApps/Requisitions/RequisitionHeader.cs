@@ -22,7 +22,7 @@
 
         public ICollection<RequisitionLine> Lines { get; protected set; }
         
-        public decimal? Qty { get; protected set; }
+        public decimal? Quantity { get; protected set; }
 
         public string Document1Name { get; protected set; }
         
@@ -46,7 +46,7 @@
 
         public string CancelledReason { get; protected set; }
         
-        public StoresFunction StoresFunction { get; protected set;}
+        public StoresFunction StoresFunction { get; protected init; }
         
         public string Comments { get; protected set; }
         
@@ -58,9 +58,9 @@
 
         public ICollection<CancelDetails> CancelDetails { get; protected set; }
 
-        public Department Department { get; protected set; }
+        public Department Department { get; protected init; }
 
-        public Nominal Nominal { get; protected set; }
+        public Nominal Nominal { get; protected init; }
 
         public Employee AuthorisedBy { get; protected set; }
 
@@ -86,15 +86,14 @@
         {
         }
 
-        public RequisitionHeader(
+        public RequisitionHeader( // todo - make this protected
             Employee createdBy,
             StoresFunction function,
             string reqType,
             int? document1Number,
             string document1Type,
             Department department,
-            Nominal nominal, 
-            IEnumerable<RequisitionLine> lines = null,
+            Nominal nominal,
             string reference = null,
             string comments = null,
             string manualPick = null,
@@ -105,34 +104,59 @@
             StorageLocation fromLocation = null,
             StorageLocation toLocation = null,
             Part part = null,
-            decimal? qty = null,
-            int? document1Line = null)
+            decimal? quantity = null,
+            int? document1Line = null,
+            string toState = null,
+            string fromState = null)
         {
             this.CreatedBy = createdBy;
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
             this.Document1 = document1Number ?? this.ReqNumber;
-            this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? string.Empty : "REQ";
+            this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? "REQ" : document1Type;
             this.Document1Line = document1Line ?? 1;
-            this.Qty = qty;
+            this.Quantity = quantity;
             this.Part = part;
-            this.Department = department;
-            this.Nominal = nominal;
-            this.Reference = reference;
-            
-            this.FromStockPool = fromStockPool; // will probably need to be conditional depending on req type
-            
-            this.Lines = new List<RequisitionLine>();
-            if (lines != null)
+            this.ToPalletNumber = toPalletNumber;
+            this.FromPalletNumber = fromPalletNumber;
+            this.ToState = toState;
+            this.FromState = fromState;
+            this.ManualPick = manualPick;
+            this.FromLocation = fromLocation;
+            this.ToLocation = toLocation;
+
+            if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
-                foreach (var l in lines)
+                if (department == null || nominal == null)
                 {
-                    this.AddLine(l);
+                    throw new CreateRequisitionException(
+                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req");
                 }
             }
+
+            this.Department = department;
+            this.Nominal = nominal;
+
+            this.Reference = reference;
+
+            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(fromStockPool))
+            {
+                throw new CreateRequisitionException(
+                    $"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
+            }
+
+            this.FromStockPool = fromStockPool;
+
+            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(toStockPool))
+            {
+                throw new CreateRequisitionException(
+                    $"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
+            }
+
+            this.Lines = new List<RequisitionLine>();
         }
-        
+
         public void AddLine(RequisitionLine toAdd)
         {
             this.Lines ??= new List<RequisitionLine>();
@@ -247,14 +271,20 @@
             return false;
         }
 
+        public string AuthorisePrivilege()
+        {
+            return this.RequiresAuthorisation() ? this.Lines.First(l => l.RequiresAuthorisation()).AuthorisePrivilege() : null;
+        }
+
         public bool CanBookReq(int? lineNumber)
         {
             if (!this.IsBooked() && !this.IsCancelled())
             {
                 var lines = this.Lines.Where(l => l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled());
-                if (lines.Any())
+                var requisitionLines = lines as RequisitionLine[] ?? lines.ToArray();
+                if (requisitionLines.Any())
                 {
-                    if (lines.All(l => l.OkToBook()))
+                    if (requisitionLines.All(l => l.OkToBook()))
                     {
                         if (!this.RequiresAuthorisation())
                         {
@@ -262,7 +292,7 @@
 
                             if (linesQty > 0)
                             {
-                                if (this.Qty == null)
+                                if (this.Quantity == null)
                                 {
                                     // no header qty to check thus true
                                     return true;
@@ -274,7 +304,7 @@
                                     // you guys are exempt from this check although most times BOOKWO should pass it
                                     return true;
                                 }
-                                return linesQty == this.Qty.Value;
+                                return linesQty == this.Quantity.Value;
                             }
                         }
                     }

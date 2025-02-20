@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
-    using System.Collections.Generic;
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -32,9 +31,9 @@
                 "TYPE",
                 new Department(),
                 new Nominal(),
-                new List<RequisitionLine> { line },
-                null,
-                "Legit loan");
+                reference: null,
+                comments: "Legit loan");
+            this.sut.AddLine(line);
         }
 
         [Test]

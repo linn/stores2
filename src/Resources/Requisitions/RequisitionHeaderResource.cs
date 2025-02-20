@@ -15,7 +15,7 @@
 
         public IEnumerable<RequisitionLineResource> Lines { get; set; }
 
-        public decimal? Qty { get; set; }
+        public decimal? Quantity { get; set; }
 
         public string Document1Name { get; set; }
 

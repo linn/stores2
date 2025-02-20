@@ -30,7 +30,7 @@
                            ReqNumber = header.ReqNumber, 
                            DateCreated = header.DateCreated.ToString("o"), 
                            Document1 = header.Document1,
-                           Qty = header.Qty,
+                           Quantity = header.Quantity,
                            Document1Name = header.Document1Name,
                            PartNumber = header.Part?.PartNumber,
                            ToLocationId = header.ToLocation?.LocationId,
@@ -95,6 +95,12 @@
                 if (model.Lines != null && model.CanBookReq(null) && this.authService.HasPermissionFor(AuthorisedActions.BookRequisition, claims))
                 {
                     yield return new LinkResource { Rel = "book", Href = "/requisitions/book" };
+                }
+
+                if (model.RequiresAuthorisation() &&
+                    this.authService.HasPermissionFor(model.AuthorisePrivilege(), claims))
+                {
+                    yield return new LinkResource { Rel = "authorise", Href = "/requisitions/auth" };
                 }
             }
         }

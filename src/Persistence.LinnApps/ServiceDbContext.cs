@@ -355,6 +355,7 @@
             q.Property(d => d.DecrementTransaction).HasColumnName("DECREMENT_TRANSACTION").HasMaxLength(1);
             q.Property(d => d.TakePriceFrom).HasColumnName("TAKE_PRICE_FROM").HasMaxLength(1);
             q.Property(d => d.RequiresAuth).HasColumnName("REQUIRES_AUTH").HasMaxLength(1);
+            q.Property(d => d.AuthOpCode).HasColumnName("AUTH_OP_CODE").HasMaxLength(10);
         }
 
         private static void BuildReqMoves(ModelBuilder builder)
@@ -388,7 +389,7 @@
             e.Property(r => r.Document1).HasColumnName("DOCUMENT_1");
             e.Property(r => r.DateCreated).HasColumnName("DATE_CREATED");
             e.HasOne(r => r.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
-            e.Property(r => r.Qty).HasColumnName("QTY");
+            e.Property(r => r.Quantity).HasColumnName("QTY");
             e.Property(r => r.Document1Name).HasColumnName("DOC1_NAME");
             e.Property(r => r.Document1Line).HasColumnName("DOCUMENT_1_LINE");
             e.Property(r => r.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
@@ -456,6 +457,7 @@
             r.HasKey(c => c.FunctionCode);
             r.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             r.Property(c => c.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            r.Property(c => c.FunctionType).HasColumnName("FUNCTION_TYPE").HasMaxLength(1);
             r.Property(c => c.CancelFunction).HasColumnName("CANCEL_FUNCTION").HasMaxLength(20);
             r.Property(c => c.DepartmentNominalRequired).HasColumnName("DEPT_NOMINAL_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ManualPickRequired).HasColumnName("MANUAL_PICK_REQUIRED").HasMaxLength(1);

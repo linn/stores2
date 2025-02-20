@@ -1,7 +1,6 @@
 namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
 {
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Net;
 
@@ -36,8 +35,8 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
                 "REQ",
                 new Department { DepartmentCode = "DEP" },
                 new Nominal { NominalCode = "NOM" },
-                new List<RequisitionLine> { new RequisitionLine(123, 1) });
-
+                null);
+            req.AddLine(new RequisitionLine(123, 1));
             this.budgetId = 234978;
             this.budget = new StoresBudget
                               {
@@ -49,7 +48,7 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
                                   RequisitionLine = req.Lines.First(),
                                   Transaction = new StoresTransactionDefinition("STST"),
                                   Part = new Part { PartNumber = "P1" },
-                                  StoresBudgetPostings = new Collection<StoresBudgetPosting>()
+                                  StoresBudgetPostings = new List<StoresBudgetPosting>()
                               };
             this.DbContext.StoresBudgets.AddAndSave(this.DbContext, this.budget);
 

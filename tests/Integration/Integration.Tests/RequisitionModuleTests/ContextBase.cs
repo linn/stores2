@@ -27,7 +27,9 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
-        protected IRequisitionService DomainService { get; private set; }
+        protected IRequisitionManager ReqManager { get; private set; }
+
+        protected IRequisitionFactory RequisitionFactory { get; private set; }
 
         protected IAuthorisationService AuthorisationService { get; private set; }
 
@@ -38,14 +40,16 @@
             var transactionManager = new TransactionManager(this.DbContext);
             var requisitionRepository
                 = new EntityFrameworkRepository<RequisitionHeader, int>(this.DbContext.RequisitionHeaders);
-            this.DomainService = Substitute.For<IRequisitionService>();
+            this.ReqManager = Substitute.For<IRequisitionManager>();
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            this.RequisitionFactory = Substitute.For<IRequisitionFactory>();
             IRequisitionFacadeService
                 requisitionService = new RequisitionFacadeService(
                     requisitionRepository,
                     transactionManager,
                     new RequisitionResourceBuilder(this.AuthorisationService),
-                    this.DomainService);
+                    this.ReqManager,
+                    this.RequisitionFactory);
 
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
                 StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(

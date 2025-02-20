@@ -420,5 +420,52 @@
 
             return new ProcessResult(successParameter.Value?.ToString() == "1", messageParameter.Value?.ToString());
         }
+
+        public async Task<ProcessResult> CanBookRequisition(int reqNumber, int? reqLine, decimal quantity)
+        {
+            await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
+
+            var cmd = new OracleCommand("STORES_WRAPPER.CAN_BOOK_REQ", connection)
+                          {
+                              CommandType = CommandType.StoredProcedure
+                          };
+
+            cmd.Parameters.Add(new OracleParameter("p_req_number", OracleDbType.Int32)
+                                   {
+                                       Direction = ParameterDirection.Input,
+                                       Value = reqNumber
+                                   });
+
+            cmd.Parameters.Add(new OracleParameter("p_line_number", OracleDbType.Int32)
+                                   {
+                                       Direction = ParameterDirection.Input,
+                                       Value = reqLine
+                                   });
+
+            cmd.Parameters.Add(new OracleParameter("p_rh_qty", OracleDbType.Int32)
+                                   {
+                                       Direction = ParameterDirection.Input,
+                                       Value = quantity
+                                   });
+
+            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+                                       {
+                                           Direction = ParameterDirection.Output,
+                                           Size = 500
+                                       };
+            cmd.Parameters.Add(messageParameter);
+
+            var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
+                                       {
+                                           Direction = ParameterDirection.Output
+                                       };
+            cmd.Parameters.Add(successParameter);
+
+            await connection.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+
+            return new ProcessResult(successParameter.Value?.ToString() == "1", messageParameter.Value?.ToString());
+        }
     }
 }

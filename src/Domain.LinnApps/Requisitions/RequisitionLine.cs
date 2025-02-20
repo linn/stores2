@@ -195,6 +195,16 @@
             return false;
         }
 
+        public string AuthorisePrivilege()
+        {
+            if (this.RequiresAuthorisation() && this.TransactionDefinition != null)
+            {
+                return this.TransactionDefinition.AuthorisePrivilege();
+            }
+
+            return null;
+        }
+
         public void Book(DateTime when)
         {
             this.DateBooked = when;

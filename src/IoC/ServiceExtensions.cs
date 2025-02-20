@@ -16,6 +16,7 @@
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
@@ -46,14 +47,18 @@
                     x => new HtmlTemplateService<StoragePlaceAuditReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoragePlaceAudit.cshtml",
                         x.GetService<ITemplateEngine>()))
-                .AddScoped<IRequisitionService, RequisitionService>()
+                .AddScoped<IRequisitionManager, RequisitionManager>()
+                .AddScoped<IRequisitionFactory, RequisitionFactory>()
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
                 .AddTransient<IDatabaseService, DatabaseService>()
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()
-                .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>();
+                .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>()
+                .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
+                .AddScoped<LdreqCreationStrategy>()
+                .AddScoped<PlaceholderStrategyForWhenHeaderHasPartNumber>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

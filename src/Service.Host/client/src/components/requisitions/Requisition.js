@@ -85,6 +85,13 @@ function Requisition({ creating }) {
     } = usePost(`${itemTypes.requisitions.url}/book`, true);
 
     const {
+        send: authorise,
+        isLoading: authoriseLoading,
+        errorMessage: authoriseError,
+        postResult: authoriseResult
+    } = usePost(`${itemTypes.requisitions.url}/authorise`, true);
+
+    const {
         send: createReq,
         isLoading: createLoading,
         errorMessage: createError
@@ -461,6 +468,10 @@ function Requisition({ creating }) {
                             dateAuthorised={formState.dateAuthorised}
                             authorisedByName={formState.authorisedByName}
                             shouldRender={shouldRender(null, false)}
+                            authoriseUrl={utilities.getHref(result, 'authorise')}
+                            onAuthorise={() => {
+                                authorise(null, { reqNumber });
+                            }}
                         />
                         {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
                             <>
@@ -494,12 +505,19 @@ function Requisition({ creating }) {
                             partDescription={formState.part?.description}
                             showQuantity
                             quantity={formState.quantity}
-                            setPart={newPart =>
+                            setPart={newPart => {
                                 dispatch({
                                     type: 'set_header_value',
                                     payload: { fieldName: 'part', newValue: newPart }
-                                })
-                            }
+                                });
+                                dispatch({
+                                    type: 'set_header_value',
+                                    payload: {
+                                        fieldName: 'partNumber',
+                                        newValue: newPart?.partNumber
+                                    }
+                                });
+                            }}
                             setQuantity={newQty =>
                                 dispatch({
                                     type: 'set_header_value',
