@@ -278,7 +278,7 @@
 
         public bool CanBookReq(int? lineNumber)
         {
-            if (!this.IsBooked() && !this.IsCancelled())
+            if (!this.IsBooked() && !this.IsCancelled() && this.StoresFunction != null)
             {
                 var lines = this.Lines.Where(l => l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled());
                 var requisitionLines = lines as RequisitionLine[] ?? lines.ToArray();
@@ -317,6 +317,16 @@
             }
 
             return false;
+        }
+
+        public string AccountingCompanyCode()
+        {
+            if (this.Lines != null && this.Lines.Any())
+            {
+                var part = this.Lines.First(l => l.Part != null)?.Part;
+                return part?.AccountingCompanyCode;
+            }
+            return null;
         }
 
     }

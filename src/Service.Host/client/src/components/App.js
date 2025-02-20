@@ -19,6 +19,9 @@ function App() {
                         <ListItem component={Link} to="/requisitions">
                             <Typography color="primary">Search Requisitions</Typography>
                         </ListItem>
+                        <ListItem component={Link} to="/requisitions/pending">
+                            <Typography color="primary">Pending Requisitions</Typography>
+                        </ListItem>
                         <ListItem component={Link} to="/stores2/carriers">
                             <Typography color="primary">Carriers</Typography>
                         </ListItem>

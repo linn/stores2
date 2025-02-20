@@ -5,6 +5,7 @@ const itemTypes = {
     countries: { url: `${config.appRoot}/stores2/countries` },
     carriers: { url: `${config.appRoot}/stores2/carriers` },
     currentEmployees: { url: `${config.proxyRoot}/employees?currentEmployees=true` },
+    historicEmployees: { url: `${config.proxyRoot}/employees` },
     storagePlaceAudit: { url: `${config.appRoot}/stores2/reports/storage-place-audit/report` },
     storagePlaces: { url: `${config.proxyRoot}/inventory/storage-places` },
     auditLocations: { url: `${config.proxyRoot}/inventory/audit-locations` },
