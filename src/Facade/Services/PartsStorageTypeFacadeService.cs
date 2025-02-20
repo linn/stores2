@@ -1,6 +1,4 @@
-﻿using Linn.Common.Proxy.LinnApps;
-
-namespace Linn.Stores2.Facade.Services
+﻿namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -8,14 +6,13 @@ namespace Linn.Stores2.Facade.Services
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Common.Proxy.LinnApps;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Parts;
-
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
 
     public class PartsStorageTypeFacadeService : AsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>
     {

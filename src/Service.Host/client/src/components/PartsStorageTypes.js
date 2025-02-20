@@ -16,8 +16,6 @@ function PartsStorageTypes() {
 
     const navigate = useNavigate();
 
-    console.log(partsStorageTypes);
-
     const StorageTypeColumns = [
         { field: 'partNumber', headerName: 'Part Number', width: 100 },
         {

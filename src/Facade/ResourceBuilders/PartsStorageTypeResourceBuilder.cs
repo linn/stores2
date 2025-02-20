@@ -1,6 +1,4 @@
-﻿using Linn.Stores2.Resources;
-
-namespace Linn.Stores2.Facade.ResourceBuilders
+﻿namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,8 +6,8 @@ namespace Linn.Stores2.Facade.ResourceBuilders
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
-    using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
     public class PartsStorageTypeResourceBuilder : IBuilder<PartsStorageType>
     {

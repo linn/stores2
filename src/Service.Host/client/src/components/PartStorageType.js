@@ -33,8 +33,11 @@ function PartStorageType({ creating }) {
     const [snackbarVisible, setSnackbarVisible] = useState();
 
     useEffect(() => {
+        if (storageTypesSearchResults) {
+            setPartStorageType(storageTypesSearchResults);
+        }
         setPartStorageType(partStorageTypeResult);
-    }, [partStorageTypeResult]);
+    }, [partStorageTypeResult, storageTypesSearchResults]);
 
     const {
         search: searchParts,

@@ -1,7 +1,7 @@
-﻿using NSubstitute;
-
-namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
+    using NSubstitute;
+
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
