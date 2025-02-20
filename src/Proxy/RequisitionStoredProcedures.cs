@@ -565,7 +565,7 @@
             return new ProcessResult(successParameter.Value?.ToString() == "1", messageParameter.Value?.ToString());
         }
 
-        public async Task<bool> CanPutPartOnPallet(string partNumber, string palletNumber)
+        public async Task<bool> CanPutPartOnPallet(string partNumber, int palletNumber)
         {
             await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
 
@@ -593,7 +593,7 @@
                            {
                                Direction = ParameterDirection.Input,
                                Size = 50,
-                               Value = palletNumber
+                               Value = palletNumber.ToString()
                            };
             cmd.Parameters.Add(arg2);
 

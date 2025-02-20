@@ -259,7 +259,41 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             foreach (var moveOnto in toAdd.MovesOnto)
             {
-                // todo - check if part can be put on pallet (pallet_analysis_pack)
+                if (moveOnto.Pallet.HasValue)
+                {
+                    var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
+                        toAdd.PartNumber,
+                        moveOnto.Pallet.Value);
+
+                    if (!canPutPartOnPallet)
+                    {
+                        throw new CannotPutPartOnPalletException(
+                            $"Cannot put part {toAdd.PartNumber} onto P{moveOnto.Pallet}");
+                    }
+                }
+
+                var toLocation = string.IsNullOrEmpty(moveOnto.Location)
+                                       ? null
+                                       : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveOnto.Location);
+                if (toLocation == null)
+                {
+                    throw new InsertReqOntosException($"Did not recognise location {moveOnto.Location}");
+                }
+
+                var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
+                                            header.ReqNumber,
+                                            moveOnto.Qty,
+                                            toAdd.LineNumber,
+                                            toLocation.LocationId,
+                                            moveOnto.Pallet,
+                                            header.ToStockPool,
+                                            header.ToState,
+                                            "FREE");
+
+                if (!insertOntosResult.Success)
+                {
+                    throw new InsertReqOntosException($"Failed in insert_req_ontos: {insertOntosResult.Message}");
+                }
             }
 
             // I'm assuming this knows which way round the debits and credits go based on the direction of the req?
