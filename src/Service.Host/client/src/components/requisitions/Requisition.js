@@ -120,12 +120,14 @@ function Requisition({ creating }) {
             dispatch({ type: 'load_state', payload: cancelResult });
         } else if (bookResult) {
             dispatch({ type: 'load_state', payload: bookResult });
+        } else if (authoriseResult) {
+            dispatch({ type: 'load_state', payload: bookResult });
         } else if (result) {
             dispatch({ type: 'load_state', payload: result });
         } else if (creating) {
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, bookResult, creating, name, userNumber]);
+    }, [result, cancelResult, bookResult, authoriseResult, creating, name, userNumber]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
@@ -316,12 +318,21 @@ function Requisition({ creating }) {
                         <ErrorCard errorMessage={bookError} />
                     </Grid>
                 )}
+                {authoriseError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={authoriseError} />
+                    </Grid>
+                )}
                 {createError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={createError} />
                     </Grid>
                 )}
-                {(fetchLoading || cancelLoading || bookLoading || createLoading) && (
+                {(fetchLoading ||
+                    cancelLoading ||
+                    bookLoading ||
+                    authoriseLoading ||
+                    createLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
