@@ -49,5 +49,7 @@
         public int? FromPallet { get; set; }
 
         public int? ToPallet { get; set; }
+
+        public int? LoanNumber { get; set; }
     }
 }

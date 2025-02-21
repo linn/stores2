@@ -43,7 +43,7 @@
             }
 
             var req = new RequisitionHeader(
-                new Employee(), // todo
+                new Employee(),
                 context.Function,
                 context.ReqType,
                 context.Document1Number,
