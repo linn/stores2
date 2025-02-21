@@ -39,7 +39,7 @@
 
             var transactionManager = new TransactionManager(this.DbContext);
 
-            var partRepository = new EntityFrameworkRepository<Part, int>(this.DbContext.Parts);
+            var partRepository = new EntityFrameworkRepository<Part, string>(this.DbContext.Parts);
             var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
             var partsStorageTypeRepository
                 = new PartsStorageTypeRepository(this.DbContext);

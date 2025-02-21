@@ -16,7 +16,7 @@
 
     public class PartsStorageTypeFacadeService : AsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>
     {
-        private readonly IRepository<Part, int> partRepository;
+        private readonly IRepository<Part, string> partRepository;
 
         private readonly IRepository<StorageType, string> storageTypeRepository;
 
@@ -28,7 +28,7 @@
             IRepository<PartsStorageType, int> partStorageTypeRepository,
             ITransactionManager transactionManager,
             IBuilder<PartsStorageType> resourceBuilder,
-            IRepository<Part, int> partRepository,
+            IRepository<Part, string> partRepository,
             IRepository<StorageType, string> storageTypeRepository,
             IDatabaseService databaseService)
             : base(partStorageTypeRepository, transactionManager, resourceBuilder)
@@ -43,7 +43,7 @@
             PartsStorageTypeResource resource,
             IEnumerable<string> privileges = null)
         {
-            var part = await this.partRepository.FindByAsync(p => p.PartNumber == resource.PartNumber);
+            var part = await this.partRepository.FindByIdAsync(resource.PartNumber);
 
             var storageType = await this.storageTypeRepository.FindByIdAsync(resource.StorageTypeCode);
 

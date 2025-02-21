@@ -28,7 +28,8 @@ module.exports = [
             'react/jsx-uses-vars': 'error',
             'react-hooks/rules-of-hooks': 'error',
             'react-hooks/exhaustive-deps': 'warn',
-            'no-unused-vars': 'error'
+            'no-unused-vars': 'error',
+            'arrow-body-style': ['error', 'as-needed']
         }
     },
     eslintPluginPrettierRecommended

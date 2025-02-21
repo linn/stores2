@@ -24,10 +24,12 @@ function PartsStorageTypes() {
             width: 150
         },
         {
-            field: 'storageType.description',
+            field: 'storageType',
             headerName: 'Storage Type Description',
             width: 300,
-            valueGetter: params => params?.row?.storageType?.description || ''
+            valueGetter: value => {
+                return value?.description || '';
+            }
         },
         { field: 'maximum', headerName: 'Maximum', width: 100 },
         { field: 'bridgeId', headerName: 'Bridge ID', width: 100 },
