@@ -1,6 +1,9 @@
+using System;
+
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System.Collections.Generic;
+    using System.Security.Cryptography;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
@@ -320,6 +323,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new RequisitionException(proxyResult.Message);
             }
+        }
+
+        public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
+        {
+            var proxyResult = await this.requisitionStoredProcedures.CreateLoanReq(loanNumber);
+
+            if (!proxyResult.Success)
+            {
+                throw new CreateRequisitionException(proxyResult.Message);
+            }
+
+            var reqNumber = Convert.ToInt32(proxyResult.Message);
+
+            return await this.repository.FindByIdAsync(reqNumber);
         }
     }
 }
