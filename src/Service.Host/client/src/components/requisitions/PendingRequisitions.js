@@ -35,11 +35,6 @@ function PendingRequisitions() {
         clear: clearEmployeesSearch
     } = useSearch(itemTypes.historicEmployees.url, 'id', 'fullName', 'fullName', false, true);
 
-<<<<<<< HEAD
-    const [options, setOptions] = useState({ pending: true });
-
-=======
->>>>>>> main
     const [filters, setFilters] = useState({
         accountingCompany: 'LINN',
         functionCode: null,
@@ -59,12 +54,7 @@ function PendingRequisitions() {
     };
 
     const getReqs = () => {
-<<<<<<< HEAD
-        const query = queryString.stringify(options);
-        send(null, `?${query}`);
-=======
         send(null, '?pending=true');
->>>>>>> main
     };
 
     const clearFilters = () => {

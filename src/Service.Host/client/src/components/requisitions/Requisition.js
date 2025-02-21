@@ -87,10 +87,10 @@ function Requisition({ creating }) {
     } = usePost(`${itemTypes.requisitions.url}/book`, true);
 
     const {
-        send: authorise
-        // isLoading: authoriseLoading, -- linter complaining these are unused - check eslint is working!
-        // errorMessage: authoriseError,
-        // postResult: authoriseResult
+        send: authorise,
+        isLoading: authoriseLoading,
+        errorMessage: authoriseError,
+        postResult: authoriseResult
     } = usePost(`${itemTypes.requisitions.url}/authorise`, true);
 
     const {
