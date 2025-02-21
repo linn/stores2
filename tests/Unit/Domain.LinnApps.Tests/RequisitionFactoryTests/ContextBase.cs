@@ -1,7 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 {
-    using System.Collections.Generic;
-
     using Linn.Common.Authorisation;
     using Linn.Common.Logging;
     using Linn.Common.Persistence;
@@ -41,6 +39,8 @@
 
         protected ICreationStrategyResolver CreationStrategyResolver { get; set; }
 
+        protected Employee Employee { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -55,7 +55,10 @@
             this.Logger = Substitute.For<ILog>();
             this.RequisitionManager = Substitute.For<IRequisitionManager>();
             this.CreationStrategyResolver = Substitute.For<ICreationStrategyResolver>();
-            
+
+            this.Employee = new Employee { Id = 1234 };
+            this.EmployeeRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.Employee);
+
             this.Sut = new RequisitionFactory(
                 this.CreationStrategyResolver,
                 this.StoresFunctionRepository,

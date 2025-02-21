@@ -4,13 +4,13 @@
 
     using Linn.Common.Persistence;
 
-    public class PlaceholderStrategyForWhenHeaderHasPartNumber : ICreationStrategy
+    public class AutomaticBookFromHeaderStrategy : ICreationStrategy
     {
         private readonly IRepository<RequisitionHeader, int> repository;
 
         private readonly IRequisitionManager requisitionManager;
 
-        public PlaceholderStrategyForWhenHeaderHasPartNumber(
+        public AutomaticBookFromHeaderStrategy(
             IRepository<RequisitionHeader, int> repository,
             IRequisitionManager requisitionManager)
         {

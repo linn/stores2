@@ -26,7 +26,7 @@ namespace Linn.Stores2.IoC
             
             if (header.Part != null && header.StoresFunction?.FunctionType == "A")
             {
-                return this.serviceProvider.GetRequiredService<PlaceholderStrategyForWhenHeaderHasPartNumber>();
+                return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }
 
             throw new InvalidOperationException("No strategy found for given scenario");

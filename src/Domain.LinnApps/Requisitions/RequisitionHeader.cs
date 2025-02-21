@@ -82,6 +82,8 @@
 
         public DateTime? BatchDate { get; set; }
 
+        public string ReqSource { get; set; }
+
         protected RequisitionHeader()
         {
         }
@@ -123,8 +125,11 @@
             this.ToState = toState;
             this.FromState = fromState;
             this.ManualPick = manualPick;
-            this.FromLocation = fromLocation;
-            this.ToLocation = toLocation;
+            this.ReqSource = "STORES2";
+            this.FromStockPool = fromStockPool;
+            this.ToStockPool = toStockPool;
+            this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
+            this.ToLocation = toPalletNumber.HasValue ? null : toLocation;
 
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
