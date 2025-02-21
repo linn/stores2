@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
 {
     using Linn.Common.Domain;
+    using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -9,7 +10,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
 
     using NUnit.Framework;
 
-    public class ContextBase
+    public class StoresServiceContextBase
     {
         protected IStoresService Sut { get; set; }
         
@@ -25,16 +26,18 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
 
         protected StockState OnToState { get; set; }
 
+        protected IRepository<StoresTransactionState, StoresTransactionStateKey> StoresTransactionStateRepository { get; private set; }
+
         [SetUp]
-        public void SetUpContext()
+        public void SetUpServiceContext()
         {
             this.StockService = Substitute.For<IStockService>();
             this.Part = new Part { PartNumber = "P1" };
             this.Location = new StorageLocation { LocationId = 123 };
             this.Pallet = new StoresPallet();
             this.OnToState = new StockState();
-
-            this.Sut = new StoresService(this.StockService);
+            this.StoresTransactionStateRepository = Substitute.For<IRepository<StoresTransactionState, StoresTransactionStateKey>>();
+            this.Sut = new StoresService(this.StockService, this.StoresTransactionStateRepository);
         }
     }
 }

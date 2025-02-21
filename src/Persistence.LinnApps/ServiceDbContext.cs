@@ -61,6 +61,8 @@
 
         public DbSet<RequisitionHistory> RequisitionHistory { get; set; }
 
+        public DbSet<StoresTransactionState> StoresTransactionStates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -98,6 +100,7 @@
             BuildStockStates(builder);
             BuildPartsStorageTypes(builder);
             BuildStoresPallets(builder);
+            BuildStoresTransactionStates(builder);
             BuildRequisitionHistory(builder);
         }
 
@@ -493,7 +496,8 @@
             var entity = builder.Entity<StoresFunctionTransaction>().ToTable("STORES_FUNCTION_TRANS");
             entity.HasKey(c => new { c.FunctionCode, c.Seq });
             entity.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
-            entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
+            entity.Property(x => x.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey(a => a.TransactionCode);
             entity.Property(x => x.Seq).HasColumnName("SEQ");
             entity.Property(x => x.ReqType).HasColumnName("REQ_TYPE").HasMaxLength(1);
         }
@@ -518,6 +522,15 @@
             entity.Property(x => x.TypeOfStock).HasColumnName("TYPE_OF_STOCK").HasMaxLength(1);
             entity.Property(x => x.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
             entity.Property(x => x.MixStates).HasColumnName("MIX_STATES").HasMaxLength(1);
+        }
+
+        private static void BuildStoresTransactionStates(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StoresTransactionState>().ToTable("STORES_TRANS_STATES");
+            entity.HasKey(c => new { c.TransactionCode, c.State, c.FromOrOnto });
+            entity.Property(c => c.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            entity.Property(c => c.State).HasColumnName("STATE").HasMaxLength(6);
+            entity.Property(x => x.FromOrOnto).HasColumnName("FROM_ONTO").HasMaxLength(1);
         }
 
         private static void BuildEmployees(ModelBuilder builder)
