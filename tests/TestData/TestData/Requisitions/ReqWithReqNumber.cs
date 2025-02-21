@@ -28,7 +28,9 @@
             StorageLocation fromLocation = null,
             StorageLocation toLocation = null,
             Part part = null,
-            decimal? quantity = null) 
+            decimal? quantity = null,
+            string fromState = null,
+            string toState = null) 
             : base(
                 createdBy,
                 function,
@@ -47,7 +49,9 @@
                 fromLocation: fromLocation, 
                 toLocation: toLocation,
                 part: part,
-                quantity: quantity)
+                quantity: quantity,
+                fromState: fromState,
+                toState: toState)
         {
             this.ReqNumber = reqNumber;
         }

@@ -36,20 +36,28 @@
                 new Department(),
                 new Nominal(),
                 part: new Part { PartNumber = "P1" },
-                quantity: this.quantity);
+                quantity: this.quantity,
+                fromState: "S1",
+                toState: "S2");
             this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.req);
 
             this.StoresService.ValidOntoLocation(
                 Arg.Is<Part>(p => p.PartNumber == "P1"),
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
-                Arg.Any<StockState>()).Returns(new ProcessResult(true, "ok"));
+                Arg.Any<StockState>())
+                .Returns(new ProcessResult(true, "ok"));
+            this.StoresService.ValidState(null, Arg.Is<StoresFunction>(a => a.FunctionCode == "FUNC"), "S1", "F")
+                .Returns(new ProcessResult(true, "From State Ok"));
+            this.StoresService.ValidState(null, Arg.Is<StoresFunction>(a => a.FunctionCode == "FUNC"), "S2", "O")
+                .Returns(new ProcessResult(true, "From State Ok"));
             this.ReqStoredProcedures.CreateRequisitionLines(123, null)
                 .Returns(new ProcessResult(true, "lines ok"));
             this.ReqStoredProcedures.CanBookRequisition(123, null, this.quantity)
                 .Returns(new ProcessResult(true, "can book ok"));
             this.ReqStoredProcedures.DoRequisition(Arg.Any<int>(), null, this.employeeId)
                 .Returns(new ProcessResult(true, "still ok"));
+
             await this.Sut.CheckAndBookRequisitionHeader(this.req);
         }
 
