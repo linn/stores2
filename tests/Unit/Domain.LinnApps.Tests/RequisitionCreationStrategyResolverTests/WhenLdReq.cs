@@ -1,11 +1,11 @@
-using FluentAssertions;
-using Linn.Stores2.Domain.LinnApps.Accounts;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
-using NUnit.Framework;
-
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyResolverTests
 {
+    using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+    using NUnit.Framework;
+    
     public class WhenLdReq : ContextBase
     {
         [Test]

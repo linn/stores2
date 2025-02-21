@@ -1,8 +1,8 @@
-using Linn.Stores2.IoC;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyResolverTests
 {
+    using Linn.Stores2.IoC;
+    using Microsoft.Extensions.DependencyInjection;
+    
     using System;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using NUnit.Framework;
