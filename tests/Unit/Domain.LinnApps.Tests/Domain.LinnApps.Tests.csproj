@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Domain.LinnApps\Domain.LinnApps.csproj" />
+    <ProjectReference Include="..\..\..\src\IoC\IoC.csproj" />
     <ProjectReference Include="..\..\..\src\Persistence.LinnApps\Persistence.LinnApps.csproj" />
     <ProjectReference Include="..\..\TestData\TestData\TestData.csproj" />
   </ItemGroup>
