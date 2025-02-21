@@ -2,8 +2,6 @@
 {
     public class MoveSpecification
     {
-        public string PartNumber { get; set; }
-
         public decimal Qty { get; set; }
 
         public string Location { get; set; }

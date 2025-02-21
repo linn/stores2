@@ -42,8 +42,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
             this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, Arg.Any<IEnumerable<string>>()).Returns(true);
             this.EmployeeRepository.FindByIdAsync(33087).Returns(employee);
             this.StoresFunctionRepository.FindByIdAsync("LDREQ").Returns(this.ldreq);
-            this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode).Returns(this.department);
-            this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
+          
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(this.from);
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
@@ -84,7 +83,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
                     {
                     new ()
                     {
-                        PartNumber = this.part.PartNumber, Qty = 1, Location = this.from.LocationCode
+                        Qty = 1, Location = this.from.LocationCode
                     }
                     },
                     LineNumber = 1,
@@ -103,28 +102,5 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
         {
             this.result.Document1Name.Should().Be("REQ");
         }
-
-        // this should move to unit tests of the relevant strategy itself
-        // [Test]
-        // public void ShouldPickStock()
-        // {
-        //     this.ReqStoredProcedures.Received(1)
-        //         .PickStock(
-        //             this.part.PartNumber,
-        //             Arg.Any<int>(),
-        //             1,
-        //             1,
-        //             this.from.LocationId,
-        //             null,
-        //             "LINN",
-        //             this.transactionDefinition.TransactionCode);
-        // }
-        //
-        // [Test]
-        // public void ShouldCreateNominalPostings()
-        // {
-        //     this.ReqStoredProcedures.Received(1).CreateNominals(
-        //         Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode);
-        // }
     }
 }

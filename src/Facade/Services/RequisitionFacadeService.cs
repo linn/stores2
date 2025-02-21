@@ -9,7 +9,6 @@
     using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Requisitions;
@@ -213,7 +212,6 @@
                            StockPicks = resource.Moves.Where(x => x.From != null).Select(
                                m => new MoveSpecification
                                         {
-                                            PartNumber = m.Part,
                                             Qty = m.Qty.GetValueOrDefault(), 
                                             Location = m.From.LocationCode,
                                             Pallet = m.From.PalletNumber
@@ -221,7 +219,6 @@
                            MovesOnto = resource.Moves.Where(x => x.To != null).Select(
                                m => new MoveSpecification
                                         {
-                                            PartNumber = m.Part,
                                             Qty = m.Qty.GetValueOrDefault(),
                                             Location = m.To.LocationCode,
                                             Pallet = m.To.PalletNumber
