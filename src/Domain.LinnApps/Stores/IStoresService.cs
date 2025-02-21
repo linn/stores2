@@ -3,8 +3,11 @@
     using System.Threading.Tasks;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
-
+   
+    // This service is intended for stores_oo replacement methods that are not
+    // suitable to be written in the requisition class itself
     public interface IStoresService
     {
         Task<ProcessResult> ValidOntoLocation(
@@ -12,5 +15,11 @@
             StorageLocation location,
             StoresPallet pallet,
             StockState state);
+
+        Task<ProcessResult> ValidState(
+            string transactionCode,
+            StoresFunction storesFunction,
+            string stateCode,
+            string fromOrOnto);
     }
 }

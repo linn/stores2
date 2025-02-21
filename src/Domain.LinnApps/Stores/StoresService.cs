@@ -4,16 +4,25 @@
     using System.Threading.Tasks;
 
     using Linn.Common.Domain;
+    using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class StoresService : IStoresService 
     {
         private readonly IStockService stockService;
 
-        public StoresService(IStockService stockService)
+        private readonly IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository;
+
+        // This service is intended for stores_oo replacement methods that are not
+        // suitable to be written in the requisition class itself
+        public StoresService(
+            IStockService stockService,
+            IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository)
         {
             this.stockService = stockService;
+            this.storesTransactionStateRepository = storesTransactionStateRepository;
         }
 
         public async Task<ProcessResult> ValidOntoLocation(
@@ -69,6 +78,50 @@
             }
 
             return new ProcessResult(true, $"Part {part.PartNumber} is valid for this location");
+        }
+
+        public async Task<ProcessResult> ValidState(
+            string transactionCode,
+            StoresFunction storesFunction,
+            string stateCode,
+            string fromOrOnto)
+        {
+            if (!string.IsNullOrEmpty(transactionCode))
+            {
+                var storesTransactionState = await this.storesTransactionStateRepository.FindByAsync(
+                    a => a.State == stateCode && a.FromOrOnto == fromOrOnto && a.TransactionCode == transactionCode);
+
+                if (storesTransactionState == null)
+                {
+                    return new ProcessResult(
+                        false,
+                        $"State {stateCode} is not valid for {fromOrOnto} for {transactionCode}");
+                }
+            }
+
+            if (storesFunction != null)
+            {
+                foreach (var storesFunctionTransactionsType in storesFunction.TransactionsTypes)
+                {
+                    var storesTransactionState = await this.storesTransactionStateRepository
+                                                     .FindByAsync(
+                                                         a => a.State == stateCode
+                                                              && a.FromOrOnto == fromOrOnto
+                                                              && a.TransactionCode == storesFunctionTransactionsType.TransactionCode);
+                    if (storesTransactionState != null)
+                    {
+                        return new ProcessResult(
+                            true,
+                            $"State {stateCode} is valid for {fromOrOnto} for {storesFunctionTransactionsType.TransactionCode}");
+                    }
+                }
+
+                return new ProcessResult(
+                    false,
+                    $"State {stateCode} is not valid for {fromOrOnto} for {storesFunction.FunctionCode}");
+            }
+
+            return new ProcessResult(true, "State is valid");
         }
     }
 }

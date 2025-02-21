@@ -6,7 +6,7 @@
 
     using NUnit.Framework;
 
-    public class WhenOntoLocationIsValid : ContextBase
+    public class WhenOntoLocationIsValid : StoresServiceContextBase
     {
         [SetUp]
         public void SetUp()

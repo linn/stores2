@@ -1,9 +1,11 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
+    using Linn.Common.Domain;
     using Linn.Common.Logging;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -293,32 +295,25 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             await this.repository.AddAsync(header);
 
-            var proxyResult =
-                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null);
+            this.DoProcessResultCheck(
+                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
 
-            if (!proxyResult.Success)
-            {
-                throw new RequisitionException(proxyResult.Message);
-            }
-            
-            proxyResult = await this.requisitionStoredProcedures.CanBookRequisition(
+            this.DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
+                                          header.ReqNumber,
+                                          null,
+                                          header.Quantity.GetValueOrDefault()));
+
+            this.DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
                               header.ReqNumber,
                               null,
-                              header.Quantity.GetValueOrDefault());
+                              header.CreatedBy.Id));
+        }
 
-            if (!proxyResult.Success)
+        private void DoProcessResultCheck(ProcessResult result)
+        {
+            if (!result.Success)
             {
-                throw new RequisitionException(proxyResult.Message);
-            }
-
-            proxyResult = await this.requisitionStoredProcedures.DoRequisition(
-                              header.ReqNumber,
-                              null,
-                              header.CreatedBy.Id);
-
-            if (!proxyResult.Success)
-            {
-                throw new RequisitionException(proxyResult.Message);
+                throw new RequisitionException(result.Message);
             }
         }
     }

@@ -10,7 +10,7 @@
 
     using NUnit.Framework;
 
-    public class WhenOntoLocationButStateIsMixed : ContextBase
+    public class WhenOntoLocationButStateIsMixed : StoresServiceContextBase
     {
         [SetUp]
         public void SetUp()
