@@ -123,5 +123,22 @@
 
             return new ProcessResult(true, "State is valid");
         }
+
+        public ProcessResult ValidStockPool(Part part, StockPool stockPool)
+        {
+            if (part == null || stockPool == null)
+            {
+                return new ProcessResult(false, "Incomplete stock pool or part data supplied");
+            }
+
+            if (stockPool.AccountingCompanyCode != part.AccountingCompanyCode)
+            {
+                return new ProcessResult(
+                    false,
+                    $"Stock Pool {stockPool.StockPoolCode} is for {stockPool.AccountingCompanyCode} and is not valid for part {part.PartNumber}");
+            }
+
+            return new ProcessResult(true, $"Stock Pool {stockPool.StockPoolCode} is valid for part {part.PartNumber}");
+        }
     }
 }

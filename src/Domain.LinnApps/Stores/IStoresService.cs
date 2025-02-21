@@ -21,5 +21,7 @@
             StoresFunction storesFunction,
             string stateCode,
             string fromOrOnto);
+
+        ProcessResult ValidStockPool(Part part, StockPool stockPool);
     }
 }

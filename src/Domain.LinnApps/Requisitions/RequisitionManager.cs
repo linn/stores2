@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -40,6 +39,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<StockState, string> stateRepository;
 
+        private readonly IRepository<StockPool, string> stockPoolRepository;
+
         public RequisitionManager(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -52,8 +53,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             ILog logger,
             IStoresService storesService,
             IRepository<StoresPallet, int> palletRepository,
-            IRepository<StockState, string> stateRepository)
-
+            IRepository<StockState, string> stateRepository,
+            IRepository<StockPool, string> stockPoolRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -67,6 +68,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.storesService = storesService;
             this.palletRepository = palletRepository;
             this.stateRepository = stateRepository;
+            this.stockPoolRepository = stockPoolRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -300,6 +302,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                      header.StoresFunction,
                                      header.ToState,
                                      "O"));
+
+            var stockPool = await this.stockPoolRepository.FindByIdAsync(header.ToStockPool);
+            DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
 
             await this.repository.AddAsync(header);
 
