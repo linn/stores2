@@ -3,7 +3,6 @@ namespace Linn.Stores2.IoC
 {
     using System;
 
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -17,19 +16,19 @@ namespace Linn.Stores2.IoC
             this.serviceProvider = serviceProvider;
         }
 
-        public ICreationStrategy Resolve(RequisitionHeader header)
+        public ICreationStrategy Resolve(RequisitionCreationContext context)
         {
-            if (header.StoresFunction?.FunctionCode == "LDREQ")
+            if (context.Function.FunctionCode == "LDREQ")
             {
                return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
             }
 
-            if (header.StoresFunction?.FunctionCode == "LOAN OUT")
+            if (context.Function.FunctionCode == "LOAN OUT")
             {
                 return this.serviceProvider.GetRequiredService<LoanOutCreationStrategy>();
             }
-
-            if (header.Part != null && header.StoresFunction?.FunctionType == "A")
+            
+            if (context.PartNumber != null && context.Function.FunctionType == "A")
             {
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }

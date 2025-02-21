@@ -4,6 +4,6 @@
 
     public interface ICreationStrategy
     {
-        Task Apply(RequisitionCreationContext context);
+        Task<RequisitionHeader> Create(RequisitionCreationContext context);
     }
 }

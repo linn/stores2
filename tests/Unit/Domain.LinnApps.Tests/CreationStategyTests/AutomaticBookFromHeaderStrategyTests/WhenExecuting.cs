@@ -2,8 +2,8 @@
 {
     using System.Threading.Tasks;
 
-    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
     using NSubstitute;
 
@@ -14,31 +14,14 @@
         [SetUp]
         public async Task SetUp()
         {
-            this.RequisitionCreationContext.CreatedByUserNumber = 123;
-            this.RequisitionCreationContext.Header = new RequisitionHeader(
-                    new Employee(),
-                    new StoresFunction("MOVE"),
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    new Part(),
-                    null,
-                    null,
-                    "S1",
-                    null);
-
-            await this.Sut.Apply(this.RequisitionCreationContext);
+            this.RequisitionCreationContext = new RequisitionCreationContext
+                                                  {
+                                                      Function = new StoresFunction("MOVE"),
+                                                      ToState = "S1",
+                                                      PartNumber = "PART",
+                                                      CreatedByUserNumber = 123
+                                                  };
+            await this.Sut.Create(this.RequisitionCreationContext);
         }
 
         [Test]
