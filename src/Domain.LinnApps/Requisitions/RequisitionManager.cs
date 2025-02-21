@@ -4,7 +4,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
-    using Linn.Common.Logging;
+    using Linn.Common.Domain;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -36,6 +36,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<StockState, string> stateRepository;
 
+        private readonly IRepository<StockPool, string> stockPoolRepository;
+
         public RequisitionManager(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -47,7 +49,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             ITransactionManager transactionManager,
             IStoresService storesService,
             IRepository<StoresPallet, int> palletRepository,
-            IRepository<StockState, string> stateRepository)
+            IRepository<StockState, string> stateRepository,
+            IRepository<StockPool, string> stockPoolRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -60,6 +63,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.storesService = storesService;
             this.palletRepository = palletRepository;
             this.stateRepository = stateRepository;
+            this.stockPoolRepository = stockPoolRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -327,44 +331,48 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var toState = await this.stateRepository.FindByIdAsync(header.ToState);
 
-            var checkOnto = await this.storesService.ValidOntoLocation(
-                                header.Part,
-                                header.ToLocation,
-                                toPallet,
-                                toState);
-            if (!checkOnto.Success)
-            {
-                throw new RequisitionException(checkOnto.Message);
-            }
+            DoProcessResultCheck(await this.storesService.ValidOntoLocation(
+                                     header.Part,
+                                     header.ToLocation,
+                                     toPallet,
+                                     toState));
+
+            DoProcessResultCheck(await this.storesService.ValidState(
+                                     null,
+                                     header.StoresFunction,
+                                     header.FromState,
+                                     "F"));
+
+            DoProcessResultCheck(await this.storesService.ValidState(
+                                     null,
+                                     header.StoresFunction,
+                                     header.ToState,
+                                     "O"));
+
+            var stockPool = await this.stockPoolRepository.FindByIdAsync(header.ToStockPool);
+            DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
 
             await this.repository.AddAsync(header);
 
-            var proxyResult =
-                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null);
+            DoProcessResultCheck(
+                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
 
-            if (!proxyResult.Success)
+            DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
+                                     header.ReqNumber,
+                                     null,
+                                     header.Quantity.GetValueOrDefault()));
+
+            DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
+                                     header.ReqNumber,
+                                     null,
+                                     header.CreatedBy.Id));
+        }
+
+        private static void DoProcessResultCheck(ProcessResult result)
+        {
+            if (!result.Success)
             {
-                throw new RequisitionException(proxyResult.Message);
-            }
-            
-            proxyResult = await this.requisitionStoredProcedures.CanBookRequisition(
-                              header.ReqNumber,
-                              null,
-                              header.Quantity.GetValueOrDefault());
-
-            if (!proxyResult.Success)
-            {
-                throw new RequisitionException(proxyResult.Message);
-            }
-
-            proxyResult = await this.requisitionStoredProcedures.DoRequisition(
-                              header.ReqNumber,
-                              null,
-                              header.CreatedBy.Id);
-
-            if (!proxyResult.Success)
-            {
-                throw new RequisitionException(proxyResult.Message);
+                throw new RequisitionException(result.Message);
             }
         }
     }

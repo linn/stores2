@@ -45,6 +45,12 @@
                 quantity: this.quantity);
             this.ReqRepository.FindByIdAsync(123).Returns(this.req);
 
+            this.StoresService.ValidState(
+                    Arg.Any<string>(),
+                    Arg.Is<StoresFunction>(a => a.FunctionCode == "FUNC"),
+                    Arg.Any<string>(),
+                    Arg.Any<string>())
+                .Returns(new ProcessResult(true, "State Ok"));
             this.StoresService.ValidOntoLocation(
                 Arg.Is<Part>(p => p.PartNumber == "P1"),
                 Arg.Any<StorageLocation>(),

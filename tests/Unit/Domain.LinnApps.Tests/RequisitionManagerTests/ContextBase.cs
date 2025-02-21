@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using Linn.Common.Authorisation;
+    using Linn.Common.Domain;
     using Linn.Common.Logging;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -38,6 +39,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
         protected IRepository<StockState, string> StateRepository { get; set; }
 
+        protected IRepository<StockPool, string> StockPoolRepository { get; set; }
+
         protected IRepository<StorageLocation, int> StorageLocationRepository { get; set; }
 
         protected ITransactionManager TransactionManager { get; set; }
@@ -62,7 +65,17 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.TransactionManager = Substitute.For<ITransactionManager>();
             this.StoresService = Substitute.For<IStoresService>();
             this.StateRepository = Substitute.For<IRepository<StockState, string>>();
+            this.StockPoolRepository = Substitute.For<IRepository<StockPool, string>>();
             this.PalletRepository = Substitute.For<IRepository<StoresPallet, int>>();
+
+            this.StoresService.ValidStockPool(Arg.Any<Part>(), Arg.Any<StockPool>())
+                .Returns(new ProcessResult(true, "Stock Pool Ok"));
+            this.StoresService.ValidState(
+                Arg.Any<string>(),
+                Arg.Any<StoresFunction>(),
+                Arg.Any<string>(),
+                Arg.Any<string>())
+                .Returns(new ProcessResult(true, "State ok"));
 
             this.Sut = new RequisitionManager(
                 this.AuthService, 
@@ -75,7 +88,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.TransactionManager,
                 this.StoresService,
                 this.PalletRepository,
-                this.StateRepository);
+                this.StateRepository,
+                this.StockPoolRepository);
         }
     }
 }

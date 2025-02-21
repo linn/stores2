@@ -1,9 +1,13 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
     using System.Threading.Tasks;
+
+    using FluentAssertions;
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -13,7 +17,7 @@
 
     using NUnit.Framework;
 
-    public class WhenCreatingAndBookingHeader : ContextBase
+    public class WhenCreatingAndBookingHeaderStockPoolInvalid : ContextBase
     {
         private RequisitionHeader req;
 
@@ -21,8 +25,10 @@
 
         private int employeeId;
 
+        private Func<Task> action;
+
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.employeeId = 567;
             this.quantity = 49;
@@ -47,10 +53,8 @@
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>())
                 .Returns(new ProcessResult(true, "ok"));
-            this.StoresService.ValidState(null, Arg.Is<StoresFunction>(a => a.FunctionCode == "FUNC"), "S1", "F")
-                .Returns(new ProcessResult(true, "From State Ok"));
-            this.StoresService.ValidState(null, Arg.Is<StoresFunction>(a => a.FunctionCode == "FUNC"), "S2", "O")
-                .Returns(new ProcessResult(true, "From State Ok"));
+            this.StoresService.ValidStockPool(Arg.Is<Part>(b => b.PartNumber == "P1"), Arg.Any<StockPool>())
+                .Returns(new ProcessResult(false, "Stock pool is bad"));
             this.ReqStoredProcedures.CreateRequisitionLines(123, null)
                 .Returns(new ProcessResult(true, "lines ok"));
             this.ReqStoredProcedures.CanBookRequisition(123, null, this.quantity)
@@ -58,35 +62,14 @@
             this.ReqStoredProcedures.DoRequisition(Arg.Any<int>(), null, this.employeeId)
                 .Returns(new ProcessResult(true, "still ok"));
 
-            await this.Sut.CheckAndBookRequisitionHeader(this.req);
+            this.action = async () => await this.Sut.CheckAndBookRequisitionHeader(this.req);
         }
 
         [Test]
-        public void ShouldCreateLines()
+        public async Task ShouldThrowError()
         {
-            this.ReqStoredProcedures.Received().CreateRequisitionLines(123, null);
-        }
-
-        [Test]
-        public void ShouldCheckOnto()
-        {
-            this.ReqStoredProcedures.Received().CanBookRequisition(123, null, this.quantity);
-        }
-
-        [Test]
-        public void ShouldDoReq()
-        {
-            this.ReqStoredProcedures.Received().DoRequisition(123, null, this.employeeId);
-        }
-
-        [Test]
-        public void ShouldCallDoRequisition()
-        {
-            this.ReqStoredProcedures.Received()
-                .DoRequisition(
-                    123,
-                    null,
-                    this.employeeId);
+            await this.action.Should().ThrowAsync<RequisitionException>()
+                .WithMessage("Stock pool is bad");
         }
     }
 }

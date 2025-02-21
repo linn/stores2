@@ -4,7 +4,7 @@
 
     using NUnit.Framework;
 
-    public class WhenOntoLocationButIsRaw : ContextBase
+    public class WhenOntoLocationButIsRaw : StoresServiceContextBase
     {
         [SetUp]
         public void SetUp()
