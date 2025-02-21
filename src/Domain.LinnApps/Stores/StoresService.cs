@@ -31,9 +31,11 @@
             StoresPallet pallet,
             StockState state)
         {
-            if (part == null || (pallet == null && location == null))
+            if (part == null || state == null || (pallet == null && location == null))
             {
-                return new ProcessResult(false, "No data provided");
+                var errorMessage = part == null ? "No valid part provided" : "No valid onto location or state provided";
+                
+                return new ProcessResult(false, errorMessage);
             }
 
             var stockLocators = await this.stockService.GetStockLocators(
