@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
-import queryString from 'query-string';
 import { DataGrid } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
@@ -36,8 +35,11 @@ function PendingRequisitions() {
         clear: clearEmployeesSearch
     } = useSearch(itemTypes.historicEmployees.url, 'id', 'fullName', 'fullName', false, true);
 
+<<<<<<< HEAD
     const [options, setOptions] = useState({ pending: true });
 
+=======
+>>>>>>> main
     const [filters, setFilters] = useState({
         accountingCompany: 'LINN',
         functionCode: null,
@@ -52,42 +54,17 @@ function PendingRequisitions() {
         employeeName: null
     });
 
-    const handleOptionChange = (property, newValue) => {
-        if (property === 'includeCancelled') {
-            setOptions(o => ({ ...o, [property]: newValue === 'Y' }));
-        } else if (newValue) {
-            setOptions(o => ({ ...o, [property]: newValue }));
-        } else {
-            const opt = { ...options };
-            delete opt[property];
-            setOptions(() => opt);
-        }
-    };
-
     const handleFiltersChange = (propertyName, newValue) => {
         setFilters(current => ({ ...current, [propertyName]: newValue }));
     };
 
-    useEffect(() => {
-        const handleKeyDown = event => {
-            if (event.key === 'Enter') {
-                const query = queryString.stringify(options);
-                if (options.reqNumber || options.comments) {
-                    send(null, `?${query}`);
-                }
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [options, send]);
-
     const getReqs = () => {
+<<<<<<< HEAD
         const query = queryString.stringify(options);
         send(null, `?${query}`);
+=======
+        send(null, '?pending=true');
+>>>>>>> main
     };
 
     const clearFilters = () => {

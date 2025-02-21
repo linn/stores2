@@ -45,7 +45,7 @@ function Requisition({ creating }) {
         isLoading: fetchLoading,
         result
     } = useGet(itemTypes.requisitions.url, true);
-    const [hasFetched, setHasFetched] = useState(false);
+    const [hasFetched, setHasFetched] = useState(0);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -62,12 +62,14 @@ function Requisition({ creating }) {
         isLoading: codesLoading,
         result: functionCodes
     } = useGet(itemTypes.functionCodes.url);
-    if (!hasFetched && token) {
+
+    if ((!hasFetched || (reqNumber && hasFetched !== reqNumber)) && token) {
         if (!creating && reqNumber) {
             fetchReq(reqNumber);
         }
+
         fetchFunctionCodes();
-        setHasFetched(true);
+        setHasFetched(reqNumber ?? 1);
     }
 
     const {
@@ -120,12 +122,14 @@ function Requisition({ creating }) {
             dispatch({ type: 'load_state', payload: cancelResult });
         } else if (bookResult) {
             dispatch({ type: 'load_state', payload: bookResult });
+        } else if (authoriseResult) {
+            dispatch({ type: 'load_state', payload: bookResult });
         } else if (result) {
             dispatch({ type: 'load_state', payload: result });
         } else if (creating) {
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, bookResult, creating, name, userNumber]);
+    }, [result, cancelResult, bookResult, authoriseResult, creating, name, userNumber]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
@@ -316,12 +320,21 @@ function Requisition({ creating }) {
                         <ErrorCard errorMessage={bookError} />
                     </Grid>
                 )}
+                {authoriseError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={authoriseError} />
+                    </Grid>
+                )}
                 {createError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={createError} />
                     </Grid>
                 )}
-                {(fetchLoading || cancelLoading || bookLoading || createLoading) && (
+                {(fetchLoading ||
+                    cancelLoading ||
+                    bookLoading ||
+                    authoriseLoading ||
+                    createLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>

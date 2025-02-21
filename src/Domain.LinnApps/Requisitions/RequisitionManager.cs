@@ -339,8 +339,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new RequisitionException(proxyResult.Message);
             }
-
-
+            
             proxyResult = await this.requisitionStoredProcedures.CanBookRequisition(
                               header.ReqNumber,
                               null,

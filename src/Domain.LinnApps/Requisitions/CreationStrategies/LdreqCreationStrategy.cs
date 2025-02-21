@@ -8,7 +8,10 @@
     using Linn.Common.Domain.Exceptions;
     using Linn.Common.Logging;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class LdreqCreationStrategy : ICreationStrategy
     {
@@ -34,7 +37,7 @@
             this.logger = logger;
         }
 
-        public async Task Apply(
+        public async Task<RequisitionHeader> Create(
            RequisitionCreationContext context)
         {
             var privilegesList = context.UserPrivileges.ToList();
@@ -43,23 +46,47 @@
                 throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
             }
 
-            var header = context.Header;
+            var req = new RequisitionHeader(
+                new Employee(),
+                context.Function,
+                context.ReqType,
+                context.Document1Number,
+                context.Document1Type,
+                new Department(),
+                new Nominal(),
+                context.Reference,
+                context.Comments,
+                context.ManualPick,
+                context.FromStockPool,
+                context.ToStockPool,
+                context.FromPallet,
+                context.ToPallet,
+                new StorageLocation(),
+                new StorageLocation(),
+               new Part(),
+                context.Quantity,
+                context.Document1Line,
+                context.FromState,
+                context.ToState);
 
-            if (context.FirstLineCandidate == null && header.Part == null)
+            await this.repository.AddAsync(req);
+
+            if (context.FirstLineCandidate == null && req.Part == null)
             {
                 throw new CreateRequisitionException(
                     "Cannot create - no line specified and header does not specify part");
+
+                await this.requisitionManager.AddRequisitionLine(req, context.FirstLineCandidate);
             }
 
-            await this.repository.AddAsync(header);
+            await this.repository.AddAsync(req);
 
-            // LDREQ from
-            if (header.ReqType == "F")
+            if (req.ReqType == "F")
             {
                 try
                 {
                     // no lines? - todo - can you do an ldreq from without lines? don't think so since need stock picks?
-                    await this.requisitionManager.AddRequisitionLine(header, context.FirstLineCandidate);
+                    await this.requisitionManager.AddRequisitionLine(req, context.FirstLineCandidate);
                 }
                 catch (DomainException ex)
                     when (ex is PickStockException or CreateNominalPostingException)
@@ -71,7 +98,7 @@
                     try
                     {
                         await this.requisitionManager.CancelHeader(
-                            header.ReqNumber,
+                            req.ReqNumber,
                             context.CreatedByUserNumber,
                             privilegesList,
                             createFailedMessage,
@@ -94,15 +121,12 @@
                 }
             }
 
-            // LDREQ onto
-            if (header.ReqType == "O")
+            if (req.ReqType == "O")
             {
 
             }
 
-
-            // reload the latest state since stored procedures will have ran and written data
-            context.Header = await this.repository.FindByIdAsync(header.ReqNumber);
+            return await this.repository.FindByIdAsync(req.ReqNumber);
         }
     }
 }

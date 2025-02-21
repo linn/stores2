@@ -63,7 +63,6 @@
             int reqNumber,
             IRequisitionFacadeService service)
         {
-            var privs = req.HttpContext.GetPrivileges();
             await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
         }
 
@@ -124,7 +123,7 @@
             IRequisitionFacadeService service)
         {
             resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
-            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges(), null, false, false));
+            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges(), resource.CreatedBy, false, true));
         }
         
         private async Task GetFunctionCodes(
