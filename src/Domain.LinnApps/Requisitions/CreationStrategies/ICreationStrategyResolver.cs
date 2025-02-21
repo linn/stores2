@@ -2,6 +2,6 @@
 {
     public interface ICreationStrategyResolver
     {
-        ICreationStrategy Resolve(RequisitionHeader header);
+        ICreationStrategy Resolve(RequisitionCreationContext context);
     }
 }

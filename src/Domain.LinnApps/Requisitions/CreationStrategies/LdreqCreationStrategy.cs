@@ -7,7 +7,10 @@
     using Linn.Common.Authorisation;
     using Linn.Common.Logging;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class LdreqCreationStrategy : ICreationStrategy
     {
@@ -30,7 +33,7 @@
             this.logger = logger;
         }
 
-        public async Task Apply(
+        public async Task<RequisitionHeader> Create(
            RequisitionCreationContext context)
         {
             var privilegesList = context.UserPrivileges.ToList();
@@ -39,11 +42,34 @@
                 throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
             }
 
-            await this.repository.AddAsync(context.Header);
+            var req = new RequisitionHeader(
+                new Employee(), // todo
+                context.Function,
+                context.ReqType,
+                context.Document1Number,
+                context.Document1Type,
+                new Department(),
+                new Nominal(),
+                context.Reference,
+                context.Comments,
+                context.ManualPick,
+                context.FromStockPool,
+                context.ToStockPool,
+                context.FromPallet,
+                context.ToPallet,
+                new StorageLocation(),
+                new StorageLocation(),
+               new Part(),
+                context.Quantity,
+                context.Document1Line,
+                context.FromState,
+                context.ToState);
+
+            await this.repository.AddAsync(req);
 
             try
             {
-                await this.requisitionManager.AddRequisitionLine(context.Header, context.FirstLineCandidate);
+                await this.requisitionManager.AddRequisitionLine(req, context.FirstLineCandidate);
             }
             catch (Exception ex)
                 when (ex is PickStockException or CreateNominalPostingException)
@@ -55,7 +81,7 @@
                 try
                 {
                     await this.requisitionManager.CancelHeader(
-                        context.Header.ReqNumber,
+                        req.ReqNumber,
                         context.CreatedByUserNumber,
                         privilegesList,
                         createFailedMessage,
@@ -79,7 +105,7 @@
             }
 
             // reload the latest state since stored procedures will have ran and written data
-            context.Header = await this.repository.FindByIdAsync(context.Header.ReqNumber);
+            return await this.repository.FindByIdAsync(req.ReqNumber);
         }
     }
 }
