@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests.AutomaticBookFromHeaderStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.AutomaticBookFromHeaderStrategyTests
 {
     using System.Threading.Tasks;
 

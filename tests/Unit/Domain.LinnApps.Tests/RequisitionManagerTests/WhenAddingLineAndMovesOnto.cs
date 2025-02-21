@@ -13,7 +13,7 @@
 
     using NUnit.Framework;
 
-    public class WhenAddingLineAndStockPicks : ContextBase
+    public class WhenAddingLineAndMovesOnto : ContextBase
     {
         private RequisitionHeader header;
 
@@ -30,7 +30,7 @@
         {
             this.nominal = new Nominal { NominalCode = "CODE" };
             this.department = new Department { DepartmentCode = "CODE" };
-            
+
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
                 .Returns(this.department);
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
@@ -42,28 +42,29 @@
                 null,
                 this.department,
                 this.nominal,
-                fromStockPool: "LINN");
+                toStockPool: "LINN",
+                toState: "STATE");
             this.part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
             this.line = new LineCandidate
-                            {
-                                LineNumber = 1,
-                                Document1 = 123,
-                                Document1Line = 1,
-                                Document1Type = "REQ",
-                                MovesOnto = null,
-                                PartNumber = this.part.PartNumber,
-                                Qty = 1,
-                                StockPicks = new List<MoveSpecification>
-                                                 {
-                                                     new MoveSpecification
-                                                         {
-                                                             Pallet = 512,
-                                                             Qty = 1
-                                                         }
-                                                 },
-                                TransactionDefinition = "DEF"
-                            };
+            {
+                LineNumber = 1,
+                Document1 = 123,
+                Document1Line = 1,
+                Document1Type = "REQ",
+                MovesOnto = new List<MoveSpecification>
+                                {
+                                    new MoveSpecification
+                                        {
+                                            Pallet = 512,
+                                            Qty = 10
+                                        }
+                                },
+                PartNumber = this.part.PartNumber,
+                Qty = 10,
+                StockPicks = null,
+                TransactionDefinition = "DEF"
+            };
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
                 .Returns(this.department);
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode)
@@ -73,10 +74,10 @@
                     this.part.PartNumber,
                     Arg.Any<int>(),
                     1,
-                    1,
+                    10,
                     null,
                     512,
-                    "LINN",
+                    this.header.ToStockPool,
                     "DEF")
                 .Returns(new ProcessResult(
                     true, string.Empty));
@@ -84,11 +85,22 @@
                 .Returns(new StoresTransactionDefinition("DEF"));
             this.ReqStoredProcedures.CreateNominals(
                 Arg.Any<int>(),
+                10,
                 1,
-                1, 
-                this.nominal.NominalCode, 
+                this.nominal.NominalCode,
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
+            this.ReqStoredProcedures.CanPutPartOnPallet("PART", 512).Returns(true);
+
+            this.ReqStoredProcedures.InsertReqOntos(
+                Arg.Any<int>(),
+                10,
+                1,
+                null,
+                512,
+                this.header.ToStockPool,
+                this.header.ToState,
+                "FREE").Returns(new ProcessResult(true, string.Empty));
 
             this.Sut.AddRequisitionLine(this.header, this.line);
         }
@@ -100,25 +112,25 @@
         }
 
         [Test]
-        public void ShouldPickStock()
+        public void ShouldCreateOntos()
         {
-        this.ReqStoredProcedures.Received(1)
-            .PickStock(
-                this.part.PartNumber,
-                Arg.Any<int>(),
-                1,
-                1,
-                null,
-                512,
-                "LINN",
-                "DEF");
+            this.ReqStoredProcedures.Received(1)
+                .InsertReqOntos(
+                    Arg.Any<int>(),
+                    10, 
+                    1,
+                    null,
+                    512, 
+                    "LINN", 
+                    "STATE",
+                    "FREE");
         }
-        
+
         [Test]
         public void ShouldCreateNominalPostings()
         {
-        this.ReqStoredProcedures.Received(1).CreateNominals(
-            Arg.Any<int>(), 1, 1, this.nominal.NominalCode, this.department.DepartmentCode);
+            this.ReqStoredProcedures.Received(1).CreateNominals(
+                Arg.Any<int>(), 10, 1, this.nominal.NominalCode, this.department.DepartmentCode);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Linn.Stores2.IoC
 
         public RequisitionCreationStrategyResolver(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider; 
         }
 
         public ICreationStrategy Resolve(RequisitionCreationContext context)

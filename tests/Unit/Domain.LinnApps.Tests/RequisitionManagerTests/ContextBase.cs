@@ -44,8 +44,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
         protected IRepository<StoresTransactionDefinition, string> TransactionDefinitionRepository { get; set; }
 
-        protected ILog Logger { get; set; }
-        
         protected IStoresService StoresService { get; private set; }
 
         [SetUp]
@@ -61,7 +59,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.PartRepository = Substitute.For<IRepository<Part, string>>();
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
             this.TransactionDefinitionRepository = Substitute.For<IRepository<StoresTransactionDefinition, string>>();
-            this.Logger = Substitute.For<ILog>();
             this.TransactionManager = Substitute.For<ITransactionManager>();
             this.StoresService = Substitute.For<IStoresService>();
             this.StateRepository = Substitute.For<IRepository<StockState, string>>();
@@ -76,7 +73,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.StorageLocationRepository,
                 this.TransactionDefinitionRepository,
                 this.TransactionManager,
-                this.Logger,
                 this.StoresService,
                 this.PalletRepository,
                 this.StateRepository);

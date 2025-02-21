@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests
 {
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -21,7 +21,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests
         {
             this.RequisitionManager = Substitute.For<IRequisitionManager>();
             this.RequisitionRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
-            this.RequisitionCreationContext = new RequisitionCreationContext();
         }
     }
 }
