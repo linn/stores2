@@ -32,5 +32,8 @@
         Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber);
 
         Task<ProcessResult> CanBookRequisition(int reqNumber, int? reqLine, decimal quantity);
+
+        // Returns req number (as string) if successful otherwise error
+        Task<ProcessResult> CreateLoanReq(int loanNumber);
     }
 }

@@ -23,7 +23,12 @@ namespace Linn.Stores2.IoC
             {
                return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
             }
-            
+
+            if (header.StoresFunction?.FunctionCode == "LOAN OUT")
+            {
+                return this.serviceProvider.GetRequiredService<LoanOutCreationStrategy>();
+            }
+
             if (header.Part != null && header.StoresFunction?.FunctionType == "A")
             {
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
