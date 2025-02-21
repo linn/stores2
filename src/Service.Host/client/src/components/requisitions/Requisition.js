@@ -352,14 +352,16 @@ function Requisition({ creating }) {
                             />
                         </Grid>
                         <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['Y', 'N']}
-                                value={formState.reversed}
-                                onChange={() => {}}
-                                label="Reversed"
-                                propertyName="reversed"
-                            />
+                            {shouldRender(null, false) && (
+                                <Dropdown
+                                    fullWidth
+                                    items={['Y', 'N']}
+                                    value={formState.reversed}
+                                    onChange={() => {}}
+                                    label="Reversed"
+                                    propertyName="reversed"
+                                />
+                            )}
                         </Grid>
                         <BookedBy
                             shouldRender={shouldRender(null, false)}
