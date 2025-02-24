@@ -82,6 +82,10 @@
 
         public DateTime? BatchDate { get; set; }
 
+        public int? LoanNumber { get; protected set; }
+
+        public string ReqSource { get; set; }
+
         protected RequisitionHeader()
         {
         }
@@ -123,8 +127,11 @@
             this.ToState = toState;
             this.FromState = fromState;
             this.ManualPick = manualPick;
-            this.FromLocation = fromLocation;
-            this.ToLocation = toLocation;
+            this.ReqSource = "STORES2";
+            this.FromStockPool = fromStockPool;
+            this.ToStockPool = toStockPool;
+            this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
+            this.ToLocation = toPalletNumber.HasValue ? null : toLocation;
 
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
@@ -139,6 +146,8 @@
             this.Nominal = nominal;
 
             this.Reference = reference;
+
+            this.ReqType = reqType;
 
             if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(fromStockPool))
             {
@@ -278,7 +287,7 @@
 
         public bool CanBookReq(int? lineNumber)
         {
-            if (!this.IsBooked() && !this.IsCancelled())
+            if (!this.IsBooked() && !this.IsCancelled() && this.StoresFunction != null)
             {
                 var lines = this.Lines.Where(l => l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled());
                 var requisitionLines = lines as RequisitionLine[] ?? lines.ToArray();
@@ -317,6 +326,16 @@
             }
 
             return false;
+        }
+
+        public string AccountingCompanyCode()
+        {
+            if (this.Lines != null && this.Lines.Any())
+            {
+                var part = this.Lines.First(l => l.Part != null)?.Part;
+                return part?.AccountingCompanyCode;
+            }
+            return null;
         }
 
     }

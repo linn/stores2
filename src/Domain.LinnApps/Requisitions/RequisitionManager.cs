@@ -1,10 +1,11 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
-    using Linn.Common.Logging;
+    using Linn.Common.Domain;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -30,13 +31,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly ITransactionManager transactionManager;
 
-        private readonly ILog logger;
-
         private readonly IStoresService storesService;
 
         private readonly IRepository<StoresPallet, int> palletRepository;
 
         private readonly IRepository<StockState, string> stateRepository;
+
+        private readonly IRepository<StockPool, string> stockPoolRepository;
 
         public RequisitionManager(
             IAuthorisationService authService,
@@ -47,11 +48,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<StorageLocation, int> storageLocationRepository,
             IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository,
             ITransactionManager transactionManager,
-            ILog logger,
             IStoresService storesService,
             IRepository<StoresPallet, int> palletRepository,
-            IRepository<StockState, string> stateRepository)
-
+            IRepository<StockState, string> stateRepository,
+            IRepository<StockPool, string> stockPoolRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -61,10 +61,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.storageLocationRepository = storageLocationRepository;
             this.transactionDefinitionRepository = transactionDefinitionRepository;
             this.transactionManager = transactionManager;
-            this.logger = logger;
             this.storesService = storesService;
             this.palletRepository = palletRepository;
             this.stateRepository = stateRepository;
+            this.stockPoolRepository = stockPoolRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -237,27 +237,77 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // we need this so the line exists for the stored procedure calls coming next
             await this.transactionManager.CommitAsync();
 
-            foreach (var pick in toAdd.StockPicks)
+            if (toAdd.StockPicks != null)
             {
-                var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
-                    ? null
-                    : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.FromLocation);
-                var pickResult = await this.requisitionStoredProcedures.PickStock(
-                                     toAdd.PartNumber,
-                                     header.ReqNumber,
-                                     toAdd.LineNumber,
-                                     pick.Qty,
-                                     fromLocation?.LocationId,
-                                     pick.FromPallet,
-                                     header.FromStockPool,
-                                     toAdd.TransactionDefinition);
-
-                if (!pickResult.Success)
+                foreach (var pick in toAdd.StockPicks)
                 {
-                    throw new PickStockException("failed in pick_stock: " + pickResult.Message);
+                    var fromLocation = string.IsNullOrEmpty(pick.Location)
+                                           ? null
+                                           : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.Location);
+                    var pickResult = await this.requisitionStoredProcedures.PickStock(
+                                         toAdd.PartNumber,
+                                         header.ReqNumber,
+                                         toAdd.LineNumber,
+                                         pick.Qty,
+                                         fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
+                                         pick.Pallet,
+                                         header.FromStockPool,
+                                         toAdd.TransactionDefinition);
+
+                    if (!pickResult.Success)
+                    {
+                        throw new PickStockException("failed in pick_stock: " + pickResult.Message);
+                    }
                 }
             }
 
+            if (toAdd.MovesOnto != null)
+            {
+                foreach (var moveOnto in toAdd.MovesOnto)
+                {
+                    if (moveOnto.Pallet.HasValue)
+                    {
+                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
+                                                     toAdd.PartNumber,
+                                                     moveOnto.Pallet.Value);
+
+                        if (!canPutPartOnPallet)
+                        {
+                            throw new CannotPutPartOnPalletException(
+                                $"Cannot put part {toAdd.PartNumber} onto P{moveOnto.Pallet}");
+                        }
+                    }
+
+                    int? locationId = null;
+
+                    if (!string.IsNullOrEmpty(moveOnto.Location))
+                    {
+                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveOnto.Location);
+                        if (toLocation == null)
+                        {
+                            throw new InsertReqOntosException($"Did not recognise location {moveOnto.Location}");
+                        }
+
+                        locationId = toLocation.LocationId;
+                    }
+                    
+                    var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
+                                                header.ReqNumber,
+                                                moveOnto.Qty,
+                                                toAdd.LineNumber,
+                                                locationId,
+                                                moveOnto.Pallet,
+                                                header.ToStockPool,
+                                                header.ToState,
+                                                "FREE");
+
+                    if (!insertOntosResult.Success)
+                    {
+                        throw new InsertReqOntosException($"Failed in insert_req_ontos: {insertOntosResult.Message}");
+                    }
+                }
+            }
+            
             var createPostingsResult = await this.requisitionStoredProcedures.CreateNominals(
                                            header.ReqNumber,
                                            toAdd.Qty,
@@ -281,46 +331,63 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var toState = await this.stateRepository.FindByIdAsync(header.ToState);
 
-            var checkOnto = await this.storesService.ValidOntoLocation(
-                                header.Part,
-                                header.ToLocation,
-                                toPallet,
-                                toState);
-            if (!checkOnto.Success)
-            {
-                throw new RequisitionException(checkOnto.Message);
-            }
+            DoProcessResultCheck(await this.storesService.ValidOntoLocation(
+                                     header.Part,
+                                     header.ToLocation,
+                                     toPallet,
+                                     toState));
+
+            DoProcessResultCheck(await this.storesService.ValidState(
+                                     null,
+                                     header.StoresFunction,
+                                     header.FromState,
+                                     "F"));
+
+            DoProcessResultCheck(await this.storesService.ValidState(
+                                     null,
+                                     header.StoresFunction,
+                                     header.ToState,
+                                     "O"));
+
+            var stockPool = await this.stockPoolRepository.FindByIdAsync(header.ToStockPool);
+            DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
 
             await this.repository.AddAsync(header);
 
-            var proxyResult =
-                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null);
+            DoProcessResultCheck(
+                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
+
+            DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
+                                     header.ReqNumber,
+                                     null,
+                                     header.Quantity.GetValueOrDefault()));
+
+            DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
+                                     header.ReqNumber,
+                                     null,
+                                     header.CreatedBy.Id));
+        }
+
+        private static void DoProcessResultCheck(ProcessResult result)
+        {
+            if (!result.Success)
+            {
+                throw new RequisitionException(result.Message);
+            }
+        }
+
+        public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
+        {
+            var proxyResult = await this.requisitionStoredProcedures.CreateLoanReq(loanNumber);
 
             if (!proxyResult.Success)
             {
-                throw new RequisitionException(proxyResult.Message);
+                throw new CreateRequisitionException(proxyResult.Message);
             }
 
+            var reqNumber = Convert.ToInt32(proxyResult.Message);
 
-            proxyResult = await this.requisitionStoredProcedures.CanBookRequisition(
-                              header.ReqNumber,
-                              null,
-                              header.Quantity.GetValueOrDefault());
-
-            if (!proxyResult.Success)
-            {
-                throw new RequisitionException(proxyResult.Message);
-            }
-
-            proxyResult = await this.requisitionStoredProcedures.DoRequisition(
-                              header.ReqNumber,
-                              null,
-                              header.CreatedBy.Id);
-
-            if (!proxyResult.Success)
-            {
-                throw new RequisitionException(proxyResult.Message);
-            }
+            return await this.repository.FindByIdAsync(reqNumber);
         }
     }
 }

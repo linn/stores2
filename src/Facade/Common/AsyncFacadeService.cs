@@ -48,7 +48,7 @@
         public virtual async Task<IResult<IEnumerable<TResource>>> GetAll(
             IEnumerable<string> privileges = null)
         {
-            var result = await this.repository.FindAll().ToListAsync();
+            var result = await this.repository.FindAllAsync();
             return new SuccessResult<IEnumerable<TResource>>(
                 this.BuildResources(result, privileges));
         }
@@ -60,7 +60,7 @@
             try
             {
                 return new SuccessResult<IEnumerable<TResource>>(this.BuildResources(
-                    await this.repository.FilterBy(this.FilterExpression(searchResource)).ToListAsync(),
+                    await this.repository.FilterByAsync(this.FilterExpression(searchResource)),
                     privileges));
             }
             catch (NotImplementedException)
@@ -97,7 +97,7 @@
         {
             try
             {
-                var results = await this.repository.FilterBy(this.SearchExpression(searchTerm)).ToListAsync();
+                var results = await this.repository.FilterByAsync(this.SearchExpression(searchTerm));
                 return new SuccessResult<IEnumerable<TResource>>(
                     this.BuildResources(results, privileges));
             }

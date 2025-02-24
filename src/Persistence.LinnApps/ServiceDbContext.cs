@@ -59,6 +59,10 @@
 
         public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
 
+        public DbSet<RequisitionHistory> RequisitionHistory { get; set; }
+
+        public DbSet<StoresTransactionState> StoresTransactionStates { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -96,6 +100,8 @@
             BuildStockStates(builder);
             BuildPartsStorageTypes(builder);
             BuildStoresPallets(builder);
+            BuildStoresTransactionStates(builder);
+            BuildRequisitionHistory(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -237,6 +243,7 @@
             e.Property(p => p.Id).HasColumnName("BRIDGE_ID");
             e.Property(p => p.Description).HasColumnName("DESCRIPTION").HasMaxLength(200);
             e.Property(p => p.RootProduct).HasColumnName("ROOT_PRODUCT").HasMaxLength(10);
+            e.Property(p => p.AccountingCompanyCode).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
             e.Property(p => p.StockControlled).HasColumnName("STOCK_CONTROLLED").HasMaxLength(1);
             e.Property(p => p.SafetyCriticalPart).HasColumnName("SAFETY_CRITICAL_PART").HasMaxLength(1);
             e.Property(p => p.EmcCriticalPart).HasColumnName("EMC_CRITICAL_PART").HasMaxLength(1);
@@ -420,7 +427,21 @@
             e.Property(r => r.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
             e.Property(r => r.FromState).HasColumnName("FROM_STATE").HasMaxLength(6);
             e.Property(r => r.ToState).HasColumnName("STATE").HasMaxLength(6);
+            e.Property(r => r.ReqSource).HasColumnName("WO_QUALITY_ISSUES").HasMaxLength(50);
             e.Property(r => r.BatchDate).HasColumnName("BATCH_DATE");
+            e.Property(r => r.LoanNumber).HasColumnName("LOAN_NUMBER");
+        }
+
+        private static void BuildRequisitionHistory(ModelBuilder builder)
+        {
+            var e = builder.Entity<RequisitionHistory>().ToTable("REQ_HIST");
+            e.HasKey(r => r.Id);
+            e.Property(r => r.Id).HasColumnName("ID");
+            e.Property(r => r.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(r => r.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
+            e.Property(r => r.DateChanged).HasColumnName("DATE_CHANGED");
+            e.Property(r => r.Action).HasColumnName("ACTION").HasMaxLength(20);
+            e.Property(r => r.By).HasColumnName("CHANGED_BY");
         }
 
         private static void BuildRequisitionLines(ModelBuilder builder)
@@ -468,6 +489,8 @@
             r.Property(c => c.ToLocationRequired).HasColumnName("ONTO_LOC_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ToStateRequired).HasColumnName("STATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ToStockPoolRequired).HasColumnName("TO_STOCK_POOL_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.Document1RequiredFlag).HasColumnName("DOCUMENT_1_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.Document1Text).HasColumnName("DOCUMENT_1_TEXT").HasMaxLength(50);
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 
@@ -476,7 +499,8 @@
             var entity = builder.Entity<StoresFunctionTransaction>().ToTable("STORES_FUNCTION_TRANS");
             entity.HasKey(c => new { c.FunctionCode, c.Seq });
             entity.Property(c => c.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
-            entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey("TRANSACTION_CODE");
+            entity.Property(x => x.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            entity.HasOne(x => x.TransactionDefinition).WithMany().HasForeignKey(a => a.TransactionCode);
             entity.Property(x => x.Seq).HasColumnName("SEQ");
             entity.Property(x => x.ReqType).HasColumnName("REQ_TYPE").HasMaxLength(1);
         }
@@ -501,6 +525,15 @@
             entity.Property(x => x.TypeOfStock).HasColumnName("TYPE_OF_STOCK").HasMaxLength(1);
             entity.Property(x => x.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
             entity.Property(x => x.MixStates).HasColumnName("MIX_STATES").HasMaxLength(1);
+        }
+
+        private static void BuildStoresTransactionStates(ModelBuilder builder)
+        {
+            var entity = builder.Entity<StoresTransactionState>().ToTable("STORES_TRANS_STATES");
+            entity.HasKey(c => new { c.TransactionCode, c.State, c.FromOrOnto });
+            entity.Property(c => c.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            entity.Property(c => c.State).HasColumnName("STATE").HasMaxLength(6);
+            entity.Property(x => x.FromOrOnto).HasColumnName("FROM_ONTO").HasMaxLength(1);
         }
 
         private static void BuildEmployees(ModelBuilder builder)

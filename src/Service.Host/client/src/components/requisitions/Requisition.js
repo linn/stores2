@@ -34,6 +34,7 @@ import AuthBy from './components/AuthBy';
 import DepartmentNominal from './components/DepartmentNominal';
 import PartNumberQuantity from './components/PartNumberQuantity';
 import StockOptions from './components/StockOptions';
+import Document1 from './components/Document1';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -45,7 +46,7 @@ function Requisition({ creating }) {
         isLoading: fetchLoading,
         result
     } = useGet(itemTypes.requisitions.url, true);
-    const [hasFetched, setHasFetched] = useState(false);
+    const [hasFetched, setHasFetched] = useState(0);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -62,12 +63,14 @@ function Requisition({ creating }) {
         isLoading: codesLoading,
         result: functionCodes
     } = useGet(itemTypes.functionCodes.url);
-    if (!hasFetched && token) {
+
+    if ((!hasFetched || (reqNumber && hasFetched !== reqNumber)) && token) {
         if (!creating && reqNumber) {
             fetchReq(reqNumber);
         }
+
         fetchFunctionCodes();
-        setHasFetched(true);
+        setHasFetched(reqNumber ?? 1);
     }
 
     const {
@@ -120,12 +123,14 @@ function Requisition({ creating }) {
             dispatch({ type: 'load_state', payload: cancelResult });
         } else if (bookResult) {
             dispatch({ type: 'load_state', payload: bookResult });
+        } else if (authoriseResult) {
+            dispatch({ type: 'load_state', payload: bookResult });
         } else if (result) {
             dispatch({ type: 'load_state', payload: result });
         } else if (creating) {
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, bookResult, creating, name, userNumber]);
+    }, [result, cancelResult, bookResult, authoriseResult, creating, name, userNumber]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
@@ -233,6 +238,10 @@ function Requisition({ creating }) {
                 return okToSaveFrontPageMove();
             }
 
+            if (formState.storesFunction?.code == 'LOAN OUT') {
+                return formState.document1;
+            }
+
             return !!formState?.lines?.length;
         }
 
@@ -316,12 +325,21 @@ function Requisition({ creating }) {
                         <ErrorCard errorMessage={bookError} />
                     </Grid>
                 )}
+                {authoriseError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={authoriseError} />
+                    </Grid>
+                )}
                 {createError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={createError} />
                     </Grid>
                 )}
-                {(fetchLoading || cancelLoading || bookLoading || createLoading) && (
+                {(fetchLoading ||
+                    cancelLoading ||
+                    bookLoading ||
+                    authoriseLoading ||
+                    createLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -339,14 +357,16 @@ function Requisition({ creating }) {
                             />
                         </Grid>
                         <Grid size={2}>
-                            <Dropdown
-                                fullWidth
-                                items={['Y', 'N']}
-                                value={formState.reversed}
-                                onChange={() => {}}
-                                label="Reversed"
-                                propertyName="reversed"
-                            />
+                            {shouldRender(null, false) && (
+                                <Dropdown
+                                    fullWidth
+                                    items={['Y', 'N']}
+                                    value={formState.reversed}
+                                    onChange={() => {}}
+                                    label="Reversed"
+                                    propertyName="reversed"
+                                />
+                            )}
                         </Grid>
                         <BookedBy
                             shouldRender={shouldRender(null, false)}
@@ -500,6 +520,16 @@ function Requisition({ creating }) {
                                 <Grid size={8} />
                             </>
                         )}
+                        <Document1
+                            document1={formState.document1}
+                            document1Text={formState.storesFunction?.document1Text}
+                            handleFieldChange={handleHeaderFieldChange}
+                            shouldRender={
+                                formState.storesFunction &&
+                                formState.storesFunction.document1Required
+                            }
+                            shouldEnter={formState.storesFunction?.document1Entered && creating}
+                        />
                         <PartNumberQuantity
                             partNumber={formState.part?.partNumber}
                             partDescription={formState.part?.description}

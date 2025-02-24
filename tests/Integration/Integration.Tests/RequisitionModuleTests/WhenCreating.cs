@@ -97,5 +97,11 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
         {
             this.Response.StatusCode.Should().Be(HttpStatusCode.Created);
         }
+
+        [Test]
+        public void ShouldSaveLog()
+        {
+            this.RequisitionHistoryRepository.Received().AddAsync(Arg.Any<RequisitionHistory>());
+        }
     }
 }

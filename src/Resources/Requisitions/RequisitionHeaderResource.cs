@@ -59,6 +59,8 @@
         
         public string Reversed { get; set; }
 
+        public bool? RequiresAuthorisation { get; set; }
+
         public int? AuthorisedBy { get; set; }
 
         public string AuthorisedByName { get; set; }
@@ -84,5 +86,9 @@
         public string ToState { get; set; }
 
         public string BatchDate { get; set; }
+
+        public string AccountingCompanyCode { get; set; }
+
+        public int? LoanNumber { get; set; }
     }
 }

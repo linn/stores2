@@ -3,6 +3,7 @@
     using System.Net.Http;
 
     using Linn.Common.Authorisation;
+    using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
@@ -33,6 +34,8 @@
 
         protected IAuthorisationService AuthorisationService { get; private set; }
 
+        protected IRepository<RequisitionHistory, int> RequisitionHistoryRepository { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -43,13 +46,15 @@
             this.ReqManager = Substitute.For<IRequisitionManager>();
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
             this.RequisitionFactory = Substitute.For<IRequisitionFactory>();
+            this.RequisitionHistoryRepository = Substitute.For<IRepository<RequisitionHistory, int>>();
             IRequisitionFacadeService
                 requisitionService = new RequisitionFacadeService(
                     requisitionRepository,
                     transactionManager,
                     new RequisitionResourceBuilder(this.AuthorisationService),
                     this.ReqManager,
-                    this.RequisitionFactory);
+                    this.RequisitionFactory,
+                    this.RequisitionHistoryRepository);
 
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
                 StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(

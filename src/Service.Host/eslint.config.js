@@ -3,8 +3,10 @@ const globals = require('globals');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const reactHooks = require('eslint-plugin-react-hooks');
 const unusedImports = require('eslint-plugin-unused-imports');
+const js = require('@eslint/js');
 
 module.exports = [
+    js.configs.recommended,
     {
         files: ['**/*.{js,jsx,mjs,cjs,ts,tsx}'],
         plugins: {
@@ -13,13 +15,17 @@ module.exports = [
             'unused-imports': unusedImports
         },
         languageOptions: {
+            ecmaVersion: 2022,
+            sourceType: 'module',
             parserOptions: {
                 ecmaFeatures: {
                     jsx: true
                 }
             },
             globals: {
-                ...globals.browser
+                ...globals.browser,
+                ...globals.node,
+                myCustomGlobal: 'readonly'
             }
         },
         rules: {
@@ -29,7 +35,7 @@ module.exports = [
             'react-hooks/rules-of-hooks': 'error',
             'react-hooks/exhaustive-deps': 'warn',
             'no-unused-vars': 'error',
-            'arrow-body-style': ['error', 'as-needed']
+            'no-console': 'warn'
         }
     },
     eslintPluginPrettierRecommended

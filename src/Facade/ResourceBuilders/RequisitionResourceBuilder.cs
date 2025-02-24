@@ -68,12 +68,15 @@
                            Reference = header.Reference,
                            FromStockPool = header.FromStockPool,
                            ToStockPool = header.ToStockPool,
+                           RequiresAuthorisation = header.RequiresAuthorisation(),
                            AuthorisedBy = header.AuthorisedBy?.Id,
                            AuthorisedByName = header.AuthorisedBy?.Name,
                            DateAuthorised = header.DateAuthorised?.ToString("o"),
                            BatchDate = header.BatchDate?.ToString("o"),
                            FromState = header.FromState,
                            ToState = header.ToState,    
+                           AccountingCompanyCode = header.AccountingCompanyCode(),
+                           LoanNumber = header.LoanNumber,
                            Links = this.BuildLinks(header, claims).ToArray()
                         };
         }

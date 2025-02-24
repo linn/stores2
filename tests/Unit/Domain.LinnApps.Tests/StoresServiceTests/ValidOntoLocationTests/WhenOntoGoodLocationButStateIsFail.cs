@@ -6,7 +6,7 @@
 
     using NUnit.Framework;
 
-    public class WhenOntoGoodLocationButStateIsFail : ContextBase
+    public class WhenOntoGoodLocationButStateIsFail : StoresServiceContextBase
     {
         [SetUp]
         public void SetUp()
