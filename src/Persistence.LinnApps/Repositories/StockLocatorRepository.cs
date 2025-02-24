@@ -20,7 +20,7 @@
         {
             this.serviceDbContext = serviceDbContext;
         }
-        
+
         public override IQueryable<StockLocator> FilterBy(Expression<Func<StockLocator, bool>> expression)
         {
             return this.serviceDbContext.StockLocators.Where(expression)

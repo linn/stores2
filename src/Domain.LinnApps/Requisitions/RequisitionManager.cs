@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -373,6 +374,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new RequisitionException(result.Message);
             }
+        }
+
+        public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
+        {
+            var proxyResult = await this.requisitionStoredProcedures.CreateLoanReq(loanNumber);
+
+            if (!proxyResult.Success)
+            {
+                throw new CreateRequisitionException(proxyResult.Message);
+            }
+
+            var reqNumber = Convert.ToInt32(proxyResult.Message);
+
+            return await this.repository.FindByIdAsync(reqNumber);
         }
     }
 }

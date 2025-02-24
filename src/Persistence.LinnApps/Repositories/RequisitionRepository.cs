@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
@@ -45,14 +46,17 @@
                 .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
 
-        public override IQueryable<RequisitionHeader> FilterBy(Expression<Func<RequisitionHeader, bool>> expression)
+        public override async Task<IList<RequisitionHeader>> FilterByAsync(
+            Expression<Func<RequisitionHeader, bool>> filterExpression,
+            Expression<Func<RequisitionHeader, object>> orderByExpression = null)
         {
-            return this.serviceDbContext.RequisitionHeaders.Where(expression)
+            return await this.serviceDbContext.RequisitionHeaders.Where(filterExpression)
                 .Include(r => r.StoresFunction)
                 .Include(r => r.CreatedBy)
                 .Include(r => r.Department)
                 .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition)
-                .Include(r => r.Lines).ThenInclude(l => l.Part);
+                .Include(r => r.Lines).ThenInclude(l => l.Part)
+                .ToListAsync();
         }
 
         public override async Task AddAsync(RequisitionHeader entity)

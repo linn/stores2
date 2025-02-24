@@ -21,6 +21,17 @@ function reducer(state, action) {
         }
         case 'set_header_value': {
             // this action type combines header field value updates, for the sake of brevity
+            if (action.payload.fieldName === 'document1') {
+                if (state.storesFunction?.document1Text == 'Loan Number') {
+                    return {
+                        ...state,
+                        document1Name: 'L',
+                        document1: action.payload.newValue,
+                        loanNumber: action.payload.newValue
+                    };
+                }
+            }
+
             return { ...state, [action.payload.fieldName]: action.payload.newValue };
         }
         case 'add_line': {

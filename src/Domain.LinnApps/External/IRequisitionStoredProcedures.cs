@@ -43,6 +43,8 @@
             string state,
             string category);
 
-        public Task<bool> CanPutPartOnPallet(string partNumber, int palletNumber);
+        Task<bool> CanPutPartOnPallet(string partNumber, int palletNumber);
+
+        Task<ProcessResult> CreateLoanReq(int loanNumber);
     }
 }

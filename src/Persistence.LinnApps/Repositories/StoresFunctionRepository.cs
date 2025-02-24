@@ -1,6 +1,6 @@
 namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
-    using System.Linq;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence.EntityFramework;
@@ -24,11 +24,12 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                        .FirstOrDefaultAsync(a => a.FunctionCode == key);
         }
 
-        public override IQueryable<StoresFunction> FindAll()
+        public override async Task<IList<StoresFunction>> FindAllAsync()
         {
-            return this.serviceDbContext.StoresFunctionCodes
+            return await this.serviceDbContext.StoresFunctionCodes
                 .Include(x => x.TransactionsTypes)
-                .ThenInclude(d => d.TransactionDefinition);
+                .ThenInclude(d => d.TransactionDefinition)
+                .ToListAsync();
         }
     }
 }

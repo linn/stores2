@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Proxy
 {
-    using System;
     using System.Data;
     using System.Threading.Tasks;
 
@@ -603,6 +602,42 @@
             await connection.CloseAsync();
 
             return int.Parse(result.Value.ToString()) == 0;
+        }
+
+        public async Task<ProcessResult> CreateLoanReq(int loanNumber)
+        {
+            await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
+
+            var cmd = new OracleCommand("STORES_WRAPPER.CREATE_LOAN_REQ", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            cmd.Parameters.Add(new OracleParameter("p_loan_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = loanNumber
+            });
+
+            var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
+            {
+                Direction = ParameterDirection.Output,
+                Size = 500
+            };
+            cmd.Parameters.Add(messageParameter);
+
+            var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Output,
+                Value = 0
+            };
+            cmd.Parameters.Add(successParameter);
+
+            await connection.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+
+            return new ProcessResult(successParameter.Value?.ToString() == "1", messageParameter.Value?.ToString());
         }
     }
 }
