@@ -8,6 +8,8 @@
     using System;
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LoanOutCreationStrategyTests;
+
     public class WhenCreatingAndWrongDocument1Name : ContextBase
     {
         private Func<Task> action;
