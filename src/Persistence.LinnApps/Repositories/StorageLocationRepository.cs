@@ -28,9 +28,14 @@
                        .ToListAsync();
         }
 
-        public override IQueryable<StorageLocation> FilterBy(Expression<Func<StorageLocation, bool>> expression)
+        public override async Task<IList<StorageLocation>> FilterByAsync(
+            Expression<Func<StorageLocation, bool>> filterExpression,
+            Expression<Func<StorageLocation, object>> orderByExpression = null)
         {
-            return this.serviceDbContext.StorageLocations.Where(expression).OrderBy(l => l.LocationCode);
+            return await this.serviceDbContext.StorageLocations
+                       .Where(filterExpression)
+                       .OrderBy(l => l.LocationCode)
+                       .ToListAsync();
         }
 
         public override async Task<StorageLocation> FindByIdAsync(int key)
