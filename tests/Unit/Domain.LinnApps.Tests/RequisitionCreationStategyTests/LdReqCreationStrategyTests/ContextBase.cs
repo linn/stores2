@@ -36,7 +36,7 @@
         protected ICreationStrategy Sut { get; private set; }
 
         [SetUp]
-        public void SetUp()
+        public void SetUpContext()
         {
             this.AuthService = Substitute.For<IAuthorisationService>();
             this.Repository = Substitute.For<IRepository<RequisitionHeader, int>>();

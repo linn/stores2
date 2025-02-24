@@ -290,7 +290,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         locationId = toLocation.LocationId;
                     }
                     
-
                     var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
                                                 header.ReqNumber,
                                                 moveOnto.Qty,

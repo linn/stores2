@@ -23,8 +23,4 @@
     <ProjectReference Include="..\..\TestData\TestData\TestData.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RequisitionCreationStategyTests\LdReqCreationStrategyTests\" />
-  </ItemGroup>
-
 </Project>
