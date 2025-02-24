@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -110,6 +111,45 @@
 
             await this.repository.AddAsync(req);
 
+            // case where header specifies part number, qty and onto location
+            if (!string.IsNullOrEmpty(context.PartNumber))
+            {
+                context.FirstLineCandidate = new LineCandidate
+                                                 {
+                                                     PartNumber = context.PartNumber,
+                                                     Qty = context.Quantity.GetValueOrDefault(),
+                                                     Document1Line = context.Document1Line,
+                                                     LineNumber = 1,
+                                                     TransactionDefinition = context.Function.TransactionsTypes
+                                                         .FirstOrDefault(x => x.ReqType == context.ReqType)?.TransactionCode,
+                                                     Document1 = context.Document1Number,
+                                                     Document1Type = context.Document1Type,
+                                                     MovesOnto = context.ReqType == "O" 
+                                                                     ? new List<MoveSpecification>
+                                                                           {
+                                                                               new MoveSpecification
+                                                                                   {
+                                                                                       Location = context.ToLocationCode,
+                                                                                       Pallet = context.ToPallet,
+                                                                                       Qty = context.Quantity.GetValueOrDefault()
+                                                                                   }
+                                                                           } 
+                                                                     : null,
+                                                     StockPicks = context.ReqType == "O"
+                                                                      ? new List<MoveSpecification>
+                                                                            {
+                                                                                new MoveSpecification
+                                                                                    {
+                                                                                        Location = context.FromLocationCode,
+                                                                                        Pallet = context.ToPallet,
+                                                                                        Qty = context.Quantity.GetValueOrDefault()
+                                                                                    }
+                                                                                } 
+                                                                      : null
+                                                 };
+            }
+
+
             // lines
             try
             {
@@ -151,4 +191,3 @@
         }
     }
 }
-

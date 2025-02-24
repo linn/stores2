@@ -13,7 +13,7 @@
 
     using NUnit.Framework;
 
-    public class WhenCreating : ContextBase
+    public class WhenCreatingWithLines : ContextBase
     {
         private RequisitionHeader result;
 
