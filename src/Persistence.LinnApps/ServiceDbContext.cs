@@ -426,6 +426,7 @@
             e.Property(r => r.ToState).HasColumnName("STATE").HasMaxLength(6);
             e.Property(r => r.ReqSource).HasColumnName("WO_QUALITY_ISSUES").HasMaxLength(50);
             e.Property(r => r.BatchDate).HasColumnName("BATCH_DATE");
+            e.Property(r => r.LoanNumber).HasColumnName("LOAN_NUMBER");
         }
 
         private static void BuildRequisitionHistory(ModelBuilder builder)
@@ -485,6 +486,8 @@
             r.Property(c => c.ToLocationRequired).HasColumnName("ONTO_LOC_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ToStateRequired).HasColumnName("STATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ToStockPoolRequired).HasColumnName("TO_STOCK_POOL_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.Document1RequiredFlag).HasColumnName("DOCUMENT_1_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.Document1Text).HasColumnName("DOCUMENT_1_TEXT").HasMaxLength(50);
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 

@@ -34,6 +34,7 @@ import AuthBy from './components/AuthBy';
 import DepartmentNominal from './components/DepartmentNominal';
 import PartNumberQuantity from './components/PartNumberQuantity';
 import StockOptions from './components/StockOptions';
+import Document1 from './components/Document1';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -235,6 +236,10 @@ function Requisition({ creating }) {
         if (creating) {
             if (formState.part?.partNumber) {
                 return okToSaveFrontPageMove();
+            }
+
+            if (formState.storesFunction?.code == 'LOAN OUT') {
+                return formState.document1;
             }
 
             return !!formState?.lines?.length;
@@ -513,6 +518,16 @@ function Requisition({ creating }) {
                                 <Grid size={8} />
                             </>
                         )}
+                        <Document1
+                            document1={formState.document1}
+                            document1Text={formState.storesFunction?.document1Text}
+                            handleFieldChange={handleHeaderFieldChange}
+                            shouldRender={
+                                formState.storesFunction &&
+                                formState.storesFunction.document1Required
+                            }
+                            shouldEnter={formState.storesFunction?.document1Entered && creating}
+                        />
                         <PartNumberQuantity
                             partNumber={formState.part?.partNumber}
                             partDescription={formState.part?.description}

@@ -82,6 +82,8 @@
 
         public DateTime? BatchDate { get; set; }
 
+        public int? LoanNumber { get; protected set; }
+
         public string ReqSource { get; set; }
 
         protected RequisitionHeader()

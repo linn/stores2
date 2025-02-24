@@ -76,6 +76,7 @@
                            FromState = header.FromState,
                            ToState = header.ToState,    
                            AccountingCompanyCode = header.AccountingCompanyCode(),
+                           LoanNumber = header.LoanNumber,
                            Links = this.BuildLinks(header, claims).ToArray()
                         };
         }
