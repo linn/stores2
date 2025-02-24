@@ -1,9 +1,7 @@
-using System;
-
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System;
     using System.Collections.Generic;
-    using System.Security.Cryptography;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;

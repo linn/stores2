@@ -47,7 +47,8 @@
             {
                 Description = "BOOK OUT PRODUCTS TO LOAN ACCOUNT",
                 Document1RequiredFlag = "Y",
-                Document1Text = "Loan Number"
+                Document1Text = "Loan Number",
+                DepartmentNominalRequired = "N"
             };
     }
 }

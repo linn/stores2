@@ -1,7 +1,6 @@
-﻿using Linn.Stores2.Domain.LinnApps.Requisitions;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests.LoanOutCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests.LoanOutCreationStrategyTests
 {
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using NUnit.Framework;
 
