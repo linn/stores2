@@ -195,6 +195,12 @@
         protected override Expression<Func<RequisitionHeader, bool>> FilterExpression(
             RequisitionSearchResource searchResource)
         {
+            if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
+            {
+                return x => x.Document1Name == searchResource.DocumentName &&
+                            x.Document1 == searchResource.DocumentNumber;
+            }
+
             if (searchResource.Pending == true)
             {
                 return x => x.Cancelled != "Y" && x.DateBooked == null;

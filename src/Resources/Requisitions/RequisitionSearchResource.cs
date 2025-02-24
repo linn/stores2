@@ -9,5 +9,9 @@
         public bool IncludeCancelled { get; set; }
 
         public bool? Pending { get; set; }
+
+        public string DocumentName { get; set; }
+
+        public int? DocumentNumber { get; set; }
     }
 }
