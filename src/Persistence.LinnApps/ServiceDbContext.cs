@@ -63,6 +63,8 @@
 
         public DbSet<StoresTransactionState> StoresTransactionStates { get; set; }
 
+        public DbSet<StockTransaction> StockTransactions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -102,6 +104,7 @@
             BuildStoresPallets(builder);
             BuildStoresTransactionStates(builder);
             BuildRequisitionHistory(builder);
+            BuildStockTransactions(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -708,6 +711,24 @@
             e.Property(l => l.BridgeId).HasColumnName("BRIDGE_ID").HasMaxLength(14);
             e.HasOne(l => l.Part).WithMany().HasForeignKey("PART_NUMBER");
             e.HasOne(l => l.StorageType).WithMany().HasForeignKey("STORAGE_TYPE");
+        }
+
+        private static void BuildStockTransactions(ModelBuilder builder)
+        {
+            var e = builder.Entity<StockTransaction>().ToTable("STOCK_TRANSACTIONS");
+            e.HasNoKey();
+            e.Property(s => s.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            e.Property(s => s.BudgetId).HasColumnName("BUDGET_ID");
+            e.Property(s => s.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(s => s.Document1).HasColumnName("DOCUMENT_1").HasMaxLength(8);
+            e.Property(s => s.Document1).HasColumnName("DOCUMENT_1_LINE");
+            e.Property(s => s.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
+            e.Property(s => s.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            e.Property(s => s.Quantity).HasColumnName("QTY");
+            e.Property(s => s.Amount).HasColumnName("AMOUNT");
+            e.Property(s => s.BudgetDate).HasColumnName("BUDGET_DATE");
+            e.HasOne(s => s.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
+            e.Property(s => s.ReqReference).HasColumnName("REQ_REFERENCE");
         }
     }
 }
