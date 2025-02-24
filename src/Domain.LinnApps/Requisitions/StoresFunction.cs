@@ -1,3 +1,5 @@
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System.Collections.Generic;
@@ -44,6 +46,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string Document1Text { get; set; }
 
+        public string PartSource { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public bool AuditFunction() => this.FunctionCode == "AUDIT" || this.FunctionCode == "KOUNT";
@@ -51,5 +55,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public bool Document1Required() => this.Document1RequiredFlag is "Y" or "O" or "X";
 
         public bool Document1Entered() => this.Document1RequiredFlag is "Y" or "O";
+
+        public bool PartNumberRequired() => this.PartSource != "N";
     }
 }
