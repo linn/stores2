@@ -235,6 +235,9 @@ function Requisition({ creating }) {
     const saveIsValid = () => {
         if (creating) {
             if (formState.part?.partNumber) {
+                if (formState.storesFunction?.code === 'LDREQ') {
+                    return true; // no validation or restrictions for now, trusting the back end will validate
+                }
                 return okToSaveFrontPageMove();
             }
 
@@ -569,6 +572,7 @@ function Requisition({ creating }) {
                             fromLocationCode={formState.fromLocationCode}
                             fromPalletNumber={formState.fromPalletNumber}
                             doPickStock={doPickStock}
+                            showFromFields={!formState.storesFunction?.functionCode === 'LDREQ'}
                             toLocationCode={formState.toLocationCode}
                             toPalletNumber={formState.toPalletNumber}
                             setItemValue={(fieldName, newValue) =>
@@ -579,7 +583,10 @@ function Requisition({ creating }) {
                             }
                             disabled={stockStatesLoading || stockPoolsLoading}
                             shouldRender={shouldRender(
-                                () => formState.storesFunction?.code === 'MOVE'
+                                () =>
+                                    formState.storesFunction?.code === 'MOVE' ||
+                                    (formState.storesFunction?.code === 'LDREQ' &&
+                                        formState.reqType === 'O')
                             )}
                         />
                         <Grid size={6}>

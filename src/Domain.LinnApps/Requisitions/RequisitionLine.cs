@@ -50,7 +50,6 @@
             this.Moves = new List<ReqMove>();
 
             this.NominalAccountPostings = new List<RequisitionLinePosting>();
-            // TODO work out how to derive postings see STORES_OO.CREATENOMINALS and Post-Insert/RL trig in REQ UT
 
             this.Cancelled = "N";
             

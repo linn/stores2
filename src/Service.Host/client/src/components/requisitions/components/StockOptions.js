@@ -30,7 +30,8 @@ function StockOptions({
     partNumber = null,
     quantity = null,
     doPickStock = null,
-    setItemValue
+    setItemValue,
+    disableFromFields = true
 }) {
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
     const {
@@ -53,7 +54,7 @@ function StockOptions({
             <Grid size={2}>
                 <Dropdown
                     value={fromState}
-                    disabled={disabled}
+                    disabled={disabled || disableFromFields}
                     fullWidth
                     label="From State"
                     propertyName="fromState"
@@ -68,7 +69,7 @@ function StockOptions({
             <Grid size={2}>
                 <Dropdown
                     value={fromStockPool}
-                    disabled={disabled}
+                    disabled={disabled || disableFromFields}
                     fullWidth
                     label="From Stock Pool"
                     propertyName="fromStockPool"
@@ -83,21 +84,23 @@ function StockOptions({
             <Grid size={2}>
                 <DatePicker
                     value={batchDate}
-                    disabled={disabled}
+                    disabled={disabled || disableFromFields}
                     onChange={newVal => setItemValue('batchDate', newVal)}
                     label="Batch Date"
                     propertyName="batchDate"
                 />
             </Grid>
             <Grid item xs={2}>
-                <Button
-                    onClick={() => setPickStockDialogVisible(true)}
-                    variant="outlined"
-                    style={{ marginTop: '32px' }}
-                    disabled={disabled || !doPickStock}
-                >
-                    Pick Stock
-                </Button>
+                {doPickStock && (
+                    <Button
+                        onClick={() => setPickStockDialogVisible(true)}
+                        variant="outlined"
+                        style={{ marginTop: '32px' }}
+                        disabled={disabled || !doPickStock || disableFromFields}
+                    >
+                        Pick Stock
+                    </Button>
+                )}
             </Grid>
             <Grid size={4} />
             <Grid size={2}>
@@ -105,6 +108,7 @@ function StockOptions({
                     propertyName="fromLocationCode"
                     label="From Loc"
                     resultsInModal
+                    disabled={disabled || disableFromFields}
                     resultLimit={100}
                     helperText="Enter a search term and press enter to search"
                     value={fromLocationCode}
@@ -125,7 +129,7 @@ function StockOptions({
                 <InputField
                     value={fromPalletNumber}
                     onChange={setItemValue}
-                    disabled={disabled}
+                    disabled={disabled || disableFromFields}
                     label="From Pallet"
                     propertyName="fromPalletNumber"
                 />

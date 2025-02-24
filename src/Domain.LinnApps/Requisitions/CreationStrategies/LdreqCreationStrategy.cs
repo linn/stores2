@@ -135,7 +135,7 @@
                                                                                    }
                                                                            } 
                                                                      : null,
-                                                     StockPicks = context.ReqType == "O"
+                                                     StockPicks = context.ReqType == "F"
                                                                       ? new List<MoveSpecification>
                                                                             {
                                                                                 new MoveSpecification
@@ -149,11 +149,9 @@
                                                  };
             }
 
-
             // lines
             try
             {
-                // todo - what if no lines?
                 await this.requisitionManager.AddRequisitionLine(req, context.FirstLineCandidate);
             }
             catch (DomainException ex)
