@@ -48,7 +48,7 @@
         public virtual async Task<IResult<IEnumerable<TResource>>> GetAll(
             IEnumerable<string> privileges = null)
         {
-            var result = await this.repository.FindAll().ToListAsync();
+            var result = await this.repository.FindAllAsync();
             return new SuccessResult<IEnumerable<TResource>>(
                 this.BuildResources(result, privileges));
         }
