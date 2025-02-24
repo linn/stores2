@@ -482,11 +482,6 @@
                 Value = loanNumber
             });
 
-            var reqNumberParameter = cmd.Parameters.Add(new OracleParameter("p_req_number", OracleDbType.Int32)
-            {
-                Direction = ParameterDirection.Output,
-            });
-
             var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
             {
                 Direction = ParameterDirection.Output,
@@ -496,7 +491,8 @@
 
             var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
             {
-                Direction = ParameterDirection.Output
+                Direction = ParameterDirection.Output,
+                Value = 0
             };
             cmd.Parameters.Add(successParameter);
 
@@ -506,7 +502,7 @@
 
             if (successParameter.Value?.ToString() == "1")
             {
-                return new ProcessResult(true, reqNumberParameter.Value?.ToString());
+                return new ProcessResult(true, messageParameter.Value?.ToString());
             }
 
             return new ProcessResult(false, messageParameter.Value?.ToString()) {};

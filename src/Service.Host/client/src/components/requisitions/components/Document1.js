@@ -12,6 +12,7 @@ function Document1({ document1, document1Text, handleFieldChange, shouldRender, 
             <Grid size={4}>
                 <InputField
                     value={document1}
+                    type="number"
                     disabled={!shouldEnter}
                     label={document1Text}
                     onChange={handleFieldChange}
