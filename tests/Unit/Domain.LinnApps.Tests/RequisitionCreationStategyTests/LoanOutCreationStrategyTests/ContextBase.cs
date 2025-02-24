@@ -1,7 +1,9 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests.LoanOutCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LoanOutCreationStrategyTests
 {
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests;
+
     using NUnit.Framework;
 
     public class ContextBase : ContextBaseForStrategies

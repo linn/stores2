@@ -1,14 +1,16 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests.LoanOutCreationStrategyTests
 {
-    using System.Threading.Tasks;
-    using System;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using NUnit.Framework;
+    using System.Threading.Tasks;
+    using System;
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
 
-    public class WhenCreatingAndWrongFunctionCode : ContextBase
+    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LoanOutCreationStrategyTests;
+
+    public class WhenCreatingAndWrongDocument1Name : ContextBase
     {
         private Func<Task> action;
 
@@ -17,8 +19,8 @@
         {
             this.RequisitionCreationContext = new RequisitionCreationContext
             {
-                Function = new StoresFunction("MOANA TROUT"),
-                Document1Type = "L",
+                Function = new StoresFunction("LOAN OUT"),
+                Document1Type = "PO",
                 Document1Number = 100
             };
             this.action = async () => await this.Sut.Create(this.RequisitionCreationContext);

@@ -1,19 +1,17 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests.LoanOutCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LoanOutCreationStrategyTests
 {
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using NUnit.Framework;
-    using System.Threading.Tasks;
     using System;
-    using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.TestData.FunctionCodes;
-    using Linn.Stores2.TestData.NominalAccounts;
-    using Linn.Stores2.TestData.Parts;
-    using Linn.Stores2.TestData.Transactions;
+    using System.Threading.Tasks;
 
-    public class WhenCreatingAndNoDocument1 : ContextBase
+    using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+
+    using NUnit.Framework;
+
+    public class WhenCreatingAndWrongFunctionCode : ContextBase
     {
         private Func<Task> action;
 
@@ -22,11 +20,10 @@
         {
             this.RequisitionCreationContext = new RequisitionCreationContext
             {
-                Function = new StoresFunction("LOAN OUT"),
+                Function = new StoresFunction("MOANA TROUT"),
                 Document1Type = "L",
-                Document1Number = null
+                Document1Number = 100
             };
-
             this.action = async () => await this.Sut.Create(this.RequisitionCreationContext);
         }
 
