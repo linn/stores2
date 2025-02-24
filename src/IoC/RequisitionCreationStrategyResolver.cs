@@ -13,7 +13,7 @@ namespace Linn.Stores2.IoC
 
         public RequisitionCreationStrategyResolver(IServiceProvider serviceProvider)
         {
-            this.serviceProvider = serviceProvider;
+            this.serviceProvider = serviceProvider; 
         }
 
         public ICreationStrategy Resolve(RequisitionCreationContext context)
@@ -21,6 +21,11 @@ namespace Linn.Stores2.IoC
             if (context.Function.FunctionCode == "LDREQ")
             {
                return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
+            }
+
+            if (context.Function.FunctionCode == "LOAN OUT")
+            {
+                return this.serviceProvider.GetRequiredService<LoanOutCreationStrategy>();
             }
             
             if (context.PartNumber != null && context.Function.FunctionType == "A")

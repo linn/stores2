@@ -82,6 +82,8 @@
 
         public DateTime? BatchDate { get; set; }
 
+        public int? LoanNumber { get; protected set; }
+
         public string ReqSource { get; set; }
 
         protected RequisitionHeader()
@@ -144,6 +146,8 @@
             this.Nominal = nominal;
 
             this.Reference = reference;
+
+            this.ReqType = reqType;
 
             if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(fromStockPool))
             {

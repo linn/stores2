@@ -59,6 +59,7 @@
                 .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
                 .AddScoped<LdreqCreationStrategy>()
                 .AddScoped<AutomaticBookFromHeaderStrategy>()
+                .AddScoped<LoanOutCreationStrategy>()
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>();
         }
 

@@ -1,10 +1,11 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests.AutomaticBookFromHeaderStrategyTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.AutomaticBookFromHeaderStrategyTests
 {
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests;
 
     using NSubstitute;
 

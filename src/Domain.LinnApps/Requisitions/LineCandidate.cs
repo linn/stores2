@@ -8,6 +8,8 @@
     {
         public IEnumerable<MoveSpecification> StockPicks { get; set; }
 
+        public IEnumerable<MoveSpecification> MovesOnto { get; set; }
+
         public int LineNumber { get; set; }
 
         public string PartNumber { get; set; }
