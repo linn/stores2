@@ -568,7 +568,6 @@
         {
             await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
 
-            connection.Open();
             var cmd = new OracleCommand("pallet_analysis_pack.can_put_part_on_pallet_wrapper", connection)
                           {
                               CommandType = CommandType.StoredProcedure
