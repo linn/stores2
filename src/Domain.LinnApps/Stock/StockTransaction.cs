@@ -27,5 +27,7 @@
         public Employee BookedBy { get; set; }
 
         public string ReqReference { get; set; }
+
+        public string DebitOrCredit { get; set; }
     }
 }

@@ -45,8 +45,10 @@
                                  .ToUpper().Contains(partNumber.ToUpper().Trim()))
                          && (string.IsNullOrEmpty(transactionCode) || x.TransactionCode
                                  .ToUpper().Contains(transactionCode.ToUpper().Trim()))
+                         && !(x.TransactionCode.StartsWith("STSTM") && x.DebitOrCredit == "D")
                          && (string.IsNullOrEmpty(functionCode) || x.FunctionCode.ToUpper()
                                  .Contains(functionCode.ToUpper().Trim())))
+
                 .OrderBy(x => x.BudgetId);
 
             var model = new ResultsModel { ReportTitle = new NameModel("Stock Transaction List") };

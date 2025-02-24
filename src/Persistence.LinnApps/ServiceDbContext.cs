@@ -729,6 +729,7 @@
             e.Property(s => s.BudgetDate).HasColumnName("BUDGET_DATE");
             e.HasOne(s => s.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
             e.Property(s => s.ReqReference).HasColumnName("REQ_REFERENCE");
+            e.Property(s => s.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT");
         }
     }
 }
