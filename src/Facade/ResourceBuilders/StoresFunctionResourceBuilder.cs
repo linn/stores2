@@ -31,6 +31,9 @@
                           ToLocationRequired = model.ToLocationRequired,
                           ToStateRequired = model.ToStateRequired,
                           ToStockPoolRequired = model.ToStockPoolRequired,
+                          Document1Required = model.Document1Required(),
+                          Document1Entered = model.Document1Entered(),
+                          Document1Text = model.Document1Text,
                           TransactionTypes = model.TransactionsTypes?.Select(
                               t => new FunctionCodeTransactionResource
                                        {
