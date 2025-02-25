@@ -123,7 +123,7 @@
                     new CalculationValueModel
                         {
                             RowId = rowId,
-                            TextDisplay = stockTransaction.BookedBy.Name,
+                            TextDisplay = stockTransaction.BookedBy.ToString(),
                             ColumnId = "BookedBy"
                         });
                 values.Add(

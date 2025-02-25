@@ -724,13 +724,13 @@
             e.Property(s => s.BudgetId).HasColumnName("BUDGET_ID");
             e.Property(s => s.ReqNumber).HasColumnName("REQ_NUMBER");
             e.Property(s => s.Document1).HasColumnName("DOCUMENT_1").HasMaxLength(8);
-            e.Property(s => s.Document1).HasColumnName("DOCUMENT_1_LINE");
+            e.Property(s => s.Document1Line).HasColumnName("DOCUMENT_1_LINE");
             e.Property(s => s.FunctionCode).HasColumnName("FUNCTION_CODE").HasMaxLength(10);
             e.Property(s => s.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.Property(s => s.Quantity).HasColumnName("QTY");
             e.Property(s => s.Amount).HasColumnName("AMOUNT");
             e.Property(s => s.BudgetDate).HasColumnName("BUDGET_DATE");
-            e.HasOne(s => s.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
+            e.Property(s => s.BookedBy).HasColumnName("BOOKED_BY");
             e.Property(s => s.ReqReference).HasColumnName("REQ_REFERENCE");
             e.Property(s => s.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT");
         }
