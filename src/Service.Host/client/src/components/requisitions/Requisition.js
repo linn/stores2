@@ -558,8 +558,9 @@ function Requisition({ creating }) {
                                 })
                             }
                             shouldRender={
-                                formState.storesFunction &&
-                                formState.storesFunction?.partNumberRequired
+                                (formState.storesFunction &&
+                                    formState.storesFunction?.partNumberRequired) ||
+                                formState.storesFunction?.code === 'LDREQ'
                             }
                         />
                         <StockOptions
