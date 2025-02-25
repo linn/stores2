@@ -37,9 +37,11 @@
             int? reqNumber,
             bool? includeCancelled,
             bool? pending,
+            string documentName,
+            int? documentNumber,
             IRequisitionFacadeService service)
         {
-            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && pending != true)
+            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && string.IsNullOrWhiteSpace(documentName) && pending != true)
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
             }
@@ -51,7 +53,9 @@
                         Comments = comments,
                         ReqNumber = reqNumber,
                         IncludeCancelled = includeCancelled.GetValueOrDefault(),
-                        Pending = pending.GetValueOrDefault()
+                        Pending = pending.GetValueOrDefault(),
+                        DocumentName = documentName,
+                        DocumentNumber = documentNumber
                     });
                 await res.Negotiate(requisitions);
             }
