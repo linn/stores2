@@ -67,10 +67,10 @@
                 throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
             }
 
-            if (context.FirstLineCandidate == null && context.PartNumber == null)
+            if (context.FirstLineCandidate == null)
             {
                 throw new CreateRequisitionException(
-                    "Cannot create - no line specified and header does not specify part");
+                    "Cannot create - no lines specified");
             }
 
             var who = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
@@ -110,44 +110,6 @@
                 context.ToState);
 
             await this.repository.AddAsync(req);
-
-            // case where header specifies part number, qty and onto location
-            if (!string.IsNullOrEmpty(context.PartNumber))
-            {
-                context.FirstLineCandidate = new LineCandidate
-                                                 {
-                                                     PartNumber = context.PartNumber,
-                                                     Qty = context.Quantity.GetValueOrDefault(),
-                                                     Document1Line = context.Document1Line,
-                                                     LineNumber = 1,
-                                                     TransactionDefinition = context.Function.TransactionsTypes
-                                                         .FirstOrDefault(x => x.ReqType == context.ReqType)?.TransactionCode,
-                                                     Document1 = context.Document1Number,
-                                                     Document1Type = context.Document1Type,
-                                                     MovesOnto = context.ReqType == "O" 
-                                                                     ? new List<MoveSpecification>
-                                                                           {
-                                                                               new MoveSpecification
-                                                                                   {
-                                                                                       Location = context.ToLocationCode,
-                                                                                       Pallet = context.ToPallet,
-                                                                                       Qty = context.Quantity.GetValueOrDefault()
-                                                                                   }
-                                                                           } 
-                                                                     : null,
-                                                     StockPicks = context.ReqType == "F"
-                                                                      ? new List<MoveSpecification>
-                                                                            {
-                                                                                new MoveSpecification
-                                                                                    {
-                                                                                        Location = context.FromLocationCode,
-                                                                                        Pallet = context.ToPallet,
-                                                                                        Qty = context.Quantity.GetValueOrDefault()
-                                                                                    }
-                                                                                } 
-                                                                      : null
-                                                 };
-            }
 
             // lines
             try

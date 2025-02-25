@@ -61,7 +61,6 @@
                                                                 From = m.StockLocator != null ?
                                                                         new MoveFromResource
                                                                             {
-                                                                                Seq = m.Sequence,
                                                                                 LocationCode = m.StockLocator.StorageLocation?.LocationCode,
                                                                                 State = m.StockLocator.State,
                                                                                 BatchDate = m.StockLocator.StockRotationDate?.ToString("o"),
@@ -76,7 +75,6 @@
                                                                 To = m.LocationId.HasValue || m.PalletNumber.HasValue
                                                                         ? new MoveToResource
                                                                                 {
-                                                                                    Seq = m.Sequence,
                                                                                     LocationCode = m.Location?.LocationCode,
                                                                                     LocationDescription = m.Location?.Description,
                                                                                     PalletNumber = m.PalletNumber,

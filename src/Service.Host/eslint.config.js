@@ -32,6 +32,7 @@ module.exports = [
             // ... any rules you want
             'react/jsx-uses-react': 'error',
             'react/jsx-uses-vars': 'error',
+            'react/jsx-no-undef': 'error',
             'react-hooks/rules-of-hooks': 'error',
             'react-hooks/exhaustive-deps': 'warn',
             'no-unused-vars': 'error',

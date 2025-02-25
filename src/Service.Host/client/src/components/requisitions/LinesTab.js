@@ -81,7 +81,7 @@ function LinesTab({
 
                 // just for now, only allowing stock pick for new rows onces
                 // todo - consider other scenarions e.g. changing pick after picked initially
-                const canPickStock = params.row.isAddition && !params.row.stockPicked;
+                const canPickStock = pickStock && params.row.isAddition && !params.row.stockPicked;
                 return (
                     <>
                         {canPickStock && (

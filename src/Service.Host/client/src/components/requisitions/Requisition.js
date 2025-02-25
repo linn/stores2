@@ -298,6 +298,11 @@ function Requisition({ creating }) {
         }
     };
 
+    // for now...
+    // might be a better way to work out whether these things are valid operations
+    const canAddMovesOnto =
+        selectedLine && formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O';
+    const canPickStock = formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'f';
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -558,9 +563,8 @@ function Requisition({ creating }) {
                                 })
                             }
                             shouldRender={
-                                (formState.storesFunction &&
-                                    formState.storesFunction?.partNumberRequired) ||
-                                formState.storesFunction?.code === 'LDREQ'
+                                formState.storesFunction &&
+                                formState.storesFunction?.partNumberRequired
                             }
                         />
                         <StockOptions
@@ -576,7 +580,6 @@ function Requisition({ creating }) {
                             fromLocationCode={formState.fromLocationCode}
                             fromPalletNumber={formState.fromPalletNumber}
                             doPickStock={doPickStock}
-                            showFromFields={!formState.storesFunction?.functionCode === 'LDREQ'}
                             toLocationCode={formState.toLocationCode}
                             toPalletNumber={formState.toPalletNumber}
                             setItemValue={(fieldName, newValue) =>
@@ -587,10 +590,7 @@ function Requisition({ creating }) {
                             }
                             disabled={stockStatesLoading || stockPoolsLoading}
                             shouldRender={shouldRender(
-                                () =>
-                                    formState.storesFunction?.code === 'MOVE' ||
-                                    (formState.storesFunction?.code === 'LDREQ' &&
-                                        formState.reqType === 'O')
+                                () => formState.storesFunction?.code === 'MOVE'
                             )}
                         />
                         <Grid size={6}>
@@ -643,12 +643,16 @@ function Requisition({ creating }) {
                                     addLine={() => {
                                         dispatch({ type: 'add_line' });
                                     }}
-                                    pickStock={(lineNumber, stockMoves) => {
-                                        dispatch({
-                                            type: 'pick_stock',
-                                            payload: { lineNumber, stockMoves }
-                                        });
-                                    }}
+                                    pickStock={
+                                        canPickStock
+                                            ? (lineNumber, stockMoves) => {
+                                                  dispatch({
+                                                      type: 'pick_stock',
+                                                      payload: { lineNumber, stockMoves }
+                                                  });
+                                              }
+                                            : null
+                                    }
                                     showPostings={!creating}
                                     updateLine={(lineNumber, fieldName, newValue) => {
                                         dispatch({
@@ -670,6 +674,27 @@ function Requisition({ creating }) {
                                     moves={
                                         formState.lines?.find(x => x.lineNumber === selectedLine)
                                             ?.moves
+                                    }
+                                    addMoveOnto={
+                                        canAddMovesOnto
+                                            ? () => {
+                                                  dispatch({
+                                                      type: 'add_move_onto',
+                                                      payload: {
+                                                          lineNumber: selectedLine
+                                                      }
+                                                  });
+                                              }
+                                            : null
+                                    }
+                                    updateMoveOnto={updated =>
+                                        dispatch({
+                                            type: 'update_move_onto',
+                                            payload: {
+                                                lineNumber: selectedLine,
+                                                ...updated
+                                            }
+                                        })
                                     }
                                 />
                             )}

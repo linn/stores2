@@ -249,7 +249,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                          header.ReqNumber,
                                          toAdd.LineNumber,
                                          pick.Qty,
-                                         fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
+                                         fromLocation?.LocationId,
                                          pick.Pallet,
                                          header.FromStockPool,
                                          toAdd.TransactionDefinition);
@@ -299,7 +299,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                 moveOnto.Pallet,
                                                 header.ToStockPool,
                                                 header.ToState,
-                                                "FREE");
+                                                "FREE"); // todo
 
                     if (!insertOntosResult.Success)
                     {
@@ -368,14 +368,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                      header.CreatedBy.Id));
         }
 
-        private static void DoProcessResultCheck(ProcessResult result)
-        {
-            if (!result.Success)
-            {
-                throw new RequisitionException(result.Message);
-            }
-        }
-
         public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
         {
             var proxyResult = await this.requisitionStoredProcedures.CreateLoanReq(loanNumber);
@@ -388,6 +380,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var reqNumber = Convert.ToInt32(proxyResult.Message);
 
             return await this.repository.FindByIdAsync(reqNumber);
+        }
+
+        private static void DoProcessResultCheck(ProcessResult result)
+        {
+            if (!result.Success)
+            {
+                throw new RequisitionException(result.Message);
+            }
         }
     }
 }

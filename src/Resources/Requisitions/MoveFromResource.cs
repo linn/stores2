@@ -2,8 +2,6 @@ namespace Linn.Stores2.Resources.Requisitions
 {
     public class MoveFromResource
     {
-            public int Seq { get; set; }
-            
             public string LocationCode { get; set; }
             
             public string LocationDescription { get; set; }

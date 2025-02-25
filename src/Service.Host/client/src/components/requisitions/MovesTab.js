@@ -1,9 +1,12 @@
 import React from 'react';
 import Grid from '@mui/material/Grid2';
 import { DataGrid } from '@mui/x-data-grid';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
 
-function MovesTab({ moves = [] }) {
+function MovesTab({ moves = [], addMoveOnto = null, updateMoveOnto = null }) {
     const headerColumns = [
         {
             field: 'seq',
@@ -92,6 +95,13 @@ function MovesTab({ moves = [] }) {
             width: 100
         },
         {
+            field: 'qty',
+            headerName: 'Qty',
+            width: 100,
+            editable: true,
+            type: 'number'
+        },
+        {
             field: 'locationCode',
             headerName: 'Loc Code',
             width: 100
@@ -104,6 +114,7 @@ function MovesTab({ moves = [] }) {
         {
             field: 'palletNumber',
             headerName: 'Pallet',
+            editable: true,
             width: 150
         },
         {
@@ -128,6 +139,12 @@ function MovesTab({ moves = [] }) {
         }
     ];
 
+    const processRowUpdate = newRow => {
+        console.log(newRow);
+        updateMoveOnto(newRow);
+        return newRow;
+    };
+
     return (
         <Grid container spacing={3}>
             <Grid size={6}>
@@ -148,7 +165,7 @@ function MovesTab({ moves = [] }) {
             <Grid size={12}>
                 <DataGrid
                     getRowId={r => r.seq}
-                    rows={moves.filter(x => x.from).map(m => m.from)}
+                    rows={moves.filter(x => x.from).map(m => ({ seq: m.seq, ...m.from }))}
                     hideFooter
                     columns={fromColumns}
                     density="compact"
@@ -162,13 +179,26 @@ function MovesTab({ moves = [] }) {
             <Grid size={12}>
                 <DataGrid
                     getRowId={r => r.seq}
-                    rows={moves.filter(x => x.to).map(m => m.to)}
+                    rows={moves.filter(x => x.to).map(m => ({ seq: m.seq, ...m.to, qty: m.qty }))}
                     hideFooter
                     columns={toColumns}
+                    processRowUpdate={processRowUpdate}
                     density="compact"
                     editMode="cell"
                     loading={false}
                 />
+            </Grid>
+            <Grid size={12}>
+                <Tooltip title="Add Line">
+                    <IconButton
+                        disabled={!addMoveOnto}
+                        onClick={addMoveOnto}
+                        color="primary"
+                        size="large"
+                    >
+                        <AddIcon />
+                    </IconButton>
+                </Tooltip>
             </Grid>
         </Grid>
     );
