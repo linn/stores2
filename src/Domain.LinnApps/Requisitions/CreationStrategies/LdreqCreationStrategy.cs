@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
