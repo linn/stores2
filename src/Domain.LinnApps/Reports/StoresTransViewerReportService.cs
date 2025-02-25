@@ -76,12 +76,14 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, TextDisplay = stockTransaction.TransactionCode, ColumnId = "Transaction"
-                    });
+                            RowId = rowId,
+                            TextDisplay = stockTransaction.BudgetId.ToString(),
+                            ColumnId = "BudgetId"
+                        });
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, TextDisplay = stockTransaction.BudgetId.ToString(), ColumnId = "BudgetId"
+                            RowId = rowId, TextDisplay = stockTransaction.TransactionCode, ColumnId = "Transaction"
                     });
                 values.Add(
                     new CalculationValueModel

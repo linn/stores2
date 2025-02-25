@@ -6,6 +6,7 @@ import {
     Loading,
     Search
 } from '@linn-it/linn-form-components-library';
+import { DataGrid } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -21,7 +22,8 @@ import ReportDataGrids from './ReportDataGrids';
 function StoresTransViewer() {
     const [partNumber, setPartNumber] = useState(null);
     const [transactionCode, setTransactionCode] = useState(null);
-    const [functionCode, setFunctionCode] = useState(null);
+    const [functionCodes, setFunctionCodes] = useState(null);
+    const [functionCodeSelect, setFunctionCodeSelect] = useState(null);
     const defaultStartDate = moment().subtract(1, 'days');
     const [fromDate, setFromDate] = useState(defaultStartDate);
     const [toDate, setToDate] = useState(new Date());
@@ -41,6 +43,14 @@ function StoresTransViewer() {
         result: reportResult
     } = useGet(itemTypes.storesTransViewer.url);
 
+    const detailColumns = [
+        {
+            field: 'id',
+            headerName: 'Selected',
+            width: 220
+        }
+    ];
+
     const getQueryString = () => {
         let queryString = '?';
 
@@ -52,8 +62,10 @@ function StoresTransViewer() {
             queryString += `toDate=${toDate.toISOString()}&`;
         }
 
-        if (functionCode?.length) {
-            queryString += `functionCode=${functionCode}&`;
+        if (functionCodes?.length) {
+            functionCodes.forEach(e => {
+                queryString += `functionCodeList=${e}&`;
+            });
         }
 
         if (transactionCode?.length) {
@@ -112,6 +124,19 @@ function StoresTransViewer() {
                         value={toDate}
                         minDate={fromDate}
                         onChange={setToDate}
+                    />
+                </Grid>
+                <Grid size={2}>
+                    <DataGrid
+                        rows={
+                            functionCodes?.map(a => ({
+                                id: a
+                            })) ?? []
+                        }
+                        columns={detailColumns}
+                        density="compact"
+                        rowHeight={45}
+                        hideFooter
                     />
                 </Grid>
                 <Grid size={4}>
