@@ -15,6 +15,7 @@ import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import useInitialise from '../hooks/useInitialise';
+import useSearch from '../hooks/useSearch';
 import ReportDataGrids from './ReportDataGrids';
 
 function StoresTransViewer() {
@@ -131,15 +132,6 @@ function StoresTransViewer() {
                 </Grid>
                 <Grid size={3}>
                     <InputField
-                        propertyName="orderNumber"
-                        label="Order Number"
-                        type="number"
-                        value={orderNumber}
-                        onChange={(_, newValue) => setOrderNumber(newValue)}
-                    />
-                </Grid>
-                <Grid size={3}>
-                    <InputField
                         value={transactionCode}
                         onChange={(_, newValue) => setTransactionCode(newValue)}
                         label="Transaction Code"
@@ -154,7 +146,6 @@ function StoresTransViewer() {
                         resultLimit={100}
                         helperText="Enter a search term and press enter or TAB"
                         value={partNumber}
-                        disabled={disabled}
                         handleValueChange={(_, newVal) => {
                             setPartNumber({ partNumber: newVal });
                         }}
