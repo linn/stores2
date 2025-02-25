@@ -554,7 +554,10 @@ function Requisition({ creating }) {
                                     payload: { fieldName: 'quantity', newValue: newQty }
                                 })
                             }
-                            shouldRender
+                            shouldRender={
+                                formState.storesFunction &&
+                                formState.storesFunction?.partNumberRequired
+                            }
                         />
                         <StockOptions
                             fromState={formState.fromState}

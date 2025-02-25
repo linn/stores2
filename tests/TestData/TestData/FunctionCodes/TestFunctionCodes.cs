@@ -8,7 +8,8 @@
             new StoresFunction("AUDIT")
             {
                 Description = "STOCK CHECK ADJUSTMENTS",
-                Document1RequiredFlag = "N"
+                Document1RequiredFlag = "N",
+                PartSource = "N"
             };
 
         public static readonly StoresFunction BookWorksOrder =
@@ -16,7 +17,8 @@
             {
                 Description = "BOOK IN WORKS ORDER",
                 Document1RequiredFlag = "Y",
-                Document1Text = "Works Order"
+                Document1Text = "Works Order",
+                PartSource = "WO"
             };
 
         public static readonly StoresFunction BookFromSupplier =
@@ -24,14 +26,16 @@
             {
                 Description = "BOOK IN GOODS FROM SUPPLIER FOR PO",
                 Document1RequiredFlag = "Y",
-                Document1Text = "Order Number"
+                Document1Text = "Order Number",
+                PartSource = "PO"
             };
 
         public static readonly StoresFunction LinnDeptReq =
             new StoresFunction("LDREQ")
             {
                 Description = "BOOK PARTS IN/OUT OF STORES ON REQUISITION",
-                Document1RequiredFlag = "N"
+                Document1RequiredFlag = "N",
+                PartSource = "N"
             };
 
         public static readonly StoresFunction SupplierKit =
@@ -39,7 +43,8 @@
             {
                 Description = "KIT PARTS TO SUPPLIER STORE",
                 Document1RequiredFlag = "Y",
-                Document1Text = "Order Number"
+                Document1Text = "Order Number",
+                PartSource = "PO"
             };
 
         public static readonly StoresFunction LoanOut =
@@ -48,7 +53,8 @@
                 Description = "BOOK OUT PRODUCTS TO LOAN ACCOUNT",
                 Document1RequiredFlag = "Y",
                 Document1Text = "Loan Number",
-                DepartmentNominalRequired = "N"
+                DepartmentNominalRequired = "N",
+                PartSource = "N"
             };
     }
 }

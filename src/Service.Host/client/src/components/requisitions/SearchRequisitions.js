@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
+import moment from 'moment';
 import { DataGrid } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid2';
 import {
@@ -37,7 +38,7 @@ function SearchRequisitions() {
         const handleKeyDown = event => {
             if (event.key === 'Enter') {
                 const query = queryString.stringify(options);
-                if (options.reqNumber || options.comments) {
+                if (options.reqNumber || options.comments || options.documentNumber) {
                     send(null, `?${query}`);
                 }
             }
@@ -54,8 +55,11 @@ function SearchRequisitions() {
         {
             field: 'reqNumber',
             headerName: 'Req Number',
-            width: 200
+            width: 140
         },
+        { field: 'created', headerName: 'Created', width: 100 },
+        { field: 'createdByName', headerName: 'By', width: 200 },
+        { field: 'doc1', headerName: 'Doc1', width: 100 },
         { field: 'comments', headerName: 'Comments', width: 200 }
     ];
 
@@ -89,7 +93,38 @@ function SearchRequisitions() {
                         helperText="you can search for a string included in the comments field of the header"
                     />
                 </Grid>
+                <Grid size={2}>
+                    <Dropdown
+                        fullWidth
+                        value={options.documentName}
+                        onChange={handleOptionChange}
+                        label="Doc Type"
+                        allowNoValue
+                        propertyName="documentName"
+                        items={[
+                            { id: 'CONS', displayText: 'Consignment' },
+                            { id: 'CO', displayText: 'Credit Order' },
+                            { id: 'L', displayText: 'Loan' },
+                            { id: 'PO', displayText: 'Purchase Order' },
+                            { id: 'RO', displayText: 'Returns Order' },
+                            { id: 'R', displayText: 'RSN' },
+                            { id: 'WO', displayText: 'Works Order' }
+                        ]}
+                    />
+                </Grid>
                 <Grid size={3}>
+                    {options.documentName && (
+                        <InputField
+                            fullWidth
+                            value={options.documentNumber}
+                            onChange={handleOptionChange}
+                            label="Doc Number"
+                            helperText="if you know the doc number"
+                            propertyName="documentNumber"
+                        />
+                    )}
+                </Grid>
+                <Grid size={2}>
                     <Dropdown
                         fullWidth
                         value={options.includeCancelled ? 'Y' : 'N'}
@@ -106,7 +141,9 @@ function SearchRequisitions() {
                         rows={
                             result?.map(r => ({
                                 ...r,
-                                id: r.reqNumber
+                                id: r.reqNumber,
+                                created: moment(r.dateCreated).format('DD-MMM-YYYY'),
+                                doc1: `${r.document1Name}${r.document1}`
                             })) || []
                         }
                         columns={columns}
