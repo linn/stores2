@@ -84,7 +84,6 @@ function LinesTab({
                 const canPickStock =
                     (params.row.isAddition && !params.row.stockPicked) ||
                     (!params.row.isAdditon && !params.row.stockPicked && canCancel);
-                console.log(params.row);
                 return (
                     <>
                         {canPickStock && (
