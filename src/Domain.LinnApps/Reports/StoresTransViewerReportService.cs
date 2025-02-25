@@ -48,7 +48,6 @@
                          && !(x.TransactionCode.StartsWith("STSTM") && x.DebitOrCredit == "D")
                          && (string.IsNullOrEmpty(functionCode) || x.FunctionCode.ToUpper()
                                  .Contains(functionCode.ToUpper().Trim())))
-
                 .OrderBy(x => x.BudgetId);
 
             var model = new ResultsModel { ReportTitle = new NameModel("Stock Transaction List") };
@@ -85,7 +84,7 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, TextDisplay = stockTransaction.BudgetId.ToString(), ColumnId = "Requisition"
+                            RowId = rowId, TextDisplay = stockTransaction.ReqNumber.ToString(), ColumnId = "Requisition"
                         });
                 values.Add(
                     new CalculationValueModel
@@ -151,7 +150,7 @@
                                   new AxisDetailsModel("Quantity", "Qty", GridDisplayType.TextValue, 90),
                                   new AxisDetailsModel("Amount", "Amount", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("BudgetDate", "Budget Date", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("BookedBy", "BookedBy", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("BookedBy", "Booked By", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("ReqRef", "Req Ref", GridDisplayType.TextValue, 150)
                               };
         }

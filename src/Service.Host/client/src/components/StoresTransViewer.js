@@ -98,7 +98,7 @@ function StoresTransViewer() {
                             <Loading />
                         </Grid>
                     ))}
-                <Grid size={3}>
+                <Grid size={4}>
                     <DatePicker
                         label="From Date"
                         value={fromDate}
@@ -106,7 +106,7 @@ function StoresTransViewer() {
                         onChange={setFromDate}
                     />
                 </Grid>
-                <Grid size={3}>
+                <Grid size={4}>
                     <DatePicker
                         label="To Date"
                         value={toDate}
@@ -114,7 +114,7 @@ function StoresTransViewer() {
                         onChange={setToDate}
                     />
                 </Grid>
-                <Grid size={3}>
+                <Grid size={4}>
                     {functionCodesResult && (
                         <Dropdown
                             value={functionCode}
@@ -130,7 +130,7 @@ function StoresTransViewer() {
                         />
                     )}
                 </Grid>
-                <Grid size={3}>
+                <Grid size={4}>
                     <InputField
                         value={transactionCode}
                         onChange={(_, newValue) => setTransactionCode(newValue)}
@@ -138,27 +138,19 @@ function StoresTransViewer() {
                         propertyName="transactionCode"
                     />
                 </Grid>
-                <Grid size={2}>
+                <Grid size={4}>
                     <Search
                         propertyName="partNumber"
                         label="Part"
                         resultsInModal
                         resultLimit={100}
-                        helperText="Enter a search term and press enter or TAB"
+                        helperText="Enter a search term and press enter"
                         value={partNumber}
-                        handleValueChange={(_, newVal) => {
-                            setPartNumber({ partNumber: newVal });
-                        }}
+                        handleValueChange={(_, newVal) => setPartNumber(newVal)}
                         search={searchParts}
                         loading={partsSearchLoading}
                         searchResults={partsSearchResults}
                         priorityFunction="closestMatchesFirst"
-                        onKeyPressFunctions={[
-                            {
-                                keyCode: 9,
-                                action: () => setPartNumber({ partNumber: partNumber?.toUpperCase() })
-                            }
-                        ]}
                         onResultSelect={r => {
                             setPartNumber(r);
                         }}
