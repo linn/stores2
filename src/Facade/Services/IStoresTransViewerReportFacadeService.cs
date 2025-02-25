@@ -1,5 +1,7 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
+    using System.Collections.Generic;
+
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
 
@@ -10,6 +12,6 @@
             string toDate,
             string partNumber,
             string transactionCode,
-            string functionCode);
+            IEnumerable<string> functionCodeList);
     }
 }

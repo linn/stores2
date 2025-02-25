@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StockTransactionModuleTests
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
 
@@ -18,10 +19,18 @@
     {
         private ResultsModel result;
 
+        private string functionCode1;
+
+        private string functionCode2;
+
         [SetUp]
         public void SetUp()
         {
             this.result = new ResultsModel { ReportTitle = new NameModel("Stock Transaction List") };
+            this.functionCode1 = "LDREQ";
+            this.functionCode2 = "LDMOVE";
+
+            var functionCodes = new List<string> { "STLDI2" };
 
             this.StoresTransViewerReportService
                 .StoresTransViewerReport(
@@ -29,11 +38,11 @@
                     null, 
                     null,
                     null,
-                    "STLDI2")
+                    Arg.Is<IEnumerable<string>>(f => f.Contains(this.functionCode1) && f.Contains(this.functionCode1)))
                 .Returns(this.result);
 
             this.Response = this.Client.Get(
-                "/stores2/stores-trans-viewer/report?functionCode=STLDI2",
+                $"/stores2/stores-trans-viewer/report?functionCodeList={this.functionCode1}&functionCodeList={this.functionCode2}",
                 with =>
                     {
                         with.Accept("application/json");

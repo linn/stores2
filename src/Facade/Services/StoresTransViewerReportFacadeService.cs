@@ -1,5 +1,7 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
+    using System.Collections.Generic;
+
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
@@ -24,14 +26,14 @@
             string toDate,
             string partNumber,
             string transactionCode,
-            string functionCode)
+            IEnumerable<string> functionCodeList)
         {
             var result = this.storesTransViewerReportService.StoresTransViewerReport(
                 fromDate,
                 toDate,
                 partNumber, 
                 transactionCode,
-                functionCode);
+                functionCodeList);
 
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }

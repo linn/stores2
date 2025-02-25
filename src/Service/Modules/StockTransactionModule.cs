@@ -31,7 +31,7 @@
             string toDate,
             string partNumber,
             string transactionCode,
-            string functionCode,
+            string[] functionCodeList,
             IStoresTransViewerReportFacadeService facadeService)
         {
             await res.Negotiate(facadeService.GetStoresTransViewerReport(
@@ -39,7 +39,7 @@
                 toDate,
                 partNumber,
                 transactionCode,
-                functionCode));
+                functionCodeList));
         }
     }
 }

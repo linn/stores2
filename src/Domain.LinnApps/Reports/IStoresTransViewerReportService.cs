@@ -1,5 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
+    using System.Collections.Generic;
+
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
 
@@ -10,6 +12,6 @@
             string toDate,
             string partNumber,
             string transactionCode,
-            string functionCode);
+            IEnumerable<string> functionCodeList);
     }
 }
