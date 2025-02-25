@@ -18,14 +18,14 @@
         {
             app.MapGet("/stores2/parts-storage-types", this.GetAll);
             app.MapPost("/stores2/parts-storage-types", this.Create);
-            app.MapGet("/stores2/parts-storage-types/{partNumber}/{storageTypeCode}", this.GetById);
-            app.MapPut("/stores2/parts-storage-types/{partNumber}/{storageTypeCode}", this.Update);
+            app.MapGet("/stores2/parts-storage-types/{bridgeId}", this.GetById);
+            app.MapPut("/stores2/parts-storage-types/{bridgeId}", this.Update);
         }
 
         private async Task GetAll(
             HttpRequest _,
             HttpResponse res,
-            IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
             await res.Negotiate(await service.GetAll());
         }
@@ -33,24 +33,22 @@
         private async Task GetById(
             HttpRequest _,
             HttpResponse res,
-            string partNumber,
-            string storageTypeCode,
-            IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            int bridgeId,
+            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
             var searchResource = new PartsStorageTypeResource
                           {
-                              PartNumber = partNumber,
-                              StorageTypeCode = storageTypeCode
+                              BridgeId = bridgeId,
                           };
 
-            await res.Negotiate(await service.FindBy(searchResource));
+            await res.Negotiate(await service.GetById(bridgeId));
         }
 
         private async Task Create(
             HttpRequest _,
             HttpResponse res,
             PartsStorageTypeResource resource,
-            IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
             await res.Negotiate(await service.Add(resource));
         }
@@ -58,14 +56,11 @@
         private async Task Update(
             HttpRequest _,
             HttpResponse res,
-            string partNumber,
-            string storageTypeCode,
+            int bridgeId,
             PartsStorageTypeResource resource,
-            IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
-            var key = new PartsStorageTypeKey(partNumber: partNumber, storageTypeCode: storageTypeCode);
-
-            await res.Negotiate(await service.Update(key, resource));
+            await res.Negotiate(await service.Update(bridgeId, resource));
         }
     }
 }

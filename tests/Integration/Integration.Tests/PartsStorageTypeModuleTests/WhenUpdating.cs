@@ -64,15 +64,15 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
                                                                 Description = this.storageType.Description
                                                             },
                                           StorageTypeCode = this.storageType.StorageTypeCode,
-                                          BridgeId = 4,
                                           Preference = "2",
+                                          BridgeId = 400,
                                           Incr = 30,
                                           Maximum = 50,
                                           Remarks = "b"
                                         };
 
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
-            this.Response = this.Client.PutAsJsonAsync($"/stores2/parts-storage-types/{this.part.PartNumber}/{this.storageType.StorageTypeCode}", this.updateResource).Result;
+            this.Response = this.Client.PutAsJsonAsync($"/stores2/parts-storage-types/{this.partsStorageType.BridgeId}", this.updateResource).Result;
         }
 
         [Test]

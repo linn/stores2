@@ -1,8 +1,11 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
+    using NSubstitute;
+
     using System.Net.Http;
 
     using Linn.Common.Persistence.EntityFramework;
+    using Linn.Common.Proxy.LinnApps;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -27,6 +30,8 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IDatabaseService DatabaseService { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -34,18 +39,21 @@
 
             var transactionManager = new TransactionManager(this.DbContext);
 
-            var partRepository = new EntityFrameworkRepository<Part, int>(this.DbContext.Parts);
+            var partRepository = new EntityFrameworkRepository<Part, string>(this.DbContext.Parts);
             var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
             var partsStorageTypeRepository
                 = new PartsStorageTypeRepository(this.DbContext);
 
-            IAsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> partsStorageTypeFacadeService
+            this.DatabaseService = Substitute.For<IDatabaseService>();
+
+            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> partsStorageTypeFacadeService
                 = new PartsStorageTypeFacadeService(
                     partsStorageTypeRepository,
                     transactionManager,
                     new PartsStorageTypeResourceBuilder(),
                     partRepository,
-                    storageTypeRepository);
+                    storageTypeRepository,
+                    this.DatabaseService);
 
             this.Client = TestClient.With<PartsStorageTypeModule>(
                 services =>

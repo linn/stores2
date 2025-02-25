@@ -6,6 +6,7 @@
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
 
     public class PartsStorageTypeResourceBuilder : IBuilder<PartsStorageType>
@@ -15,7 +16,17 @@
             return new PartsStorageTypeResource
                        {
                            StorageTypeCode = partsStorageType.StorageTypeCode,
+                           StorageType = new StorageTypeResource
+                           {
+                               StorageTypeCode = partsStorageType.StorageType.StorageTypeCode,
+                               Description = partsStorageType.StorageType.Description
+                           },
                            PartNumber = partsStorageType.PartNumber,
+                           Part = new PartResource 
+                            {
+                               PartNumber = partsStorageType.Part.PartNumber,
+                               Description = partsStorageType.Part.Description
+                            },
                            Remarks = partsStorageType.Remarks,
                            Maximum = partsStorageType.Maximum,
                            BridgeId = partsStorageType.BridgeId,
@@ -27,7 +38,7 @@
 
         public string GetLocation(PartsStorageType model)
         {
-            return $"/stores2/parts-storage-types/{model.StorageTypeCode}/{model.PartNumber}";
+            return $"/stores2/parts-storage-types/{model.BridgeId}";
         }
 
         object IBuilder<PartsStorageType>.Build(PartsStorageType entity, IEnumerable<string> claims) =>

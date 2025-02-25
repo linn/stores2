@@ -9,7 +9,7 @@
 
     using Microsoft.EntityFrameworkCore;
 
-    public class PartsStorageTypeRepository : EntityFrameworkRepository<PartsStorageType, PartsStorageTypeKey>
+    public class PartsStorageTypeRepository : EntityFrameworkRepository<PartsStorageType, int>
     {
         private readonly ServiceDbContext serviceDbContext;
 
@@ -26,12 +26,12 @@
                        .ToListAsync();
         }
 
-        public override async Task<PartsStorageType> FindByIdAsync(PartsStorageTypeKey key)
+        public override async Task<PartsStorageType> FindByIdAsync(int key)
         {
             var result = await this.serviceDbContext.PartsStorageTypes
                              .Include(pst => pst.Part)
                              .Include(pst => pst.StorageType)
-                             .FirstOrDefaultAsync(pst => pst.PartNumber == key.PartNumber && pst.StorageTypeCode == key.StorageTypeCode);
+                             .FirstOrDefaultAsync(pst => pst.BridgeId == key);
             return result;
         }
     }
