@@ -2,6 +2,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
@@ -237,20 +238,24 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // we need this so the line exists for the stored procedure calls coming next
             await this.transactionManager.CommitAsync();
 
-            if (toAdd.StockPicks != null)
+
+            if (toAdd.Moves != null)
             {
-                foreach (var pick in toAdd.StockPicks)
+                // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
+                // write offs
+                foreach (var pick in toAdd.Moves.Where(x => x.FromPallet.HasValue 
+                                                            || !string.IsNullOrEmpty(x.FromLocation)))
                 {
-                    var fromLocation = string.IsNullOrEmpty(pick.Location)
+                    var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
                                            ? null
-                                           : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.Location);
+                                           : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.FromLocation);
                     var pickResult = await this.requisitionStoredProcedures.PickStock(
                                          toAdd.PartNumber,
                                          header.ReqNumber,
                                          toAdd.LineNumber,
                                          pick.Qty,
                                          fromLocation?.LocationId,
-                                         pick.Pallet,
+                                         pick.FromPallet,
                                          header.FromStockPool,
                                          toAdd.TransactionDefinition);
 
@@ -259,44 +264,42 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         throw new PickStockException("failed in pick_stock: " + pickResult.Message);
                     }
                 }
-            }
 
-            if (toAdd.MovesOnto != null)
-            {
-                foreach (var moveOnto in toAdd.MovesOnto)
+                // write ons
+                foreach (var moveOnto 
+                         in toAdd.Moves.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
                 {
-                    if (moveOnto.Pallet.HasValue)
+                    if (moveOnto.ToPallet.HasValue)
                     {
                         var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
                                                      toAdd.PartNumber,
-                                                     moveOnto.Pallet.Value);
-
+                                                     moveOnto.ToPallet.Value);
                         if (!canPutPartOnPallet)
                         {
                             throw new CannotPutPartOnPalletException(
-                                $"Cannot put part {toAdd.PartNumber} onto P{moveOnto.Pallet}");
+                                $"Cannot put part {toAdd.PartNumber} onto P{moveOnto.ToPallet}");
                         }
                     }
 
                     int? locationId = null;
 
-                    if (!string.IsNullOrEmpty(moveOnto.Location))
+                    if (!string.IsNullOrEmpty(moveOnto.ToLocation))
                     {
-                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveOnto.Location);
+                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveOnto.ToLocation);
                         if (toLocation == null)
                         {
-                            throw new InsertReqOntosException($"Did not recognise location {moveOnto.Location}");
+                            throw new InsertReqOntosException($"Did not recognise location {moveOnto.ToLocation}");
                         }
 
                         locationId = toLocation.LocationId;
                     }
-                    
+
                     var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
                                                 header.ReqNumber,
                                                 moveOnto.Qty,
                                                 toAdd.LineNumber,
                                                 locationId,
-                                                moveOnto.Pallet,
+                                                moveOnto.ToPallet,
                                                 header.ToStockPool,
                                                 header.ToState,
                                                 "FREE"); // todo
@@ -307,7 +310,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     }
                 }
             }
-            
+
+            // todo - consider what has to happen if a move is from one place to another
+            // i.e. cases where both a 'from' and a 'to' location or pallet is set
+
             var createPostingsResult = await this.requisitionStoredProcedures.CreateNominals(
                                            header.ReqNumber,
                                            toAdd.Qty,

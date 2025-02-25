@@ -227,19 +227,14 @@
 
             return new LineCandidate
                        {
-                           StockPicks = resource.Moves.Where(x => x.From != null).Select(
+                           Moves = resource.Moves.Where(x => x.From != null).Select(
                                m => new MoveSpecification
                                         {
                                             Qty = m.Qty.GetValueOrDefault(), 
-                                            Location = m.From.LocationCode,
-                                            Pallet = m.From.PalletNumber
-                                        }),
-                           MovesOnto = resource.Moves.Where(x => x.To != null).Select(
-                               m => new MoveSpecification
-                                        {
-                                            Qty = m.Qty.GetValueOrDefault(),
-                                            Location = m.To.LocationCode,
-                                            Pallet = m.To.PalletNumber
+                                            FromLocation  = m.From.LocationCode,
+                                            FromPallet = m.From.PalletNumber,
+                                            ToLocation = m.To.LocationCode,
+                                            ToPallet = m.To.PalletNumber
                                         }),
                            LineNumber = resource.LineNumber,
                            PartNumber = resource.Part?.PartNumber,

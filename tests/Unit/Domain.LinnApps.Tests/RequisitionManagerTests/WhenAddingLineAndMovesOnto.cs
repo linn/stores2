@@ -52,17 +52,16 @@
                 Document1 = 123,
                 Document1Line = 1,
                 Document1Type = "REQ",
-                MovesOnto = new List<MoveSpecification>
+                Moves = new List<MoveSpecification>
                                 {
                                     new MoveSpecification
                                         {
-                                            Pallet = 512,
+                                            ToPallet = 512,
                                             Qty = 10
                                         }
                                 },
                 PartNumber = this.part.PartNumber,
                 Qty = 10,
-                StockPicks = null,
                 TransactionDefinition = "DEF"
             };
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)

@@ -56,14 +56,13 @@
                 Document1 = 123,
                 Document1Line = 1,
                 Document1Type = "REQ",
-                MovesOnto = null,
                 PartNumber = this.part.PartNumber,
                 Qty = 1,
-                StockPicks = new List<MoveSpecification>
+                Moves = new List<MoveSpecification>
                                                  {
                                                      new MoveSpecification
                                                          {
-                                                             Pallet = 512,
+                                                             FromPallet = 512,
                                                              Qty = 1
                                                          }
                                                  },
