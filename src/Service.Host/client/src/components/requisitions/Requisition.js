@@ -574,15 +574,23 @@ function Requisition({ creating }) {
                             doPickStock={doPickStock}
                             toLocationCode={formState.toLocationCode}
                             toPalletNumber={formState.toPalletNumber}
+                            functionCode={formState.storesFunction}
                             setItemValue={(fieldName, newValue) =>
                                 dispatch({
                                     type: 'set_header_value',
                                     payload: { fieldName, newValue }
                                 })
                             }
-                            disabled={stockStatesLoading || stockPoolsLoading}
+                            disabled={stockStatesLoading || stockPoolsLoading || !creating}
                             shouldRender={shouldRender(
-                                () => formState.storesFunction?.code === 'MOVE'
+                                () =>
+                                    formState.storesFunction?.code === 'MOVE' ||
+                                    ((formState.fromLocationRequired !== 'N' ||
+                                        formState.toLocationRequired !== 'N') &&
+                                        !(
+                                            formState.storesFunction?.code === 'LOAN OUT' &&
+                                            creating
+                                        ))
                             )}
                         />
                         <Grid size={6}>

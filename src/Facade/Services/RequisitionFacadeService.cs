@@ -198,7 +198,7 @@
             if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
             {
                 return x => x.Document1Name == searchResource.DocumentName &&
-                            x.Document1 == searchResource.DocumentNumber;
+                            x.Document1 == searchResource.DocumentNumber && (searchResource.IncludeCancelled || x.Cancelled != "Y");
             }
 
             if (searchResource.Pending == true)
