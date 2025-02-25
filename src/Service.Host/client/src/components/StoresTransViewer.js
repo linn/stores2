@@ -89,7 +89,7 @@ function StoresTransViewer() {
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={2}>
                 <Grid size={12}>
-                    <Typography variant="h4">Goods In Log</Typography>
+                    <Typography variant="h4">Stores Transaction Viewer</Typography>
                 </Grid>
                 {isLoading ||
                     (partsSearchLoading && (
