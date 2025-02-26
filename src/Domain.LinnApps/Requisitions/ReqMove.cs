@@ -116,12 +116,12 @@
                     this.PalletNumber = header.ToPalletNumber;
                 }
 
-                if (string.IsNullOrEmpty(header.ToStockPool))
+                if (!string.IsNullOrEmpty(header.ToStockPool))
                 {
                     this.StockPoolCode = header.ToStockPool;
                 }
 
-                if (string.IsNullOrEmpty(header.ToState))
+                if (!string.IsNullOrEmpty(header.ToState))
                 {
                     this.State = header.ToState;
                 }

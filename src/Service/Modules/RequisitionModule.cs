@@ -27,7 +27,7 @@
             app.MapPost("/requisitions/book", this.Book);
             app.MapPost("/requisitions/authorise", this.Authorise);
             app.MapPost("/requisitions", this.Create);
-            app.MapPut("/requisitions/{reqNumber}", this.Update);
+            app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
         }
 

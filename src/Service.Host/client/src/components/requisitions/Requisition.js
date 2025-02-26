@@ -23,7 +23,6 @@ import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 import useInitialise from '../../hooks/useInitialise';
 import usePost from '../../hooks/usePost';
-import usePut from '../../hooks/usePut';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
@@ -105,7 +104,7 @@ function Requisition({ creating }) {
         send: updateReq,
         isLoading: updateLoading,
         errorMessage: updateError
-    } = usePut(itemTypes.requisitions.url, true, true);
+    } = usePost(itemTypes.requisitions.url, true, true);
 
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
