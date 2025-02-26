@@ -48,8 +48,9 @@
                          && (string.IsNullOrEmpty(partNumber) || x.PartNumber.ToUpper().Contains(partNumber.ToUpper().Trim()))
                          && (string.IsNullOrEmpty(transactionCode) || x.TransactionCode.ToUpper().Contains(transactionCode.ToUpper().Trim()))
                          && (!x.TransactionCode.StartsWith("STSTM") || x.DebitOrCredit != "D")
-                         && (functionCodes == null || functionCodes.Count == 0
-                                                   || functionCodes.Any(f => x.FunctionCode.ToUpper().Contains(f))))
+                         && (functionCodes == null 
+                             || functionCodes.Count == 0
+                             || functionCodes.Any(f => x.FunctionCode.ToUpper().Contains(f))))
                 .OrderBy(x => x.BudgetId);
 
             var model = new ResultsModel { ReportTitle = new NameModel("Stock Transaction List") };
@@ -80,6 +81,7 @@
                             TextDisplay = stockTransaction.BudgetId.ToString(),
                             ColumnId = "BudgetId"
                         });
+
                 values.Add(
                     new CalculationValueModel
                         {
@@ -145,8 +147,8 @@
         {
             return new List<AxisDetailsModel>
                               {
-                                  new AxisDetailsModel("Transaction", "Transaction", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("BudgetId", "Budget Id", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("Transaction", "Transaction", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("Requisition", "Requisition", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("Document1", "Document1", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("FunctionCode", "Function Code", GridDisplayType.TextValue, 150),

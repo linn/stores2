@@ -22,8 +22,7 @@ import ReportDataGrids from './ReportDataGrids';
 function StoresTransViewer() {
     const [partNumber, setPartNumber] = useState(null);
     const [transactionCode, setTransactionCode] = useState(null);
-    const [functionCodes, setFunctionCodes] = useState(null);
-    const [functionCodeSelect, setFunctionCodeSelect] = useState(null);
+    const [functionCodes, setFunctionCodes] = useState([]); 
     const defaultStartDate = moment().subtract(1, 'days');
     const [fromDate, setFromDate] = useState(defaultStartDate);
     const [toDate, setToDate] = useState(new Date());
@@ -79,8 +78,10 @@ function StoresTransViewer() {
         return queryString;
     };
 
-    const handleFunctionCodeChange = (propertyName, newValue) => {
-        setFunctionCode(current => ({ ...current, [propertyName]: newValue }));
+    const addToFunctionCodeList = newVal => {
+        if (newVal && !functionCodes.includes(newVal)) {
+            setFunctionCodes(prev => [...prev, newVal]);
+        }
     };
 
     const reports = useMemo(
@@ -110,7 +111,7 @@ function StoresTransViewer() {
                             <Loading />
                         </Grid>
                     ))}
-                <Grid size={4}>
+                <Grid size={3}>
                     <DatePicker
                         label="From Date"
                         value={fromDate}
@@ -118,7 +119,7 @@ function StoresTransViewer() {
                         onChange={setFromDate}
                     />
                 </Grid>
-                <Grid size={4}>
+                <Grid size={3}>
                     <DatePicker
                         label="To Date"
                         value={toDate}
@@ -126,44 +127,7 @@ function StoresTransViewer() {
                         onChange={setToDate}
                     />
                 </Grid>
-                <Grid size={2}>
-                    <DataGrid
-                        rows={
-                            functionCodes?.map(a => ({
-                                id: a
-                            })) ?? []
-                        }
-                        columns={detailColumns}
-                        density="compact"
-                        rowHeight={45}
-                        hideFooter
-                    />
-                </Grid>
-                <Grid size={4}>
-                    {functionCodesResult && (
-                        <Dropdown
-                            value={functionCode}
-                            fullWidth
-                            label="Function Code"
-                            propertyName="functionCode"
-                            allowNoValue
-                            items={functionCodesResult.map(c => ({
-                                id: c.code,
-                                displayText: `${c.code} - ${c.description}`
-                            }))}
-                            onChange={handleFunctionCodeChange}
-                        />
-                    )}
-                </Grid>
-                <Grid size={4}>
-                    <InputField
-                        value={transactionCode}
-                        onChange={(_, newValue) => setTransactionCode(newValue)}
-                        label="Transaction Code"
-                        propertyName="transactionCode"
-                    />
-                </Grid>
-                <Grid size={4}>
+                <Grid size={3}>
                     <Search
                         propertyName="partNumber"
                         label="Part"
@@ -177,12 +141,62 @@ function StoresTransViewer() {
                         searchResults={partsSearchResults}
                         priorityFunction="closestMatchesFirst"
                         onResultSelect={r => {
-                            setPartNumber(r);
+                            setPartNumber(r.name);
                         }}
                         clearSearch={clearPartsSearch}
                         autoFocus={false}
                     />
                 </Grid>
+                <Grid size={3}>
+                    <InputField
+                        value={transactionCode}
+                        onChange={(_, newValue) => setTransactionCode(newValue)}
+                        label="Transaction Code"
+                        propertyName="transactionCode"
+                    />
+                </Grid>
+                <Grid size={3}>
+                    {functionCodesResult && (
+                        <Dropdown
+                            value={null}
+                            fullWidth
+                            label="Function Code"
+                            propertyName="functionCode"
+                            helperText="Select function codes to add to search parameters"
+                            allowNoValue
+                            items={functionCodesResult.map(c => ({
+                                id: c.code,
+                                displayText: `${c.code} - ${c.description}`
+                            }))}
+                            onChange={(_, newVal) => addToFunctionCodeList(newVal)}
+                        />
+                    )}
+                </Grid>
+                <Grid size={3}>
+                    <DataGrid
+                        rows={
+                            functionCodes?.map(a => ({
+                                id: a
+                            })) ?? []
+                        }
+                        columns={detailColumns}
+                        density="compact"
+                        rowHeight={45}
+                        hideFooter
+                    />
+                </Grid>
+                <Grid size={1}>
+                    <Button
+                        color="secondary"
+                        variant="outlined"
+                        onClick={() => {
+                            setFunctionCodes([]);
+                        }}
+                    >
+                        Clear
+                    </Button>
+                </Grid>
+                <Grid size={2} />
                 <Grid size={4}>
                     <Button
                         disabled={isLoading}
