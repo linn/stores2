@@ -11,8 +11,6 @@
     using Linn.Common.Persistence;
     using Linn.Common.Resources;
 
-    using Microsoft.EntityFrameworkCore;
-
     public abstract class AsyncFacadeService<T, TKey, TResource, TUpdateResource, TSearchResource> 
         : IAsyncFacadeService<T, TKey, TResource, TUpdateResource, TSearchResource>
     {

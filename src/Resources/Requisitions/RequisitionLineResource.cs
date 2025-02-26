@@ -42,6 +42,8 @@
 
         public string Cancelled { get; set; }
 
+        public bool? StockPicked { get; set; }
+
         public IEnumerable<RequisitionLinePostingResource> Postings { get; set; }
 
         public IEnumerable<StoresBudgetResource> StoresBudgets { get; set; }
