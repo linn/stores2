@@ -92,17 +92,14 @@ function reducer(state, action) {
                                       seq: index + 1,
                                       part: move.partNumber,
                                       qty: move.quantityToPick,
-                                      from: {
-                                          seq: index + 1,
-                                          locationCode: move.locationName,
-                                          locationDescription: move.locationDescription,
-                                          palletNumber: move.palletNumber,
-                                          state: move.state,
-                                          batchRef: move.batchRef,
-                                          batchDate: move.stockRotationDate,
-                                          qtyAtLocation: move.quantity,
-                                          qtyAllocated: move.qtyAllocated
-                                      }
+                                      fromLocationCode: move.locationName,
+                                      fromLocationDescription: move.locationDescription,
+                                      fromPalletNumber: move.palletNumber,
+                                      fromState: move.state,
+                                      fromBatchRef: move.batchRef,
+                                      fromBatchDate: move.stockRotationDate,
+                                      qtyAtLocation: move.quantity,
+                                      qtyAllocated: move.qtyAllocated
                                   }))
                               ]
                           }
@@ -137,7 +134,8 @@ function reducer(state, action) {
                                   {
                                       lineNumber: action.payload.lineNumber,
                                       seq: line.moves ? line.moves.length + 1 : 1,
-                                      to: { stockPool: 'LINN', state: 'STORES' },
+                                      toStockPool: 'LINN',
+                                      toState: 'STORES',
                                       part: line.part.partNumber
                                   }
                               ]
@@ -157,10 +155,8 @@ function reducer(state, action) {
                                   m.seq === action.payload.seq
                                       ? {
                                             ...m,
-                                            qty: action.payload.qty,
-                                            to: {
-                                                ...action.payload
-                                            }
+
+                                            ...action.payload
                                         }
                                       : m
                               )
