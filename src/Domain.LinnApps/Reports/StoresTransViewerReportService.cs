@@ -38,19 +38,17 @@
             var toDateSearch = string.IsNullOrWhiteSpace(toDate) ? (DateTime?)null
                              : DateTime.Parse(toDate);
 
-            var functionCodes = functionCodeList?.Where(f => !string.IsNullOrWhiteSpace(f))
-                .Select(fc => fc.ToUpper().Trim())
-                .ToList();
+            var functionCodes = functionCodeList?.Select(f => f.ToUpper()).ToList();
 
-            var data = this.stockTransactionRepository.FilterBy(
-                    x => (fromDateSearch == null || x.BudgetDate >= fromDateSearch)
-                         && (toDateSearch == null || x.BudgetDate <= toDateSearch)
-                         && (string.IsNullOrEmpty(partNumber) || x.PartNumber.ToUpper().Contains(partNumber.ToUpper().Trim()))
-                         && (string.IsNullOrEmpty(transactionCode) || x.TransactionCode.ToUpper().Contains(transactionCode.ToUpper().Trim()))
-                         && (!x.TransactionCode.StartsWith("STSTM") || x.DebitOrCredit != "D")
-                         && (functionCodes == null 
-                             || functionCodes.Count == 0
-                             || functionCodes.Any(f => x.FunctionCode.ToUpper().Contains(f))))
+            var data = this.stockTransactionRepository
+                .FilterBy(x => (fromDateSearch == null || x.BudgetDate >= fromDateSearch)
+                               && (toDateSearch == null || x.BudgetDate <= toDateSearch)
+                               && (string.IsNullOrEmpty(partNumber) || x.PartNumber.Contains(partNumber.Trim()))
+                               && (string.IsNullOrEmpty(transactionCode) || x.TransactionCode.Contains(transactionCode.Trim()))
+                               && (!x.TransactionCode.StartsWith("STSTM") || x.DebitOrCredit != "D")
+                               && (functionCodes == null
+                                   || functionCodes.Count == 0
+                                   || functionCodes.Contains(x.FunctionCode.ToUpper())))
                 .OrderBy(x => x.BudgetId);
 
             var model = new ResultsModel { ReportTitle = new NameModel("Stock Transaction List") };
