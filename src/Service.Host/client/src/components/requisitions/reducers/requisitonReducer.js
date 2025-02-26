@@ -157,8 +157,10 @@ function reducer(state, action) {
                                   m.seq === action.payload.seq
                                       ? {
                                             ...m,
-                                            palletNumber: action.payload.pallet,
-                                            qty: action.payload.qty
+                                            qty: action.payload.qty,
+                                            to: {
+                                                ...action.payload
+                                            }
                                         }
                                       : m
                               )

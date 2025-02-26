@@ -23,11 +23,11 @@ import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 import useInitialise from '../../hooks/useInitialise';
 import usePost from '../../hooks/usePost';
+import useUserProfile from '../../hooks/useUserProfile';
+import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
-import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import MovesTab from './MovesTab';
-import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
 import BookedBy from './components/BookedBy';
 import AuthBy from './components/AuthBy';
@@ -675,6 +675,8 @@ function Requisition({ creating }) {
                                         formState.lines?.find(x => x.lineNumber === selectedLine)
                                             ?.moves
                                     }
+                                    stockPools={stockPools}
+                                    stockStates={stockStates}
                                     addMoveOnto={
                                         canAddMovesOnto
                                             ? () => {

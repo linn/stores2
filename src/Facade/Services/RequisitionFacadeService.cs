@@ -227,14 +227,14 @@
 
             return new LineCandidate
                        {
-                           Moves = resource.Moves.Where(x => x.From != null).Select(
+                           Moves = resource.Moves.Select(
                                m => new MoveSpecification
                                         {
                                             Qty = m.Qty.GetValueOrDefault(), 
-                                            FromLocation  = m.From.LocationCode,
-                                            FromPallet = m.From.PalletNumber,
-                                            ToLocation = m.To.LocationCode,
-                                            ToPallet = m.To.PalletNumber
+                                            FromLocation  = m.FromLocationCode,
+                                            FromPallet = m.FromPalletNumber,
+                                            ToLocation = m.ToLocationCode,
+                                            ToPallet = m.ToPalletNumber
                                         }),
                            LineNumber = resource.LineNumber,
                            PartNumber = resource.Part?.PartNumber,

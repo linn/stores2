@@ -3,6 +3,7 @@ const globals = require('globals');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const reactHooks = require('eslint-plugin-react-hooks');
 const unusedImports = require('eslint-plugin-unused-imports');
+const importPlugin = require('eslint-plugin-import');
 const js = require('@eslint/js');
 
 module.exports = [
@@ -12,7 +13,8 @@ module.exports = [
         plugins: {
             react,
             'react-hooks': reactHooks,
-            'unused-imports': unusedImports
+            'unused-imports': unusedImports,
+            import: importPlugin
         },
         languageOptions: {
             ecmaVersion: 2022,
@@ -32,11 +34,19 @@ module.exports = [
             // ... any rules you want
             'react/jsx-uses-react': 'error',
             'react/jsx-uses-vars': 'error',
+            'import/no-unresolved': 'error',
+
             'react/jsx-no-undef': 'error',
             'react-hooks/rules-of-hooks': 'error',
             'react-hooks/exhaustive-deps': 'warn',
             'no-unused-vars': 'error',
-            'no-console': 'warn'
+            'no-console': 'warn',
+            'import/order': [
+                'error',
+                {
+                    groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index']
+                }
+            ]
         }
     },
     eslintPluginPrettierRecommended

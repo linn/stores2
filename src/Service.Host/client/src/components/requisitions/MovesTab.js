@@ -1,12 +1,87 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Grid from '@mui/material/Grid2';
-import { DataGrid } from '@mui/x-data-grid';
+import { Search } from '@linn-it/linn-form-components-library';
+import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
+import useSearch from '../../hooks/useSearch';
+import itemTypes from '../../itemTypes';
 
-function MovesTab({ moves = [], addMoveOnto = null, updateMoveOnto = null }) {
+function MovesTab({
+    moves = [],
+    addMoveOnto = null,
+    updateMoveOnto = null,
+    stockPools = [],
+    stockStates = []
+}) {
+    const [searchDialogOpen, setSearchDialogOpen] = useState({
+        forRow: null
+    });
+
+    const {
+        search: searchLocations,
+        results: locationsSearchResults,
+        loading: locationsSearchLoading,
+        clear: clearLocationsSearch
+    } = useSearch(itemTypes.storageLocations.url, 'locationId', 'locationCode', 'description');
+
+    const [searchTerm, setSearchTerm] = useState();
+
+    const renderSearchDialog = () => {
+        const handleClose = () => {
+            setSearchDialogOpen({ forRow: null });
+        };
+
+        const handleSearchResultSelect = selected => {
+            const currentRow = moves
+                .filter(x => x.to)
+                ?.find(r => r.seq === searchDialogOpen.forRow);
+            console.log(currentRow);
+            console.log(selected);
+            const newRow = {
+                ...currentRow,
+                locationCode: selected.name,
+                locationDescription: selected.description
+            };
+
+            processRowUpdate(newRow);
+            setSearchDialogOpen({ forRow: null });
+        };
+
+        return (
+            <Dialog open={searchDialogOpen.forRow} onClose={handleClose}>
+                <DialogTitle>Search</DialogTitle>
+                <DialogContent>
+                    <Search
+                        autoFocus
+                        propertyName="defaultLocation"
+                        label="defaultLocation"
+                        resultsInModal
+                        resultLimit={100}
+                        value={searchTerm}
+                        loading={locationsSearchLoading}
+                        handleValueChange={(_, newVal) => setSearchTerm(newVal)}
+                        search={searchLocations}
+                        searchResults={locationsSearchResults}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handleSearchResultSelect}
+                        clearSearch={clearLocationsSearch}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
+        );
+    };
+
     const headerColumns = [
         {
             field: 'seq',
@@ -42,37 +117,38 @@ function MovesTab({ moves = [], addMoveOnto = null, updateMoveOnto = null }) {
             width: 100
         },
         {
-            field: 'locationCode',
+            field: 'fromLocationCode',
             headerName: 'Loc Code',
             width: 100
         },
         {
-            field: 'locationDescription',
+            field: 'fromLocationDescription',
             headerName: 'Loc Desc',
             width: 150
         },
         {
-            field: 'palletNumber',
+            field: 'fromPalletNumber',
             headerName: 'Pallet',
-            width: 150
+            width: 150,
+            type: 'number'
         },
         {
-            field: 'stockPool',
+            field: 'fromStockPool',
             headerName: 'Stock Pool',
             width: 100
         },
         {
-            field: 'state',
+            field: 'fromState',
             headerName: 'State',
             width: 100
         },
         {
-            field: 'batchRef',
+            field: 'fromBatchRef',
             headerName: 'Batch Ref',
             width: 100
         },
         {
-            field: 'batchDate',
+            field: 'fromBatchDate',
             headerName: 'Batch Date',
             width: 100
         },
@@ -102,23 +178,37 @@ function MovesTab({ moves = [], addMoveOnto = null, updateMoveOnto = null }) {
             type: 'number'
         },
         {
-            field: 'locationCode',
+            field: 'toLocationCode',
             headerName: 'Loc Code',
-            width: 100
+            width: 100,
+            renderCell: params => (
+                <>
+                    <GridSearchIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={() =>
+                            setSearchDialogOpen({
+                                forRow: params.id
+                            })
+                        }
+                    />
+                    {params.value}
+                </>
+            )
         },
         {
-            field: 'locationDescription',
+            field: 'toLocationDescription',
             headerName: 'Loc Desc',
             width: 150
         },
         {
-            field: 'palletNumber',
+            field: 'toPalletNumber',
             headerName: 'Pallet',
             editable: true,
-            width: 150
+            width: 150,
+            type: 'number'
         },
         {
-            field: 'stockPool',
+            field: 'toStockPool',
             headerName: 'Stock Pool',
             width: 100
         },
@@ -139,68 +229,71 @@ function MovesTab({ moves = [], addMoveOnto = null, updateMoveOnto = null }) {
         }
     ];
 
-    const processRowUpdate = newRow => {
-        console.log(newRow);
-        updateMoveOnto(newRow);
-        return newRow;
+    const processRowUpdate = updated => {
+        const newRowValues = { ...updated, ...updated.to };
+        updateMoveOnto(newRowValues);
+        return newRowValues;
     };
 
     return (
-        <Grid container spacing={3}>
-            <Grid size={6}>
-                <DataGrid
-                    getRowId={r => r.seq}
-                    rows={moves}
-                    hideFooter
-                    columns={headerColumns}
-                    density="compact"
-                    editMode="cell"
-                    loading={false}
-                />
+        <>
+            {searchDialogOpen.forRow && renderSearchDialog()}
+            <Grid container spacing={3}>
+                <Grid size={6}>
+                    <DataGrid
+                        getRowId={r => r.seq}
+                        rows={moves}
+                        hideFooter
+                        columns={headerColumns}
+                        density="compact"
+                        editMode="cell"
+                        loading={false}
+                    />
+                </Grid>
+                <Grid size={6} />
+                <Grid size={12}>
+                    <Typography variant="h6">From</Typography>
+                </Grid>
+                <Grid size={12}>
+                    <DataGrid
+                        getRowId={r => r.seq}
+                        rows={moves.filter(x => x.fromLocationCode || x.fromPalletNumber)}
+                        hideFooter
+                        columns={fromColumns}
+                        density="compact"
+                        editMode="cell"
+                        loading={false}
+                    />
+                </Grid>
+                <Grid size={12}>
+                    <Typography variant="h6">Onto</Typography>
+                </Grid>
+                <Grid size={12}>
+                    <DataGrid
+                        getRowId={r => r.seq}
+                        rows={moves.filter(x => x.toLocationCode || x.toPalletNumber)}
+                        hideFooter
+                        columns={toColumns}
+                        processRowUpdate={processRowUpdate}
+                        density="compact"
+                        editMode="cell"
+                        loading={false}
+                    />
+                </Grid>
+                <Grid size={12}>
+                    <Tooltip title="Add Line">
+                        <IconButton
+                            disabled={!addMoveOnto}
+                            onClick={addMoveOnto}
+                            color="primary"
+                            size="large"
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Grid>
             </Grid>
-            <Grid size={6} />
-            <Grid size={12}>
-                <Typography variant="h6">From</Typography>
-            </Grid>
-            <Grid size={12}>
-                <DataGrid
-                    getRowId={r => r.seq}
-                    rows={moves.filter(x => x.from).map(m => ({ seq: m.seq, ...m.from }))}
-                    hideFooter
-                    columns={fromColumns}
-                    density="compact"
-                    editMode="cell"
-                    loading={false}
-                />
-            </Grid>
-            <Grid size={12}>
-                <Typography variant="h6">Onto</Typography>
-            </Grid>
-            <Grid size={12}>
-                <DataGrid
-                    getRowId={r => r.seq}
-                    rows={moves.filter(x => x.to).map(m => ({ seq: m.seq, ...m.to, qty: m.qty }))}
-                    hideFooter
-                    columns={toColumns}
-                    processRowUpdate={processRowUpdate}
-                    density="compact"
-                    editMode="cell"
-                    loading={false}
-                />
-            </Grid>
-            <Grid size={12}>
-                <Tooltip title="Add Line">
-                    <IconButton
-                        disabled={!addMoveOnto}
-                        onClick={addMoveOnto}
-                        color="primary"
-                        size="large"
-                    >
-                        <AddIcon />
-                    </IconButton>
-                </Tooltip>
-            </Grid>
-        </Grid>
+        </>
     );
 }
 
