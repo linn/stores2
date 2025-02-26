@@ -34,6 +34,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         Task<RequisitionHeader> CreateLoanReq(int loanNumber);
 
-        Task PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks);
+        Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks);
     }
 }

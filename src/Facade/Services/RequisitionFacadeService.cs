@@ -177,7 +177,7 @@
                     {
                         if (updatedLine.StockPicked == true)
                         {
-                            await this.requisitionManager.PickStockOnRequisitionLine(entity, candidate);
+                           entity = await this.requisitionManager.PickStockOnRequisitionLine(entity, candidate);
                         }
                     }
 

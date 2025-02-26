@@ -100,5 +100,32 @@
 
             return false;
         }
+
+        public void SetOntoFieldsFromHeader(RequisitionHeader header)
+        {
+            if (header != null)
+            {
+                if (header.ToLocation != null)
+                {
+                    this.Location = header.ToLocation;
+                    this.LocationId = header.ToLocation.LocationId;
+                }
+
+                if (header.ToPalletNumber != null)
+                {
+                    this.PalletNumber = header.ToPalletNumber;
+                }
+
+                if (string.IsNullOrEmpty(header.ToStockPool))
+                {
+                    this.StockPoolCode = header.ToStockPool;
+                }
+
+                if (string.IsNullOrEmpty(header.ToState))
+                {
+                    this.State = header.ToState;
+                }
+            }
+        }
     }
 }
