@@ -58,7 +58,7 @@
         public void ShouldReturnReport()
         {
             this.result.ReportTitle.DisplayValue.Should().Be("Stock Transaction List");
-            this.result.Columns.Should().HaveCount(11);
+            this.result.Columns.Should().HaveCount(10);
             this.result.Rows.Should().HaveCount(1);
             this.result.GetGridTextValue(0, 0).Should().Be("123");
             this.result.GetGridTextValue(0, 1).Should().Be("SDFR");
@@ -68,8 +68,8 @@
             this.result.GetGridTextValue(0, 5).Should().Be("PART");
             this.result.GetGridTextValue(0, 6).Should().Be("19.00");
             this.result.GetGridTextValue(0, 7).Should().Be("100");
-            this.result.GetGridTextValue(0, 9).Should().Be("33156");
-            this.result.GetGridTextValue(0, 10).Should().Be("Req");
+            this.result.GetGridTextValue(0, 8).Should().Be("33156");
+            this.result.GetGridTextValue(0, 9).Should().Be("Req");
         }
     }
 }
