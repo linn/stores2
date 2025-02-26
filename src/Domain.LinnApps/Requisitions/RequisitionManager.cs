@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
@@ -388,6 +390,44 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var reqNumber = Convert.ToInt32(proxyResult.Message);
 
             return await this.repository.FindByIdAsync(reqNumber);
+        }
+
+        public async Task PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks)
+        {
+            var line = header.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
+
+            if (line == null)
+            {
+                throw new PickStockException("Could not find line");
+            }
+
+            // if no moves before
+            if (!line.Moves.Any())
+            {
+                if (lineWithPicks.StockPicks != null)
+                {
+                    foreach (var pick in lineWithPicks.StockPicks)
+                    {
+                        var fromLocation = string.IsNullOrEmpty(pick.Location)
+                            ? null
+                            : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.Location);
+                        var pickResult = await this.requisitionStoredProcedures.PickStock(
+                            lineWithPicks.PartNumber,
+                            header.ReqNumber,
+                            lineWithPicks.LineNumber,
+                            pick.Qty,
+                            fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
+                            pick.Pallet,
+                            header.FromStockPool,
+                            lineWithPicks.TransactionDefinition);
+
+                        if (!pickResult.Success)
+                        {
+                            throw new PickStockException("failed in pick_stock: " + pickResult.Message);
+                        }
+                    }
+                }
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 import useInitialise from '../../hooks/useInitialise';
 import usePost from '../../hooks/usePost';
+import usePut from '../../hooks/usePut';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
@@ -99,6 +100,12 @@ function Requisition({ creating }) {
         isLoading: createLoading,
         errorMessage: createError
     } = usePost(itemTypes.requisitions.url, true, true);
+
+    const {
+        send: updateReq,
+        isLoading: updateLoading,
+        errorMessage: updateError
+    } = usePut(itemTypes.requisitions.url, true, true);
 
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
@@ -245,6 +252,9 @@ function Requisition({ creating }) {
             return !!formState?.lines?.length;
         }
 
+        if (formState?.lines?.length) {
+            return formState.lines.find(l => l.stockPicked);
+        }
         return false;
     };
 
@@ -335,371 +345,392 @@ function Requisition({ creating }) {
                         <ErrorCard errorMessage={createError} />
                     </Grid>
                 )}
+                {updateError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={updateError} />
+                    </Grid>
+                )}
                 {(fetchLoading ||
                     cancelLoading ||
                     bookLoading ||
                     authoriseLoading ||
-                    createLoading) && (
+                    createLoading ||
+                    updateLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
                 )}
-                {!fetchLoading && !cancelLoading && !createLoading && formState && (
-                    <>
-                        <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.reqNumber}
-                                type="number"
-                                onChange={() => {}}
-                                label="Req Number"
-                                propertyName="reqNumber"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            {shouldRender(null, false) && (
-                                <Dropdown
+                {!fetchLoading &&
+                    !cancelLoading &&
+                    !createLoading &&
+                    !updateLoading &&
+                    formState && (
+                        <>
+                            <Grid size={2}>
+                                <InputField
                                     fullWidth
-                                    items={['Y', 'N']}
-                                    value={formState.reversed}
+                                    value={formState.reqNumber}
+                                    type="number"
                                     onChange={() => {}}
-                                    label="Reversed"
-                                    propertyName="reversed"
+                                    label="Req Number"
+                                    propertyName="reqNumber"
                                 />
-                            )}
-                        </Grid>
-                        <BookedBy
-                            shouldRender={shouldRender(null, false)}
-                            dateBooked={formState.dateBooked}
-                            bookedByName={formState.bookedByName}
-                            bookUrl={utilities.getHref(result, 'book')}
-                            onBook={() => {
-                                book(null, { reqNumber });
-                            }}
-                        />
-                        <Grid size={2} />
-                        <Grid size={2}>
-                            {!codesLoading && functionCodes && (
-                                <Search
-                                    propertyName="storesFunction"
-                                    label="Function"
-                                    resultsInModal
-                                    resultLimit={100}
-                                    disabled={!creating || !!formState.lines?.length}
-                                    helperText="Enter a value, or press enter to view all function codes"
-                                    value={formState.storesFunction?.code}
-                                    handleValueChange={(_, newVal) => {
-                                        dispatch({
-                                            type: 'set_header_value',
-                                            payload: {
-                                                fieldName: 'storesFunction',
-                                                newValue: { code: newVal }
-                                            }
-                                        });
-                                    }}
-                                    search={() => {}}
-                                    loading={false}
-                                    searchResults={functionCodes.map(f => ({
-                                        ...f,
-                                        id: f.code,
-                                        name: f.code,
-                                        description: f.description
-                                    }))}
-                                    onKeyPressFunctions={[
-                                        { keyCode: 9, action: getAndSetFunctionCode }
-                                    ]}
-                                    priorityFunction="closestMatchesFirst"
-                                    onResultSelect={r => {
-                                        dispatch({
-                                            type: 'set_header_value',
-                                            payload: { fieldName: 'storesFunction', newValue: r }
-                                        });
-                                        setDefaultHeaderFieldsForFunctionCode(r);
-                                    }}
-                                    clearSearch={() => {}}
-                                    autoFocus={false}
-                                />
-                            )}
-                        </Grid>
-                        <Grid size={4}>
-                            <InputField
-                                fullWidth
-                                value={formState.storesFunction?.description}
-                                onChange={() => {}}
-                                label="Function Code Description"
-                                propertyName="storesFunctionDescription"
-                            />
-                        </Grid>
-                        <Grid size={6} />
-                        <Grid size={2}>
-                            <InputField
-                                fullWidth
-                                value={formState.createdByName}
-                                onChange={() => {}}
-                                label="Created By"
-                                propertyName="createdByName"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <DatePicker
-                                value={formState.dateCreated}
-                                onChange={() => {}}
-                                label="Date Created"
-                                propertyName="dateCreated"
-                            />
-                        </Grid>
-                        <Grid size={2}>
-                            <Button
-                                disabled={
-                                    formState.cancelled === 'Y' || formState.dateBooked || creating
-                                }
-                                variant="contained"
-                                sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
-                                onClick={() => setCancelDialogVisible(true)}
-                            >
-                                Cancel Req
-                            </Button>
-                        </Grid>
-                        <Grid size={6} />
-                        <DepartmentNominal
-                            departmentCode={formState.department?.departmentCode}
-                            departmentDescription={formState.department?.description}
-                            setDepartment={newDept =>
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName: 'department', newValue: newDept }
-                                })
-                            }
-                            nominalCode={formState.nominal?.nominalCode}
-                            nominalDescription={formState.nominal?.description}
-                            setNominal={newNominal =>
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName: 'nominal', newValue: newNominal }
-                                })
-                            }
-                            shouldRender={shouldRender(
-                                () =>
-                                    !formState.storesFunction?.departmentNominalRequired ||
-                                    formState.storesFunction?.departmentNominalRequired !== 'N'
-                            )}
-                        />
-                        <AuthBy
-                            dateAuthorised={formState.dateAuthorised}
-                            authorisedByName={formState.authorisedByName}
-                            shouldRender={shouldRender(null, false)}
-                            authoriseUrl={utilities.getHref(result, 'authorise')}
-                            onAuthorise={() => {
-                                authorise(null, { reqNumber });
-                            }}
-                        />
-                        {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
-                            <>
-                                <Grid size={2}>
+                            </Grid>
+                            <Grid size={2}>
+                                {shouldRender(null, false) && (
                                     <Dropdown
                                         fullWidth
                                         items={['Y', 'N']}
-                                        allowNoValue
-                                        value={formState.manualPick}
+                                        value={formState.reversed}
                                         onChange={() => {}}
-                                        label="Manual Pick"
-                                        propertyName="manualPick"
+                                        label="Reversed"
+                                        propertyName="reversed"
                                     />
-                                </Grid>
-                                <Grid size={2}>
-                                    <Dropdown
-                                        fullWidth
-                                        items={['F', 'O']}
-                                        allowNoValue
-                                        value={formState.reqType}
-                                        onChange={handleHeaderFieldChange}
-                                        label="Req Type"
-                                        propertyName="reqType"
+                                )}
+                            </Grid>
+                            <BookedBy
+                                shouldRender={shouldRender(null, false)}
+                                dateBooked={formState.dateBooked}
+                                bookedByName={formState.bookedByName}
+                                bookUrl={utilities.getHref(result, 'book')}
+                                onBook={() => {
+                                    book(null, { reqNumber });
+                                }}
+                            />
+                            <Grid size={2} />
+                            <Grid size={2}>
+                                {!codesLoading && functionCodes && (
+                                    <Search
+                                        propertyName="storesFunction"
+                                        label="Function"
+                                        resultsInModal
+                                        resultLimit={100}
+                                        disabled={!creating || !!formState.lines?.length}
+                                        helperText="Enter a value, or press enter to view all function codes"
+                                        value={formState.storesFunction?.code}
+                                        handleValueChange={(_, newVal) => {
+                                            dispatch({
+                                                type: 'set_header_value',
+                                                payload: {
+                                                    fieldName: 'storesFunction',
+                                                    newValue: { code: newVal }
+                                                }
+                                            });
+                                        }}
+                                        search={() => {}}
+                                        loading={false}
+                                        searchResults={functionCodes.map(f => ({
+                                            ...f,
+                                            id: f.code,
+                                            name: f.code,
+                                            description: f.description
+                                        }))}
+                                        onKeyPressFunctions={[
+                                            { keyCode: 9, action: getAndSetFunctionCode }
+                                        ]}
+                                        priorityFunction="closestMatchesFirst"
+                                        onResultSelect={r => {
+                                            dispatch({
+                                                type: 'set_header_value',
+                                                payload: {
+                                                    fieldName: 'storesFunction',
+                                                    newValue: r
+                                                }
+                                            });
+                                            setDefaultHeaderFieldsForFunctionCode(r);
+                                        }}
+                                        clearSearch={() => {}}
+                                        autoFocus={false}
                                     />
-                                </Grid>
-                                <Grid size={8} />
-                            </>
-                        )}
-                        <Document1
-                            document1={formState.document1}
-                            document1Text={formState.storesFunction?.document1Text}
-                            handleFieldChange={handleHeaderFieldChange}
-                            shouldRender={
-                                formState.storesFunction &&
-                                formState.storesFunction.document1Required
-                            }
-                            shouldEnter={formState.storesFunction?.document1Entered && creating}
-                        />
-                        <PartNumberQuantity
-                            partNumber={formState.part?.partNumber}
-                            partDescription={formState.part?.description}
-                            showQuantity
-                            quantity={formState.quantity}
-                            setPart={newPart => {
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName: 'part', newValue: newPart }
-                                });
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: {
-                                        fieldName: 'partNumber',
-                                        newValue: newPart?.partNumber
+                                )}
+                            </Grid>
+                            <Grid size={4}>
+                                <InputField
+                                    fullWidth
+                                    value={formState.storesFunction?.description}
+                                    onChange={() => {}}
+                                    label="Function Code Description"
+                                    propertyName="storesFunctionDescription"
+                                />
+                            </Grid>
+                            <Grid size={6} />
+                            <Grid size={2}>
+                                <InputField
+                                    fullWidth
+                                    value={formState.createdByName}
+                                    onChange={() => {}}
+                                    label="Created By"
+                                    propertyName="createdByName"
+                                />
+                            </Grid>
+                            <Grid size={2}>
+                                <DatePicker
+                                    value={formState.dateCreated}
+                                    onChange={() => {}}
+                                    label="Date Created"
+                                    propertyName="dateCreated"
+                                />
+                            </Grid>
+                            <Grid size={2}>
+                                <Button
+                                    disabled={
+                                        formState.cancelled === 'Y' ||
+                                        formState.dateBooked ||
+                                        creating
                                     }
-                                });
-                            }}
-                            setQuantity={newQty =>
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName: 'quantity', newValue: newQty }
-                                })
-                            }
-                            shouldRender={
-                                formState.storesFunction &&
-                                formState.storesFunction?.partNumberRequired
-                            }
-                        />
-                        <StockOptions
-                            fromState={formState.fromState}
-                            fromStockPool={formState.fromStockPool}
-                            batchDate={formState.batchDate}
-                            toState={formState.toState}
-                            toStockPool={formState.toStockPool}
-                            stockStates={stockStates}
-                            stockPools={stockPools}
-                            partNumber={formState.part?.partNumber}
-                            quantity={formState.quantity}
-                            fromLocationCode={formState.fromLocationCode}
-                            fromPalletNumber={formState.fromPalletNumber}
-                            doPickStock={doPickStock}
-                            toLocationCode={formState.toLocationCode}
-                            toPalletNumber={formState.toPalletNumber}
-                            functionCode={formState.storesFunction}
-                            setItemValue={(fieldName, newValue) =>
-                                dispatch({
-                                    type: 'set_header_value',
-                                    payload: { fieldName, newValue }
-                                })
-                            }
-                            disabled={stockStatesLoading || stockPoolsLoading || !creating}
-                            shouldRender={shouldRender(
-                                () =>
-                                    formState.storesFunction?.code === 'MOVE' ||
-                                    ((formState.fromLocationRequired !== 'N' ||
-                                        formState.toLocationRequired !== 'N') &&
-                                        !(
-                                            formState.storesFunction?.code === 'LOAN OUT' &&
-                                            creating
-                                        ))
+                                    variant="contained"
+                                    sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
+                                    onClick={() => setCancelDialogVisible(true)}
+                                >
+                                    Cancel Req
+                                </Button>
+                            </Grid>
+                            <Grid size={6} />
+                            <DepartmentNominal
+                                departmentCode={formState.department?.departmentCode}
+                                departmentDescription={formState.department?.description}
+                                setDepartment={newDept =>
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'department', newValue: newDept }
+                                    })
+                                }
+                                nominalCode={formState.nominal?.nominalCode}
+                                nominalDescription={formState.nominal?.description}
+                                setNominal={newNominal =>
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'nominal', newValue: newNominal }
+                                    })
+                                }
+                                shouldRender={shouldRender(
+                                    () =>
+                                        !formState.storesFunction?.departmentNominalRequired ||
+                                        formState.storesFunction?.departmentNominalRequired !== 'N'
+                                )}
+                            />
+                            <AuthBy
+                                dateAuthorised={formState.dateAuthorised}
+                                authorisedByName={formState.authorisedByName}
+                                shouldRender={shouldRender(null, false)}
+                                authoriseUrl={utilities.getHref(result, 'authorise')}
+                                onAuthorise={() => {
+                                    authorise(null, { reqNumber });
+                                }}
+                            />
+                            {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
+                                <>
+                                    <Grid size={2}>
+                                        <Dropdown
+                                            fullWidth
+                                            items={['Y', 'N']}
+                                            allowNoValue
+                                            value={formState.manualPick}
+                                            onChange={() => {}}
+                                            label="Manual Pick"
+                                            propertyName="manualPick"
+                                        />
+                                    </Grid>
+                                    <Grid size={2}>
+                                        <Dropdown
+                                            fullWidth
+                                            items={['F', 'O']}
+                                            allowNoValue
+                                            value={formState.reqType}
+                                            onChange={handleHeaderFieldChange}
+                                            label="Req Type"
+                                            propertyName="reqType"
+                                        />
+                                    </Grid>
+                                    <Grid size={8} />
+                                </>
                             )}
-                        />
-                        <Grid size={6}>
-                            <InputField
-                                fullWidth
-                                value={formState.comments}
-                                onChange={handleHeaderFieldChange}
-                                label="Comments"
-                                propertyName="comments"
+                            <Document1
+                                document1={formState.document1}
+                                document1Text={formState.storesFunction?.document1Text}
+                                handleFieldChange={handleHeaderFieldChange}
+                                shouldRender={
+                                    formState.storesFunction &&
+                                    formState.storesFunction.document1Required
+                                }
+                                shouldEnter={formState.storesFunction?.document1Entered && creating}
                             />
-                        </Grid>
-                        <Grid size={6}>
-                            <InputField
-                                fullWidth
-                                value={formState.reference}
-                                onChange={handleHeaderFieldChange}
-                                label="Reference"
-                                propertyName="reference"
+                            <PartNumberQuantity
+                                partNumber={formState.part?.partNumber}
+                                partDescription={formState.part?.description}
+                                showQuantity
+                                quantity={formState.quantity}
+                                setPart={newPart => {
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'part', newValue: newPart }
+                                    });
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: {
+                                            fieldName: 'partNumber',
+                                            newValue: newPart?.partNumber
+                                        }
+                                    });
+                                }}
+                                setQuantity={newQty =>
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'quantity', newValue: newQty }
+                                    })
+                                }
+                                shouldRender={
+                                    formState.storesFunction &&
+                                    formState.storesFunction?.partNumberRequired
+                                }
                             />
-                        </Grid>
-                        <Grid size={12}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <Tabs value={tab} onChange={handleChange}>
-                                    <Tab label="Lines" />
-                                    <Tab
-                                        label={`Moves (L${selectedLine ?? ''})`}
-                                        disabled={!selectedLine}
+                            <StockOptions
+                                fromState={formState.fromState}
+                                fromStockPool={formState.fromStockPool}
+                                batchDate={formState.batchDate}
+                                toState={formState.toState}
+                                toStockPool={formState.toStockPool}
+                                stockStates={stockStates}
+                                stockPools={stockPools}
+                                partNumber={formState.part?.partNumber}
+                                quantity={formState.quantity}
+                                fromLocationCode={formState.fromLocationCode}
+                                fromPalletNumber={formState.fromPalletNumber}
+                                doPickStock={doPickStock}
+                                toLocationCode={formState.toLocationCode}
+                                toPalletNumber={formState.toPalletNumber}
+                                functionCode={formState.storesFunction}
+                                setItemValue={(fieldName, newValue) =>
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName, newValue }
+                                    })
+                                }
+                                disabled={stockStatesLoading || stockPoolsLoading || !creating}
+                                shouldRender={shouldRender(
+                                    () =>
+                                        formState.storesFunction?.code === 'MOVE' ||
+                                        ((formState.fromLocationRequired !== 'N' ||
+                                            formState.toLocationRequired !== 'N') &&
+                                            !(
+                                                formState.storesFunction?.code === 'LOAN OUT' &&
+                                                creating
+                                            ))
+                                )}
+                            />
+                            <Grid size={6}>
+                                <InputField
+                                    fullWidth
+                                    value={formState.comments}
+                                    onChange={handleHeaderFieldChange}
+                                    label="Comments"
+                                    propertyName="comments"
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    fullWidth
+                                    value={formState.reference}
+                                    onChange={handleHeaderFieldChange}
+                                    label="Reference"
+                                    propertyName="reference"
+                                />
+                            </Grid>
+                            <Grid size={12}>
+                                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                    <Tabs value={tab} onChange={handleChange}>
+                                        <Tab label="Lines" />
+                                        <Tab
+                                            label={`Moves (L${selectedLine ?? ''})`}
+                                            disabled={!selectedLine}
+                                        />
+                                        <Tab
+                                            label={`Transactions (L${selectedLine ?? ''})`}
+                                            disabled={
+                                                creating ||
+                                                !formState.lines?.find(
+                                                    x => x.lineNumber === selectedLine
+                                                )?.moves?.length
+                                            }
+                                        />
+                                    </Tabs>
+                                </Box>
+                            </Grid>
+                            <Grid size={12}>
+                                {tab === 0 && (
+                                    <LinesTab
+                                        lines={formState.lines}
+                                        selected={selectedLine}
+                                        setSelected={setSelectedLine}
+                                        cancelLine={cancel}
+                                        canBook={canBookLines()}
+                                        canAdd={canAddLines()}
+                                        addLine={() => {
+                                            dispatch({ type: 'add_line' });
+                                        }}
+                                        pickStock={(lineNumber, stockMoves) => {
+                                            dispatch({
+                                                type: 'pick_stock',
+                                                payload: { lineNumber, stockMoves }
+                                            });
+                                        }}
+                                        showPostings={!creating}
+                                        updateLine={(lineNumber, fieldName, newValue) => {
+                                            dispatch({
+                                                type: 'set_line_value',
+                                                payload: {
+                                                    lineNumber,
+                                                    fieldName,
+                                                    newValue
+                                                }
+                                            });
+                                        }}
+                                        bookLine={lineNumber => {
+                                            book(null, { reqNumber, lineNumber });
+                                        }}
                                     />
-                                    <Tab
-                                        label={`Transactions (L${selectedLine ?? ''})`}
-                                        disabled={
-                                            creating ||
-                                            !formState.lines?.find(
+                                )}
+                                {tab === 1 && (
+                                    <MovesTab
+                                        moves={
+                                            formState.lines?.find(
                                                 x => x.lineNumber === selectedLine
-                                            )?.moves?.length
+                                            )?.moves
                                         }
                                     />
-                                </Tabs>
-                            </Box>
-                        </Grid>
-                        <Grid size={12}>
-                            {tab === 0 && (
-                                <LinesTab
-                                    lines={formState.lines}
-                                    selected={selectedLine}
-                                    setSelected={setSelectedLine}
-                                    cancelLine={cancel}
-                                    canBook={canBookLines()}
-                                    canAdd={canAddLines()}
-                                    addLine={() => {
-                                        dispatch({ type: 'add_line' });
+                                )}
+                                {tab === 2 && (
+                                    <TransactionsTab
+                                        transactions={
+                                            formState.lines?.find(
+                                                x => x.lineNumber === selectedLine
+                                            )?.storesBudgets
+                                        }
+                                    />
+                                )}
+                            </Grid>
+                            <Grid item xs={12}>
+                                <SaveBackCancelButtons
+                                    saveDisabled={!saveIsValid()}
+                                    cancelClick={() => {
+                                        if (creating) {
+                                            dispatch({ type: 'load_create' });
+                                        }
                                     }}
-                                    pickStock={(lineNumber, stockMoves) => {
-                                        dispatch({
-                                            type: 'pick_stock',
-                                            payload: { lineNumber, stockMoves }
-                                        });
+                                    saveClick={() => {
+                                        if (creating) {
+                                            createReq(null, formState);
+                                        } else {
+                                            updateReq(reqNumber, formState);
+                                        }
                                     }}
-                                    showPostings={!creating}
-                                    updateLine={(lineNumber, fieldName, newValue) => {
-                                        dispatch({
-                                            type: 'set_line_value',
-                                            payload: {
-                                                lineNumber,
-                                                fieldName,
-                                                newValue
-                                            }
-                                        });
-                                    }}
-                                    bookLine={lineNumber => {
-                                        book(null, { reqNumber, lineNumber });
+                                    backClick={() => {
+                                        navigate('/requisitions');
                                     }}
                                 />
-                            )}
-                            {tab === 1 && (
-                                <MovesTab
-                                    moves={
-                                        formState.lines?.find(x => x.lineNumber === selectedLine)
-                                            ?.moves
-                                    }
-                                />
-                            )}
-                            {tab === 2 && (
-                                <TransactionsTab
-                                    transactions={
-                                        formState.lines?.find(x => x.lineNumber === selectedLine)
-                                            ?.storesBudgets
-                                    }
-                                />
-                            )}
-                        </Grid>
-                        <Grid item xs={12}>
-                            <SaveBackCancelButtons
-                                saveDisabled={!saveIsValid()}
-                                cancelClick={() => {
-                                    if (creating) {
-                                        dispatch({ type: 'load_create' });
-                                    }
-                                }}
-                                saveClick={() => {
-                                    createReq(null, formState);
-                                }}
-                                backClick={() => {
-                                    navigate('/requisitions');
-                                }}
-                            />
-                        </Grid>
-                    </>
-                )}
+                            </Grid>
+                        </>
+                    )}
             </Grid>
         </Page>
     );

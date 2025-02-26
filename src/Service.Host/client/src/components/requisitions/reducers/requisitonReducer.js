@@ -90,7 +90,7 @@ function reducer(state, action) {
                               moves: [
                                   ...action.payload.stockMoves.map(
                                       (move, index) =>
-                                          state.reqType === 'F'
+                                          state.reqType === 'F' || !state.reqType
                                               ? {
                                                     seq: index + 1,
                                                     part: move.partNumber,
