@@ -36,7 +36,7 @@ function MovesTab({ moves = [] }) {
         {
             field: 'seq',
             headerName: 'Seq',
-            width: 100
+            width: 80
         },
         {
             field: 'locationCode',
@@ -56,7 +56,7 @@ function MovesTab({ moves = [] }) {
         {
             field: 'stockPool',
             headerName: 'Stock Pool',
-            width: 100
+            width: 120
         },
         {
             field: 'state',
@@ -71,7 +71,7 @@ function MovesTab({ moves = [] }) {
         {
             field: 'batchDate',
             headerName: 'Batch Date',
-            width: 100
+            width: 120
         },
         {
             field: 'qtyAtLocation',
@@ -89,7 +89,7 @@ function MovesTab({ moves = [] }) {
         {
             field: 'seq',
             headerName: 'Seq',
-            width: 100
+            width: 80
         },
         {
             field: 'locationCode',
@@ -109,7 +109,7 @@ function MovesTab({ moves = [] }) {
         {
             field: 'stockPool',
             headerName: 'Stock Pool',
-            width: 100
+            width: 120
         },
         {
             field: 'state',

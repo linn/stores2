@@ -80,6 +80,8 @@
 
         public string ToState { get; set; }
 
+        public string ToCategory { get; set; }
+
         public DateTime? BatchDate { get; set; }
 
         public int? LoanNumber { get; protected set; }
