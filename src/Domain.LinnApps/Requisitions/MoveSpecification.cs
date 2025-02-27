@@ -11,5 +11,9 @@
         public string ToLocation { get; set; }
 
         public int? ToPallet { get; set; }
+        
+        public string ToStockPool { get; set; }
+        
+        public string ToState { get; set; }
     }
 }

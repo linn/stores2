@@ -136,7 +136,8 @@ function reducer(state, action) {
                                       seq: line.moves ? line.moves.length + 1 : 1,
                                       toStockPool: 'LINN',
                                       toState: 'STORES',
-                                      part: line.part.partNumber
+                                      part: line.part.partNumber,
+                                      isTo: true
                                   }
                               ]
                           }
@@ -154,8 +155,6 @@ function reducer(state, action) {
                               moves: line.moves.map(m =>
                                   m.seq === action.payload.seq
                                       ? {
-                                            ...m,
-
                                             ...action.payload
                                         }
                                       : m

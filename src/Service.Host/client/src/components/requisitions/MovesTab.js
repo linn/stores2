@@ -40,15 +40,11 @@ function MovesTab({
         };
 
         const handleSearchResultSelect = selected => {
-            const currentRow = moves
-                .filter(x => x.to)
-                ?.find(r => r.seq === searchDialogOpen.forRow);
-            console.log(currentRow);
-            console.log(selected);
+            const currentRow = moves.find(r => r.seq === searchDialogOpen.forRow);
             const newRow = {
                 ...currentRow,
-                locationCode: selected.name,
-                locationDescription: selected.description
+                toLocationCode: selected.name,
+                toLocationDescription: selected.description
             };
 
             processRowUpdate(newRow);
@@ -210,12 +206,18 @@ function MovesTab({
         {
             field: 'toStockPool',
             headerName: 'Stock Pool',
-            width: 100
+            width: 100,
+            editable: true,
+            valueOptions: stockPools?.map(s => s.stockPoolCode),
+            type: 'singleSelect'
         },
         {
-            field: 'state',
+            field: 'toState',
             headerName: 'State',
-            width: 100
+            width: 100,
+            editable: true,
+            valueOptions: stockStates?.map(s => s.state),
+            type: 'singleSelect'
         },
         {
             field: 'serialNumber',
@@ -230,9 +232,8 @@ function MovesTab({
     ];
 
     const processRowUpdate = updated => {
-        const newRowValues = { ...updated, ...updated.to };
-        updateMoveOnto(newRowValues);
-        return newRowValues;
+        updateMoveOnto(updated);
+        return updated;
     };
 
     return (
@@ -257,7 +258,7 @@ function MovesTab({
                 <Grid size={12}>
                     <DataGrid
                         getRowId={r => r.seq}
-                        rows={moves.filter(x => x.fromLocationCode || x.fromPalletNumber)}
+                        rows={moves.filter(x => x.isFrom)}
                         hideFooter
                         columns={fromColumns}
                         density="compact"
@@ -271,7 +272,7 @@ function MovesTab({
                 <Grid size={12}>
                     <DataGrid
                         getRowId={r => r.seq}
-                        rows={moves.filter(x => x.toLocationCode || x.toPalletNumber)}
+                        rows={moves.filter(x => x.isTo)}
                         hideFooter
                         columns={toColumns}
                         processRowUpdate={processRowUpdate}

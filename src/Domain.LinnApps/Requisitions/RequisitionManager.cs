@@ -300,8 +300,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                 toAdd.LineNumber,
                                                 locationId,
                                                 moveOnto.ToPallet,
-                                                header.ToStockPool,
-                                                header.ToState,
+                                                moveOnto.ToStockPool,
+                                                moveOnto.ToState,
                                                 "FREE"); // todo
 
                     if (!insertOntosResult.Success)

@@ -73,7 +73,9 @@
                                                                 ToStockPool = m.StockPoolCode,
                                                                 ToState = m.State,
                                                                 SerialNumber = m.SerialNumber, 
-                                                                Remarks = m.Remarks
+                                                                Remarks = m.Remarks,
+                                                                IsFrom = m.StockLocator != null,
+                                                                IsTo = m.PalletNumber.HasValue || m.Location != null
                                                             }),
                            Links = this.BuildLinks(l).ToArray()
                        };

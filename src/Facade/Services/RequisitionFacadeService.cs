@@ -234,7 +234,9 @@
                                             FromLocation  = m.FromLocationCode,
                                             FromPallet = m.FromPalletNumber,
                                             ToLocation = m.ToLocationCode,
-                                            ToPallet = m.ToPalletNumber
+                                            ToPallet = m.ToPalletNumber,
+                                            ToStockPool = m.ToStockPool,
+                                            ToState = m.ToState
                                         }),
                            LineNumber = resource.LineNumber,
                            PartNumber = resource.Part?.PartNumber,

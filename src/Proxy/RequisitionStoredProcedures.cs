@@ -556,9 +556,7 @@
                                            Size = 500
                                        };
             cmd.Parameters.Add(messageParameter);
-
             
-
             await connection.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
             await connection.CloseAsync();
