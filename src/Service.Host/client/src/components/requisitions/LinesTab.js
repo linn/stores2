@@ -47,7 +47,7 @@ function LinesTab({
                                 style={{ cursor: 'pointer' }}
                                 onClick={() => setPartsSearchDialogOpen(params.id)}
                             />
-                            params.row.part?.partNumber
+                            {params.row.part?.partNumber}
                         </>
                     ) : (
                         <Link to={utilities.getHref(params.row, 'part')}>
@@ -176,6 +176,7 @@ function LinesTab({
                     }}
                     editMode="cell"
                     loading={false}
+                    hideFooter
                 />
             </Grid>
             <Grid size={12}>
