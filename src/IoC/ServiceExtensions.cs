@@ -59,7 +59,8 @@
                 .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
                 .AddScoped<LdreqCreationStrategy>()
                 .AddScoped<AutomaticBookFromHeaderStrategy>()
-                .AddScoped<LoanOutCreationStrategy>();
+                .AddScoped<LoanOutCreationStrategy>()
+                .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -78,7 +79,8 @@
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
                 .AddScoped<IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>, StockStateFacadeService>()
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
-                .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>();
+                .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
+                .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
