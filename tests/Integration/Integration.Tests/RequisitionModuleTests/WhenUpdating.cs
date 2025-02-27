@@ -58,7 +58,14 @@
         {
             this.RequisitionHistoryRepository.Received().AddAsync(Arg.Any<RequisitionHistory>());
         }
-
+        
+        [Test]
+        public void ShouldCallDomain()
+        {
+            this.ReqManager.Received().UpdateRequisition(
+                Arg.Any<RequisitionHeader>(), Arg.Any<IEnumerable<LineCandidate>>());
+        }
+        
         [Test]
         public void ShouldReturnJsonContentType()
         {
