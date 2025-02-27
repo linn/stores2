@@ -147,21 +147,22 @@ function reducer(state, action) {
         case 'update_move_onto':
             return {
                 ...state,
-                lines: state.lines.map(line =>
-                    line.lineNumber === action.payload.lineNumber
+                lines: state.lines.map(line => {
+                    const updatedMoves = line.moves.map(m =>
+                        m.seq === action.payload.seq
+                            ? {
+                                  ...action.payload
+                              }
+                            : m
+                    );
+                    return line.lineNumber === action.payload.lineNumber
                         ? {
                               ...line,
-                              qty: line.qty ? line.qty + action.payload.qty : action.payload.qty,
-                              moves: line.moves.map(m =>
-                                  m.seq === action.payload.seq
-                                      ? {
-                                            ...action.payload
-                                        }
-                                      : m
-                              )
+                              qty: updatedMoves.reduce((sum, item) => sum + item.qty, 0),
+                              moves: updatedMoves
                           }
-                        : line
-                )
+                        : line;
+                })
             };
         default:
             return state;
