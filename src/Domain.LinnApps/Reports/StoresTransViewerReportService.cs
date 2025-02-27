@@ -67,7 +67,7 @@
                                   new AxisDetailsModel("PartNumber", "Part Number", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("Quantity", "Qty", GridDisplayType.TextValue, 90),
                                   new AxisDetailsModel("Amount", "Amount", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("BookedBy", "Booked By", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("BookedBy", "Booked By", GridDisplayType.TextValue, 200),
                                   new AxisDetailsModel("ReqRef", "Req Ref", GridDisplayType.TextValue, 150)
                               };
 
@@ -140,7 +140,7 @@
                     new CalculationValueModel
                     {
                         RowId = rowId,
-                        TextDisplay = stockTransaction.BookedBy.Name,
+                        TextDisplay = stockTransaction.BookedBy?.Name,
                         ColumnId = "BookedBy"
                     });
                 values.Add(
