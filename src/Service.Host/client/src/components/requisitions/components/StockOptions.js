@@ -30,6 +30,7 @@ function StockOptions({
     partNumber = null,
     quantity = null,
     doPickStock = null,
+    functionCode = null,
     setItemValue
 }) {
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -50,90 +51,98 @@ function StockOptions({
 
     return (
         <>
-            <Grid size={2}>
-                <Dropdown
-                    value={fromState}
-                    disabled={disabled}
-                    fullWidth
-                    label="From State"
-                    propertyName="fromState"
-                    allowNoValue
-                    items={stockStates?.map(s => ({
-                        id: s.state,
-                        displayText: s.state
-                    }))}
-                    onChange={setItemValue}
-                />
-            </Grid>
-            <Grid size={2}>
-                <Dropdown
-                    value={fromStockPool}
-                    disabled={disabled}
-                    fullWidth
-                    label="From Stock Pool"
-                    propertyName="fromStockPool"
-                    allowNoValue
-                    items={stockPoolItems?.map(s => ({
-                        id: s.stockPoolCode,
-                        displayText: s.stockPoolCode
-                    }))}
-                    onChange={setItemValue}
-                />
-            </Grid>
-            <Grid size={2}>
-                <DatePicker
-                    value={batchDate}
-                    disabled={disabled}
-                    onChange={newVal => setItemValue('batchDate', newVal)}
-                    label="Batch Date"
-                    propertyName="batchDate"
-                />
-            </Grid>
-            <Grid item xs={2}>
-                {doPickStock && (
-                    <Button
-                        onClick={() => setPickStockDialogVisible(true)}
-                        variant="outlined"
-                        style={{ marginTop: '32px' }}
-                        disabled={disabled || !doPickStock}
-                    >
-                        Pick Stock
-                    </Button>
-                )}
-            </Grid>
-            <Grid size={4} />
-            <Grid size={2}>
-                <Search
-                    propertyName="fromLocationCode"
-                    label="From Loc"
-                    resultsInModal
-                    disabled={disabled}
-                    resultLimit={100}
-                    helperText="Enter a search term and press enter to search"
-                    value={fromLocationCode}
-                    handleValueChange={setItemValue}
-                    search={searchLocations}
-                    loading={locationsSearchLoading}
-                    searchResults={locationsSearchResults}
-                    priorityFunction="closestMatchesFirst"
-                    onResultSelect={r => {
-                        setItemValue('fromLocationId', r.locationId);
-                        setItemValue('fromLocationCode', r.locationCode);
-                    }}
-                    clearSearch={clearLocationsSearch}
-                    autoFocus={false}
-                />
-            </Grid>
-            <Grid size={2}>
-                <InputField
-                    value={fromPalletNumber}
-                    onChange={setItemValue}
-                    disabled={disabled}
-                    label="From Pallet"
-                    propertyName="fromPalletNumber"
-                />
-            </Grid>
-            <Grid size={8} />
+            {(functionCode?.fromStateRequired !== 'N' ||
+                functionCode?.fromStockPoolRequired !== 'N' ||
+                functionCode?.batchDateRequired !== 'N' ||
+                functionCode?.code === 'MOVE') && (
+                <>
+                    <Grid size={2}>
+                        <Dropdown
+                            value={fromState}
+                            disabled={disabled}
+                            fullWidth
+                            label="From State"
+                            propertyName="fromState"
+                            allowNoValue
+                            items={stockStates?.map(s => ({
+                                id: s.state,
+                                displayText: s.state
+                            }))}
+                            onChange={setItemValue}
+                        />
+                    </Grid>
+                    <Grid size={2}>
+                        <Dropdown
+                            value={fromStockPool}
+                            disabled={disabled}
+                            fullWidth
+                            label="From Stock Pool"
+                            propertyName="fromStockPool"
+                            allowNoValue
+                            items={stockPoolItems?.map(s => ({
+                                id: s.stockPoolCode,
+                                displayText: s.stockPoolCode
+                            }))}
+                            onChange={setItemValue}
+                        />
+                    </Grid>
+                    <Grid size={2}>
+                        <DatePicker
+                            value={batchDate}
+                            disabled={disabled}
+                            onChange={newVal => setItemValue('batchDate', newVal)}
+                            label="Batch Date"
+                            propertyName="batchDate"
+                        />
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Button
+                            onClick={() => setPickStockDialogVisible(true)}
+                            variant="outlined"
+                            style={{ marginTop: '32px' }}
+                            disabled={disabled || !doPickStock}
+                        >
+                            Pick Stock
+                        </Button>
+                    </Grid>
+                    <Grid size={4} />
+                </>
+            )}
+            {functionCode?.fromLocationRequired !== 'N' && (
+                <>
+                    <Grid size={2}>
+                        <Search
+                            propertyName="fromLocationCode"
+                            label="From Loc"
+                            resultsInModal
+                            resultLimit={100}
+                            helperText="Enter a search term and press enter to search"
+                            value={fromLocationCode}
+                            handleValueChange={setItemValue}
+                            search={searchLocations}
+                            loading={locationsSearchLoading}
+                            searchResults={locationsSearchResults}
+                            priorityFunction="closestMatchesFirst"
+                            onResultSelect={r => {
+                                setItemValue('fromLocationId', r.locationId);
+                                setItemValue('fromLocationCode', r.locationCode);
+                            }}
+                            clearSearch={clearLocationsSearch}
+                            autoFocus={false}
+                        />
+                    </Grid>
+                    <Grid size={2}>
+                        <InputField
+                            value={fromPalletNumber}
+                            onChange={setItemValue}
+                            disabled={disabled}
+                            label="From Pallet"
+                            propertyName="fromPalletNumber"
+                        />
+                    </Grid>
+                    <Grid size={8} />
+                </>
+            )}
             <Grid size={2}>
                 <Dropdown
                     value={toState}
@@ -183,6 +192,7 @@ function StockOptions({
                         setItemValue('toLocationCode', r.locationCode);
                     }}
                     clearSearch={clearLocationsSearch}
+                    disabled={disabled}
                     autoFocus={false}
                 />
             </Grid>
@@ -228,6 +238,16 @@ StockOptions.propTypes = {
     shouldRender: PropTypes.bool,
     partNumber: PropTypes.string,
     quantity: PropTypes.number,
+    functionCode: PropTypes.shape({
+        code: PropTypes.string,
+        batchDateRequired: PropTypes.string,
+        fromLocationRequired: PropTypes.string,
+        fromStateRequired: PropTypes.string,
+        fromStockPoolRequired: PropTypes.string,
+        toLocationRequired: PropTypes.string,
+        toStateRequired: PropTypes.string,
+        toStockPoolRequired: PropTypes.string
+    }),
     doPickStock: PropTypes.func
 };
 
@@ -247,7 +267,8 @@ StockOptions.defaultProps = {
     doPickStock: null,
     fromPalletNumber: null,
     toLocationCode: null,
-    toPalletNumber: null
+    toPalletNumber: null,
+    functionCode: null
 };
 
 export default StockOptions;

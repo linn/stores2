@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Common.Proxy.LinnApps;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -13,32 +14,36 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Parts;
 
-    public class PartsStorageTypeFacadeService : AsyncFacadeService<PartsStorageType, PartsStorageTypeKey, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>
+    public class PartsStorageTypeFacadeService : AsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>
     {
-        private readonly IRepository<Part, int> partRepository;
+        private readonly IRepository<Part, string> partRepository;
 
         private readonly IRepository<StorageType, string> storageTypeRepository;
 
-        private readonly IRepository<PartsStorageType, PartsStorageTypeKey> partStorageTypeRepository;
+        private readonly IRepository<PartsStorageType, int> partStorageTypeRepository;
+
+        private readonly IDatabaseService databaseService;
 
         public PartsStorageTypeFacadeService(
-            IRepository<PartsStorageType, PartsStorageTypeKey> partStorageTypeRepository,
+            IRepository<PartsStorageType, int> partStorageTypeRepository,
             ITransactionManager transactionManager,
             IBuilder<PartsStorageType> resourceBuilder,
-            IRepository<Part, int> partRepository,
-            IRepository<StorageType, string> storageTypeRepository)
+            IRepository<Part, string> partRepository,
+            IRepository<StorageType, string> storageTypeRepository,
+            IDatabaseService databaseService)
             : base(partStorageTypeRepository, transactionManager, resourceBuilder)
         {
             this.partRepository = partRepository;
             this.storageTypeRepository = storageTypeRepository;
             this.partStorageTypeRepository = partStorageTypeRepository;
+            this.databaseService = databaseService;
         }
 
         protected override async Task<PartsStorageType> CreateFromResourceAsync(
             PartsStorageTypeResource resource,
             IEnumerable<string> privileges = null)
         {
-            var part = await this.partRepository.FindByAsync(p => p.PartNumber == resource.PartNumber);
+            var part = await this.partRepository.FindByIdAsync(resource.PartNumber);
 
             var storageType = await this.storageTypeRepository.FindByIdAsync(resource.StorageTypeCode);
 
@@ -51,6 +56,8 @@
                 throw new PartsStorageTypeException("Part Storage Type Already Exists");
             }
 
+            var bridgeId = this.databaseService.GetIdSequence("PARTS_STORAGE_TYPES_ID_SEQ");
+
             return new PartsStorageType(
                 part,
                 storageType,
@@ -58,7 +65,7 @@
                 resource.Maximum,
                 resource.Incr,
                 resource.Preference,
-                resource.BridgeId);
+                bridgeId);
         }
 
         protected override void UpdateFromResource(
@@ -70,8 +77,7 @@
                 updateResource.Remarks,
                 updateResource.Maximum,
                 updateResource.Incr,
-                updateResource.Preference,
-                updateResource.BridgeId);
+                updateResource.Preference);
         }
 
         protected override Expression<Func<PartsStorageType, bool>> SearchExpression(string searchTerm)

@@ -395,5 +395,68 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException(result.Message);
             }
         }
+
+        public async Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks)
+        {
+            var line = header.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
+
+            if (line == null)
+            {
+                throw new PickStockException("Could not find line");
+            }
+
+            // if no moves before
+            if (!line.Moves.Any())
+            {
+                foreach (var pick in lineWithPicks.Moves.Where(x => x.FromPallet.HasValue || !string.IsNullOrEmpty(x.FromLocation)))
+                {
+                    var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
+                        ? null
+                        : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.FromLocation);
+
+                    // warning this call only makes the From side of the req_moves you still need to fill out other side
+                    var pickResult = await this.requisitionStoredProcedures.PickStock(
+                            lineWithPicks.PartNumber,
+                            header.ReqNumber,
+                            lineWithPicks.LineNumber,
+                            pick.Qty,
+                            fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
+                            pick.FromPallet,
+                            header.FromStockPool,
+                            lineWithPicks.TransactionDefinition);
+
+                    if (!pickResult.Success)
+                    {
+                        throw new PickStockException("failed in pick_stock: " + pickResult.Message);
+                    }
+
+                    // now fetch the header with the moves
+                    var pickedRequisition = await this.repository.FindByIdAsync(header.ReqNumber);
+
+                    // now if our transaction is an onto transaction need to fix moves
+                    var transaction =
+                            await this.transactionDefinitionRepository.FindByIdAsync(
+                                lineWithPicks.TransactionDefinition);
+
+                    if (transaction.RequiresOntoTransactions)
+                    {
+                        var pickedLine = pickedRequisition.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
+                        if (pickedLine != null)
+                        {
+                            foreach (var move in pickedLine.Moves)
+                            {
+                                move.SetOntoFieldsFromHeader(header);
+                            }
+
+                            // we need these saved now in case we are picking multiple req lines and lose the changes
+                            await this.transactionManager.CommitAsync();
+                        }
+                    }
+
+                    return pickedRequisition;
+                }
+            }
+            return header;
+        }
     }
 }

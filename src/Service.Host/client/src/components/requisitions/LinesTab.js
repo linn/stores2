@@ -34,19 +34,21 @@ function LinesTab({
     const [partsSearchDialogOpen, setPartsSearchDialogOpen] = useState();
 
     const linesColumns = [
-        { field: 'lineNumber', headerName: '#', width: 100 },
+        { field: 'lineNumber', headerName: '#', width: 60 },
         {
             field: 'partNumber',
             headerName: 'Part',
             width: 150,
             renderCell: params => (
                 <>
-                    <GridSearchIcon
-                        style={{ cursor: 'pointer' }}
-                        onClick={() => setPartsSearchDialogOpen(params.id)}
-                    />
                     {params.row.isAddition ? (
-                        params.row.part?.partNumber
+                        <>
+                            <GridSearchIcon
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => setPartsSearchDialogOpen(params.id)}
+                            />
+                            params.row.part?.partNumber
+                        </>
                     ) : (
                         <Link to={utilities.getHref(params.row, 'part')}>
                             {params.row.part?.partNumber}
@@ -61,12 +63,12 @@ function LinesTab({
             width: 300,
             renderCell: params => params.row.part?.description
         },
-        { field: 'qty', headerName: 'Qty', width: 100 },
+        { field: 'qty', headerName: 'Qty', width: 80 },
         { field: 'transactionCode', headerName: 'Trans Code', width: 100 },
         { field: 'transactionCodeDescription', headerName: 'Trans Desc', width: 200 },
-        { field: 'document1Type', headerName: 'Doc1 Type', width: 100 },
-        { field: 'document1Number', headerName: 'Doc1 Number', width: 100 },
-        { field: 'document1Line', headerName: 'Doc1 Line', width: 100 },
+        { field: 'document1Type', headerName: 'Doc1', width: 80 },
+        { field: 'document1Number', headerName: 'Number', width: 80 },
+        { field: 'document1Line', headerName: 'Line', width: 60 },
         { field: 'dateBooked', headerName: 'Booked', width: 100 },
         { field: 'cancelled', headerName: 'Cancelled', width: 100 },
         {
@@ -81,7 +83,9 @@ function LinesTab({
 
                 // just for now, only allowing stock pick for new rows onces
                 // todo - consider other scenarions e.g. changing pick after picked initially
-                const canPickStock = pickStock && params.row.isAddition && !params.row.stockPicked;
+                const canPickStock =
+                    (params.row.isAddition && !params.row.stockPicked) ||
+                    (!params.row.isAdditon && !params.row.stockPicked && canCancel);
                 return (
                     <>
                         {canPickStock && (
@@ -165,13 +169,11 @@ function LinesTab({
                 <DataGrid
                     getRowId={r => r.lineNumber}
                     rows={lines}
+                    columns={linesColumns}
                     rowSelectionModel={selected ? [selected] : []}
                     onRowClick={row => {
                         setSelected(row.id);
                     }}
-                    columns={linesColumns}
-                    hideFooter
-                    density="compact"
                     editMode="cell"
                     loading={false}
                 />

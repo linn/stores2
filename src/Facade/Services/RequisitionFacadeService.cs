@@ -161,6 +161,32 @@
             return result;
         }
 
+        protected override async Task UpdateFromResourceAsync(
+            RequisitionHeader entity,
+            RequisitionHeaderResource updateResource,
+            IEnumerable<string> privileges = null)
+        {
+            // check lines
+            if (updateResource.Lines.Any())
+            {
+                foreach (var updatedLine in updateResource.Lines)
+                {
+                    var line = entity.Lines.SingleOrDefault(l => l.LineNumber == updatedLine.LineNumber);
+                    var candidate = BuildLineCandidateFromResource(updatedLine);
+                    if (line != null)
+                    {
+                        if (updatedLine.StockPicked == true)
+                        {
+                           entity = await this.requisitionManager.PickStockOnRequisitionLine(entity, candidate);
+                        }
+                    }
+
+                    // TODO if no line then add one                        
+                    // else { this.requisitionManager.AddRequisitionLine(entity, candidate); }
+                }
+            }
+        }
+
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
             string searchTerm)
         {
@@ -198,7 +224,7 @@
             if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
             {
                 return x => x.Document1Name == searchResource.DocumentName &&
-                            x.Document1 == searchResource.DocumentNumber;
+                            x.Document1 == searchResource.DocumentNumber && (searchResource.IncludeCancelled || x.Cancelled != "Y");
             }
 
             if (searchResource.Pending == true)
