@@ -1,17 +1,17 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.NominalAccounts;
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Requisitions;
     using Linn.Stores2.TestData.Transactions;
     using NSubstitute;
     using NUnit.Framework;
-    using FluentAssertions;
-    using Linn.Common.Domain;
-    using Linn.Stores2.TestData.NominalAccounts;
-    using System.Threading.Tasks;
 
     public class WhenCreatingLoanReq : ContextBase
     {
