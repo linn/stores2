@@ -302,7 +302,7 @@ function Requisition({ creating }) {
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
         selectedLine && formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O';
-    const canPickStock = formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'f';
+    const canPickStock = formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'F';
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
