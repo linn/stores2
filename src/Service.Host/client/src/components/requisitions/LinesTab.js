@@ -47,7 +47,7 @@ function LinesTab({
                                 style={{ cursor: 'pointer' }}
                                 onClick={() => setPartsSearchDialogOpen(params.id)}
                             />
-                            params.row.part?.partNumber
+                            {params.row.part?.partNumber}
                         </>
                     ) : (
                         <Link to={utilities.getHref(params.row, 'part')}>
@@ -169,15 +169,14 @@ function LinesTab({
                 <DataGrid
                     getRowId={r => r.lineNumber}
                     rows={lines}
+                    columns={linesColumns}
                     rowSelectionModel={selected ? [selected] : []}
                     onRowClick={row => {
                         setSelected(row.id);
                     }}
-                    columns={linesColumns}
-                    hideFooter
-                    density="compact"
                     editMode="cell"
                     loading={false}
+                    hideFooter
                 />
             </Grid>
             <Grid size={12}>

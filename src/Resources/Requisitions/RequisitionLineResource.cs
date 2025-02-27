@@ -50,6 +50,6 @@
 
         public RequisitionHeaderResource RequisitionHeader { get; set; }
         
-        public IEnumerable<MoveHeaderResource> Moves { get; set; }
+        public IEnumerable<MoveResource> Moves { get; set; }
     }
 }

@@ -13,7 +13,7 @@
 
     using NUnit.Framework;
 
-    public class WhenNoLinesAndHeaderDoesNotSpecifyPart : ContextBase
+    public class WhenNoLines : ContextBase
     {
         private Func<Task> action;
 
@@ -36,7 +36,7 @@
         {
             await this.action.Should().ThrowAsync<CreateRequisitionException>()
                 .WithMessage(
-                    "Cannot create - no line specified and header does not specify part");
+                    "Cannot create - no lines specified");
         }
     }
 }

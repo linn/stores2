@@ -57,17 +57,16 @@
                 Document1 = 123,
                 Document1Line = 1,
                 Document1Type = "REQ",
-                MovesOnto = new List<MoveSpecification>
+                Moves = new List<MoveSpecification>
                                 {
                                     new MoveSpecification
                                         {
-                                            Location = "LOC",
+                                            ToLocation = "LOC",
                                             Qty = 10
                                         }
                                 },
                 PartNumber = this.part.PartNumber,
                 Qty = 10,
-                StockPicks = null,
                 TransactionDefinition = "DEF"
             };
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
