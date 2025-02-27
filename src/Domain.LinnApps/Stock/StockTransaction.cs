@@ -24,7 +24,9 @@
 
         public DateTime? BudgetDate { get; set; }
 
-        public int BookedBy { get; set; }
+        public int BookedById { get; set; }
+
+        public Employee BookedBy { get; set; }
 
         public string ReqReference { get; set; }
 

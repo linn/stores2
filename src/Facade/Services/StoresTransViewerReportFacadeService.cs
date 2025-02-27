@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
@@ -21,14 +22,14 @@
             this.resourceBuilder = resourceBuilder;
         }
 
-        public IResult<ReportReturnResource> GetStoresTransViewerReport(
+        public async Task<IResult<ReportReturnResource>> GetStoresTransViewerReport(
             string fromDate,
             string toDate,
             string partNumber,
             string transactionCode,
             IEnumerable<string> functionCodeList)
         {
-            var result = this.storesTransViewerReportService.StoresTransViewerReport(
+            var result = await this.storesTransViewerReportService.StoresTransViewerReport(
                 fromDate,
                 toDate,
                 partNumber, 

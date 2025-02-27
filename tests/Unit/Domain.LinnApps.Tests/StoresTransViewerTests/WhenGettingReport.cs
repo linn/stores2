@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Threading.Tasks;
 
     using FluentAssertions;
 
@@ -20,20 +21,25 @@
 
         private IList<string> functionCodeList;
 
-        private IList<StockTransaction> stockTransaction;
+        private IList<StockTransaction> stockTransactions;
 
         [SetUp]
         public void SetUp()
         {
             this.functionCodeList = new List<string> { "LDREQ", "LDMOVE" };
 
-            this.stockTransaction = new List<StockTransaction>
+            this.stockTransactions = new List<StockTransaction>
                                         {
                                             new StockTransaction
                                                 {
                                                     PartNumber = "PART",
                                                     Amount = 100,
-                                                    BookedBy = 33156,
+                                                    BookedById = 33156,
+                                                    BookedBy = new Employee
+                                                                   {
+                                                                       Id = 33156,
+                                                                       Name = "Ross Stewart"
+                                                                   },
                                                     BudgetDate = DateTime.Today,
                                                     BudgetId = 123,
                                                     DebitOrCredit = "D",
@@ -47,11 +53,10 @@
                                                 }
                                         };
 
-            this.StockTransactionRepository.FilterBy(Arg.Any<Expression<Func<StockTransaction, bool>>>())
-                .Returns(
-                    a => this.stockTransaction.AsQueryable());
+            this.StockTransactionRepository.FilterByAsync(Arg.Any<Expression<Func<StockTransaction, bool>>>())
+                .Returns(this.stockTransactions);
 
-            this.result = this.Sut.StoresTransViewerReport(null, null, null, null, this.functionCodeList);
+            this.result = this.Sut.StoresTransViewerReport(null, null, null, null, this.functionCodeList).Result;
         }
 
         [Test]
@@ -68,7 +73,7 @@
             this.result.GetGridTextValue(0, 5).Should().Be("PART");
             this.result.GetGridTextValue(0, 6).Should().Be("19.00");
             this.result.GetGridTextValue(0, 7).Should().Be("100");
-            this.result.GetGridTextValue(0, 8).Should().Be("33156");
+            this.result.GetGridTextValue(0, 8).Should().Be("Ross Stewart");
             this.result.GetGridTextValue(0, 9).Should().Be("Req");
         }
     }

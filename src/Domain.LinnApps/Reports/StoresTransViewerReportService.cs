@@ -25,7 +25,7 @@
             this.stockTransactionRepository = stockTransactionRepository;
         }
 
-        public ResultsModel StoresTransViewerReport(
+        public async Task<ResultsModel> StoresTransViewerReport(
             string fromDate,
             string toDate,
             string partNumber,
@@ -41,16 +41,19 @@
 
             var functionCodes = functionCodeList?.Select(f => f.ToUpper()).ToList();
 
-            var stockTransactions = this.stockTransactionRepository
-                .FilterBy(x => (fromDateSearch == null || x.BudgetDate >= fromDateSearch)
-                               && (toDateSearch == null || x.BudgetDate <= toDateSearch)
-                               && (string.IsNullOrEmpty(partNumber) || x.PartNumber.Contains(partNumber.Trim()))
-                               && (string.IsNullOrEmpty(transactionCode) || x.TransactionCode.Contains(transactionCode.Trim()))
-                               && (!x.TransactionCode.StartsWith("STSTM") || x.DebitOrCredit != "D")
-                               && (functionCodes == null
-                                   || functionCodes.Count == 0
-                                   || functionCodes.Contains(x.FunctionCode.ToUpper())))
-                .OrderBy(x => x.BudgetId);
+            var stockTransactions = await this.stockTransactionRepository.FilterByAsync(
+                                        x => (fromDateSearch == null || x.BudgetDate >= fromDateSearch)
+                                             && (toDateSearch == null || x.BudgetDate <= toDateSearch)
+                                             && (string.IsNullOrEmpty(partNumber)
+                                                 || x.PartNumber.Contains(partNumber.Trim()))
+                                             && (string.IsNullOrEmpty(transactionCode)
+                                                 || x.TransactionCode.Contains(transactionCode.Trim()))
+                                             && (!x.TransactionCode.StartsWith("STSTM") || x.DebitOrCredit != "D")
+                                             && (functionCodes == null || functionCodes.Count == 0
+                                                                       || functionCodes.Contains(
+                                                                           x.FunctionCode.ToUpper())));
+
+            var orderedStockTransactions = stockTransactions.OrderBy(x => x.BudgetId);
 
             var report = new ResultsModel { ReportTitle = new NameModel("Stock Transaction List") };
 
@@ -72,7 +75,7 @@
 
             var values = new List<CalculationValueModel>();
 
-            foreach (var stockTransaction in stockTransactions)
+            foreach (var stockTransaction in orderedStockTransactions)
             {
                 var rowId = $"{stockTransaction.TransactionCode}/{stockTransaction.BudgetId}";
 
@@ -137,7 +140,7 @@
                     new CalculationValueModel
                     {
                         RowId = rowId,
-                        TextDisplay = stockTransaction.BookedBy.ToString(),
+                        TextDisplay = stockTransaction.BookedBy.Name,
                         ColumnId = "BookedBy"
                     });
                 values.Add(
