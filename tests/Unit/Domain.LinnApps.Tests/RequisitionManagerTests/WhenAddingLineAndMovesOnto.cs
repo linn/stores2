@@ -41,9 +41,7 @@
                 null,
                 null,
                 this.department,
-                this.nominal,
-                toStockPool: "LINN",
-                toState: "STATE");
+                this.nominal);
             this.part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
             this.line = new LineCandidate
@@ -57,7 +55,9 @@
                                     new MoveSpecification
                                         {
                                             ToPallet = 512,
-                                            Qty = 10
+                                            Qty = 10,
+                                            ToState = "STORES",
+                                            ToStockPool = "LINN"
                                         }
                                 },
                 PartNumber = this.part.PartNumber,
@@ -76,7 +76,7 @@
                     10,
                     null,
                     512,
-                    this.header.ToStockPool,
+                    "LINN",
                     "DEF")
                 .Returns(new ProcessResult(
                     true, string.Empty));
@@ -97,8 +97,8 @@
                 1,
                 null,
                 512,
-                this.header.ToStockPool,
-                this.header.ToState,
+                "LINN",
+                "STORES",
                 "FREE").Returns(new ProcessResult(true, string.Empty));
 
             this.Sut.AddRequisitionLine(this.header, this.line);
@@ -121,7 +121,7 @@
                     null,
                     512, 
                     "LINN", 
-                    "STATE",
+                    "STORES",
                     "FREE");
         }
 

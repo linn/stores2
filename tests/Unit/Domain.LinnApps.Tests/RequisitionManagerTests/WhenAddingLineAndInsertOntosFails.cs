@@ -62,7 +62,9 @@
                                     new MoveSpecification
                                         {
                                             ToPallet = 512,
-                                            Qty = 10
+                                            Qty = 10,
+                                            ToState = "STORES",
+                                            ToStockPool = "LINN"
                                         }
                                 },
                 PartNumber = this.part.PartNumber,
@@ -81,7 +83,7 @@
                     10,
                     null,
                     512,
-                    this.header.ToStockPool,
+                    "LINN",
                     "DEF")
                 .Returns(new ProcessResult(
                     true, string.Empty));
@@ -102,8 +104,8 @@
                 1,
                 null,
                 512,
-                this.header.ToStockPool,
-                this.header.ToState,
+                "LINN",
+                "STORES",
                 "FREE").Returns(new ProcessResult(false, "no can do onto"));
 
              this.action = () => this.Sut.AddRequisitionLine(this.header, this.line);
