@@ -322,7 +322,7 @@
             var locIdParameter = new OracleParameter("p_location_id", OracleDbType.Int32)
                                           {
                                               Direction = ParameterDirection.Input,
-                                              Value = locationId
+                                              Value = palletNumber != null ? null : locationId
                                           };
             cmd.Parameters.Add(locIdParameter);
 

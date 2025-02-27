@@ -160,6 +160,7 @@ function LinesTab({
                     open={pickStockDialogVisible}
                     setOpen={setPickStockDialogVisible}
                     partNumber={lines.find(l => l.lineNumber === selected)?.part?.partNumber}
+                    quantity={lines.find(l => l.lineNumber === selected && !l.isAddition)?.qty}
                     handleConfirm={moves => {
                         pickStock(selected, moves);
                     }}

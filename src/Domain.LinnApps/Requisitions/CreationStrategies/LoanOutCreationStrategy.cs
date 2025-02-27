@@ -12,7 +12,7 @@
             this.requisitionManager = requisitionManager;
         }
 
-        public Task<RequisitionHeader> Create(RequisitionCreationContext context)
+        public async Task<RequisitionHeader> Create(RequisitionCreationContext context)
         {
             if (context.Function.FunctionCode != "LOAN OUT")
             {
@@ -29,7 +29,14 @@
                 throw new CreateRequisitionException("Loan Out function requires a Loan document number");
             }
 
-            return this.requisitionManager.CreateLoanReq(context.Document1Number.Value);
+            var req = await this.requisitionManager.CreateLoanReq(context.Document1Number.Value);
+            
+            // need to add some extra fields to make picking and booking possible
+            // REQ_UT does this from function code WVI but we know what they should be
+            req.SetStateAndCategory("STORES", "STORES", "FREE");
+            req.ReqSource = "STORES2";
+
+            return req;
         }
     }
 }
