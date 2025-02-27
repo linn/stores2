@@ -4,8 +4,16 @@
     {
         public decimal Qty { get; set; }
 
-        public string Location { get; set; }
+        public string FromLocation { get; set; }
 
-        public int? Pallet { get; set; }
+        public int? FromPallet { get; set; }
+
+        public string ToLocation { get; set; }
+
+        public int? ToPallet { get; set; }
+        
+        public string ToStockPool { get; set; }
+        
+        public string ToState { get; set; }
     }
 }

@@ -505,13 +505,13 @@
             cmd.Parameters.Add(new OracleParameter("p_location_id", OracleDbType.Int32)
                                    {
                                        Direction = ParameterDirection.Input,
-                                       Value = palletNumber
+                                       Value = locationId
                                    });
 
             cmd.Parameters.Add(new OracleParameter("p_pallet_number", OracleDbType.Int32)
                                    {
                                        Direction = ParameterDirection.Input,
-                                       Value = locationId
+                                       Value = palletNumber
                                    });
 
             cmd.Parameters.Add(new OracleParameter("p_stock_pool", OracleDbType.Varchar2)
@@ -534,15 +534,21 @@
 
             cmd.Parameters.Add(new OracleParameter("p_serial_number", OracleDbType.Int32)
                                    {
-                                       Direction = ParameterDirection.Input,
-                                       Value = null // todo - don't need to pass this for my use case, but might later
+                                       Direction = ParameterDirection.Input
+                                       // todo - don't need to pass this for my use case, but might later
                                    });
 
-            cmd.Parameters.Add(new OracleParameter("p_ins_upd", OracleDbType.Int32)
+            cmd.Parameters.Add(new OracleParameter("p_ins_upd", OracleDbType.Varchar2)
                                    {
                                        Direction = ParameterDirection.Input,
                                        Value = "I" // todo - hardcoded to insert moves for now, but can pass U for updating existing moves
                                    });
+
+            var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
+                                       {
+                                           Direction = ParameterDirection.Output
+                                       };
+            cmd.Parameters.Add(successParameter);
 
             var messageParameter = new OracleParameter("p_message", OracleDbType.Varchar2)
                                        {
@@ -550,13 +556,7 @@
                                            Size = 500
                                        };
             cmd.Parameters.Add(messageParameter);
-
-            var successParameter =  new OracleParameter("p_success", OracleDbType.Int32)
-                                       {
-                                           Direction = ParameterDirection.Output
-                                       };
-            cmd.Parameters.Add(successParameter);
-
+            
             await connection.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
             await connection.CloseAsync();
@@ -568,7 +568,6 @@
         {
             await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
 
-            connection.Open();
             var cmd = new OracleCommand("pallet_analysis_pack.can_put_part_on_pallet_wrapper", connection)
                           {
                               CommandType = CommandType.StoredProcedure

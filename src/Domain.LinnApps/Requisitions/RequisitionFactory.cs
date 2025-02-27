@@ -64,7 +64,7 @@
                                   Comments = comments,
                                   ManualPick = manualPick,
                                   FromStockPool = fromStockPool,
-                                  ToStockPool = toStockPool,
+                                  ToStockPool = toStockPool,    
                                   FromLocationCode = fromLocationCode,
                                   ToLocationCode = toLocationCode,
                                   PartNumber = partNumber,

@@ -23,11 +23,11 @@ import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 import useInitialise from '../../hooks/useInitialise';
 import usePost from '../../hooks/usePost';
+import useUserProfile from '../../hooks/useUserProfile';
+import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
-import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import MovesTab from './MovesTab';
-import useUserProfile from '../../hooks/useUserProfile';
 import TransactionsTab from './TransactionsTab';
 import BookedBy from './components/BookedBy';
 import AuthBy from './components/AuthBy';
@@ -241,6 +241,9 @@ function Requisition({ creating }) {
     const saveIsValid = () => {
         if (creating) {
             if (formState.part?.partNumber) {
+                if (formState.storesFunction?.code === 'LDREQ') {
+                    return true; // no validation or restrictions for now, trusting the back end will validate
+                }
                 return okToSaveFrontPageMove();
             }
 
@@ -304,6 +307,10 @@ function Requisition({ creating }) {
         }
     };
 
+    // for now...
+    // might be a better way to work out whether these things are valid operations
+    const canAddMovesOnto =
+        selectedLine && formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O';
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -696,6 +703,29 @@ function Requisition({ creating }) {
                                                 x => x.lineNumber === selectedLine
                                             )?.moves
                                         }
+                                        stockPools={stockPools}
+                                        stockStates={stockStates}
+                                        addMoveOnto={
+                                            canAddMovesOnto
+                                                ? () => {
+                                                      dispatch({
+                                                          type: 'add_move_onto',
+                                                          payload: {
+                                                              lineNumber: selectedLine
+                                                          }
+                                                      });
+                                                  }
+                                                : null
+                                        }
+                                        updateMoveOnto={updated =>
+                                            dispatch({
+                                                type: 'update_move_onto',
+                                                payload: {
+                                                    lineNumber: selectedLine,
+                                                    ...updated
+                                                }
+                                            })
+                                        }
                                     />
                                 )}
                                 {tab === 2 && (
@@ -708,6 +738,7 @@ function Requisition({ creating }) {
                                     />
                                 )}
                             </Grid>
+
                             <Grid item xs={12}>
                                 <SaveBackCancelButtons
                                     saveDisabled={!saveIsValid()}

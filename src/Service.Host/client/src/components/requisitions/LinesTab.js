@@ -170,15 +170,14 @@ function LinesTab({
                 <DataGrid
                     getRowId={r => r.lineNumber}
                     rows={lines}
+                    columns={linesColumns}
                     rowSelectionModel={selected ? [selected] : []}
                     onRowClick={row => {
                         setSelected(row.id);
                     }}
-                    columns={linesColumns}
-                    hideFooter
-                    density="compact"
                     editMode="cell"
                     loading={false}
+                    hideFooter
                 />
             </Grid>
             <Grid size={12}>

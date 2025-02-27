@@ -40,16 +40,13 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                                                             Part = new PartResource { PartNumber = "PART" },
                                                             Qty = 1,
                                                             TransactionCode = "CODE",
-                                                            Moves = new List<MoveHeaderResource>
+                                                            Moves = new List<MoveResource>
                                                                         {
-                                                                            new MoveHeaderResource
+                                                                            new MoveResource
                                                                                 {
                                                                                     Part = "PART",
                                                                                     Qty = 1,
-                                                                                    From = new MoveFromResource
-                                                                                        {
-                                                                                            LocationCode = "LOC"
-                                                                                        }
+                                                                                    FromLocationCode = "LOC"
                                                                                 }
                                                                         }
                                                         }

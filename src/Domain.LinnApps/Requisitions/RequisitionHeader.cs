@@ -151,6 +151,8 @@
 
             this.ReqType = reqType;
 
+            this.Reversed = "N";
+
             if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(fromStockPool))
             {
                 throw new CreateRequisitionException(

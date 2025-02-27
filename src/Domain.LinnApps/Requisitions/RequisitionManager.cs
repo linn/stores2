@@ -1,9 +1,8 @@
-using System.Linq;
-
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
@@ -239,20 +238,24 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // we need this so the line exists for the stored procedure calls coming next
             await this.transactionManager.CommitAsync();
 
-            if (toAdd.StockPicks != null)
+
+            if (toAdd.Moves != null)
             {
-                foreach (var pick in toAdd.StockPicks)
+                // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
+                // write offs
+                foreach (var pick in toAdd.Moves.Where(x => x.FromPallet.HasValue 
+                                                            || !string.IsNullOrEmpty(x.FromLocation)))
                 {
-                    var fromLocation = string.IsNullOrEmpty(pick.Location)
+                    var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
                                            ? null
-                                           : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.Location);
+                                           : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.FromLocation);
                     var pickResult = await this.requisitionStoredProcedures.PickStock(
                                          toAdd.PartNumber,
                                          header.ReqNumber,
                                          toAdd.LineNumber,
                                          pick.Qty,
-                                         fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
-                                         pick.Pallet,
+                                         fromLocation?.LocationId,
+                                         pick.FromPallet,
                                          header.FromStockPool,
                                          toAdd.TransactionDefinition);
 
@@ -261,47 +264,45 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         throw new PickStockException("failed in pick_stock: " + pickResult.Message);
                     }
                 }
-            }
 
-            if (toAdd.MovesOnto != null)
-            {
-                foreach (var moveOnto in toAdd.MovesOnto)
+                // write ons
+                foreach (var moveOnto 
+                         in toAdd.Moves.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
                 {
-                    if (moveOnto.Pallet.HasValue)
+                    if (moveOnto.ToPallet.HasValue)
                     {
                         var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
                                                      toAdd.PartNumber,
-                                                     moveOnto.Pallet.Value);
-
+                                                     moveOnto.ToPallet.Value);
                         if (!canPutPartOnPallet)
                         {
                             throw new CannotPutPartOnPalletException(
-                                $"Cannot put part {toAdd.PartNumber} onto P{moveOnto.Pallet}");
+                                $"Cannot put part {toAdd.PartNumber} onto P{moveOnto.ToPallet}");
                         }
                     }
 
                     int? locationId = null;
 
-                    if (!string.IsNullOrEmpty(moveOnto.Location))
+                    if (!string.IsNullOrEmpty(moveOnto.ToLocation))
                     {
-                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveOnto.Location);
+                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveOnto.ToLocation);
                         if (toLocation == null)
                         {
-                            throw new InsertReqOntosException($"Did not recognise location {moveOnto.Location}");
+                            throw new InsertReqOntosException($"Did not recognise location {moveOnto.ToLocation}");
                         }
 
                         locationId = toLocation.LocationId;
                     }
-                    
+
                     var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
                                                 header.ReqNumber,
                                                 moveOnto.Qty,
                                                 toAdd.LineNumber,
                                                 locationId,
-                                                moveOnto.Pallet,
-                                                header.ToStockPool,
-                                                header.ToState,
-                                                "FREE");
+                                                moveOnto.ToPallet,
+                                                moveOnto.ToStockPool,
+                                                moveOnto.ToState,
+                                                "FREE"); // todo
 
                     if (!insertOntosResult.Success)
                     {
@@ -309,7 +310,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     }
                 }
             }
-            
+
+            // todo - consider what has to happen if a move is from one place to another
+            // i.e. cases where both a 'from' and a 'to' location or pallet is set
+
             var createPostingsResult = await this.requisitionStoredProcedures.CreateNominals(
                                            header.ReqNumber,
                                            toAdd.Qty,
@@ -370,14 +374,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                      header.CreatedBy.Id));
         }
 
-        private static void DoProcessResultCheck(ProcessResult result)
-        {
-            if (!result.Success)
-            {
-                throw new RequisitionException(result.Message);
-            }
-        }
-
         public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
         {
             var proxyResult = await this.requisitionStoredProcedures.CreateLoanReq(loanNumber);
@@ -392,6 +388,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return await this.repository.FindByIdAsync(reqNumber);
         }
 
+        private static void DoProcessResultCheck(ProcessResult result)
+        {
+            if (!result.Success)
+            {
+                throw new RequisitionException(result.Message);
+            }
+        }
+
         public async Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks)
         {
             var line = header.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
@@ -404,58 +408,54 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // if no moves before
             if (!line.Moves.Any())
             {
-                if (lineWithPicks.StockPicks != null)
+                foreach (var pick in lineWithPicks.Moves.Where(x => x.FromPallet.HasValue || !string.IsNullOrEmpty(x.FromLocation)))
                 {
-                    foreach (var pick in lineWithPicks.StockPicks)
-                    {
-                        var fromLocation = string.IsNullOrEmpty(pick.Location)
-                            ? null
-                            : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.Location);
+                    var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
+                        ? null
+                        : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == pick.FromLocation);
 
-                        // warning this call only makes the From side of the req_moves you still need to fill out other side
-                        var pickResult = await this.requisitionStoredProcedures.PickStock(
+                    // warning this call only makes the From side of the req_moves you still need to fill out other side
+                    var pickResult = await this.requisitionStoredProcedures.PickStock(
                             lineWithPicks.PartNumber,
                             header.ReqNumber,
                             lineWithPicks.LineNumber,
                             pick.Qty,
                             fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
-                            pick.Pallet,
+                            pick.FromPallet,
                             header.FromStockPool,
                             lineWithPicks.TransactionDefinition);
 
-                        if (!pickResult.Success)
-                        {
-                            throw new PickStockException("failed in pick_stock: " + pickResult.Message);
-                        }
+                    if (!pickResult.Success)
+                    {
+                        throw new PickStockException("failed in pick_stock: " + pickResult.Message);
+                    }
 
-                        // now fetch the header with the moves
-                        var pickedRequisition = await this.repository.FindByIdAsync(header.ReqNumber);
+                    // now fetch the header with the moves
+                    var pickedRequisition = await this.repository.FindByIdAsync(header.ReqNumber);
 
-                        // now if our transaction is an onto transaction need to fix moves
-                        var transaction =
+                    // now if our transaction is an onto transaction need to fix moves
+                    var transaction =
                             await this.transactionDefinitionRepository.FindByIdAsync(
                                 lineWithPicks.TransactionDefinition);
 
-                        if (transaction.RequiresOntoTransactions)
+                    if (transaction.RequiresOntoTransactions)
+                    {
+                        var pickedLine = pickedRequisition.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
+                        if (pickedLine != null)
                         {
-                            var pickedLine = pickedRequisition.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
-                            if (pickedLine != null)
+                            foreach (var move in pickedLine.Moves)
                             {
-                                foreach (var move in pickedLine.Moves)
-                                {
-                                    move.SetOntoFieldsFromHeader(header);
-                                }
-
-                                // we need these saved now in case we are picking multiple req lines and lose the changes
-                                await this.transactionManager.CommitAsync();
+                                move.SetOntoFieldsFromHeader(header);
                             }
-                        }
 
-                        return pickedRequisition;
+                            // we need these saved now in case we are picking multiple req lines and lose the changes
+                            await this.transactionManager.CommitAsync();
+                        }
                     }
+
+                    return pickedRequisition;
                 }
             }
-
             return header;
         }
     }

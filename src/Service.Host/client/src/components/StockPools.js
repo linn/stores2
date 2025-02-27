@@ -10,7 +10,6 @@ import DialogActions from '@mui/material/DialogActions';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import { Loading, Search, ErrorCard, SnackbarMessage } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import usePut from '../hooks/usePut';
@@ -18,6 +17,7 @@ import useInitialise from '../hooks/useInitialise';
 import usePost from '../hooks/usePost';
 import useGet from '../hooks/useGet';
 import useSearch from '../hooks/useSearch';
+import Page from './Page';
 
 function StockPools() {
     const { isLoading, result: stockPoolResult } = useInitialise(itemTypes.stockPools.url);
