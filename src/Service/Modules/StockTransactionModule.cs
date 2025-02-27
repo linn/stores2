@@ -34,7 +34,7 @@
             string[] functionCodeList,
             IStoresTransViewerReportFacadeService facadeService)
         {
-            await res.Negotiate(facadeService.GetStoresTransViewerReport(
+            await res.Negotiate(await facadeService.GetStoresTransViewerReport(
                 fromDate,
                 toDate,
                 partNumber,
