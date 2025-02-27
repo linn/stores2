@@ -51,9 +51,8 @@
                                              && (!x.TransactionCode.StartsWith("STSTM") || x.DebitOrCredit != "D")
                                              && (functionCodes == null || functionCodes.Count == 0
                                                                        || functionCodes.Contains(
-                                                                           x.FunctionCode.ToUpper())));
-
-            var orderedStockTransactions = stockTransactions.OrderBy(x => x.BudgetId);
+                                                                           x.FunctionCode.ToUpper())),
+                                        x => x.BudgetId);
 
             var report = new ResultsModel { ReportTitle = new NameModel("Stock Transaction List") };
 
@@ -75,7 +74,7 @@
 
             var values = new List<CalculationValueModel>();
 
-            foreach (var stockTransaction in orderedStockTransactions)
+            foreach (var stockTransaction in stockTransactions)
             {
                 var rowId = $"{stockTransaction.TransactionCode}/{stockTransaction.BudgetId}";
 

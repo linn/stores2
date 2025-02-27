@@ -56,7 +56,9 @@
                                                 }
                                         };
 
-            this.StockTransactionRepository.FilterByAsync(Arg.Any<Expression<Func<StockTransaction, bool>>>())
+            this.StockTransactionRepository.FilterByAsync(
+                    Arg.Any<Expression<Func<StockTransaction, bool>>>(), 
+                    Arg.Any<Expression<Func<StockTransaction, object>>>())
                 .Returns(this.stockTransactions);
 
             this.result = this.Sut.StoresTransViewerReport(null, null, null, null, this.functionCodeList).Result;
