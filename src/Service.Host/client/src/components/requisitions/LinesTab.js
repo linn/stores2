@@ -47,7 +47,7 @@ function LinesTab({
                                 style={{ cursor: 'pointer' }}
                                 onClick={() => setPartsSearchDialogOpen(params.id)}
                             />
-                            params.row.part?.partNumber
+                            {params.row.part?.partNumber}
                         </>
                     ) : (
                         <Link to={utilities.getHref(params.row, 'part')}>
@@ -160,6 +160,7 @@ function LinesTab({
                     open={pickStockDialogVisible}
                     setOpen={setPickStockDialogVisible}
                     partNumber={lines.find(l => l.lineNumber === selected)?.part?.partNumber}
+                    quantity={lines.find(l => l.lineNumber === selected && !l.isAddition)?.qty}
                     handleConfirm={moves => {
                         pickStock(selected, moves);
                     }}
