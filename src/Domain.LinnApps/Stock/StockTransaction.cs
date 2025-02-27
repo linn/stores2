@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Linn.Stores2.Domain.LinnApps.Parts;
+
     public class StockTransaction
     {
         public string TransactionCode { get; set;  }
@@ -16,15 +18,13 @@
 
         public string FunctionCode { get; set; }
 
-        public string PartNumber { get; set; }
+        public Part Part { get; set; }
 
         public decimal Quantity { get; set; }
 
         public int? Amount { get; set; }
 
         public DateTime? BudgetDate { get; set; }
-
-        public int BookedById { get; set; }
 
         public Employee BookedBy { get; set; }
 

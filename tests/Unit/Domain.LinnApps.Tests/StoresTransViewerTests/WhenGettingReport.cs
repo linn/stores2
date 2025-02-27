@@ -9,6 +9,7 @@
     using FluentAssertions;
 
     using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     using NSubstitute;
@@ -32,9 +33,11 @@
                                         {
                                             new StockTransaction
                                                 {
-                                                    PartNumber = "PART",
+                                                    Part = new Part
+                                                               {
+                                                                   PartNumber = "PART"
+                                                               },
                                                     Amount = 100,
-                                                    BookedById = 33156,
                                                     BookedBy = new Employee
                                                                    {
                                                                        Id = 33156,

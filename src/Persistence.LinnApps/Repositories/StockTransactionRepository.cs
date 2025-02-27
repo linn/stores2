@@ -25,6 +25,7 @@
             Expression<Func<StockTransaction, object>> orderByExpression = null)
         {
             return await this.serviceDbContext.StockTransactions.Where(filterExpression)
+                       .Include(p => p.Part)
                        .Include(e => e.BookedBy)
                        .ToListAsync();
         }

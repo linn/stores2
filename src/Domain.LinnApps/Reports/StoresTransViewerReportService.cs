@@ -45,7 +45,7 @@
                                         x => (fromDateSearch == null || x.BudgetDate >= fromDateSearch)
                                              && (toDateSearch == null || x.BudgetDate <= toDateSearch)
                                              && (string.IsNullOrEmpty(partNumber)
-                                                 || x.PartNumber.Contains(partNumber.Trim()))
+                                                 || x.Part.PartNumber.Contains(partNumber.Trim()))
                                              && (string.IsNullOrEmpty(transactionCode)
                                                  || x.TransactionCode.Contains(transactionCode.Trim()))
                                              && (!x.TransactionCode.StartsWith("STSTM") || x.DebitOrCredit != "D")
@@ -119,7 +119,7 @@
                     new CalculationValueModel
                     {
                         RowId = rowId,
-                        TextDisplay = stockTransaction.PartNumber,
+                        TextDisplay = stockTransaction.Part.PartNumber,
                         ColumnId = "PartNumber"
                     });
                 values.Add(
@@ -170,7 +170,7 @@
                 report.ValueDrillDownTemplates.Add(
                     new DrillDownModel(
                         "PartNumber",
-                        $"/stores/Parts/Part_Viewer.aspx?part={stockTransaction.PartNumber}",
+                        $"/stores/Parts/{stockTransaction.Part.Id}",
                         report.RowIndex(rowId),
                         report.ColumnIndex("PartNumber")));
             }
