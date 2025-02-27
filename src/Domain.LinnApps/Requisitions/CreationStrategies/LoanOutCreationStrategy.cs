@@ -33,9 +33,7 @@
             
             // need to add some extra fields to make picking and booking possible
             // REQ_UT does this from function code WVI but we know what they should be
-            req.FromState = "STORES";
-            req.ToState = "STORES";
-            req.ToCategory = "FREE";
+            req.SetStateAndCategory("STORES", "STORES", "FREE");
             req.ReqSource = "STORES2";
 
             return req;
