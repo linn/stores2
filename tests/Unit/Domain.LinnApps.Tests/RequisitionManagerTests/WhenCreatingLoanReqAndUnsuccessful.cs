@@ -1,12 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Linn.Common.Domain;
-    using NUnit.Framework;
-    using NSubstitute;
-    using System;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using NSubstitute;
+    using NUnit.Framework;
 
     public class WhenCreatingLoanReqAndUnsuccessful : ContextBase
     {
