@@ -169,7 +169,7 @@
                 report.ValueDrillDownTemplates.Add(
                     new DrillDownModel(
                         "PartNumber",
-                        $"/stores/Parts/{stockTransaction.Part.Id}",
+                        $"/parts/{stockTransaction.Part.Id}",
                         report.RowIndex(rowId),
                         report.ColumnIndex("PartNumber")));
             }
