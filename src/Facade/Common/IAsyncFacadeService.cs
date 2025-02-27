@@ -43,7 +43,8 @@
             TKey id,
             TUpdateResource updateResource,
             IEnumerable<string> privileges = null,
-            int? userNumber = null);
+            int? userNumber = null,
+            bool reloadEntity = false);
 
         Task<IResult<TResource>> GetApplicationState(IEnumerable<string> privileges = null);
 

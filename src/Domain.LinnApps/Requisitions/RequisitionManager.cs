@@ -313,7 +313,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             // todo - consider what has to happen if a move is from one place to another
             // i.e. cases where both a 'from' and a 'to' location or pallet is set
-
             var createPostingsResult = await this.requisitionStoredProcedures.CreateNominals(
                                            header.ReqNumber,
                                            toAdd.Qty,
@@ -457,6 +456,34 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
             }
             return header;
+        }
+
+        public async Task UpdateRequisition(RequisitionHeader current, IEnumerable<LineCandidate> lineUpdates)
+        {
+            // todo - permission checks? will be different for different req types I assume
+            foreach (var line in lineUpdates)
+            {
+                var existingLine = current.Lines.SingleOrDefault(l => l.LineNumber == line.LineNumber);
+                
+                // updating an existing line
+                if (existingLine != null)
+                {
+                    // picking stock for an existing line?
+                    if (line.StockPicked == true)
+                    {
+                        await this.PickStockOnRequisitionLine(current, line);
+                    }
+                    
+                    // could support updating line fields here 
+                }
+                // adding a new line?
+                else
+                {
+                    // note - this will pick stock/create ontos, create nominal postings etc
+                    // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
+                    await this.AddRequisitionLine(current, line);
+                }
+            }
         }
     }
 }

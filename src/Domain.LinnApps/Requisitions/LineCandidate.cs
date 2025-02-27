@@ -21,5 +21,7 @@
         public decimal Qty { get; set; }
 
         public string TransactionDefinition { get; set; }
+        
+        public bool? StockPicked { get; set; }
     }
 }

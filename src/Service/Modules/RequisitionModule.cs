@@ -139,7 +139,8 @@
             IRequisitionFacadeService service)
         {
             var updatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
-            await res.Negotiate(await service.Update(reqNumber, resource, req.HttpContext.GetPrivileges(), updatedBy));
+            await res.Negotiate(
+                await service.Update(reqNumber, resource, req.HttpContext.GetPrivileges(), updatedBy, true));
         }
 
         private async Task GetFunctionCodes(
