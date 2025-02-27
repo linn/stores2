@@ -88,34 +88,25 @@ function reducer(state, action) {
                               // todo - simplification: following line assumes stock can only be picked once for each line
                               // so will need to make this able to cope with subsequent changes at some point
                               moves: [
-                                  ...action.payload.stockMoves.map(
-                                      (move, index) =>
-                                          state.reqType === 'F'
-                                              ? {
-                                                    seq: index + 1,
-                                                    part: move.partNumber,
-                                                    qty: move.quantityToPick,
-                                                    from: {
-                                                        seq: index + 1,
-                                                        locationCode: move.locationName,
-                                                        locationDescription:
-                                                            move.locationDescription,
-                                                        palletNumber: move.palletNumber,
-                                                        state: move.state,
-                                                        batchRef: move.batchRef,
-                                                        batchDate: move.stockRotationDate,
-                                                        qtyAtLocation: move.quantity,
-                                                        qtyAllocated: move.qtyAllocated
-                                                    }
-                                                }
-                                              : {} // todo - behaviour for reqs onto
-                                  )
+                                  ...action.payload.stockMoves.map((move, index) => ({
+                                      seq: index + 1,
+                                      part: move.partNumber,
+                                      qty: move.quantityToPick,
+                                      fromLocationCode: move.locationName,
+                                      fromLocationDescription: move.locationDescription,
+                                      fromPalletNumber: move.palletNumber,
+                                      fromState: move.state,
+                                      fromBatchRef: move.batchRef,
+                                      fromBatchDate: move.stockRotationDate,
+                                      qtyAtLocation: move.quantity,
+                                      qtyAllocated: move.qtyAllocated
+                                  }))
                               ]
                           }
                         : line
                 )
             };
-        case 'set_options_from_pick': {
+        case 'set_options_from_pick':
             if (action.payload) {
                 return {
                     ...state,
@@ -131,10 +122,50 @@ function reducer(state, action) {
             }
 
             return state;
-        }
-        default: {
+        case 'add_move_onto':
+            return {
+                ...state,
+                lines: state.lines.map(line =>
+                    line.lineNumber === action.payload.lineNumber
+                        ? {
+                              ...line,
+                              moves: [
+                                  ...(line.moves ? line.moves : []),
+                                  {
+                                      lineNumber: action.payload.lineNumber,
+                                      seq: line.moves ? line.moves.length + 1 : 1,
+                                      toStockPool: 'LINN',
+                                      toState: 'STORES',
+                                      part: line.part.partNumber,
+                                      isTo: true
+                                  }
+                              ]
+                          }
+                        : line
+                )
+            };
+        case 'update_move_onto':
+            return {
+                ...state,
+                lines: state.lines.map(line => {
+                    const updatedMoves = line.moves.map(m =>
+                        m.seq === action.payload.seq
+                            ? {
+                                  ...action.payload
+                              }
+                            : m
+                    );
+                    return line.lineNumber === action.payload.lineNumber
+                        ? {
+                              ...line,
+                              qty: updatedMoves.reduce((sum, item) => sum + item.qty, 0),
+                              moves: updatedMoves
+                          }
+                        : line;
+                })
+            };
+        default:
             return state;
-        }
     }
 }
 

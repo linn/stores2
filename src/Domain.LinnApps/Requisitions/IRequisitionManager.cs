@@ -33,5 +33,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task CheckAndBookRequisitionHeader(RequisitionHeader header);
 
         Task<RequisitionHeader> CreateLoanReq(int loanNumber);
+
+        Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks);
     }
 }

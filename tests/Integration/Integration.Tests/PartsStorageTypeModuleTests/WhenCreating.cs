@@ -1,5 +1,7 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
+    using NSubstitute;
+
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
@@ -34,11 +36,6 @@
 
             this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
 
-            this.DbContext.Parts.AddAndSave(this.DbContext, this.part);
-
-            this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
-
-
             this.partsStorageType = new PartsStorageType(
                 this.part,
                 this.storageType,
@@ -46,8 +43,16 @@
                 100,
                 50,
                 "1",
-                400);
+                1);
 
+            this.DbContext.Parts.AddAndSave(this.DbContext, this.part);
+
+            this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
+
+            this.DatabaseService.GetNextVal("PARTS_STORAGE_TYPES_ID_SEQ").Returns(1);
+
+
+            
 
             this.Response = this.Client.PostAsJsonAsync($"/stores2/parts-storage-types", this.partsStorageType).Result;
         }

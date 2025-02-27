@@ -36,6 +36,14 @@
 
         public string Document1Text { get; set; }
 
+        public string PartSource { get; set; }
+
+        public bool PartNumberRequired { get; set; }
+
+        public string BatchRequired { get; set; }
+
+        public string BatchDateRequired { get; set; }
+
         public IEnumerable<FunctionCodeTransactionResource> TransactionTypes { get; set; }
     }
 }

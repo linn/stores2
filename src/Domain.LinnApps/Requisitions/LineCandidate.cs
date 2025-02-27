@@ -6,9 +6,7 @@
     // the domain service or factory methods and converted into a persisted line entity as part of a requistion.
     public class LineCandidate
     {
-        public IEnumerable<MoveSpecification> StockPicks { get; set; }
-
-        public IEnumerable<MoveSpecification> MovesOnto { get; set; }
+        public IEnumerable<MoveSpecification> Moves { get; set; }
 
         public int LineNumber { get; set; }
 

@@ -161,6 +161,32 @@
             return result;
         }
 
+        protected override async Task UpdateFromResourceAsync(
+            RequisitionHeader entity,
+            RequisitionHeaderResource updateResource,
+            IEnumerable<string> privileges = null)
+        {
+            // check lines
+            if (updateResource.Lines.Any())
+            {
+                foreach (var updatedLine in updateResource.Lines)
+                {
+                    var line = entity.Lines.SingleOrDefault(l => l.LineNumber == updatedLine.LineNumber);
+                    var candidate = BuildLineCandidateFromResource(updatedLine);
+                    if (line != null)
+                    {
+                        if (updatedLine.StockPicked == true)
+                        {
+                           entity = await this.requisitionManager.PickStockOnRequisitionLine(entity, candidate);
+                        }
+                    }
+
+                    // TODO if no line then add one                        
+                    // else { this.requisitionManager.AddRequisitionLine(entity, candidate); }
+                }
+            }
+        }
+
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
             string searchTerm)
         {
@@ -195,6 +221,12 @@
         protected override Expression<Func<RequisitionHeader, bool>> FilterExpression(
             RequisitionSearchResource searchResource)
         {
+            if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
+            {
+                return x => x.Document1Name == searchResource.DocumentName &&
+                            x.Document1 == searchResource.DocumentNumber && (searchResource.IncludeCancelled || x.Cancelled != "Y");
+            }
+
             if (searchResource.Pending == true)
             {
                 return x => x.Cancelled != "Y" && x.DateBooked == null;
@@ -221,19 +253,16 @@
 
             return new LineCandidate
                        {
-                           StockPicks = resource.Moves.Where(x => x.From != null).Select(
+                           Moves = resource.Moves.Select(
                                m => new MoveSpecification
                                         {
                                             Qty = m.Qty.GetValueOrDefault(), 
-                                            Location = m.From.LocationCode,
-                                            Pallet = m.From.PalletNumber
-                                        }),
-                           MovesOnto = resource.Moves.Where(x => x.To != null).Select(
-                               m => new MoveSpecification
-                                        {
-                                            Qty = m.Qty.GetValueOrDefault(),
-                                            Location = m.To.LocationCode,
-                                            Pallet = m.To.PalletNumber
+                                            FromLocation  = m.FromLocationCode,
+                                            FromPallet = m.FromPalletNumber,
+                                            ToLocation = m.ToLocationCode,
+                                            ToPallet = m.ToPalletNumber,
+                                            ToStockPool = m.ToStockPool,
+                                            ToState = m.ToState
                                         }),
                            LineNumber = resource.LineNumber,
                            PartNumber = resource.Part?.PartNumber,

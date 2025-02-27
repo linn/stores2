@@ -34,6 +34,10 @@
                           Document1Required = model.Document1Required(),
                           Document1Entered = model.Document1Entered(),
                           Document1Text = model.Document1Text,
+                          PartSource = model.PartSource,
+                          PartNumberRequired = model.PartNumberRequired(),
+                          BatchDateRequired = model.BatchDateRequired,
+                          BatchRequired = model.BatchRequired,
                           TransactionTypes = model.TransactionsTypes?.Select(
                               t => new FunctionCodeTransactionResource
                                        {

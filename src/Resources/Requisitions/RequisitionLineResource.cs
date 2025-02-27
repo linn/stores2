@@ -42,12 +42,14 @@
 
         public string Cancelled { get; set; }
 
+        public bool? StockPicked { get; set; }
+
         public IEnumerable<RequisitionLinePostingResource> Postings { get; set; }
 
         public IEnumerable<StoresBudgetResource> StoresBudgets { get; set; }
 
         public RequisitionHeaderResource RequisitionHeader { get; set; }
         
-        public IEnumerable<MoveHeaderResource> Moves { get; set; }
+        public IEnumerable<MoveResource> Moves { get; set; }
     }
 }

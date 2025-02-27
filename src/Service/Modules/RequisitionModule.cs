@@ -27,6 +27,7 @@
             app.MapPost("/requisitions/book", this.Book);
             app.MapPost("/requisitions/authorise", this.Authorise);
             app.MapPost("/requisitions", this.Create);
+            app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
         }
 
@@ -37,9 +38,11 @@
             int? reqNumber,
             bool? includeCancelled,
             bool? pending,
+            string documentName,
+            int? documentNumber,
             IRequisitionFacadeService service)
         {
-            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && pending != true)
+            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && string.IsNullOrWhiteSpace(documentName) && pending != true)
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
             }
@@ -51,7 +54,9 @@
                         Comments = comments,
                         ReqNumber = reqNumber,
                         IncludeCancelled = includeCancelled.GetValueOrDefault(),
-                        Pending = pending.GetValueOrDefault()
+                        Pending = pending.GetValueOrDefault(),
+                        DocumentName = documentName,
+                        DocumentNumber = documentNumber
                     });
                 await res.Negotiate(requisitions);
             }
@@ -125,7 +130,18 @@
             resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges(), resource.CreatedBy, false, true));
         }
-        
+
+        private async Task Update(
+            HttpResponse res,
+            HttpRequest req,
+            int reqNumber,
+            RequisitionHeaderResource resource,
+            IRequisitionFacadeService service)
+        {
+            var updatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
+            await res.Negotiate(await service.Update(reqNumber, resource, req.HttpContext.GetPrivileges(), updatedBy));
+        }
+
         private async Task GetFunctionCodes(
             HttpRequest _,
             HttpResponse res,
