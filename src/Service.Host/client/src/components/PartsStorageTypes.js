@@ -4,10 +4,10 @@ import Grid from '@mui/material/Grid2';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { Loading, CreateButton, utilities } from '@linn-it/linn-form-components-library';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
+import Page from './Page';
 
 function PartsStorageTypes() {
     const { isPartsStorageTypesLoading, result: partsStorageTypes } = useInitialise(
@@ -17,7 +17,7 @@ function PartsStorageTypes() {
     const navigate = useNavigate();
 
     const StorageTypeColumns = [
-        { field: 'partNumber', headerName: 'Part Number', width: 100 },
+        { field: 'partNumber', headerName: 'Part Number', width: 150 },
         {
             field: 'storageTypeCode',
             headerName: 'Storage Type Code',
