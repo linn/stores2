@@ -43,7 +43,7 @@
             var data = await this.goodsInLogRepository.FilterByAsync(
                            x => (fromDateSearch == null || x.DateCreated >= fromDateSearch)
                                 && (toDateSearch == null || x.DateCreated <= toDateSearch)
-                                && (!createdBy.HasValue || x.CreatedBy == createdBy)
+                                && (!createdBy.HasValue || x.CreatedBy.Id == createdBy)
                                 && (string.IsNullOrEmpty(articleNumber) || x.ArticleNumber.ToUpper()
                                         .Contains(articleNumber.ToUpper().Trim()))
                                 && (!orderNumber.HasValue || x.OrderNumber == orderNumber)
@@ -93,7 +93,7 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, TextDisplay = goodsInLogEntry.CreatedBy.ToString(), ColumnId = "CreatedBy"
+                            RowId = rowId, TextDisplay = goodsInLogEntry?.CreatedBy?.Name, ColumnId = "CreatedBy"
                     });
                 values.Add(
                     new CalculationValueModel
@@ -267,7 +267,7 @@
                                   new AxisDetailsModel("BookInRef", "Book In Ref", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("Type", "Type", GridDisplayType.TextValue, 90),
                                   new AxisDetailsModel("DateCreated", "Date Created", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("CreatedBy", "Created By", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("CreatedBy", "Created By", GridDisplayType.TextValue, 200),
                                   new AxisDetailsModel("OrderNumber", "Order Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("OrderLine", "Line", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("Quantity", "Qty", GridDisplayType.TextValue, 100),

@@ -31,7 +31,11 @@
                                                      BookInRef = 1234, 
                                                      ArticleNumber = "PART PARCEL", 
                                                      Comments = "LC", 
-                                                     CreatedBy = 33156, 
+                                                     CreatedBy = new Employee
+                                                                     {
+                                                                         Id = 33156,
+                                                                         Name = "Ross Stewart"
+                                                                     }, 
                                                      DateCreated = DateTime.Today, 
                                                      DemLocation = "LC2016", 
                                                      ErrorMessage = "EM", 
@@ -83,7 +87,7 @@
             this.result.GetGridTextValue(0, 0).Should().Be("1234");
             this.result.GetGridTextValue(0, 1).Should().Be("TransAM");
             this.result.GetGridTextValue(0, 2).Should().Be(DateTime.Today.ToString("dd/MM/yyyy"));
-            this.result.GetGridTextValue(0, 3).Should().Be("33156");
+            this.result.GetGridTextValue(0, 3).Should().Be("Ross Stewart");
             this.result.GetGridTextValue(0, 4).Should().Be("1234");
             this.result.GetGridTextValue(0, 5).Should().Be("1");
             this.result.GetGridTextValue(0, 6).Should().Be("5.5");
