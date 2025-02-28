@@ -143,7 +143,7 @@ function Requisition({ creating }) {
     };
 
     const canAddLines = () => {
-        if (formState.cancelled !== 'N' || formState.dateBooked) {
+        if (formState.cancelled === 'Y' || formState.dateBooked) {
             return false;
         }
 
@@ -613,16 +613,20 @@ function Requisition({ creating }) {
                                     })
                                 }
                                 disabled={stockStatesLoading || stockPoolsLoading || !creating}
-                                shouldRender={shouldRender(
-                                    () =>
-                                        formState.storesFunction?.code === 'MOVE' ||
-                                        ((formState.fromLocationRequired !== 'N' ||
-                                            formState.toLocationRequired !== 'N') &&
-                                            !(
-                                                formState.storesFunction?.code === 'LOAN OUT' &&
-                                                creating
-                                            ))
-                                )}
+                                shouldRender={shouldRender(() => {
+                                    const isMoveFunction =
+                                        formState.storesFunction?.code === 'MOVE';
+                                    const isLocationRequired =
+                                        formState.fromLocationRequired !== 'N' ||
+                                        formState.toLocationRequired !== 'N';
+                                    const isLoanOutWhileCreating =
+                                        formState.storesFunction?.code === 'LOAN OUT' && creating;
+
+                                    return (
+                                        isMoveFunction ||
+                                        (isLocationRequired && !isLoanOutWhileCreating)
+                                    );
+                                })}
                             />
                             <Grid size={6}>
                                 <InputField

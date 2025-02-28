@@ -74,6 +74,7 @@ function reducer(state, action) {
                 )
             };
         case 'pick_stock':
+            console.log(action.payload.stockMoves);
             return {
                 ...state,
                 lines: state.lines.map(line =>
@@ -96,6 +97,7 @@ function reducer(state, action) {
                                       fromLocationDescription: move.locationDescription,
                                       fromPalletNumber: move.palletNumber,
                                       fromState: move.state,
+                                      fromStockPool: move.fromStockPool,
                                       fromBatchRef: move.batchRef,
                                       fromBatchDate: move.stockRotationDate,
                                       qtyAtLocation: move.quantity,
