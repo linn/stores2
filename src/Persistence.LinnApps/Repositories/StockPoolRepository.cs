@@ -18,7 +18,7 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override async Task<IList<StockPool>> FindAllAsync()
+        public async Task<IList<StockPool>> FindAllAsync()
         {
             return await this.serviceDbContext.StockPools
                 .Include(a => a.AccountingCompany)

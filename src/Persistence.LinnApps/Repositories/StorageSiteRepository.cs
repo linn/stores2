@@ -17,7 +17,7 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override async Task<IList<StorageSite>> FindAllAsync()
+        public async Task<IList<StorageSite>> FindAllAsync()
         {
             var result = await this.serviceDbContext.StorageSites
                 .Include(x => x.StorageAreas)

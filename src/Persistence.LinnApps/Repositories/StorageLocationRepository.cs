@@ -20,7 +20,7 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override async Task<IList<StorageLocation>> FindAllAsync()
+        public async Task<IList<StorageLocation>> FindAllAsync()
         {
             return await this.serviceDbContext.StorageLocations
                        .Where(l => l.DateInvalid == null)
@@ -28,7 +28,7 @@
                        .ToListAsync();
         }
 
-        public override async Task<IList<StorageLocation>> FilterByAsync(
+        public async Task<IList<StorageLocation>> FilterByAsync(
             Expression<Func<StorageLocation, bool>> filterExpression,
             Expression<Func<StorageLocation, object>> orderByExpression = null)
         {

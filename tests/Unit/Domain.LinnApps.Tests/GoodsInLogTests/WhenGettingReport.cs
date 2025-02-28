@@ -64,7 +64,8 @@
                                          };
 
             this.GoodsInLogRepository.FilterByAsync(
-                    Arg.Any<Expression<Func<GoodsInLogEntry, bool>>>())
+                    Arg.Any<Expression<Func<GoodsInLogEntry, bool>>>(), 
+                    Arg.Any<List<(Expression<Func<GoodsInLogEntry, object>> OrderByExpression, bool? Ascending)>>())
                 .Returns(this.goodsInLogEntries);
 
             this.result = this.Sut.GoodsInLogReport(

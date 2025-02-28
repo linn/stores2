@@ -20,7 +20,7 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override async Task<IList<StockTransaction>> FilterByAsync(
+        public async Task<IList<StockTransaction>> FilterByAsync(
             Expression<Func<StockTransaction, bool>> filterExpression,
             Expression<Func<StockTransaction, object>> orderByExpression = null)
         {

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
@@ -40,19 +41,22 @@
             var toDateSearch = string.IsNullOrWhiteSpace(toDate) ? (DateTime?)null
                              : DateTime.Parse(toDate);
 
-            var data = await this.goodsInLogRepository.FilterByAsync(
-                           x => (fromDateSearch == null || x.DateCreated >= fromDateSearch)
-                                && (toDateSearch == null || x.DateCreated <= toDateSearch)
-                                && (!createdBy.HasValue || x.CreatedBy.Id == createdBy)
-                                && (string.IsNullOrEmpty(articleNumber) || x.ArticleNumber.ToUpper()
-                                        .Contains(articleNumber.ToUpper().Trim()))
-                                && (!orderNumber.HasValue || x.OrderNumber == orderNumber)
-                                && (!quantity.HasValue || x.Quantity == quantity)
-                                && (!reqNumber.HasValue || x.ReqNumber == reqNumber)
-                                && (string.IsNullOrEmpty(storagePlace) || x.StoragePlace.ToUpper()
-                                        .Contains(storagePlace.ToUpper().Trim())));
-
-            var goodsInLogEntries = data.OrderByDescending(x => x.Id);
+            var goodsInLogEntries = await this.goodsInLogRepository.FilterByAsync(
+                                        x => (fromDateSearch == null || x.DateCreated >= fromDateSearch)
+                                             && (toDateSearch == null || x.DateCreated <= toDateSearch)
+                                             && (!createdBy.HasValue || x.CreatedBy.Id == createdBy)
+                                             && (string.IsNullOrEmpty(articleNumber) || x.ArticleNumber.ToUpper()
+                                                     .Contains(articleNumber.ToUpper().Trim()))
+                                             && (!orderNumber.HasValue || x.OrderNumber == orderNumber)
+                                             && (!quantity.HasValue || x.Quantity == quantity)
+                                             && (!reqNumber.HasValue || x.ReqNumber == reqNumber)
+                                             && (string.IsNullOrEmpty(storagePlace) || x.StoragePlace.ToUpper()
+                                                     .Contains(storagePlace.ToUpper().Trim())), 
+                                        new List<(Expression<Func<GoodsInLogEntry, object>> OrderByExpression, bool?
+                                            Ascending)>
+                                            {
+                                                (x => x.Id, false)
+                                            });
 
             var model = new ResultsModel { ReportTitle = new NameModel("Goods In Log") };
 

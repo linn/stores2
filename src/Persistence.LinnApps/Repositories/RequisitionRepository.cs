@@ -46,7 +46,7 @@
                 .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
 
-        public override async Task<IList<RequisitionHeader>> FilterByAsync(
+        public async Task<IList<RequisitionHeader>> FilterByAsync(
             Expression<Func<RequisitionHeader, bool>> filterExpression,
             Expression<Func<RequisitionHeader, object>> orderByExpression = null)
         {

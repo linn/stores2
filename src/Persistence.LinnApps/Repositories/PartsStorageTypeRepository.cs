@@ -18,7 +18,7 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override async Task<IList<PartsStorageType>> FindAllAsync()
+        public async Task<IList<PartsStorageType>> FindAllAsync()
         {
             return await this.serviceDbContext.PartsStorageTypes
                        .Include(pst => pst.Part)

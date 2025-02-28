@@ -24,7 +24,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                        .FirstOrDefaultAsync(a => a.FunctionCode == key);
         }
 
-        public override async Task<IList<StoresFunction>> FindAllAsync()
+        public async Task<IList<StoresFunction>> FindAllAsync()
         {
             return await this.serviceDbContext.StoresFunctionCodes
                 .Include(x => x.TransactionsTypes)

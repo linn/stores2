@@ -28,7 +28,7 @@
                 .Include(l => l.Part);
         }
 
-        public override async Task<IList<StockLocator>> FilterByAsync(
+        public async Task<IList<StockLocator>> FilterByAsync(
             Expression<Func<StockLocator, bool>> filterByExpression,
             Expression<Func<StockLocator, object>> orderByExpression = null)
         {
