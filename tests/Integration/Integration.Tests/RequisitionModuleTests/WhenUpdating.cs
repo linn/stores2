@@ -1,18 +1,22 @@
 ﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
+    using System.Collections.Generic;
+    using System.Net;
+    using System.Net.Http.Json;
+
     using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.TestData.Requisitions;
+
     using NSubstitute;
+
     using NUnit.Framework;
-    using System.Collections.Generic;
-    using System.Net.Http.Json;
-    using System.Net;
-    using Linn.Stores2.Integration.Tests.Extensions;
 
     public class WhenUpdating : ContextBase
     {
@@ -66,6 +70,7 @@
                 Arg.Any<RequisitionHeader>(), Arg.Any<IEnumerable<LineCandidate>>());
         }
         
+
         [Test]
         public void ShouldReturnJsonContentType()
         {
