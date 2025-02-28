@@ -238,7 +238,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // we need this so the line exists for the stored procedure calls coming next
             await this.transactionManager.CommitAsync();
 
-
             if (toAdd.Moves != null)
             {
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
@@ -256,7 +255,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                          pick.Qty,
                                          fromLocation?.LocationId,
                                          pick.FromPallet,
-                                         header.FromStockPool,
+                                         pick.FromStockPool,
                                          toAdd.TransactionDefinition);
 
                     if (!pickResult.Success)
@@ -387,14 +386,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return await this.repository.FindByIdAsync(reqNumber);
         }
 
-        private static void DoProcessResultCheck(ProcessResult result)
-        {
-            if (!result.Success)
-            {
-                throw new RequisitionException(result.Message);
-            }
-        }
-
         public async Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks)
         {
             var line = header.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
@@ -455,6 +446,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     return pickedRequisition;
                 }
             }
+
             return header;
         }
 
@@ -465,24 +457,32 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 var existingLine = current.Lines.SingleOrDefault(l => l.LineNumber == line.LineNumber);
                 
-                // updating an existing line
+                // are we updating an existing line?
                 if (existingLine != null)
                 {
-                    // picking stock for an existing line?
+                    // picking stock for an existing line
                     if (line.StockPicked == true)
                     {
                         await this.PickStockOnRequisitionLine(current, line);
                     }
                     
-                    // could support updating line fields here 
+                    // could support other line updates, e.g. updating other line fields here 
                 }
-                // adding a new line?
                 else
                 {
+                    // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
                     await this.AddRequisitionLine(current, line);
                 }
+            }
+        }
+
+        private static void DoProcessResultCheck(ProcessResult result)
+        {
+            if (!result.Success)
+            {
+                throw new RequisitionException(result.Message);
             }
         }
     }

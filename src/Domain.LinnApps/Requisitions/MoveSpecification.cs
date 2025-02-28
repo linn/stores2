@@ -15,5 +15,7 @@
         public string ToStockPool { get; set; }
         
         public string ToState { get; set; }
+
+        public string FromStockPool { get; set; }
     }
 }
