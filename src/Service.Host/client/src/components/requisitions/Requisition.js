@@ -101,7 +101,7 @@ function Requisition({ creating }) {
     const {
         send: createReq,
         isLoading: createLoading,
-        errorMessage: createError,
+        errorMessage: createError
     } = usePost(itemTypes.requisitions.url, true, true);
 
     const {
@@ -323,6 +323,7 @@ function Requisition({ creating }) {
     };
 
     const shouldRender = (renderFunction, showOnCreate = true) => {
+        console.log(creating);
         if ((renderFunction && !renderFunction()) || (!showOnCreate && creating)) {
             return false;
         }
@@ -430,7 +431,7 @@ function Requisition({ creating }) {
                                 shouldRender={shouldRender(null, false)}
                                 dateBooked={formState.dateBooked}
                                 bookedByName={formState.bookedByName}
-                                bookUrl={utilities.getHref(result, 'book')}
+                                bookUrl={utilities.getHref(formState, 'book')}
                                 onBook={() => {
                                     book(null, { reqNumber });
                                 }}

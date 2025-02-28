@@ -14,7 +14,7 @@ function BookedBy({
     if (!shouldRender) {
         return <Grid size={6} />;
     }
-
+    console.log(bookUrl);
     return (
         <>
             <Grid size={2}>
