@@ -27,19 +27,5 @@
                 .Include(l => l.StorageLocation)
                 .Include(l => l.Part);
         }
-
-        public async Task<IList<StockLocator>> FilterByAsync(
-            Expression<Func<StockLocator, bool>> filterByExpression,
-            Expression<Func<StockLocator, object>> orderByExpression = null)
-        {
-            var query = this.serviceDbContext.StockLocators.Where(filterByExpression);
-
-            var results = await query
-                              .Include(l => l.StorageLocation)
-                              .Include(l => l.Part)
-                              .ToListAsync();
-
-            return results;
-        }
     }
 }

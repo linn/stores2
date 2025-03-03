@@ -8,7 +8,6 @@
 
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
-    using Linn.Stores2.Domain.LinnApps.Stock;
 
     using Microsoft.EntityFrameworkCore;
 
@@ -21,13 +20,11 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public async Task<IList<GoodsInLogEntry>> FilterByAsync(
-            Expression<Func<GoodsInLogEntry, bool>> filterExpression,
-            Expression<Func<GoodsInLogEntry, object>> orderByExpression = null)
+        public override IQueryable<GoodsInLogEntry> FilterBy(
+            Expression<Func<GoodsInLogEntry, bool>> filterExpression)
         {
-            return await this.serviceDbContext.GoodsInLogEntries.Where(filterExpression)
-                       .Include(e => e.CreatedBy)
-                       .ToListAsync();
+            return this.serviceDbContext.GoodsInLogEntries.Where(filterExpression)
+                       .Include(e => e.CreatedBy);
         }
     }
 }

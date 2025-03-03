@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
@@ -20,22 +19,19 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public async Task<IList<StorageLocation>> FindAllAsync()
+        public override IQueryable<StorageLocation> FindAll()
         {
-            return await this.serviceDbContext.StorageLocations
+            return this.serviceDbContext.StorageLocations
                        .Where(l => l.DateInvalid == null)
-                       .OrderBy(l => l.LocationCode)
-                       .ToListAsync();
+                       .OrderBy(l => l.LocationCode);
         }
 
-        public async Task<IList<StorageLocation>> FilterByAsync(
-            Expression<Func<StorageLocation, bool>> filterExpression,
-            Expression<Func<StorageLocation, object>> orderByExpression = null)
+        public override IQueryable<StorageLocation> FilterBy(
+            Expression<Func<StorageLocation, bool>> filterExpression)
         {
-            return await this.serviceDbContext.StorageLocations
+            return this.serviceDbContext.StorageLocations
                        .Where(filterExpression)
-                       .OrderBy(l => l.LocationCode)
-                       .ToListAsync();
+                       .OrderBy(l => l.LocationCode);
         }
 
         public override async Task<StorageLocation> FindByIdAsync(int key)

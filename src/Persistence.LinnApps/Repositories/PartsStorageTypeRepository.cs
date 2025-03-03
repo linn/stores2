@@ -1,6 +1,6 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
-    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence.EntityFramework;
@@ -18,12 +18,11 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public async Task<IList<PartsStorageType>> FindAllAsync()
+        public override IQueryable<PartsStorageType> FindAll()
         {
-            return await this.serviceDbContext.PartsStorageTypes
+            return this.serviceDbContext.PartsStorageTypes
                        .Include(pst => pst.Part)
-                       .Include(pst => pst.StorageType)
-                       .ToListAsync();
+                       .Include(pst => pst.StorageType);
         }
 
         public override async Task<PartsStorageType> FindByIdAsync(int key)
