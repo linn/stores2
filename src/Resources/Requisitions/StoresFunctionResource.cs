@@ -44,6 +44,10 @@
 
         public string BatchDateRequired { get; set; }
 
+        public string NominalCode { get; set; }
+
+        public string NominalDescription { get; set; }
+
         public IEnumerable<FunctionCodeTransactionResource> TransactionTypes { get; set; }
     }
 }

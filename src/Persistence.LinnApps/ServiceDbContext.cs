@@ -10,6 +10,7 @@
     using Linn.Stores2.Domain.LinnApps.Stores;
 
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Internal;
     using Microsoft.Extensions.Logging;
 
     public class ServiceDbContext : DbContext
@@ -105,6 +106,7 @@
             BuildStoresTransactionStates(builder);
             BuildRequisitionHistory(builder);
             BuildStockTransactions(builder);
+            BuildStockTransactionPostings(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -366,6 +368,7 @@
             q.Property(d => d.TakePriceFrom).HasColumnName("TAKE_PRICE_FROM").HasMaxLength(1);
             q.Property(d => d.RequiresAuth).HasColumnName("REQUIRES_AUTH").HasMaxLength(1);
             q.Property(d => d.AuthOpCode).HasColumnName("AUTH_OP_CODE").HasMaxLength(10);
+            q.HasMany(t => t.StoresTransactionPostings).WithOne().HasForeignKey(p => p.TransactionCode);
         }
 
         private static void BuildReqMoves(ModelBuilder builder)
@@ -739,6 +742,16 @@
             e.Property(s => s.ReqReference).HasColumnName("REQ_REFERENCE");
             e.Property(s => s.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT");
             e.HasOne(s => s.Part).WithMany().HasForeignKey("PART_NUMBER");
+        }
+
+        private static void BuildStockTransactionPostings(ModelBuilder builder)
+        {
+            var e = builder.Entity<StoresTransactionPosting>().ToTable("STORES_TRANS_POSTINGS");
+            e.HasKey(l => l.Id);
+            e.Property(s => s.Id).HasColumnName("STP_ID");
+            e.Property(s => s.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
+            e.Property(s => s.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT").HasMaxLength(1);
+            e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
         }
     }
 }
