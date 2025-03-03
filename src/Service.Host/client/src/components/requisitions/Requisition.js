@@ -133,7 +133,7 @@ function Requisition({ creating }) {
     const [hasLoadedDefaultState, setHasLoadedDefaultState] = useState(false);
 
     useEffect(() => {
-        if (creating && !hasLoadedDefaultState) {
+        if (creating && !hasLoadedDefaultState && userNumber) {
             setHasLoadedDefaultState(true);
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
@@ -165,6 +165,7 @@ function Requisition({ creating }) {
         creating,
         name,
         userNumber,
+        hasLoadedDefaultState,
         updateResult,
         clearUpdateResult,
         clearCancelResult,
@@ -326,7 +327,6 @@ function Requisition({ creating }) {
     };
 
     const shouldRender = (renderFunction, showOnCreate = true) => {
-        console.log(creating);
         if ((renderFunction && !renderFunction()) || (!showOnCreate && creating)) {
             return false;
         }
