@@ -130,8 +130,11 @@ function Requisition({ creating }) {
         []
     );
 
+    const [hasLoadedDefaultState, setHasLoadedDefaultState] = useState(false);
+
     useEffect(() => {
-        if (creating) {
+        if (creating && !hasLoadedDefaultState && userNumber) {
+            setHasLoadedDefaultState(true);
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
         if (cancelResult) {
@@ -143,7 +146,7 @@ function Requisition({ creating }) {
             clearBookResult();
         }
         if (authoriseResult) {
-            dispatch({ type: 'load_state', payload: bookResult });
+            dispatch({ type: 'load_state', payload: authoriseResult });
             clearAuthoriseResult();
         }
         if (result) {
@@ -162,6 +165,7 @@ function Requisition({ creating }) {
         creating,
         name,
         userNumber,
+        hasLoadedDefaultState,
         updateResult,
         clearUpdateResult,
         clearCancelResult,
@@ -323,7 +327,6 @@ function Requisition({ creating }) {
     };
 
     const shouldRender = (renderFunction, showOnCreate = true) => {
-        console.log(creating);
         if ((renderFunction && !renderFunction()) || (!showOnCreate && creating)) {
             return false;
         }
