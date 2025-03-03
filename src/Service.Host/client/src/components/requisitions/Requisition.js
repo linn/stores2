@@ -143,7 +143,7 @@ function Requisition({ creating }) {
             clearBookResult();
         }
         if (authoriseResult) {
-            dispatch({ type: 'load_state', payload: bookResult });
+            dispatch({ type: 'load_state', payload: authoriseResult });
             clearAuthoriseResult();
         }
         if (result) {
