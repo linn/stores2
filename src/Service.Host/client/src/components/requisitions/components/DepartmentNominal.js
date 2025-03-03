@@ -1,7 +1,6 @@
 import React from 'react';
 import Grid from '@mui/material/Grid2';
 import { InputField, Search } from '@linn-it/linn-form-components-library';
-import PropTypes from 'prop-types';
 import itemTypes from '../../../itemTypes';
 import useSearch from '../../../hooks/useSearch';
 
@@ -12,7 +11,8 @@ function DepartmentNominal({
     nominalCode = null,
     nominalDescription = null,
     setNominal,
-    shouldRender = true
+    shouldRender = true,
+    enterNominal = true
 }) {
     const {
         search: searchDepartments,
@@ -40,7 +40,11 @@ function DepartmentNominal({
                     label="Department"
                     resultsInModal
                     resultLimit={100}
-                    helperText="Enter a search term and press enter to look up departments"
+                    helperText={
+                        departmentDescription
+                            ? ''
+                            : 'Enter a search term and press enter to look up departments'
+                    }
                     value={departmentCode}
                     handleValueChange={(_, newVal) => {
                         setDepartment({ departmentCode: newVal });
@@ -71,7 +75,11 @@ function DepartmentNominal({
                     label="Nominal"
                     resultsInModal
                     resultLimit={100}
-                    helperText="Enter a search term and press enter to look up nominals"
+                    helperText={
+                        nominalDescription
+                            ? ''
+                            : 'Enter a search term and press enter to look up nominals'
+                    }
                     value={nominalCode}
                     handleValueChange={(_, newVal) => {
                         setNominal({ nominalCode: newVal });
@@ -84,6 +92,7 @@ function DepartmentNominal({
                         setNominal(r);
                     }}
                     clearSearch={clearNominalsSearch}
+                    disabled={!enterNominal}
                     autoFocus={false}
                 />
             </Grid>
@@ -99,23 +108,5 @@ function DepartmentNominal({
         </>
     );
 }
-
-DepartmentNominal.propTypes = {
-    departmentCode: PropTypes.string,
-    departmentDescription: PropTypes.string,
-    setDepartment: PropTypes.func.isRequired,
-    nominalCode: PropTypes.string,
-    nominalDescription: PropTypes.string,
-    setNominal: PropTypes.func.isRequired,
-    shouldRender: PropTypes.bool
-};
-
-DepartmentNominal.defaultProps = {
-    departmentCode: null,
-    departmentDescription: null,
-    nominalCode: null,
-    nominalDescription: null,
-    shouldRender: true
-};
 
 export default DepartmentNominal;

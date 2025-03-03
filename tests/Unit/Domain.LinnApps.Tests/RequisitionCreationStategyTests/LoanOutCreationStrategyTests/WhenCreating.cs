@@ -68,5 +68,13 @@
             this.Result.StoresFunction.Should().NotBeNull();
             this.Result.StoresFunction.FunctionCode.Should().Be("LOAN OUT");
         }
+
+        [Test]
+        public void ShouldDefaultExtraFields()
+        {
+            this.Result.ToCategory.Should().Be("FREE");
+            this.Result.FromState.Should().Be("STORES");
+            this.Result.ToState.Should().Be("STORES");
+        }
     }
 }

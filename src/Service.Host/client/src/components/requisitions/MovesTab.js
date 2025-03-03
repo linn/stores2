@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import moment from 'moment';
 import Grid from '@mui/material/Grid2';
 import { Search } from '@linn-it/linn-form-components-library';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
@@ -110,7 +111,7 @@ function MovesTab({
         {
             field: 'seq',
             headerName: 'Seq',
-            width: 100
+            width: 80
         },
         {
             field: 'fromLocationCode',
@@ -131,7 +132,7 @@ function MovesTab({
         {
             field: 'fromStockPool',
             headerName: 'Stock Pool',
-            width: 100
+            width: 120
         },
         {
             field: 'fromState',
@@ -146,7 +147,8 @@ function MovesTab({
         {
             field: 'fromBatchDate',
             headerName: 'Batch Date',
-            width: 100
+            width: 120,
+            renderCell: params => moment(params.row.fromBatchDate).format('DD-MMM-YYYY')
         },
         {
             field: 'qtyAtLocation',
@@ -164,7 +166,7 @@ function MovesTab({
         {
             field: 'seq',
             headerName: 'Seq',
-            width: 100
+            width: 80
         },
         {
             field: 'qty',
@@ -206,7 +208,7 @@ function MovesTab({
         {
             field: 'toStockPool',
             headerName: 'Stock Pool',
-            width: 100,
+            width: 120,
             editable: true,
             valueOptions: stockPools?.map(s => s.stockPoolCode),
             type: 'singleSelect'

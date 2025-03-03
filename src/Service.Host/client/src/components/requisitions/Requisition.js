@@ -44,7 +44,8 @@ function Requisition({ creating }) {
     const {
         send: fetchReq,
         isLoading: fetchLoading,
-        result
+        result,
+        clearData: clearReqResult
     } = useGet(itemTypes.requisitions.url, true);
     const [hasFetched, setHasFetched] = useState(0);
 
@@ -77,21 +78,24 @@ function Requisition({ creating }) {
         send: cancel,
         isLoading: cancelLoading,
         errorMessage: cancelError,
-        postResult: cancelResult
+        postResult: cancelResult,
+        clearPostResult: clearCancelResult
     } = usePost(`${itemTypes.requisitions.url}/cancel`, true);
 
     const {
         send: book,
         isLoading: bookLoading,
         errorMessage: bookError,
-        postResult: bookResult
+        postResult: bookResult,
+        clearPostResult: clearBookResult
     } = usePost(`${itemTypes.requisitions.url}/book`, true);
 
     const {
         send: authorise,
         isLoading: authoriseLoading,
         errorMessage: authoriseError,
-        postResult: authoriseResult
+        postResult: authoriseResult,
+        clearPostResult: clearAuthoriseResult
     } = usePost(`${itemTypes.requisitions.url}/authorise`, true);
 
     const {
@@ -103,7 +107,9 @@ function Requisition({ creating }) {
     const {
         send: updateReq,
         isLoading: updateLoading,
-        errorMessage: updateError
+        errorMessage: updateError,
+        postResult: updateResult,
+        clearPostResult: clearUpdateResult
     } = usePost(itemTypes.requisitions.url, true, true);
 
     const [tab, setTab] = useState(0);
@@ -125,25 +131,51 @@ function Requisition({ creating }) {
     );
 
     useEffect(() => {
-        if (cancelResult) {
-            dispatch({ type: 'load_state', payload: cancelResult });
-        } else if (bookResult) {
-            dispatch({ type: 'load_state', payload: bookResult });
-        } else if (authoriseResult) {
-            dispatch({ type: 'load_state', payload: bookResult });
-        } else if (result) {
-            dispatch({ type: 'load_state', payload: result });
-        } else if (creating) {
+        if (creating) {
             dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
         }
-    }, [result, cancelResult, bookResult, authoriseResult, creating, name, userNumber]);
+        if (cancelResult) {
+            dispatch({ type: 'load_state', payload: cancelResult });
+            clearCancelResult();
+        }
+        if (bookResult) {
+            dispatch({ type: 'load_state', payload: bookResult });
+            clearBookResult();
+        }
+        if (authoriseResult) {
+            dispatch({ type: 'load_state', payload: bookResult });
+            clearAuthoriseResult();
+        }
+        if (result) {
+            dispatch({ type: 'load_state', payload: result });
+            clearReqResult();
+        }
+        if (updateResult) {
+            dispatch({ type: 'load_state', payload: updateResult });
+            clearUpdateResult();
+        }
+    }, [
+        result,
+        cancelResult,
+        bookResult,
+        authoriseResult,
+        creating,
+        name,
+        userNumber,
+        updateResult,
+        clearUpdateResult,
+        clearCancelResult,
+        clearBookResult,
+        clearReqResult,
+        clearAuthoriseResult
+    ]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
 
     const canAddLines = () => {
-        if (formState.cancelled !== 'N' || formState.dateBooked) {
+        if (formState.cancelled === 'Y' || formState.dateBooked) {
             return false;
         }
 
@@ -291,6 +323,7 @@ function Requisition({ creating }) {
     };
 
     const shouldRender = (renderFunction, showOnCreate = true) => {
+        console.log(creating);
         if ((renderFunction && !renderFunction()) || (!showOnCreate && creating)) {
             return false;
         }
@@ -398,7 +431,7 @@ function Requisition({ creating }) {
                                 shouldRender={shouldRender(null, false)}
                                 dateBooked={formState.dateBooked}
                                 bookedByName={formState.bookedByName}
-                                bookUrl={utilities.getHref(result, 'book')}
+                                bookUrl={utilities.getHref(formState, 'book')}
                                 onBook={() => {
                                     book(null, { reqNumber });
                                 }}
@@ -511,9 +544,12 @@ function Requisition({ creating }) {
                                 }
                                 shouldRender={shouldRender(
                                     () =>
-                                        !formState.storesFunction?.departmentNominalRequired ||
-                                        formState.storesFunction?.departmentNominalRequired !== 'N'
+                                        formState.storesFunction &&
+                                        (!formState.storesFunction?.departmentNominalRequired ||
+                                            formState.storesFunction?.departmentNominalRequired !==
+                                                'N')
                                 )}
+                                enterNominal={!formState?.storesFunction?.nominalCode}
                             />
                             <AuthBy
                                 dateAuthorised={formState.dateAuthorised}
@@ -613,16 +649,20 @@ function Requisition({ creating }) {
                                     })
                                 }
                                 disabled={stockStatesLoading || stockPoolsLoading || !creating}
-                                shouldRender={shouldRender(
-                                    () =>
-                                        formState.storesFunction?.code === 'MOVE' ||
-                                        ((formState.fromLocationRequired !== 'N' ||
-                                            formState.toLocationRequired !== 'N') &&
-                                            !(
-                                                formState.storesFunction?.code === 'LOAN OUT' &&
-                                                creating
-                                            ))
-                                )}
+                                shouldRender={shouldRender(() => {
+                                    const isMoveFunction =
+                                        formState.storesFunction?.code === 'MOVE';
+                                    const isLocationRequired =
+                                        formState.fromLocationRequired !== 'N' ||
+                                        formState.toLocationRequired !== 'N';
+                                    const isLoanOutWhileCreating =
+                                        formState.storesFunction?.code === 'LOAN OUT' && creating;
+
+                                    return (
+                                        isMoveFunction ||
+                                        (isLocationRequired && !isLoanOutWhileCreating)
+                                    );
+                                })}
                             />
                             <Grid size={6}>
                                 <InputField

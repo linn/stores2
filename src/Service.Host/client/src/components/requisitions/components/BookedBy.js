@@ -14,7 +14,6 @@ function BookedBy({
     if (!shouldRender) {
         return <Grid size={6} />;
     }
-
     return (
         <>
             <Grid size={2}>

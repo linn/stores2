@@ -1,9 +1,35 @@
 ﻿namespace Linn.Stores2.TestData.FunctionCodes
 {
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
 
     public static class TestFunctionCodes
     {
+        public static readonly StoresFunction AdjustReq =
+            new StoresFunction("ADJUST")
+            {
+                Description = "ADJUST PARTS UP/DOWN IN STOCK",
+                Document1RequiredFlag = "N",
+                PartSource = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>()
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "ADJUST",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.StockToAdjust,
+                        TransactionCode = TestTransDefs.StockToAdjust.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "ADJUST",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.AdjustToStock,
+                        TransactionCode = TestTransDefs.AdjustToStock.TransactionCode
+                    }
+                }
+            };
+
         public static readonly StoresFunction Audit =
             new StoresFunction("AUDIT")
             {
@@ -27,7 +53,38 @@
                 Description = "BOOK IN GOODS FROM SUPPLIER FOR PO",
                 Document1RequiredFlag = "Y",
                 Document1Text = "Order Number",
-                PartSource = "PO"
+                PartSource = "PO",
+                TransactionsTypes = new List<StoresFunctionTransaction>()
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "BOOKSU",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.SupplierToStores,
+                        TransactionCode = TestTransDefs.SupplierToStores.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "BOOKSU",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.MaterialVarianceBelowStd,
+                        TransactionCode = TestTransDefs.MaterialVarianceBelowStd.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "BOOKSU",
+                        Seq = 3,
+                        TransactionDefinition = TestTransDefs.SupplierToQC,
+                        TransactionCode = TestTransDefs.SupplierToQC.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "BOOKSU",
+                        Seq = 4,
+                        TransactionDefinition = TestTransDefs.SupplierToNowhere,
+                        TransactionCode = TestTransDefs.SupplierToNowhere.TransactionCode
+                    }
+                }
             };
 
         public static readonly StoresFunction LinnDeptReq =
@@ -35,7 +92,44 @@
             {
                 Description = "BOOK PARTS IN/OUT OF STORES ON REQUISITION",
                 Document1RequiredFlag = "N",
-                PartSource = "N"
+                PartSource = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>()
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "LDREQ",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.StockToLinnDept,
+                        TransactionCode = TestTransDefs.StockToLinnDept.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "LDREQ",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.LinnDeptToStock,
+                        TransactionCode = TestTransDefs.LinnDeptToStock.TransactionCode
+                    }
+                }
+            };
+
+        public static readonly StoresFunction LoanOut =
+            new StoresFunction("LOAN OUT")
+            {
+                Description = "BOOK OUT PRODUCTS TO LOAN ACCOUNT",
+                Document1RequiredFlag = "Y",
+                Document1Text = "Loan Number",
+                DepartmentNominalRequired = "N",
+                PartSource = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>()
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "LOAN OUT",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.StockToLoan,
+                        TransactionCode = TestTransDefs.StockToLoan.TransactionCode
+                    }
+                }
             };
 
         public static readonly StoresFunction SupplierKit =
@@ -47,14 +141,29 @@
                 PartSource = "PO"
             };
 
-        public static readonly StoresFunction LoanOut =
-            new StoresFunction("LOAN OUT")
+        public static readonly StoresFunction WriteOff =
+            new StoresFunction("WOFF")
             {
-                Description = "BOOK OUT PRODUCTS TO LOAN ACCOUNT",
-                Document1RequiredFlag = "Y",
-                Document1Text = "Loan Number",
-                DepartmentNominalRequired = "N",
-                PartSource = "N"
+                Description = "WRITE OFF/ON PARTS IN STOCK",
+                Document1RequiredFlag = "N",
+                PartSource = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>()
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "WOFF",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.WriteOff,
+                        TransactionCode = TestTransDefs.WriteOff.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "WOFF",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.WriteOn,
+                        TransactionCode = TestTransDefs.WriteOn.TransactionCode
+                    }
+                }
             };
     }
 }

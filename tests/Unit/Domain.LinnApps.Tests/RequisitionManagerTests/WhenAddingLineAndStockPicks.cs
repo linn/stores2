@@ -41,8 +41,7 @@
                 null,
                 null,
                 this.department,
-                this.nominal,
-                fromStockPool: "LINN");
+                this.nominal);
             this.part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
             this.line = new LineCandidate
@@ -58,7 +57,8 @@
                                                      new MoveSpecification
                                                          {
                                                              FromPallet = 512,
-                                                             Qty = 1
+                                                             Qty = 1,
+                                                             FromStockPool = "LINN"
                                                          }
                                                  },
                                 TransactionDefinition = "DEF"

@@ -74,11 +74,13 @@
 
         public string FromStockPool { get; set; }
 
-        public string ToStockPool { get; set; }
+        public string ToStockPool { get; protected set; }
 
-        public string FromState { get; set; }
+        public string FromState { get; protected set; }
 
-        public string ToState { get; set; }
+        public string ToState { get; protected set; }
+
+        public string ToCategory { get; protected set; }
 
         public DateTime? BatchDate { get; set; }
 
@@ -132,7 +134,7 @@
             this.ToStockPool = toStockPool;
             this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
             this.ToLocation = toPalletNumber.HasValue ? null : toLocation;
-
+            this.Cancelled = "N";
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
                 if (department == null || nominal == null)
@@ -340,5 +342,11 @@
             return null;
         }
 
+        public void SetStateAndCategory(string fromState, string toState, string toCategory)
+        {
+            this.FromState = fromState;
+            this.ToState = toState;
+            this.ToCategory = toCategory;
+        }
     }
 }

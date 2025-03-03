@@ -30,6 +30,20 @@ function reducer(state, action) {
                         loanNumber: action.payload.newValue
                     };
                 }
+            } else if (action.payload.fieldName === 'storesFunction') {
+                if (
+                    action.payload.newValue?.nominalCode &&
+                    action.payload.newValue?.nominalDescription
+                ) {
+                    return {
+                        ...state,
+                        storesFunction: action.payload.newValue,
+                        nominal: {
+                            nominalCode: action.payload.newValue?.nominalCode,
+                            description: action.payload.newValue?.nominalDescription
+                        }
+                    };
+                }
             }
 
             return { ...state, [action.payload.fieldName]: action.payload.newValue };
@@ -92,10 +106,15 @@ function reducer(state, action) {
                                       seq: index + 1,
                                       part: move.partNumber,
                                       qty: move.quantityToPick,
-                                      fromLocationCode: move.locationName,
-                                      fromLocationDescription: move.locationDescription,
+                                      fromLocationCode: move.palletNumber
+                                          ? null
+                                          : move.locationName,
+                                      fromLocationDescription: move.palletNumber
+                                          ? null
+                                          : move.locationDescription,
                                       fromPalletNumber: move.palletNumber,
                                       fromState: move.state,
+                                      fromStockPool: move.fromStockPool,
                                       fromBatchRef: move.batchRef,
                                       fromBatchDate: move.stockRotationDate,
                                       qtyAtLocation: move.quantity,

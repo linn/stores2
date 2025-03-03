@@ -125,6 +125,11 @@
                 {
                     this.State = header.ToState;
                 }
+
+                if (!string.IsNullOrEmpty(header.ToCategory))
+                {
+                    this.Category = header.ToCategory;
+                }
             }
         }
     }
