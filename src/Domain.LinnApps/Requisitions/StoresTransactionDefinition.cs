@@ -1,5 +1,9 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+
     public class StoresTransactionDefinition
     {
         public StoresTransactionDefinition()
@@ -31,6 +35,8 @@
 
         public string AuthOpCode { get; set; }
 
+        public ICollection<StoresTransactionPosting> StoresTransactionPostings { get; set; }
+
         public bool RequiresStockAllocations => this.StockAllocations == "Y";
 
         public bool RequiresOntoTransactions => this.OntoTransactions == "Y";
@@ -51,6 +57,16 @@
             }
 
             return string.Empty;
+        }
+
+        public Nominal GetNominal()
+        {
+            // material variances transactions and SUNWI transactions mess this up so exclude them
+            if (this.StoresTransactionPostings != null && !this.MaterialVarianceTransaction && !this.TransactionCode.Contains("NW"))
+            {
+                return this.StoresTransactionPostings.FirstOrDefault(p => p.Nominal != null)?.Nominal;
+            }
+            return null;
         }
     }
 }

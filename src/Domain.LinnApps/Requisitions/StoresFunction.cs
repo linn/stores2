@@ -1,6 +1,8 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System.Collections.Generic;
+    using System.Linq;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
 
     public class StoresFunction
     {
@@ -59,5 +61,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public bool Document1Entered() => this.Document1RequiredFlag is "Y" or "O";
 
         public bool PartNumberRequired() => this.PartSource != "N";
+
+        public Nominal GetNominal()
+        {
+            if (this.TransactionsTypes != null)
+            {
+                return this.TransactionsTypes.FirstOrDefault(t => t.TransactionDefinition?.GetNominal() != null)
+                    ?.TransactionDefinition.GetNominal();
+            }
+            return null;
+        }
     }
 }

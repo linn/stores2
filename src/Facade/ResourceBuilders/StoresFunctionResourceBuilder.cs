@@ -38,6 +38,8 @@
                           PartNumberRequired = model.PartNumberRequired(),
                           BatchDateRequired = model.BatchDateRequired,
                           BatchRequired = model.BatchRequired,
+                          NominalCode = model.GetNominal()?.NominalCode,
+                          NominalDescription = model.GetNominal()?.Description,
                           TransactionTypes = model.TransactionsTypes?.Select(
                               t => new FunctionCodeTransactionResource
                                        {

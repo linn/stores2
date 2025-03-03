@@ -544,9 +544,12 @@ function Requisition({ creating }) {
                                 }
                                 shouldRender={shouldRender(
                                     () =>
-                                        !formState.storesFunction?.departmentNominalRequired ||
-                                        formState.storesFunction?.departmentNominalRequired !== 'N'
+                                        formState.storesFunction &&
+                                        (!formState.storesFunction?.departmentNominalRequired ||
+                                            formState.storesFunction?.departmentNominalRequired !==
+                                                'N')
                                 )}
+                                enterNominal={!formState?.storesFunction?.nominalCode}
                             />
                             <AuthBy
                                 dateAuthorised={formState.dateAuthorised}

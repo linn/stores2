@@ -30,6 +30,20 @@ function reducer(state, action) {
                         loanNumber: action.payload.newValue
                     };
                 }
+            } else if (action.payload.fieldName === 'storesFunction') {
+                if (
+                    action.payload.newValue?.nominalCode &&
+                    action.payload.newValue?.nominalDescription
+                ) {
+                    return {
+                        ...state,
+                        storesFunction: action.payload.newValue,
+                        nominal: {
+                            nominalCode: action.payload.newValue?.nominalCode,
+                            description: action.payload.newValue?.nominalDescription
+                        }
+                    };
+                }
             }
 
             return { ...state, [action.payload.fieldName]: action.payload.newValue };
