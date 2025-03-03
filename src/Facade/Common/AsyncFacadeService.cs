@@ -147,7 +147,8 @@
             TKey id, 
             TUpdateResource updateResource, 
             IEnumerable<string> privileges = null,
-            int? userNumber = null)
+            int? userNumber = null,
+            bool reloadEntity = false)
         {
             var entity = await this.FindById(id);
             if (entity == null)
@@ -169,6 +170,11 @@
             if (userNumber.HasValue)
             {
                 await this.MaybeSaveLog("Update", userNumber, entity, default, updateResource);
+            }
+
+            if (reloadEntity)
+            {
+                entity = await this.FindById(id);
             }
 
             await this.transactionManager.CommitAsync();

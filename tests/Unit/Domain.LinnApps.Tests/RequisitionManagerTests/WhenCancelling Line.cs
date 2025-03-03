@@ -38,7 +38,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
             var employee = new Employee { Id = 33087 };
 
-
             this.EmployeeRepository.FindByIdAsync(33087).Returns(employee);
 
             this.ReqStoredProcedures.DeleteAllocOntos(

@@ -95,7 +95,7 @@ function StockOptions({
                             propertyName="batchDate"
                         />
                     </Grid>
-                    <Grid item xs={2}>
+                    <Grid size={2}>
                         <Button
                             onClick={() => setPickStockDialogVisible(true)}
                             variant="outlined"

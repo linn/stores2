@@ -111,7 +111,8 @@
             }
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> AuthoriseRequisition(int reqNumber, int authorisedBy, IEnumerable<string> privileges)
+        public async Task<IResult<RequisitionHeaderResource>> AuthoriseRequisition(
+            int reqNumber, int authorisedBy, IEnumerable<string> privileges)
         {
             try
             {
@@ -144,6 +145,7 @@
                              resource.Document1Name, 
                              resource.Department?.DepartmentCode, 
                              resource.Nominal?.NominalCode, 
+                             // assumption is creations happen with one line only
                              BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()), 
                              resource.Reference, 
                              resource.Comments, 
@@ -166,25 +168,9 @@
             RequisitionHeaderResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            // check lines
-            if (updateResource.Lines.Any())
-            {
-                foreach (var updatedLine in updateResource.Lines)
-                {
-                    var line = entity.Lines.SingleOrDefault(l => l.LineNumber == updatedLine.LineNumber);
-                    var candidate = BuildLineCandidateFromResource(updatedLine);
-                    if (line != null)
-                    {
-                        if (updatedLine.StockPicked == true)
-                        {
-                           entity = await this.requisitionManager.PickStockOnRequisitionLine(entity, candidate);
-                        }
-                    }
 
-                    // TODO if no line then add one                        
-                    // else { this.requisitionManager.AddRequisitionLine(entity, candidate); }
-                }
-            }
+                await this.requisitionManager.UpdateRequisition(
+                    entity, updateResource.Lines.Select(BuildLineCandidateFromResource));
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
@@ -269,6 +255,7 @@
                            Document1 = resource.Document1Number,
                            Document1Line = resource.Document1Line,
                            Document1Type = resource.Document1Type,
+                           StockPicked = resource.StockPicked,
                            Qty = resource.Qty,
                            TransactionDefinition = resource.TransactionCode
                        };

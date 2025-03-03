@@ -134,7 +134,7 @@
             this.ToStockPool = toStockPool;
             this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
             this.ToLocation = toPalletNumber.HasValue ? null : toLocation;
-
+            this.Cancelled = "N";
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
                 if (department == null || nominal == null)

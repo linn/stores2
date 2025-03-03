@@ -92,10 +92,15 @@ function reducer(state, action) {
                                       seq: index + 1,
                                       part: move.partNumber,
                                       qty: move.quantityToPick,
-                                      fromLocationCode: move.locationName,
-                                      fromLocationDescription: move.locationDescription,
+                                      fromLocationCode: move.palletNumber
+                                          ? null
+                                          : move.locationName,
+                                      fromLocationDescription: move.palletNumber
+                                          ? null
+                                          : move.locationDescription,
                                       fromPalletNumber: move.palletNumber,
                                       fromState: move.state,
+                                      fromStockPool: move.fromStockPool,
                                       fromBatchRef: move.batchRef,
                                       fromBatchDate: move.stockRotationDate,
                                       qtyAtLocation: move.quantity,
