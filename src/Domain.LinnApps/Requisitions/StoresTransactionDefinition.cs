@@ -1,10 +1,9 @@
-﻿using Linn.Stores2.Domain.LinnApps.Stores;
-using System.Collections.Generic;
-using System.Linq;
-using Linn.Stores2.Domain.LinnApps.Accounts;
-
-namespace Linn.Stores2.Domain.LinnApps.Requisitions
+﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+
     public class StoresTransactionDefinition
     {
         public StoresTransactionDefinition()

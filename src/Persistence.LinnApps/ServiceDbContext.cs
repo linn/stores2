@@ -10,7 +10,6 @@
     using Linn.Stores2.Domain.LinnApps.Stores;
 
     using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Internal;
     using Microsoft.Extensions.Logging;
 
     public class ServiceDbContext : DbContext

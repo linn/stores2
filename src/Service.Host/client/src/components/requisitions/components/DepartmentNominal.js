@@ -1,7 +1,6 @@
 import React from 'react';
 import Grid from '@mui/material/Grid2';
 import { InputField, Search } from '@linn-it/linn-form-components-library';
-import PropTypes from 'prop-types';
 import itemTypes from '../../../itemTypes';
 import useSearch from '../../../hooks/useSearch';
 
@@ -109,25 +108,5 @@ function DepartmentNominal({
         </>
     );
 }
-
-DepartmentNominal.propTypes = {
-    departmentCode: PropTypes.string,
-    departmentDescription: PropTypes.string,
-    setDepartment: PropTypes.func.isRequired,
-    nominalCode: PropTypes.string,
-    nominalDescription: PropTypes.string,
-    setNominal: PropTypes.func.isRequired,
-    shouldRender: PropTypes.bool,
-    enterNominal: PropTypes.bool
-};
-
-DepartmentNominal.defaultProps = {
-    departmentCode: null,
-    departmentDescription: null,
-    nominalCode: null,
-    nominalDescription: null,
-    shouldRender: true,
-    enterNominal: true
-};
 
 export default DepartmentNominal;
