@@ -12,7 +12,8 @@ function DepartmentNominal({
     nominalCode = null,
     nominalDescription = null,
     setNominal,
-    shouldRender = true
+    shouldRender = true,
+    enterNominal = true
 }) {
     const {
         search: searchDepartments,
@@ -40,7 +41,11 @@ function DepartmentNominal({
                     label="Department"
                     resultsInModal
                     resultLimit={100}
-                    helperText="Enter a search term and press enter to look up departments"
+                    helperText={
+                        departmentDescription
+                            ? ''
+                            : 'Enter a search term and press enter to look up departments'
+                    }
                     value={departmentCode}
                     handleValueChange={(_, newVal) => {
                         setDepartment({ departmentCode: newVal });
@@ -71,7 +76,11 @@ function DepartmentNominal({
                     label="Nominal"
                     resultsInModal
                     resultLimit={100}
-                    helperText="Enter a search term and press enter to look up nominals"
+                    helperText={
+                        nominalDescription
+                            ? ''
+                            : 'Enter a search term and press enter to look up nominals'
+                    }
                     value={nominalCode}
                     handleValueChange={(_, newVal) => {
                         setNominal({ nominalCode: newVal });
@@ -84,6 +93,7 @@ function DepartmentNominal({
                         setNominal(r);
                     }}
                     clearSearch={clearNominalsSearch}
+                    disabled={!enterNominal}
                     autoFocus={false}
                 />
             </Grid>
@@ -107,7 +117,8 @@ DepartmentNominal.propTypes = {
     nominalCode: PropTypes.string,
     nominalDescription: PropTypes.string,
     setNominal: PropTypes.func.isRequired,
-    shouldRender: PropTypes.bool
+    shouldRender: PropTypes.bool,
+    enterNominal: PropTypes.bool
 };
 
 DepartmentNominal.defaultProps = {
@@ -115,7 +126,8 @@ DepartmentNominal.defaultProps = {
     departmentDescription: null,
     nominalCode: null,
     nominalDescription: null,
-    shouldRender: true
+    shouldRender: true,
+    enterNominal: true
 };
 
 export default DepartmentNominal;

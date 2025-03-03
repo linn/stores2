@@ -270,6 +270,18 @@ function Requisition({ creating }) {
                 }
             });
         }
+        if (selectedFunction.nominalCode) {
+            dispatch({
+                type: 'set_header_value',
+                payload: {
+                    fieldName: 'nominal',
+                    newValue: {
+                        nominalCode: selectedFunction.nominalCode,
+                        description: selectedFunction.nominalDescription
+                    }
+                }
+            });
+        }
     };
 
     const getAndSetFunctionCode = () => {
@@ -511,9 +523,12 @@ function Requisition({ creating }) {
                                 }
                                 shouldRender={shouldRender(
                                     () =>
-                                        !formState.storesFunction?.departmentNominalRequired ||
-                                        formState.storesFunction?.departmentNominalRequired !== 'N'
+                                        formState.storesFunction &&
+                                        (!formState.storesFunction?.departmentNominalRequired ||
+                                            formState.storesFunction?.departmentNominalRequired !==
+                                                'N')
                                 )}
+                                enterNominal={!formState?.storesFunction?.nominalCode}
                             />
                             <AuthBy
                                 dateAuthorised={formState.dateAuthorised}
