@@ -500,6 +500,7 @@
             r.Property(c => c.PartSource).HasColumnName("PART_SOURCE").HasMaxLength(2);
             r.Property(c => c.BatchDateRequired).HasColumnName("BATCH_DATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.BatchRequired).HasColumnName("BATCH_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FunctionAvailableFlag).HasColumnName("FUNCTION_AVAILABLE").HasMaxLength(1);
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 

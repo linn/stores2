@@ -52,6 +52,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string BatchDateRequired { get; set; }
 
+        public string FunctionAvailableFlag { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public bool AuditFunction() => this.FunctionCode == "AUDIT" || this.FunctionCode == "KOUNT";
@@ -61,6 +63,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public bool Document1Entered() => this.Document1RequiredFlag is "Y" or "O";
 
         public bool PartNumberRequired() => this.PartSource != "N";
+
+        public bool FunctionAvailable() => this.FunctionAvailableFlag == "Y";
 
         public Nominal GetNominal()
         {

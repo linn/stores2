@@ -40,6 +40,7 @@
                           BatchRequired = model.BatchRequired,
                           NominalCode = model.GetNominal()?.NominalCode,
                           NominalDescription = model.GetNominal()?.Description,
+                          FunctionAvailable = model.FunctionAvailable(),
                           TransactionTypes = model.TransactionsTypes?.Select(
                               t => new FunctionCodeTransactionResource
                                        {

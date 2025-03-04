@@ -23,6 +23,11 @@ namespace Linn.Stores2.IoC
                return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
             }
 
+            if (context.Function.FunctionCode == "ADJUST" || context.Function.FunctionCode == "WOFF")
+            {
+                return this.serviceProvider.GetRequiredService<LdReqWithNominalCreationStrategy>();
+            }
+
             if (context.Function.FunctionCode == "LOAN OUT")
             {
                 return this.serviceProvider.GetRequiredService<LoanOutCreationStrategy>();

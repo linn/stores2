@@ -21,6 +21,9 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
         {
             return await this.serviceDbContext.StoresFunctionCodes
                        .Include(a => a.TransactionsTypes)
+                       .ThenInclude(d => d.TransactionDefinition)
+                       .ThenInclude(d => d.StoresTransactionPostings)
+                       .ThenInclude(p => p.Nominal)
                        .FirstOrDefaultAsync(a => a.FunctionCode == key);
         }
 
