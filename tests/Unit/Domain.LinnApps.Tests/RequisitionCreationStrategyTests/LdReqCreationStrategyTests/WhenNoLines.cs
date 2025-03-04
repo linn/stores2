@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LdReqCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LdReqCreationStrategyTests
 {
     using System;
     using System.Collections.Generic;
@@ -13,7 +13,7 @@
 
     using NUnit.Framework;
 
-    public class WhenUnauthorised : ContextBase
+    public class WhenNoLines : ContextBase
     {
         private Func<Task> action;
 
@@ -22,17 +22,21 @@
         {
             var context = new RequisitionCreationContext
                               {
-                                  UserPrivileges = new List<string>()
+                                  UserPrivileges = new List<string>(),
+                                  PartNumber = null,
+                                  FirstLineCandidate = null
                               };
             this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, Arg.Any<IEnumerable<string>>())
-                .Returns(false);
+                .Returns(true);
             this.action = () => this.Sut.Create(context);
         }
 
         [Test]
         public async Task ShouldThrow()
         {
-            await this.action.Should().ThrowAsync<UnauthorisedActionException>();
+            await this.action.Should().ThrowAsync<CreateRequisitionException>()
+                .WithMessage(
+                    "Cannot create - no lines specified");
         }
     }
 }

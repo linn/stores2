@@ -1,21 +1,22 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.CreationStategyTests.LoanOutCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LoanOutCreationStrategyTests
 {
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using NUnit.Framework;
-    using System.Threading.Tasks;
     using System;
+    using System.Threading.Tasks;
+
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LoanOutCreationStrategyTests;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+
+    using NUnit.Framework;
 
     public class WhenCreatingAndWrongDocument1Name : ContextBase
     {
         private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.RequisitionCreationContext = new RequisitionCreationContext
             {
