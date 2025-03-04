@@ -362,7 +362,9 @@ function Requisition({ creating }) {
     // for now...
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
-        selectedLine && formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O';
+        selectedLine &&
+        ((formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O') ||
+            (formState?.manualPick && formState?.reqType === 'O'));
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
