@@ -12,7 +12,6 @@
     {
         private Action action;
 
-
         [SetUp]
         public void SetUp()
         {
