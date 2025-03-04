@@ -46,17 +46,15 @@
                 .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
 
-        public override async Task<IList<RequisitionHeader>> FilterByAsync(
-            Expression<Func<RequisitionHeader, bool>> filterExpression,
-            Expression<Func<RequisitionHeader, object>> orderByExpression = null)
+        public override IQueryable<RequisitionHeader> FilterBy(
+            Expression<Func<RequisitionHeader, bool>> filterExpression)
         {
-            return await this.serviceDbContext.RequisitionHeaders.Where(filterExpression)
+            return this.serviceDbContext.RequisitionHeaders.Where(filterExpression)
                 .Include(r => r.StoresFunction)
                 .Include(r => r.CreatedBy)
                 .Include(r => r.Department)
                 .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition)
-                .Include(r => r.Lines).ThenInclude(l => l.Part)
-                .ToListAsync();
+                .Include(r => r.Lines).ThenInclude(l => l.Part);
         }
 
         public override async Task AddAsync(RequisitionHeader entity)

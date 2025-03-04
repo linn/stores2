@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
@@ -23,7 +24,7 @@
             this.goodsInLogRepository = goodsInLogRepository;
         }
 
-        public ResultsModel GoodsInLogReport(
+        public async Task<ResultsModel> GoodsInLogReport(
             string fromDate,
             string toDate,
             int? createdBy,
@@ -40,18 +41,22 @@
             var toDateSearch = string.IsNullOrWhiteSpace(toDate) ? (DateTime?)null
                              : DateTime.Parse(toDate);
 
-            var data = this.goodsInLogRepository.FilterBy(
-                    x => (fromDateSearch == null || x.DateCreated >= fromDateSearch)
-                         && (toDateSearch == null || x.DateCreated <= toDateSearch)
-                         && (!createdBy.HasValue || x.CreatedBy == createdBy)
-                         && (string.IsNullOrEmpty(articleNumber) || x.ArticleNumber
-                                 .ToUpper().Contains(articleNumber.ToUpper().Trim()))
-                         && (!orderNumber.HasValue || x.OrderNumber == orderNumber)
-                         && (!quantity.HasValue || x.Quantity == quantity)
-                         && (!reqNumber.HasValue || x.ReqNumber == reqNumber)
-                         && (string.IsNullOrEmpty(storagePlace) || x.StoragePlace.ToUpper()
-                                 .Contains(storagePlace.ToUpper().Trim())))
-                .OrderByDescending(x => x.Id);
+            var goodsInLogEntries = await this.goodsInLogRepository.FilterByAsync(
+                                        x => (fromDateSearch == null || x.DateCreated >= fromDateSearch)
+                                             && (toDateSearch == null || x.DateCreated <= toDateSearch)
+                                             && (!createdBy.HasValue || x.CreatedBy.Id == createdBy)
+                                             && (string.IsNullOrEmpty(articleNumber) || x.ArticleNumber.ToUpper()
+                                                     .Contains(articleNumber.ToUpper().Trim()))
+                                             && (!orderNumber.HasValue || x.OrderNumber == orderNumber)
+                                             && (!quantity.HasValue || x.Quantity == quantity)
+                                             && (!reqNumber.HasValue || x.ReqNumber == reqNumber)
+                                             && (string.IsNullOrEmpty(storagePlace) || x.StoragePlace.ToUpper()
+                                                     .Contains(storagePlace.ToUpper().Trim())), 
+                                        new List<(Expression<Func<GoodsInLogEntry, object>> OrderByExpression, bool?
+                                            Ascending)>
+                                            {
+                                                (x => x.Id, false)
+                                            });
 
             var model = new ResultsModel { ReportTitle = new NameModel("Goods In Log") };
 
@@ -59,7 +64,7 @@
 
             model.AddSortedColumns(columns);
 
-            var values = this.SetModelRows(data);
+            var values = this.SetModelRows(goodsInLogEntries);
 
             this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Quantity, true);
 
@@ -92,7 +97,7 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, TextDisplay = goodsInLogEntry.CreatedBy.ToString(), ColumnId = "CreatedBy"
+                            RowId = rowId, TextDisplay = goodsInLogEntry?.CreatedBy?.Name, ColumnId = "CreatedBy"
                     });
                 values.Add(
                     new CalculationValueModel
@@ -266,7 +271,7 @@
                                   new AxisDetailsModel("BookInRef", "Book In Ref", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("Type", "Type", GridDisplayType.TextValue, 90),
                                   new AxisDetailsModel("DateCreated", "Date Created", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("CreatedBy", "Created By", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("CreatedBy", "Created By", GridDisplayType.TextValue, 200),
                                   new AxisDetailsModel("OrderNumber", "Order Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("OrderLine", "Line", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("Quantity", "Qty", GridDisplayType.TextValue, 100),

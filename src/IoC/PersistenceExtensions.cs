@@ -54,8 +54,7 @@
                 r => new EntityFrameworkRepository<Department, string>(r.GetService<ServiceDbContext>()?.Departments))
                 .AddScoped<IRepository<Nominal, string>, EntityFrameworkRepository<Nominal, string>>(
                 r => new EntityFrameworkRepository<Nominal, string>(r.GetService<ServiceDbContext>()?.Nominals))
-                .AddScoped<IRepository<GoodsInLogEntry, int>, EntityFrameworkRepository<GoodsInLogEntry, int>>(
-                    r => new EntityFrameworkRepository<GoodsInLogEntry, int>(r.GetService<ServiceDbContext>()?.GoodsInLogEntries))
+                .AddScoped<IRepository<GoodsInLogEntry, int>, GoodsInLogRepository>()
                 .AddScoped<IRepository<RequisitionHistory, int>, EntityFrameworkRepository<RequisitionHistory, int>>(
                     r => new EntityFrameworkRepository<RequisitionHistory, int>(r.GetService<ServiceDbContext>()?.RequisitionHistory))
                 .AddScoped<IRepository<StoresTransactionState, StoresTransactionStateKey>, EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>>(

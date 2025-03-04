@@ -13,7 +13,7 @@
 		<PackageReference Include="Linn.Common.Domain.LinnApps" Version="1.0.0" />
 		<PackageReference Include="Linn.Common.Email" Version="5.1.0" />
 		<PackageReference Include="Linn.Common.Messaging.RabbitMQ" Version="3.2.4" />
-		<PackageReference Include="Linn.Common.Persistence" Version="4.3.0" />
+		<PackageReference Include="Linn.Common.Persistence" Version="5.0.1" />
 		<PackageReference Include="linn.common.rendering" Version="1.0.0" />
 		<PackageReference Include="Linn.Common.Reporting" Version="1.9.0" />
 	</ItemGroup>

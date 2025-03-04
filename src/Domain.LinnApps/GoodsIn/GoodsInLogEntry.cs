@@ -10,7 +10,7 @@
 
         public DateTime DateCreated { get; set; }
 
-        public int CreatedBy { get; set; }
+        public Employee CreatedBy { get; set; }
 
         public string WandString { get; set; }
 

@@ -682,7 +682,7 @@
             e.Property(g => g.Id).HasColumnName("GILOG_ID");
             e.Property(g => g.TransactionType).HasColumnName("TRANS_TYPE").HasMaxLength(1);
             e.Property(g => g.DateCreated).HasColumnName("DATE_CREATED");
-            e.Property(g => g.CreatedBy).HasColumnName("CREATED_BY");
+            e.HasOne(g => g.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
             e.Property(g => g.WandString).HasColumnName("WAND_STRING").HasMaxLength(20);
             e.Property(g => g.ArticleNumber).HasColumnName("ARTICLE_NUMBER").HasMaxLength(14);
             e.Property(g => g.Quantity).HasColumnName("QTY");

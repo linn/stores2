@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
@@ -52,7 +53,11 @@
                                              && (functionCodes == null || functionCodes.Count == 0
                                                                        || functionCodes.Contains(
                                                                            x.FunctionCode.ToUpper())),
-                                        x => x.BudgetId);
+                                        new List<(Expression<Func<StockTransaction, object>> OrderByExpression, bool?
+                                            Ascending)>
+                                            {
+                                                (x => x.BudgetId, true)
+                                            });
 
             var report = new ResultsModel { ReportTitle = new NameModel("Stock Transaction List") };
 
@@ -118,7 +123,7 @@
                     new CalculationValueModel
                     {
                         RowId = rowId,
-                        TextDisplay = stockTransaction.Part.PartNumber,
+                        TextDisplay = stockTransaction.Part?.PartNumber,
                         ColumnId = "PartNumber"
                     });
                 values.Add(
@@ -169,7 +174,7 @@
                 report.ValueDrillDownTemplates.Add(
                     new DrillDownModel(
                         "PartNumber",
-                        $"/stores/Parts/{stockTransaction.Part.Id}",
+                        $"/parts/{stockTransaction.Part.Id}",
                         report.RowIndex(rowId),
                         report.ColumnIndex("PartNumber")));
             }
