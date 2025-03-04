@@ -35,7 +35,7 @@
                 123,
                 "REQ",
                 new Department(),
-                new Nominal());
+                new Nominal("0000001234", "SOME NOM"));
             this.req.Lines.Add(new RequisitionLine(123, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLinnDept));
 
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);

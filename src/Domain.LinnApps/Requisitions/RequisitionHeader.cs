@@ -142,6 +142,15 @@
                     throw new CreateRequisitionException(
                         $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req");
                 }
+
+                if (function.GetNominal() != null)
+                {
+                    if (function.GetNominal().NominalCode != nominal?.NominalCode)
+                    {
+                        throw new CreateRequisitionException(
+                            $"Cannot create - nominal must be {function.GetNominal().NominalCode}");
+                    }
+                }
             }
 
             this.Department = department;

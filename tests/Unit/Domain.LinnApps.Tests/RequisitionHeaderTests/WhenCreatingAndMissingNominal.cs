@@ -1,0 +1,38 @@
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+{
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using NUnit.Framework;
+    using System;
+    using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.FunctionCodes;
+
+    public class WhenCreatingAndMissingNominal 
+    {
+        private Action action;
+
+
+        [SetUp]
+        public void SetUp()
+        {
+            this.action = () => new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.LinnDeptReq,
+                "F",
+                null,
+                null,
+                new Department(),
+                null,
+                reference: null,
+                comments: "constructor test");
+        }
+
+        [Test]
+        public void ShouldThrow()
+        {
+            this.action.Should().Throw<CreateRequisitionException>()
+                .WithMessage("Nominal and Department must be specified for a LDREQ req");
+        }
+    }
+}
