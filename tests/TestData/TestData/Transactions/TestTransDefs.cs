@@ -25,7 +25,12 @@
                 OntoTransactions = "Y",
                 DecrementTransaction = "N",
                 TakePriceFrom = "M",
-                RequiresAuth = "N"
+                RequiresAuth = "N",
+                StoresTransactionPostings = new List<StoresTransactionPosting>
+                {
+                    new StoresTransactionPosting() { DebitOrCredit = "C", TransactionCode = "STLDI" },
+                    new StoresTransactionPosting() { DebitOrCredit = "D", TransactionCode = "STLDI" }
+                }
             };
 
         public static readonly StoresTransactionDefinition StockToLinnDept =
@@ -38,7 +43,12 @@
                 DecrementTransaction = "N",
                 TakePriceFrom = "P",
                 RequiresAuth = "Y",
-                AuthOpCode = "AUTH"
+                AuthOpCode = "AUTH",
+                StoresTransactionPostings = new List<StoresTransactionPosting>
+                {
+                    new StoresTransactionPosting() { DebitOrCredit = "C", TransactionCode = "STLDI" },
+                    new StoresTransactionPosting() { DebitOrCredit = "D", TransactionCode = "STLDI" }
+                }
             };
 
         // used in BOOKWO function to decrement stock

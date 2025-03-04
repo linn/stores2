@@ -1,4 +1,6 @@
 ﻿
+using System.Collections.Generic;
+
 namespace Linn.Stores2.IoC
 {
     using System;
@@ -11,6 +13,8 @@ namespace Linn.Stores2.IoC
     {
         private readonly IServiceProvider serviceProvider;
 
+        private List<string> ldreqFunctions = ["LDREQ", "ADJUST", "WOFF"];
+
         public RequisitionCreationStrategyResolver(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider; 
@@ -18,9 +22,9 @@ namespace Linn.Stores2.IoC
 
         public ICreationStrategy Resolve(RequisitionCreationContext context)
         {
-            if (context.Function.FunctionCode == "LDREQ")
+            if (ldreqFunctions.Contains(context.Function.FunctionCode))
             {
-               return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
+                return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
             }
 
             if (context.Function.FunctionCode == "LOAN OUT")

@@ -178,29 +178,45 @@ function Requisition({ creating }) {
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
 
+    const requiresDepartmentNominal = () => {
+        if (formState.storesFunction) {
+            // either departmentNominalRequired is null or Y
+            return (
+                !formState.storesFunction?.departmentNominalRequired ||
+                formState.storesFunction?.departmentNominalRequired === 'Y'
+            );
+        }
+        return false;
+    };
+
+    const validDepartmentNominal = () => {
+        if (!requiresDepartmentNominal()) {
+            return false;
+        }
+        return formState.nominal?.nominalCode && formState.department?.departmentCode;
+    };
+
     const canAddLines = () => {
+        if (!formState.storesFunction) {
+            return false;
+        }
+
         if (formState.cancelled === 'Y' || formState.dateBooked) {
             return false;
         }
 
-        if (formState.storesFunction?.code === 'LDREQ') {
-            if (
-                formState.nominal?.nominalCode &&
-                formState.department?.departmentCode &&
-                formState.reqType &&
-                formState.storesFunction.description
-            ) {
-                return true;
-            }
+        if (formState.part?.partNumber) {
+            // if front page part no need for lines
+            return false;
         }
 
-        if (formState.storesFunction?.code === 'MOVE') {
-            if (!formState.part?.partNumber) {
-                return true;
-            }
+        // from hardcoding in REQLINES.when-new-record-instance
+        const partNosNotRequiredFuncs = ['LOAN OUT', 'LOAN BACK', 'CUSTRET', 'SUKIT'];
+        if (partNosNotRequiredFuncs.includes(formState.storesFunction?.code)) {
+            return false;
         }
 
-        return false;
+        return validDepartmentNominal() && formState.reqType;
     };
 
     const canBookLines = () => {
@@ -346,7 +362,10 @@ function Requisition({ creating }) {
     // for now...
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
-        selectedLine && formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O';
+        selectedLine &&
+        ((formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O') ||
+            (formState?.manualPick && formState?.reqType === 'O'));
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -408,38 +427,41 @@ function Requisition({ creating }) {
                     !updateLoading &&
                     formState && (
                         <>
-                            <Grid size={2}>
-                                <InputField
-                                    fullWidth
-                                    value={formState.reqNumber}
-                                    type="number"
-                                    onChange={() => {}}
-                                    label="Req Number"
-                                    propertyName="reqNumber"
-                                />
-                            </Grid>
-                            <Grid size={2}>
-                                {shouldRender(null, false) && (
-                                    <Dropdown
-                                        fullWidth
-                                        items={['Y', 'N']}
-                                        value={formState.reversed}
-                                        onChange={() => {}}
-                                        label="Reversed"
-                                        propertyName="reversed"
+                            {shouldRender(null, false) && (
+                                <>
+                                    <Grid size={2}>
+                                        <InputField
+                                            fullWidth
+                                            value={formState.reqNumber}
+                                            type="number"
+                                            onChange={() => {}}
+                                            label="Req Number"
+                                            propertyName="reqNumber"
+                                        />
+                                    </Grid>
+                                    <Grid size={2}>
+                                        <Dropdown
+                                            fullWidth
+                                            items={['Y', 'N']}
+                                            value={formState.reversed}
+                                            onChange={() => {}}
+                                            label="Reversed"
+                                            propertyName="reversed"
+                                        />
+                                    </Grid>
+                                    <BookedBy
+                                        shouldRender={shouldRender(null, false)}
+                                        dateBooked={formState.dateBooked}
+                                        bookedByName={formState.bookedByName}
+                                        bookUrl={utilities.getHref(formState, 'book')}
+                                        onBook={() => {
+                                            book(null, { reqNumber });
+                                        }}
                                     />
-                                )}
-                            </Grid>
-                            <BookedBy
-                                shouldRender={shouldRender(null, false)}
-                                dateBooked={formState.dateBooked}
-                                bookedByName={formState.bookedByName}
-                                bookUrl={utilities.getHref(formState, 'book')}
-                                onBook={() => {
-                                    book(null, { reqNumber });
-                                }}
-                            />
-                            <Grid size={2} />
+                                    <Grid size={2} />
+                                </>
+                            )}
+
                             <Grid size={2}>
                                 {!codesLoading && functionCodes && (
                                     <Search
@@ -461,12 +483,14 @@ function Requisition({ creating }) {
                                         }}
                                         search={() => {}}
                                         loading={false}
-                                        searchResults={functionCodes.map(f => ({
-                                            ...f,
-                                            id: f.code,
-                                            name: f.code,
-                                            description: f.description
-                                        }))}
+                                        searchResults={functionCodes
+                                            .filter(f => f.functionAvailable)
+                                            .map(f => ({
+                                                ...f,
+                                                id: f.code,
+                                                name: f.code,
+                                                description: f.description
+                                            }))}
                                         onKeyPressFunctions={[
                                             { keyCode: 9, action: getAndSetFunctionCode }
                                         ]}
@@ -545,13 +569,7 @@ function Requisition({ creating }) {
                                         payload: { fieldName: 'nominal', newValue: newNominal }
                                     })
                                 }
-                                shouldRender={shouldRender(
-                                    () =>
-                                        formState.storesFunction &&
-                                        (!formState.storesFunction?.departmentNominalRequired ||
-                                            formState.storesFunction?.departmentNominalRequired !==
-                                                'N')
-                                )}
+                                shouldRender={shouldRender(requiresDepartmentNominal)}
                                 enterNominal={!formState?.storesFunction?.nominalCode}
                             />
                             <AuthBy
@@ -568,7 +586,10 @@ function Requisition({ creating }) {
                                     <Grid size={2}>
                                         <Dropdown
                                             fullWidth
-                                            items={['Y', 'N']}
+                                            items={[
+                                                { id: 'Y', displayText: 'Yes' },
+                                                { id: 'N', displayText: 'No' }
+                                            ]}
                                             allowNoValue
                                             value={formState.manualPick}
                                             onChange={() => {}}
@@ -579,7 +600,10 @@ function Requisition({ creating }) {
                                     <Grid size={2}>
                                         <Dropdown
                                             fullWidth
-                                            items={['F', 'O']}
+                                            items={[
+                                                { id: 'F', displayText: 'From Stock' },
+                                                { id: 'O', displayText: 'Return To Stock' }
+                                            ]}
                                             allowNoValue
                                             value={formState.reqType}
                                             onChange={handleHeaderFieldChange}

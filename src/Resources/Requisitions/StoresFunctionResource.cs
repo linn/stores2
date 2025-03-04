@@ -48,6 +48,8 @@
 
         public string NominalDescription { get; set; }
 
+        public bool FunctionAvailable { get; set; }
+
         public IEnumerable<FunctionCodeTransactionResource> TransactionTypes { get; set; }
     }
 }

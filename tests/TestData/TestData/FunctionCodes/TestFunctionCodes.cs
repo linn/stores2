@@ -9,6 +9,7 @@
             new StoresFunction("ADJUST")
             {
                 Description = "ADJUST PARTS UP/DOWN IN STOCK",
+                DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
                 PartSource = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
@@ -91,6 +92,7 @@
             new StoresFunction("LDREQ")
             {
                 Description = "BOOK PARTS IN/OUT OF STORES ON REQUISITION",
+                DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
                 PartSource = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
@@ -145,6 +147,7 @@
             new StoresFunction("WOFF")
             {
                 Description = "WRITE OFF/ON PARTS IN STOCK",
+                DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
                 PartSource = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
