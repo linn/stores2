@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests
 {
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Requisitions;

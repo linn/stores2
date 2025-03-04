@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LoanOutCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LoanOutCreationStrategyTests
 {
     using System.Threading.Tasks;
 

@@ -13,7 +13,7 @@
         private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             var processResult = new ProcessResult(false, "Did not make req");
 

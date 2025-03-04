@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LdReqCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LdReqCreationStrategyTests
 {
     using System;
     using System.Collections.Generic;
