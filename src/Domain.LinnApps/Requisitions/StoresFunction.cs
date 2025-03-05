@@ -75,5 +75,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
             return null;
         }
+
+        public IList<string> GetTransactionStates(string fromOrOnto)
+        {
+            if (this.TransactionsTypes != null)
+            {
+                return this.TransactionsTypes.Select(t => t.TransactionDefinition?.GetTransactionStates(fromOrOnto)).SelectMany( s => s ).Distinct().OrderBy(s => s).ToList();
+
+            }
+            return new List<string>();
+        }
     }
 }

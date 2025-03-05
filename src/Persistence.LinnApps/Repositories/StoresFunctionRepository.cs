@@ -25,6 +25,9 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                        .ThenInclude(d => d.TransactionDefinition)
                        .ThenInclude(d => d.StoresTransactionPostings)
                        .ThenInclude(p => p.Nominal)
+                       .Include(a => a.TransactionsTypes)
+                       .ThenInclude(d => d.TransactionDefinition)
+                       .ThenInclude(d => d.StoresTransactionStates)
                        .FirstOrDefaultAsync(a => a.FunctionCode == key);
         }
 
@@ -34,7 +37,10 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                 .Include(x => x.TransactionsTypes)
                 .ThenInclude(d => d.TransactionDefinition)
                 .ThenInclude(d => d.StoresTransactionPostings)
-                .ThenInclude(p => p.Nominal);
+                .ThenInclude(p => p.Nominal)
+                .Include(a => a.TransactionsTypes)
+                .ThenInclude(d => d.TransactionDefinition)
+                .ThenInclude(d => d.StoresTransactionStates);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+﻿using Linn.Stores2.Domain.LinnApps.Stores;
+
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -37,6 +39,8 @@
 
         public ICollection<StoresTransactionPosting> StoresTransactionPostings { get; set; }
 
+        public ICollection<StoresTransactionState> StoresTransactionStates { get; set; }
+
         public bool RequiresStockAllocations => this.StockAllocations == "Y";
 
         public bool RequiresOntoTransactions => this.OntoTransactions == "Y";
@@ -67,6 +71,18 @@
                 return this.StoresTransactionPostings.FirstOrDefault(p => p.Nominal != null)?.Nominal;
             }
             return null;
+        }
+
+        public IList<string> GetTransactionStates(string fromOrOnto)
+        {
+            if (this.StoresTransactionStates != null)
+            {
+                return this.StoresTransactionStates
+                    .Where(t => t.TransactionCode == this.TransactionCode && t.FromOrOnto == fromOrOnto)
+                    .OrderBy(s => s.State)
+                    .Select(s => s.State).ToList();
+            }
+            return new List<string>();
         }
     }
 }

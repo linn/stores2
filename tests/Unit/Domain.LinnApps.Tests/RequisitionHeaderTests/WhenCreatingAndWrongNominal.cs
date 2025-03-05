@@ -17,7 +17,7 @@
         {
             this.action = () => new RequisitionHeader(
                 new Employee(),
-                TestFunctionCodes.AdjustReq,
+                TestFunctionCodes.Adjust,
                 "F",
                 null,
                 null,

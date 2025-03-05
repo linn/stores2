@@ -196,6 +196,13 @@ function Requisition({ creating }) {
         return formState.nominal?.nominalCode && formState.department?.departmentCode;
     };
 
+    const validFromState = () => {
+        if (formState.reqType === 'F' && formState.storesFunction?.fromStateRequired === 'Y') {
+            return formState.fromState;
+        }
+        return true;
+    };
+
     const canAddLines = () => {
         if (!formState.storesFunction) {
             return false;
@@ -216,7 +223,7 @@ function Requisition({ creating }) {
             return false;
         }
 
-        return validDepartmentNominal() && formState.reqType;
+        return validDepartmentNominal() && validFromState() && formState.reqType;
     };
 
     const canBookLines = () => {
@@ -659,7 +666,6 @@ function Requisition({ creating }) {
                                 batchDate={formState.batchDate}
                                 toState={formState.toState}
                                 toStockPool={formState.toStockPool}
-                                stockStates={stockStates}
                                 stockPools={stockPools}
                                 partNumber={formState.part?.partNumber}
                                 quantity={formState.quantity}
