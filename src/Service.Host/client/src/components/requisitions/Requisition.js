@@ -767,6 +767,7 @@ function Requisition({ creating }) {
                                         bookLine={lineNumber => {
                                             book(null, { reqNumber, lineNumber });
                                         }}
+                                        fromState={formState.fromState}
                                     />
                                 )}
                                 {tab === 1 && (
