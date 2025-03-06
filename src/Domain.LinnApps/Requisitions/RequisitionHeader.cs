@@ -153,6 +153,21 @@
                 }
             }
 
+            if (this.StoresFunction.FromStateRequired == "Y")
+            {
+                if (string.IsNullOrEmpty(fromState))
+                {
+                    throw new CreateRequisitionException(
+                        "Cannot create - from state must be present");
+                }
+
+                if (!this.StoresFunction.GetTransactionStates("F").Contains(fromState))
+                {
+                    throw new CreateRequisitionException(
+                        $"Cannot create - from state must be one of {string.Join(",", this.StoresFunction.GetTransactionStates("F") )}");
+                }
+            }
+
             this.Department = department;
             this.Nominal = nominal;
 

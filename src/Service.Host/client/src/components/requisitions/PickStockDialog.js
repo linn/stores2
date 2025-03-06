@@ -119,7 +119,7 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber, quantity, s
             <DialogTitle>Stock Locations</DialogTitle>
             <DialogContent>
                 <DataGrid
-                    rows={moves ?? []} // {moves.filter(m => !state || state === m.state) ?? []}
+                    rows={moves ?? []}
                     processRowUpdate={processRowUpdate}
                     columns={columns}
                     hideFooter
