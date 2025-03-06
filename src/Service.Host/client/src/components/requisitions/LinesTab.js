@@ -26,7 +26,8 @@ function LinesTab({
     updateLine,
     pickStock,
     bookLine,
-    canBook
+    canBook,
+    fromState
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -164,6 +165,7 @@ function LinesTab({
                     handleConfirm={moves => {
                         pickStock(selected, moves);
                     }}
+                    state={fromState}
                 />
             )}
             <Grid size={12}>

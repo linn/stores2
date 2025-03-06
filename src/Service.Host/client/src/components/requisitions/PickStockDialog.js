@@ -12,7 +12,7 @@ import Snackbar from '@mui/material/Snackbar';
 import itemTypes from '../../itemTypes';
 import useInitialise from '../../hooks/useInitialise';
 
-function PickStockDialog({ open, setOpen, handleConfirm, partNumber, quantity }) {
+function PickStockDialog({ open, setOpen, handleConfirm, partNumber, quantity, state }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
     const handleClose = () => {
@@ -21,7 +21,7 @@ function PickStockDialog({ open, setOpen, handleConfirm, partNumber, quantity })
     const { isLoading, result } = useInitialise(
         itemTypes.stockLocators.url,
         null,
-        `?partNumber=${partNumber}`,
+        `?partNumber=${partNumber}${state ? `&state=${state}` : ''}`,
         true
     );
     const [moves, setMoves] = useState([]);

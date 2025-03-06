@@ -35,8 +35,8 @@
                             RequiresAuth = "N",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
-                                new StoresTransactionPosting() { DebitOrCredit = "D", TransactionCode = "ADSTI" },
-                                new StoresTransactionPosting() { DebitOrCredit = "C", TransactionCode = "ADSTI", Nominal = new Nominal("0000004710", "STOCK ADJUSTMENTS") }
+                                new StoresTransactionPosting("ADSTI", "D", null),
+                                new StoresTransactionPosting("ADSTI", "C", new Nominal("0000004710", "STOCK ADJUSTMENTS"))
                             }
                         },
                         TransactionCode = TestTransDefs.StockToAdjust.TransactionCode
@@ -58,8 +58,8 @@
                             AuthOpCode = "STORESAUTH",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
-                                new StoresTransactionPosting() { DebitOrCredit = "C", TransactionCode = "STADI" },
-                                new StoresTransactionPosting() { DebitOrCredit = "D", TransactionCode = "STADI", Nominal = new Nominal("0000004710", "STOCK ADJUSTMENTS") }
+                                new StoresTransactionPosting("STADI", "C", null),
+                                new StoresTransactionPosting("STADI", "D", new Nominal("0000004710", "STOCK ADJUSTMENTS"))
                             }
                         }
                     }

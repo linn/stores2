@@ -4,6 +4,18 @@
 
     public class StoresTransactionPosting
     {
+        protected StoresTransactionPosting()
+        {
+            // for ef
+        }
+
+        public StoresTransactionPosting(string transactionCode, string debitOrCredit, Nominal nominal)
+        {
+            this.TransactionCode = transactionCode;
+            this.DebitOrCredit = debitOrCredit;
+            this.Nominal = nominal;
+        }
+
         public int Id { get; set; }
 
         public string TransactionCode { get; set; }

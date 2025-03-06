@@ -37,8 +37,8 @@
                             RequiresAuth = "N",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
-                                new StoresTransactionPosting() { DebitOrCredit = "C", TransactionCode = "SUSTI" },
-                                new StoresTransactionPosting() { DebitOrCredit = "D", TransactionCode = "SUSTI" }
+                                new StoresTransactionPosting("SUSTI", "C", null),
+                                new StoresTransactionPosting("SUSTI", "D", null)
                             }
                         },
                         TransactionCode = "SUSTI"
@@ -58,8 +58,8 @@
                             RequiresAuth = "N",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
-                                new StoresTransactionPosting() { DebitOrCredit = "D", TransactionCode = "SUSTI" },
-                                new StoresTransactionPosting() { DebitOrCredit = "C", TransactionCode = "SUSTI", Nominal = new Nominal("00000012926", "MATERIAL PRICE VARIANCES") }
+                                new StoresTransactionPosting("SUSTI", "D", null),
+                                new StoresTransactionPosting("SUSTI", "C", new Nominal("00000012926", "MATERIAL PRICE VARIANCES"))
                             }
                         },
                         TransactionCode = "SUMVI"
@@ -79,8 +79,8 @@
                             RequiresAuth = "N",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
-                                new StoresTransactionPosting() { DebitOrCredit = "C", TransactionCode = "SUGII" },
-                                new StoresTransactionPosting() { DebitOrCredit = "D", TransactionCode = "SUGII" }
+                                new StoresTransactionPosting("SUGII", "C", null),
+                                new StoresTransactionPosting("SUGII", "D", null)
                             }
                         },
                         TransactionCode = "SUGII"
@@ -100,8 +100,8 @@
                             RequiresAuth = "N",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
-                                new StoresTransactionPosting() { DebitOrCredit = "C", TransactionCode = "SUSTI" },
-                                new StoresTransactionPosting() { DebitOrCredit = "D", TransactionCode = "SUSTI", Nominal = new Nominal("00000012926", "MATERIAL PRICE VARIANCES") }
+                                new StoresTransactionPosting("SUSTI", "C", null),
+                                new StoresTransactionPosting("SUSTI", "D", new Nominal("00000012926", "MATERIAL PRICE VARIANCES"))
                             }
                         },
                         TransactionCode = "SUNWI"

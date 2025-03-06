@@ -18,7 +18,7 @@
         {
             this.StoresTransactionStateRepository
                 .FindByAsync(Arg.Any<Expression<Func<StoresTransactionState, bool>>>())
-                .Returns(new StoresTransactionState { FromOrOnto = "F", State = "ST1", TransactionCode = "TR1" });
+                .Returns(new StoresTransactionState("F", "TR1", "ST1"));
 
             this.Result = this.Sut.ValidState(null, this.StoresFunction, "ST1", "F").Result;
         }
