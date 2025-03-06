@@ -4,7 +4,7 @@
 
     public class StoresTransactionPosting
     {
-        public StoresTransactionPosting()
+        protected StoresTransactionPosting()
         {
             // for ef
         }

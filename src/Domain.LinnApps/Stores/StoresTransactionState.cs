@@ -2,7 +2,7 @@
 {
     public class StoresTransactionState
     {
-        public StoresTransactionState()
+        protected StoresTransactionState()
         {
             // for ef
         }
