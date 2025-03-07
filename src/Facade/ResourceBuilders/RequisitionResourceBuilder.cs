@@ -9,6 +9,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Resources.Accounts;
+    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionResourceBuilder : IBuilder<RequisitionHeader>
@@ -33,6 +34,13 @@
                            Quantity = header.Quantity,
                            Document1Name = header.Document1Name,
                            PartNumber = header.Part?.PartNumber,
+                           Part = header.Part == null
+                                      ? null
+                                      : new PartResource
+                                            {
+                                                PartNumber = header.Part.PartNumber,
+                                                Description = header.Part.Description
+                                            },        
                            ToLocationId = header.ToLocation?.LocationId,
                            ToLocationCode = header.ToLocation?.LocationCode,
                            FromLocationId = header.FromLocation?.LocationId,
