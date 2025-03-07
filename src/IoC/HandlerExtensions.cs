@@ -37,7 +37,8 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StockStateResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StorageLocationResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageLocationResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresFunctionResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresFunctionResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<StoresFunctionResource>>();
         }
     }
 }
