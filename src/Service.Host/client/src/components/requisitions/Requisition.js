@@ -477,7 +477,7 @@ function Requisition({ creating }) {
                                         resultsInModal
                                         resultLimit={100}
                                         disabled={!creating || !!formState.lines?.length}
-                                        helperText="Enter a value, or press enter to view all function codes"
+                                        helperText="<Enter> to search or <Tab> to select"
                                         value={formState.storesFunction?.code}
                                         handleValueChange={(_, newVal) => {
                                             dispatch({

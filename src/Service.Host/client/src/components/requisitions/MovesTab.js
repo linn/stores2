@@ -98,12 +98,17 @@ function MovesTab({
         {
             field: 'dateBooked',
             headerName: 'Booked?',
-            width: 150
+            width: 150,
+            renderCell: params => moment(params.row.dateBooked).format('DD-MMM-YYYY')
         },
         {
             field: 'dateCancelled',
             headerName: 'Cancelled?',
-            width: 100
+            width: 100,
+            renderCell: params =>
+                params.row.dateCancelled
+                    ? moment(params.row.dateCancelled).format('DD-MMM-YYYY')
+                    : ''
         }
     ];
 
@@ -116,7 +121,7 @@ function MovesTab({
         {
             field: 'fromLocationCode',
             headerName: 'Loc Code',
-            width: 100
+            width: 120
         },
         {
             field: 'fromLocationDescription',
@@ -178,7 +183,7 @@ function MovesTab({
         {
             field: 'toLocationCode',
             headerName: 'Loc Code',
-            width: 100,
+            width: 120,
             renderCell: params => (
                 <>
                     <GridSearchIcon

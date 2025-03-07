@@ -10,6 +10,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AddIcon from '@mui/icons-material/Add';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import Typography from '@mui/material/Typography';
+import moment from 'moment';
 import BudgetPostings from '../BudgetPostings';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import PartsSearchDialog from '../PartsSearchDialog';
@@ -70,7 +71,12 @@ function LinesTab({
         { field: 'document1Type', headerName: 'Doc1', width: 80 },
         { field: 'document1Number', headerName: 'Number', width: 80 },
         { field: 'document1Line', headerName: 'Line', width: 60 },
-        { field: 'dateBooked', headerName: 'Booked', width: 100 },
+        {
+            field: 'dateBooked',
+            headerName: 'Booked',
+            width: 110,
+            renderCell: params => moment(params.row.dateBooked).format('DD-MMM-YYYY')
+        },
         { field: 'cancelled', headerName: 'Cancelled', width: 100 },
         {
             field: 'actions',

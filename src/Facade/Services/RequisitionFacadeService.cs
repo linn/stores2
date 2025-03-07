@@ -168,7 +168,6 @@
             RequisitionHeaderResource updateResource,
             IEnumerable<string> privileges = null)
         {
-
                 await this.requisitionManager.UpdateRequisition(
                     entity, updateResource.Lines.Select(BuildLineCandidateFromResource));
         }

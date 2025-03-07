@@ -34,7 +34,7 @@ function PartNumberQuantity({
                     label="Part"
                     resultsInModal
                     resultLimit={100}
-                    helperText="Enter a search term and press enter or TAB"
+                    helperText="<Enter> to search part. <Tab> to select"
                     value={partNumber}
                     disabled={disabled}
                     handleValueChange={(_, newVal) => {

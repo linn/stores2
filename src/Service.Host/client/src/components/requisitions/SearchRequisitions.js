@@ -171,7 +171,7 @@ function SearchRequisitions() {
                                 ...r,
                                 id: r.reqNumber,
                                 created: moment(r.dateCreated).format('DD-MMM-YYYY'),
-                                doc1: `${r.document1Name}${r.document1}`
+                                doc1: `${r.document1Name} ${r.document1}`
                             })) || []
                         }
                         columns={columns}
