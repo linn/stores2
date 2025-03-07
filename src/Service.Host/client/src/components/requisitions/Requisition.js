@@ -656,6 +656,7 @@ function Requisition({ creating }) {
                                         payload: { fieldName: 'quantity', newValue: newQty }
                                     })
                                 }
+                                disabled={!creating}
                                 shouldRender={
                                     formState.storesFunction &&
                                     formState.storesFunction?.partNumberRequired
@@ -704,6 +705,7 @@ function Requisition({ creating }) {
                                     value={formState.comments}
                                     onChange={handleHeaderFieldChange}
                                     label="Comments"
+                                    disabled={!creating}
                                     propertyName="comments"
                                 />
                             </Grid>
@@ -712,6 +714,7 @@ function Requisition({ creating }) {
                                     fullWidth
                                     value={formState.reference}
                                     onChange={handleHeaderFieldChange}
+                                    disabled={!creating}
                                     label="Reference"
                                     propertyName="reference"
                                 />
