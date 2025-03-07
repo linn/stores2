@@ -15,16 +15,16 @@
         [SetUp]
         public void SetUp()
         {
-            this.action = () => new RequisitionHeader(
-                new Employee(),
-                TestFunctionCodes.AdjustQC,
-                "F",
-                null,
-                null,
-                new Department(),
-                new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
-                reference: null,
-                comments: "adjust qc test");
+            this.action = () => _ = new RequisitionHeader(
+                                    new Employee(),
+                                    TestFunctionCodes.AdjustQC,
+                                    "F",
+                                    null,
+                                    null,
+                                    new Department(),
+                                    new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
+                                    reference: null,
+                                    comments: "adjust qc test");
         }
 
         [Test]

@@ -31,7 +31,7 @@
 
             var line = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.StockToLinnDept)
             {
-                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) },
+                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) }
             };
             line.AddPosting("D", 1, TestNominalAccounts.AssetsFinGoods);
             line.AddPosting("C", 1, TestNominalAccounts.AssetsFinGoods);
