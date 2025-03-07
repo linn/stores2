@@ -29,6 +29,8 @@
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
+            app.MapGet("/requisitions/function-codes/{code}", this.GetFunctionCode);
+            app.MapGet("/stores2/function-codes", this.GetApp);
         }
 
         private async Task Search(
@@ -149,6 +151,15 @@
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
         {
             await res.Negotiate(await service.GetAll());
+        }
+
+        private async Task GetFunctionCode(
+            HttpRequest _,
+            HttpResponse res,
+            string code,
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
+        {
+            await res.Negotiate(await service.GetById(code));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)

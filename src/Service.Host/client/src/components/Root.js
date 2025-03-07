@@ -1,10 +1,10 @@
 ﻿import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
+import useSignIn from '../hooks/useSignIn';
+import Navigation from '../containers/Navigation';
 import App from './App';
 import 'typeface-roboto';
 import NotFoundPage from './NotFoundPage';
-import useSignIn from '../hooks/useSignIn';
-import Navigation from '../containers/Navigation';
 import Carriers from './Carriers';
 import Carrier from './Carrier';
 import GoodsInLog from './GoodsInLog';
@@ -20,6 +20,8 @@ import StorageTypes from './StorageTypes';
 import PartsStorageTypes from './PartsStorageTypes';
 import PartStorageType from './PartStorageType';
 import StoresTransViewer from './StoresTransViewer';
+import StoresFunctions from './StoresFunctions';
+import StoresFunction from './StoresFunction';
 
 function Root() {
     useSignIn();
@@ -65,6 +67,8 @@ function Root() {
                     <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
                     <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />
+                    <Route path="/stores2/function-codes" element={<StoresFunctions />} />
+                    <Route path="/requisitions/function-codes/:code" element={<StoresFunction />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>

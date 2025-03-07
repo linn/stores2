@@ -22,14 +22,17 @@ function App() {
                         <ListItem component={Link} to="/requisitions/pending">
                             <Typography color="primary">Pending Requisitions</Typography>
                         </ListItem>
-                        <ListItem component={Link} to="/stores2/carriers">
-                            <Typography color="primary">Carriers</Typography>
-                        </ListItem>
                         <ListItem component={Link} to="/stores2/reports/storage-place-audit">
                             <Typography color="primary">Storage Place Audit</Typography>
                         </ListItem>
                         <ListItem component={Link} to="/stores2/budgets">
                             <Typography color="primary">Stores Budget Viewer</Typography>
+                        </ListItem>
+                        <ListItem component={Link} to="/stores2/carriers">
+                            <Typography color="primary">Carriers</Typography>
+                        </ListItem>
+                        <ListItem component={Link} to="/stores2/function-codes">
+                            <Typography color="primary">Stores Functions</Typography>
                         </ListItem>
                         <ListItem component={Link} to="/stores2/storage">
                             <Typography color="primary">Storage Locations</Typography>
