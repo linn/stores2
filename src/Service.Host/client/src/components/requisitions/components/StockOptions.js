@@ -116,9 +116,10 @@ function StockOptions({
                             label="From Loc"
                             resultsInModal
                             resultLimit={100}
-                            helperText="Enter a search term and press enter to search"
+                            helperText="<Enter> to search or <Tab> to select"
                             value={fromLocationCode}
                             handleValueChange={setItemValue}
+                            disabled={disabled}
                             search={searchLocations}
                             loading={locationsSearchLoading}
                             searchResults={locationsSearchResults}
@@ -127,6 +128,16 @@ function StockOptions({
                                 setItemValue('fromLocationId', r.locationId);
                                 setItemValue('fromLocationCode', r.locationCode);
                             }}
+                            onKeyPressFunctions={[
+                                {
+                                    keyCode: 9,
+                                    action: () =>
+                                        setItemValue(
+                                            'fromLocationCode',
+                                            fromLocationCode?.toUpperCase()
+                                        )
+                                }
+                            ]}
                             clearSearch={clearLocationsSearch}
                             autoFocus={false}
                         />
@@ -182,7 +193,7 @@ function StockOptions({
                     label="To Loc"
                     resultsInModal
                     resultLimit={100}
-                    helperText="Enter a search term and press enter to search"
+                    helperText="<Enter> to search or <Tab> to select"
                     value={toLocationCode}
                     handleValueChange={setItemValue}
                     search={searchLocations}
@@ -193,6 +204,13 @@ function StockOptions({
                         setItemValue('toLocationId', r.locationId);
                         setItemValue('toLocationCode', r.locationCode);
                     }}
+                    onKeyPressFunctions={[
+                        {
+                            keyCode: 9,
+                            action: () =>
+                                setItemValue('toLocationCode', toLocationCode?.toUpperCase())
+                        }
+                    ]}
                     clearSearch={clearLocationsSearch}
                     disabled={disabled}
                     autoFocus={false}

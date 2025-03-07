@@ -477,7 +477,7 @@ function Requisition({ creating }) {
                                         resultsInModal
                                         resultLimit={100}
                                         disabled={!creating || !!formState.lines?.length}
-                                        helperText="Enter a value, or press enter to view all function codes"
+                                        helperText="<Enter> to search or <Tab> to select"
                                         value={formState.storesFunction?.code}
                                         handleValueChange={(_, newVal) => {
                                             dispatch({
@@ -540,6 +540,7 @@ function Requisition({ creating }) {
                                 <DatePicker
                                     value={formState.dateCreated}
                                     onChange={() => {}}
+                                    disabled
                                     label="Date Created"
                                     propertyName="dateCreated"
                                 />
@@ -655,6 +656,7 @@ function Requisition({ creating }) {
                                         payload: { fieldName: 'quantity', newValue: newQty }
                                     })
                                 }
+                                disabled={!creating}
                                 shouldRender={
                                     formState.storesFunction &&
                                     formState.storesFunction?.partNumberRequired
@@ -703,6 +705,7 @@ function Requisition({ creating }) {
                                     value={formState.comments}
                                     onChange={handleHeaderFieldChange}
                                     label="Comments"
+                                    disabled={!creating}
                                     propertyName="comments"
                                 />
                             </Grid>
@@ -711,6 +714,7 @@ function Requisition({ creating }) {
                                     fullWidth
                                     value={formState.reference}
                                     onChange={handleHeaderFieldChange}
+                                    disabled={!creating}
                                     label="Reference"
                                     propertyName="reference"
                                 />

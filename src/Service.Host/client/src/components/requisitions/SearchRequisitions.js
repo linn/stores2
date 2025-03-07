@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import queryString from 'query-string';
 import moment from 'moment';
 import { DataGrid } from '@mui/x-data-grid';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid2';
 import {
     utilities,
@@ -31,6 +32,17 @@ function SearchRequisitions() {
             const opt = { ...options };
             delete opt[property];
             setOptions(() => opt);
+        }
+    };
+
+    const tryToGoToReq = selectedNumber => {
+        navigate(`/requisitions/${selectedNumber}`);
+    };
+
+    const doQuery = () => {
+        const query = queryString.stringify(options);
+        if (options.reqNumber || options.comments || options.documentNumber) {
+            send(null, `?${query}`);
         }
     };
 
@@ -67,7 +79,7 @@ function SearchRequisitions() {
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
                 <Grid size={11}>
-                    <Typography variant="h4">Search Requisitions</Typography>
+                    <Typography variant="h4">View, Search, Create Requisitions</Typography>
                 </Grid>
                 <Grid size={1}>
                     <CreateButton createUrl="/requisitions/create" />
@@ -83,6 +95,15 @@ function SearchRequisitions() {
                         propertyName="reqNumber"
                     />
                 </Grid>
+                <Grid size={1}>
+                    <Button
+                        onClick={() => tryToGoToReq(options.reqNumber)}
+                        variant="outlined"
+                        style={{ marginTop: '29px' }}
+                    >
+                        Go
+                    </Button>
+                </Grid>
                 <Grid size={3}>
                     <InputField
                         fullWidth
@@ -93,6 +114,12 @@ function SearchRequisitions() {
                         helperText="you can search for a string included in the comments field of the header"
                     />
                 </Grid>
+                <Grid size={3}>
+                    <Button onClick={doQuery} variant="outlined" style={{ marginTop: '29px' }}>
+                        Search
+                    </Button>
+                </Grid>
+                <Grid size={2} />
                 <Grid size={2}>
                     <Dropdown
                         fullWidth
@@ -135,6 +162,7 @@ function SearchRequisitions() {
                         items={['N', 'Y']}
                     />
                 </Grid>
+                <Grid size={5} />
 
                 <Grid size={12}>
                     <DataGrid
@@ -143,7 +171,7 @@ function SearchRequisitions() {
                                 ...r,
                                 id: r.reqNumber,
                                 created: moment(r.dateCreated).format('DD-MMM-YYYY'),
-                                doc1: `${r.document1Name}${r.document1}`
+                                doc1: `${r.document1Name} ${r.document1}`
                             })) || []
                         }
                         columns={columns}

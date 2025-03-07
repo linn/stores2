@@ -4,6 +4,7 @@
 
     using Linn.Common.Resources;
     using Linn.Stores2.Resources.Accounts;
+    using Linn.Stores2.Resources.Parts;
 
     public class RequisitionHeaderResource : HypermediaResource
     {
@@ -20,6 +21,8 @@
         public string Document1Name { get; set; }
 
         public string PartNumber { get; set; }
+
+        public PartResource Part { get; set; }
         
         public int? ToLocationId { get; set; }
 

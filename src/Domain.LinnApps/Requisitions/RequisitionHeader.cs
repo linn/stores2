@@ -119,9 +119,9 @@
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
-            this.Document1 = document1Number ?? this.ReqNumber;
+            this.Document1 = document1Number;
             this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? "REQ" : document1Type;
-            this.Document1Line = document1Line ?? 1;
+            this.Document1Line = document1Line;
             this.Quantity = quantity;
             this.Part = part;
             this.ToPalletNumber = toPalletNumber;

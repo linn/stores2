@@ -16,8 +16,6 @@
         [SetUp]
         public void SetUp()
         {
-            var site = new StorageSite { SiteCode = "TEST" };
-            var area = new StorageArea { StorageAreaCode = "TEST" };
             var location = new StorageLocation();
             this.action = () =>
             {

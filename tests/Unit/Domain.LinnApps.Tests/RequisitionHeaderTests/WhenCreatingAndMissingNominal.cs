@@ -16,16 +16,16 @@
         [SetUp]
         public void SetUp()
         {
-            this.action = () => new RequisitionHeader(
-                new Employee(),
-                TestFunctionCodes.LinnDeptReq,
-                "F",
-                null,
-                null,
-                new Department(),
-                null,
-                reference: null,
-                comments: "constructor test");
+            this.action = () => _ = new RequisitionHeader(
+                                    new Employee(),
+                                    TestFunctionCodes.LinnDeptReq,
+                                    "F",
+                                    null,
+                                    null,
+                                    new Department(),
+                                    null,
+                                    reference: null,
+                                    comments: "constructor test");
         }
 
         [Test]

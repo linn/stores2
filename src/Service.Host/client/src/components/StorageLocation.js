@@ -15,13 +15,13 @@ import {
     SaveBackCancelButtons
 } from '@linn-it/linn-form-components-library';
 import PropTypes from 'prop-types';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import useInitialise from '../hooks/useInitialise';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
+import Page from './Page';
 
 function StorageLocation({ creating }) {
     const [hasFetched, setHasFetched] = useState(false);
@@ -417,7 +417,7 @@ function StorageLocation({ creating }) {
                                             value={
                                                 formValues.dateInvalid
                                                     ? moment(formValues.dateInvalid).format(
-                                                          'DD MMM YYYY'
+                                                          'DD-MMM-YYYY'
                                                       )
                                                     : ''
                                             }
