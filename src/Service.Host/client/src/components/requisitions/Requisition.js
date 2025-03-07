@@ -540,6 +540,7 @@ function Requisition({ creating }) {
                                 <DatePicker
                                     value={formState.dateCreated}
                                     onChange={() => {}}
+                                    disabled
                                     label="Date Created"
                                     propertyName="dateCreated"
                                 />

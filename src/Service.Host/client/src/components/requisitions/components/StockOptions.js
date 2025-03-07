@@ -119,6 +119,7 @@ function StockOptions({
                             helperText="<Enter> to search or <Tab> to select"
                             value={fromLocationCode}
                             handleValueChange={setItemValue}
+                            disabled={disabled}
                             search={searchLocations}
                             loading={locationsSearchLoading}
                             searchResults={locationsSearchResults}
