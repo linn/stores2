@@ -20,6 +20,8 @@ import StorageTypes from './StorageTypes';
 import PartsStorageTypes from './PartsStorageTypes';
 import PartStorageType from './PartStorageType';
 import StoresTransViewer from './StoresTransViewer';
+import StoresFunctions from './StoresFunctions';
+import StoresFunction from './StoresFunction';
 
 function Root() {
     useSignIn();
@@ -38,6 +40,14 @@ function Root() {
                     <Route
                         path="/stores2/reports/storage-place-audit"
                         element={<StoragePlaceAudit />}
+                    />
+                    <Route
+                        path="/requisitions/stores-functions/view"
+                        element={<StoresFunctions />}
+                    />
+                    <Route
+                        path="/requisitions/stores-functions/:code"
+                        element={<StoresFunction />}
                     />
                     <Route path="/requisitions" element={<SearchRequisitions />} />
                     <Route path="/requisitions/pending" element={<PendingRequisitions />} />

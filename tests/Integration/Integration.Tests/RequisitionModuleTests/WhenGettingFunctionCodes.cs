@@ -24,7 +24,7 @@
             this.DbContext.StoresFunctionCodes.AddAndSave(this.DbContext, this.ldreq);
 
             this.Response = this.Client.Get(
-                "/requisitions/function-codes",
+                "/requisitions/stores-functions",
                 with =>
                 {
                     with.Accept("application/json");
