@@ -46,7 +46,7 @@
              string fromState = null,
              string toState = null)
         {
-            var function = await this.storesFunctionRepository.FindByIdAsync(functionCode);
+            var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
            
             var context = new RequisitionCreationContext
                               {
@@ -63,14 +63,14 @@
                                   Reference = reference,
                                   Comments = comments,
                                   ManualPick = manualPick,
-                                  FromStockPool = fromStockPool,
-                                  ToStockPool = toStockPool,    
-                                  FromLocationCode = fromLocationCode,
-                                  ToLocationCode = toLocationCode,
-                                  PartNumber = partNumber,
+                                  FromStockPool = fromStockPool?.ToUpper(),
+                                  ToStockPool = toStockPool?.ToUpper(),    
+                                  FromLocationCode = fromLocationCode?.ToUpper(),
+                                  ToLocationCode = toLocationCode?.ToUpper(),
+                                  PartNumber = partNumber?.ToUpper(),
                                   Quantity = quantity,
-                                  FromState = fromState,
-                                  ToState = toState,
+                                  FromState = fromState?.ToUpper(),
+                                  ToState = toState?.ToUpper(),
                                   FromPallet = fromPalletNumber,
                                   ToPallet = toPalletNumber
                               };

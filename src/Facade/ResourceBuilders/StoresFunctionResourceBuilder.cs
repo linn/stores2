@@ -42,6 +42,8 @@
                           NominalCode = model.GetNominal()?.NominalCode,
                           NominalDescription = model.GetNominal()?.Description,
                           FunctionAvailable = model.FunctionAvailable(),
+                          FromStates = model.GetTransactionStates("F"),
+                          ToStates = model.GetTransactionStates("O"),
                           TransactionTypes = model.TransactionsTypes?.Select(
                               t => new FunctionCodeTransactionResource
                                        {

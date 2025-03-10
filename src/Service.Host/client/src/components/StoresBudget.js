@@ -48,7 +48,7 @@ function StoresBudget({ storesBudget }) {
             </Grid>
             <Grid size={4}>
                 <Typography variant="body1">
-                    {moment(storesBudget?.dateBooked).format('DD MMM YYYY')}
+                    {moment(storesBudget?.dateBooked).format('DD-MMM-YYYY')}
                 </Typography>
             </Grid>
             <Grid size={2} />

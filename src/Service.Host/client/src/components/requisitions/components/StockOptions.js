@@ -8,13 +8,11 @@ import {
 } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
-import PropTypes from 'prop-types';
 import itemTypes from '../../../itemTypes';
 import useSearch from '../../../hooks/useSearch';
 import PickStockDialog from '../PickStockDialog';
 
 function StockOptions({
-    stockStates = [],
     stockPools = [],
     fromState = null,
     fromStockPool = null,
@@ -41,7 +39,7 @@ function StockOptions({
         clear: clearLocationsSearch
     } = useSearch(itemTypes.storageLocations.url, 'locationId', 'locationCode', 'description');
 
-    if (!shouldRender) {
+    if (!shouldRender || !functionCode) {
         return '';
     }
 
@@ -57,19 +55,21 @@ function StockOptions({
                 functionCode?.code === 'MOVE') && (
                 <>
                     <Grid size={2}>
-                        <Dropdown
-                            value={fromState}
-                            disabled={disabled}
-                            fullWidth
-                            label="From State"
-                            propertyName="fromState"
-                            allowNoValue
-                            items={stockStates?.map(s => ({
-                                id: s.state,
-                                displayText: s.state
-                            }))}
-                            onChange={setItemValue}
-                        />
+                        {functionCode?.fromStates && (
+                            <Dropdown
+                                value={fromState}
+                                disabled={disabled}
+                                fullWidth
+                                label="From State"
+                                propertyName="fromState"
+                                allowNoValue
+                                items={functionCode?.fromStates?.map(s => ({
+                                    id: s,
+                                    displayText: s
+                                }))}
+                                onChange={setItemValue}
+                            />
+                        )}
                     </Grid>
                     <Grid size={2}>
                         <Dropdown
@@ -116,9 +116,10 @@ function StockOptions({
                             label="From Loc"
                             resultsInModal
                             resultLimit={100}
-                            helperText="Enter a search term and press enter to search"
+                            helperText="<Enter> to search or <Tab> to select"
                             value={fromLocationCode}
                             handleValueChange={setItemValue}
+                            disabled={disabled}
                             search={searchLocations}
                             loading={locationsSearchLoading}
                             searchResults={locationsSearchResults}
@@ -127,6 +128,16 @@ function StockOptions({
                                 setItemValue('fromLocationId', r.locationId);
                                 setItemValue('fromLocationCode', r.locationCode);
                             }}
+                            onKeyPressFunctions={[
+                                {
+                                    keyCode: 9,
+                                    action: () =>
+                                        setItemValue(
+                                            'fromLocationCode',
+                                            fromLocationCode?.toUpperCase()
+                                        )
+                                }
+                            ]}
                             clearSearch={clearLocationsSearch}
                             autoFocus={false}
                         />
@@ -144,19 +155,21 @@ function StockOptions({
                 </>
             )}
             <Grid size={2}>
-                <Dropdown
-                    value={toState}
-                    disabled={disabled}
-                    fullWidth
-                    label="To State"
-                    propertyName="toState"
-                    allowNoValue
-                    items={stockStates?.map(s => ({
-                        id: s.state,
-                        displayText: s.state
-                    }))}
-                    onChange={setItemValue}
-                />
+                {functionCode?.fromStates && (
+                    <Dropdown
+                        value={toState}
+                        disabled={disabled}
+                        fullWidth
+                        label="To State"
+                        propertyName="toState"
+                        allowNoValue
+                        items={functionCode?.toStates?.map(s => ({
+                            id: s,
+                            displayText: s
+                        }))}
+                        onChange={setItemValue}
+                    />
+                )}
             </Grid>
             <Grid size={2}>
                 <Dropdown
@@ -180,7 +193,7 @@ function StockOptions({
                     label="To Loc"
                     resultsInModal
                     resultLimit={100}
-                    helperText="Enter a search term and press enter to search"
+                    helperText="<Enter> to search or <Tab> to select"
                     value={toLocationCode}
                     handleValueChange={setItemValue}
                     search={searchLocations}
@@ -191,6 +204,13 @@ function StockOptions({
                         setItemValue('toLocationId', r.locationId);
                         setItemValue('toLocationCode', r.locationCode);
                     }}
+                    onKeyPressFunctions={[
+                        {
+                            keyCode: 9,
+                            action: () =>
+                                setItemValue('toLocationCode', toLocationCode?.toUpperCase())
+                        }
+                    ]}
                     clearSearch={clearLocationsSearch}
                     disabled={disabled}
                     autoFocus={false}
@@ -220,55 +240,5 @@ function StockOptions({
         </>
     );
 }
-
-StockOptions.propTypes = {
-    stockStates: PropTypes.arrayOf(PropTypes.shape({ state: PropTypes.string })),
-    stockPools: PropTypes.arrayOf(PropTypes.shape({ stockPoolCode: PropTypes.string })),
-    fromState: PropTypes.string,
-    setItemValue: PropTypes.func.isRequired,
-    fromStockPool: PropTypes.string,
-    batchDate: PropTypes.string,
-    fromLocationCode: PropTypes.string,
-    fromPalletNumber: PropTypes.number,
-    toState: PropTypes.string,
-    toStockPool: PropTypes.string,
-    toLocationCode: PropTypes.string,
-    toPalletNumber: PropTypes.number,
-    disabled: PropTypes.bool,
-    shouldRender: PropTypes.bool,
-    partNumber: PropTypes.string,
-    quantity: PropTypes.number,
-    functionCode: PropTypes.shape({
-        code: PropTypes.string,
-        batchDateRequired: PropTypes.string,
-        fromLocationRequired: PropTypes.string,
-        fromStateRequired: PropTypes.string,
-        fromStockPoolRequired: PropTypes.string,
-        toLocationRequired: PropTypes.string,
-        toStateRequired: PropTypes.string,
-        toStockPoolRequired: PropTypes.string
-    }),
-    doPickStock: PropTypes.func
-};
-
-StockOptions.defaultProps = {
-    stockStates: [],
-    stockPools: [],
-    fromState: null,
-    fromLocationCode: null,
-    fromStockPool: null,
-    toState: null,
-    toStockPool: null,
-    batchDate: null,
-    disabled: false,
-    shouldRender: true,
-    partNumber: null,
-    quantity: null,
-    doPickStock: null,
-    fromPalletNumber: null,
-    toLocationCode: null,
-    toPalletNumber: null,
-    functionCode: null
-};
 
 export default StockOptions;

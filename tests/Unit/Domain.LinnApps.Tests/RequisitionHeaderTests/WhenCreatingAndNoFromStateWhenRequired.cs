@@ -1,17 +1,14 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
-
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
-
     using NUnit.Framework;
 
-    public class WhenCreatingAndWrongNominal
+    public class WhenCreatingAndNoFromStateWhenRequired
     {
         private Action action;
 
@@ -20,21 +17,21 @@
         {
             this.action = () => _ = new RequisitionHeader(
                                     new Employee(),
-                                    TestFunctionCodes.Adjust,
+                                    TestFunctionCodes.AdjustQC,
                                     "F",
                                     null,
                                     null,
                                     new Department(),
-                                    new Nominal("0000001234", "NOT STOCK ADJUSTMENTS"),
+                                    new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
                                     reference: null,
-                                    comments: "constructor test");
+                                    comments: "adjust qc test");
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Cannot create - nominal must be 0000004710");
+                .WithMessage("Cannot create - from state must be present");
         }
     }
 }

@@ -15,7 +15,6 @@
         [SetUp]
         public void SetUp()
         {
-           
             this.sut = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.LoanOut,

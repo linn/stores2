@@ -119,9 +119,9 @@
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
-            this.Document1 = document1Number ?? this.ReqNumber;
+            this.Document1 = document1Number;
             this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? "REQ" : document1Type;
-            this.Document1Line = document1Line ?? 1;
+            this.Document1Line = document1Line;
             this.Quantity = quantity;
             this.Part = part;
             this.ToPalletNumber = toPalletNumber;
@@ -150,6 +150,21 @@
                         throw new CreateRequisitionException(
                             $"Cannot create - nominal must be {function.GetNominal().NominalCode}");
                     }
+                }
+            }
+
+            if (this.StoresFunction.FromStateRequired == "Y")
+            {
+                if (string.IsNullOrEmpty(fromState))
+                {
+                    throw new CreateRequisitionException(
+                        "Cannot create - from state must be present");
+                }
+
+                if (!this.StoresFunction.GetTransactionStates("F").Contains(fromState))
+                {
+                    throw new CreateRequisitionException(
+                        $"Cannot create - from state must be one of {string.Join(",", this.StoresFunction.GetTransactionStates("F") )}");
                 }
             }
 

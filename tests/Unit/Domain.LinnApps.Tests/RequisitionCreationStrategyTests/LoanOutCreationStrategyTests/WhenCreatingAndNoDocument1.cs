@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStategyTests.LoanOutCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LoanOutCreationStrategyTests
 {
     using System;
     using System.Threading.Tasks;
@@ -16,7 +16,7 @@
         private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.RequisitionCreationContext = new RequisitionCreationContext
             {

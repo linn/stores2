@@ -12,7 +12,7 @@
         {
             var context = new RequisitionCreationContext
                               {
-                                  Function = new StoresFunction() { FunctionType = "A" },
+                                  Function = new StoresFunction { FunctionType = "A" },
                                   PartNumber = "PART"
                               };
             var result = this.Sut.Resolve(context);

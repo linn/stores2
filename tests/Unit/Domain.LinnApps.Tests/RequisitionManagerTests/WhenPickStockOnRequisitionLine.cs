@@ -19,7 +19,7 @@
         [SetUp]
         public void SetUp()
         {
-            var employee = new Employee() { Id = 33087 };
+            var employee = new Employee { Id = 33087 };
 
             var unpickedReq = new ReqWithReqNumber(
                 123,
@@ -31,7 +31,12 @@
                 null,
                 null,
                 fromStockPool: "LINN");
-            var unpickedLine = new RequisitionLine(unpickedReq.ReqNumber, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLoan);
+            var unpickedLine = new RequisitionLine(
+                unpickedReq.ReqNumber,
+                1,
+                TestParts.SelektHub,
+                1,
+                TestTransDefs.StockToLoan);
             unpickedReq.AddLine(unpickedLine);
 
             var pickedReq = new ReqWithReqNumber(
@@ -44,7 +49,12 @@
                 null,
                 null,
                 fromStockPool: "LINN");
-            var pickedLine = new RequisitionLine(pickedReq.ReqNumber, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLoan);
+            var pickedLine = new RequisitionLine(
+                pickedReq.ReqNumber,
+                1,
+                TestParts.SelektHub,
+                1,
+                TestTransDefs.StockToLoan);
             pickedLine.Moves.Add(new ReqMove());
             pickedReq.AddLine(pickedLine);
 
@@ -57,19 +67,16 @@
                 PartNumber = TestParts.SelektHub.PartNumber,
                 Qty = 1,
                 TransactionDefinition = TestTransDefs.StockToLoan.TransactionCode,
-                Moves = new List<MoveSpecification>()
-                {
-                    new MoveSpecification
-                    {
-                        FromPallet=512,
-                        Qty=1
-                    }
-                }
+                Moves = new List<MoveSpecification>
+                            {
+                                new MoveSpecification { FromPallet = 512, Qty = 1 }
+                            }
             };
 
             this.ReqRepository.FindByIdAsync(pickedReq.ReqNumber).Returns(pickedReq);
 
-            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLoan.TransactionCode).Returns(TestTransDefs.StockToLoan);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLoan.TransactionCode)
+                .Returns(TestTransDefs.StockToLoan);
 
             this.ReqStoredProcedures
                 .PickStock(

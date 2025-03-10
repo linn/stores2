@@ -16,7 +16,7 @@
         [SetUp]
         public void SetUp()
         {
-            this.action = () => new RequisitionHeader(
+            this.action = () => _ = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.LinnDeptReq,
                 "F",

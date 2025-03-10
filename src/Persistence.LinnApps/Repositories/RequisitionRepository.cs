@@ -26,6 +26,12 @@
             return await this.serviceDbContext
                 .RequisitionHeaders
                 .Include(r => r.StoresFunction).ThenInclude(f => f.TransactionsTypes)
+                .ThenInclude(d => d.TransactionDefinition)
+                .ThenInclude(d => d.StoresTransactionPostings)
+                .ThenInclude(p => p.Nominal)
+                .Include(r => r.StoresFunction).ThenInclude(a => a.TransactionsTypes)
+                .ThenInclude(d => d.TransactionDefinition)
+                .ThenInclude(d => d.StoresTransactionStates)
                 .Include(r => r.Lines).ThenInclude(l => l.Part)
                 .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition)
                 .Include(r => r.Lines).ThenInclude(l => l.NominalAccountPostings).ThenInclude(p => p.NominalAccount)

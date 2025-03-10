@@ -5,12 +5,13 @@
 
     public static class TestFunctionCodes
     {
-        public static readonly StoresFunction AdjustReq =
+        public static readonly StoresFunction Adjust =
             new StoresFunction("ADJUST")
             {
                 Description = "ADJUST PARTS UP/DOWN IN STOCK",
                 DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
+                FromStateRequired = "N",
                 PartSource = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
@@ -31,11 +32,39 @@
                 }
             };
 
+        public static readonly StoresFunction AdjustQC =
+            new StoresFunction("ADJUST QC")
+            {
+                Description = "ADJUST PARTS UP/DOWN IN INSPECTION",
+                DepartmentNominalRequired = "Y",
+                Document1RequiredFlag = "N",
+                FromStateRequired = "Y",
+                PartSource = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>()
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "ADJUST QC",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.QCToAdjust,
+                        TransactionCode = TestTransDefs.StockToAdjust.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "ADJUST QC",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.AdjustToQC,
+                        TransactionCode = TestTransDefs.AdjustToStock.TransactionCode
+                    }
+                }
+            };
+
         public static readonly StoresFunction Audit =
             new StoresFunction("AUDIT")
             {
                 Description = "STOCK CHECK ADJUSTMENTS",
                 Document1RequiredFlag = "N",
+                FromStateRequired = "N",
                 PartSource = "N"
             };
 
@@ -45,6 +74,7 @@
                 Description = "BOOK IN WORKS ORDER",
                 Document1RequiredFlag = "Y",
                 Document1Text = "Works Order",
+                FromStateRequired = "N",
                 PartSource = "WO"
             };
 
@@ -54,6 +84,7 @@
                 Description = "BOOK IN GOODS FROM SUPPLIER FOR PO",
                 Document1RequiredFlag = "Y",
                 Document1Text = "Order Number",
+                FromStateRequired = "N",
                 PartSource = "PO",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
@@ -94,6 +125,7 @@
                 Description = "BOOK PARTS IN/OUT OF STORES ON REQUISITION",
                 DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
+                FromStateRequired = "N",
                 PartSource = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
@@ -121,6 +153,7 @@
                 Document1RequiredFlag = "Y",
                 Document1Text = "Loan Number",
                 DepartmentNominalRequired = "N",
+                FromStateRequired = "N",
                 PartSource = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
@@ -140,6 +173,7 @@
                 Description = "KIT PARTS TO SUPPLIER STORE",
                 Document1RequiredFlag = "Y",
                 Document1Text = "Order Number",
+                FromStateRequired = "N",
                 PartSource = "PO"
             };
 
@@ -149,6 +183,7 @@
                 Description = "WRITE OFF/ON PARTS IN STOCK",
                 DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
+                FromStateRequired = "N",
                 PartSource = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
