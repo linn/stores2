@@ -41,6 +41,14 @@ function Root() {
                         path="/stores2/reports/storage-place-audit"
                         element={<StoragePlaceAudit />}
                     />
+                    <Route
+                        path="/requisitions/stores-functions/view"
+                        element={<StoresFunctions />}
+                    />
+                    <Route
+                        path="/requisitions/stores-functions/:code"
+                        element={<StoresFunction />}
+                    />
                     <Route path="/requisitions" element={<SearchRequisitions />} />
                     <Route path="/requisitions/pending" element={<PendingRequisitions />} />
                     <Route path="/requisitions/create" element={<Requisition creating />} />
@@ -67,8 +75,6 @@ function Root() {
                     <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
                     <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />
-                    <Route path="/stores2/function-codes" element={<StoresFunctions />} />
-                    <Route path="/requisitions/function-codes/:code" element={<StoresFunction />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>

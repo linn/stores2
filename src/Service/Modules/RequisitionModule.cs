@@ -22,15 +22,15 @@
             app.MapGet("/requisitions", this.Search);
             app.MapGet("/requisitions/create", this.GetApp);
             app.MapGet("/requisitions/pending", this.GetApp);
-            app.MapGet("/requisitions/{reqNumber}", this.GetById);
             app.MapPost("/requisitions/cancel", this.Cancel);
             app.MapPost("/requisitions/book", this.Book);
             app.MapPost("/requisitions/authorise", this.Authorise);
+            app.MapGet("/requisitions/stores-functions", this.GetFunctionCodes);
+            app.MapGet("/requisitions/stores-functions/view", this.GetApp);
+            app.MapGet("/requisitions/stores-functions/{code}", this.GetStoresFunction);
+            app.MapGet("/requisitions/{reqNumber:int}", this.GetById);
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
-            app.MapGet("/requisitions/function-codes", this.GetFunctionCodes);
-            app.MapGet("/requisitions/function-codes/{code}", this.GetFunctionCode);
-            app.MapGet("/stores2/function-codes", this.GetApp);
         }
 
         private async Task Search(
@@ -153,7 +153,7 @@
             await res.Negotiate(await service.GetAll());
         }
 
-        private async Task GetFunctionCode(
+        private async Task GetStoresFunction(
             HttpRequest _,
             HttpResponse res,
             string code,

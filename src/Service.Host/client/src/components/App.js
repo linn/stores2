@@ -4,8 +4,8 @@ import List from '@mui/material/List';
 import Grid from '@mui/material/Grid2';
 import React from 'react';
 import ListItem from '@mui/material/ListItem';
-import Page from './Page';
 import config from '../config';
+import Page from './Page';
 
 function App() {
     return (
@@ -31,7 +31,7 @@ function App() {
                         <ListItem component={Link} to="/stores2/carriers">
                             <Typography color="primary">Carriers</Typography>
                         </ListItem>
-                        <ListItem component={Link} to="/stores2/function-codes">
+                        <ListItem component={Link} to="/requisitions/stores-functions/view">
                             <Typography color="primary">Stores Functions</Typography>
                         </ListItem>
                         <ListItem component={Link} to="/stores2/storage">

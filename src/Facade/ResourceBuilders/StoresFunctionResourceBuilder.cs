@@ -56,7 +56,7 @@
 
         public string GetLocation(StoresFunction model)
         {
-            return $"/requisitions/function-codes/{model.FunctionCode}";
+            return $"/requisitions/stores-functions/{model.FunctionCode}";
         }
 
         object IBuilder<StoresFunction>.Build(StoresFunction model, IEnumerable<string> claims) => this.Build(model, claims);
