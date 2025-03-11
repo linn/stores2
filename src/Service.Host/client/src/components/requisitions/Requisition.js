@@ -297,6 +297,9 @@ function Requisition({ creating }) {
         return false;
     };
 
+    // just for now to only allow updates of comments field
+    const [commentsUpdated, setCommentsUpdated] = useState(false);
+
     const saveIsValid = () => {
         if (creating) {
             if (formState.part?.partNumber) {
@@ -316,7 +319,8 @@ function Requisition({ creating }) {
         if (formState?.lines?.length) {
             return formState.lines.find(l => l.stockPicked);
         }
-        return false;
+
+        return commentsUpdated;
     };
 
     const setDefaultHeaderFieldsForFunctionCode = selectedFunction => {
@@ -711,9 +715,11 @@ function Requisition({ creating }) {
                                 <InputField
                                     fullWidth
                                     value={formState.comments}
-                                    onChange={handleHeaderFieldChange}
+                                    onChange={(propertyName, newValue) => {
+                                        handleHeaderFieldChange(propertyName, newValue);
+                                        setCommentsUpdated(true);
+                                    }}
                                     label="Comments"
-                                    disabled={!creating}
                                     propertyName="comments"
                                 />
                             </Grid>

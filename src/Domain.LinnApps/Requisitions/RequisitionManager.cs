@@ -450,9 +450,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return header;
         }
 
-        public async Task UpdateRequisition(RequisitionHeader current, IEnumerable<LineCandidate> lineUpdates)
+        public async Task UpdateRequisition(
+            RequisitionHeader current, 
+            string updatedComments,
+            IEnumerable<LineCandidate> lineUpdates)
         {
             // todo - permission checks? will be different for different req types I assume
+
+            current.Update(updatedComments);
+
             foreach (var line in lineUpdates)
             {
                 var existingLine = current.Lines.SingleOrDefault(l => l.LineNumber == line.LineNumber);
