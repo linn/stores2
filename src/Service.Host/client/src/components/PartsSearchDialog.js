@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -18,6 +18,20 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
         'partNumber',
         'description'
     );
+
+    const handlePartSelect = () => {
+        if (searchTerm) {
+            search(searchTerm.trim().toUpperCase());
+        }
+    };
+
+    useEffect(() => {
+        if (results?.length === 1) {
+            setSearchDialogOpen(false);
+            handleSearchResultSelect(results[0]);
+        }
+    }, [results, setSearchDialogOpen, handleSearchResultSelect]);
+
     return (
         <Dialog open={searchDialogOpen} onClose={handleClose} fullWidth maxWidth="md">
             <DialogTitle>Search</DialogTitle>
@@ -28,6 +42,8 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
                     label="Part Number"
                     // resultsInModal
                     resultLimit={100}
+                    helperText="<Enter> to search or <Tab> to select if you have entered a known part number"
+                    onKeyPressFunctions={[{ keyCode: 9, action: handlePartSelect }]}
                     value={searchTerm}
                     loading={loading}
                     handleValueChange={(_, newVal) => setSearchTerm(newVal)}
