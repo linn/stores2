@@ -43,9 +43,8 @@ function DepartmentNominal({
     useEffect(() => {
         if (departmentsSearchResults?.length === 1) {
             setDepartment(departmentsSearchResults[0]);
-            clearDepartmentsSearch();
         }
-    }, [departmentsSearchResults, setDepartment, clearDepartmentsSearch]);
+    }, [departmentsSearchResults, setDepartment]);
 
     const handleNominalUpdate = () => {
         searchNominals(setCode(nominalCode));
@@ -54,9 +53,8 @@ function DepartmentNominal({
     useEffect(() => {
         if (nominalsSearchResults?.length === 1) {
             setNominal(nominalsSearchResults[0]);
-            clearNominalsSearch();
         }
-    }, [clearNominalsSearch, setNominal, nominalsSearchResults]);
+    }, [setNominal, nominalsSearchResults]);
 
     if (!shouldRender) {
         return null;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import moment from 'moment';
 import Grid from '@mui/material/Grid2';
 import { Search } from '@linn-it/linn-form-components-library';
@@ -35,20 +35,35 @@ function MovesTab({
 
     const [searchTerm, setSearchTerm] = useState();
 
-    const renderSearchDialog = () => {
-        const handleClose = () => {
-            setSearchDialogOpen({ forRow: null });
-        };
+    const handleLocationSelect = () => {
+        if (searchTerm) {
+            setSearchDialogOpen(false);
+            searchLocations(searchTerm.trim().toUpperCase());
+        }
+    };
 
-        const handleSearchResultSelect = selected => {
+    const handleSearchResultSelect = useCallback(
+        selected => {
             const currentRow = moves.find(r => r.seq === searchDialogOpen.forRow);
             const newRow = {
                 ...currentRow,
                 toLocationCode: selected.name,
                 toLocationDescription: selected.description
             };
+            updateMoveOnto(newRow);
 
-            processRowUpdate(newRow);
+            setSearchDialogOpen({ forRow: null });
+        },
+        [moves, searchDialogOpen, setSearchDialogOpen, updateMoveOnto]
+    );
+    useEffect(() => {
+        if (locationsSearchResults?.length === 1) {
+            handleSearchResultSelect(locationsSearchResults[0]);
+        }
+    }, [locationsSearchResults, handleSearchResultSelect]);
+
+    const renderSearchDialog = () => {
+        const handleClose = () => {
             setSearchDialogOpen({ forRow: null });
         };
 
@@ -60,9 +75,12 @@ function MovesTab({
                         autoFocus
                         propertyName="defaultLocation"
                         label="defaultLocation"
-                        resultsInModal
+                        // resultsInModal
                         resultLimit={100}
                         value={searchTerm}
+                        onKeyPressFunctions={[{ keyCode: 9, action: handleLocationSelect }]}
+                        helperText="<Enter> to search or <Tab> to select if you have entered a known location code"
+                        c
                         loading={locationsSearchLoading}
                         handleValueChange={(_, newVal) => setSearchTerm(newVal)}
                         search={searchLocations}

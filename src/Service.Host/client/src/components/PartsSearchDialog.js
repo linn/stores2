@@ -21,16 +21,16 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
 
     const handlePartSelect = () => {
         if (searchTerm) {
+            setSearchDialogOpen(false);
             search(searchTerm.trim().toUpperCase());
         }
     };
 
     useEffect(() => {
         if (results?.length === 1) {
-            setSearchDialogOpen(false);
             handleSearchResultSelect(results[0]);
         }
-    }, [results, setSearchDialogOpen, handleSearchResultSelect]);
+    }, [results, handleSearchResultSelect]);
 
     return (
         <Dialog open={searchDialogOpen} onClose={handleClose} fullWidth maxWidth="md">
