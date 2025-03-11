@@ -75,7 +75,8 @@ function LinesTab({
             field: 'dateBooked',
             headerName: 'Booked',
             width: 110,
-            renderCell: params => moment(params.row.dateBooked).format('DD-MMM-YYYY')
+            renderCell: params =>
+                params.row.dateBooked ? moment(params.row.dateBooked).format('DD-MMM-YYYY') : ''
         },
         { field: 'cancelled', headerName: 'Cancelled', width: 100 },
         {

@@ -38,7 +38,7 @@
             var cancelledByParameter = new OracleParameter("p_unalloc_by", OracleDbType.Int32)
                                           {
                                               Direction = ParameterDirection.Input,
-                                              Value = reqNumber
+                                              Value = cancelledBy
                                           };
             cmd.Parameters.Add(cancelledByParameter);
 
@@ -56,11 +56,12 @@
                                              };
             cmd.Parameters.Add(qtyAllocatedParameter);
 
-            var commitParameter = new OracleParameter("p_commit", OracleDbType.Boolean) // todo - won't work? amend wrapper?
+            var commitParameter = new OracleParameter("p_commit", OracleDbType.Int32)
                                             {
                                                 Direction = ParameterDirection.Input,
-                                                Value = true
+                                                Value = 1
                                             };
+
             cmd.Parameters.Add(commitParameter);
             
             var successParameter = new OracleParameter("p_success", OracleDbType.Int32)
@@ -81,7 +82,7 @@
             await connection.CloseAsync();
 
             return new ProcessResult(
-                (int)successParameter.Value == 1,
+                successParameter.Value.ToString() == "1",
                 messageParameter.Value.ToString());
         }
 
