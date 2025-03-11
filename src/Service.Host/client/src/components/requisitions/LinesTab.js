@@ -154,27 +154,25 @@ function LinesTab({
                     }}
                 />
             )}
-            {partsSearchDialogOpen && (
-                <PartsSearchDialog
-                    searchDialogOpen={!!partsSearchDialogOpen}
-                    setSearchDialogOpen={setPartsSearchDialogOpen}
-                    handleSearchResultSelect={r => {
-                        updateLine(partsSearchDialogOpen, 'part', r);
-                    }}
-                />
-            )}
-            {pickStockDialogVisible && (
-                <PickStockDialog
-                    open={pickStockDialogVisible}
-                    setOpen={setPickStockDialogVisible}
-                    partNumber={lines.find(l => l.lineNumber === selected)?.part?.partNumber}
-                    quantity={lines.find(l => l.lineNumber === selected && !l.isAddition)?.qty}
-                    handleConfirm={moves => {
-                        pickStock(selected, moves);
-                    }}
-                    state={fromState}
-                />
-            )}
+
+            <PartsSearchDialog
+                searchDialogOpen={!!partsSearchDialogOpen}
+                setSearchDialogOpen={setPartsSearchDialogOpen}
+                handleSearchResultSelect={r => {
+                    updateLine(partsSearchDialogOpen, 'part', r);
+                }}
+            />
+
+            <PickStockDialog
+                open={pickStockDialogVisible}
+                setOpen={setPickStockDialogVisible}
+                partNumber={lines.find(l => l.lineNumber === selected)?.part?.partNumber}
+                quantity={lines.find(l => l.lineNumber === selected && !l.isAddition)?.qty}
+                handleConfirm={moves => {
+                    pickStock(selected, moves);
+                }}
+                state={fromState}
+            />
             <Grid size={12}>
                 <DataGrid
                     getRowId={r => r.lineNumber}

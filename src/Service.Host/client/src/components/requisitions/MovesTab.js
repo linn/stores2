@@ -35,9 +35,11 @@ function MovesTab({
 
     const [searchTerm, setSearchTerm] = useState();
 
+    const [isSelectingLocation, setIsSelectingLocation] = useState(false);
+
     const handleLocationSelect = () => {
         if (searchTerm) {
-            setSearchDialogOpen(false);
+            setIsSelectingLocation(true);
             searchLocations(searchTerm.trim().toUpperCase());
         }
     };
@@ -51,16 +53,25 @@ function MovesTab({
                 toLocationDescription: selected.description
             };
             updateMoveOnto(newRow);
-
             setSearchDialogOpen({ forRow: null });
         },
         [moves, searchDialogOpen, setSearchDialogOpen, updateMoveOnto]
     );
+
     useEffect(() => {
-        if (locationsSearchResults?.length === 1) {
+        if (locationsSearchResults?.length === 1 && isSelectingLocation) {
             handleSearchResultSelect(locationsSearchResults[0]);
+            clearLocationsSearch();
+            setIsSelectingLocation(false);
+            setSearchDialogOpen({ forRow: null });
         }
-    }, [locationsSearchResults, handleSearchResultSelect]);
+    }, [
+        locationsSearchResults,
+        handleSearchResultSelect,
+        clearLocationsSearch,
+        isSelectingLocation,
+        setIsSelectingLocation
+    ]);
 
     const renderSearchDialog = () => {
         const handleClose = () => {
@@ -80,7 +91,6 @@ function MovesTab({
                         value={searchTerm}
                         onKeyPressFunctions={[{ keyCode: 9, action: handleLocationSelect }]}
                         helperText="<Enter> to search or <Tab> to select if you have entered a known location code"
-                        c
                         loading={locationsSearchLoading}
                         handleValueChange={(_, newVal) => setSearchTerm(newVal)}
                         search={searchLocations}

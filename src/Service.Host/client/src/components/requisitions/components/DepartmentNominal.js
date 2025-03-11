@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid2';
 import { InputField, Search } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../../itemTypes';
@@ -37,24 +37,46 @@ function DepartmentNominal({
     };
 
     const handleDepartmentUpdate = () => {
+        setIsSelectingDepartment(true);
         searchDepartments(setCode(departmentCode));
     };
 
+    const [isSelectingDepartment, setIsSelectingDepartment] = useState(false);
+
     useEffect(() => {
-        if (departmentsSearchResults?.length === 1) {
+        if (departmentsSearchResults?.length === 1 && isSelectingDepartment) {
             setDepartment(departmentsSearchResults[0]);
+            setIsSelectingDepartment(false);
+            clearDepartmentsSearch();
         }
-    }, [departmentsSearchResults, setDepartment]);
+    }, [
+        departmentsSearchResults,
+        setDepartment,
+        isSelectingDepartment,
+        setIsSelectingDepartment,
+        clearDepartmentsSearch
+    ]);
+
+    const [isSelectingNominal, setIsSelectingNominal] = useState(false);
 
     const handleNominalUpdate = () => {
+        setIsSelectingNominal(true);
         searchNominals(setCode(nominalCode));
     };
 
     useEffect(() => {
-        if (nominalsSearchResults?.length === 1) {
+        if (nominalsSearchResults?.length === 1 && isSelectingNominal) {
             setNominal(nominalsSearchResults[0]);
+            setIsSelectingNominal(false);
+            clearNominalsSearch();
         }
-    }, [setNominal, nominalsSearchResults]);
+    }, [
+        setNominal,
+        nominalsSearchResults,
+        isSelectingNominal,
+        setIsSelectingNominal,
+        clearNominalsSearch
+    ]);
 
     if (!shouldRender) {
         return null;
