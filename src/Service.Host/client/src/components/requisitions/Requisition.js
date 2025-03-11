@@ -316,11 +316,7 @@ function Requisition({ creating }) {
             return !!formState?.lines?.length;
         }
 
-        if (formState?.lines?.length) {
-            return formState.lines.find(l => l.stockPicked);
-        }
-
-        return commentsUpdated;
+        return commentsUpdated || formState.lines.find(l => l.stockPicked);
     };
 
     const setDefaultHeaderFieldsForFunctionCode = selectedFunction => {
