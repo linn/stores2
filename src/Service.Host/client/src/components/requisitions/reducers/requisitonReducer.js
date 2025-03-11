@@ -46,7 +46,12 @@ function reducer(state, action) {
                 }
             }
 
-            return { ...state, [action.payload.fieldName]: action.payload.newValue };
+            let newValue = action.payload.newValue;
+            if (newValue?.length === 0) {
+                newValue = null;
+            }
+
+            return { ...state, [action.payload.fieldName]: newValue };
         }
         case 'add_line': {
             // need to set the line transaction type based on the function code and req type
@@ -134,6 +139,8 @@ function reducer(state, action) {
                     fromLocationId: action.payload.locationId,
                     fromLocationCode: action.payload.locationName,
                     fromPalletNumber: action.payload.palletNumber,
+                    batchRef: action.payload.batchRef,
+                    batchDate: action.payload.stockRotationDate,
                     toState: action.payload.state,
                     toStockPool: action.payload.stockPoolCode,
                     quantity: action.payload.quantityToPick

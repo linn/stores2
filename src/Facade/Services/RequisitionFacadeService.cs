@@ -159,7 +159,9 @@
                              resource.PartNumber, 
                              resource.Quantity,
                              resource.FromState,
-                             resource.ToState);
+                             resource.ToState,
+                             resource.BatchRef,
+                             string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate));
             return result;
         }
 

@@ -29,6 +29,7 @@ function StockOptions({
     quantity = null,
     doPickStock = null,
     functionCode = null,
+    batchRef = null,
     setItemValue
 }) {
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -127,15 +128,20 @@ function StockOptions({
                             onResultSelect={r => {
                                 setItemValue('fromLocationId', r.locationId);
                                 setItemValue('fromLocationCode', r.locationCode);
+                                setItemValue('fromPalletNumber', null);
                             }}
                             onKeyPressFunctions={[
                                 {
                                     keyCode: 9,
-                                    action: () =>
+                                    action: () => {
                                         setItemValue(
                                             'fromLocationCode',
                                             fromLocationCode?.toUpperCase()
-                                        )
+                                        );
+                                        if (fromLocationCode) {
+                                            setItemValue('fromPalletNumber', null);
+                                        }
+                                    }
                                 }
                             ]}
                             clearSearch={clearLocationsSearch}
@@ -145,13 +151,28 @@ function StockOptions({
                     <Grid size={2}>
                         <InputField
                             value={fromPalletNumber}
-                            onChange={setItemValue}
+                            onChange={(field, newVal) => {
+                                setItemValue(field, newVal);
+                                if (newVal) {
+                                    setItemValue('toLocationId', null);
+                                    setItemValue('toLocationCode', null);
+                                }
+                            }}
                             disabled={disabled}
                             label="From Pallet"
                             propertyName="fromPalletNumber"
                         />
                     </Grid>
-                    <Grid size={8} />
+                    <Grid size={2}>
+                        <InputField
+                            value={batchRef}
+                            onChange={setItemValue}
+                            disabled={disabled}
+                            label="Batch Ref"
+                            propertyName="batchRef"
+                        />
+                    </Grid>
+                    <Grid size={6} />
                 </>
             )}
             <Grid size={2}>
@@ -203,12 +224,17 @@ function StockOptions({
                     onResultSelect={r => {
                         setItemValue('toLocationId', r.locationId);
                         setItemValue('toLocationCode', r.locationCode);
+                        setItemValue('toPalletNumber', null);
                     }}
                     onKeyPressFunctions={[
                         {
                             keyCode: 9,
-                            action: () =>
-                                setItemValue('toLocationCode', toLocationCode?.toUpperCase())
+                            action: () => {
+                                setItemValue('toLocationCode', toLocationCode?.toUpperCase());
+                                if (toLocationCode) {
+                                    setItemValue('toPalletNumber', null);
+                                }
+                            }
                         }
                     ]}
                     clearSearch={clearLocationsSearch}
@@ -219,7 +245,13 @@ function StockOptions({
             <Grid size={2}>
                 <InputField
                     value={toPalletNumber}
-                    onChange={setItemValue}
+                    onChange={(field, newVal) => {
+                        setItemValue(field, newVal);
+                        if (newVal) {
+                            setItemValue('toLocationId', null);
+                            setItemValue('toLocationCode', null);
+                        }
+                    }}
                     disabled={disabled}
                     label="To Pallet"
                     propertyName="toPalletNumber"
@@ -231,6 +263,7 @@ function StockOptions({
                     open={pickStockDialogVisible}
                     setOpen={setPickStockDialogVisible}
                     partNumber={partNumber}
+                    getBatches={true}
                     quantity={quantity}
                     handleConfirm={moves => {
                         doPickStock(moves);

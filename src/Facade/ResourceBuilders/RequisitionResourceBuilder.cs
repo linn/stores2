@@ -81,6 +81,7 @@
                            AuthorisedByName = header.AuthorisedBy?.Name,
                            DateAuthorised = header.DateAuthorised?.ToString("o"),
                            BatchDate = header.BatchDate?.ToString("o"),
+                           BatchRef = header.BatchRef,
                            FromState = header.FromState,
                            ToState = header.ToState,    
                            AccountingCompanyCode = header.AccountingCompanyCode(),

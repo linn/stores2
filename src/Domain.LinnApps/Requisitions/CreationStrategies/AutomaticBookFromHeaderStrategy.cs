@@ -71,7 +71,9 @@
                 context.Quantity,
                 context.Document1Line,
                 context.ToState,
-                context.FromState);
+                context.FromState,
+                context.BatchRef,
+                context.BatchDate);
             await this.requisitionManager.CheckAndBookRequisitionHeader(req);
 
             return await this.repository.FindByIdAsync(req.ReqNumber);
