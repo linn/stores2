@@ -491,7 +491,15 @@ function Requisition({ creating }) {
                                         search={() => {}}
                                         loading={false}
                                         searchResults={functionCodes
-                                            .filter(f => f.functionAvailable)
+                                            .filter(
+                                                f =>
+                                                    f.functionAvailable &&
+                                                    f.code.includes(
+                                                        formState.storesFunction?.code
+                                                            ?.trim()
+                                                            .toUpperCase()
+                                                    )
+                                            )
                                             .map(f => ({
                                                 ...f,
                                                 id: f.code,
