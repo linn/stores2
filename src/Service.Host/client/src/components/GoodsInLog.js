@@ -8,13 +8,14 @@ import {
 } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
+import queryString from 'query-string';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import useInitialise from '../hooks/useInitialise';
+import Page from './Page';
 import ReportDataGrids from './ReportDataGrids';
 
 function GoodsInLog() {
@@ -39,47 +40,28 @@ function GoodsInLog() {
 
     const { send: getReport, isLoading, result: reportResult } = useGet(itemTypes.goodsInLog.url);
 
+    const [firstTime, setFirstTime] = useState(true);
+    const getQueryString = () => {
+        const opt = {};
+        if (fromDate) opt.fromDate = fromDate.toISOString();
+        if (toDate) opt.toDate = toDate.toISOString();
+        if (createdBy) opt.createdBy = createdBy;
+        if (articleNumber?.length) opt.articleNumber = articleNumber;
+        if (quantity) opt.quantity = quantity;
+        if (orderNumber) opt.orderNumber = orderNumber;
+        if (reqNumber) opt.reqNumber = reqNumber;
+        if (storagePlace?.length) opt.storagePlace = storagePlace;
+        return `?${queryString.stringify(opt)}`;
+    };
+
+    if (firstTime) {
+        getReport(null, getQueryString());
+        setFirstTime(false);
+    }
+
     const { result: currentEmployees, isLoading: isCurrentEmployeesLoading } = useInitialise(
         itemTypes.currentEmployees.url
     );
-
-    const getQueryString = () => {
-        let queryString = '?';
-
-        if (fromDate) {
-            queryString += `fromDate=${fromDate.toISOString()}&`;
-        }
-
-        if (toDate) {
-            queryString += `toDate=${toDate.toISOString()}&`;
-        }
-
-        if (createdBy) {
-            queryString += `createdBy=${createdBy}&`;
-        }
-
-        if (articleNumber?.length) {
-            queryString += `articleNumber=${articleNumber}&`;
-        }
-
-        if (quantity) {
-            queryString += `quantity=${quantity}&`;
-        }
-
-        if (orderNumber) {
-            queryString += `orderNumber=${orderNumber}&`;
-        }
-
-        if (reqNumber) {
-            queryString += `reqNumber=${reqNumber}&`;
-        }
-
-        if (storagePlace?.length) {
-            queryString += `storagePlace=${storagePlace.toUpperCase()}`;
-        }
-
-        return queryString;
-    };
 
     const handleEmployeeDropDownChange = (propertyName, newValue) => {
         setCreatedBy(newValue);
