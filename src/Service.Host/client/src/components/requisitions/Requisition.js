@@ -308,23 +308,46 @@ function Requisition({ creating }) {
     // just for now to only allow updates of comments field
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
+    const newMovesOntoAreValid = () => {
+        const newLines = formState.lines?.filter(x => x.isAddition);
+        if (newLines?.length) {
+            if (
+                newLines.every(l =>
+                    !l.moves
+                        ? false
+                        : l.moves.every(m => m.qty && (m.toLocationCode || m.toPalletNumber))
+                )
+            ) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     const saveIsValid = () => {
         if (creating) {
             if (formState.part?.partNumber) {
                 if (formState.storesFunction?.code === 'LDREQ') {
-                    return true; // no validation or restrictions for now, trusting the back end will validate
+                    return true; // No validation for now, backend validates
                 }
                 return okToSaveFrontPageMove();
             }
-
-            if (formState.storesFunction?.code == 'LOAN OUT') {
-                return formState.document1;
+            if (formState.storesFunction?.code === 'LOAN OUT') {
+                return !!formState.document1;
             }
-
             return !!formState?.lines?.length;
         }
 
-        return commentsUpdated || formState.lines.find(l => l.stockPicked);
+        // For updates: Allow saving if stock is picked for an existing line, new lines, or valid "onto" moves
+        if (formState.lines.some(l => l.stockPicked)) {
+            return true;
+        }
+        if (newMovesOntoAreValid()) {
+            return true;
+        }
+
+        // Allow saving if the comments field has been updated
+        return commentsUpdated;
     };
 
     const setDefaultHeaderFieldsForFunctionCode = selectedFunction => {
@@ -630,6 +653,7 @@ function Requisition({ creating }) {
                                                 { id: 'O', displayText: 'Return To Stock' }
                                             ]}
                                             allowNoValue={false}
+                                            disabled={!creating || formState.lines?.length}
                                             value={formState.reqType}
                                             onChange={handleHeaderFieldChange}
                                             label="Req Type"
