@@ -435,6 +435,7 @@
             e.Property(r => r.ToState).HasColumnName("STATE").HasMaxLength(6);
             e.Property(r => r.ReqSource).HasColumnName("WO_QUALITY_ISSUES").HasMaxLength(50);
             e.Property(r => r.BatchDate).HasColumnName("BATCH_DATE");
+            e.Property(r => r.BatchRef).HasColumnName("BATCH_REF").HasMaxLength(20);
             e.Property(r => r.LoanNumber).HasColumnName("LOAN_NUMBER");
             e.Property(r => r.ToCategory).HasColumnName("CATEGORY").HasMaxLength(6);
         }

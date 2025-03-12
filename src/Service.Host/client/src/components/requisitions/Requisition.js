@@ -685,6 +685,7 @@ function Requisition({ creating }) {
                                 toLocationCode={formState.toLocationCode}
                                 toPalletNumber={formState.toPalletNumber}
                                 functionCode={formState.storesFunction}
+                                batchRef={formState.batchRef}
                                 setItemValue={(fieldName, newValue) =>
                                     dispatch({
                                         type: 'set_header_value',

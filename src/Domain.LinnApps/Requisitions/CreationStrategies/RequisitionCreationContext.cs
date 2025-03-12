@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
+    using System;
     using System.Collections.Generic;
 
     public class RequisitionCreationContext
@@ -51,5 +52,9 @@
         public int? ToPallet { get; set; }
 
         public int? LoanNumber { get; set; }
+
+        public DateTime? BatchDate { get; set; }
+
+        public string BatchRef { get; set; }
     }
 }

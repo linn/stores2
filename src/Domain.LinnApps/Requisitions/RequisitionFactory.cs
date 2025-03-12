@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -44,7 +45,9 @@
              string partNumber = null,
              decimal? quantity = null,
              string fromState = null,
-             string toState = null)
+             string toState = null,
+             string batchRef = null,
+             DateTime? batchDate = null)
         {
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
            
@@ -72,7 +75,9 @@
                                   FromState = fromState?.ToUpper(),
                                   ToState = toState?.ToUpper(),
                                   FromPallet = fromPalletNumber,
-                                  ToPallet = toPalletNumber
+                                  ToPallet = toPalletNumber,
+                                  BatchRef = batchRef,
+                                  BatchDate = batchDate
                               };
 
             var strategy = this.creationStrategyResolver.Resolve(context);

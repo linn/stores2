@@ -84,6 +84,8 @@
 
         public DateTime? BatchDate { get; set; }
 
+        public string BatchRef { get; set; }
+
         public int? LoanNumber { get; protected set; }
 
         public string ReqSource { get; set; }
@@ -113,7 +115,9 @@
             decimal? quantity = null,
             int? document1Line = null,
             string toState = null,
-            string fromState = null)
+            string fromState = null,
+            string batchRef = null,
+            DateTime? batchDate = null)
         {
             this.CreatedBy = createdBy;
             this.Comments = comments;
@@ -135,6 +139,8 @@
             this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
             this.ToLocation = toPalletNumber.HasValue ? null : toLocation;
             this.Cancelled = "N";
+            this.BatchRef = batchRef;
+            this.BatchDate = batchDate;
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
                 if (department == null || nominal == null)

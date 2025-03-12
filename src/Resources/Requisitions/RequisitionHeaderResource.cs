@@ -90,6 +90,8 @@
 
         public string BatchDate { get; set; }
 
+        public string BatchRef { get; set; }
+
         public string AccountingCompanyCode { get; set; }
 
         public int? LoanNumber { get; set; }
