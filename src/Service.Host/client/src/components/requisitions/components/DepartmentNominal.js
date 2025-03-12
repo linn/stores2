@@ -12,7 +12,8 @@ function DepartmentNominal({
     nominalDescription = null,
     setNominal,
     shouldRender = true,
-    enterNominal = true
+    enterNominal = true,
+    disabled = false
 }) {
     const {
         search: searchDepartments,
@@ -101,6 +102,7 @@ function DepartmentNominal({
                     }}
                     search={searchDepartments}
                     loading={departmentsSearchLoading}
+                    disabled={disabled}
                     searchResults={departmentsSearchResults}
                     priorityFunction="closestMatchesFirst"
                     onKeyPressFunctions={[{ keyCode: 9, action: handleDepartmentUpdate }]}
@@ -144,7 +146,7 @@ function DepartmentNominal({
                         setNominal(r);
                     }}
                     clearSearch={clearNominalsSearch}
-                    disabled={!enterNominal}
+                    disabled={disabled || !enterNominal}
                     autoFocus={false}
                 />
             </Grid>

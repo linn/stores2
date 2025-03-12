@@ -28,11 +28,13 @@ function PickStockDialog({
     const { isLoading, result, send, clearData } = useGet(itemTypes.stockLocators.url, true);
 
     useEffect(() => {
-        send(
-            null,
-            `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${getBatches ? '&queryBatchView=true' : ''}`
-        );
-    }, [partNumber, send, getBatches, state]);
+        if (open && partNumber) {
+            send(
+                null,
+                `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${getBatches ? '&queryBatchView=true' : ''}`
+            );
+        }
+    }, [partNumber, send, getBatches, state, open]);
 
     const [moves, setMoves] = useState([]);
 

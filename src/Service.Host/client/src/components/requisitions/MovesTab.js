@@ -127,7 +127,8 @@ function MovesTab({
             field: 'dateBooked',
             headerName: 'Booked?',
             width: 150,
-            renderCell: params => moment(params.row.dateBooked).format('DD-MMM-YYYY')
+            renderCell: params =>
+                params.row.dateBooked ? moment(params.row.dateBooked).format('DD-MMM-YYYY') : ''
         },
         {
             field: 'dateCancelled',
@@ -316,7 +317,7 @@ function MovesTab({
                         loading={false}
                     />
                 </Grid>
-                <Grid size={12}>
+                <Grid size={3}>
                     <Tooltip title="Add Line">
                         <IconButton
                             disabled={!addMoveOnto}
@@ -327,6 +328,11 @@ function MovesTab({
                             <AddIcon />
                         </IconButton>
                     </Tooltip>
+                </Grid>
+                <Grid size={9}>
+                    <Typography variant="subtitle1">
+                        Note: adding moves will update the line qty
+                    </Typography>
                 </Grid>
             </Grid>
         </>

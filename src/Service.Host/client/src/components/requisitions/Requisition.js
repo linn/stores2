@@ -132,10 +132,17 @@ function Requisition({ creating }) {
 
     const [hasLoadedDefaultState, setHasLoadedDefaultState] = useState(false);
 
+    const [revertState, setRevertState] = useState({});
+
     useEffect(() => {
         if (creating && !hasLoadedDefaultState && userNumber) {
             setHasLoadedDefaultState(true);
-            dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
+            const defaults = { userNumber, userName: name };
+            dispatch({
+                type: 'load_create',
+                payload: defaults
+            });
+            setRevertState(defaults);
         }
         if (cancelResult) {
             dispatch({ type: 'load_state', payload: cancelResult });
@@ -151,6 +158,7 @@ function Requisition({ creating }) {
         }
         if (result) {
             dispatch({ type: 'load_state', payload: result });
+            setRevertState(result);
             clearReqResult();
         }
         if (updateResult) {
@@ -300,23 +308,51 @@ function Requisition({ creating }) {
     // just for now to only allow updates of comments field
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
+    const newMovesOntoAreValid = () => {
+        const newLines = formState.lines?.filter(x => x.isAddition);
+        if (newLines?.length) {
+            if (
+                newLines.every(l =>
+                    !l.moves
+                        ? false
+                        : l.moves.every(m => m.qty && (m.toLocationCode || m.toPalletNumber))
+                )
+            ) {
+                return true;
+            }
+        }
+        return false;
+    };
+
     const saveIsValid = () => {
         if (creating) {
+            // header specifies part, i.e. no explicit lines
             if (formState.part?.partNumber) {
-                if (formState.storesFunction?.code === 'LDREQ') {
-                    return true; // no validation or restrictions for now, trusting the back end will validate
-                }
                 return okToSaveFrontPageMove();
             }
-
-            if (formState.storesFunction?.code == 'LOAN OUT') {
-                return formState.document1;
+            if (formState.storesFunction?.code === 'LOAN OUT') {
+                return !!formState.document1;
             }
 
-            return !!formState?.lines?.length;
+            // if none of the above was satisfied and no lines
+            if (!formState?.lines?.length) {
+                return false;
+            }
         }
 
-        return commentsUpdated || formState.lines.find(l => l.stockPicked);
+        // Allow saving if stock is picked for an either a new or existing line
+        if (formState.lines.some(l => l.stockPicked)) {
+            return true;
+        }
+
+        //  or  a new line has been added with valid "onto" moves
+        if (newMovesOntoAreValid()) {
+            return true;
+        }
+
+        if (!creating) {
+            return commentsUpdated;
+        }
     };
 
     const setDefaultHeaderFieldsForFunctionCode = selectedFunction => {
@@ -571,6 +607,7 @@ function Requisition({ creating }) {
                             <DepartmentNominal
                                 departmentCode={formState.department?.departmentCode}
                                 departmentDescription={formState.department?.description}
+                                disabled={!creating} // todo - maybe disable changing dept/nom if lines have already been added?
                                 setDepartment={newDept =>
                                     dispatch({
                                         type: 'set_header_value',
@@ -621,6 +658,7 @@ function Requisition({ creating }) {
                                                 { id: 'O', displayText: 'Return To Stock' }
                                             ]}
                                             allowNoValue
+                                            disabled={!creating || formState.lines?.length}
                                             value={formState.reqType}
                                             onChange={handleHeaderFieldChange}
                                             label="Req Type"
@@ -759,6 +797,7 @@ function Requisition({ creating }) {
                                         cancelLine={cancel}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
+                                        isFromStock={formState.reqType === 'F'}
                                         addLine={() => {
                                             dispatch({ type: 'add_line' });
                                         }}
@@ -832,9 +871,7 @@ function Requisition({ creating }) {
                                 <SaveBackCancelButtons
                                     saveDisabled={!saveIsValid()}
                                     cancelClick={() => {
-                                        if (creating) {
-                                            dispatch({ type: 'load_create' });
-                                        }
+                                        dispatch({ type: 'load_state', payload: revertState });
                                     }}
                                     saveClick={() => {
                                         if (creating) {

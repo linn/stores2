@@ -202,11 +202,21 @@
 
         public void Update(string comments)
         {
+            if (this.IsBooked())
+            {
+                throw new RequisitionException("Cannot amend a booked req");
+            }
+
             this.Comments = comments;
         }
 
         public void AddLine(RequisitionLine toAdd)
         {
+            if (this.IsBooked())
+            {
+                throw new RequisitionException("Cannot add lines to a booked req");
+            }
+
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
             this.Lines.Add(toAdd);
