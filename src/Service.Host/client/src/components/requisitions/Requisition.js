@@ -132,10 +132,17 @@ function Requisition({ creating }) {
 
     const [hasLoadedDefaultState, setHasLoadedDefaultState] = useState(false);
 
+    const [revertState, setRevertState] = useState({});
+
     useEffect(() => {
         if (creating && !hasLoadedDefaultState && userNumber) {
             setHasLoadedDefaultState(true);
-            dispatch({ type: 'load_create', payload: { userNumber, userName: name } });
+            const defaults = { userNumber, userName: name, reqType: 'F' };
+            dispatch({
+                type: 'load_create',
+                payload: defaults
+            });
+            setRevertState(defaults);
         }
         if (cancelResult) {
             dispatch({ type: 'load_state', payload: cancelResult });
@@ -151,6 +158,7 @@ function Requisition({ creating }) {
         }
         if (result) {
             dispatch({ type: 'load_state', payload: result });
+            setRevertState(result);
             clearReqResult();
         }
         if (updateResult) {
@@ -571,6 +579,7 @@ function Requisition({ creating }) {
                             <DepartmentNominal
                                 departmentCode={formState.department?.departmentCode}
                                 departmentDescription={formState.department?.description}
+                                disabled={!creating} // todo - maybe disable changing dept/nom if lines have already been added?
                                 setDepartment={newDept =>
                                     dispatch({
                                         type: 'set_header_value',
@@ -620,7 +629,7 @@ function Requisition({ creating }) {
                                                 { id: 'F', displayText: 'From Stock' },
                                                 { id: 'O', displayText: 'Return To Stock' }
                                             ]}
-                                            allowNoValue
+                                            allowNoValue={false}
                                             value={formState.reqType}
                                             onChange={handleHeaderFieldChange}
                                             label="Req Type"
@@ -759,6 +768,7 @@ function Requisition({ creating }) {
                                         cancelLine={cancel}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
+                                        isFromStock={formState.reqType === 'F'}
                                         addLine={() => {
                                             dispatch({ type: 'add_line' });
                                         }}
@@ -832,9 +842,7 @@ function Requisition({ creating }) {
                                 <SaveBackCancelButtons
                                     saveDisabled={!saveIsValid()}
                                     cancelClick={() => {
-                                        if (creating) {
-                                            dispatch({ type: 'load_create' });
-                                        }
+                                        dispatch({ type: 'load_state', payload: revertState });
                                     }}
                                     saveClick={() => {
                                         if (creating) {
