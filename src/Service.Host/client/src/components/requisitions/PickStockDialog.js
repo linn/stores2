@@ -37,7 +37,7 @@ function PickStockDialog({
     const [moves, setMoves] = useState([]);
 
     const handleClose = () => {
-        setMoves(null);
+        setMoves([]);
         setOpen(false);
     };
 
