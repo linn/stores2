@@ -137,7 +137,7 @@ function Requisition({ creating }) {
     useEffect(() => {
         if (creating && !hasLoadedDefaultState && userNumber) {
             setHasLoadedDefaultState(true);
-            const defaults = { userNumber, userName: name, reqType: 'F' };
+            const defaults = { userNumber, userName: name };
             dispatch({
                 type: 'load_create',
                 payload: defaults
@@ -326,28 +326,33 @@ function Requisition({ creating }) {
 
     const saveIsValid = () => {
         if (creating) {
+            // header specifies part, i.e. no explicit lines
             if (formState.part?.partNumber) {
-                if (formState.storesFunction?.code === 'LDREQ') {
-                    return true; // No validation for now, backend validates
-                }
                 return okToSaveFrontPageMove();
             }
             if (formState.storesFunction?.code === 'LOAN OUT') {
                 return !!formState.document1;
             }
-            return !!formState?.lines?.length;
+
+            // if none of the above was satisfied and no lines
+            if (!formState?.lines?.length) {
+                return false;
+            }
         }
 
-        // For updates: Allow saving if stock is picked for an existing line, new lines, or valid "onto" moves
+        // Allow saving if stock is picked for an either a new or existing line
         if (formState.lines.some(l => l.stockPicked)) {
             return true;
         }
+
+        //  or  a new line has been added with valid "onto" moves
         if (newMovesOntoAreValid()) {
             return true;
         }
 
-        // Allow saving if the comments field has been updated
-        return commentsUpdated;
+        if (!creating) {
+            return commentsUpdated;
+        }
     };
 
     const setDefaultHeaderFieldsForFunctionCode = selectedFunction => {
@@ -655,6 +660,7 @@ function Requisition({ creating }) {
                                             allowNoValue={false}
                                             disabled={!creating || formState.lines?.length}
                                             value={formState.reqType}
+                                            allowNoValue
                                             onChange={handleHeaderFieldChange}
                                             label="Req Type"
                                             propertyName="reqType"
