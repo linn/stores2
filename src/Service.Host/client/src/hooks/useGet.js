@@ -1,5 +1,4 @@
-import { useCallback } from 'react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 
 function useGet(url, requiresAuth = false) {
@@ -7,12 +6,8 @@ function useGet(url, requiresAuth = false) {
     const [errorMessage, setErrorMessage] = useState(null);
     const [result, setResult] = useState(null);
 
-    let token = '';
-
     const auth = useAuth();
-    if (requiresAuth) {
-        token = auth.user?.access_token;
-    }
+
     const clearData = () => setResult(null);
 
     const send = useCallback(
@@ -20,6 +15,9 @@ function useGet(url, requiresAuth = false) {
             setIsLoading(true);
             setResult(null);
             setErrorMessage(null);
+
+            let token = requiresAuth ? auth.user?.access_token : ''; // Moved inside useCallback
+
             const headers = {
                 accept: 'application/json'
             };
@@ -27,20 +25,25 @@ function useGet(url, requiresAuth = false) {
                 method: 'GET',
                 headers: requiresAuth ? { ...headers, Authorization: `Bearer ${token}` } : headers
             };
-            const response = await fetch(
-                id ? `${url}/${id}${queryString ?? ''}` : `${url}${queryString ?? ''}`,
-                requestParameters
-            );
-            if (response.ok) {
-                setResult(await response.json());
-                setIsLoading(false);
-            } else {
-                const text = await response.text();
-                setErrorMessage(text);
+
+            try {
+                const response = await fetch(
+                    id ? `${url}/${id}${queryString ?? ''}` : `${url}${queryString ?? ''}`,
+                    requestParameters
+                );
+
+                if (response.ok) {
+                    setResult(await response.json());
+                } else {
+                    setErrorMessage(await response.text());
+                }
+            } catch (error) {
+                setErrorMessage(error.message);
+            } finally {
                 setIsLoading(false);
             }
         },
-        [requiresAuth, token, url]
+        [requiresAuth, auth.user?.access_token, url]
     );
 
     return { send, isLoading, errorMessage, result, clearData };

@@ -25,9 +25,6 @@ function PickStockDialog({
     const handleCloseSnackbar = () => setSnackbar(null);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
-    const handleClose = () => {
-        setOpen(false);
-    };
     const { isLoading, result, send } = useGet(itemTypes.stockLocators.url, true);
 
     useEffect(() => {
@@ -38,6 +35,12 @@ function PickStockDialog({
     }, [partNumber, send, getBatches, state]);
 
     const [moves, setMoves] = useState([]);
+
+    const handleClose = () => {
+        setMoves(null);
+        setOpen(false);
+    };
+
     useEffect(() => {
         if (result?.length && !moves?.length) {
             setMoves(result.map((x, i) => ({ ...x, id: i })));
