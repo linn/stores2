@@ -25,7 +25,7 @@ function PickStockDialog({
     const handleCloseSnackbar = () => setSnackbar(null);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
-    const { isLoading, result, send } = useGet(itemTypes.stockLocators.url, true);
+    const { isLoading, result, send, clearData } = useGet(itemTypes.stockLocators.url, true);
 
     useEffect(() => {
         send(
@@ -37,6 +37,7 @@ function PickStockDialog({
     const [moves, setMoves] = useState([]);
 
     const handleClose = () => {
+        clearData();
         setMoves([]);
         setOpen(false);
     };
