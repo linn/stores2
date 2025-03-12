@@ -10,7 +10,7 @@ import SnackbarContent from '@mui/material/SnackbarContent';
 import Snackbar from '@mui/material/Snackbar';
 import moment from 'moment';
 import itemTypes from '../../itemTypes';
-import useInitialise from '../../hooks/useInitialise';
+import useGet from '../../hooks/useGet';
 
 function PickStockDialog({
     open,
@@ -25,16 +25,23 @@ function PickStockDialog({
     const handleCloseSnackbar = () => setSnackbar(null);
     const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
+    const { isLoading, result, send, clearData } = useGet(itemTypes.stockLocators.url, true);
+
+    useEffect(() => {
+        send(
+            null,
+            `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${getBatches ? '&queryBatchView=true' : ''}`
+        );
+    }, [partNumber, send, getBatches, state]);
+
+    const [moves, setMoves] = useState([]);
+
     const handleClose = () => {
+        clearData();
+        setMoves([]);
         setOpen(false);
     };
-    const { isLoading, result } = useInitialise(
-        itemTypes.stockLocators.url,
-        null,
-        `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${getBatches ? '&queryBatchView=true' : ''}`,
-        true
-    );
-    const [moves, setMoves] = useState([]);
+
     useEffect(() => {
         if (result?.length && !moves?.length) {
             setMoves(result.map((x, i) => ({ ...x, id: i })));
