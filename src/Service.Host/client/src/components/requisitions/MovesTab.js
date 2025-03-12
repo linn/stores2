@@ -329,7 +329,7 @@ function MovesTab({
                         </IconButton>
                     </Tooltip>
                 </Grid>
-                <Grid size={6}>
+                <Grid size={9}>
                     <Typography variant="subtitle1">
                         Note: adding moves will update the line qty
                     </Typography>
