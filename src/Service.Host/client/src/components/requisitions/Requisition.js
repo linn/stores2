@@ -657,10 +657,9 @@ function Requisition({ creating }) {
                                                 { id: 'F', displayText: 'From Stock' },
                                                 { id: 'O', displayText: 'Return To Stock' }
                                             ]}
-                                            allowNoValue={false}
+                                            allowNoValue
                                             disabled={!creating || formState.lines?.length}
                                             value={formState.reqType}
-                                            allowNoValue
                                             onChange={handleHeaderFieldChange}
                                             label="Req Type"
                                             propertyName="reqType"

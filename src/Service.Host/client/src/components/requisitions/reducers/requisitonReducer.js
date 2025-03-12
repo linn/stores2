@@ -121,6 +121,7 @@ function reducer(state, action) {
                                       fromState: move.state,
                                       fromStockPool: move.fromStockPool,
                                       fromBatchRef: move.batchRef,
+                                      isFrom: true,
                                       fromBatchDate: move.stockRotationDate,
                                       qtyAtLocation: move.quantity,
                                       qtyAllocated: move.qtyAllocated
