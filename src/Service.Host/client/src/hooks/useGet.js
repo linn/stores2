@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 
@@ -14,30 +15,33 @@ function useGet(url, requiresAuth = false) {
     }
     const clearData = () => setResult(null);
 
-    const send = async (id, queryString) => {
-        setIsLoading(true);
-        setResult(null);
-        setErrorMessage(null);
-        const headers = {
-            accept: 'application/json'
-        };
-        const requestParameters = {
-            method: 'GET',
-            headers: requiresAuth ? { ...headers, Authorization: `Bearer ${token}` } : headers
-        };
-        const response = await fetch(
-            id ? `${url}/${id}${queryString ?? ''}` : `${url}${queryString ?? ''}`,
-            requestParameters
-        );
-        if (response.ok) {
-            setResult(await response.json());
-            setIsLoading(false);
-        } else {
-            const text = await response.text();
-            setErrorMessage(text);
-            setIsLoading(false);
-        }
-    };
+    const send = useCallback(
+        async (id, queryString) => {
+            setIsLoading(true);
+            setResult(null);
+            setErrorMessage(null);
+            const headers = {
+                accept: 'application/json'
+            };
+            const requestParameters = {
+                method: 'GET',
+                headers: requiresAuth ? { ...headers, Authorization: `Bearer ${token}` } : headers
+            };
+            const response = await fetch(
+                id ? `${url}/${id}${queryString ?? ''}` : `${url}${queryString ?? ''}`,
+                requestParameters
+            );
+            if (response.ok) {
+                setResult(await response.json());
+                setIsLoading(false);
+            } else {
+                const text = await response.text();
+                setErrorMessage(text);
+                setIsLoading(false);
+            }
+        },
+        [requiresAuth, token, url]
+    );
 
     return { send, isLoading, errorMessage, result, clearData };
 }
