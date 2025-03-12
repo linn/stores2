@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid2';
 import { InputField, Search } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../../itemTypes';
@@ -28,8 +28,58 @@ function DepartmentNominal({
         clear: clearNominalsSearch
     } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
 
+    const setCode = code => {
+        if (code?.length && code.length < 10) {
+            return code.padStart(10, '0');
+        }
+
+        return code;
+    };
+
+    const handleDepartmentUpdate = () => {
+        setIsSelectingDepartment(true);
+        searchDepartments(setCode(departmentCode));
+    };
+
+    const [isSelectingDepartment, setIsSelectingDepartment] = useState(false);
+
+    useEffect(() => {
+        if (departmentsSearchResults?.length === 1 && isSelectingDepartment) {
+            setDepartment(departmentsSearchResults[0]);
+            setIsSelectingDepartment(false);
+            clearDepartmentsSearch();
+        }
+    }, [
+        departmentsSearchResults,
+        setDepartment,
+        isSelectingDepartment,
+        setIsSelectingDepartment,
+        clearDepartmentsSearch
+    ]);
+
+    const [isSelectingNominal, setIsSelectingNominal] = useState(false);
+
+    const handleNominalUpdate = () => {
+        setIsSelectingNominal(true);
+        searchNominals(setCode(nominalCode));
+    };
+
+    useEffect(() => {
+        if (nominalsSearchResults?.length === 1 && isSelectingNominal) {
+            setNominal(nominalsSearchResults[0]);
+            setIsSelectingNominal(false);
+            clearNominalsSearch();
+        }
+    }, [
+        setNominal,
+        nominalsSearchResults,
+        isSelectingNominal,
+        setIsSelectingNominal,
+        clearNominalsSearch
+    ]);
+
     if (!shouldRender) {
-        return '';
+        return null;
     }
 
     return (
@@ -43,7 +93,7 @@ function DepartmentNominal({
                     helperText={
                         departmentDescription
                             ? ''
-                            : 'Enter a search term and press enter to look up departments'
+                            : '<Enter> to search or <Tab> to select if you have entered a known dept code'
                     }
                     value={departmentCode}
                     handleValueChange={(_, newVal) => {
@@ -53,6 +103,7 @@ function DepartmentNominal({
                     loading={departmentsSearchLoading}
                     searchResults={departmentsSearchResults}
                     priorityFunction="closestMatchesFirst"
+                    onKeyPressFunctions={[{ keyCode: 9, action: handleDepartmentUpdate }]}
                     onResultSelect={r => {
                         setDepartment(r);
                     }}
@@ -78,7 +129,7 @@ function DepartmentNominal({
                     helperText={
                         nominalDescription
                             ? ''
-                            : 'Enter a search term and press enter to look up nominals'
+                            : '<Enter> to search or <Tab> to select if you have entered a known nominal code'
                     }
                     value={nominalCode}
                     handleValueChange={(_, newVal) => {
@@ -87,6 +138,7 @@ function DepartmentNominal({
                     search={searchNominals}
                     loading={nominalsSearchLoading}
                     searchResults={nominalsSearchResults}
+                    onKeyPressFunctions={[{ keyCode: 9, action: handleNominalUpdate }]}
                     priorityFunction="closestMatchesFirst"
                     onResultSelect={r => {
                         setNominal(r);

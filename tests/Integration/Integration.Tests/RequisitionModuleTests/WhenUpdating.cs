@@ -67,7 +67,9 @@
         public void ShouldCallDomain()
         {
             this.ReqManager.Received().UpdateRequisition(
-                Arg.Any<RequisitionHeader>(), Arg.Any<IEnumerable<LineCandidate>>());
+                Arg.Any<RequisitionHeader>(), 
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<LineCandidate>>());
         }
         
 

@@ -194,6 +194,11 @@
             this.Lines = new List<RequisitionLine>();
         }
 
+        public void Update(string comments)
+        {
+            this.Comments = comments;
+        }
+
         public void AddLine(RequisitionLine toAdd)
         {
             this.Lines ??= new List<RequisitionLine>();

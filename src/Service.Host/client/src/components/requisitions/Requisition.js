@@ -297,6 +297,9 @@ function Requisition({ creating }) {
         return false;
     };
 
+    // just for now to only allow updates of comments field
+    const [commentsUpdated, setCommentsUpdated] = useState(false);
+
     const saveIsValid = () => {
         if (creating) {
             if (formState.part?.partNumber) {
@@ -313,10 +316,7 @@ function Requisition({ creating }) {
             return !!formState?.lines?.length;
         }
 
-        if (formState?.lines?.length) {
-            return formState.lines.find(l => l.stockPicked);
-        }
-        return false;
+        return commentsUpdated || formState.lines.find(l => l.stockPicked);
     };
 
     const setDefaultHeaderFieldsForFunctionCode = selectedFunction => {
@@ -491,7 +491,15 @@ function Requisition({ creating }) {
                                         search={() => {}}
                                         loading={false}
                                         searchResults={functionCodes
-                                            .filter(f => f.functionAvailable)
+                                            .filter(
+                                                f =>
+                                                    f.functionAvailable &&
+                                                    f.code.includes(
+                                                        formState.storesFunction?.code
+                                                            ?.trim()
+                                                            .toUpperCase()
+                                                    )
+                                            )
                                             .map(f => ({
                                                 ...f,
                                                 id: f.code,
@@ -703,9 +711,11 @@ function Requisition({ creating }) {
                                 <InputField
                                     fullWidth
                                     value={formState.comments}
-                                    onChange={handleHeaderFieldChange}
+                                    onChange={(propertyName, newValue) => {
+                                        handleHeaderFieldChange(propertyName, newValue);
+                                        setCommentsUpdated(true);
+                                    }}
                                     label="Comments"
-                                    disabled={!creating}
                                     propertyName="comments"
                                 />
                             </Grid>

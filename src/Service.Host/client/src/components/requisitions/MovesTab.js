@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import moment from 'moment';
 import Grid from '@mui/material/Grid2';
 import { Search } from '@linn-it/linn-form-components-library';
@@ -35,20 +35,46 @@ function MovesTab({
 
     const [searchTerm, setSearchTerm] = useState();
 
-    const renderSearchDialog = () => {
-        const handleClose = () => {
-            setSearchDialogOpen({ forRow: null });
-        };
+    const [isSelectingLocation, setIsSelectingLocation] = useState(false);
 
-        const handleSearchResultSelect = selected => {
+    const handleLocationSelect = () => {
+        if (searchTerm) {
+            setIsSelectingLocation(true);
+            searchLocations(searchTerm.trim().toUpperCase());
+        }
+    };
+
+    const handleSearchResultSelect = useCallback(
+        selected => {
             const currentRow = moves.find(r => r.seq === searchDialogOpen.forRow);
             const newRow = {
                 ...currentRow,
                 toLocationCode: selected.name,
                 toLocationDescription: selected.description
             };
+            updateMoveOnto(newRow);
+            setSearchDialogOpen({ forRow: null });
+        },
+        [moves, searchDialogOpen, setSearchDialogOpen, updateMoveOnto]
+    );
 
-            processRowUpdate(newRow);
+    useEffect(() => {
+        if (locationsSearchResults?.length === 1 && isSelectingLocation) {
+            handleSearchResultSelect(locationsSearchResults[0]);
+            clearLocationsSearch();
+            setIsSelectingLocation(false);
+            setSearchDialogOpen({ forRow: null });
+        }
+    }, [
+        locationsSearchResults,
+        handleSearchResultSelect,
+        clearLocationsSearch,
+        isSelectingLocation,
+        setIsSelectingLocation
+    ]);
+
+    const renderSearchDialog = () => {
+        const handleClose = () => {
             setSearchDialogOpen({ forRow: null });
         };
 
@@ -60,9 +86,11 @@ function MovesTab({
                         autoFocus
                         propertyName="defaultLocation"
                         label="defaultLocation"
-                        resultsInModal
+                        // resultsInModal
                         resultLimit={100}
                         value={searchTerm}
+                        onKeyPressFunctions={[{ keyCode: 9, action: handleLocationSelect }]}
+                        helperText="<Enter> to search or <Tab> to select if you have entered a known location code"
                         loading={locationsSearchLoading}
                         handleValueChange={(_, newVal) => setSearchTerm(newVal)}
                         search={searchLocations}

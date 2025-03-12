@@ -36,6 +36,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks);
 
-        Task UpdateRequisition(RequisitionHeader headerUpdates, IEnumerable<LineCandidate> lineUpdates);
+        Task UpdateRequisition(
+            RequisitionHeader headerUpdates, 
+            string updatedComments,
+            IEnumerable<LineCandidate> lineUpdates);
     }
 }

@@ -450,9 +450,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return header;
         }
 
-        public async Task UpdateRequisition(RequisitionHeader current, IEnumerable<LineCandidate> lineUpdates)
+        public async Task UpdateRequisition(
+            RequisitionHeader current, 
+            string updatedComments,
+            IEnumerable<LineCandidate> lineUpdates)
         {
             // todo - permission checks? will be different for different req types I assume
+            current.Update(updatedComments);
+
             foreach (var line in lineUpdates)
             {
                 var existingLine = current.Lines.SingleOrDefault(l => l.LineNumber == line.LineNumber);
@@ -461,7 +466,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (existingLine != null)
                 {
                     // picking stock for an existing line
-                    if (line.StockPicked == true)
+                    if (line.StockPicked.GetValueOrDefault() == true)
                     {
                         await this.PickStockOnRequisitionLine(current, line);
                     }

@@ -85,6 +85,7 @@
 
             await this.Sut.UpdateRequisition(
                 this.req,
+                this.req.Comments,
                 new List<LineCandidate>
                     {
                         this.newLineCandidate

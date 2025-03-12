@@ -169,7 +169,9 @@
             IEnumerable<string> privileges = null)
         {
                 await this.requisitionManager.UpdateRequisition(
-                    entity, updateResource.Lines.Select(BuildLineCandidateFromResource));
+                    entity, 
+                    updateResource.Comments,
+                    updateResource.Lines.Select(BuildLineCandidateFromResource));
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
