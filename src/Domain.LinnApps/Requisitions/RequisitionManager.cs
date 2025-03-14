@@ -8,6 +8,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using Linn.Common.Authorisation;
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -40,6 +41,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<StockPool, string> stockPoolRepository;
 
+        private readonly IRepository<StoresFunction, string> storesFunctionRepository;
+
+        private readonly IRepository<Department, string> departmentRepository;
+
+        private readonly IRepository<Nominal, string> nominalRepository;
+
         public RequisitionManager(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -52,7 +59,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IStoresService storesService,
             IRepository<StoresPallet, int> palletRepository,
             IRepository<StockState, string> stateRepository,
-            IRepository<StockPool, string> stockPoolRepository)
+            IRepository<StockPool, string> stockPoolRepository,
+            IRepository<StoresFunction, string> storesFunctionRepository,
+            IRepository<Department, string> departmentRepository,
+            IRepository<Nominal, string> nominalRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -66,6 +76,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.palletRepository = palletRepository;
             this.stateRepository = stateRepository;
             this.stockPoolRepository = stockPoolRepository;
+            this.storesFunctionRepository = storesFunctionRepository;
+            this.departmentRepository = departmentRepository;
+            this.nominalRepository = nominalRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -481,6 +494,89 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.AddRequisitionLine(current, line);
                 }
             }
+        }
+
+        public async Task<RequisitionHeader> Validate(
+            int createdBy,
+            string functionCode,
+            string reqType,
+            int? document1Number,
+            string document1Type,
+            string departmentCode,
+            string nominalCode,
+            LineCandidate firstLine = null,
+            string reference = null,
+            string comments = null,
+            string manualPick = null,
+            string fromStockPool = null,
+            string toStockPool = null,
+            int? fromPalletNumber = null,
+            int? toPalletNumber = null,
+            string fromLocationCode = null,
+            string toLocationCode = null,
+            string partNumber = null,
+            decimal? quantity = null,
+            string fromState = null,
+            string toState = null,
+            string batchRef = null,
+            DateTime? batchDate = null)
+        {
+            // just try and construct a req with a single line
+            // exceptions will be thrown if any of the validation fails
+            var function = string.IsNullOrEmpty(functionCode) 
+                               ? await this.storesFunctionRepository.FindByIdAsync(functionCode) : null;
+            var dept = string.IsNullOrEmpty(departmentCode) 
+                           ? await this.departmentRepository.FindByIdAsync(departmentCode) : null;
+            var nom = string.IsNullOrEmpty(nominalCode)
+                          ? await this.nominalRepository.FindByIdAsync(nominalCode) : null;
+            var fromLocation = string.IsNullOrEmpty(fromLocationCode) 
+                                   ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == fromLocationCode) : null;
+            var toLocation = string.IsNullOrEmpty(toLocationCode)
+                                 ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
+            var part = string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
+
+            var req = new RequisitionHeader(
+                new Employee(),
+                function,
+                reqType,
+                document1Number,
+                document1Type,
+                dept,
+                nom,
+                reference,
+                comments,
+                manualPick,
+                fromStockPool,
+                toStockPool,
+                fromPalletNumber,
+                toPalletNumber,
+                fromLocation,
+                toLocation,
+                part,
+                quantity,
+                null,
+                toState,
+                fromState,
+                batchRef,
+                batchDate);
+
+            var firstLinePart = string.IsNullOrEmpty(firstLine.PartNumber)
+                                    ? await this.partRepository.FindByIdAsync(partNumber)
+                                    : null;
+            var transactionDefinition = string.IsNullOrEmpty(firstLine.TransactionDefinition) 
+                                            ? null : await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition);
+
+            req.AddLine(new RequisitionLine(
+                0, 
+                1, 
+                firstLinePart, 
+                firstLine.Qty, 
+                transactionDefinition, 
+                firstLine.Document1,
+                firstLine.Document1Line.GetValueOrDefault(),
+                firstLine.Document1Type));
+
+            return req;
         }
 
         private static void DoProcessResultCheck(ProcessResult result)

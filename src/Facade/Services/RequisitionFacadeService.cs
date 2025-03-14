@@ -24,7 +24,7 @@
         private readonly IRepository<RequisitionHistory, int> reqHistoryRepository;
 
         private readonly ITransactionManager transactionManager;
-        
+
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -132,9 +132,41 @@
             }
         }
 
-        public Task<IResult<RequisitionHeaderResource>> Validate(RequisitionHeaderResource candidate)
+        public async Task<IResult<RequisitionHeaderResource>> Validate(RequisitionHeaderResource resource)
         {
-           throw new NotImplementedException();
+            try
+            {
+                await this.requisitionManager.Validate(
+                    resource.CreatedBy.GetValueOrDefault(),
+                    resource.StoresFunction?.Code,
+                    resource.ReqType,
+                    resource.Document1,
+                    resource.Document1Name,
+                    resource.Department?.DepartmentCode,
+                    resource.Nominal?.NominalCode,
+                    BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()),
+                    resource.Reference,
+                    resource.Comments,
+                    resource.ManualPick,
+                    resource.FromStockPool,
+                    resource.ToStockPool,
+                    resource.FromPalletNumber,
+                    resource.ToPalletNumber,
+                    resource.FromLocationCode,
+                    resource.ToLocationCode,
+                    resource.PartNumber,
+                    resource.Quantity,
+                    resource.FromState,
+                    resource.ToState,
+                    resource.BatchRef,
+                    string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate));
+
+                return new SuccessResult<RequisitionHeaderResource>(resource);
+            }
+            catch (DomainException ex)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(ex.Message);
+            }
         }
 
         protected override async Task<RequisitionHeader> CreateFromResourceAsync(

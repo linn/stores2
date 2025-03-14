@@ -152,20 +152,24 @@
 
             this.Lines = new List<RequisitionLine>();
 
-            var errors = this.Validate();
-            var enumerable = errors.ToList();
-            if (enumerable.Any())
-            {
-                string aggregatedErrors = string.Join(", ", enumerable);
+            var errors = this.Validate().ToList();
 
+            if (errors.Any())
+            {
                 throw new CreateRequisitionException(
-                    $"Validation failed with the following errors: {aggregatedErrors}");
+                    $"Validation failed with the following errors: {string.Join(", ", errors)}");
             }
         }
 
 
-        public IEnumerable<string> Validate()
+        private IEnumerable<string> Validate()
         {
+            if (this.StoresFunction == null)
+            {
+                yield return "Stores Function must be specified.";
+                yield break;  // don't even have a function, so no need to continue with function specific validation
+            }
+
             if (this.StoresFunction.Document1Required())
             {
                 if (this.Document1 == null)
