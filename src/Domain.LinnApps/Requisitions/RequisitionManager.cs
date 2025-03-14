@@ -566,7 +566,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                         ? await this.partRepository.FindByIdAsync(firstLine.PartNumber)
                                         : null;
                 var transactionDefinition = !string.IsNullOrEmpty(firstLine?.TransactionDefinition)
-                                                ? null : await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition);
+                                                ? await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition) : null;
 
                 req.AddLine(new RequisitionLine(
                     0,
