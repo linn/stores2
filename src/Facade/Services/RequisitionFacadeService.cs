@@ -132,6 +132,11 @@
             }
         }
 
+        public Task<IResult<RequisitionHeaderResource>> Validate(RequisitionHeaderResource candidate, IEnumerable<string> privileges)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override async Task<RequisitionHeader> CreateFromResourceAsync(
             RequisitionHeaderResource resource,
             IEnumerable<string> privileges = null)

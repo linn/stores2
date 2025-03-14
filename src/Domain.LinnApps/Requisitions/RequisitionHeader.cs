@@ -94,7 +94,7 @@
         {
         }
 
-        public RequisitionHeader( // todo - make this protected
+        public RequisitionHeader(
             Employee createdBy,
             StoresFunction function,
             string reqType,
@@ -124,7 +124,7 @@
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
             this.Document1 = document1Number;
-            this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? "REQ" : document1Type;
+            this.Document1Name = string.IsNullOrEmpty(document1Type) ? "REQ" : document1Type;
             this.Document1Line = document1Line;
             this.Quantity = quantity;
             this.Part = part;
@@ -141,6 +141,17 @@
             this.Cancelled = "N";
             this.BatchRef = batchRef;
             this.BatchDate = batchDate;
+
+
+            if (function.Document1Required())
+            {
+                if (document1Number == null)
+                {
+                    throw new CreateRequisitionException($"Document1 number required: {function.Document1Text}");
+                }
+            }
+            
+            
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
                 if (department == null || nominal == null)
@@ -215,6 +226,11 @@
             if (this.IsBooked())
             {
                 throw new RequisitionException("Cannot add lines to a booked req");
+            }
+
+            if (toAdd.Part == null || toAdd.Qty == 0)
+            {
+                throw new RequisitionException("Line must specify part number and qty");
             }
 
             this.Lines ??= new List<RequisitionLine>();

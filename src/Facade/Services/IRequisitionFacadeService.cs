@@ -23,5 +23,9 @@
 
         Task<IResult<RequisitionHeaderResource>> AuthoriseRequisition(
             int reqNumber, int authorisedBy, IEnumerable<string> privileges);
+
+        Task<IResult<RequisitionHeaderResource>> Validate(
+            RequisitionHeaderResource candidate,
+            IEnumerable<string> privileges);
     }
 }
