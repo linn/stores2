@@ -166,13 +166,11 @@
 
         public IEnumerable<string> Validate()
         {
-            var errors = new List<string>();
-
             if (this.StoresFunction.Document1Required())
             {
                 if (this.Document1 == null)
                 {
-                    errors.Add($"Document1 number required: {this.StoresFunction.Document1Text}");
+                    yield return $"Document1 number required: {this.StoresFunction.Document1Text}";
                 }
             }
 
@@ -180,16 +178,15 @@
             {
                 if (this.Department == null || this.Nominal == null)
                 {
-                    errors.Add(
-                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req");
+                    yield return 
+                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req";
                 }
 
                 if (this.StoresFunction.GetNominal() != null)
                 {
                     if (this.StoresFunction.GetNominal().NominalCode != this.Nominal?.NominalCode)
                     {
-                        errors.Add(
-                            $"Nominal must be {this.StoresFunction.GetNominal().NominalCode}");
+                        yield return $"Nominal must be {this.StoresFunction.GetNominal().NominalCode}";
                     }
                 }
             }
@@ -198,34 +195,30 @@
             {
                 if (string.IsNullOrEmpty(this.FromState))
                 {
-                   errors.Add(
-                        "From state must be present");
+                    yield return "From state must be present";
                 }
 
                 if (!this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
                 {
-                    errors.Add(
+                    yield return 
                         $"From state must be one of "
-                        + $"{string.Join(",", this.StoresFunction.GetTransactionStates("F"))}");
+                        + $"{string.Join(",", this.StoresFunction.GetTransactionStates("F"))}";
                 }
             }
 
             if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
             {
-                throw new CreateRequisitionException(
-                    $"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
+                throw new CreateRequisitionException
+                    ($"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
             }
-
 
             if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
             {
-                throw new CreateRequisitionException(
-                    $"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
+                throw new CreateRequisitionException
+                    ($"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
             }
-
-
-            return errors;
         }
+
 
         public void Update(string comments)
         {
