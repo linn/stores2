@@ -103,6 +103,25 @@ function Requisition({ creating }) {
         isLoading: createLoading,
         errorMessage: createError
     } = usePost(itemTypes.requisitions.url, true, true);
+    const [validated, setValidated] = useState(false);
+    const {
+        send: validateReq,
+        isLoading: validateLoading,
+        errorMessage: validationError,
+        clearPostResult: clearValidation,
+        postResult: validationSuccess
+    } = usePost(`${itemTypes.requisitions.url}/validate`, true, true);
+
+    useEffect(() => {
+        if (validationSuccess) {
+            setValidated(true);
+        }
+    }, [validationSuccess]);
+
+    useEffect(() => {
+        // if any of the fields in the dependency array change, the validation needs to be run again
+        setValidated(false);
+    }, [formState?.storesFunction?.functionCode]);
 
     const {
         send: updateReq,
@@ -241,114 +260,114 @@ function Requisition({ creating }) {
         return false;
     };
 
-    const optionalOrNeeded = code => {
-        if (code === 'O' || code === 'Y') {
-            return true;
-        }
+    // const optionalOrNeeded = code => {
+    //     if (code === 'O' || code === 'Y') {
+    //         return true;
+    //     }
 
-        return false;
-    };
+    //     return false;
+    // };
 
-    const okToSaveFrontPageMove = () => {
-        if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
-            if (
-                optionalOrNeeded(formState.storesFunction.fromLocationRequired) &&
-                !formState.fromLocationCode &&
-                !formState.fromPalletNumber
-            ) {
-                return false;
-            }
+    // const okToSaveFrontPageMove = () => {
+    //     if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
+    //         if (
+    //             optionalOrNeeded(formState.storesFunction.fromLocationRequired) &&
+    //             !formState.fromLocationCode &&
+    //             !formState.fromPalletNumber
+    //         ) {
+    //             return false;
+    //         }
 
-            if (
-                optionalOrNeeded(formState.storesFunction.fromStockPoolRequired) &&
-                !formState.fromStockPool
-            ) {
-                return false;
-            }
+    //         if (
+    //             optionalOrNeeded(formState.storesFunction.fromStockPoolRequired) &&
+    //             !formState.fromStockPool
+    //         ) {
+    //             return false;
+    //         }
 
-            if (
-                optionalOrNeeded(formState.storesFunction.fromStateRequired) &&
-                !formState.fromState
-            ) {
-                return false;
-            }
+    //         if (
+    //             optionalOrNeeded(formState.storesFunction.fromStateRequired) &&
+    //             !formState.fromState
+    //         ) {
+    //             return false;
+    //         }
 
-            if (
-                optionalOrNeeded(formState.storesFunction.quantityRequired) &&
-                !formState.quantity
-            ) {
-                return false;
-            }
+    //         if (
+    //             optionalOrNeeded(formState.storesFunction.quantityRequired) &&
+    //             !formState.quantity
+    //         ) {
+    //             return false;
+    //         }
 
-            if (
-                optionalOrNeeded(formState.storesFunction.toLocationRequired) &&
-                !formState.toLocationCode &&
-                !formState.toPalletNumber
-            ) {
-                return false;
-            }
+    //         if (
+    //             optionalOrNeeded(formState.storesFunction.toLocationRequired) &&
+    //             !formState.toLocationCode &&
+    //             !formState.toPalletNumber
+    //         ) {
+    //             return false;
+    //         }
 
-            if (optionalOrNeeded(formState.storesFunction.toStateRequired) && !formState.toState) {
-                return false;
-            }
+    //         if (optionalOrNeeded(formState.storesFunction.toStateRequired) && !formState.toState) {
+    //             return false;
+    //         }
 
-            if (
-                optionalOrNeeded(formState.storesFunction.toStockPoolRequired) &&
-                !formState.toStockPool
-            ) {
-                return false;
-            }
+    //         if (
+    //             optionalOrNeeded(formState.storesFunction.toStockPoolRequired) &&
+    //             !formState.toStockPool
+    //         ) {
+    //             return false;
+    //         }
 
-            return true;
-        }
+    //         return true;
+    //     }
 
-        return false;
-    };
+    //     return false;
+    // };
 
     // just for now to only allow updates of comments field
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
-    const newMovesOntoAreValid = () => {
-        const newLines = formState.lines?.filter(x => x.isAddition);
-        if (newLines?.length) {
-            if (
-                newLines.every(l =>
-                    !l.moves
-                        ? false
-                        : l.moves.every(m => m.qty && (m.toLocationCode || m.toPalletNumber))
-                )
-            ) {
-                return true;
-            }
-        }
-        return false;
-    };
+    // const newMovesOntoAreValid = () => {
+    //     const newLines = formState.lines?.filter(x => x.isAddition);
+    //     if (newLines?.length) {
+    //         if (
+    //             newLines.every(l =>
+    //                 !l.moves
+    //                     ? false
+    //                     : l.moves.every(m => m.qty && (m.toLocationCode || m.toPalletNumber))
+    //             )
+    //         ) {
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // };
 
     const saveIsValid = () => {
-        if (creating) {
-            // header specifies part, i.e. no explicit lines
-            if (formState.part?.partNumber) {
-                return okToSaveFrontPageMove();
-            }
-            if (formState.storesFunction?.code === 'LOAN OUT') {
-                return !!formState.document1;
-            }
+        // if (creating) {
+        //     // header specifies part, i.e. no explicit lines
+        //     if (formState.part?.partNumber) {
+        //         return okToSaveFrontPageMove();
+        //     }
+        //     if (formState.storesFunction?.code === 'LOAN OUT') {
+        //         return !!formState.document1;
+        //     }
 
-            // if none of the above was satisfied and no lines
-            if (!formState?.lines?.length) {
-                return false;
-            }
-        }
+        //     // if none of the above was satisfied and no lines
+        //     if (!formState?.lines?.length) {
+        //         return false;
+        //     }
+        // }
 
-        // Allow saving if stock is picked for an either a new or existing line
-        if (formState.lines.some(l => l.stockPicked)) {
-            return true;
-        }
+        // // Allow saving if stock is picked for an either a new or existing line
+        // if (formState.lines.some(l => l.stockPicked)) {
+        //     return true;
+        // }
 
-        //  or  a new line has been added with valid "onto" moves
-        if (newMovesOntoAreValid()) {
-            return true;
-        }
+        // //  or  a new line has been added with valid "onto" moves
+        // if (newMovesOntoAreValid()) {
+        //     return true;
+        // }
 
         if (!creating) {
             return commentsUpdated;
@@ -429,6 +448,11 @@ function Requisition({ creating }) {
                         )}
                     </Typography>
                 </Grid>
+                {validationError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={validationError} />
+                    </Grid>
+                )}
                 {cancelError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={cancelError} />
@@ -866,10 +890,22 @@ function Requisition({ creating }) {
                                     />
                                 )}
                             </Grid>
-
-                            <Grid item xs={12}>
+                            <Grid size={12}>
+                                <Box sx={{ float: 'right' }}>
+                                    <Button
+                                        disabled={validateLoading}
+                                        onClick={() => {
+                                            clearValidation();
+                                            validateReq(null, formState);
+                                        }}
+                                    >
+                                        {validateLoading ? 'validating...' : 'validate'}
+                                    </Button>
+                                </Box>
+                            </Grid>
+                            <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!saveIsValid()}
+                                    saveDisabled={!saveIsValid() || !validated || validateLoading}
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
                                     }}

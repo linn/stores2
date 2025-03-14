@@ -523,17 +523,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
-            var function = string.IsNullOrEmpty(functionCode) 
+            var function = !string.IsNullOrEmpty(functionCode) 
                                ? await this.storesFunctionRepository.FindByIdAsync(functionCode) : null;
-            var dept = string.IsNullOrEmpty(departmentCode) 
+            var dept = !string.IsNullOrEmpty(departmentCode) 
                            ? await this.departmentRepository.FindByIdAsync(departmentCode) : null;
-            var nom = string.IsNullOrEmpty(nominalCode)
+            var nom = !string.IsNullOrEmpty(nominalCode)
                           ? await this.nominalRepository.FindByIdAsync(nominalCode) : null;
-            var fromLocation = string.IsNullOrEmpty(fromLocationCode) 
+            var fromLocation = !string.IsNullOrEmpty(fromLocationCode) 
                                    ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == fromLocationCode) : null;
-            var toLocation = string.IsNullOrEmpty(toLocationCode)
+            var toLocation = !string.IsNullOrEmpty(toLocationCode)
                                  ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
-            var part = string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
+            var part = !string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
 
             var req = new RequisitionHeader(
                 new Employee(),
@@ -560,10 +560,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 batchRef,
                 batchDate);
 
-            var firstLinePart = string.IsNullOrEmpty(firstLine.PartNumber)
+            var firstLinePart = !string.IsNullOrEmpty(firstLine.PartNumber)
                                     ? await this.partRepository.FindByIdAsync(partNumber)
                                     : null;
-            var transactionDefinition = string.IsNullOrEmpty(firstLine.TransactionDefinition) 
+            var transactionDefinition = !string.IsNullOrEmpty(firstLine.TransactionDefinition) 
                                             ? null : await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition);
 
             req.AddLine(new RequisitionLine(
