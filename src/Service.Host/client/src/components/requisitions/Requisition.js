@@ -123,8 +123,8 @@ function Requisition({ creating }) {
         setValidated(false);
     }, [
         formState?.storesFunction?.functionCode,
-        formState.nominal?.nominalCode,
-        formState.department?.departmentCode
+        formState?.nominal?.nominalCode,
+        formState?.department?.departmentCode
     ]);
 
     const {

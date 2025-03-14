@@ -279,7 +279,7 @@
 
             return new LineCandidate
                        {
-                           Moves = resource.Moves.Select(
+                           Moves = resource.Moves?.Select(
                                m => new MoveSpecification
                                         {
                                             Qty = m.Qty.GetValueOrDefault(), 

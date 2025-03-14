@@ -560,14 +560,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 batchRef,
                 batchDate);
 
-            var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
-                                    ? await this.partRepository.FindByIdAsync(partNumber)
-                                    : null;
-            var transactionDefinition = !string.IsNullOrEmpty(firstLine?.TransactionDefinition) 
-                                            ? null : await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition);
-
             if (firstLine != null)
             {
+
+                var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
+                                        ? await this.partRepository.FindByIdAsync(partNumber)
+                                        : null;
+                var transactionDefinition = !string.IsNullOrEmpty(firstLine?.TransactionDefinition)
+                                                ? null : await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition);
+
                 req.AddLine(new RequisitionLine(
                     0,
                     1,
