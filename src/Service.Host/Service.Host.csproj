@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<AssemblyName>Linn.Stores2.Service.Host</AssemblyName>
 		<RootNamespace>Linn.Stores2.Service.Host</RootNamespace>
 		<PreserveCompilationContext>true</PreserveCompilationContext>
