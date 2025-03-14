@@ -562,7 +562,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (firstLine != null)
             {
-
                 var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
                                         ? await this.partRepository.FindByIdAsync(partNumber)
                                         : null;
