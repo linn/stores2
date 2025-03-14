@@ -9,7 +9,7 @@
 	<ItemGroup>
 		<PackageReference Include="Linn.Common.Messaging.RabbitMQ" Version="3.2.4" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.3" />
-		<PackageReference Include="RabbitMQ.Client" Version="7.1.1" />
+		<PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
 	</ItemGroup>
 
 	<ItemGroup>
