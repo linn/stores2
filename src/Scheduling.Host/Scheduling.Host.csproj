@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>dotnet-Scheduling.Host-319D7819-8043-45B8-A3FE-7B31A1ADEDF5</UserSecretsId>
@@ -10,7 +10,7 @@
   <ItemGroup>
 	  <PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="6.0.0" />
 	  <PackageReference Include="Linn.Common.Scheduling" Version="3.0.0" />
-	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.3" />
   </ItemGroup>
 
 	<ItemGroup>
