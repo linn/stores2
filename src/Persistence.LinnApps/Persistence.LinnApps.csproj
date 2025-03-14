@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<RootNamespace>Linn.Stores2.Persistence.LinnApps</RootNamespace>
 		<AssemblyName>Linn.Stores2.Persistence.LinnApps</AssemblyName>
 	</PropertyGroup>
@@ -12,7 +12,7 @@
 		<PackageReference Include="Linn.Common.Persistence" Version="5.0.1" />
 		<PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="6.0.0" />
 		<PackageReference Include="Linn.Common.Proxy.LinnApps" Version="3.2.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.3" />
 		<PackageReference Include="Oracle.EntityFrameworkCore" Version="7.21.13" />
 	</ItemGroup>
 
