@@ -15,20 +15,6 @@
         {
         }
 
-        public RequisitionLine(int? reqNumber, int? lineNumber)
-        {
-            if (reqNumber.HasValue)
-            {
-                this.ReqNumber = reqNumber.Value;
-            }
-
-            if (lineNumber.HasValue)
-            {
-                this.LineNumber = lineNumber.Value;
-            }
-            this.NominalAccountPostings = new List<RequisitionLinePosting>();
-        }
-
         public RequisitionLine(
             int reqNumber, 
             int lineNumber, 
@@ -46,6 +32,11 @@
             this.TransactionDefinition = transaction ?? throw new RequisitionException("Requisition line requires a transaction");
 
             this.Qty = qty;
+
+            if (this.Qty == 0)
+            {
+                throw new RequisitionException("Requisition line requires a qty");
+            }
 
             this.Moves = new List<ReqMove>();
 

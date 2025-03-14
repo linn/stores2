@@ -39,7 +39,12 @@
                 null,
                 null,
                 "Goodbye Reqs");
-            var requisitionLine = new RequisitionLine(this.req.ReqNumber, 1);
+            var requisitionLine = new RequisitionLine(
+                123,
+                1,
+                new Part(),
+                10,
+                new StoresTransactionDefinition());
             this.req.AddLine(requisitionLine);
 
             this.newLineCandidate = new LineCandidate

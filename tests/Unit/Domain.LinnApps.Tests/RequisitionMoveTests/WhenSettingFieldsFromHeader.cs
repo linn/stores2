@@ -16,7 +16,17 @@
         [SetUp]
         public void SetUp()
         {
-            this.sut = new ReqMove(1, 1, 1, 1, 1, 100, null, null, null, null);
+            this.sut = new ReqMove(
+                1, 
+                1,
+                1, 
+                1, 
+                1,
+                100,
+                null,
+                null,
+                null, 
+                null);
 
             var req = new ReqWithReqNumber(
                 123,
@@ -36,7 +46,7 @@
                 null,
                 null,
                 null,
-                new StorageLocation() { LocationId = 13985, Description = "A-LN-123" },
+                new StorageLocation { LocationId = 13985, Description = "A-LN-123" },
                 null,
                 null,
                 null,

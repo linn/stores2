@@ -17,7 +17,10 @@ function usePost(url, requiresAuth = false, redirectOnSuccess = false) {
         token = auth.user?.access_token;
     }
 
-    const clearPostResult = () => setPostResult(null);
+    const clearPostResult = () => {
+        setPostResult(null);
+        setErrorMessage(null);
+    };
 
     const send = async (id, data) => {
         setIsLoading(true);

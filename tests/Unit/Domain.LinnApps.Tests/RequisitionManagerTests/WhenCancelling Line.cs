@@ -6,6 +6,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.Requisitions;
 
@@ -32,7 +33,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 null,
                 null,
                 "Goodbye Reqs");
-            var requisitionLine = new RequisitionLine(this.req.ReqNumber, 1);
+            var requisitionLine = new RequisitionLine(123, 1, new Part(), 10, new StoresTransactionDefinition());
             this.req.AddLine(requisitionLine);
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
 

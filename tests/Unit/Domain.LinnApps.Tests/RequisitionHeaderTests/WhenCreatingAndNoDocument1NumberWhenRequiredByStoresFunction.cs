@@ -8,7 +8,7 @@
     using Linn.Stores2.TestData.FunctionCodes;
     using NUnit.Framework;
 
-    public class WhenCreatingAndNoFromStateWhenRequired
+    public class WhenCreatingAndNoDocument1NumberWhenRequiredByStoresFunction
     {
         private Action action;
 
@@ -17,21 +17,23 @@
         {
             this.action = () => _ = new RequisitionHeader(
                                     new Employee(),
-                                    TestFunctionCodes.AdjustQC,
+                                    TestFunctionCodes.LoanOut,
                                     "F",
                                     null,
                                     null,
                                     new Department(),
                                     new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
                                     reference: null,
-                                    comments: "adjust qc test");
+                                    comments: "adjust qc test",
+                                    fromState: "S");
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .Where(ex => ex.Message.Contains("From state must be present"));
+                .WithMessage(
+                    "Validation failed with the following errors: Document1 number required: Loan Number");
         }
     }
 }

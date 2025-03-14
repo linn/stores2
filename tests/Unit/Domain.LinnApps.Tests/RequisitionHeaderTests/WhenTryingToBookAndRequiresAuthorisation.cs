@@ -20,7 +20,7 @@
                 TestFunctionCodes.LoanOut,
                 "F",
                 12345678,
-                "TYPE",
+                "L",
                 new Department(),
                 new Nominal(),
                 reference: null,

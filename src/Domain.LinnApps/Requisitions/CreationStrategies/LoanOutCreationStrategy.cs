@@ -23,7 +23,7 @@
             {
                 throw new CreateRequisitionException("Loan Out function requires a Loan document");
             }
-
+            
             if (context.Document1Number == null)
             {
                 throw new CreateRequisitionException("Loan Out function requires a Loan document number");

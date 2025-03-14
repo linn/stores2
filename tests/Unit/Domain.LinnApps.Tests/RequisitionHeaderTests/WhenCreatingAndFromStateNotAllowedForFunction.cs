@@ -35,7 +35,7 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Cannot create - from state must be one of FAIL,QC");
+                .WithMessage("Validation failed with the following errors: From state must be one of FAIL,QC");
         }
     }
 }

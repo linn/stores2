@@ -203,5 +203,13 @@
                     }
                 }
             };
+
+        public static readonly StoresFunction GistPo =
+            new StoresFunction("GIST PO")
+                {
+                    Description = "BOOK STOCK INTO STORES FROM QC ON A PO",
+                    FromStockPoolRequired = "Y",
+                    ToStockPoolRequired = "Y"
+                };
     }
 }

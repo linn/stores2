@@ -28,6 +28,7 @@
             app.MapGet("/requisitions/stores-functions", this.GetFunctionCodes);
             app.MapGet("/requisitions/stores-functions/view", this.GetApp);
             app.MapGet("/requisitions/stores-functions/{code}", this.GetStoresFunction);
+            app.MapPost("/requisitions/validate", this.Validate);
             app.MapGet("/requisitions/{reqNumber:int}", this.GetById);
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
@@ -132,6 +133,16 @@
             resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges(), resource.CreatedBy, false, true));
         }
+
+        private async Task Validate(
+            HttpResponse res,
+            HttpRequest req,
+            RequisitionHeaderResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.Validate(resource));
+        }
+
 
         private async Task Update(
             HttpResponse res,
