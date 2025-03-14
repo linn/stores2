@@ -140,7 +140,7 @@ Resources:
           Image: !Sub docker.io/linn/stores2:${dockerTag}
           PortMappings:
             - ContainerPort: 5050
-          Memory: '500'
+          Memory: !If [isTesting, '256', '1024']
           HealthCheck:
             Command:
               - "CMD-SHELL"
