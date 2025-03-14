@@ -563,7 +563,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (firstLine != null)
             {
                 var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
-                                        ? await this.partRepository.FindByIdAsync(partNumber)
+                                        ? await this.partRepository.FindByIdAsync(firstLine.PartNumber)
                                         : null;
                 var transactionDefinition = !string.IsNullOrEmpty(firstLine?.TransactionDefinition)
                                                 ? null : await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition);
