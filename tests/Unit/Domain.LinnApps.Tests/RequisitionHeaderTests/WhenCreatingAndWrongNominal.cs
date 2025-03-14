@@ -34,7 +34,8 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Cannot create - nominal must be 0000004710");
+                .WithMessage(
+                    "Validation failed with the following errors: Nominal must be 0000004710");
         }
     }
 }

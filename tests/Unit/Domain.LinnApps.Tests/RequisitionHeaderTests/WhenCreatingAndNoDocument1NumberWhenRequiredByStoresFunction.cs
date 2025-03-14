@@ -32,7 +32,8 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Document1 number required: Loan Number");
+                .WithMessage(
+                    "Validation failed with the following errors: Document1 number required: Loan Number");
         }
     }
 }

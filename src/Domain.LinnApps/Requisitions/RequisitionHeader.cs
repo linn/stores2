@@ -9,6 +9,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     public class RequisitionHeader
     {
@@ -93,7 +94,7 @@
         protected RequisitionHeader()
         {
         }
-
+        
         public RequisitionHeader(
             Employee createdBy,
             StoresFunction function,
@@ -123,7 +124,6 @@
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
-            this.Document1 = document1Number;
             this.Document1Name = string.IsNullOrEmpty(document1Type) ? "REQ" : document1Type;
             this.Document1Line = document1Line;
             this.Quantity = quantity;
@@ -133,7 +133,6 @@
             this.ToState = toState;
             this.FromState = fromState;
             this.ManualPick = manualPick;
-            this.ReqSource = "STORES2";
             this.FromStockPool = fromStockPool;
             this.ToStockPool = toStockPool;
             this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
@@ -142,73 +141,90 @@
             this.BatchRef = batchRef;
             this.BatchDate = batchDate;
 
+            this.Document1 = document1Number;
 
-            if (function.Document1Required())
+            this.Department = department;
+            this.Nominal = nominal;
+            this.Reference = reference;
+            this.ReqType = reqType;
+
+            this.Reversed = "N";
+
+            this.Lines = new List<RequisitionLine>();
+
+            var errors = this.Validate();
+            var enumerable = errors.ToList();
+            if (enumerable.Any())
             {
-                if (document1Number == null)
+                string aggregatedErrors = string.Join(", ", enumerable);
+
+                throw new CreateRequisitionException(
+                    $"Validation failed with the following errors: {aggregatedErrors}");
+            }
+        }
+
+
+        public IEnumerable<string> Validate()
+        {
+            var errors = new List<string>();
+
+            if (this.StoresFunction.Document1Required())
+            {
+                if (this.Document1 == null)
                 {
-                    throw new CreateRequisitionException($"Document1 number required: {function.Document1Text}");
+                    errors.Add($"Document1 number required: {this.StoresFunction.Document1Text}");
                 }
             }
-            
-            
+
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
-                if (department == null || nominal == null)
+                if (this.Department == null || this.Nominal == null)
                 {
-                    throw new CreateRequisitionException(
+                    errors.Add(
                         $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req");
                 }
 
-                if (function.GetNominal() != null)
+                if (this.StoresFunction.GetNominal() != null)
                 {
-                    if (function.GetNominal().NominalCode != nominal?.NominalCode)
+                    if (this.StoresFunction.GetNominal().NominalCode != this.Nominal?.NominalCode)
                     {
-                        throw new CreateRequisitionException(
-                            $"Cannot create - nominal must be {function.GetNominal().NominalCode}");
+                        errors.Add(
+                            $"Nominal must be {this.StoresFunction.GetNominal().NominalCode}");
                     }
                 }
             }
 
             if (this.StoresFunction.FromStateRequired == "Y")
             {
-                if (string.IsNullOrEmpty(fromState))
+                if (string.IsNullOrEmpty(this.FromState))
                 {
-                    throw new CreateRequisitionException(
-                        "Cannot create - from state must be present");
+                   errors.Add(
+                        "From state must be present");
                 }
 
-                if (!this.StoresFunction.GetTransactionStates("F").Contains(fromState))
+                if (!this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
                 {
-                    throw new CreateRequisitionException(
-                        $"Cannot create - from state must be one of {string.Join(",", this.StoresFunction.GetTransactionStates("F") )}");
+                    errors.Add(
+                        $"From state must be one of "
+                        + $"{string.Join(",", this.StoresFunction.GetTransactionStates("F"))}");
                 }
             }
 
-            this.Department = department;
-            this.Nominal = nominal;
-
-            this.Reference = reference;
-
-            this.ReqType = reqType;
-
-            this.Reversed = "N";
-
-            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(fromStockPool))
+            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
             {
                 throw new CreateRequisitionException(
                     $"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
             }
 
-            this.FromStockPool = fromStockPool;
 
-            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(toStockPool))
+            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
             {
                 throw new CreateRequisitionException(
                     $"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
             }
 
-            this.Lines = new List<RequisitionLine>();
+
+            return errors;
         }
 
         public void Update(string comments)
