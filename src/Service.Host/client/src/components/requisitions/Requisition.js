@@ -900,7 +900,7 @@ function Requisition({ creating }) {
                             <Grid size={12}>
                                 <Box sx={{ float: 'right' }}>
                                     <Button
-                                        disabled={validateLoading}
+                                        disabled={validateLoading || validated}
                                         onClick={() => {
                                             clearValidation();
                                             validateReq(null, formState);
