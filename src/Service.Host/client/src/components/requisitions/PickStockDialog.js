@@ -19,6 +19,7 @@ function PickStockDialog({
     partNumber,
     quantity,
     state,
+    stockPool,
     getBatches = false
 }) {
     const [snackbar, setSnackbar] = useState(null);
@@ -31,10 +32,10 @@ function PickStockDialog({
         if (open && partNumber) {
             send(
                 null,
-                `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${getBatches ? '&queryBatchView=true' : ''}`
+                `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${stockPool ? `&stockPoolCode=${stockPool}` : ''}${getBatches ? '&queryBatchView=true' : ''}`
             );
         }
-    }, [partNumber, send, getBatches, state, open]);
+    }, [partNumber, send, getBatches, state, open, stockPool]);
 
     const [moves, setMoves] = useState([]);
 
@@ -44,9 +45,43 @@ function PickStockDialog({
         setOpen(false);
     };
 
+    const sortIt = (a, b) => {
+        if (a.palletNumber && b.palletNumber) {
+            if (a.palletNumber < b.palletNumber) {
+                return -1;
+            }
+            if (a.palletNumber > b.palletNumber) {
+                return 1;
+            }
+
+            if (a.batchRef < b.batchRef) {
+                return -1;
+            }
+            if (a.batchRef > b.batchRef) {
+                return 1;
+            }
+        }
+
+        if (a.locationName < b.locationName) {
+            return -1;
+        }
+        if (a.locationName > b.locationName) {
+            return 1;
+        }
+
+        if (a.batchRef < b.batchRef) {
+            return -1;
+        }
+        if (a.batchRef > b.batchRef) {
+            return 1;
+        }
+
+        return 0;
+    };
+
     useEffect(() => {
         if (result?.length && !moves?.length) {
-            setMoves(result.map((x, i) => ({ ...x, id: i })));
+            setMoves(result.sort(sortIt).map((x, i) => ({ ...x, id: i })));
         }
     }, [result, moves]);
 
@@ -138,6 +173,10 @@ function PickStockDialog({
     ];
 
     const processRowUpdate = newRow => {
+        if (newRow.quantityToPick > newRow.quantity - newRow.quantityAllocated) {
+            newRow.quantityToPick = newRow.quantity - newRow.quantityAllocated;
+        }
+
         setMoves(m => m.map(x => (x.id === newRow.id ? newRow : x)));
         return newRow;
     };

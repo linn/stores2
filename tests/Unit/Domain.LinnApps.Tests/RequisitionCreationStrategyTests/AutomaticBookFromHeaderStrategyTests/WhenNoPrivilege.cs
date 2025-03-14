@@ -1,7 +1,11 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.AutomaticBookFromHeaderStrategyTests
 {
+    using System;
     using System.Collections.Generic;
+    using System.Security.Authentication;
     using System.Threading.Tasks;
+
+    using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
@@ -10,10 +14,12 @@
 
     using NUnit.Framework;
 
-    public class WhenExecuting : ContextBase
+    public class WhenNoPrivilege : ContextBase
     {
+        private Func<Task> action;
+
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.RequisitionCreationContext = new RequisitionCreationContext
                                                   {
@@ -23,17 +29,15 @@
                                                       CreatedByUserNumber = 123
                                                   };
             this.AuthorisationService.HasPermissionFor(AuthorisedActions.RequisitionMove, Arg.Any<List<string>>())
-                .Returns(true);
+                .Returns(false);
 
-            await this.Sut.Create(this.RequisitionCreationContext);
+            this.action = () => this.Sut.Create(this.RequisitionCreationContext);
         }
 
         [Test]
-        public void ShouldCallManager()
+        public void ShouldThrowUnauthorised()
         {
-            this.RequisitionManager
-                .Received()
-                .CheckAndBookRequisitionHeader(Arg.Is<RequisitionHeader>(a => a.ToState == "S1"));
+            this.action.Should().ThrowAsync<AuthenticationException>();
         }
     }
 }
