@@ -119,12 +119,37 @@ function reducer(state, action) {
                                           : move.locationDescription,
                                       fromPalletNumber: move.palletNumber,
                                       fromState: move.state,
-                                      fromStockPool: move.fromStockPool,
+                                      fromStockPool: move.stockPoolCode,
                                       fromBatchRef: move.batchRef,
-                                      isFrom: true,
+                                      isFrom: state.reqType === 'O' ? false : true,
+                                      isTo: state.reqType === 'F' ? false : true,
                                       fromBatchDate: move.stockRotationDate,
                                       qtyAtLocation: move.quantity,
-                                      qtyAllocated: move.qtyAllocated
+                                      qtyAllocated: move.qtyAllocated,
+                                      toStockPool:
+                                          state.reqType === 'F'
+                                              ? null
+                                              : state.toStockPool
+                                                ? state.toStockPool
+                                                : move.stockPoolCode,
+                                      toState:
+                                          state.reqType === 'F'
+                                              ? null
+                                              : state.toState
+                                                ? state.toState
+                                                : move.state,
+                                      toLocationCode:
+                                          state.reqType === 'F'
+                                              ? null
+                                              : state.toLocationCode
+                                                ? state.toLocationCode
+                                                : null,
+                                      toPalletNumber:
+                                          state.reqType === 'F'
+                                              ? null
+                                              : state.toPalletNumber
+                                                ? state.toPalletNumber
+                                                : null
                                   }))
                               ]
                           }
@@ -164,6 +189,29 @@ function reducer(state, action) {
                                       toStockPool: 'LINN',
                                       toState: 'STORES',
                                       part: line.part.partNumber,
+                                      isTo: true
+                                  }
+                              ]
+                          }
+                        : line
+                )
+            };
+        case 'add_move':
+            return {
+                ...state,
+                lines: state.lines.map(line =>
+                    line.lineNumber === action.payload.lineNumber
+                        ? {
+                              ...line,
+                              moves: [
+                                  ...(line.moves ? line.moves : []),
+                                  {
+                                      lineNumber: action.payload.lineNumber,
+                                      seq: line.moves ? line.moves.length + 1 : 1,
+                                      toStockPool: 'LINN',
+                                      toState: 'STORES',
+                                      part: line.part.partNumber,
+                                      isFrom: true,
                                       isTo: true
                                   }
                               ]
