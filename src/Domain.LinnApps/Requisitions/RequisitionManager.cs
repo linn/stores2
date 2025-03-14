@@ -560,21 +560,29 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 batchRef,
                 batchDate);
 
-            var firstLinePart = !string.IsNullOrEmpty(firstLine.PartNumber)
+            var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
                                     ? await this.partRepository.FindByIdAsync(partNumber)
                                     : null;
-            var transactionDefinition = !string.IsNullOrEmpty(firstLine.TransactionDefinition) 
+            var transactionDefinition = !string.IsNullOrEmpty(firstLine?.TransactionDefinition) 
                                             ? null : await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition);
 
-            req.AddLine(new RequisitionLine(
-                0, 
-                1, 
-                firstLinePart, 
-                firstLine.Qty, 
-                transactionDefinition, 
-                firstLine.Document1,
-                firstLine.Document1Line.GetValueOrDefault(),
-                firstLine.Document1Type));
+            if (firstLine != null)
+            {
+                req.AddLine(new RequisitionLine(
+                    0,
+                    1,
+                    firstLinePart,
+                    firstLine.Qty,
+                    transactionDefinition,
+                    firstLine.Document1,
+                    firstLine.Document1Line.GetValueOrDefault(),
+                    firstLine.Document1Type));
+            }
+
+            if (req.Part == null && req.Lines.Count == 0)
+            {
+                throw new RequisitionException("Lines are required if header does not specify part");
+            }
 
             return req;
         }

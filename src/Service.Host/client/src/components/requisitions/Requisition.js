@@ -121,7 +121,11 @@ function Requisition({ creating }) {
     useEffect(() => {
         // if any of the fields in the dependency array change, the validation needs to be run again
         setValidated(false);
-    }, [formState?.storesFunction?.functionCode]);
+    }, [
+        formState?.storesFunction?.functionCode,
+        formState.nominal?.nominalCode,
+        formState.department?.departmentCode
+    ]);
 
     const {
         send: updateReq,
@@ -268,6 +272,7 @@ function Requisition({ creating }) {
     //     return false;
     // };
 
+    // todo - move all this to the C# Validate function
     // const okToSaveFrontPageMove = () => {
     //     if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
     //         if (
@@ -327,6 +332,7 @@ function Requisition({ creating }) {
     // just for now to only allow updates of comments field
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
+    // todo - move all this to the C# Validate function
     // const newMovesOntoAreValid = () => {
     //     const newLines = formState.lines?.filter(x => x.isAddition);
     //     if (newLines?.length) {
