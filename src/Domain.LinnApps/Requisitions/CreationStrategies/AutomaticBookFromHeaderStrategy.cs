@@ -1,9 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
+    using System.Linq;
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
@@ -23,6 +26,8 @@
 
         private readonly IRepository<StorageLocation, int> storageLocationRepository;
 
+        private readonly IAuthorisationService authorisationService;
+
         public AutomaticBookFromHeaderStrategy(
             IRepository<RequisitionHeader, int> repository,
             IRequisitionManager requisitionManager,
@@ -30,7 +35,8 @@
             IRepository<Nominal, string> nominalRepository,
             IRepository<Employee, int> employeeRepository,
             IRepository<Part, string> partRepository,
-            IRepository<StorageLocation, int> storageLocationRepository)
+            IRepository<StorageLocation, int> storageLocationRepository,
+            IAuthorisationService authorisationService)
         {
             this.repository = repository;
             this.requisitionManager = requisitionManager;
@@ -39,10 +45,18 @@
             this.employeeRepository = employeeRepository;
             this.partRepository = partRepository;
             this.storageLocationRepository = storageLocationRepository;
+            this.authorisationService = authorisationService;
         }
 
         public async Task<RequisitionHeader> Create(RequisitionCreationContext context)
         {
+            var privilegesList = context.UserPrivileges?.ToList();
+            var authAction = AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode);
+            if (!this.authorisationService.HasPermissionFor(authAction, privilegesList))
+            {
+                throw new UnauthorisedActionException($"You are not authorised to raise {context.Function.FunctionCode}");
+            }
+
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
             var nominal = await this.nominalRepository.FindByIdAsync(context.NominalCode);

@@ -265,6 +265,8 @@ function StockOptions({
                     partNumber={partNumber}
                     getBatches={true}
                     quantity={quantity}
+                    state={fromState}
+                    stockPool={fromStockPool}
                     handleConfirm={moves => {
                         doPickStock(moves);
                     }}
