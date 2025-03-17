@@ -9,5 +9,7 @@ namespace Linn.Stores2.Resources.Requisitions
         public string TransactionDefinition { get; set; }
         
         public string TransactionDescription { get; set; }
+
+        public bool? StockAllocations { get; set; }
     }
 }

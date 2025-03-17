@@ -64,7 +64,8 @@ function reducer(state, action) {
                 if (lineTransactionType) {
                     lineTransaction = {
                         transactionCode: lineTransactionType.transactionDefinition,
-                        transactionCodeDescription: lineTransactionType.transactionDescription
+                        transactionCodeDescription: lineTransactionType.transactionDescription,
+                        stockAllocations: lineTransactionType.stockAllocations
                     };
                 }
             }

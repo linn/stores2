@@ -29,6 +29,7 @@
                            Qty = l.Qty,
                            TransactionCode = l.TransactionDefinition?.TransactionCode,
                            TransactionCodeDescription = l.TransactionDefinition?.Description,
+                           StockAllocations = l.TransactionDefinition?.StockAllocations == "Y",
                            Document1Number = l.Document1Number,
                            Document1Line = l.Document1Line,
                            Document1Type = l.Document1Type,
