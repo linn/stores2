@@ -11,6 +11,7 @@
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Service.Modules;
 
@@ -57,7 +58,7 @@
                     this.RequisitionHistoryRepository);
 
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
-                StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(
+                StoresFunctionRequestResource> functionCodeService = new StoresFunctionCodeService(
                 new EntityFrameworkRepository<StoresFunction, string>(this.DbContext.StoresFunctionCodes),
                 transactionManager,
                 new StoresFunctionResourceBuilder());

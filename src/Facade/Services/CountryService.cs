@@ -40,7 +40,8 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<Country, bool>> FilterExpression(CountryResource searchResource)
+        protected override Expression<Func<Country, bool>> FilterExpression(CountryResource searchResource,
+            IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
         }

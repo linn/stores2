@@ -7,6 +7,7 @@
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.Services;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Service.Extensions;
     using Linn.Stores2.Service.Models;
@@ -14,6 +15,7 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
+    using Org.BouncyCastle.Ocsp;
 
     public class RequisitionModule : IModule
     {
@@ -157,18 +159,27 @@
         }
 
         private async Task GetFunctionCodes(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
-            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
+            bool? onlyAllowed,
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionRequestResource> service)
         {
-            await res.Negotiate(await service.GetAll());
+            if (onlyAllowed == true)
+            {
+                await res.Negotiate(await service.FilterBy(new StoresFunctionRequestResource { OnlyAllowed = true },
+                    req.HttpContext.GetPrivileges()));
+            }
+            else
+            {
+                await res.Negotiate(await service.GetAll());
+            }
         }
 
         private async Task GetStoresFunction(
             HttpRequest _,
             HttpResponse res,
             string code,
-            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionRequestResource> service)
         {
             await res.Negotiate(await service.GetById(code));
         }

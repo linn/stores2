@@ -43,7 +43,8 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<StoresBudget, bool>> FilterExpression(StoresBudgetResource searchResource)
+        protected override Expression<Func<StoresBudget, bool>> FilterExpression(StoresBudgetResource searchResource,
+            IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
         }

@@ -131,7 +131,8 @@
             entity.StoresKittingPriority = updateResource.StoresKittingPriority;
         }
 
-        protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationResource searchResource)
+        protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationResource searchResource,
+            IEnumerable<string> privileges = null)
         {
             Expression<Func<StorageLocation, bool>> expression = loc => loc.DateInvalid == null;
 

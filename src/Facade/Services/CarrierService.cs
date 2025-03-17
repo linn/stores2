@@ -82,7 +82,8 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<Carrier, bool>> FilterExpression(CarrierResource searchResource)
+        protected override Expression<Func<Carrier, bool>> FilterExpression(CarrierResource searchResource,
+            IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
         }

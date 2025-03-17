@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.IoC
+﻿using Linn.Stores2.Resources.RequestResources;
+
+namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
@@ -78,7 +80,7 @@
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>()
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
                 .AddScoped<IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>, StockStateFacadeService>()
-                .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
+                .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionRequestResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>();
         }

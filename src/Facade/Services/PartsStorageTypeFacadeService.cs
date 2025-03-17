@@ -103,7 +103,8 @@
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)
+        protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource,
+            IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
         }

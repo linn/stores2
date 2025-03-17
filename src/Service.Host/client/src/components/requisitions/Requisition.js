@@ -63,14 +63,14 @@ function Requisition({ creating }) {
         send: fetchFunctionCodes,
         isLoading: codesLoading,
         result: functionCodes
-    } = useGet(itemTypes.functionCodes.url);
+    } = useGet(itemTypes.functionCodes.url, true);
 
     if ((!hasFetched || (reqNumber && hasFetched !== reqNumber)) && token) {
         if (!creating && reqNumber) {
             fetchReq(reqNumber);
         }
 
-        fetchFunctionCodes();
+        fetchFunctionCodes(null, '?onlyAllowed=true');
         setHasFetched(reqNumber ?? 1);
     }
 

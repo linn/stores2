@@ -104,7 +104,8 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<StockPool, bool>> FilterExpression(StockPoolResource searchResource)
+        protected override Expression<Func<StockPool, bool>> FilterExpression(StockPoolResource searchResource,
+            IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
         }

@@ -245,7 +245,8 @@
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> FilterExpression(
-            RequisitionSearchResource searchResource)
+            RequisitionSearchResource searchResource,
+            IEnumerable<string> privileges = null)
         {
             if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
             {

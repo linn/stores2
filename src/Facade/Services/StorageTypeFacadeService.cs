@@ -71,7 +71,8 @@
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<StorageType, bool>> FilterExpression(StorageTypeResource searchResource)
+        protected override Expression<Func<StorageType, bool>> FilterExpression(StorageTypeResource searchResource,
+            IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
         }

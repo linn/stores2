@@ -58,7 +58,7 @@
             try
             {
                 return new SuccessResult<IEnumerable<TResource>>(this.BuildResources(
-                    await this.repository.FilterByAsync(this.FilterExpression(searchResource)),
+                    await this.repository.FilterByAsync(this.FilterExpression(searchResource, privileges)),
                     privileges));
             }
             catch (NotImplementedException)
@@ -264,7 +264,8 @@
             T entity,
             IEnumerable<string> privileges = null);
 
-        protected abstract Expression<Func<T, bool>> FilterExpression(TSearchResource searchResource);
+        protected abstract Expression<Func<T, bool>> FilterExpression(TSearchResource searchResource,
+            IEnumerable<string> privileges = null);
 
         protected abstract Expression<Func<T, bool>> FindExpression(TSearchResource searchResource);
 
