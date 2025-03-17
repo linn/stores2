@@ -911,7 +911,7 @@ function Requisition({ creating }) {
                             </Grid>
                             <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!saveIsValid() || !validated || validateLoading}
+                                    saveDisabled={!saveIsValid()}
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
                                     }}
