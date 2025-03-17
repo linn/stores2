@@ -29,6 +29,7 @@
                            Qty = l.Qty,
                            TransactionCode = l.TransactionDefinition?.TransactionCode,
                            TransactionCodeDescription = l.TransactionDefinition?.Description,
+                           StockAllocations = l.TransactionDefinition?.StockAllocations == "Y",
                            Document1Number = l.Document1Number,
                            Document1Line = l.Document1Line,
                            Document1Type = l.Document1Type,
@@ -37,7 +38,6 @@
                            Document2Type = l.Document2Type,
                            DateBooked = l.DateBooked?.ToString("o"),
                            Cancelled = l.Cancelled,
-                           StockAllocations = l.TransactionDefinition?.StockAllocations == "Y",
                            StoresBudgets = l.StoresBudgets?.Select(
                                b => storesBudgetResourceBuilder.Build(b, null)),
                            Postings = l.NominalAccountPostings?.Select(

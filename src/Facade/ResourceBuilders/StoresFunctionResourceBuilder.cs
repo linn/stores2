@@ -50,7 +50,8 @@
                                            Seq = t.Seq,
                                            ReqType = t.ReqType,
                                            TransactionDefinition = t.TransactionDefinition?.TransactionCode,
-                                           TransactionDescription = t.TransactionDefinition?.Description
+                                           TransactionDescription = t.TransactionDefinition?.Description,
+                                           StockAllocations = t.TransactionDefinition?.StockAllocations == "Y"
                                        }),
                           Links = this.BuildLinks(model, claims).ToArray()
             };
