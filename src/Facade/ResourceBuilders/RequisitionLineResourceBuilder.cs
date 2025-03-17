@@ -37,6 +37,7 @@
                            Document2Type = l.Document2Type,
                            DateBooked = l.DateBooked?.ToString("o"),
                            Cancelled = l.Cancelled,
+                           StockAllocations = l.TransactionDefinition?.StockAllocations == "Y",
                            StoresBudgets = l.StoresBudgets?.Select(
                                b => storesBudgetResourceBuilder.Build(b, null)),
                            Postings = l.NominalAccountPostings?.Select(
