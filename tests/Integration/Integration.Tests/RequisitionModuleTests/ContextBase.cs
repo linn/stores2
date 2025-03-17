@@ -60,7 +60,7 @@
                 StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(
                 new EntityFrameworkRepository<StoresFunction, string>(this.DbContext.StoresFunctionCodes),
                 transactionManager,
-                new StoresFunctionResourceBuilder());
+                new StoresFunctionResourceBuilder(this.AuthorisationService));
 
             this.Client = TestClient.With<RequisitionModule>(
                 services =>
