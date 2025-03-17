@@ -44,6 +44,8 @@
 
         public bool? StockPicked { get; set; }
 
+        public bool? StockAllocations { get; set; }
+
         public IEnumerable<RequisitionLinePostingResource> Postings { get; set; }
 
         public IEnumerable<StoresBudgetResource> StoresBudgets { get; set; }

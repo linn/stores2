@@ -828,7 +828,6 @@ function Requisition({ creating }) {
                                         cancelLine={cancel}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
-                                        isFromStock={formState.reqType === 'F'}
                                         addLine={() => {
                                             dispatch({ type: 'add_line' });
                                         }}
