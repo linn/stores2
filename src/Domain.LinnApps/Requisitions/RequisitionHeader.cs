@@ -9,6 +9,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     public class RequisitionHeader
     {
@@ -93,8 +94,8 @@
         protected RequisitionHeader()
         {
         }
-
-        public RequisitionHeader( // todo - make this protected
+        
+        public RequisitionHeader(
             Employee createdBy,
             StoresFunction function,
             string reqType,
@@ -123,8 +124,7 @@
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
             this.StoresFunction = function;
-            this.Document1 = document1Number;
-            this.Document1Name = string.IsNullOrEmpty(this.Document1Name) ? "REQ" : document1Type;
+            this.Document1Name = string.IsNullOrEmpty(document1Type) ? "REQ" : document1Type;
             this.Document1Line = document1Line;
             this.Quantity = quantity;
             this.Part = part;
@@ -133,7 +133,6 @@
             this.ToState = toState;
             this.FromState = fromState;
             this.ManualPick = manualPick;
-            this.ReqSource = "STORES2";
             this.FromStockPool = fromStockPool;
             this.ToStockPool = toStockPool;
             this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
@@ -141,64 +140,89 @@
             this.Cancelled = "N";
             this.BatchRef = batchRef;
             this.BatchDate = batchDate;
+
+            this.Document1 = document1Number;
+
+            this.Department = department;
+            this.Nominal = nominal;
+            this.Reference = reference;
+            this.ReqType = reqType;
+
+            this.Reversed = "N";
+
+            this.Lines = new List<RequisitionLine>();
+
+            var errors = this.Validate().ToList();
+
+            if (errors.Any())
+            {
+                throw new CreateRequisitionException(
+                    $"Validation failed with the following errors: {string.Join(", ", errors)}");
+            }
+        }
+
+
+        private IEnumerable<string> Validate()
+        {
+            if (this.StoresFunction == null)
+            {
+                yield return "Stores Function must be specified.";
+                yield break;  // don't even have a function, so no need to continue with function specific validation
+            }
+
+            if (this.StoresFunction.Document1Required())
+            {
+                if (this.Document1 == null)
+                {
+                    yield return $"Document1 number required: {this.StoresFunction.Document1Text}";
+                }
+            }
+
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
-                if (department == null || nominal == null)
+                if (this.Department == null || this.Nominal == null)
                 {
-                    throw new CreateRequisitionException(
-                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req");
+                    yield return 
+                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req";
                 }
 
-                if (function.GetNominal() != null)
+                if (this.StoresFunction.GetNominal() != null)
                 {
-                    if (function.GetNominal().NominalCode != nominal?.NominalCode)
+                    if (this.StoresFunction.GetNominal().NominalCode != this.Nominal?.NominalCode)
                     {
-                        throw new CreateRequisitionException(
-                            $"Cannot create - nominal must be {function.GetNominal().NominalCode}");
+                        yield return $"Nominal must be {this.StoresFunction.GetNominal().NominalCode}";
                     }
                 }
             }
 
             if (this.StoresFunction.FromStateRequired == "Y")
             {
-                if (string.IsNullOrEmpty(fromState))
+                if (string.IsNullOrEmpty(this.FromState))
                 {
-                    throw new CreateRequisitionException(
-                        "Cannot create - from state must be present");
+                    yield return "From state must be present";
                 }
 
-                if (!this.StoresFunction.GetTransactionStates("F").Contains(fromState))
+                if (!this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
                 {
-                    throw new CreateRequisitionException(
-                        $"Cannot create - from state must be one of {string.Join(",", this.StoresFunction.GetTransactionStates("F") )}");
+                    yield return 
+                        $"From state must be one of "
+                        + $"{string.Join(",", this.StoresFunction.GetTransactionStates("F"))}";
                 }
             }
 
-            this.Department = department;
-            this.Nominal = nominal;
-
-            this.Reference = reference;
-
-            this.ReqType = reqType;
-
-            this.Reversed = "N";
-
-            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(fromStockPool))
+            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
             {
-                throw new CreateRequisitionException(
-                    $"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
+                throw new CreateRequisitionException
+                    ($"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
             }
 
-            this.FromStockPool = fromStockPool;
-
-            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(toStockPool))
+            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
             {
-                throw new CreateRequisitionException(
-                    $"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
+                throw new CreateRequisitionException
+                    ($"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
             }
-
-            this.Lines = new List<RequisitionLine>();
         }
+
 
         public void Update(string comments)
         {
@@ -215,6 +239,11 @@
             if (this.IsBooked())
             {
                 throw new RequisitionException("Cannot add lines to a booked req");
+            }
+
+            if (toAdd.Part == null || toAdd.Qty == 0)
+            {
+                throw new RequisitionException("Line must specify part number and qty");
             }
 
             this.Lines ??= new List<RequisitionLine>();

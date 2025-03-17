@@ -8,7 +8,7 @@
     using Linn.Stores2.TestData.FunctionCodes;
     using NUnit.Framework;
 
-    public class WhenCreatingAndNoFromStateWhenRequired
+    public class WhenCreatingAndNoToStockPoolWhenRequiredByStoresFunction
     {
         private Action action;
 
@@ -17,21 +17,23 @@
         {
             this.action = () => _ = new RequisitionHeader(
                                     new Employee(),
-                                    TestFunctionCodes.AdjustQC,
+                                    TestFunctionCodes.GistPo,
                                     "F",
-                                    null,
+                                    123,
                                     null,
                                     new Department(),
                                     new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
                                     reference: null,
-                                    comments: "adjust qc test");
+                                    comments: "adjust qc test",
+                                    fromState: "STATE",
+                                    fromStockPool: "A");
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .Where(ex => ex.Message.Contains("From state must be present"));
+                .WithMessage("To stock pool must be specified for GIST PO");
         }
     }
 }
