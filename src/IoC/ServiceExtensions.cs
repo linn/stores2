@@ -60,6 +60,7 @@
                 .AddScoped<LdreqCreationStrategy>()
                 .AddScoped<AutomaticBookFromHeaderStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
+                .AddScoped<GistPoCreationStrategy>()
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>();
         }
 
