@@ -4,6 +4,7 @@
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
 
     using NUnit.Framework;
@@ -25,10 +26,10 @@
                 new Nominal(),
                 reference: null,
                 comments: "Goodbye Reqs");
-            var line1 = new RequisitionLine(this.req.ReqNumber, 1);
-            line1.Book(new DateTime(2024,1,1));
+            var line1 = new RequisitionLine(123, 1, new Part(), 10, new StoresTransactionDefinition());
+            line1.Book(new DateTime(2024, 1, 1));
 
-            var unbookedLine = new RequisitionLine(this.req.ReqNumber, 2);
+            var unbookedLine = new RequisitionLine(123, 2, new Part(), 10, new StoresTransactionDefinition());
 
             this.req.AddLine(line1);
             this.req.AddLine(unbookedLine);

@@ -49,6 +49,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
         protected IStoresService StoresService { get; private set; }
 
+
         [SetUp]
         public void SetUpContext()
         {
@@ -89,7 +90,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.StoresService,
                 this.PalletRepository,
                 this.StateRepository,
-                this.StockPoolRepository);
+                this.StockPoolRepository,
+                this.StoresFunctionRepository,
+                this.DepartmentRepository,
+                this.NominalRepository);
         }
     }
 }

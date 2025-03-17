@@ -103,6 +103,29 @@ function Requisition({ creating }) {
         isLoading: createLoading,
         errorMessage: createError
     } = usePost(itemTypes.requisitions.url, true, true);
+    const [validated, setValidated] = useState(false);
+    const {
+        send: validateReq,
+        isLoading: validateLoading,
+        errorMessage: validationError,
+        clearPostResult: clearValidation,
+        postResult: validationSuccess
+    } = usePost(`${itemTypes.requisitions.url}/validate`, true, true);
+
+    useEffect(() => {
+        if (validationSuccess) {
+            setValidated(true);
+        }
+    }, [validationSuccess]);
+
+    useEffect(() => {
+        // if any of the fields in the dependency array change, the validation needs to be run again
+        setValidated(false);
+    }, [
+        formState?.storesFunction?.functionCode,
+        formState?.nominal?.nominalCode,
+        formState?.department?.departmentCode
+    ]);
 
     const {
         send: updateReq,
@@ -327,6 +350,9 @@ function Requisition({ creating }) {
     };
 
     const saveIsValid = () => {
+        // todo - all of this code should be moved into the domain validation code
+        // that is now invoked by hitting the /validate endpoint
+        // but leaving here for now
         if (creating) {
             // header specifies part, i.e. no explicit lines
             if (formState.part?.partNumber) {
@@ -434,6 +460,11 @@ function Requisition({ creating }) {
                         )}
                     </Typography>
                 </Grid>
+                {validationError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={validationError} />
+                    </Grid>
+                )}
                 {cancelError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={cancelError} />
@@ -885,10 +916,22 @@ function Requisition({ creating }) {
                                     />
                                 )}
                             </Grid>
-
-                            <Grid item xs={12}>
+                            <Grid size={12}>
+                                <Box sx={{ float: 'right' }}>
+                                    <Button
+                                        disabled={validateLoading || validated}
+                                        onClick={() => {
+                                            clearValidation();
+                                            validateReq(null, formState);
+                                        }}
+                                    >
+                                        {validateLoading ? 'validating...' : 'validate'}
+                                    </Button>
+                                </Box>
+                            </Grid>
+                            <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!saveIsValid()}
+                                    saveDisabled={!saveIsValid() || !validated || validateLoading}
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
                                     }}

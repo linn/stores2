@@ -66,6 +66,7 @@
                 throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
             }
 
+            // todo - move somewhere validator can hit this
             if (context.FirstLineCandidate == null)
             {
                 throw new CreateRequisitionException(
