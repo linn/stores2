@@ -19,7 +19,7 @@ namespace Linn.Stores2.Domain.LinnApps
                 throw new InsufficientDataSuppliedException("No function code supplied");
             }
 
-            return $"stores.requisitions.{functionCode.ToUpper()}";
+            return $"stores.requisitions.functions.{functionCode.ToUpper()}";
         }
     }
 }

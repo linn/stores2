@@ -29,6 +29,12 @@ function reducer(state, action) {
                         document1: action.payload.newValue,
                         loanNumber: action.payload.newValue
                     };
+                } else if (state.storesFunction?.document1Name) {
+                    return {
+                        ...state,
+                        document1Name: state.storesFunction?.document1Name,
+                        document1: action.payload.newValue
+                    };
                 }
             } else if (action.payload.fieldName === 'storesFunction') {
                 if (

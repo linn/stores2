@@ -157,20 +157,20 @@
         }
 
         private async Task GetFunctionCodes(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
         {
-            await res.Negotiate(await service.GetAll());
+            await res.Negotiate(await service.GetAll(req.HttpContext.GetPrivileges()));
         }
 
         private async Task GetStoresFunction(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             string code,
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
         {
-            await res.Negotiate(await service.GetById(code));
+            await res.Negotiate(await service.GetById(code, req.HttpContext.GetPrivileges()));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)

@@ -48,6 +48,7 @@ function Requisition({ creating }) {
         clearData: clearReqResult
     } = useGet(itemTypes.requisitions.url, true);
     const [hasFetched, setHasFetched] = useState(0);
+    const [functionCodeError, setFunctionCodeError] = useState(null);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -63,7 +64,7 @@ function Requisition({ creating }) {
         send: fetchFunctionCodes,
         isLoading: codesLoading,
         result: functionCodes
-    } = useGet(itemTypes.functionCodes.url);
+    } = useGet(itemTypes.functionCodes.url, true);
 
     if ((!hasFetched || (reqNumber && hasFetched !== reqNumber)) && token) {
         if (!creating && reqNumber) {
@@ -401,14 +402,19 @@ function Requisition({ creating }) {
                 a => a.code === formState.storesFunction.code.toUpperCase()
             );
             if (code) {
-                dispatch({
-                    type: 'set_header_value',
-                    payload: {
-                        fieldName: 'storesFunction',
-                        newValue: code
-                    }
-                });
-                setDefaultHeaderFieldsForFunctionCode(code);
+                if (utilities.getHref(code, 'create-req')) {
+                    dispatch({
+                        type: 'set_header_value',
+                        payload: {
+                            fieldName: 'storesFunction',
+                            newValue: code
+                        }
+                    });
+                    setFunctionCodeError(null);
+                    setDefaultHeaderFieldsForFunctionCode(code);
+                } else {
+                    setFunctionCodeError(`You dont have permission for ${code.code}`);
+                }
             }
         }
     };
@@ -463,6 +469,11 @@ function Requisition({ creating }) {
                 {validationError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={validationError} />
+                    </Grid>
+                )}
+                {functionCodeError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={functionCodeError} />
                     </Grid>
                 )}
                 {cancelError && (
@@ -561,6 +572,7 @@ function Requisition({ creating }) {
                                             });
                                         }}
                                         search={() => {}}
+                                        displayChips
                                         loading={false}
                                         searchResults={functionCodes
                                             .filter(
@@ -576,21 +588,36 @@ function Requisition({ creating }) {
                                                 ...f,
                                                 id: f.code,
                                                 name: f.code,
-                                                description: f.description
+                                                description: f.description,
+                                                chips: !utilities.getHref(f, 'create-req')
+                                                    ? [
+                                                          {
+                                                              text: 'no permission',
+                                                              color: 'light gray'
+                                                          }
+                                                      ]
+                                                    : []
                                             }))}
                                         onKeyPressFunctions={[
                                             { keyCode: 9, action: getAndSetFunctionCode }
                                         ]}
                                         priorityFunction="closestMatchesFirst"
                                         onResultSelect={r => {
-                                            dispatch({
-                                                type: 'set_header_value',
-                                                payload: {
-                                                    fieldName: 'storesFunction',
-                                                    newValue: r
-                                                }
-                                            });
-                                            setDefaultHeaderFieldsForFunctionCode(r);
+                                            if (utilities.getHref(r, 'create-req')) {
+                                                dispatch({
+                                                    type: 'set_header_value',
+                                                    payload: {
+                                                        fieldName: 'storesFunction',
+                                                        newValue: r
+                                                    }
+                                                });
+                                                setFunctionCodeError(null);
+                                                setDefaultHeaderFieldsForFunctionCode(r);
+                                            } else {
+                                                setFunctionCodeError(
+                                                    `You dont have permission for ${r.code}`
+                                                );
+                                            }
                                         }}
                                         clearSearch={() => {}}
                                         autoFocus={false}
@@ -931,7 +958,7 @@ function Requisition({ creating }) {
                             </Grid>
                             <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!saveIsValid() || !validated || validateLoading}
+                                    saveDisabled={!saveIsValid()}
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
                                     }}
