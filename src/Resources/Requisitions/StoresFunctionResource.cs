@@ -37,6 +37,8 @@
 
         public string Document1Text { get; set; }
 
+        public string Document1Name { get; set; }
+
         public string PartSource { get; set; }
 
         public bool PartNumberRequired { get; set; }
