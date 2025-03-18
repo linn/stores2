@@ -19,9 +19,7 @@
         public decimal? Quantity { get; set; }
 
         public string Document1Name { get; set; }
-
-        public string PartNumber { get; set; }
-
+        
         public PartResource Part { get; set; }
         
         public int? ToLocationId { get; set; }

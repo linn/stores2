@@ -22,7 +22,9 @@
                                                       PartNumber = "PART",
                                                       CreatedByUserNumber = 123
                                                   };
-            this.AuthorisationService.HasPermissionFor(AuthorisedActions.RequisitionMove, Arg.Any<List<string>>())
+            this.AuthorisationService.HasPermissionFor(
+                    AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode), 
+                    Arg.Any<List<string>>())
                 .Returns(true);
 
             await this.Sut.Create(this.RequisitionCreationContext);

@@ -178,6 +178,14 @@
                 }
             }
 
+            if (this.StoresFunction.QuantityRequired == "Y")
+            {
+                if (this.Quantity.GetValueOrDefault() == 0)
+                {
+                    yield return $"Quantity required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
             if (this.StoresFunction.DepartmentNominalRequired == "Y")
             {
                 if (this.Department == null || this.Nominal == null)

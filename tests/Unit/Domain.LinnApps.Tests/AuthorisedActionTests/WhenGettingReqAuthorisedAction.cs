@@ -20,7 +20,7 @@
         [Test]
         public void ShouldReturnAuthString()
         {
-            this.result.Should().Be("stores.requisitions.MOVELOC");
+            this.result.Should().Be("stores.requisitions.functions.MOVELOC");
         }
     }
 }

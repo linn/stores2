@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LdReqCreationStrategyTests
+﻿using Linn.Stores2.Domain.LinnApps.Requisitions;
+
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LdReqCreationStrategyTests
 {
     using System;
     using System.Collections.Generic;
@@ -22,9 +24,15 @@
         {
             var context = new RequisitionCreationContext
                               {
-                                  UserPrivileges = new List<string>()
+                                  UserPrivileges = new List<string>(),
+                                  Function = new StoresFunction
+                                  {
+                                      FunctionCode = "LDREQ"
+                                  }
                               };
-            this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, Arg.Any<IEnumerable<string>>())
+            this.AuthService.HasPermissionFor(
+                    AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
+                    Arg.Any<IEnumerable<string>>())
                 .Returns(false);
             this.action = () => this.Sut.Create(context);
         }
