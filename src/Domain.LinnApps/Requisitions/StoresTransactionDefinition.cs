@@ -24,6 +24,8 @@
 
         public string DocType { get; set; }
 
+        public string Doc2Type { get; set; }
+
         public string StockAllocations { get; set; }
 
         public string OntoTransactions { get; set; }

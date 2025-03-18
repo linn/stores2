@@ -39,6 +39,14 @@
 
         public string Document1Name { get; set; }
 
+        public bool Document2Required { get; set; }
+
+        public bool Document2Entered { get; set; }
+
+        public string Document2Text { get; set; }
+
+        public string Document2Name { get; set; }
+
         public string PartSource { get; set; }
 
         public bool PartNumberRequired { get; set; }

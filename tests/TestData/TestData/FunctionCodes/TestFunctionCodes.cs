@@ -119,6 +119,34 @@
                 }
             };
 
+        public static readonly StoresFunction CustomerReturn =
+            new StoresFunction("CUSTRET")
+            {
+                Description = "RETURN GOODS FROM CUSTOMER TO STOCK/INSPECTION",
+                DepartmentNominalRequired = "N",
+                Document1RequiredFlag = "Y",
+                Document2RequiredFlag = "Y",
+                FromStateRequired = "N",
+                PartSource = "C",
+                TransactionsTypes = new List<StoresFunctionTransaction>()
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "CUSTRET",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.CustomerToInspection,
+                        TransactionCode = TestTransDefs.CustomerToInspection.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "CUSTRET",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.CustomerToGoodStock,
+                        TransactionCode = TestTransDefs.CustomerToGoodStock.TransactionCode
+                    }
+                }
+            };
+
         public static readonly StoresFunction LinnDeptReq =
             new StoresFunction("LDREQ")
             {

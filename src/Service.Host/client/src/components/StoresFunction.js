@@ -192,6 +192,22 @@ function StoresFunction() {
                             <Grid size={2}>
                                 {<Typography variant="body1">{result.document1Text}</Typography>}
                             </Grid>
+                            {yesNoIcon(
+                                'Document 2',
+                                result.document2Required,
+                                'Required',
+                                'Not Required'
+                            )}
+                            {yesNoIcon(
+                                'Doc2 Entered',
+                                result.document2Entered,
+                                'Required',
+                                'Not Required'
+                            )}
+                            <Grid size={2}>{<Typography variant="body1">Text</Typography>}</Grid>
+                            <Grid size={2}>
+                                {<Typography variant="body1">{result.document2Text}</Typography>}
+                            </Grid>
                             {showRequired('Part Number', result.partNumberRequired)}
                             {showRequired('Quantity', result.quantityRequired)}
                             <Grid size={2}>
