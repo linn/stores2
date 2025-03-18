@@ -198,7 +198,8 @@
                              resource.FromState,
                              resource.ToState,
                              resource.BatchRef,
-                             string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate));
+                             string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
+                             resource.Lines?.Select(BuildLineCandidateFromResource));
             return result;
         }
 

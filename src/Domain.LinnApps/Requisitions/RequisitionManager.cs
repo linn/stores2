@@ -251,6 +251,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // we need this so the line exists for the stored procedure calls coming next
             await this.transactionManager.CommitAsync();
 
+            var createdMoves = false;
             if (toAdd.Moves != null)
             {
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
@@ -275,6 +276,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         throw new PickStockException("failed in pick_stock: " + pickResult.Message);
                     }
+
+                    createdMoves = true;
                 }
 
                 // write ons
@@ -314,7 +317,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                 moveOnto.ToPallet,
                                                 moveOnto.ToStockPool,
                                                 moveOnto.ToState,
-                                                "FREE"); // todo
+                                                "FREE",
+                                                createdMoves ? "U" : "I");
 
                     if (!insertOntosResult.Success)
                     {
@@ -329,8 +333,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                            header.ReqNumber,
                                            toAdd.Qty,
                                            toAdd.LineNumber,
-                                           header.Nominal.NominalCode,
-                                           header.Department.DepartmentCode);
+                                           header.Nominal?.NominalCode,
+                                           header.Department?.DepartmentCode);
 
             if (!createPostingsResult.Success)
             {

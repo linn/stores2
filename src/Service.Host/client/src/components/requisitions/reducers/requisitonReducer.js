@@ -68,6 +68,15 @@ function reducer(state, action) {
                         stockAllocations: lineTransactionType.stockAllocations
                     };
                 }
+            } else if (storesFunctionTransactions && storesFunctionTransactions.length) {
+                const lineTransactionType = storesFunctionTransactions[0];
+                if (lineTransactionType) {
+                    lineTransaction = {
+                        transactionCode: lineTransactionType.transactionDefinition,
+                        transactionCodeDescription: lineTransactionType.transactionDescription,
+                        stockAllocations: lineTransactionType.stockAllocations
+                    };
+                }
             }
 
             // use the next available line number

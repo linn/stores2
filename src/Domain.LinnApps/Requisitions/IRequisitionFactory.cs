@@ -30,6 +30,7 @@
             string fromState = null,
             string toState = null,
             string batchRef = null,
-            DateTime? batchDate = null);
+            DateTime? batchDate = null,
+            IEnumerable<LineCandidate> lines = null);
     }
 }

@@ -476,7 +476,8 @@
             int? palletNumber,
             string stockPool,
             string state,
-            string category)
+            string category,
+            string insertOrUpdate = "I")
         {
             await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
 
@@ -542,7 +543,7 @@
             cmd.Parameters.Add(new OracleParameter("p_ins_upd", OracleDbType.Varchar2)
                                    {
                                        Direction = ParameterDirection.Input,
-                                       Value = "I" // todo - hardcoded to insert moves for now, but can pass U for updating existing moves
+                                       Value = insertOrUpdate
                                    });
 
             var successParameter = new OracleParameter("p_success", OracleDbType.Int32)

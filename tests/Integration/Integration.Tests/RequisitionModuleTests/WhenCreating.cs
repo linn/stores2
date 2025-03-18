@@ -73,7 +73,12 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                 null,
                 null,
                 null,
-                null).Returns(
+                null,
+                null,
+                null,
+                null,
+                null,
+                Arg.Any<IEnumerable<LineCandidate>>()).Returns(
                 new ReqWithReqNumber(
                 123,
                 new Employee(),
