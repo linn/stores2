@@ -81,8 +81,8 @@
                 "STORES",
                 "QC",
                 context.BatchRef,
-                context.BatchDate);
-            await this.reqRepository.AddAsync(req);
+                context.BatchDate,
+                "FREE");
             
             // add lines and book
             await this.requisitionManager.CheckAndBookRequisitionHeader(req);

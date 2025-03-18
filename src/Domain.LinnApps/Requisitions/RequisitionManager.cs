@@ -371,7 +371,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             await this.repository.AddAsync(header);
 
-            DoProcessResultCheck(
+            DoProcessResultCheck(  
                 await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
 
             DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(

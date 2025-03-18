@@ -25,7 +25,8 @@ function Document1({
             onSelect({
                 partNumber: purchaseOrder.details[0].partNumber,
                 partDescription: purchaseOrder.details[0].partDescription,
-                batchRef: `P${purchaseOrder.orderNumber}`
+                batchRef: `P${purchaseOrder.orderNumber}`,
+                document1Line: 1
             });
             clearPurchaseOrder();
         }

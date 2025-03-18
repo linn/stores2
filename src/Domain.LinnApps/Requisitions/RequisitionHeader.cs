@@ -9,7 +9,6 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     public class RequisitionHeader
     {
@@ -90,6 +89,8 @@
         public int? LoanNumber { get; protected set; }
 
         public string ReqSource { get; set; }
+        
+        public string UnitOfMeasure { get; protected set; }
 
         protected RequisitionHeader()
         {
@@ -118,7 +119,8 @@
             string toState = null,
             string fromState = null,
             string batchRef = null,
-            DateTime? batchDate = null)
+            DateTime? batchDate = null,
+            string category = null)
         {
             this.CreatedBy = createdBy;
             this.Comments = comments;
@@ -128,6 +130,7 @@
             this.Document1Line = document1Line;
             this.Quantity = quantity;
             this.Part = part;
+            this.UnitOfMeasure = part?.OurUnitOfMeasure;
             this.ToPalletNumber = toPalletNumber;
             this.FromPalletNumber = fromPalletNumber;
             this.ToState = toState;
@@ -140,7 +143,7 @@
             this.Cancelled = "N";
             this.BatchRef = batchRef;
             this.BatchDate = batchDate;
-
+            this.ToCategory = category;
             this.Document1 = document1Number;
 
             this.Department = department;

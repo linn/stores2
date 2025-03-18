@@ -433,7 +433,17 @@ function Requisition({ creating }) {
             type: 'set_header_value',
             payload: {
                 fieldName: 'part',
-                newValue: { partNumber: selected.partNumber, description: selected.partDescription }
+                newValue: {
+                    partNumber: selected.partNumber,
+                    description: selected.partDescription
+                }
+            }
+        });
+        dispatch({
+            type: 'set_header_value',
+            payload: {
+                fieldName: 'document1Line',
+                newValue: selected.document1Line
             }
         });
         if (selected.batchRef) {
@@ -442,7 +452,6 @@ function Requisition({ creating }) {
                 payload: { fieldName: 'batchRef', newValue: selected.batchRef }
             });
         }
-        console.log(selected);
     };
 
     // for now...

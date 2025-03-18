@@ -13,6 +13,8 @@
         public string DateCreated { get; set; }
 
         public int? Document1 { get; set; }
+        
+        public int? Document1Line { get; set; }
 
         public IEnumerable<RequisitionLineResource> Lines { get; set; }
 
