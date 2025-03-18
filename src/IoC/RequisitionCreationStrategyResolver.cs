@@ -31,7 +31,12 @@ namespace Linn.Stores2.IoC
             {
                 return this.serviceProvider.GetRequiredService<LoanOutCreationStrategy>();
             }
-            
+
+            if (context.Function.FunctionCode == "GIST PO")
+            {
+                return this.serviceProvider.GetRequiredService<GistPoCreationStrategy>();
+            }
+
             if (context.PartNumber != null && context.Function.FunctionType == "A")
             {
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();

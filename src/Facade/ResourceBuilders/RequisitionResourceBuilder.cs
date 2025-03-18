@@ -33,7 +33,6 @@
                            Document1 = header.Document1,
                            Quantity = header.Quantity,
                            Document1Name = header.Document1Name,
-                           PartNumber = header.Part?.PartNumber,
                            Part = header.Part == null
                                       ? null
                                       : new PartResource

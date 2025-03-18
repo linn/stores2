@@ -27,8 +27,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IEnumerable<string> privileges);
 
         Task<RequisitionHeader> AuthoriseRequisition(int reqNumber, int authorisedBy, IEnumerable<string> privileges);
-
-
+        
         Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd);
 
         Task CheckAndBookRequisitionHeader(RequisitionHeader header);

@@ -48,7 +48,7 @@
             this.NominalRepository.FindByIdAsync(this.context.NominalCode).Returns(nom);
             this.EmployeeRepository.FindByIdAsync(this.context.CreatedByUserNumber).Returns(employee);
             this.AuthService.HasPermissionFor(
-                    AuthorisedActions.Ldreq,
+                    AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
                     Arg.Any<IEnumerable<string>>())
                 .Returns(true);
 

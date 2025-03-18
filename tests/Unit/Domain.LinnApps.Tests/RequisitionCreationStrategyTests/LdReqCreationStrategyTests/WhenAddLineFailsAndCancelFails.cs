@@ -46,7 +46,7 @@
             this.NominalRepository.FindByIdAsync(context.NominalCode).Returns(new Nominal());
 
             this.AuthService.HasPermissionFor(
-                    AuthorisedActions.Ldreq,
+                    AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
                     Arg.Any<IEnumerable<string>>())
                 .Returns(true);
             this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), context.FirstLineCandidate)
