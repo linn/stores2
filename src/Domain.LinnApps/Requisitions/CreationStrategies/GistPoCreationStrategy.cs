@@ -9,7 +9,7 @@
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
-    // todo - this porbably doesnt need its own strategy? very similar to the AutomaticBookFromHeaderStrategy
+    // todo - this probably doesnt need its own strategy? very similar to the AutomaticBookFromHeaderStrategy
     // but leaving for now in case I discover significant deviation
     public class GistPoCreationStrategy : ICreationStrategy
     {
