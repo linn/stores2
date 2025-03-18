@@ -439,7 +439,6 @@
             e.Property(r => r.LoanNumber).HasColumnName("LOAN_NUMBER");
             e.Property(r => r.ToCategory).HasColumnName("CATEGORY").HasMaxLength(6);
             e.Property(r => r.UnitOfMeasure).HasColumnName("UNIT_OF_MEASURE").HasMaxLength(14);
-
         }
 
         private static void BuildRequisitionHistory(ModelBuilder builder)
