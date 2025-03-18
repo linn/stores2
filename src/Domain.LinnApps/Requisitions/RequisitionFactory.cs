@@ -24,30 +24,32 @@
         }
 
         public async Task<RequisitionHeader> CreateRequisition(
-             int createdBy,
-             IEnumerable<string> privileges,
-             string functionCode,
-             string reqType,
-             int? document1Number,
-             string document1Type,
-             string departmentCode,
-             string nominalCode,
-             LineCandidate firstLine = null,
-             string reference = null,
-             string comments = null,
-             string manualPick = null,
-             string fromStockPool = null,
-             string toStockPool = null,
-             int? fromPalletNumber = null,
-             int? toPalletNumber = null,
-             string fromLocationCode = null,
-             string toLocationCode = null,
-             string partNumber = null,
-             decimal? quantity = null,
-             string fromState = null,
-             string toState = null,
-             string batchRef = null,
-             DateTime? batchDate = null)
+            int createdBy,
+            IEnumerable<string> privileges,
+            string functionCode,
+            string reqType,
+            int? document1Number,
+            int? document1Line,
+            string document1Type,
+            string departmentCode,
+            string nominalCode,
+            LineCandidate firstLine = null,
+            string reference = null,
+            string comments = null,
+            string manualPick = null,
+            string fromStockPool = null,
+            string toStockPool = null,
+            int? fromPalletNumber = null,
+            int? toPalletNumber = null,
+            string fromLocationCode = null,
+            string toLocationCode = null,
+            string partNumber = null,
+            decimal? quantity = null,
+            string fromState = null,
+            string toState = null,
+            string batchRef = null,
+            DateTime? batchDate = null,
+            IEnumerable<LineCandidate> lines = null)
         {
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
            
@@ -60,7 +62,7 @@
                                   ReqType = reqType,
                                   Document1Number = document1Number,
                                   Document1Type = document1Type,
-                                  Document1Line = null,
+                                  Document1Line = document1Line,
                                   DepartmentCode = departmentCode,
                                   NominalCode = nominalCode,
                                   Reference = reference,
@@ -77,7 +79,8 @@
                                   FromPallet = fromPalletNumber,
                                   ToPallet = toPalletNumber,
                                   BatchRef = batchRef,
-                                  BatchDate = batchDate
+                                  BatchDate = batchDate,
+                                  Lines = lines
                               };
 
             var strategy = this.creationStrategyResolver.Resolve(context);

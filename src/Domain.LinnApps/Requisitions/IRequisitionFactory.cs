@@ -6,12 +6,12 @@
 
     public interface IRequisitionFactory
     {
-        Task<RequisitionHeader> CreateRequisition(
-            int createdBy,
+        Task<RequisitionHeader> CreateRequisition(int createdBy,
             IEnumerable<string> privileges,
             string functionCode,
             string reqType,
             int? document1Number,
+            int? document1Line,
             string document1Type,
             string departmentCode,
             string nominalCode,
@@ -30,6 +30,7 @@
             string fromState = null,
             string toState = null,
             string batchRef = null,
-            DateTime? batchDate = null);
+            DateTime? batchDate = null,
+            IEnumerable<LineCandidate> lines = null);
     }
 }

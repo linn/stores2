@@ -1,9 +1,8 @@
-﻿
-using System.Collections.Generic;
-
-namespace Linn.Stores2.IoC
+﻿namespace Linn.Stores2.IoC
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
@@ -31,10 +30,20 @@ namespace Linn.Stores2.IoC
             {
                 return this.serviceProvider.GetRequiredService<LoanOutCreationStrategy>();
             }
-            
+
+            if (context.Function.FunctionCode == "GIST PO")
+            {
+                return this.serviceProvider.GetRequiredService<GistPoCreationStrategy>();
+            }
+
             if (context.PartNumber != null && context.Function.FunctionType == "A")
             {
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
+            }
+
+            if (context.PartNumber == null && context.Lines?.Count() > 0)
+            {
+                return this.serviceProvider.GetRequiredService<LinesProvidedStrategy>();
             }
 
             throw new InvalidOperationException("No strategy found for given scenario");

@@ -51,10 +51,10 @@
 
         public int? ToPallet { get; set; }
 
-        public int? LoanNumber { get; set; }
-
         public DateTime? BatchDate { get; set; }
 
         public string BatchRef { get; set; }
+
+        public IEnumerable<LineCandidate> Lines { get; set; }
     }
 }

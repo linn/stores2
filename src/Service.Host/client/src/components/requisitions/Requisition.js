@@ -223,15 +223,17 @@ function Requisition({ creating }) {
 
     const validDepartmentNominal = () => {
         if (!requiresDepartmentNominal()) {
-            return true; 
+            return true;
         }
+
         return formState.nominal?.nominalCode && formState.department?.departmentCode;
     };
 
     const validFromState = () => {
         if (formState.reqType === 'F' && formState.storesFunction?.fromStateRequired === 'Y') {
-            return formState.fromState;
+            return !!formState.fromState;
         }
+
         return true;
     };
 
@@ -255,7 +257,7 @@ function Requisition({ creating }) {
             return false;
         }
 
-        return validDepartmentNominal() && validFromState() && formState.reqType;
+        return validDepartmentNominal() && validFromState();
     };
 
     const canBookLines = () => {
@@ -434,12 +436,41 @@ function Requisition({ creating }) {
         }
     };
 
+    const handleDocument1Select = selected => {
+        dispatch({
+            type: 'set_header_value',
+            payload: {
+                fieldName: 'part',
+                newValue: {
+                    partNumber: selected.partNumber,
+                    description: selected.partDescription
+                }
+            }
+        });
+        dispatch({
+            type: 'set_header_value',
+            payload: {
+                fieldName: 'document1Line',
+                newValue: selected.document1Line
+            }
+        });
+        if (selected.batchRef) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'batchRef', newValue: selected.batchRef }
+            });
+        }
+    };
+
     // for now...
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
         selectedLine &&
         ((formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O') ||
             (formState?.manualPick && formState?.reqType === 'O'));
+
+    //todo also needs to be improved
+    const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -735,6 +766,8 @@ function Requisition({ creating }) {
                                     formState.storesFunction.document1Required
                                 }
                                 shouldEnter={formState.storesFunction?.document1Entered && creating}
+                                onSelect={handleDocument1Select}
+                                partSource={formState.storesFunction?.partSource}
                             />
                             <PartNumberQuantity
                                 partNumber={formState.part?.partNumber}
@@ -855,6 +888,9 @@ function Requisition({ creating }) {
                                         cancelLine={cancel}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
+                                        isFromStock={
+                                            formState.reqType === 'F' || !formState.reqType
+                                        }
                                         addLine={() => {
                                             dispatch({ type: 'add_line' });
                                         }}
@@ -895,6 +931,18 @@ function Requisition({ creating }) {
                                                 ? () => {
                                                       dispatch({
                                                           type: 'add_move_onto',
+                                                          payload: {
+                                                              lineNumber: selectedLine
+                                                          }
+                                                      });
+                                                  }
+                                                : null
+                                        }
+                                        addMove={
+                                            canAddMoves
+                                                ? () => {
+                                                      dispatch({
+                                                          type: 'add_move',
                                                           payload: {
                                                               lineNumber: selectedLine
                                                           }

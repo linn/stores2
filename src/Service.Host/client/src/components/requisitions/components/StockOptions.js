@@ -264,6 +264,7 @@ function StockOptions({
                     setOpen={setPickStockDialogVisible}
                     partNumber={partNumber}
                     getBatches={true}
+                    batchRef={batchRef}
                     quantity={quantity}
                     state={fromState}
                     stockPool={fromStockPool}
