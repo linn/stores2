@@ -15,7 +15,6 @@ function Document1({
 }) {
     const {
         send: fetchPurchaseOrder,
-        isLoading: fetchPurchaseLoading,
         result: purchaseOrder,
         clearData: clearPurchaseOrder
     } = useGet(itemTypes.purchaseOrder.url, true);
@@ -48,7 +47,7 @@ function Document1({
                     propertyName="document1"
                     textFieldProps={{
                         onKeyDown: data => {
-                            if (data.keyCode == 13) {
+                            if (data.keyCode == 13 || data.keyCode == 9) {
                                 if (partSource === 'PO') {
                                     fetchPurchaseOrder(document1);
                                 }
