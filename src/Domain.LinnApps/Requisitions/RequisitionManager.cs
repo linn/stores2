@@ -317,7 +317,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                 moveOnto.ToPallet,
                                                 moveOnto.ToStockPool,
                                                 moveOnto.ToState,
-                                                "FREE",
+                                                "FREE", // TODO
                                                 createdMoves ? "U" : "I");
 
                     if (!insertOntosResult.Success)
