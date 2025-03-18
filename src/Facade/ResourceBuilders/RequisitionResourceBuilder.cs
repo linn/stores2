@@ -24,7 +24,7 @@
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
             var reqLineBuilder = new RequisitionLineResourceBuilder();
-            var storeFunctionBuilder = new StoresFunctionResourceBuilder();
+            var storeFunctionBuilder = new StoresFunctionResourceBuilder(this.authService);
 
             return new RequisitionHeaderResource
                        {
