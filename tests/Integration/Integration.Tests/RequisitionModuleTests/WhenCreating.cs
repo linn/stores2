@@ -74,7 +74,8 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                 fromLocationCode: null,
                 toLocationCode: null,
                 partNumber: null,
-                quantity: null).Returns(
+                quantity: null,
+                lines: Arg.Any<IEnumerable<LineCandidate>>()).Returns(
                 new ReqWithReqNumber(
                 123,
                 new Employee(),
