@@ -86,5 +86,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
             return new List<string>();
         }
+
+        public string Document1Name()
+        {
+            if (this.TransactionsTypes != null)
+            {
+                // see REQ_UT FUNCTION_CODE_WVI cursor C 
+                return this.TransactionsTypes.FirstOrDefault()?.TransactionDefinition?.DocType;
+            }
+            return string.Empty;
+        }
     }
 }

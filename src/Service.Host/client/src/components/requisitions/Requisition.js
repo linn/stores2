@@ -223,7 +223,7 @@ function Requisition({ creating }) {
 
     const validDepartmentNominal = () => {
         if (!requiresDepartmentNominal()) {
-            return false;
+            return true; 
         }
         return formState.nominal?.nominalCode && formState.department?.departmentCode;
     };

@@ -13,7 +13,7 @@ namespace Linn.Stores2.IoC
     {
         private readonly IServiceProvider serviceProvider;
 
-        private List<string> ldreqFunctions = ["LDREQ", "ADJUST", "WOFF", "ADJUST QC", "WOFF QC"];
+        private List<string> ldreqFunctions = ["LDREQ", "ADJUST", "WOFF", "ADJUST QC", "WOFF QC", "RSN"];
 
         public RequisitionCreationStrategyResolver(IServiceProvider serviceProvider)
         {

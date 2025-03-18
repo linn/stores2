@@ -329,8 +329,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                            header.ReqNumber,
                                            toAdd.Qty,
                                            toAdd.LineNumber,
-                                           header.Nominal.NominalCode,
-                                           header.Department.DepartmentCode);
+                                           header.Nominal?.NominalCode,
+                                           header.Department?.DepartmentCode);
 
             if (!createPostingsResult.Success)
             {

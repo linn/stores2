@@ -44,6 +44,7 @@
                           Document1Required = model.Document1Required(),
                           Document1Entered = model.Document1Entered(),
                           Document1Text = model.Document1Text,
+                          Document1Name = model.Document1Name(),
                           PartSource = model.PartSource,
                           PartNumberRequired = model.PartNumberRequired(),
                           BatchDateRequired = model.BatchDateRequired,

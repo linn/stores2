@@ -167,6 +167,36 @@
                 }
             };
 
+        public static readonly StoresFunction Rsn =
+            new StoresFunction("RSN")
+            {
+                Description = "BOOKS PARTS TO A RSN",
+                Document1RequiredFlag = "Y",
+                Document1Text = "RSN Number",
+                DepartmentNominalRequired = "N",
+                FromStateRequired = "N",
+                PartSource = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>()
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "RSN",
+                        Seq = 1,
+                        ReqType = "F",
+                        TransactionDefinition = TestTransDefs.StockToRSN,
+                        TransactionCode = TestTransDefs.StockToRSN.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "RSN",
+                        Seq = 2,
+                        ReqType = "O",
+                        TransactionDefinition = TestTransDefs.RSNToStock,
+                        TransactionCode = TestTransDefs.RSNToStock.TransactionCode
+                    }
+                }
+            };
+
         public static readonly StoresFunction SupplierKit =
             new StoresFunction("SUKIT")
             {
