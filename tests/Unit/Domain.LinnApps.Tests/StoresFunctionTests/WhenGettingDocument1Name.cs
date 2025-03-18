@@ -1,8 +1,7 @@
-﻿using Linn.Stores2.Domain.LinnApps.Stores;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
 {
     using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.Transactions;
