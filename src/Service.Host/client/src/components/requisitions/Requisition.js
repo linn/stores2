@@ -223,15 +223,17 @@ function Requisition({ creating }) {
 
     const validDepartmentNominal = () => {
         if (!requiresDepartmentNominal()) {
-            return true; 
+            return true;
         }
+
         return formState.nominal?.nominalCode && formState.department?.departmentCode;
     };
 
     const validFromState = () => {
         if (formState.reqType === 'F' && formState.storesFunction?.fromStateRequired === 'Y') {
-            return formState.fromState;
+            return !!formState.fromState;
         }
+
         return true;
     };
 
@@ -255,7 +257,7 @@ function Requisition({ creating }) {
             return false;
         }
 
-        return validDepartmentNominal() && validFromState() && formState.reqType;
+        return validDepartmentNominal() && validFromState();
     };
 
     const canBookLines = () => {
@@ -466,6 +468,9 @@ function Requisition({ creating }) {
         selectedLine &&
         ((formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O') ||
             (formState?.manualPick && formState?.reqType === 'O'));
+
+    //todo also needs to be improved
+    const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -883,6 +888,9 @@ function Requisition({ creating }) {
                                         cancelLine={cancel}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
+                                        isFromStock={
+                                            formState.reqType === 'F' || !formState.reqType
+                                        }
                                         addLine={() => {
                                             dispatch({ type: 'add_line' });
                                         }}
@@ -923,6 +931,18 @@ function Requisition({ creating }) {
                                                 ? () => {
                                                       dispatch({
                                                           type: 'add_move_onto',
+                                                          payload: {
+                                                              lineNumber: selectedLine
+                                                          }
+                                                      });
+                                                  }
+                                                : null
+                                        }
+                                        addMove={
+                                            canAddMoves
+                                                ? () => {
+                                                      dispatch({
+                                                          type: 'add_move',
                                                           payload: {
                                                               lineNumber: selectedLine
                                                           }

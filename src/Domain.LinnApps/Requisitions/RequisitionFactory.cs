@@ -23,7 +23,8 @@
             this.storesFunctionRepository = storesFunctionRepository;
         }
 
-        public async Task<RequisitionHeader> CreateRequisition(int createdBy,
+        public async Task<RequisitionHeader> CreateRequisition(
+            int createdBy,
             IEnumerable<string> privileges,
             string functionCode,
             string reqType,
@@ -47,7 +48,8 @@
             string fromState = null,
             string toState = null,
             string batchRef = null,
-            DateTime? batchDate = null)
+            DateTime? batchDate = null,
+            IEnumerable<LineCandidate> lines = null)
         {
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
            
@@ -77,7 +79,8 @@
                                   FromPallet = fromPalletNumber,
                                   ToPallet = toPalletNumber,
                                   BatchRef = batchRef,
-                                  BatchDate = batchDate
+                                  BatchDate = batchDate,
+                                  Lines = lines
                               };
 
             var strategy = this.creationStrategyResolver.Resolve(context);

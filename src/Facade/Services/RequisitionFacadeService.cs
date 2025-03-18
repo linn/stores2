@@ -183,7 +183,6 @@
                              resource.Document1Name, 
                              resource.Department?.DepartmentCode, 
                              resource.Nominal?.NominalCode, 
-                             // assumption is creations happen with one line only
                              BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()), 
                              reference: resource.Reference, 
                              comments: resource.Comments, 
@@ -199,7 +198,8 @@
                              fromState: resource.FromState,
                              toState: resource.ToState,
                              batchRef: resource.BatchRef,
-                             batchDate: string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate));
+                             batchDate: string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
+                             lines: resource.Lines?.Select(BuildLineCandidateFromResource));
             return result;
         }
 
