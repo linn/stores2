@@ -436,6 +436,32 @@ function Requisition({ creating }) {
         }
     };
 
+    const handleDocument1Select = selected => {
+        dispatch({
+            type: 'set_header_value',
+            payload: {
+                fieldName: 'part',
+                newValue: {
+                    partNumber: selected.partNumber,
+                    description: selected.partDescription
+                }
+            }
+        });
+        dispatch({
+            type: 'set_header_value',
+            payload: {
+                fieldName: 'document1Line',
+                newValue: selected.document1Line
+            }
+        });
+        if (selected.batchRef) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'batchRef', newValue: selected.batchRef }
+            });
+        }
+    };
+
     // for now...
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
@@ -740,6 +766,8 @@ function Requisition({ creating }) {
                                     formState.storesFunction.document1Required
                                 }
                                 shouldEnter={formState.storesFunction?.document1Entered && creating}
+                                onSelect={handleDocument1Select}
+                                partSource={formState.storesFunction?.partSource}
                             />
                             <PartNumberQuantity
                                 partNumber={formState.part?.partNumber}

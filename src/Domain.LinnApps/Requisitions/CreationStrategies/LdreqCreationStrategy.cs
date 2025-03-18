@@ -61,7 +61,7 @@
            RequisitionCreationContext context)
         {
             var privilegesList = context.UserPrivileges.ToList();
-            if (!this.authService.HasPermissionFor(AuthorisedActions.Ldreq, privilegesList))
+            if (!this.authService.HasPermissionFor(AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode), privilegesList))
             {
                 throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
             }

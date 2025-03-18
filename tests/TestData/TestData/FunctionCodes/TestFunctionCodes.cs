@@ -237,6 +237,7 @@
         public static readonly StoresFunction GistPo =
             new StoresFunction("GIST PO")
                 {
+                    QuantityRequired = "Y",
                     Description = "BOOK STOCK INTO STORES FROM QC ON A PO",
                     FromStockPoolRequired = "Y",
                     ToStockPoolRequired = "Y"
