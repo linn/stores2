@@ -14,7 +14,6 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
-    using Org.BouncyCastle.Ocsp;
 
     public class RequisitionModule : IModule
     {
