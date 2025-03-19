@@ -110,7 +110,8 @@ function Requisition({ creating }) {
         isLoading: validateLoading,
         errorMessage: validationError,
         clearPostResult: clearValidation,
-        postResult: validationSuccess
+        postResult: validationSuccess,
+        cancelRequest: cancelValidation
     } = usePost(`${itemTypes.requisitions.url}/validate`, true, true);
 
     useEffect(() => {
@@ -395,6 +396,38 @@ function Requisition({ creating }) {
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
+    // todo - move to dedicated file
+    function useDebounce(value, delay = 1000) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            return () => clearTimeout(handler);
+        }, [value, delay]);
+
+        return debouncedValue;
+    }
+
+    const debouncedFormState = useDebounce(formState, 500);
+
+    useEffect(() => {
+        if (!debouncedFormState) return;
+        clearValidation();
+        validateReq(null, debouncedFormState);
+
+        return () => cancelValidation(); // Cancel previous request on re-run
+    }, [debouncedFormState]);
+
+    const validToSaveMessage = () => {
+        if (validateLoading) {
+            return 'Thinking...';
+        }
+        return validationError ?? 'YES!';
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -415,11 +448,6 @@ function Requisition({ creating }) {
                         )}
                     </Typography>
                 </Grid>
-                {validationError && (
-                    <Grid size={12}>
-                        <ErrorCard errorMessage={validationError} />
-                    </Grid>
-                )}
                 {functionCodeError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={functionCodeError} />
@@ -582,7 +610,20 @@ function Requisition({ creating }) {
                                     propertyName="storesFunctionDescription"
                                 />
                             </Grid>
-                            <Grid size={6} />
+                            {creating ? (
+                                <Grid size={6}>
+                                    <InputField
+                                        label="Valid to Save?"
+                                        fullWidth
+                                        rows={2}
+                                        error={!validated}
+                                        propertyName="validToSaveMessage"
+                                        value={validToSaveMessage()}
+                                    />
+                                </Grid>
+                            ) : (
+                                <Grid size={6} />
+                            )}
                             <Grid size={2}>
                                 <InputField
                                     fullWidth
@@ -895,21 +936,8 @@ function Requisition({ creating }) {
                                 )}
                             </Grid>
                             <Grid size={12}>
-                                <Box sx={{ float: 'right' }}>
-                                    <Button
-                                        disabled={validateLoading || validated}
-                                        onClick={() => {
-                                            clearValidation();
-                                            validateReq(null, formState);
-                                        }}
-                                    >
-                                        {validateLoading ? 'validating...' : 'validate'}
-                                    </Button>
-                                </Box>
-                            </Grid>
-                            <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!saveIsValid()}
+                                    saveDisabled={!saveIsValid() || (creating && !validated)}
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
                                     }}
