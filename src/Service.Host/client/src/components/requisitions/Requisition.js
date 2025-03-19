@@ -417,7 +417,16 @@ function Requisition({ creating }) {
         if (validateLoading) {
             return 'Thinking...';
         }
-        return validationError ?? 'YES!';
+
+        if (validationError) {
+            return validationError;
+        }
+
+        if (validationSuccess) {
+            return 'YES!';
+        }
+
+        return '';
     };
 
     return (
