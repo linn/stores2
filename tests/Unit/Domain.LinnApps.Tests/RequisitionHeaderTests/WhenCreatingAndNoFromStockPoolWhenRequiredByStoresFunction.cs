@@ -25,14 +25,16 @@
                                     new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
                                     reference: null,
                                     comments: "adjust qc test",
-                                    fromState: "STATE");
+                                    fromState: "STATE",
+                                    quantity: 10,
+                                    toStockPool: "POOL");
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("From stock pool must be specified for GIST PO");
+                .WithMessage("Validation failed with the following errors: From stock pool must be specified for GIST PO");
         }
     }
 }

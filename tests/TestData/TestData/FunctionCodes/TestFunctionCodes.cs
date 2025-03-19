@@ -13,7 +13,7 @@
                 Document1RequiredFlag = "N",
                 FromStateRequired = "N",
                 PartSource = "N",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
+                TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
                     {
@@ -40,7 +40,7 @@
                 Document1RequiredFlag = "N",
                 FromStateRequired = "Y",
                 PartSource = "N",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
+                TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
                     {
@@ -86,7 +86,7 @@
                 Document1Text = "Order Number",
                 FromStateRequired = "N",
                 PartSource = "PO",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
+                TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
                     {
@@ -127,7 +127,7 @@
                 Document1RequiredFlag = "N",
                 FromStateRequired = "N",
                 PartSource = "N",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
+                TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
                     {
@@ -155,7 +155,7 @@
                 DepartmentNominalRequired = "N",
                 FromStateRequired = "N",
                 PartSource = "N",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
+                TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
                     {
@@ -176,7 +176,7 @@
                 DepartmentNominalRequired = "N",
                 FromStateRequired = "N",
                 PartSource = "N",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
+                TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
                     {
@@ -204,7 +204,8 @@
                 Document1RequiredFlag = "Y",
                 Document1Text = "Order Number",
                 FromStateRequired = "N",
-                PartSource = "PO"
+                PartSource = "PO",
+                ToLocationRequired = "Y"
             };
 
         public static readonly StoresFunction WriteOff =
@@ -215,7 +216,7 @@
                 Document1RequiredFlag = "N",
                 FromStateRequired = "N",
                 PartSource = "N",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
+                TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
                     {
@@ -241,6 +242,20 @@
                     Description = "BOOK STOCK INTO STORES FROM QC ON A PO",
                     FromStockPoolRequired = "Y",
                     ToStockPoolRequired = "Y"
+                };
+
+        public static readonly StoresFunction AdjustLoc =
+            new StoresFunction("ADJUST LOC")
+                {
+                    QuantityRequired = "N",
+                    ToLocationRequired = "N",
+                    FromLocationRequired = "Y"
+                };
+
+        public static readonly StoresFunction SupplierReturn =
+            new StoresFunction("SURETURN")
+                {
+                    ToStateRequired = "Y"
                 };
     }
 }

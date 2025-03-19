@@ -206,6 +206,22 @@
                 }
             }
 
+            if (this.StoresFunction.FromLocationRequired == "Y")
+            {
+                if (this.FromLocation == null && !this.FromPalletNumber.HasValue)
+                {
+                    yield return $"From location or pallet required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.StoresFunction.ToLocationRequired == "Y")
+            {
+                if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
+                {
+                    yield return $"To location or pallet required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
             if (this.StoresFunction.FromStateRequired == "Y")
             {
                 if (string.IsNullOrEmpty(this.FromState))
@@ -223,14 +239,17 @@
 
             if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
             {
-                throw new CreateRequisitionException
-                    ($"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
+               yield return $"From stock pool must be specified for {this.StoresFunction.FunctionCode}";
             }
 
             if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
             {
-                throw new CreateRequisitionException
-                    ($"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
+                yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
+            }
+
+            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
+            {
+                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
         }
 
