@@ -53,9 +53,11 @@
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
             var fromLocation = string.IsNullOrEmpty(context.FromLocationCode) ? null 
-                                : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == context.FromLocationCode);
+                                : await this.storageLocationRepository
+                                      .FindByAsync(x => x.LocationCode == context.FromLocationCode);
             var toLocation = string.IsNullOrEmpty(context.ToLocationCode) ? null
-                                   : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == context.ToLocationCode);
+                                   : await this.storageLocationRepository
+                                         .FindByAsync(x => x.LocationCode == context.ToLocationCode);
             
             // create req
             var req = new RequisitionHeader(

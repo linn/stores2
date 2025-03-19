@@ -8,7 +8,7 @@
     using Linn.Stores2.TestData.FunctionCodes;
     using NUnit.Framework;
 
-    public class WhenCreatingAndNoToStockPoolWhenRequiredByStoresFunction
+    public class WhenCreatingAndNoToStateWhenRequiredByStoresFunction
     {
         private Action action;
 
@@ -17,7 +17,7 @@
         {
             this.action = () => _ = new RequisitionHeader(
                                     new Employee(),
-                                    TestFunctionCodes.GistPo,
+                                    TestFunctionCodes.SupplierReturn,
                                     "F",
                                     123,
                                     null,
@@ -25,16 +25,18 @@
                                     new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
                                     reference: null,
                                     comments: "adjust qc test",
+                                    toStockPool: "POOL",
                                     fromState: "STATE",
-                                    quantity: 10,
-                                    fromStockPool: "A");
+                                    fromStockPool: "A",
+                                    quantity: 10);
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: To stock pool must be specified for GIST PO");
+                .WithMessage(
+                    "Validation failed with the following errors: To State must be specified for SURETURN");
         }
     }
 }

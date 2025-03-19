@@ -267,70 +267,6 @@ function Requisition({ creating }) {
         return false;
     };
 
-    const optionalOrNeeded = code => {
-        if (code === 'O' || code === 'Y') {
-            return true;
-        }
-
-        return false;
-    };
-
-    const okToSaveFrontPageMove = () => {
-        if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
-            if (
-                optionalOrNeeded(formState.storesFunction.fromLocationRequired) &&
-                !formState.fromLocationCode &&
-                !formState.fromPalletNumber
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.fromStockPoolRequired) &&
-                !formState.fromStockPool
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.fromStateRequired) &&
-                !formState.fromState
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.quantityRequired) &&
-                !formState.quantity
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.toLocationRequired) &&
-                !formState.toLocationCode &&
-                !formState.toPalletNumber
-            ) {
-                return false;
-            }
-
-            if (optionalOrNeeded(formState.storesFunction.toStateRequired) && !formState.toState) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.toStockPoolRequired) &&
-                !formState.toStockPool
-            ) {
-                return false;
-            }
-
-            return true;
-        }
-
-        return false;
-    };
-
     // just for now to only allow updates of comments field
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
@@ -351,22 +287,9 @@ function Requisition({ creating }) {
     };
 
     const saveIsValid = () => {
-        // todo - all of this code should be moved into the domain validation code
-        // that is now invoked by hitting the /validate endpoint
-        // but leaving here for now
         if (creating) {
-            // header specifies part, i.e. no explicit lines
-            if (formState.part?.partNumber) {
-                return okToSaveFrontPageMove();
-            }
-            if (formState.storesFunction?.code === 'LOAN OUT') {
-                return !!formState.document1;
-            }
-
-            // if none of the above was satisfied and no lines
-            if (!formState?.lines?.length) {
-                return false;
-            }
+            // validation perfomed on the server
+            return true;
         }
 
         // Allow saving if stock is picked for an either a new or existing line
