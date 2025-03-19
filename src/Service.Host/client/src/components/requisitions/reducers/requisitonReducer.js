@@ -36,6 +36,12 @@ function reducer(state, action) {
                         document1: action.payload.newValue
                     };
                 }
+            } else if (action.payload.fieldName === 'document2') {
+                return {
+                    ...state,
+                    document2Name: state.storesFunction?.document1Name,
+                    document2: action.payload.newValue
+                };
             } else if (action.payload.fieldName === 'storesFunction') {
                 if (
                     action.payload.newValue?.nominalCode &&

@@ -33,6 +33,8 @@
 
         public bool Document1Required { get; set; }
 
+        public string Document1LineRequired { get; set; }
+
         public bool Document1Entered { get; set; }
 
         public string Document1Text { get; set; }

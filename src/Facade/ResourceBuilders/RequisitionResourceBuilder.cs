@@ -85,6 +85,8 @@
                            ToState = header.ToState,    
                            AccountingCompanyCode = header.AccountingCompanyCode(),
                            LoanNumber = header.LoanNumber,
+                           Document2 = header.Document2,
+                           Document2Name = header.Document2Name,
                            Links = this.BuildLinks(header, claims).ToArray()
                         };
         }

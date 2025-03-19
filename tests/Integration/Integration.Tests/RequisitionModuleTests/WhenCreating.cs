@@ -61,6 +61,8 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                 null, 
                 null,
                 null,
+                null,
+                null,
                 this.resource.Department.DepartmentCode,
                 this.resource.Nominal.NominalCode,
                 Arg.Any<LineCandidate>(),

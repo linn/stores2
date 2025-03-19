@@ -192,6 +192,12 @@ function StoresFunction() {
                             <Grid size={2}>
                                 {<Typography variant="body1">{result.document1Text}</Typography>}
                             </Grid>
+                            {showRequired('Doc 1 Line', result.document1LineRequired)}
+                            <Grid size={4} />
+                            <Grid size={2}>{<Typography variant="body1">Name</Typography>}</Grid>
+                            <Grid size={2}>
+                                {<Typography variant="body1">{result.document1Name}</Typography>}
+                            </Grid>
                             {yesNoIcon(
                                 'Document 2',
                                 result.document2Required,
@@ -208,7 +214,12 @@ function StoresFunction() {
                             <Grid size={2}>
                                 {<Typography variant="body1">{result.document2Text}</Typography>}
                             </Grid>
-                            {showRequired('Part Number', result.partNumberRequired)}
+                            {yesNoIcon(
+                                'Part Number',
+                                result.partNumberRequired,
+                                'Required',
+                                'Not Required'
+                            )}
                             {showRequired('Quantity', result.quantityRequired)}
                             <Grid size={2}>
                                 {<Typography variant="body1">Part Source</Typography>}
@@ -219,7 +230,7 @@ function StoresFunction() {
                                     items={[
                                         { id: 'N', displayText: 'N - Not Required' },
                                         { id: 'PO', displayText: 'PO - Purchase Order' },
-                                        { id: 'C', displayText: 'C - Credit Order' },
+                                        { id: 'C', displayText: 'C - Credit Note' },
                                         { id: 'RO', displayText: 'RO - Returns Order' },
                                         { id: 'WO', displayText: 'WO - Works Order' },
                                         { id: 'IP', displayText: 'IP - Input' },
@@ -239,7 +250,7 @@ function StoresFunction() {
                             <Grid size={4} />
                             {showRequired('To Location', result.toLocationRequired)}
                             {showRequired('To State', result.toStateRequired)}
-                            {showRequired('To Stock Pool', result.toStockPool)}
+                            {showRequired('To Stock Pool', result.toStockPoolRequired)}
                             <Grid size={12}>
                                 {result.transactionTypes && (
                                     <DataGrid

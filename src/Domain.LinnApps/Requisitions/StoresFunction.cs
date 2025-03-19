@@ -44,6 +44,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         // Y - Yes, O, X or N - No
         public string Document1RequiredFlag { get; set; }
 
+        public string Document1LineRequiredFlag { get; set; }
+
         public string Document1Text { get; set; }
 
         // Y - Yes, O, X or N - No
