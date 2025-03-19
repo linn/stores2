@@ -85,6 +85,11 @@
                 context.BatchRef,
                 context.BatchDate,
                 "FREE");
+
+            if (context.ValidateOnly.GetValueOrDefault())
+            {
+                return req;
+            }
             
             // add lines and book
             await this.requisitionManager.CheckAndBookRequisitionHeader(req);

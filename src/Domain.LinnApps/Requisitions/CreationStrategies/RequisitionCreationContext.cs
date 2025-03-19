@@ -60,5 +60,7 @@
         public string BatchRef { get; set; }
 
         public IEnumerable<LineCandidate> Lines { get; set; }
+
+        public bool? ValidateOnly { get; set; }
     }
 }

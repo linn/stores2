@@ -95,6 +95,16 @@
                 context.BatchRef,
                 context.BatchDate);
 
+            if (context.Lines == null || !context.Lines.Any())
+            {
+                throw new CreateRequisitionException($"Must provide lines for {context.Function.FunctionCode}");
+            }
+
+            if (context.ValidateOnly.GetValueOrDefault())
+            {
+                return req;
+            }
+
             await this.repository.AddAsync(req);
 
             foreach (var lineCandidate in context.Lines)

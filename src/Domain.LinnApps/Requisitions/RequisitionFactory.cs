@@ -91,5 +91,68 @@
             var result = await strategy.Create(context);
             return result;
         }
+
+        public async Task<RequisitionHeader> Validate(
+            IEnumerable<string> privileges,
+            int createdBy,
+            string functionCode,
+            string reqType,
+            int? document1Number,
+            string document1Type,
+            string departmentCode,
+            string nominalCode,
+            LineCandidate firstLine = null,
+            string reference = null,
+            string comments = null,
+            string manualPick = null,
+            string fromStockPool = null,
+            string toStockPool = null,
+            int? fromPalletNumber = null,
+            int? toPalletNumber = null,
+            string fromLocationCode = null,
+            string toLocationCode = null,
+            string partNumber = null,
+            decimal? quantity = null,
+            string fromState = null,
+            string toState = null,
+            string batchRef = null,
+            DateTime? batchDate = null)
+        {
+            var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
+
+            var context = new RequisitionCreationContext
+                              {
+                                  Function = function,
+                                  CreatedByUserNumber = createdBy,
+                                  UserPrivileges = privileges,
+                                  FirstLineCandidate = firstLine,
+                                  ReqType = reqType,
+                                  Document1Number = document1Number,
+                                  Document1Type = document1Type,
+                                  DepartmentCode = departmentCode,
+                                  NominalCode = nominalCode,
+                                  Reference = reference,
+                                  Comments = comments,
+                                  ManualPick = manualPick,
+                                  FromStockPool = fromStockPool?.ToUpper(),
+                                  ToStockPool = toStockPool?.ToUpper(),
+                                  FromLocationCode = fromLocationCode?.ToUpper(),
+                                  ToLocationCode = toLocationCode?.ToUpper(),
+                                  PartNumber = partNumber?.ToUpper(),
+                                  Quantity = quantity,
+                                  FromState = fromState?.ToUpper(),
+                                  ToState = toState?.ToUpper(),
+                                  FromPallet = fromPalletNumber,
+                                  ToPallet = toPalletNumber,
+                                  BatchRef = batchRef,
+                                  BatchDate = batchDate,
+                                  Lines = new List<LineCandidate> { firstLine },
+                                  ValidateOnly = true // don't call any stored procedures or commit anything
+                              };
+
+            var strategy = this.creationStrategyResolver.Resolve(context);
+            var result = await strategy.Create(context);
+            return result;
+        }
     }
 }

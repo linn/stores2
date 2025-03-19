@@ -14,6 +14,20 @@
 
         public async Task<RequisitionHeader> Create(RequisitionCreationContext context)
         {
+            var req = new RequisitionHeader(
+                new Employee(),
+                context.Function,
+                null,
+                context.Document1Number,
+                context.Document1Type,
+                null,
+                null);
+
+            if (context.ValidateOnly.GetValueOrDefault())
+            {
+                return req;
+            }
+
             if (context.Function.FunctionCode != "LOAN OUT")
             {
                 throw new CreateRequisitionException("Loan Out Creation Strategy requires a LOAN OUT function");
@@ -29,7 +43,7 @@
                 throw new CreateRequisitionException("Loan Out function requires a Loan document number");
             }
 
-            var req = await this.requisitionManager.CreateLoanReq(context.Document1Number.Value);
+            req = await this.requisitionManager.CreateLoanReq(req.Document1.GetValueOrDefault());
             
             // need to add some extra fields to make picking and booking possible
             // REQ_UT does this from function code WVI but we know what they should be

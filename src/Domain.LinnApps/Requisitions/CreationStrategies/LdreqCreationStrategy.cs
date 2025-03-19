@@ -82,8 +82,7 @@
                 ? null : await this.storageLocationRepository
                              .FindByAsync(x => x.LocationCode == context.FromLocationCode);
             var toLocation = string.IsNullOrEmpty(context.ToLocationCode)
-                                   ? null : await this.storageLocationRepository.
-                                                FindByAsync(x => x.LocationCode == context.ToLocationCode);
+                                   ? null : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == context.ToLocationCode);
 
             // header
             var req = new RequisitionHeader(
@@ -110,6 +109,11 @@
                 context.ToState);
 
             await this.repository.AddAsync(req);
+
+            if (context.ValidateOnly.GetValueOrDefault())
+            {
+                return req;
+            }
 
             // lines
             try

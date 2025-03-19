@@ -6,7 +6,8 @@
 
     public interface IRequisitionFactory
     {
-        Task<RequisitionHeader> CreateRequisition(int createdBy,
+        Task<RequisitionHeader> CreateRequisition(
+            int createdBy,
             IEnumerable<string> privileges,
             string functionCode,
             string reqType,
@@ -34,5 +35,31 @@
             string batchRef = null,
             DateTime? batchDate = null,
             IEnumerable<LineCandidate> lines = null);
+
+        Task<RequisitionHeader> Validate(
+            IEnumerable<string> privileges,
+            int createdBy,
+            string functionCode,
+            string reqType,
+            int? document1Number,
+            string document1Type,
+            string departmentCode,
+            string nominalCode,
+            LineCandidate firstLine = null,
+            string reference = null,
+            string comments = null,
+            string manualPick = null,
+            string fromStockPool = null,
+            string toStockPool = null,
+            int? fromPalletNumber = null,
+            int? toPalletNumber = null,
+            string fromLocationCode = null,
+            string toLocationCode = null,
+            string partNumber = null,
+            decimal? quantity = null,
+            string fromState = null,
+            string toState = null,
+            string batchRef = null,
+            DateTime? batchDate = null);
     }
 }

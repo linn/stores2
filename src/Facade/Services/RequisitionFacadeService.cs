@@ -132,11 +132,16 @@
             }
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> Validate(RequisitionHeaderResource resource)
+        public async Task<IResult<RequisitionHeaderResource>> Validate(
+            RequisitionHeaderResource resource,
+            IEnumerable<string> privileges)
         {
             try
             {
-                await this.requisitionManager.Validate(
+                var privilegeList = privileges.ToList();
+
+                await this.requisitionFactory.Validate(
+                    privilegeList,
                     resource.CreatedBy.GetValueOrDefault(),
                     resource.StoresFunction?.Code,
                     resource.ReqType,

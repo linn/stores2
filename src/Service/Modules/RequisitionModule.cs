@@ -140,7 +140,7 @@
             RequisitionHeaderResource resource,
             IRequisitionFacadeService service)
         {
-            await res.Negotiate(await service.Validate(resource));
+            await res.Negotiate(await service.Validate(resource, req.HttpContext.GetPrivileges()));
         }
 
 

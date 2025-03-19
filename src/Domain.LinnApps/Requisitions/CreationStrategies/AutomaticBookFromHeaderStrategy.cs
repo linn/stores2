@@ -88,6 +88,12 @@
                 context.FromState,
                 context.BatchRef,
                 context.BatchDate);
+
+            if (context.ValidateOnly.GetValueOrDefault())
+            {
+                return req;
+            }
+
             await this.requisitionManager.CheckAndBookRequisitionHeader(req);
 
             return await this.repository.FindByIdAsync(req.ReqNumber);

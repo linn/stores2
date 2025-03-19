@@ -83,11 +83,14 @@
                 context.Document2Number,
                 context.Document2Type);
 
-
             // TODO following check from VALID_CREDIT_NOTES for 
             // requisitionManager.CheckDocument1
             // check if overbooked if line
             // check if ToState is QC,FAil there is also a document2
+            if (context.ValidateOnly.GetValueOrDefault())
+            {
+                return req;
+            }
 
             // add lines and book
             await this.requisitionManager.CheckAndBookRequisitionHeader(req);
