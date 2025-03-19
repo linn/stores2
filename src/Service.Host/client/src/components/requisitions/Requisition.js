@@ -410,8 +410,8 @@ function Requisition({ creating }) {
         setValidated(false);
         validateReq(null, debouncedFormState);
 
-        return () => cancelValidation(); // Cancel previous request on re-run
-    }, [debouncedFormState]);
+        return () => cancelValidation();
+    }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
 
     const validToSaveMessage = () => {
         if (validateLoading) {
