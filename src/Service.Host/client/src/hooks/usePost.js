@@ -9,7 +9,7 @@ function usePost(url, requiresAuth = false, redirectOnSuccess = false) {
     const [postResult, setPostResult] = useState(null);
 
     const navigate = useNavigate();
-    const abortControllerRef = useRef(null); // Store AbortController
+    const abortControllerRef = useRef(null);
 
     let token = '';
     const auth = useAuth();
@@ -23,12 +23,11 @@ function usePost(url, requiresAuth = false, redirectOnSuccess = false) {
     };
 
     const send = async (id, data) => {
-        // Cancel any ongoing request before starting a new one
         if (abortControllerRef.current) {
             abortControllerRef.current.abort();
         }
 
-        const controller = new AbortController(); // Create a new controller
+        const controller = new AbortController();
         abortControllerRef.current = controller;
 
         setIsLoading(true);
@@ -44,7 +43,7 @@ function usePost(url, requiresAuth = false, redirectOnSuccess = false) {
             method: 'POST',
             body: JSON.stringify(data),
             headers: requiresAuth ? { ...headers, Authorization: `Bearer ${token}` } : headers,
-            signal: controller.signal // Attach the abort signal
+            signal: controller.signal
         };
 
         try {

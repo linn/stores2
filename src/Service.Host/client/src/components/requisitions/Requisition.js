@@ -120,15 +120,6 @@ function Requisition({ creating }) {
         }
     }, [validationSuccess]);
 
-    useEffect(() => {
-        // if any of the fields in the dependency array change, the validation needs to be run again
-        setValidated(false);
-    }, [
-        formState?.storesFunction?.functionCode,
-        formState?.nominal?.nominalCode,
-        formState?.department?.departmentCode
-    ]);
-
     const {
         send: updateReq,
         isLoading: updateLoading,
@@ -416,6 +407,7 @@ function Requisition({ creating }) {
     useEffect(() => {
         if (!debouncedFormState) return;
         clearValidation();
+        setValidated(false);
         validateReq(null, debouncedFormState);
 
         return () => cancelValidation(); // Cancel previous request on re-run
