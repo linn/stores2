@@ -28,21 +28,6 @@
                 return req;
             }
 
-            if (context.Function.FunctionCode != "LOAN OUT")
-            {
-                throw new CreateRequisitionException("Loan Out Creation Strategy requires a LOAN OUT function");
-            }
-
-            if (context.Document1Type != "L")
-            {
-                throw new CreateRequisitionException("Loan Out function requires a Loan document");
-            }
-            
-            if (context.Document1Number == null)
-            {
-                throw new CreateRequisitionException("Loan Out function requires a Loan document number");
-            }
-
             req = await this.requisitionManager.CreateLoanReq(req.Document1.GetValueOrDefault());
             
             // need to add some extra fields to make picking and booking possible
