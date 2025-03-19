@@ -167,17 +167,21 @@
 
             if (errors.Any())
             {
+                if (this.StoresFunction == null)
+                {
+                    throw new CreateRequisitionException($"{string.Join(", ", errors)}");
+                }
+
                 throw new CreateRequisitionException(
                     $"Validation failed with the following errors: {string.Join(", ", errors)}");
             }
         }
 
-
         private IEnumerable<string> Validate()
         {
             if (this.StoresFunction == null)
             {
-                yield return "Stores Function must be specified.";
+                yield return "Please choose a Function.";
                 yield break;  // don't even have a function, so no need to continue with function specific validation
             }
 
@@ -393,6 +397,7 @@
             {
                 return this.Lines.Any(l => l.RequiresAuthorisation());
             }
+
             return false;
         }
 
