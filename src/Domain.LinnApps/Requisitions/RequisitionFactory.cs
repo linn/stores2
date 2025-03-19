@@ -66,6 +66,7 @@
                                   Document1Type = document1Type,
                                   Document1Line = document1Line,
                                   Document2Number = document2Number,
+                                  Document2Type = document2Type,
                                   DepartmentCode = departmentCode,
                                   NominalCode = nominalCode,
                                   Reference = reference,

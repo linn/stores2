@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Linn.Common.Authorisation;
-using Linn.Common.Persistence;
-using Linn.Stores2.Domain.LinnApps.Exceptions;
-using Linn.Stores2.Domain.LinnApps.Parts;
-using Linn.Stores2.Domain.LinnApps.Stock;
-
-namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
+﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Linn.Common.Authorisation;
+    using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+
     public class CustRetCreationStrategy : ICreationStrategy
     {
         private readonly IAuthorisationService authorisationService;
