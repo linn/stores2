@@ -181,6 +181,8 @@
                              resource.Document1, 
                              resource.Document1Line, 
                              resource.Document1Name, 
+                             resource.Document2,
+                             resource.Document2Name,
                              resource.Department?.DepartmentCode, 
                              resource.Nominal?.NominalCode, 
                              BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()), 

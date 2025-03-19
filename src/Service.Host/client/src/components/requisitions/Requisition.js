@@ -35,6 +35,7 @@ import DepartmentNominal from './components/DepartmentNominal';
 import PartNumberQuantity from './components/PartNumberQuantity';
 import StockOptions from './components/StockOptions';
 import Document1 from './components/Document1';
+import Document2 from './components/Document2';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -417,7 +418,16 @@ function Requisition({ creating }) {
         if (validateLoading) {
             return 'Thinking...';
         }
-        return validationError ?? 'YES!';
+
+        if (validationError) {
+            return validationError;
+        }
+
+        if (validationSuccess) {
+            return 'YES!';
+        }
+
+        return '';
     };
 
     return (
@@ -716,6 +726,10 @@ function Requisition({ creating }) {
                             <Document1
                                 document1={formState.document1}
                                 document1Text={formState.storesFunction?.document1Text}
+                                document1Line={formState.document1Line}
+                                document1LineRequired={
+                                    formState.storesFunction?.document1LineRequired
+                                }
                                 handleFieldChange={handleHeaderFieldChange}
                                 shouldRender={
                                     formState.storesFunction &&
@@ -724,6 +738,16 @@ function Requisition({ creating }) {
                                 shouldEnter={formState.storesFunction?.document1Entered && creating}
                                 onSelect={handleDocument1Select}
                                 partSource={formState.storesFunction?.partSource}
+                            />
+                            <Document2
+                                document2={formState.document2}
+                                document2Text={formState.storesFunction?.document2Text}
+                                handleFieldChange={handleHeaderFieldChange}
+                                shouldRender={
+                                    formState.storesFunction &&
+                                    formState.storesFunction.document2Required
+                                }
+                                shouldEnter={formState.storesFunction?.document2Entered && creating}
                             />
                             <PartNumberQuantity
                                 partNumber={formState.part?.partNumber}

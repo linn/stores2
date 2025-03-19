@@ -62,6 +62,7 @@
                 .AddScoped<LinesProvidedStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
                 .AddScoped<GistPoCreationStrategy>()
+                .AddScoped<CustRetCreationStrategy>()
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>();
         }
 

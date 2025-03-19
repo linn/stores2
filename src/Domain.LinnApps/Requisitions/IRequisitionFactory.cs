@@ -13,6 +13,8 @@
             int? document1Number,
             int? document1Line,
             string document1Type,
+            int? document2,
+            string document2Type,
             string departmentCode,
             string nominalCode,
             LineCandidate firstLine = null,

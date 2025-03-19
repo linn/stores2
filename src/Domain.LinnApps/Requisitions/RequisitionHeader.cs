@@ -27,7 +27,11 @@
         public string Document1Name { get; protected set; }
         
         public int? Document1Line { get; protected set; }
-        
+
+        public int? Document2 { get; protected set; }
+
+        public string Document2Name { get; protected set; }
+
         public Part Part { get; protected set; }
 
         public StorageLocation ToLocation { get; protected set; }
@@ -120,7 +124,9 @@
             string fromState = null,
             string batchRef = null,
             DateTime? batchDate = null,
-            string category = null)
+            string category = null,
+            int? document2Number = null,
+            string document2Type = null)
         {
             this.CreatedBy = createdBy;
             this.Comments = comments;
@@ -150,6 +156,8 @@
             this.Nominal = nominal;
             this.Reference = reference;
             this.ReqType = reqType;
+            this.Document2 = document2Number;
+            this.Document2Name = Document2Name;
 
             this.Reversed = "N";
 

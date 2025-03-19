@@ -361,6 +361,7 @@
             q.Property(d => d.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             q.Property(d => d.QcType).HasColumnName("QC_TYPE").HasMaxLength(1);
             q.Property(d => d.DocType).HasColumnName("DOC1_TYPE").HasMaxLength(6);
+            q.Property(d => d.Doc2Type).HasColumnName("DOC2_TYPE").HasMaxLength(6);
             q.Property(d => d.StockAllocations).HasColumnName("STOCK_ALLOCATIONS").HasMaxLength(1);
             q.Property(d => d.OntoTransactions).HasColumnName("ONTO_TRANSACTIONS").HasMaxLength(1);
             q.Property(d => d.DecrementTransaction).HasColumnName("DECREMENT_TRANSACTION").HasMaxLength(1);
@@ -439,6 +440,8 @@
             e.Property(r => r.LoanNumber).HasColumnName("LOAN_NUMBER");
             e.Property(r => r.ToCategory).HasColumnName("CATEGORY").HasMaxLength(6);
             e.Property(r => r.UnitOfMeasure).HasColumnName("UNIT_OF_MEASURE").HasMaxLength(14);
+            e.Property(r => r.Document2).HasColumnName("DOCUMENT_2");
+            e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
         }
 
         private static void BuildRequisitionHistory(ModelBuilder builder)
@@ -499,7 +502,10 @@
             r.Property(c => c.ToStateRequired).HasColumnName("STATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ToStockPoolRequired).HasColumnName("TO_STOCK_POOL_REQUIRED").HasMaxLength(1);
             r.Property(c => c.Document1RequiredFlag).HasColumnName("DOCUMENT_1_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.Document1LineRequiredFlag).HasColumnName("DOC_1_LINE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.Document1Text).HasColumnName("DOCUMENT_1_TEXT").HasMaxLength(50);
+            r.Property(c => c.Document2RequiredFlag).HasColumnName("DOCUMENT_2_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.Document2Text).HasColumnName("DOCUMENT_2_TEXT").HasMaxLength(50);
             r.Property(c => c.PartSource).HasColumnName("PART_SOURCE").HasMaxLength(2);
             r.Property(c => c.BatchDateRequired).HasColumnName("BATCH_DATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.BatchRequired).HasColumnName("BATCH_REQUIRED").HasMaxLength(1);

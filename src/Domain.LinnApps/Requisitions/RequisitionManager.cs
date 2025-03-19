@@ -583,7 +583,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
-            if (req.Part == null && req.Lines.Count == 0)
+            if (req.Part == null && req.Lines.Count == 0 && function.PartNumberRequired())
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
             }

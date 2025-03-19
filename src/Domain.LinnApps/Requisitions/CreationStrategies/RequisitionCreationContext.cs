@@ -21,6 +21,10 @@
 
         public int? Document1Line { get; set; }
 
+        public int? Document2Number { get; set; }
+
+        public string Document2Type { get; set; }
+
         public string DepartmentCode { get; set; }
 
         public string NominalCode { get; set; }

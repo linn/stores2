@@ -7,6 +7,8 @@ import useGet from '../../../hooks/useGet';
 function Document1({
     document1,
     document1Text,
+    document1Line,
+    document1LineRequired,
     handleFieldChange,
     shouldRender,
     shouldEnter,
@@ -56,7 +58,19 @@ function Document1({
                     }}
                 />
             </Grid>
-            <Grid size={8} />
+            <Grid size={2}>
+                {document1LineRequired !== 'N' && (
+                    <InputField
+                        value={document1Line}
+                        type="number"
+                        disabled={!shouldEnter}
+                        label="Line"
+                        onChange={handleFieldChange}
+                        propertyName="document1Line"
+                    />
+                )}
+            </Grid>
+            <Grid size={6} />
         </>
     );
 }
