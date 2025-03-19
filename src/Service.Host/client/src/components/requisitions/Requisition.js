@@ -111,7 +111,8 @@ function Requisition({ creating }) {
         isLoading: validateLoading,
         errorMessage: validationError,
         clearPostResult: clearValidation,
-        postResult: validationSuccess
+        postResult: validationSuccess,
+        cancelRequest: cancelValidation
     } = usePost(`${itemTypes.requisitions.url}/validate`, true, true);
 
     useEffect(() => {
@@ -119,15 +120,6 @@ function Requisition({ creating }) {
             setValidated(true);
         }
     }, [validationSuccess]);
-
-    useEffect(() => {
-        // if any of the fields in the dependency array change, the validation needs to be run again
-        setValidated(false);
-    }, [
-        formState?.storesFunction?.functionCode,
-        formState?.nominal?.nominalCode,
-        formState?.department?.departmentCode
-    ]);
 
     const {
         send: updateReq,
@@ -268,70 +260,6 @@ function Requisition({ creating }) {
         return false;
     };
 
-    const optionalOrNeeded = code => {
-        if (code === 'O' || code === 'Y') {
-            return true;
-        }
-
-        return false;
-    };
-
-    const okToSaveFrontPageMove = () => {
-        if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
-            if (
-                optionalOrNeeded(formState.storesFunction.fromLocationRequired) &&
-                !formState.fromLocationCode &&
-                !formState.fromPalletNumber
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.fromStockPoolRequired) &&
-                !formState.fromStockPool
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.fromStateRequired) &&
-                !formState.fromState
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.quantityRequired) &&
-                !formState.quantity
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.toLocationRequired) &&
-                !formState.toLocationCode &&
-                !formState.toPalletNumber
-            ) {
-                return false;
-            }
-
-            if (optionalOrNeeded(formState.storesFunction.toStateRequired) && !formState.toState) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.toStockPoolRequired) &&
-                !formState.toStockPool
-            ) {
-                return false;
-            }
-
-            return true;
-        }
-
-        return false;
-    };
-
     // just for now to only allow updates of comments field
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
@@ -352,22 +280,9 @@ function Requisition({ creating }) {
     };
 
     const saveIsValid = () => {
-        // todo - all of this code should be moved into the domain validation code
-        // that is now invoked by hitting the /validate endpoint
-        // but leaving here for now
         if (creating) {
-            // header specifies part, i.e. no explicit lines
-            if (formState.part?.partNumber) {
-                return okToSaveFrontPageMove();
-            }
-            if (formState.storesFunction?.code === 'LOAN OUT') {
-                return !!formState.document1;
-            }
-
-            // if none of the above was satisfied and no lines
-            if (!formState?.lines?.length) {
-                return false;
-            }
+            // validation perfomed on the server
+            return true;
         }
 
         // Allow saving if stock is picked for an either a new or existing line
@@ -473,6 +388,39 @@ function Requisition({ creating }) {
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
+    // todo - move to dedicated file
+    function useDebounce(value, delay = 1000) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            return () => clearTimeout(handler);
+        }, [value, delay]);
+
+        return debouncedValue;
+    }
+
+    const debouncedFormState = useDebounce(formState, 500);
+
+    useEffect(() => {
+        if (!debouncedFormState) return;
+        clearValidation();
+        setValidated(false);
+        validateReq(null, debouncedFormState);
+
+        return () => cancelValidation();
+    }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
+
+    const validToSaveMessage = () => {
+        if (validateLoading) {
+            return 'Thinking...';
+        }
+        return validationError ?? 'YES!';
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -493,11 +441,6 @@ function Requisition({ creating }) {
                         )}
                     </Typography>
                 </Grid>
-                {validationError && (
-                    <Grid size={12}>
-                        <ErrorCard errorMessage={validationError} />
-                    </Grid>
-                )}
                 {functionCodeError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={functionCodeError} />
@@ -660,7 +603,20 @@ function Requisition({ creating }) {
                                     propertyName="storesFunctionDescription"
                                 />
                             </Grid>
-                            <Grid size={6} />
+                            {creating ? (
+                                <Grid size={6}>
+                                    <InputField
+                                        label="Valid to Save?"
+                                        fullWidth
+                                        rows={2}
+                                        error={!validated}
+                                        propertyName="validToSaveMessage"
+                                        value={validToSaveMessage()}
+                                    />
+                                </Grid>
+                            ) : (
+                                <Grid size={6} />
+                            )}
                             <Grid size={2}>
                                 <InputField
                                     fullWidth
@@ -987,21 +943,8 @@ function Requisition({ creating }) {
                                 )}
                             </Grid>
                             <Grid size={12}>
-                                <Box sx={{ float: 'right' }}>
-                                    <Button
-                                        disabled={validateLoading || validated}
-                                        onClick={() => {
-                                            clearValidation();
-                                            validateReq(null, formState);
-                                        }}
-                                    >
-                                        {validateLoading ? 'validating...' : 'validate'}
-                                    </Button>
-                                </Box>
-                            </Grid>
-                            <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!saveIsValid()}
+                                    saveDisabled={!saveIsValid() || (creating && !validated)}
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
                                     }}
