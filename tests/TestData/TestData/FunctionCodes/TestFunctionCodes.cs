@@ -285,8 +285,7 @@
                     ToStockPoolRequired = "Y",
                     DepartmentNominalRequired = "N",
                     Document1RequiredFlag = "Y",
-                    Document1LineRequiredFlag = "O",
-                    ToStockPoolRequired = "Y"
+                    Document1LineRequiredFlag = "O"
                 };
 
         public static readonly StoresFunction AdjustLoc =
