@@ -61,9 +61,9 @@
                 .AddScoped<AutomaticBookFromHeaderStrategy>()
                 .AddScoped<LinesProvidedStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
+                .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
                 .AddScoped<GistPoCreationStrategy>()
-                .AddScoped<CustRetCreationStrategy>()
-                .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>();
+                .AddScoped<CustRetCreationStrategy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

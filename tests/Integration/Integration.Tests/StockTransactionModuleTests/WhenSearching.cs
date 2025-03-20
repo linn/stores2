@@ -63,7 +63,7 @@
         }
 
         [Test]
-        public void ShouldReturnNoResults()
+        public void ShouldReturnResults()
         {
             var resource = this.Response.DeserializeBody<ReportReturnResource>();
             resource.ReportResults.First().title.displayString.Should().Be("Stock Transaction List");
