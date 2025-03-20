@@ -65,5 +65,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string toState = null,
             string batchRef = null,
             DateTime? batchDate = null);
+
+        DocumentResult GetDocument(string docName, int docNumber, int? lineNumber);
     }
 }

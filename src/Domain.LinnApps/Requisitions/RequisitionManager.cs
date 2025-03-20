@@ -47,6 +47,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<Nominal, string> nominalRepository;
 
+        private readonly IDocumentProxy documentProxy;
+
         public RequisitionManager(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -62,7 +64,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<StockPool, string> stockPoolRepository,
             IRepository<StoresFunction, string> storesFunctionRepository,
             IRepository<Department, string> departmentRepository,
-            IRepository<Nominal, string> nominalRepository)
+            IRepository<Nominal, string> nominalRepository,
+            IDocumentProxy documentProxy)
         {
             this.authService = authService;
             this.repository = repository;
@@ -79,6 +82,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.storesFunctionRepository = storesFunctionRepository;
             this.departmentRepository = departmentRepository;
             this.nominalRepository = nominalRepository;
+            this.documentProxy = documentProxy;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -556,7 +560,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
-            if (req.Part == null && req.Lines.Count == 0 && function.PartNumberRequired())
+            if (req.Part == null && req.Lines.Count == 0 && function.PartNumberRequired() && (function.PartSource != "C"))
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
             }
@@ -602,6 +606,32 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             return req;
+        }
+
+        public DocumentResult GetDocument(string docName, int docNumber, int? lineNumber)
+        {
+            if (docName == "C")
+            {
+                var result = this.documentProxy.GetCreditNote(docNumber, lineNumber).Result;
+
+                if (result == null)
+                {
+                    if (lineNumber.HasValue)
+                    {
+                        throw new DocumentException($"Could not find credit note {docNumber} with line {lineNumber}");
+                    }
+                    else
+                    {
+                        throw new DocumentException($"Could not find credit note {docNumber}");
+                    }
+                }
+                else
+                {
+                    return result;
+                }
+            }
+
+            return null;
         }
 
         private static void DoProcessResultCheck(ProcessResult result)
