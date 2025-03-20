@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.IoC
+﻿using Linn.Common.Proxy;
+
+namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
@@ -23,6 +25,7 @@
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Proxy;
+    using Linn.Stores2.Proxy.External;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
@@ -53,6 +56,8 @@
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
                 .AddTransient<IDatabaseService, DatabaseService>()
+                .AddTransient<IRestClient, RestClient>()
+                .AddScoped<IDocumentProxy, DocumentProxy>()
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>()

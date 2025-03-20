@@ -40,11 +40,35 @@
 
         public async Task<RequisitionHeader> Create(RequisitionCreationContext context)
         {
+            if (context.Function.FunctionCode != "CUSTRET")
+            {
+                throw new CreateRequisitionException("Cust Ret Creation Strategy requires a CUSTRET function");
+            }
+
             var privilegesList = context.UserPrivileges?.ToList();
             var authAction = AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode);
             if (!this.authorisationService.HasPermissionFor(authAction, privilegesList))
             {
-                throw new UnauthorisedActionException($"You are not authorised to raise {context.Function.FunctionCode}");
+                throw new UnauthorisedActionException($"You are not authorised to raise CUSTRET");
+            }
+
+            if (context.Document1Type != "C" || context.Document1Number == null)
+            {
+                throw new CreateRequisitionException("CUSTRET function requires a credit note");
+            }
+
+            var document = this.requisitionManager.GetDocument(context.Document1Type, context.Document1Number.Value,
+                context.Document1Line);
+            if (document == null)
+            {
+                if (context.Document1Line.HasValue)
+                {
+                    throw new CreateRequisitionException($"Could not find credit note {context.Document1Number} with line {context.Document1Line}");
+                }
+                else
+                {
+                    throw new CreateRequisitionException($"Could not find credit note {context.Document1Number}");
+                }
             }
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
