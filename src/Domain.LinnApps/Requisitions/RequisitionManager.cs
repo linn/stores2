@@ -243,11 +243,33 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves)
         {
+            var moveSpecifications = moves.ToList();
+            await this.CheckMoves(line.Part.PartNumber, moveSpecifications);
+            
+            // only implementing moves onto for now
+            foreach (var moveOnto
+                     in moveSpecifications.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
+            {
+                var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
+                    line.ReqNumber,
+                    moveOnto.Qty,
+                    line.LineNumber,
+                    moveOnto.ToLocationId,
+                    moveOnto.ToPallet,
+                    moveOnto.ToStockPool,
+                    moveOnto.ToState,
+                    "FREE");
+
+                if (!insertOntosResult.Success)
+                {
+                    throw new InsertReqOntosException($"Failed in insert_req_ontos: {insertOntosResult.Message}");
+                }
+            }
         }
 
-        public async Task CheckMoves(LineCandidate line)
+        public async Task CheckMoves(string partNumber, IEnumerable<MoveSpecification> moves)
         {
-            foreach (var moveSpecification in line.Moves)
+            foreach (var moveSpecification in moves)
             {
                 // just checking moves onto for now, but could extend if required
                 if (moveSpecification.ToPallet.HasValue || !string.IsNullOrEmpty(moveSpecification.ToLocation))
@@ -255,13 +277,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     if (moveSpecification.ToPallet.HasValue)
                     {
                         // todo - check pallet exists?
-                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
-                            line.PartNumber,
+                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(partNumber,
                             moveSpecification.ToPallet.Value);
                         if (!canPutPartOnPallet)
                         {
                             throw new CannotPutPartOnPalletException(
-                                $"Cannot put part {line.PartNumber} onto P{moveSpecification.ToPallet}");
+                                $"Cannot put part {partNumber} onto P{moveSpecification.ToPallet}");
                         }
                     }
 
@@ -291,7 +312,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var createdMoves = false;
 
-            await this.CheckMoves(toAdd);
+            await this.CheckMoves(toAdd.PartNumber, toAdd.Moves);
             
             if (toAdd.Moves != null)
             {
@@ -477,7 +498,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         await this.PickStockOnRequisitionLine(current, line);
                     }
                     
-                    await this.CheckMoves(line);
+                    await this.CheckMoves(line.PartNumber, line.Moves);
                     
                     
                     // could support other line updates, e.g. updating other line fields here 
@@ -487,7 +508,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
-                    await this.CheckMoves(line);
+                    await this.CheckMoves(line.PartNumber, line.Moves);
                     await this.AddRequisitionLine(current, line);
                 }
             }
