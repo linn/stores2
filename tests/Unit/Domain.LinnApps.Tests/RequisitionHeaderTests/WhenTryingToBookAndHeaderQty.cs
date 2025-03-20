@@ -19,14 +19,14 @@
         {
             var line1 = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.SupplierToStores)
             {
-                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) },
+                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) }
             };
             line1.AddPosting("D", 1, TestNominalAccounts.AssetsRawMat);
             line1.AddPosting("C", 1, TestNominalAccounts.UninvoicedCreditors);
 
             var line2 = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.MaterialVarianceBelowStd)
             {
-                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) },
+                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) }
             };
             line2.AddPosting("D", 1, TestNominalAccounts.AssetsRawMat);
             line2.AddPosting("C", 1, TestNominalAccounts.UninvoicedCreditors);
@@ -34,7 +34,7 @@
             this.sut = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.BookFromSupplier,
-                "F",
+                null,
                 123456,
                 "PO",
                 null,

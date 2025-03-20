@@ -39,7 +39,7 @@
             var req = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.LoanOut,
-                "F",
+                null,
                 100,
                 "L",
                 new Department("0000002508", "ASSETS"),

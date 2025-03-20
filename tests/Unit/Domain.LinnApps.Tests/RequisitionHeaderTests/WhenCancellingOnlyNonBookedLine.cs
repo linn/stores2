@@ -1,4 +1,7 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+﻿using Linn.Stores2.TestData.FunctionCodes;
+using Linn.Stores2.TestData.Transactions;
+
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
     using FluentAssertions;
@@ -18,7 +21,7 @@
         {
             this.req = new RequisitionHeader(
                 new Employee(),
-                new StoresFunction { FunctionCode = "F1" },
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 12345678,
                 "TYPE",
@@ -26,10 +29,10 @@
                 new Nominal(),
                 reference: null,
                 comments: "Goodbye Reqs");
-            var line1 = new RequisitionLine(123, 1, new Part(), 10, new StoresTransactionDefinition());
+            var line1 = new RequisitionLine(123, 1, new Part(), 10, TestTransDefs.StockToLinnDept);
             line1.Book(new DateTime(2024, 1, 1));
 
-            var unbookedLine = new RequisitionLine(123, 2, new Part(), 10, new StoresTransactionDefinition());
+            var unbookedLine = new RequisitionLine(123, 2, new Part(), 10, TestTransDefs.StockToLinnDept);
 
             this.req.AddLine(line1);
             this.req.AddLine(unbookedLine);

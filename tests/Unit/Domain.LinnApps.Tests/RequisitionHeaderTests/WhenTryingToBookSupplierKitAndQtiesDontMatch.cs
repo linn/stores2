@@ -38,7 +38,7 @@
             this.sut = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.SupplierKit,
-                "F",
+                null,
                 123456,
                 "PO",
                 null,

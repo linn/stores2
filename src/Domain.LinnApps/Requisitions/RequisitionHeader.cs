@@ -290,11 +290,11 @@
 
             var transactionTypesForFunction = this.StoresFunction.TransactionsTypes;
             var transactionReqType = transactionTypesForFunction
-                .FirstOrDefault(t => t.TransactionDefinition.TransactionCode == toAdd.TransactionDefinition.TransactionCode)?.ReqType;
+                ?.FirstOrDefault(t => t.TransactionDefinition.TransactionCode == toAdd.TransactionDefinition.TransactionCode)?.ReqType;
             if (transactionReqType != this.ReqType)
             {
                 throw new RequisitionException(
-                    $"Cannot add a {toAdd.TransactionDefinition?.TransactionCode} to a req of type {this.ReqType}");
+                    $"Cannot add a {toAdd.TransactionDefinition?.TransactionCode} line to a req of type {this.ReqType}");
             }
             
             if (toAdd.Part == null || toAdd.Qty == 0)

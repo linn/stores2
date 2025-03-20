@@ -170,6 +170,7 @@
                     {
                         FunctionCode = "LDREQ",
                         Seq = 1,
+                        ReqType = "F",
                         TransactionDefinition = TestTransDefs.StockToLinnDept,
                         TransactionCode = TestTransDefs.StockToLinnDept.TransactionCode
                     },
@@ -177,6 +178,7 @@
                     {
                         FunctionCode = "LDREQ",
                         Seq = 2,
+                        ReqType = "O",
                         TransactionDefinition = TestTransDefs.LinnDeptToStock,
                         TransactionCode = TestTransDefs.LinnDeptToStock.TransactionCode
                     }

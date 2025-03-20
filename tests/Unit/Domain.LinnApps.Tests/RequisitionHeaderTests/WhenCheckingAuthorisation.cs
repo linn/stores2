@@ -42,7 +42,7 @@
             this.sut = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.LoanOut,
-                "F",
+                null,
                 12345678,
                 "L",
                 new Department(),

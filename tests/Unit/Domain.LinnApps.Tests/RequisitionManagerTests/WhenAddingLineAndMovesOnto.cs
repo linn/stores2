@@ -1,4 +1,7 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿using Linn.Stores2.TestData.FunctionCodes;
+using Linn.Stores2.TestData.Transactions;
+
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
 
@@ -36,7 +39,7 @@
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
             this.header = new RequisitionHeader(
                 new Employee { Id = 33087 },
-                new StoresFunction("LDREQ"),
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 null,
                 null,
@@ -62,7 +65,7 @@
                                 },
                 PartNumber = this.part.PartNumber,
                 Qty = 10,
-                TransactionDefinition = "DEF"
+                TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode
             };
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
                 .Returns(this.department);
@@ -77,11 +80,11 @@
                     null,
                     512,
                     "LINN",
-                    "DEF")
+                    TestTransDefs.StockToLinnDept.TransactionCode)
                 .Returns(new ProcessResult(
                     true, string.Empty));
-            this.TransactionDefinitionRepository.FindByIdAsync("DEF")
-                .Returns(new StoresTransactionDefinition("DEF"));
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
+                .Returns(TestTransDefs.StockToLinnDept);
             this.ReqStoredProcedures.CreateNominals(
                 Arg.Any<int>(),
                 10,

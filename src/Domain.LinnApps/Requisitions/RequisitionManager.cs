@@ -241,6 +241,44 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return req;
         }
 
+        public async Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves)
+        {
+        }
+
+        public async Task CheckMoves(LineCandidate line)
+        {
+            foreach (var moveSpecification in line.Moves)
+            {
+                // just checking moves onto for now, but could extend if required
+                if (moveSpecification.ToPallet.HasValue || !string.IsNullOrEmpty(moveSpecification.ToLocation))
+                {
+                    if (moveSpecification.ToPallet.HasValue)
+                    {
+                        // todo - check pallet exists?
+                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
+                            line.PartNumber,
+                            moveSpecification.ToPallet.Value);
+                        if (!canPutPartOnPallet)
+                        {
+                            throw new CannotPutPartOnPalletException(
+                                $"Cannot put part {line.PartNumber} onto P{moveSpecification.ToPallet}");
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(moveSpecification.ToLocation))
+                    {
+                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveSpecification.ToLocation);
+                        if (toLocation == null)
+                        {
+                            throw new InsertReqOntosException($"Location {moveSpecification.ToLocation} not found");
+                        }
+                        
+                        moveSpecification.ToLocationId = toLocation.LocationId;
+                    }
+                }
+            }
+        }
+
         public async Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd)
         {
             var part = await this.partRepository.FindByIdAsync(toAdd.PartNumber);
@@ -252,6 +290,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             await this.transactionManager.CommitAsync();
 
             var createdMoves = false;
+
+            await this.CheckMoves(toAdd);
+            
             if (toAdd.Moves != null)
             {
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
@@ -284,36 +325,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 foreach (var moveOnto 
                          in toAdd.Moves.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
                 {
-                    if (moveOnto.ToPallet.HasValue)
-                    {
-                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
-                                                     toAdd.PartNumber,
-                                                     moveOnto.ToPallet.Value);
-                        if (!canPutPartOnPallet)
-                        {
-                            throw new CannotPutPartOnPalletException(
-                                $"Cannot put part {toAdd.PartNumber} onto P{moveOnto.ToPallet}");
-                        }
-                    }
-
-                    int? locationId = null;
-
-                    if (!string.IsNullOrEmpty(moveOnto.ToLocation))
-                    {
-                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveOnto.ToLocation);
-                        if (toLocation == null)
-                        {
-                            throw new InsertReqOntosException($"Did not recognise location {moveOnto.ToLocation}");
-                        }
-
-                        locationId = toLocation.LocationId;
-                    }
-
                     var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
                                                 header.ReqNumber,
                                                 moveOnto.Qty,
                                                 toAdd.LineNumber,
-                                                locationId,
+                                                moveOnto.ToLocationId,
                                                 moveOnto.ToPallet,
                                                 moveOnto.ToStockPool,
                                                 moveOnto.ToState,
@@ -461,6 +477,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         await this.PickStockOnRequisitionLine(current, line);
                     }
                     
+                    await this.CheckMoves(line);
+                    
+                    
                     // could support other line updates, e.g. updating other line fields here 
                 }
                 else
@@ -468,6 +487,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
+                    await this.CheckMoves(line);
                     await this.AddRequisitionLine(current, line);
                 }
             }
