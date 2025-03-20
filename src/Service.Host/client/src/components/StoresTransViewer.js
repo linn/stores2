@@ -110,14 +110,14 @@ function StoresTransViewer() {
                 </Grid>
                 <Grid size={1}>
                     <ExportButton
-                        buttonText="PDF"
+                        buttonText="CSV"
                         disabled={isLoading || notReadyToRun()}
-                        accept="application/pdf"
-                        fileName="stores-trans-viewer-export.pdf"
-                        tooltipText="Download report as PDF"
+                        accept="application/csv"
+                        fileName="stores-trans-viewer-export.csv"
+                        tooltipText="Download report as CSV"
                         href={`${
                             config.appRoot
-                        }/stores2/stores-trans-viewer/pdf${getQueryString()}`}
+                        }/stores2/stores-trans-viewer/report${getQueryString()}`}
                     />
                 </Grid>
                 {isLoading ||

@@ -16,7 +16,6 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/stores2/stores-trans-viewer/report", this.StoresTransViewerReport);
-            app.MapGet("/stores2/stores-trans-viewer/pdf", this.GetStoresTransactionReportPdf);
             app.MapGet("/stores2/stores-trans-viewer", this.GetApp);
         }
 
@@ -41,27 +40,6 @@
                 partNumber,
                 transactionCode,
                 functionCodeList));
-        }
-
-        private async Task GetStoresTransactionReportPdf(
-            HttpRequest req,
-            HttpResponse res,
-            string fromDate,
-            string toDate,
-            string partNumber,
-            string transactionCode,
-            string[] functionCodeList,
-            IStoresTransViewerReportFacadeService facadeService)
-        {
-            var result = await facadeService.GetStoresTransactionReportAsPdf(
-                             fromDate,
-                             toDate,
-                             partNumber,
-                             transactionCode,
-                             functionCodeList);
-
-            res.ContentType = "application/pdf";
-            await res.FromStream(result, res.ContentType, new System.Net.Mime.ContentDisposition("attachment"));
         }
     }
 }

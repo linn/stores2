@@ -15,12 +15,5 @@
             string partNumber,
             string transactionCode,
             IEnumerable<string> functionCodeList);
-
-        Task<Stream> GetStoresTransactionReportAsPdf(
-            string fromDate,
-            string toDate,
-            string partNumber,
-            string transactionCode,
-            IEnumerable<string> functionCodeList);
     }
 }

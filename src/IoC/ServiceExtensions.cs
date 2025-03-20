@@ -42,8 +42,6 @@
                 .AddSingleton<IAuthorisationService, AuthorisationService>()
                 .AddScoped<IPdfService>(
                     _ => new PdfService(ConfigurationManager.Configuration["PDF_SERVICE_ROOT"], new HttpClient()))
-                .AddTransient<IStringFromFileService>(
-                    x => new StringFromFileService(ConfigurationManager.Configuration["VIEWS_ROOT"]))
                 .AddScoped<IStoragePlaceAuditReportService, StoragePlaceAuditReportService>()
                 .AddScoped<IHtmlTemplateService<StoragePlaceAuditReport>>(
                     x => new HtmlTemplateService<StoragePlaceAuditReport>(
@@ -65,11 +63,7 @@
                 .AddScoped<LoanOutCreationStrategy>()
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
                 .AddScoped<GistPoCreationStrategy>()
-                .AddScoped<CustRetCreationStrategy>()
-                .AddScoped<IHtmlTemplateService<StoresTransactionReport>>(
-                    x => new HtmlTemplateService<StoresTransactionReport>(
-                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoresTransaction.cshtml",
-                        x.GetService<ITemplateEngine>()));
+                .AddScoped<CustRetCreationStrategy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

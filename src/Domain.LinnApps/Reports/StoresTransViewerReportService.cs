@@ -44,9 +44,9 @@
                                         x => (fromDateSearch == null || x.BudgetDate >= fromDateSearch)
                                              && (toDateSearch == null || x.BudgetDate <= toDateSearch)
                                              && (string.IsNullOrEmpty(partNumber)
-                                                 || x.Part.PartNumber.Contains(partNumber.Trim()))
+                                                 || x.Part.PartNumber == partNumber.Trim())
                                              && (string.IsNullOrEmpty(transactionCode)
-                                                 || x.TransactionCode.Contains(transactionCode.Trim()))
+                                                 || x.TransactionCode == transactionCode.Trim())
                                              && (!x.TransactionCode.StartsWith("STSTM") || x.DebitOrCredit != "D")
                                              && (functionCodes == null || functionCodes.Count == 0
                                                                        || functionCodes.Contains(
