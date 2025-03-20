@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;

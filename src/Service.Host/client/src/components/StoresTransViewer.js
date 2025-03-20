@@ -112,7 +112,6 @@ function StoresTransViewer() {
                     <ExportButton
                         buttonText="CSV"
                         disabled={isLoading || notReadyToRun()}
-                        accept="application/csv"
                         fileName="stores-trans-viewer-export.csv"
                         tooltipText="Download report as CSV"
                         href={`${
