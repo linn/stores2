@@ -42,6 +42,8 @@
                 .AddSingleton<IAuthorisationService, AuthorisationService>()
                 .AddScoped<IPdfService>(
                     _ => new PdfService(ConfigurationManager.Configuration["PDF_SERVICE_ROOT"], new HttpClient()))
+                .AddTransient<IStringFromFileService>(
+                    x => new StringFromFileService(ConfigurationManager.Configuration["VIEWS_ROOT"]))
                 .AddScoped<IStoragePlaceAuditReportService, StoragePlaceAuditReportService>()
                 .AddScoped<IHtmlTemplateService<StoragePlaceAuditReport>>(
                     x => new HtmlTemplateService<StoragePlaceAuditReport>(

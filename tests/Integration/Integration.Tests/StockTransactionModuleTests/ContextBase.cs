@@ -27,6 +27,8 @@
 
         protected IStoresTransViewerReportService StoresTransViewerReportService { get; private set; }
 
+        protected IStringFromFileService StringFromFileService { get; private set; }
+
         protected IPdfService PdfService { get; private set; }
 
         protected IHtmlTemplateService<StoresTransactionReport> HtmlTemplateServiceForStoresTransaction { get; private set; }
@@ -37,10 +39,12 @@
             this.StoresTransViewerReportService = Substitute.For<IStoresTransViewerReportService>();
             this.HtmlTemplateServiceForStoresTransaction = Substitute.For<IHtmlTemplateService<StoresTransactionReport>>();
             this.PdfService = Substitute.For<IPdfService>();
+            this.StringFromFileService = Substitute.For<IStringFromFileService>();
 
             this.StoresTransViewerReportFacadeService = new StoresTransViewerReportFacadeService(
                 this.StoresTransViewerReportService,
                 new ReportReturnResourceBuilder(), 
+                this.StringFromFileService,
                 this.PdfService,
                 this.HtmlTemplateServiceForStoresTransaction);
 

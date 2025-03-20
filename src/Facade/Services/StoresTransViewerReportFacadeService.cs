@@ -18,6 +18,8 @@
 
         private readonly IReportReturnResourceBuilder resourceBuilder;
 
+        private readonly IStringFromFileService stringFromFileService;
+
         private readonly IPdfService pdfService;
 
         private readonly IHtmlTemplateService<StoresTransactionReport> htmlTemplateServiceForStoresTransaction;
@@ -25,11 +27,13 @@
         public StoresTransViewerReportFacadeService(
             IStoresTransViewerReportService storesTransViewerReportService,
             IReportReturnResourceBuilder resourceBuilder,
+            IStringFromFileService stringFromFileService,
             IPdfService pdfService, 
             IHtmlTemplateService<StoresTransactionReport> htmlTemplateServiceForStoresTransaction)
         {
             this.storesTransViewerReportService = storesTransViewerReportService;
             this.resourceBuilder = resourceBuilder;
+            this.stringFromFileService = stringFromFileService;
             this.pdfService = pdfService;
             this.htmlTemplateServiceForStoresTransaction = htmlTemplateServiceForStoresTransaction;
         }
@@ -66,8 +70,8 @@
                 functionCodeList);
 
             var data = new StoresTransactionReport(report.Result);
-
             var html = await this.htmlTemplateServiceForStoresTransaction.GetHtml(data);
+            var footerHtml = await this.stringFromFileService.GetString("Footer.html");
 
             return await this.pdfService.ConvertHtmlToPdf(html, true);
         }
