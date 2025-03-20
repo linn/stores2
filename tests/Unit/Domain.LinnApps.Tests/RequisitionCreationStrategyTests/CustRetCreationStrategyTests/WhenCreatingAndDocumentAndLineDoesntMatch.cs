@@ -1,15 +1,15 @@
-﻿using Linn.Stores2.Domain.LinnApps.Exceptions;
-using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using NSubstitute;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using FluentAssertions;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.CustRetCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.CustRetCreationStrategyTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+    using NSubstitute;
+    using NUnit.Framework;
+
     public class WhenCreatingAndDocumentAndLineDoesntMatch : ContextBase
     {
         private Func<Task> action;

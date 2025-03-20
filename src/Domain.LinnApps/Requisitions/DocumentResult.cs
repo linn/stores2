@@ -1,7 +1,7 @@
-﻿using Linn.Stores2.Domain.LinnApps.Parts;
-
-namespace Linn.Stores2.Domain.LinnApps.Requisitions
+﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using Linn.Stores2.Domain.LinnApps.Parts;
+
     public class DocumentResult
     {
         public DocumentResult(string name, int number, int? line, decimal? qty, string partNumber)

@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Linn.Common.Authorisation;
-using Linn.Common.Persistence;
-using Linn.Stores2.Domain.LinnApps.Accounts;
-using Linn.Stores2.Domain.LinnApps.Parts;
-using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
-using Linn.Stores2.Domain.LinnApps.Stock;
-using NSubstitute;
-using NUnit.Framework;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.CustRetCreationStrategyTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.CustRetCreationStrategyTests
 {
+    using Linn.Common.Authorisation;
+    using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using NSubstitute;
+    using NUnit.Framework;
+
     public class ContextBase : ContextBaseForStrategies
     {
         protected CustRetCreationStrategy Sut { get; set; }

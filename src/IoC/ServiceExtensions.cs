@@ -1,6 +1,4 @@
-﻿using Linn.Common.Proxy;
-
-namespace Linn.Stores2.IoC
+﻿namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
@@ -8,6 +6,7 @@ namespace Linn.Stores2.IoC
     using Linn.Common.Configuration;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
+    using Linn.Common.Proxy;
     using Linn.Common.Proxy.LinnApps;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
