@@ -39,17 +39,14 @@ namespace Linn.Stores2.Proxy.External
                 {
                     return new DocumentResult("C", documentNumber, null, null, null);
                 }
-                else
+                var line = creditNote.Details.SingleOrDefault(l => l.LineNumber == documentLine.Value);
+                if (line != null)
                 {
-                    var line = creditNote.Details.SingleOrDefault(l => l.LineNumber == documentLine.Value);
-                    if (line != null)
-                    {
-                        return new DocumentResult("C", documentNumber, documentLine, line.Quantity, line.ArticleNumber);
-                    }
+                    return new DocumentResult("C", documentNumber, documentLine, line.Quantity, line.ArticleNumber);
                 }
             }
 
-            return await Task.FromResult<DocumentResult>(null);
+            return null; 
         }
 
         private IDictionary<string, string[]> JsonHeaders()
