@@ -19,5 +19,7 @@
         public string ToState { get; set; }
 
         public string FromStockPool { get; set; }
+        
+        public bool IsAddition { get; set; }
     }
 }

@@ -263,7 +263,7 @@ function Requisition({ creating }) {
     // just for now to only allow updates of comments field
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
-    const newMovesOntoAreValid = () => {
+    const movesOntoAreValid = () => {
         const newLines = formState.lines?.filter(x => x.isAddition);
         if (newLines?.length) {
             if (
@@ -290,8 +290,13 @@ function Requisition({ creating }) {
             return true;
         }
 
+        // Allow saving if new move(s)
+        if (formState.lines.some(l => l.moves?.some(x => x.isAddition))) {
+            return true;
+        }
+
         //  or  a new line has been added with valid "onto" moves
-        if (newMovesOntoAreValid()) {
+        if (movesOntoAreValid()) {
             return true;
         }
 

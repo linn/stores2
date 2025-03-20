@@ -217,7 +217,8 @@ function reducer(state, action) {
                                       toStockPool: 'LINN',
                                       toState: 'STORES',
                                       part: line.part.partNumber,
-                                      isTo: true
+                                      isTo: true,
+                                      isAddition: true
                                   }
                               ]
                           }

@@ -311,11 +311,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             await this.transactionManager.CommitAsync();
 
             var createdMoves = false;
-
-            await this.CheckMoves(toAdd.PartNumber, toAdd.Moves);
             
-            if (toAdd.Moves != null)
+            if (toAdd.Moves != null && toAdd.Moves.Any())
             {
+                await this.CheckMoves(toAdd.PartNumber, toAdd.Moves);
+
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
                 foreach (var pick in toAdd.Moves.Where(x => x.FromPallet.HasValue 
@@ -498,10 +498,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         await this.PickStockOnRequisitionLine(current, line);
                     }
                     
-                    await this.CheckMoves(line.PartNumber, line.Moves);
-                    
-                    
-                    // could support other line updates, e.g. updating other line fields here 
+                    // adding moves for an existing line
+                    var movesToAdd = line.Moves.Where(x => x.IsAddition).ToList();
+
+                    if (movesToAdd.Count <= 0)
+                    {
+                        continue;
+                    }
+                    await this.CheckMoves(line.PartNumber, movesToAdd);
+                    await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
                 {

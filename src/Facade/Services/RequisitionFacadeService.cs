@@ -291,7 +291,8 @@
                                             ToLocation = m.ToLocationCode,
                                             ToPallet = m.ToPalletNumber,
                                             ToStockPool = m.ToStockPool,
-                                            ToState = m.ToState
+                                            ToState = m.ToState,
+                                            IsAddition = m.IsAddition.GetValueOrDefault()
                                         }),
                            LineNumber = resource.LineNumber,
                            PartNumber = resource.Part?.PartNumber,
