@@ -46,6 +46,8 @@
                 fromState: "S1",
                 toState: "S2");
             this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.req);
+            this.StateRepository.FindByIdAsync("S2")
+                .Returns(new StockState("S2", "S2 desc"));
 
             this.StoresService.ValidOntoLocation(
                 Arg.Is<Part>(p => p.PartNumber == "P1"),

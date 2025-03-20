@@ -9,7 +9,6 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     public class RequisitionHeader
     {
@@ -28,7 +27,11 @@
         public string Document1Name { get; protected set; }
         
         public int? Document1Line { get; protected set; }
-        
+
+        public int? Document2 { get; protected set; }
+
+        public string Document2Name { get; protected set; }
+
         public Part Part { get; protected set; }
 
         public StorageLocation ToLocation { get; protected set; }
@@ -90,6 +93,8 @@
         public int? LoanNumber { get; protected set; }
 
         public string ReqSource { get; set; }
+        
+        public string UnitOfMeasure { get; protected set; }
 
         protected RequisitionHeader()
         {
@@ -118,7 +123,10 @@
             string toState = null,
             string fromState = null,
             string batchRef = null,
-            DateTime? batchDate = null)
+            DateTime? batchDate = null,
+            string category = null,
+            int? document2Number = null,
+            string document2Type = null)
         {
             this.CreatedBy = createdBy;
             this.Comments = comments;
@@ -128,6 +136,7 @@
             this.Document1Line = document1Line;
             this.Quantity = quantity;
             this.Part = part;
+            this.UnitOfMeasure = part?.OurUnitOfMeasure;
             this.ToPalletNumber = toPalletNumber;
             this.FromPalletNumber = fromPalletNumber;
             this.ToState = toState;
@@ -140,13 +149,15 @@
             this.Cancelled = "N";
             this.BatchRef = batchRef;
             this.BatchDate = batchDate;
-
+            this.ToCategory = category;
             this.Document1 = document1Number;
 
             this.Department = department;
             this.Nominal = nominal;
             this.Reference = reference;
             this.ReqType = reqType;
+            this.Document2 = document2Number;
+            this.Document2Name = Document2Name;
 
             this.Reversed = "N";
 
@@ -156,17 +167,21 @@
 
             if (errors.Any())
             {
+                if (this.StoresFunction == null)
+                {
+                    throw new CreateRequisitionException($"{string.Join(", ", errors)}");
+                }
+
                 throw new CreateRequisitionException(
                     $"Validation failed with the following errors: {string.Join(", ", errors)}");
             }
         }
 
-
         private IEnumerable<string> Validate()
         {
             if (this.StoresFunction == null)
             {
-                yield return "Stores Function must be specified.";
+                yield return "Please choose a Function.";
                 yield break;  // don't even have a function, so no need to continue with function specific validation
             }
 
@@ -175,6 +190,14 @@
                 if (this.Document1 == null)
                 {
                     yield return $"Document1 number required: {this.StoresFunction.Document1Text}";
+                }
+            }
+
+            if (this.StoresFunction.QuantityRequired == "Y")
+            {
+                if (this.Quantity.GetValueOrDefault() == 0)
+                {
+                    yield return $"Quantity required for: {this.StoresFunction.FunctionCode}";
                 }
             }
 
@@ -195,6 +218,22 @@
                 }
             }
 
+            if (this.StoresFunction.FromLocationRequired == "Y")
+            {
+                if (this.FromLocation == null && !this.FromPalletNumber.HasValue)
+                {
+                    yield return $"From location or pallet required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.StoresFunction.ToLocationRequired == "Y")
+            {
+                if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
+                {
+                    yield return $"To location or pallet required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
             if (this.StoresFunction.FromStateRequired == "Y")
             {
                 if (string.IsNullOrEmpty(this.FromState))
@@ -212,14 +251,17 @@
 
             if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
             {
-                throw new CreateRequisitionException
-                    ($"From stock pool must be specified for {this.StoresFunction.FunctionCode}");
+               yield return $"From stock pool must be specified for {this.StoresFunction.FunctionCode}";
             }
 
             if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
             {
-                throw new CreateRequisitionException
-                    ($"To stock pool must be specified for {this.StoresFunction.FunctionCode}");
+                yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
+            }
+
+            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
+            {
+                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
         }
 
@@ -355,6 +397,7 @@
             {
                 return this.Lines.Any(l => l.RequiresAuthorisation());
             }
+
             return false;
         }
 

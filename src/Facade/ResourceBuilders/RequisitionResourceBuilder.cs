@@ -24,7 +24,7 @@
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
             var reqLineBuilder = new RequisitionLineResourceBuilder();
-            var storeFunctionBuilder = new StoresFunctionResourceBuilder();
+            var storeFunctionBuilder = new StoresFunctionResourceBuilder(this.authService);
 
             return new RequisitionHeaderResource
                        {
@@ -33,7 +33,6 @@
                            Document1 = header.Document1,
                            Quantity = header.Quantity,
                            Document1Name = header.Document1Name,
-                           PartNumber = header.Part?.PartNumber,
                            Part = header.Part == null
                                       ? null
                                       : new PartResource
@@ -86,6 +85,8 @@
                            ToState = header.ToState,    
                            AccountingCompanyCode = header.AccountingCompanyCode(),
                            LoanNumber = header.LoanNumber,
+                           Document2 = header.Document2,
+                           Document2Name = header.Document2Name,
                            Links = this.BuildLinks(header, claims).ToArray()
                         };
         }

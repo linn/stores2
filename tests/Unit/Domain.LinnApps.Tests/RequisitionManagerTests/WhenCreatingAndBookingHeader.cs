@@ -57,6 +57,8 @@
                 .Returns(new ProcessResult(true, "can book ok"));
             this.ReqStoredProcedures.DoRequisition(Arg.Any<int>(), null, this.employeeId)
                 .Returns(new ProcessResult(true, "still ok"));
+            this.StateRepository.FindByIdAsync("S2")
+                .Returns(new StockState("S2", "S2 desc"));
 
             await this.Sut.CheckAndBookRequisitionHeader(this.req);
         }

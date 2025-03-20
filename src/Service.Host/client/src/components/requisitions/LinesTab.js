@@ -28,8 +28,7 @@ function LinesTab({
     pickStock,
     bookLine,
     canBook,
-    fromState,
-    isFromStock = false
+    fromState
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -66,7 +65,7 @@ function LinesTab({
             width: 300,
             renderCell: params => params.row.part?.description
         },
-        { field: 'qty', headerName: 'Qty', width: 80 },
+        { field: 'qty', headerName: 'Qty', width: 80, editable: true },
         { field: 'transactionCode', headerName: 'Trans Code', width: 100 },
         { field: 'transactionCodeDescription', headerName: 'Trans Desc', width: 200 },
         { field: 'document1Type', headerName: 'Doc1', width: 80 },
@@ -93,7 +92,7 @@ function LinesTab({
                 // just for now, only allowing stock pick for new rows onces
                 // todo - consider other scenarions e.g. changing pick after picked initially
                 const canPickStock =
-                    isFromStock &&
+                    params.row.stockAllocations &&
                     ((params.row.isAddition && !params.row.stockPicked) ||
                         (!params.row.isAdditon && !params.row.stockPicked && canCancel));
                 return (
@@ -140,6 +139,11 @@ function LinesTab({
         }
     ];
 
+    const processRowUpdate = updatedLine => {
+        updateLine(updatedLine.lineNumber, 'qty', updatedLine.qty);
+        return updatedLine;
+    };
+
     return (
         <Grid container spacing={3}>
             {cancelDialogVisible && (
@@ -169,7 +173,7 @@ function LinesTab({
                 open={pickStockDialogVisible}
                 setOpen={setPickStockDialogVisible}
                 partNumber={lines.find(l => l.lineNumber === selected)?.part?.partNumber}
-                quantity={lines.find(l => l.lineNumber === selected && !l.isAddition)?.qty}
+                quantity={lines.find(l => l.lineNumber === selected)?.qty}
                 handleConfirm={moves => {
                     pickStock(selected, moves);
                 }}
@@ -180,6 +184,7 @@ function LinesTab({
                     getRowId={r => r.lineNumber}
                     rows={lines}
                     columns={linesColumns}
+                    processRowUpdate={processRowUpdate}
                     rowSelectionModel={selected ? [selected] : []}
                     onRowClick={row => {
                         setSelected(row.id);

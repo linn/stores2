@@ -13,15 +13,19 @@
         public string DateCreated { get; set; }
 
         public int? Document1 { get; set; }
+        
+        public int? Document1Line { get; set; }
+
+        public string Document1Name { get; set; }
+
+        public int? Document2 { get; set; }
+
+        public string Document2Name { get; set; }
 
         public IEnumerable<RequisitionLineResource> Lines { get; set; }
 
         public decimal? Quantity { get; set; }
-
-        public string Document1Name { get; set; }
-
-        public string PartNumber { get; set; }
-
+        
         public PartResource Part { get; set; }
         
         public int? ToLocationId { get; set; }

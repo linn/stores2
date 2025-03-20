@@ -18,6 +18,7 @@ import itemTypes from '../../itemTypes';
 function MovesTab({
     moves = [],
     addMoveOnto = null,
+    addMove = null,
     updateMoveOnto = null,
     stockPools = [],
     stockStates = []
@@ -182,7 +183,10 @@ function MovesTab({
             field: 'fromBatchDate',
             headerName: 'Batch Date',
             width: 120,
-            renderCell: params => moment(params.row.fromBatchDate).format('DD-MMM-YYYY')
+            renderCell: params =>
+                params.row.fromBatchDate
+                    ? moment(params.row.fromBatchDate).format('DD-MMM-YYYY')
+                    : ''
         },
         {
             field: 'qtyAtLocation',
@@ -320,8 +324,8 @@ function MovesTab({
                 <Grid size={3}>
                     <Tooltip title="Add Line">
                         <IconButton
-                            disabled={!addMoveOnto}
-                            onClick={addMoveOnto}
+                            disabled={!addMoveOnto && !addMove}
+                            onClick={addMoveOnto ? addMoveOnto : addMove}
                             color="primary"
                             size="large"
                         >

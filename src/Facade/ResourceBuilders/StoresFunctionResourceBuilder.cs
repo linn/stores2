@@ -3,13 +3,22 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Resources.Requisitions;
 
     public class StoresFunctionResourceBuilder : IBuilder<StoresFunction>
     {
+        private readonly IAuthorisationService authService;
+
+        public StoresFunctionResourceBuilder(IAuthorisationService authService)
+        {
+            this.authService = authService;
+        }
+
         public StoresFunctionResource Build(StoresFunction model, IEnumerable<string> claims)
         {
             if (model == null)
@@ -35,6 +44,12 @@
                           Document1Required = model.Document1Required(),
                           Document1Entered = model.Document1Entered(),
                           Document1Text = model.Document1Text,
+                          Document1Name = model.Document1Name(),
+                          Document1LineRequired = model.Document1LineRequiredFlag,
+                          Document2Required = model.Document2Required(),
+                          Document2Entered = model.Document2Entered(),
+                          Document2Text = model.Document2Text,
+                          Document2Name = model.Document2Name(),
                           PartSource = model.PartSource,
                           PartNumberRequired = model.PartNumberRequired(),
                           BatchDateRequired = model.BatchDateRequired,
@@ -50,7 +65,8 @@
                                            Seq = t.Seq,
                                            ReqType = t.ReqType,
                                            TransactionDefinition = t.TransactionDefinition?.TransactionCode,
-                                           TransactionDescription = t.TransactionDefinition?.Description
+                                           TransactionDescription = t.TransactionDefinition?.Description,
+                                           StockAllocations = t.TransactionDefinition?.StockAllocations == "Y"
                                        }),
                           Links = this.BuildLinks(model, claims).ToArray()
             };
@@ -68,6 +84,14 @@
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
+
+                // annoyingly not every function needs a permission
+                var unAuthFunctions = new List<string>() { "LOAN OUT" };
+
+                if (this.authService.HasPermissionFor(AuthorisedActions.GetRequisitionActionByFunction(model.FunctionCode), claims) || unAuthFunctions.Contains(model.FunctionCode))
+                {
+                    yield return new LinkResource { Rel = "create-req", Href = "/requisitions/create" };
+                }
             }
         }
     }

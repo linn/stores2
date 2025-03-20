@@ -44,7 +44,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         // Y - Yes, O, X or N - No
         public string Document1RequiredFlag { get; set; }
 
+        public string Document1LineRequiredFlag { get; set; }
+
         public string Document1Text { get; set; }
+
+        // Y - Yes, O, X or N - No
+        public string Document2RequiredFlag { get; set; }
+
+        public string Document2Text { get; set; }
 
         public string PartSource { get; set; }
 
@@ -61,6 +68,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public bool Document1Required() => this.Document1RequiredFlag is "Y" or "O" or "X";
 
         public bool Document1Entered() => this.Document1RequiredFlag is "Y" or "O";
+
+        public bool Document2Required() => this.Document2RequiredFlag is "Y" or "O" or "X";
+
+        public bool Document2Entered() => this.Document2RequiredFlag is "Y" or "O";
 
         public bool PartNumberRequired() => this.PartSource != "N";
 
@@ -85,6 +96,26 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             }
             return new List<string>();
+        }
+
+        public string Document1Name()
+        {
+            if (this.TransactionsTypes != null)
+            {
+                // see REQ_UT FUNCTION_CODE_WVI cursor C 
+                return this.TransactionsTypes.FirstOrDefault()?.TransactionDefinition?.DocType;
+            }
+            return string.Empty;
+        }
+
+        public string Document2Name()
+        {
+            if (this.TransactionsTypes != null)
+            {
+                // see REQ_UT FUNCTION_CODE_WVI cursor C 
+                return this.TransactionsTypes.FirstOrDefault()?.TransactionDefinition?.Doc2Type;
+            }
+            return string.Empty;
         }
     }
 }

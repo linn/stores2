@@ -35,6 +35,7 @@ import DepartmentNominal from './components/DepartmentNominal';
 import PartNumberQuantity from './components/PartNumberQuantity';
 import StockOptions from './components/StockOptions';
 import Document1 from './components/Document1';
+import Document2 from './components/Document2';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -48,6 +49,7 @@ function Requisition({ creating }) {
         clearData: clearReqResult
     } = useGet(itemTypes.requisitions.url, true);
     const [hasFetched, setHasFetched] = useState(0);
+    const [functionCodeError, setFunctionCodeError] = useState(null);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -63,7 +65,7 @@ function Requisition({ creating }) {
         send: fetchFunctionCodes,
         isLoading: codesLoading,
         result: functionCodes
-    } = useGet(itemTypes.functionCodes.url);
+    } = useGet(itemTypes.functionCodes.url, true);
 
     if ((!hasFetched || (reqNumber && hasFetched !== reqNumber)) && token) {
         if (!creating && reqNumber) {
@@ -109,7 +111,8 @@ function Requisition({ creating }) {
         isLoading: validateLoading,
         errorMessage: validationError,
         clearPostResult: clearValidation,
-        postResult: validationSuccess
+        postResult: validationSuccess,
+        cancelRequest: cancelValidation
     } = usePost(`${itemTypes.requisitions.url}/validate`, true, true);
 
     useEffect(() => {
@@ -117,15 +120,6 @@ function Requisition({ creating }) {
             setValidated(true);
         }
     }, [validationSuccess]);
-
-    useEffect(() => {
-        // if any of the fields in the dependency array change, the validation needs to be run again
-        setValidated(false);
-    }, [
-        formState?.storesFunction?.functionCode,
-        formState?.nominal?.nominalCode,
-        formState?.department?.departmentCode
-    ]);
 
     const {
         send: updateReq,
@@ -222,15 +216,17 @@ function Requisition({ creating }) {
 
     const validDepartmentNominal = () => {
         if (!requiresDepartmentNominal()) {
-            return false;
+            return true;
         }
+
         return formState.nominal?.nominalCode && formState.department?.departmentCode;
     };
 
     const validFromState = () => {
         if (formState.reqType === 'F' && formState.storesFunction?.fromStateRequired === 'Y') {
-            return formState.fromState;
+            return !!formState.fromState;
         }
+
         return true;
     };
 
@@ -254,77 +250,13 @@ function Requisition({ creating }) {
             return false;
         }
 
-        return validDepartmentNominal() && validFromState() && formState.reqType;
+        return validDepartmentNominal() && validFromState();
     };
 
     const canBookLines = () => {
         if (result && utilities.getHref(result, 'book')) {
             return true;
         }
-        return false;
-    };
-
-    const optionalOrNeeded = code => {
-        if (code === 'O' || code === 'Y') {
-            return true;
-        }
-
-        return false;
-    };
-
-    const okToSaveFrontPageMove = () => {
-        if (formState.storesFunction && formState.part?.partNumber && !formState?.lines?.length) {
-            if (
-                optionalOrNeeded(formState.storesFunction.fromLocationRequired) &&
-                !formState.fromLocationCode &&
-                !formState.fromPalletNumber
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.fromStockPoolRequired) &&
-                !formState.fromStockPool
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.fromStateRequired) &&
-                !formState.fromState
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.quantityRequired) &&
-                !formState.quantity
-            ) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.toLocationRequired) &&
-                !formState.toLocationCode &&
-                !formState.toPalletNumber
-            ) {
-                return false;
-            }
-
-            if (optionalOrNeeded(formState.storesFunction.toStateRequired) && !formState.toState) {
-                return false;
-            }
-
-            if (
-                optionalOrNeeded(formState.storesFunction.toStockPoolRequired) &&
-                !formState.toStockPool
-            ) {
-                return false;
-            }
-
-            return true;
-        }
-
         return false;
     };
 
@@ -348,22 +280,9 @@ function Requisition({ creating }) {
     };
 
     const saveIsValid = () => {
-        // todo - all of this code should be moved into the domain validation code
-        // that is now invoked by hitting the /validate endpoint
-        // but leaving here for now
         if (creating) {
-            // header specifies part, i.e. no explicit lines
-            if (formState.part?.partNumber) {
-                return okToSaveFrontPageMove();
-            }
-            if (formState.storesFunction?.code === 'LOAN OUT') {
-                return !!formState.document1;
-            }
-
-            // if none of the above was satisfied and no lines
-            if (!formState?.lines?.length) {
-                return false;
-            }
+            // validation perfomed on the server
+            return true;
         }
 
         // Allow saving if stock is picked for an either a new or existing line
@@ -399,14 +318,19 @@ function Requisition({ creating }) {
                 a => a.code === formState.storesFunction.code.toUpperCase()
             );
             if (code) {
-                dispatch({
-                    type: 'set_header_value',
-                    payload: {
-                        fieldName: 'storesFunction',
-                        newValue: code
-                    }
-                });
-                setDefaultHeaderFieldsForFunctionCode(code);
+                if (utilities.getHref(code, 'create-req')) {
+                    dispatch({
+                        type: 'set_header_value',
+                        payload: {
+                            fieldName: 'storesFunction',
+                            newValue: code
+                        }
+                    });
+                    setFunctionCodeError(null);
+                    setDefaultHeaderFieldsForFunctionCode(code);
+                } else {
+                    setFunctionCodeError(`You dont have permission for ${code.code}`);
+                }
             }
         }
     };
@@ -428,12 +352,83 @@ function Requisition({ creating }) {
         }
     };
 
+    const handleDocument1Select = selected => {
+        dispatch({
+            type: 'set_header_value',
+            payload: {
+                fieldName: 'part',
+                newValue: {
+                    partNumber: selected.partNumber,
+                    description: selected.partDescription
+                }
+            }
+        });
+        dispatch({
+            type: 'set_header_value',
+            payload: {
+                fieldName: 'document1Line',
+                newValue: selected.document1Line
+            }
+        });
+        if (selected.batchRef) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'batchRef', newValue: selected.batchRef }
+            });
+        }
+    };
+
     // for now...
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
         selectedLine &&
         ((formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O') ||
             (formState?.manualPick && formState?.reqType === 'O'));
+
+    //todo also needs to be improved
+    const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
+
+    // todo - move to dedicated file
+    function useDebounce(value, delay = 1000) {
+        const [debouncedValue, setDebouncedValue] = useState(value);
+
+        useEffect(() => {
+            const handler = setTimeout(() => {
+                setDebouncedValue(value);
+            }, delay);
+
+            return () => clearTimeout(handler);
+        }, [value, delay]);
+
+        return debouncedValue;
+    }
+
+    const debouncedFormState = useDebounce(formState, 500);
+
+    useEffect(() => {
+        if (!debouncedFormState) return;
+        clearValidation();
+        setValidated(false);
+        validateReq(null, debouncedFormState);
+
+        return () => cancelValidation();
+    }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
+
+    const validToSaveMessage = () => {
+        if (validateLoading) {
+            return 'Thinking...';
+        }
+
+        if (validationError) {
+            return validationError;
+        }
+
+        if (validationSuccess) {
+            return 'YES!';
+        }
+
+        return '';
+    };
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -455,9 +450,9 @@ function Requisition({ creating }) {
                         )}
                     </Typography>
                 </Grid>
-                {validationError && (
+                {functionCodeError && (
                     <Grid size={12}>
-                        <ErrorCard errorMessage={validationError} />
+                        <ErrorCard errorMessage={functionCodeError} />
                     </Grid>
                 )}
                 {cancelError && (
@@ -556,6 +551,7 @@ function Requisition({ creating }) {
                                             });
                                         }}
                                         search={() => {}}
+                                        displayChips
                                         loading={false}
                                         searchResults={functionCodes
                                             .filter(
@@ -571,21 +567,36 @@ function Requisition({ creating }) {
                                                 ...f,
                                                 id: f.code,
                                                 name: f.code,
-                                                description: f.description
+                                                description: f.description,
+                                                chips: !utilities.getHref(f, 'create-req')
+                                                    ? [
+                                                          {
+                                                              text: 'no permission',
+                                                              color: 'light gray'
+                                                          }
+                                                      ]
+                                                    : []
                                             }))}
                                         onKeyPressFunctions={[
                                             { keyCode: 9, action: getAndSetFunctionCode }
                                         ]}
                                         priorityFunction="closestMatchesFirst"
                                         onResultSelect={r => {
-                                            dispatch({
-                                                type: 'set_header_value',
-                                                payload: {
-                                                    fieldName: 'storesFunction',
-                                                    newValue: r
-                                                }
-                                            });
-                                            setDefaultHeaderFieldsForFunctionCode(r);
+                                            if (utilities.getHref(r, 'create-req')) {
+                                                dispatch({
+                                                    type: 'set_header_value',
+                                                    payload: {
+                                                        fieldName: 'storesFunction',
+                                                        newValue: r
+                                                    }
+                                                });
+                                                setFunctionCodeError(null);
+                                                setDefaultHeaderFieldsForFunctionCode(r);
+                                            } else {
+                                                setFunctionCodeError(
+                                                    `You dont have permission for ${r.code}`
+                                                );
+                                            }
                                         }}
                                         clearSearch={() => {}}
                                         autoFocus={false}
@@ -601,7 +612,20 @@ function Requisition({ creating }) {
                                     propertyName="storesFunctionDescription"
                                 />
                             </Grid>
-                            <Grid size={6} />
+                            {creating ? (
+                                <Grid size={6}>
+                                    <InputField
+                                        label="Valid to Save?"
+                                        fullWidth
+                                        rows={2}
+                                        error={!validated}
+                                        propertyName="validToSaveMessage"
+                                        value={validToSaveMessage()}
+                                    />
+                                </Grid>
+                            ) : (
+                                <Grid size={6} />
+                            )}
                             <Grid size={2}>
                                 <InputField
                                     fullWidth
@@ -702,12 +726,28 @@ function Requisition({ creating }) {
                             <Document1
                                 document1={formState.document1}
                                 document1Text={formState.storesFunction?.document1Text}
+                                document1Line={formState.document1Line}
+                                document1LineRequired={
+                                    formState.storesFunction?.document1LineRequired
+                                }
                                 handleFieldChange={handleHeaderFieldChange}
                                 shouldRender={
                                     formState.storesFunction &&
                                     formState.storesFunction.document1Required
                                 }
                                 shouldEnter={formState.storesFunction?.document1Entered && creating}
+                                onSelect={handleDocument1Select}
+                                partSource={formState.storesFunction?.partSource}
+                            />
+                            <Document2
+                                document2={formState.document2}
+                                document2Text={formState.storesFunction?.document2Text}
+                                handleFieldChange={handleHeaderFieldChange}
+                                shouldRender={
+                                    formState.storesFunction &&
+                                    formState.storesFunction.document2Required
+                                }
+                                shouldEnter={formState.storesFunction?.document2Entered && creating}
                             />
                             <PartNumberQuantity
                                 partNumber={formState.part?.partNumber}
@@ -828,7 +868,9 @@ function Requisition({ creating }) {
                                         cancelLine={cancel}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
-                                        isFromStock={formState.reqType === 'F'}
+                                        isFromStock={
+                                            formState.reqType === 'F' || !formState.reqType
+                                        }
                                         addLine={() => {
                                             dispatch({ type: 'add_line' });
                                         }}
@@ -876,6 +918,18 @@ function Requisition({ creating }) {
                                                   }
                                                 : null
                                         }
+                                        addMove={
+                                            canAddMoves
+                                                ? () => {
+                                                      dispatch({
+                                                          type: 'add_move',
+                                                          payload: {
+                                                              lineNumber: selectedLine
+                                                          }
+                                                      });
+                                                  }
+                                                : null
+                                        }
                                         updateMoveOnto={updated =>
                                             dispatch({
                                                 type: 'update_move_onto',
@@ -898,21 +952,8 @@ function Requisition({ creating }) {
                                 )}
                             </Grid>
                             <Grid size={12}>
-                                <Box sx={{ float: 'right' }}>
-                                    <Button
-                                        disabled={validateLoading || validated}
-                                        onClick={() => {
-                                            clearValidation();
-                                            validateReq(null, formState);
-                                        }}
-                                    >
-                                        {validateLoading ? 'validating...' : 'validate'}
-                                    </Button>
-                                </Box>
-                            </Grid>
-                            <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!saveIsValid() || !validated || validateLoading}
+                                    saveDisabled={!saveIsValid() || (creating && !validated)}
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
                                     }}

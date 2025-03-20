@@ -7,6 +7,7 @@
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
     using NSubstitute;
@@ -22,9 +23,15 @@
         {
             var context = new RequisitionCreationContext
                               {
-                                  UserPrivileges = new List<string>()
+                                  UserPrivileges = new List<string>(),
+                                  Function = new StoresFunction
+                                  {
+                                      FunctionCode = "LDREQ"
+                                  }
                               };
-            this.AuthService.HasPermissionFor(AuthorisedActions.Ldreq, Arg.Any<IEnumerable<string>>())
+            this.AuthService.HasPermissionFor(
+                    AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
+                    Arg.Any<IEnumerable<string>>())
                 .Returns(false);
             this.action = () => this.Sut.Create(context);
         }

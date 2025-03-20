@@ -21,6 +21,10 @@
 
         public int? Document1Line { get; set; }
 
+        public int? Document2Number { get; set; }
+
+        public string Document2Type { get; set; }
+
         public string DepartmentCode { get; set; }
 
         public string NominalCode { get; set; }
@@ -51,10 +55,10 @@
 
         public int? ToPallet { get; set; }
 
-        public int? LoanNumber { get; set; }
-
         public DateTime? BatchDate { get; set; }
 
         public string BatchRef { get; set; }
+
+        public IEnumerable<LineCandidate> Lines { get; set; }
     }
 }

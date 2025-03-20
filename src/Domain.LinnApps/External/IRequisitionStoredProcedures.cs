@@ -41,7 +41,8 @@
             int? palletNumber,
             string stockPool,
             string state,
-            string category);
+            string category,
+            string insertOrUpdate = "I");
 
         Task<bool> CanPutPartOnPallet(string partNumber, int palletNumber);
 

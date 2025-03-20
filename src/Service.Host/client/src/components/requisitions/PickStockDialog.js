@@ -20,7 +20,8 @@ function PickStockDialog({
     quantity,
     state,
     stockPool,
-    getBatches = false
+    getBatches = false,
+    batchRef = null
 }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
@@ -81,9 +82,14 @@ function PickStockDialog({
 
     useEffect(() => {
         if (result?.length && !moves?.length) {
-            setMoves(result.sort(sortIt).map((x, i) => ({ ...x, id: i })));
+            setMoves(
+                result
+                    .filter(x => !batchRef || x.batchRef === batchRef)
+                    .sort(sortIt)
+                    .map((x, i) => ({ ...x, id: i }))
+            );
         }
-    }, [result, moves]);
+    }, [result, moves, batchRef]);
 
     const handleConfirmClick = picks => {
         if (quantity) {

@@ -59,8 +59,11 @@
                 .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
                 .AddScoped<LdreqCreationStrategy>()
                 .AddScoped<AutomaticBookFromHeaderStrategy>()
+                .AddScoped<LinesProvidedStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
+                .AddScoped<GistPoCreationStrategy>()
+                .AddScoped<CustRetCreationStrategy>()
                 .AddScoped<IHtmlTemplateService<StoresTransactionReport>>(
                     x => new HtmlTemplateService<StoresTransactionReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoresTransaction.cshtml",

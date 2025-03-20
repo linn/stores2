@@ -49,7 +49,7 @@
                 fromStockPool: null,
                 toStockPool: null,
                 fromPalletNumber: null,
-                toPalletNumber: null,
+                toPalletNumber: 123,
                 fromLocation: null,
                 toLocation: null,
                 part: kittedAss,
