@@ -283,11 +283,25 @@
                 throw new RequisitionException("Cannot add lines to a booked req");
             }
 
+            if (toAdd.TransactionDefinition == null)
+            {
+                throw new RequisitionException("Line must have a transaction definition");
+            }
+
+            var transactionTypesForFunction = this.StoresFunction.TransactionsTypes;
+            var transactionReqType = transactionTypesForFunction
+                .FirstOrDefault(t => t.TransactionDefinition.TransactionCode == toAdd.TransactionDefinition.TransactionCode)?.ReqType;
+            if (transactionReqType != this.ReqType)
+            {
+                throw new RequisitionException(
+                    $"Cannot add a {toAdd.TransactionDefinition?.TransactionCode} to a req of type {this.ReqType}");
+            }
+            
             if (toAdd.Part == null || toAdd.Qty == 0)
             {
                 throw new RequisitionException("Line must specify part number and qty");
             }
-
+            
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
             this.Lines.Add(toAdd);

@@ -456,7 +456,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (existingLine != null)
                 {
                     // picking stock for an existing line
-                    if (line.StockPicked.GetValueOrDefault() == true)
+                    if (line.StockPicked.GetValueOrDefault())
                     {
                         await this.PickStockOnRequisitionLine(current, line);
                     }
@@ -536,6 +536,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 fromState,
                 batchRef,
                 batchDate);
+            
+            // loan out is weird in that all the creation actually happens in PLSQL
+            // so don't validate anything else here
+            if (functionCode == "LOAN OUT")
+            {
+                // could make some proxy calls to check a valid loan number was entered
+                return req;
+            }
+            
+            // TODO - are there any other cases where we want to skip further validation?
+            // TODO - if so, is there a better way to group these cases than checking function code?
 
             if (firstLine != null)
             {
@@ -555,8 +566,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Line.GetValueOrDefault(),
                     firstLine.Document1Type));
             }
-
-            if (req.Part == null && req.Lines.Count == 0 && function.PartNumberRequired())
+            
+            if (req.Part == null && req.Lines.Count == 0)
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
             }

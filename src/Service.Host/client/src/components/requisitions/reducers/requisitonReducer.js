@@ -82,6 +82,7 @@ function reducer(state, action) {
                 }
             } else if (storesFunctionTransactions && storesFunctionTransactions.length) {
                 const lineTransactionType = storesFunctionTransactions[0];
+                var transactionReqType = lineTransactionType.reqType;
                 if (lineTransactionType) {
                     lineTransaction = {
                         transactionCode: lineTransactionType.transactionDefinition,
@@ -100,7 +101,7 @@ function reducer(state, action) {
             newLine.document1Type = 'REQ';
             newLine.document1Line = newLine.lineNumber;
 
-            return { ...state, lines: [...state.lines, newLine] };
+            return { ...state, reqType: transactionReqType, lines: [...state.lines, newLine] };
         }
         case 'set_line_value':
             return {
