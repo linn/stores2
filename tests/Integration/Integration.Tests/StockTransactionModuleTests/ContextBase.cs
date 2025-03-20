@@ -28,7 +28,6 @@
         public void SetUpContext()
         {
             this.StoresTransViewerReportService = Substitute.For<IStoresTransViewerReportService>();
-
             this.StoresTransViewerReportFacadeService = new StoresTransViewerReportFacadeService(
                 this.StoresTransViewerReportService,
                 new ReportReturnResourceBuilder());
