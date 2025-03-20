@@ -612,7 +612,23 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             if (docName == "C")
             {
-                return this.documentProxy.GetCreditNote(docNumber, lineNumber);
+                var result = this.documentProxy.GetCreditNote(docNumber, lineNumber);
+
+                if (result == null)
+                {
+                    if (lineNumber.HasValue)
+                    {
+                        throw new DocumentException($"Could not find credit note {docNumber} with line {lineNumber}");
+                    }
+                    else
+                    {
+                        throw new DocumentException($"Could not find credit note {docNumber}");
+                    }
+                }
+                else
+                {
+                    return result;
+                }
             }
 
             return null;

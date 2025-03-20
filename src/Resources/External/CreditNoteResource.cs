@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Linn.Stores2.Resources.External
+﻿namespace Linn.Stores2.Resources.External
 {
+    using System.Collections.Generic;
+
     public class CreditNoteResource
     {
         public string DocumentType { get; set; }

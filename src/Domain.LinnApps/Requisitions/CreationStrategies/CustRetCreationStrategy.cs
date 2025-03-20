@@ -59,17 +59,6 @@
 
             var document = this.requisitionManager.GetDocument(context.Document1Type, context.Document1Number.Value,
                 context.Document1Line);
-            if (document == null)
-            {
-                if (context.Document1Line.HasValue)
-                {
-                    throw new CreateRequisitionException($"Could not find credit note {context.Document1Number} with line {context.Document1Line}");
-                }
-                else
-                {
-                    throw new CreateRequisitionException($"Could not find credit note {context.Document1Number}");
-                }
-            }
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
