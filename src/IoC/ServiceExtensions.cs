@@ -60,7 +60,11 @@
                 .AddScoped<LdreqCreationStrategy>()
                 .AddScoped<AutomaticBookFromHeaderStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
-                .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>();
+                .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
+                .AddScoped<IHtmlTemplateService<StoresTransactionReport>>(
+                    x => new HtmlTemplateService<StoresTransactionReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}StoresTransaction.cshtml",
+                        x.GetService<ITemplateEngine>()));
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

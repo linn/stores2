@@ -8,8 +8,6 @@
 
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
-    using Linn.Stores2.Domain.LinnApps.GoodsIn;
-    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class StoresTransViewerReportService : IStoresTransViewerReportService
@@ -64,6 +62,7 @@
             var columns = new List<AxisDetailsModel>
                               {
                                   new AxisDetailsModel("BudgetId", "Budget Id", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("BudgetDate", "Budget Date", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("Transaction", "Transaction", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("Requisition", "Requisition", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("Document1", "Document1", GridDisplayType.TextValue, 100),
@@ -90,6 +89,14 @@
                         TextDisplay = stockTransaction.BudgetId.ToString(),
                         ColumnId = "BudgetId"
                     });
+
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            TextDisplay = stockTransaction.BudgetDate?.ToString("dd/MM/yyyy"),
+                            ColumnId = "BudgetDate"
+                        });
 
                 values.Add(
                     new CalculationValueModel

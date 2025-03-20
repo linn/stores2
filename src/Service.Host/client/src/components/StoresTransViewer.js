@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react';
 import {
     DatePicker,
     Dropdown,
+    ExportButton,
     InputField,
     Loading,
     Search
@@ -11,12 +12,12 @@ import Grid from '@mui/material/Grid2';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
+import Page from './Page';
 import ReportDataGrids from './ReportDataGrids';
 
 function StoresTransViewer() {
@@ -99,11 +100,25 @@ function StoresTransViewer() {
         [reportResult]
     );
 
+    const notReadyToRun = () => !fromDate && !toDate;
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={2}>
-                <Grid size={12}>
+                <Grid size={11}>
                     <Typography variant="h4">Stores Transaction Viewer</Typography>
+                </Grid>
+                <Grid size={1}>
+                    <ExportButton
+                        buttonText="PDF"
+                        disabled={isLoading || notReadyToRun()}
+                        accept="application/pdf"
+                        fileName="stores-trans-viewer-export.pdf"
+                        tooltipText="Download report as PDF"
+                        href={`${
+                            config.appRoot
+                        }/stores2/stores-trans-viewer/pdf${getQueryString()}`}
+                    />
                 </Grid>
                 {isLoading ||
                     (partsSearchLoading && (
