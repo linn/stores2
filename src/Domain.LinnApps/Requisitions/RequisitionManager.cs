@@ -612,7 +612,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             if (docName == "C")
             {
-                var result = this.documentProxy.GetCreditNote(docNumber, lineNumber);
+                var result = this.documentProxy.GetCreditNote(docNumber, lineNumber).Result;
 
                 if (result == null)
                 {

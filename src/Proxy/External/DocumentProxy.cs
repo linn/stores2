@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Proxy.External
+﻿using System.Threading.Tasks;
+
+namespace Linn.Stores2.Proxy.External
 {
     using System;
     using System.Collections.Generic;
@@ -21,13 +23,13 @@
             this.restClient = restClient;
         }
 
-        public DocumentResult GetCreditNote(int documentNumber, int? documentLine)
+        public async Task<DocumentResult> GetCreditNote(int documentNumber, int? documentLine)
         {
             DocumentResult result = null;
 
             var uri = $"{ConfigurationManager.Configuration["PROXY_ROOT"]}/sales/credit-notes/{documentNumber}";
 
-            var response = this.restClient.Get(CancellationToken.None, new Uri(uri, UriKind.RelativeOrAbsolute), new Dictionary<string, string>(), this.JsonHeaders()).Result;
+            var response = await this.restClient.Get(CancellationToken.None, new Uri(uri, UriKind.RelativeOrAbsolute), new Dictionary<string, string>(), this.JsonHeaders());
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -35,19 +37,19 @@
                 var creditNote = json.Deserialize<CreditNoteResource>(response.Value);
                 if (documentLine == null)
                 {
-                    result = new DocumentResult("C", documentNumber, null, null, null);
+                    return new DocumentResult("C", documentNumber, null, null, null);
                 }
                 else
                 {
                     var line = creditNote.Details.SingleOrDefault(l => l.LineNumber == documentLine.Value);
                     if (line != null)
                     {
-                        result = new DocumentResult("C", documentNumber, documentLine, line.Quantity, line.ArticleNumber);
+                        return new DocumentResult("C", documentNumber, documentLine, line.Quantity, line.ArticleNumber);
                     }
                 }
             }
 
-            return result;
+            return await Task.FromResult<DocumentResult>(null);
         }
 
         private IDictionary<string, string[]> JsonHeaders()
