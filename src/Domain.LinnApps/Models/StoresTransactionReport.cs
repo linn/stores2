@@ -12,5 +12,7 @@
         }
 
         public ResultsModel Report { get; set; }
+
+        public DateTime ReportDate { get; set; }
     }
 }
