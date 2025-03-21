@@ -14,7 +14,8 @@ import {
     ErrorCard,
     Search,
     SaveBackCancelButtons,
-    utilities
+    utilities,
+    CreateButton
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -60,10 +61,6 @@ function Requisition({ creating }) {
     const { result: stockPools, loading: stockPoolsLoading } = useInitialise(
         itemTypes.stockPools.url
     );
-
-    const cancelHref = utilities.getHref(result, 'cancel');
-    const bookHref = utilities.getHref(result, 'book');
-    const authoriseHref = utilities.getHref(result, 'authorise');
 
     const {
         send: fetchFunctionCodes,
@@ -143,6 +140,10 @@ function Requisition({ creating }) {
     };
 
     const [formState, dispatch] = useReducer(requisitionReducer, null);
+    const cancelHref = utilities.getHref(formState, 'cancel');
+    const bookHref = utilities.getHref(formState, 'book');
+    const authoriseHref = utilities.getHref(formState, 'authorise');
+    const createHref = utilities.getHref(formState, 'create');
 
     useEffect(
         () => () => {
@@ -447,13 +448,18 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={12}>
+                <Grid size={10}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={2}>
+                    {shouldRender(() => !!createHref, false) && (
+                        <CreateButton createUrl="/requisitions/create" />
+                    )}
                 </Grid>
                 {functionCodeError && (
                     <Grid size={12}>
@@ -527,7 +533,7 @@ function Requisition({ creating }) {
                                         shouldRender={shouldRender(null, false)}
                                         dateBooked={formState.dateBooked}
                                         bookedByName={formState.bookedByName}
-                                        bookUrl={utilities.getHref(formState, 'book')}
+                                        bookUrl={bookHref}
                                         onBook={() => {
                                             book(null, { reqNumber });
                                         }}
