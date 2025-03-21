@@ -1,5 +1,3 @@
-using Linn.Stores2.TestData.FunctionCodes;
-
 namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
 {
     using System.Collections.Generic;
@@ -15,6 +13,7 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Stores;
+    using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Requisitions;
     using Linn.Stores2.TestData.Transactions;
