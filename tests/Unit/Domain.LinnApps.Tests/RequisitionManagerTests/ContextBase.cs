@@ -49,6 +49,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
         protected IStoresService StoresService { get; private set; }
 
+        protected IDocumentProxy DocumentProxy { get; private set; }
+
 
         [SetUp]
         public void SetUpContext()
@@ -68,6 +70,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.StateRepository = Substitute.For<IRepository<StockState, string>>();
             this.StockPoolRepository = Substitute.For<IRepository<StockPool, string>>();
             this.PalletRepository = Substitute.For<IRepository<StoresPallet, int>>();
+            this.DocumentProxy = Substitute.For<IDocumentProxy>();
 
             this.StoresService.ValidStockPool(Arg.Any<Part>(), Arg.Any<StockPool>())
                 .Returns(new ProcessResult(true, "Stock Pool Ok"));
@@ -93,7 +96,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.StockPoolRepository,
                 this.StoresFunctionRepository,
                 this.DepartmentRepository,
-                this.NominalRepository);
+                this.NominalRepository,
+                this.DocumentProxy);
         }
     }
 }

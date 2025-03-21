@@ -6,6 +6,7 @@
     using Linn.Common.Configuration;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
+    using Linn.Common.Proxy;
     using Linn.Common.Proxy.LinnApps;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
@@ -23,6 +24,7 @@
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Proxy;
+    using Linn.Stores2.Proxy.External;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
@@ -53,6 +55,8 @@
                 .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
                 .AddTransient<IDatabaseService, DatabaseService>()
+                .AddTransient<IRestClient, RestClient>()
+                .AddScoped<IDocumentProxy, DocumentProxy>()
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>()
@@ -61,9 +65,9 @@
                 .AddScoped<AutomaticBookFromHeaderStrategy>()
                 .AddScoped<LinesProvidedStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
+                .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
                 .AddScoped<GistPoCreationStrategy>()
-                .AddScoped<CustRetCreationStrategy>()
-                .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>();
+                .AddScoped<CustRetCreationStrategy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

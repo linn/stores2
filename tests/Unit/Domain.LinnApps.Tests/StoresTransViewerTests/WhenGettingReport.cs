@@ -68,18 +68,19 @@
         public void ShouldReturnReport()
         {
             this.result.ReportTitle.DisplayValue.Should().Be("Stock Transaction List");
-            this.result.Columns.Should().HaveCount(10);
+            this.result.Columns.Should().HaveCount(11);
             this.result.Rows.Should().HaveCount(1);
             this.result.GetGridTextValue(0, 0).Should().Be("123");
-            this.result.GetGridTextValue(0, 1).Should().Be("SDFR");
-            this.result.GetGridTextValue(0, 2).Should().Be("1234");
-            this.result.GetGridTextValue(0, 3).Should().Be("1990/1");
-            this.result.GetGridTextValue(0, 4).Should().Be("LDREQ");
-            this.result.GetGridTextValue(0, 5).Should().Be("PART");
-            this.result.GetGridTextValue(0, 6).Should().Be("19.00");
-            this.result.GetGridTextValue(0, 7).Should().Be("100");
-            this.result.GetGridTextValue(0, 8).Should().Be("Ross Stewart");
-            this.result.GetGridTextValue(0, 9).Should().Be("Req");
+            this.result.GetGridTextValue(0, 1).Should().Be(DateTime.Today.ToString("dd/MM/yyyy"));
+            this.result.GetGridTextValue(0, 2).Should().Be("SDFR");
+            this.result.GetGridTextValue(0, 3).Should().Be("1234");
+            this.result.GetGridTextValue(0, 4).Should().Be("1990/1");
+            this.result.GetGridTextValue(0, 5).Should().Be("LDREQ");
+            this.result.GetGridTextValue(0, 6).Should().Be("PART");
+            this.result.GetGridTextValue(0, 7).Should().Be("19.00");
+            this.result.GetGridTextValue(0, 8).Should().Be("100");
+            this.result.GetGridTextValue(0, 9).Should().Be("Ross Stewart");
+            this.result.GetGridTextValue(0,10).Should().Be("Req");
         }
     }
 }
