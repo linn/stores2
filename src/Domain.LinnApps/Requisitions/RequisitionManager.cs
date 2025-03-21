@@ -650,7 +650,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
-            if (req.Part == null && req.Lines.Count == 0 && function.PartNumberRequired() && (function.PartSource != "C"))
+            // todo - theres nothing about LDREQ and adjacent function codes that will get us into this if
+            // todo - but we do want to throw an exception if no lines in these cases, so add extra lines_required column to function_codes?
+            if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
             }
