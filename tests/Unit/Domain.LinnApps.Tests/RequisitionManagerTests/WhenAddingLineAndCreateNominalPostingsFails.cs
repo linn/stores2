@@ -1,7 +1,4 @@
-﻿using Linn.Stores2.TestData.FunctionCodes;
-using Linn.Stores2.TestData.Transactions;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -14,6 +11,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
