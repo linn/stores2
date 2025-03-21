@@ -627,11 +627,43 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
                 else
                 {
+                    if (lineNumber.HasValue && result.Quantity == 0)
+                    {
+                        throw new DocumentException($"Credit note {docNumber} line {lineNumber} is cancelled");
+                    }
+
                     return result;
                 }
             }
 
             return null;
+        }
+
+        public async Task CheckDocumentLineForOverAndFullyBooked(RequisitionHeader header, DocumentResult document)
+        {
+            if (header.HasDocument1WithLine() && document.Quantity.HasValue)
+            {
+                var reqs = await this.repository.FilterByAsync(r =>
+                    r.Document1Name == header.Document1Name && r.Document1 == header.Document1.Value && r.Document1Line == header.Document1Line &&
+                    r.Cancelled == "N" && r.Quantity != null);
+
+                if (reqs.Any())
+                {
+                    var bookQty = reqs.Sum(r => r.Quantity.Value);
+
+                    if (header.Quantity.HasValue)
+                    {
+                        if (bookQty + header.Quantity > document.Quantity)
+                        {
+                            throw new DocumentException("Trying to overbook this line");
+                        }
+                    }
+                    else if (bookQty == document.Quantity)
+                    {
+                        throw new DocumentException("Line is already fully booked");
+                    }
+                }
+            }
         }
 
         private static void DoProcessResultCheck(ProcessResult result)
@@ -676,11 +708,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                      toPallet,
                                      toState));
 
-            DoProcessResultCheck(await this.storesService.ValidState(
-                                     null,
-                                     header.StoresFunction,
-                                     header.FromState,
-                                     "F"));
+            if (!string.IsNullOrEmpty(header.FromState))
+            {
+                DoProcessResultCheck(await this.storesService.ValidState(
+                    null,
+                    header.StoresFunction,
+                    header.FromState,
+                    "F"));
+            }
 
             DoProcessResultCheck(await this.storesService.ValidState(
                                      null,

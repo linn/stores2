@@ -26,7 +26,8 @@ const itemTypes = {
     accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` },
     partsStorageTypes: { url: `${config.appRoot}/stores2/parts-storage-types` },
     storesTransViewer: { url: `${config.appRoot}/stores2/stores-trans-viewer/report` },
-    purchaseOrder: { url: `${config.proxyRoot}/purchasing/purchase-orders` }
+    purchaseOrder: { url: `${config.proxyRoot}/purchasing/purchase-orders` },
+    creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` }
 };
 
 export default itemTypes;
