@@ -51,7 +51,7 @@ function Document1({
                 clearCreditNote();
             }
         }
-    }, [creditNote, document1Line, onSelect, clearPurchaseOrder]);
+    }, [creditNote, document1Line, onSelect, clearCreditNote]);
 
     if (!shouldRender) {
         return '';
