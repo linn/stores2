@@ -1,6 +1,3 @@
-using Linn.Stores2.TestData.FunctionCodes;
-using Linn.Stores2.TestData.Transactions;
-
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System.Linq;
@@ -9,7 +6,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
 
     using NUnit.Framework;
 
