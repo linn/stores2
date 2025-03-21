@@ -66,13 +66,6 @@
                 throw new UnauthorisedActionException("You are not authorised to raise LDREQ");
             }
 
-            // todo - move somewhere validator can hit this
-            if (context.FirstLineCandidate == null)
-            {
-                throw new CreateRequisitionException(
-                    "Cannot create - no lines specified");
-            }
-
             var who = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
             var nominal = await this.nominalRepository.FindByIdAsync(context.NominalCode);
@@ -82,8 +75,33 @@
                 ? null : await this.storageLocationRepository
                              .FindByAsync(x => x.LocationCode == context.FromLocationCode);
             var toLocation = string.IsNullOrEmpty(context.ToLocationCode)
-                                   ? null : await this.storageLocationRepository.
-                                                FindByAsync(x => x.LocationCode == context.ToLocationCode);
+                                   ? null : await this.storageLocationRepository.FindByAsync(x => x.LocationCode == context.ToLocationCode);
+
+            await this.requisitionManager.Validate(
+                context.CreatedByUserNumber,
+                context.Function.FunctionCode,
+                context.ReqType,
+                context.Document1Number,
+                context.Document1Type,
+                context.DepartmentCode,
+                context.NominalCode,
+                context.FirstLineCandidate,
+                context.Reference,
+                context.Comments,
+                context.ManualPick,
+                context.FromStockPool,
+                context.ToStockPool,
+                context.FromPallet,
+                context.ToPallet,
+                context.FromLocationCode,
+                context.ToLocationCode,
+                context.PartNumber,
+                context.Quantity,
+                context.FromState,
+                context.ToState,
+                context.BatchRef,
+                context.BatchDate,
+                context.Document1Line);
 
             // header
             var req = new RequisitionHeader(

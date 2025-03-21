@@ -10,8 +10,9 @@ namespace Linn.Stores2.TestData.Requisitions
             this.Moves = new List<ReqMove> { new ReqMove() };
         }
 
-        public LineWithMoves(int reqNumber, int lineNumber)
+        public LineWithMoves(int reqNumber, int lineNumber, StoresTransactionDefinition  transactionDefinition)
         {
+            this.TransactionDefinition = transactionDefinition;
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
             this.Part = new Part();

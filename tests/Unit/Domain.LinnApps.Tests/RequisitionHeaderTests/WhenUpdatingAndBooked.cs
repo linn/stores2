@@ -7,7 +7,9 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
 
     using NUnit.Framework;
 
@@ -20,14 +22,14 @@
         {
             var req = new RequisitionHeader(
                 new Employee(),
-                new StoresFunction { FunctionCode = "F1" },
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 12345678,
                 "TYPE",
                 new Department(),
                 new Nominal(),
                 reference: "Goodbye Reqs");
-            req.AddLine(new LineWithMoves(1, 1));
+            req.AddLine(new LineWithMoves(1, 1, TestTransDefs.StockToLinnDept));
             req.Book(new Employee());
 
             this.action = () => req.Update("new comment");

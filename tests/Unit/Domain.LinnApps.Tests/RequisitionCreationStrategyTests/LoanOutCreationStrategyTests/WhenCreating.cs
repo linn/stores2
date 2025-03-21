@@ -39,7 +39,7 @@
             var req = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.LoanOut,
-                "F",
+                null,
                 100,
                 "L",
                 new Department("0000002508", "ASSETS"),
@@ -75,6 +75,7 @@
             this.Result.ToCategory.Should().Be("FREE");
             this.Result.FromState.Should().Be("STORES");
             this.Result.ToState.Should().Be("STORES");
+            this.Result.ReqSource.Should().Be("STORES2");
         }
     }
 }

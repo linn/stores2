@@ -10,6 +10,8 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
@@ -29,19 +31,33 @@
                                   PartNumber = null,
                                   DepartmentCode = "0001234",
                                   NominalCode = "0004321",
+                                  ReqType = "F",
                                   CreatedByUserNumber = 12345,
                                   FirstLineCandidate = new LineCandidate
                                                            {
                                                                Qty = 1,
                                                                LineNumber = 1,
-                                                               TransactionDefinition = "DEF",
+                                                               TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
                                                                PartNumber = "PART",
                                                            },
-                                  Function = new StoresFunction("LDREQ")
-                                                 {
-                                                     DepartmentNominalRequired = "Y"
-                                                 }
+                                  Function = TestFunctionCodes.LinnDeptReq
                               };
+            this.EmployeeRepository.FindByIdAsync(context.CreatedByUserNumber).Returns(new Employee());
+            this.RequisitionManager.Validate(
+                Arg.Any<int>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<int?>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>()).ReturnsForAnyArgs(new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.LinnDeptReq,
+                "F",
+                null,
+                null,
+                new Department(),
+                new Nominal()));
             this.DepartmentRepository.FindByIdAsync(context.DepartmentCode).Returns(new Department());
             this.NominalRepository.FindByIdAsync(context.NominalCode).Returns(new Nominal());
 

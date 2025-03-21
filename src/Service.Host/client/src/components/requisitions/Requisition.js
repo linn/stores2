@@ -25,6 +25,7 @@ import useInitialise from '../../hooks/useInitialise';
 import usePost from '../../hooks/usePost';
 import useUserProfile from '../../hooks/useUserProfile';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
+import useDebounceValue from '../../hooks/useDebounceValue';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import MovesTab from './MovesTab';
@@ -163,14 +164,17 @@ function Requisition({ creating }) {
         }
         if (cancelResult) {
             dispatch({ type: 'load_state', payload: cancelResult });
+            setRevertState(cancelResult);
             clearCancelResult();
         }
         if (bookResult) {
             dispatch({ type: 'load_state', payload: bookResult });
+            setRevertState(bookResult);
             clearBookResult();
         }
         if (authoriseResult) {
             dispatch({ type: 'load_state', payload: authoriseResult });
+            setRevertState(authoriseResult);
             clearAuthoriseResult();
         }
         if (result) {
@@ -180,6 +184,7 @@ function Requisition({ creating }) {
         }
         if (updateResult) {
             dispatch({ type: 'load_state', payload: updateResult });
+            setRevertState(updateResult);
             clearUpdateResult();
         }
     }, [
@@ -231,6 +236,11 @@ function Requisition({ creating }) {
     };
 
     const canAddLines = () => {
+        // can only add one line when creating
+        if (creating && formState.lines?.length) {
+            return false;
+        }
+
         if (!formState.storesFunction) {
             return false;
         }
@@ -263,7 +273,7 @@ function Requisition({ creating }) {
     // just for now to only allow updates of comments field
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
-    const newMovesOntoAreValid = () => {
+    const movesOntoAreValid = () => {
         const newLines = formState.lines?.filter(x => x.isAddition);
         if (newLines?.length) {
             if (
@@ -290,8 +300,13 @@ function Requisition({ creating }) {
             return true;
         }
 
+        // Allow saving if new move(s)
+        if (formState.lines.some(l => l.moves?.some(x => x.isAddition))) {
+            return true;
+        }
+
         //  or  a new line has been added with valid "onto" moves
-        if (newMovesOntoAreValid()) {
+        if (movesOntoAreValid()) {
             return true;
         }
 
@@ -389,21 +404,7 @@ function Requisition({ creating }) {
     const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
     // todo - move to dedicated file
-    function useDebounce(value, delay = 1000) {
-        const [debouncedValue, setDebouncedValue] = useState(value);
-
-        useEffect(() => {
-            const handler = setTimeout(() => {
-                setDebouncedValue(value);
-            }, delay);
-
-            return () => clearTimeout(handler);
-        }, [value, delay]);
-
-        return debouncedValue;
-    }
-
-    const debouncedFormState = useDebounce(formState, 500);
+    const debouncedFormState = useDebounceValue(formState);
 
     useEffect(() => {
         if (!debouncedFormState) return;

@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Proxy
+﻿using Linn.Common.Proxy;
+
+namespace Linn.Stores2.Proxy
 {
     using System.Data;
     using System.Threading.Tasks;
@@ -383,7 +385,6 @@
         public async Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber)
         {
             await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
-
             var cmd = new OracleCommand("STORES_WRAPPER.CREATE_REQ_LINES", connection)
             {
                 CommandType = CommandType.StoredProcedure

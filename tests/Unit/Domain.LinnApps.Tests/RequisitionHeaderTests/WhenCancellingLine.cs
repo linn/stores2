@@ -1,4 +1,7 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+﻿using Linn.Stores2.TestData.FunctionCodes;
+using Linn.Stores2.TestData.Transactions;
+
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System.Linq;
 
@@ -19,7 +22,7 @@
         {
             this.sut = new RequisitionHeader(
                 new Employee(),
-                new StoresFunction { FunctionCode = "F1" },
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 12345678,
                 "TYPE",
@@ -27,7 +30,7 @@
                 new Nominal(),
                 reference: null,
                 comments: "Goodbye Reqs");
-            this.sut.AddLine(new LineWithMoves(1, 1));
+            this.sut.AddLine(new LineWithMoves(1, 1, TestTransDefs.StockToLinnDept));
             this.sut.CancelLine(1, "reason", new Employee());
         }
 

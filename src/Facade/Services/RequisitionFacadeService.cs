@@ -91,7 +91,8 @@
             }
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> BookRequisition(int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges)
+        public async Task<IResult<RequisitionHeaderResource>> BookRequisition(
+            int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges)
         {
             try
             {
@@ -291,7 +292,8 @@
                                             ToLocation = m.ToLocationCode,
                                             ToPallet = m.ToPalletNumber,
                                             ToStockPool = m.ToStockPool,
-                                            ToState = m.ToState
+                                            ToState = m.ToState,
+                                            IsAddition = m.IsAddition.GetValueOrDefault()
                                         }),
                            LineNumber = resource.LineNumber,
                            PartNumber = resource.Part?.PartNumber,

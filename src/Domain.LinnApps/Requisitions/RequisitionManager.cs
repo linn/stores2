@@ -245,6 +245,90 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return req;
         }
 
+        public async Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves)
+        {
+            var moveSpecifications = moves.ToList();
+            await this.CheckMoves(line.Part.PartNumber, moveSpecifications);
+            
+            // only implementing moves onto for now
+            foreach (var moveOnto
+                     in moveSpecifications.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
+            {
+                var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
+                    line.ReqNumber,
+                    moveOnto.Qty,
+                    line.LineNumber,
+                    moveOnto.ToLocationId,
+                    moveOnto.ToPallet,
+                    moveOnto.ToStockPool,
+                    moveOnto.ToState,
+                    "FREE");
+
+                if (!insertOntosResult.Success)
+                {
+                    throw new InsertReqOntosException($"Failed in insert_req_ontos: {insertOntosResult.Message}");
+                }
+            }
+        }
+
+        public async Task CheckMoves(string partNumber, IEnumerable<MoveSpecification> moves)
+        {
+            foreach (var m in moves)
+            {
+                if (m.Qty <= 0)
+                {
+                    throw new RequisitionException("Move qty is invalid");
+                }
+
+                if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && !m.FromPallet.HasValue
+                    && string.IsNullOrEmpty(m.FromLocation))
+                {
+                    throw new RequisitionException("Moves are missing location information");
+                }
+
+                // just checking moves onto for now, but could extend if required
+                if (m.ToPallet.HasValue || !string.IsNullOrEmpty(m.ToLocation))
+                {
+                    if ((m.ToPallet.HasValue && !string.IsNullOrEmpty(m.ToLocation))
+                        || (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation)))
+                    {
+                        throw new InsertReqOntosException("Move onto must specify either location code or pallet number");
+                    }
+
+                    if (m.ToPallet.HasValue)
+                    {
+                        var pallet = await this.palletRepository.FindByAsync(
+                                         x => x.PalletNumber == m.ToPallet.Value && !x.DateInvalid.HasValue);
+                        
+                        if (pallet == null)
+                        {
+                            throw new InsertReqOntosException($"Pallet {m.ToPallet.Value} is invalid");
+                        }
+
+                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
+                                                     partNumber,
+                                                     m.ToPallet.Value);
+                        if (!canPutPartOnPallet)
+                        {
+                            throw new CannotPutPartOnPalletException(
+                                $"Cannot put part {partNumber} onto P{m.ToPallet}");
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(m.ToLocation))
+                    {
+                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == m.ToLocation);
+                        if (toLocation == null)
+                        {
+                            throw new InsertReqOntosException($"Location {m.ToLocation} not found");
+                        }
+                        
+                        m.ToLocationId = toLocation.LocationId;
+                    }
+                }
+            }
+        }
+
         public async Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd)
         {
             var part = await this.partRepository.FindByIdAsync(toAdd.PartNumber);
@@ -256,8 +340,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             await this.transactionManager.CommitAsync();
 
             var createdMoves = false;
-            if (toAdd.Moves != null)
+            
+            if (toAdd.Moves != null && toAdd.Moves.Any())
             {
+                await this.CheckMoves(toAdd.PartNumber, toAdd.Moves);
+
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
                 foreach (var pick in toAdd.Moves.Where(x => x.FromPallet.HasValue 
@@ -288,36 +375,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 foreach (var moveOnto 
                          in toAdd.Moves.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
                 {
-                    if (moveOnto.ToPallet.HasValue)
-                    {
-                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
-                                                     toAdd.PartNumber,
-                                                     moveOnto.ToPallet.Value);
-                        if (!canPutPartOnPallet)
-                        {
-                            throw new CannotPutPartOnPalletException(
-                                $"Cannot put part {toAdd.PartNumber} onto P{moveOnto.ToPallet}");
-                        }
-                    }
-
-                    int? locationId = null;
-
-                    if (!string.IsNullOrEmpty(moveOnto.ToLocation))
-                    {
-                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveOnto.ToLocation);
-                        if (toLocation == null)
-                        {
-                            throw new InsertReqOntosException($"Did not recognise location {moveOnto.ToLocation}");
-                        }
-
-                        locationId = toLocation.LocationId;
-                    }
-
                     var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
                                                 header.ReqNumber,
                                                 moveOnto.Qty,
                                                 toAdd.LineNumber,
-                                                locationId,
+                                                moveOnto.ToLocationId,
                                                 moveOnto.ToPallet,
                                                 moveOnto.ToStockPool,
                                                 moveOnto.ToState,
@@ -460,18 +522,28 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (existingLine != null)
                 {
                     // picking stock for an existing line
-                    if (line.StockPicked.GetValueOrDefault() == true)
+                    if (line.StockPicked.GetValueOrDefault())
                     {
                         await this.PickStockOnRequisitionLine(current, line);
                     }
                     
-                    // could support other line updates, e.g. updating other line fields here 
+                    // adding moves for an existing line
+                    var movesToAdd = line.Moves.Where(x => x.IsAddition).ToList();
+
+                    if (movesToAdd.Count <= 0)
+                    {
+                        continue;
+                    }
+
+                    await this.CheckMoves(line.PartNumber, movesToAdd);
+                    await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
                 {
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
+                    await this.CheckMoves(line.PartNumber, line.Moves);
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -500,7 +572,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string fromState = null,
             string toState = null,
             string batchRef = null,
-            DateTime? batchDate = null)
+            DateTime? batchDate = null,
+            int? document1Line = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
@@ -516,8 +589,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                  ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
             var part = !string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
 
+            var employee = await this.employeeRepository.FindByIdAsync(createdBy);
+
             var req = new RequisitionHeader(
-                new Employee(),
+                employee,
                 function,
                 reqType,
                 document1Number,
@@ -535,12 +610,22 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 toLocation,
                 part,
                 quantity,
-                null,
+                document1Line,
                 toState,
                 fromState,
                 batchRef,
                 batchDate);
 
+            // loan out is weird in that all the creation actually happens in PLSQL
+            // so don't validate anything else here
+            // TODO - are there any other cases where we want to skip further validation?
+            // TODO - if so, is there a better way to group these cases than checking function code?
+            if (functionCode == "LOAN OUT")
+            {
+                // could make some proxy calls to check a valid loan number was entered
+                return req;
+            }
+            
             if (firstLine != null)
             {
                 var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
@@ -548,6 +633,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                         : null;
                 var transactionDefinition = !string.IsNullOrEmpty(firstLine?.TransactionDefinition)
                                                 ? await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition) : null;
+
+                if (firstLine.Moves != null && firstLine.Moves.Any())
+                {
+                    await this.CheckMoves(firstLine.PartNumber, firstLine.Moves);
+                }
 
                 req.AddLine(new RequisitionLine(
                     0,
@@ -560,7 +650,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
-            if (req.Part == null && req.Lines.Count == 0 && function.PartNumberRequired() && (function.PartSource != "C"))
+            // todo - theres nothing about LDREQ and adjacent function codes that will get us into this if
+            // todo - but we do want to throw an exception if no lines in these cases, so add extra lines_required column to function_codes?
+            if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
             }
