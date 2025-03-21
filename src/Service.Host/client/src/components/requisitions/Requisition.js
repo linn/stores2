@@ -236,6 +236,11 @@ function Requisition({ creating }) {
     };
 
     const canAddLines = () => {
+        // can only add one line when creating
+        if (creating && formState.lines?.length) {
+            return false;
+        }
+
         if (!formState.storesFunction) {
             return false;
         }
