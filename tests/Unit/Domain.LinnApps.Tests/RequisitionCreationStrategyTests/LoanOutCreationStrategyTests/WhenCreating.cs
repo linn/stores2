@@ -75,6 +75,7 @@
             this.Result.ToCategory.Should().Be("FREE");
             this.Result.FromState.Should().Be("STORES");
             this.Result.ToState.Should().Be("STORES");
+            this.Result.ReqSource.Should().Be("STORES2");
         }
     }
 }

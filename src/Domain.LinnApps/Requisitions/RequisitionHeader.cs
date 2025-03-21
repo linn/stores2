@@ -128,6 +128,7 @@
             int? document2Number = null,
             string document2Type = null)
         {
+            this.ReqSource = "STORES2";
             this.CreatedBy = createdBy;
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
