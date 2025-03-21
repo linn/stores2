@@ -48,7 +48,7 @@ function Document1({
                     partDescription: line.description,
                     document1Line
                 });
-                clearPurchaseOrder();
+                clearCreditNote();
             }
         }
     }, [creditNote, document1Line, onSelect, clearPurchaseOrder]);
