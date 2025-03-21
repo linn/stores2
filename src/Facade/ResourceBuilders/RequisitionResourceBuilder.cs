@@ -103,7 +103,7 @@
         {
             if (claims?.Count > 0)
             {
-                yield return new LinkResource { Rel = "self", Href = "/requisitions/create" };
+                yield return new LinkResource { Rel = "create", Href = "/requisitions/create" };
             }
 
             if (model != null)

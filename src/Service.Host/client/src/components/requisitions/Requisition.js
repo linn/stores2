@@ -61,6 +61,10 @@ function Requisition({ creating }) {
         itemTypes.stockPools.url
     );
 
+    const cancelHref = utilities.getHref(result, 'cancel');
+    const bookHref = utilities.getHref(result, 'book');
+    const authoriseHref = utilities.getHref(result, 'authorise');
+
     const {
         send: fetchFunctionCodes,
         isLoading: codesLoading,
@@ -254,9 +258,10 @@ function Requisition({ creating }) {
     };
 
     const canBookLines = () => {
-        if (result && utilities.getHref(result, 'book')) {
+        if (result && bookHref) {
             return true;
         }
+
         return false;
     };
 
@@ -645,18 +650,20 @@ function Requisition({ creating }) {
                                 />
                             </Grid>
                             <Grid size={2}>
-                                <Button
-                                    disabled={
-                                        formState.cancelled === 'Y' ||
-                                        formState.dateBooked ||
-                                        creating
-                                    }
-                                    variant="contained"
-                                    sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
-                                    onClick={() => setCancelDialogVisible(true)}
-                                >
-                                    Cancel Req
-                                </Button>
+                                {shouldRender(() => !!cancelHref, false) && (
+                                    <Button
+                                        disabled={
+                                            formState.cancelled === 'Y' ||
+                                            formState.dateBooked ||
+                                            creating
+                                        }
+                                        variant="contained"
+                                        sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
+                                        onClick={() => setCancelDialogVisible(true)}
+                                    >
+                                        Cancel Req
+                                    </Button>
+                                )}
                             </Grid>
                             <Grid size={6} />
                             <DepartmentNominal
@@ -684,7 +691,7 @@ function Requisition({ creating }) {
                                 dateAuthorised={formState.dateAuthorised}
                                 authorisedByName={formState.authorisedByName}
                                 shouldRender={shouldRender(null, false)}
-                                authoriseUrl={utilities.getHref(result, 'authorise')}
+                                authoriseUrl={authoriseHref}
                                 onAuthorise={() => {
                                     authorise(null, { reqNumber });
                                 }}
