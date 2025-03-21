@@ -185,6 +185,11 @@
                 yield break;  // don't even have a function, so no need to continue with function specific validation
             }
 
+            if (this.CreatedBy == null)
+            {
+                yield return "Invalid CreatedBy Employee";
+            }
+
             if (this.StoresFunction.Document1Required())
             {
                 if (this.Document1 == null)

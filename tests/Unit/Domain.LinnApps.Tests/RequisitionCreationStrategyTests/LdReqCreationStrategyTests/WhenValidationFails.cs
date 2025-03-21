@@ -11,10 +11,11 @@
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
 
     using NUnit.Framework;
 
-    public class WhenNoLines : ContextBase
+    public class WhenValidationFails : ContextBase
     {
         private Func<Task> action;
 
@@ -29,18 +30,33 @@
                                   FirstLineCandidate = null
                               };
             this.AuthService.HasPermissionFor(
-                    AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode) 
-                    ,Arg.Any<IEnumerable<string>>())
+                    AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
+                    Arg.Any<IEnumerable<string>>())
                 .Returns(true);
+
+            this.RequisitionManager.Validate(
+                Arg.Any<int>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<int?>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>()).Throws(new RequisitionException("Failed validation"));
             this.action = () => this.Sut.Create(context);
         }
 
         [Test]
         public async Task ShouldThrow()
         {
-            await this.action.Should().ThrowAsync<CreateRequisitionException>()
+            await this.action.Should().ThrowAsync<RequisitionException>()
                 .WithMessage(
-                    "Cannot create - no lines specified");
+                    "Failed validation");
+        }
+
+        [Test]
+        public void ShouldNotAdd()
+        {
+            this.Repository.DidNotReceive().Add(Arg.Any<RequisitionHeader>());
         }
     }
 }

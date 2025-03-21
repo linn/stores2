@@ -10,6 +10,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+    using Linn.Stores2.TestData.FunctionCodes;
 
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
@@ -42,6 +43,24 @@
                     DepartmentNominalRequired = "Y"
                 }
             };
+            this.EmployeeRepository.FindByIdAsync(context.CreatedByUserNumber).Returns(new Employee());
+
+            this.RequisitionManager.Validate(
+                Arg.Any<int>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<int?>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>()).ReturnsForAnyArgs(new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.LinnDeptReq,
+                "F",
+                null,
+                null,
+                new Department(),
+                new Nominal()));
+
             this.DepartmentRepository.FindByIdAsync(context.DepartmentCode).Returns(new Department());
             this.NominalRepository.FindByIdAsync(context.NominalCode).Returns(new Nominal());
 

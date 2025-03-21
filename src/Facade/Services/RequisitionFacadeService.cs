@@ -91,7 +91,8 @@
             }
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> BookRequisition(int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges)
+        public async Task<IResult<RequisitionHeaderResource>> BookRequisition(
+            int reqNumber, int? lineNumber, int bookedBy, IEnumerable<string> privileges)
         {
             try
             {

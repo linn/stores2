@@ -64,7 +64,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string fromState = null,
             string toState = null,
             string batchRef = null,
-            DateTime? batchDate = null);
+            DateTime? batchDate = null,
+            int? document1Line = null);
 
         Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves);
     }

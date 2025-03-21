@@ -505,6 +505,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         continue;
                     }
+
                     await this.CheckMoves(line.PartNumber, movesToAdd);
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
@@ -542,7 +543,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string fromState = null,
             string toState = null,
             string batchRef = null,
-            DateTime? batchDate = null)
+            DateTime? batchDate = null,
+            int? document1Line = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
@@ -558,8 +560,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                  ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
             var part = !string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
 
+            var employee = await this.employeeRepository.FindByIdAsync(createdBy);
+
             var req = new RequisitionHeader(
-                new Employee(),
+                employee,
                 function,
                 reqType,
                 document1Number,
@@ -577,23 +581,22 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 toLocation,
                 part,
                 quantity,
-                null,
+                document1Line,
                 toState,
                 fromState,
                 batchRef,
                 batchDate);
-            
+
             // loan out is weird in that all the creation actually happens in PLSQL
             // so don't validate anything else here
+            // TODO - are there any other cases where we want to skip further validation?
+            // TODO - if so, is there a better way to group these cases than checking function code?
             if (functionCode == "LOAN OUT")
             {
                 // could make some proxy calls to check a valid loan number was entered
                 return req;
             }
             
-            // TODO - are there any other cases where we want to skip further validation?
-            // TODO - if so, is there a better way to group these cases than checking function code?
-
             if (firstLine != null)
             {
                 var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
