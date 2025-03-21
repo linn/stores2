@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -11,7 +12,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-    
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
 
@@ -108,7 +109,8 @@
                 this.header.ToStockPool,
                 this.header.ToState,
                 "FREE").Returns(new ProcessResult(true, string.Empty));
-
+            this.PalletRepository.FindByAsync(Arg.Any<Expression<Func<StoresPallet, bool>>>())
+                .Returns(new StoresPallet());
             this.action = () => this.Sut.AddRequisitionLine(this.header, this.line);
         }
 

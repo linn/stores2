@@ -3,7 +3,9 @@ using Linn.Stores2.TestData.Transactions;
 
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
 
     using FluentAssertions;
 
@@ -11,6 +13,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
 
     using NSubstitute;
 
@@ -93,7 +96,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 512).Returns(true);
-
+            this.PalletRepository.FindByAsync(Arg.Any<Expression<Func<StoresPallet, bool>>>())
+                .Returns(new StoresPallet());
             this.ReqStoredProcedures.InsertReqOntos(
                 Arg.Any<int>(),
                 10,

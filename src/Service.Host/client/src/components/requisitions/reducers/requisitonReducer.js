@@ -218,7 +218,8 @@ function reducer(state, action) {
                                       toState: 'STORES',
                                       part: line.part.partNumber,
                                       isTo: true,
-                                      isAddition: true
+                                      isAddition: true,
+                                      qty: line.qty
                                   }
                               ]
                           }

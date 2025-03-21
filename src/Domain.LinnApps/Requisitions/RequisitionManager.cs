@@ -269,32 +269,57 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task CheckMoves(string partNumber, IEnumerable<MoveSpecification> moves)
         {
-            foreach (var moveSpecification in moves)
+            foreach (var m in moves)
             {
-                // just checking moves onto for now, but could extend if required
-                if (moveSpecification.ToPallet.HasValue || !string.IsNullOrEmpty(moveSpecification.ToLocation))
+                if (m.Qty <= 0)
                 {
-                    if (moveSpecification.ToPallet.HasValue)
+                    throw new RequisitionException("Move qty is invalid");
+                }
+
+                if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && !m.FromPallet.HasValue
+                    && string.IsNullOrEmpty(m.FromLocation))
+                {
+                    throw new RequisitionException("Moves are missing location information");
+                }
+
+                // just checking moves onto for now, but could extend if required
+                if (m.ToPallet.HasValue || !string.IsNullOrEmpty(m.ToLocation))
+                {
+                    if ((m.ToPallet.HasValue && !string.IsNullOrEmpty(m.ToLocation))
+                        || (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation)))
                     {
-                        // todo - check pallet exists?
-                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(partNumber,
-                            moveSpecification.ToPallet.Value);
+                        throw new InsertReqOntosException("Move onto must specify either location code or pallet number");
+                    }
+
+                    if (m.ToPallet.HasValue)
+                    {
+                        var pallet = await this.palletRepository.FindByAsync(
+                                         x => x.PalletNumber == m.ToPallet.Value && !x.DateInvalid.HasValue);
+                        
+                        if (pallet == null)
+                        {
+                            throw new InsertReqOntosException($"Pallet {m.ToPallet.Value} is invalid");
+                        }
+
+                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
+                                                     partNumber,
+                                                     m.ToPallet.Value);
                         if (!canPutPartOnPallet)
                         {
                             throw new CannotPutPartOnPalletException(
-                                $"Cannot put part {partNumber} onto P{moveSpecification.ToPallet}");
+                                $"Cannot put part {partNumber} onto P{m.ToPallet}");
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(moveSpecification.ToLocation))
+                    if (!string.IsNullOrEmpty(m.ToLocation))
                     {
-                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == moveSpecification.ToLocation);
+                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == m.ToLocation);
                         if (toLocation == null)
                         {
-                            throw new InsertReqOntosException($"Location {moveSpecification.ToLocation} not found");
+                            throw new InsertReqOntosException($"Location {m.ToLocation} not found");
                         }
                         
-                        moveSpecification.ToLocationId = toLocation.LocationId;
+                        m.ToLocationId = toLocation.LocationId;
                     }
                 }
             }
@@ -604,6 +629,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                         : null;
                 var transactionDefinition = !string.IsNullOrEmpty(firstLine?.TransactionDefinition)
                                                 ? await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition) : null;
+
+                if (firstLine.Moves != null && firstLine.Moves.Any())
+                {
+                    await this.CheckMoves(firstLine.PartNumber, firstLine.Moves);
+                }
 
                 req.AddLine(new RequisitionLine(
                     0,
