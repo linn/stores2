@@ -69,5 +69,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
 
         DocumentResult GetDocument(string docName, int docNumber, int? lineNumber);
+
+        Task CheckDocumentLineForOverAndFullyBooked(RequisitionHeader header, DocumentResult document);
     }
 }

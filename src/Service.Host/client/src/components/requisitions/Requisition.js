@@ -416,6 +416,10 @@ function Requisition({ creating }) {
     }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
 
     const validToSaveMessage = () => {
+        if (codesLoading) {
+            return 'Loading...';
+        }
+
         if (validateLoading) {
             return 'Thinking...';
         }

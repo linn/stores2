@@ -319,6 +319,10 @@
 
         public bool IsAuthorised() => this.DateAuthorised != null || this.AuthorisedBy != null;
 
+        public bool HasDocument1() => !string.IsNullOrEmpty(this.Document1Name) && this.Document1.HasValue;
+
+        public bool HasDocument1WithLine() => this.HasDocument1() && this.Document1Line.HasValue;
+
         public void Book(Employee bookedBy)
         {
             this.DateBooked = DateTime.Now;
