@@ -27,6 +27,10 @@ function MovesTab({
         forRow: null
     });
 
+    const palletFormat = Intl.NumberFormat('en-GB', {
+        useGrouping: false
+    });
+
     const {
         search: searchLocations,
         results: locationsSearchResults,
@@ -162,7 +166,14 @@ function MovesTab({
             field: 'fromPalletNumber',
             headerName: 'Pallet',
             width: 150,
-            type: 'number'
+            type: 'number',
+            valueFormatter: value => {
+                if (value == null) {
+                    return '';
+                }
+
+                return palletFormat.format(value);
+            }
         },
         {
             field: 'fromStockPool',
@@ -241,7 +252,14 @@ function MovesTab({
             headerName: 'Pallet',
             editable: true,
             width: 150,
-            type: 'number'
+            type: 'number',
+            valueFormatter: value => {
+                if (value == null) {
+                    return '';
+                }
+
+                return palletFormat.format(value);
+            }
         },
         {
             field: 'toStockPool',

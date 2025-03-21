@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests
 {
+    using Linn.Common.Logging;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
@@ -16,11 +17,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests
 
         protected RequisitionCreationContext RequisitionCreationContext { get; set; }
 
+        protected ILog Log { get; private set; }
+
         [SetUp]
         public void SetUpContextForAll()
         {
             this.RequisitionManager = Substitute.For<IRequisitionManager>();
             this.RequisitionRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
+            this.Log = Substitute.For<ILog>();
         }
     }
 }

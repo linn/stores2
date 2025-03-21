@@ -87,7 +87,7 @@
                            LoanNumber = header.LoanNumber,
                            Document2 = header.Document2,
                            Document2Name = header.Document2Name,
-                           Links = this.BuildLinks(header, claims).ToArray()
+                           Links = this.BuildLinks(header, claims?.ToList()).ToArray()
                         };
         }
 
@@ -99,15 +99,27 @@
         object IBuilder<RequisitionHeader>.Build(RequisitionHeader entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
 
-        private IEnumerable<LinkResource> BuildLinks(RequisitionHeader model, IEnumerable<string> claims)
+        private IEnumerable<LinkResource> BuildLinks(RequisitionHeader model, IList<string> claims)
         {
+            if (claims?.Count > 0)
+            {
+                yield return new LinkResource { Rel = "self", Href = "/requisitions/create" };
+            }
+
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
 
-                if (model.Lines != null && model.CanBookReq(null) && this.authService.HasPermissionFor(AuthorisedActions.BookRequisition, claims))
+                if (model.Lines != null && model.CanBookReq(null)
+                                        && this.authService.HasPermissionFor(AuthorisedActions.BookRequisition, claims))
                 {
                     yield return new LinkResource { Rel = "book", Href = "/requisitions/book" };
+                }
+
+                if (!model.IsCancelled() && !model.IsBooked()
+                                         && this.authService.HasPermissionFor(AuthorisedActions.CancelRequisition, claims))
+                {
+                    yield return new LinkResource { Rel = "cancel", Href = "/requisitions/cancel" };
                 }
 
                 if (model.RequiresAuthorisation() &&
