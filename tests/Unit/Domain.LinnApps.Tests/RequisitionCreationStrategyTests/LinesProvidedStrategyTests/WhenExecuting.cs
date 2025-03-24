@@ -46,6 +46,7 @@
                     AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode), 
                     Arg.Any<List<string>>())
                 .Returns(true);
+            this.EmployeeRepository.FindByIdAsync(123).Returns(new Employee());
 
             await this.Sut.Create(this.RequisitionCreationContext);
         }
