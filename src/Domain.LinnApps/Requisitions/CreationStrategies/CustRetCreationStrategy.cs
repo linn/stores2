@@ -58,7 +58,7 @@
             }
 
             var document = this.requisitionManager.GetDocument(
-                context.Document1Type, 
+                context.Document1Type,
                 context.Document1Number.Value,
                 context.Document1Line);
 

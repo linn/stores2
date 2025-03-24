@@ -140,6 +140,9 @@ function Requisition({ creating }) {
     };
 
     const [formState, dispatch] = useReducer(requisitionReducer, null);
+    const cancelHref = utilities.getHref(formState, 'cancel');
+    const bookHref = utilities.getHref(formState, 'book');
+    const authoriseHref = utilities.getHref(formState, 'authorise');
 
     useEffect(
         () => () => {
@@ -264,9 +267,10 @@ function Requisition({ creating }) {
     };
 
     const canBookLines = () => {
-        if (result && utilities.getHref(result, 'book')) {
+        if (result && bookHref) {
             return true;
         }
+
         return false;
     };
 
@@ -527,7 +531,7 @@ function Requisition({ creating }) {
                                         shouldRender={shouldRender(null, false)}
                                         dateBooked={formState.dateBooked}
                                         bookedByName={formState.bookedByName}
-                                        bookUrl={utilities.getHref(formState, 'book')}
+                                        bookUrl={bookHref}
                                         onBook={() => {
                                             book(null, { reqNumber });
                                         }}
@@ -650,18 +654,20 @@ function Requisition({ creating }) {
                                 />
                             </Grid>
                             <Grid size={2}>
-                                <Button
-                                    disabled={
-                                        formState.cancelled === 'Y' ||
-                                        formState.dateBooked ||
-                                        creating
-                                    }
-                                    variant="contained"
-                                    sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
-                                    onClick={() => setCancelDialogVisible(true)}
-                                >
-                                    Cancel Req
-                                </Button>
+                                {shouldRender(() => !!cancelHref, false) && (
+                                    <Button
+                                        disabled={
+                                            formState.cancelled === 'Y' ||
+                                            formState.dateBooked ||
+                                            creating
+                                        }
+                                        variant="contained"
+                                        sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
+                                        onClick={() => setCancelDialogVisible(true)}
+                                    >
+                                        Cancel Req
+                                    </Button>
+                                )}
                             </Grid>
                             <Grid size={6} />
                             <DepartmentNominal
@@ -689,7 +695,7 @@ function Requisition({ creating }) {
                                 dateAuthorised={formState.dateAuthorised}
                                 authorisedByName={formState.authorisedByName}
                                 shouldRender={shouldRender(null, false)}
-                                authoriseUrl={utilities.getHref(result, 'authorise')}
+                                authoriseUrl={authoriseHref}
                                 onAuthorise={() => {
                                     authorise(null, { reqNumber });
                                 }}
@@ -900,6 +906,7 @@ function Requisition({ creating }) {
                                             book(null, { reqNumber, lineNumber });
                                         }}
                                         fromState={formState.fromState}
+                                        fromStockPool={formState.fromStockPool}
                                     />
                                 )}
                                 {tab === 1 && (
