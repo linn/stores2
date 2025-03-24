@@ -61,6 +61,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string FunctionAvailableFlag { get; set; }
 
+        public string ToStockPool { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public string LinesRequired { get; set;  }
@@ -116,6 +118,23 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 // see REQ_UT FUNCTION_CODE_WVI cursor C 
                 return this.TransactionsTypes.FirstOrDefault()?.TransactionDefinition?.Doc2Type;
+            }
+            return string.Empty;
+        }
+
+        public string DefaultToState()
+        {
+            if (this.ToStateRequired == "Y" && this.TransactionsTypes != null)
+            {
+                var states = this.TransactionsTypes
+                    .Where(t => !string.IsNullOrEmpty(t.TransactionDefinition?.InspectedState))
+                    .Select(t => t.TransactionDefinition?.InspectedState);
+                if (states.Contains("STORES"))
+                {
+                    return "STORES";
+                }
+
+                return states.FirstOrDefault();
             }
             return string.Empty;
         }

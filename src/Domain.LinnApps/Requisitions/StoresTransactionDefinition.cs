@@ -38,6 +38,8 @@
 
         public string AuthOpCode { get; set; }
 
+        public string InspectedState { get; set; }
+
         public ICollection<StoresTransactionPosting> StoresTransactionPostings { get; set; }
 
         public ICollection<StoresTransactionState> StoresTransactionStates { get; set; }

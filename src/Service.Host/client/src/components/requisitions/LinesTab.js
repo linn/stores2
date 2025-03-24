@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid2';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { Link } from 'react-router';
+import Link from '@mui/material/Link';
 import { utilities } from '@linn-it/linn-form-components-library';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -28,7 +28,8 @@ function LinesTab({
     pickStock,
     bookLine,
     canBook,
-    fromState
+    fromState,
+    fromStockPool
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -52,7 +53,7 @@ function LinesTab({
                             {params.row.part?.partNumber}
                         </>
                     ) : (
-                        <Link to={utilities.getHref(params.row, 'part')}>
+                        <Link href={utilities.getHref(params.row, 'part')}>
                             {params.row.part?.partNumber}
                         </Link>
                     )}
@@ -178,6 +179,7 @@ function LinesTab({
                     pickStock(selected, moves);
                 }}
                 state={fromState}
+                stockPool={fromStockPool}
             />
             <Grid size={12}>
                 <DataGrid

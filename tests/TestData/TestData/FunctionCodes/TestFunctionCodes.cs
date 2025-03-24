@@ -135,6 +135,7 @@
                 FromStateRequired = "N",
                 ToStateRequired = "Y",
                 ToStockPoolRequired = "Y",
+                ToStockPool = "LINN",
                 PartSource = "C",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
@@ -302,7 +303,8 @@
         public static readonly StoresFunction SupplierReturn =
             new StoresFunction("SURETURN")
                 {
-                    ToStateRequired = "Y"
+                    ToStateRequired = "Y",
+                    ToStockPool = "LINN"
                 };
 
         public static readonly StoresFunction Move =
