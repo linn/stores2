@@ -53,7 +53,19 @@ function reducer(state, action) {
                         nominal: {
                             nominalCode: action.payload.newValue?.nominalCode,
                             description: action.payload.newValue?.nominalDescription
-                        }
+                        },
+                        toState: action.payload.newValue?.defaultToState,
+                        toStockPool: action.payload.newValue?.toStockPool
+                    };
+                } else if (
+                    action.payload.newValue?.defaultToState ||
+                    action.payload.newValue?.toStockPool
+                ) {
+                    return {
+                        ...state,
+                        storesFunction: action.payload.newValue,
+                        toState: action.payload.newValue?.defaultToState,
+                        toStockPool: action.payload.newValue?.toStockPool
                     };
                 }
             }
