@@ -71,7 +71,6 @@
             var loan = json.Deserialize<DocumentResource>(response.Value);
 
             return new DocumentResult("L", loan.DocumentNumber, null, null, null);
-
         }
     }
 }
