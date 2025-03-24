@@ -57,6 +57,8 @@
                           NominalCode = model.GetNominal()?.NominalCode,
                           NominalDescription = model.GetNominal()?.Description,
                           FunctionAvailable = model.FunctionAvailable(),
+                          DefaultToState = model.DefaultToState(),
+                          ToStockPool = model.ToStockPool,
                           FromStates = model.GetTransactionStates("F"),
                           ToStates = model.GetTransactionStates("O"),
                           TransactionTypes = model.TransactionsTypes?.Select(

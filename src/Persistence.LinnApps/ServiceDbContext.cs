@@ -368,6 +368,7 @@
             q.Property(d => d.TakePriceFrom).HasColumnName("TAKE_PRICE_FROM").HasMaxLength(1);
             q.Property(d => d.RequiresAuth).HasColumnName("REQUIRES_AUTH").HasMaxLength(1);
             q.Property(d => d.AuthOpCode).HasColumnName("AUTH_OP_CODE").HasMaxLength(10);
+            q.Property(d => d.InspectedState).HasColumnName("INSPECTED_STATE").HasMaxLength(10);
             q.HasMany(t => t.StoresTransactionPostings).WithOne().HasForeignKey(p => p.TransactionCode);
             q.HasMany(t => t.StoresTransactionStates).WithOne().HasForeignKey(p => p.TransactionCode);
         }
@@ -510,6 +511,7 @@
             r.Property(c => c.BatchDateRequired).HasColumnName("BATCH_DATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.BatchRequired).HasColumnName("BATCH_REQUIRED").HasMaxLength(1);
             r.Property(c => c.FunctionAvailableFlag).HasColumnName("FUNCTION_AVAILABLE").HasMaxLength(1);
+            r.Property(c => c.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 

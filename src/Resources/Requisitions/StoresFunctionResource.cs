@@ -63,6 +63,10 @@
 
         public bool FunctionAvailable { get; set; }
 
+        public string DefaultToState { get; set; }
+
+        public string ToStockPool { get; set; }
+
         public IEnumerable<string> FromStates { get; set; }
 
         public IEnumerable<string> ToStates { get; set; }
