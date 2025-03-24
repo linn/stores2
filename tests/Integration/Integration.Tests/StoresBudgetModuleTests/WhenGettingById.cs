@@ -13,6 +13,7 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Stores;
+    using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Requisitions;
     using Linn.Stores2.TestData.Transactions;
@@ -28,18 +29,18 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
         [SetUp]
         public void SetUp()
         {
+            var trans = TestTransDefs.StockToLinnDept;
             var req = new ReqWithReqNumber(
                 456,
                 new Employee(),
-                new StoresFunction { FunctionCode = "FUNC" },
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 123,
                 "REQ",
                 new Department { DepartmentCode = "DEP" },
-                new Nominal { NominalCode = "NOM" },
-                null);
+                new Nominal { NominalCode = "NOM" });
 
-            req.AddLine(new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.StockToLinnDept));
+            req.AddLine(new RequisitionLine(123, 1, TestParts.Cap003, 1, trans));
             this.budgetId = 234978;
             this.budget = new StoresBudget
                               {
@@ -49,7 +50,7 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
                                   RequisitionNumber = 123,
                                   LineNumber = 1,
                                   RequisitionLine = req.Lines.First(),
-                                  Transaction = new StoresTransactionDefinition("STST"),
+                                  Transaction = trans,
                                   Part = new Part { PartNumber = "P1" },
                                   StoresBudgetPostings = new List<StoresBudgetPosting>()
                               };

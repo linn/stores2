@@ -69,6 +69,7 @@ function reducer(state, action) {
             // need to set the line transaction type based on the function code and req type
             const storesFunctionTransactions = state.storesFunction.transactionTypes;
             let lineTransaction = {};
+            var transactionReqType = '';
             if (state.reqType && storesFunctionTransactions) {
                 const lineTransactionType = storesFunctionTransactions.find(
                     x => x.reqType === state.reqType
@@ -82,6 +83,7 @@ function reducer(state, action) {
                 }
             } else if (storesFunctionTransactions && storesFunctionTransactions.length) {
                 const lineTransactionType = storesFunctionTransactions[0];
+                transactionReqType = lineTransactionType.reqType;
                 if (lineTransactionType) {
                     lineTransaction = {
                         transactionCode: lineTransactionType.transactionDefinition,
@@ -100,7 +102,11 @@ function reducer(state, action) {
             newLine.document1Type = 'REQ';
             newLine.document1Line = newLine.lineNumber;
 
-            return { ...state, lines: [...state.lines, newLine] };
+            return {
+                ...state,
+                reqType: state.reqType ?? transactionReqType,
+                lines: [...state.lines, newLine]
+            };
         }
         case 'set_line_value':
             return {
@@ -211,7 +217,9 @@ function reducer(state, action) {
                                       toStockPool: 'LINN',
                                       toState: 'STORES',
                                       part: line.part.partNumber,
-                                      isTo: true
+                                      isTo: true,
+                                      isAddition: true,
+                                      qty: line.qty
                                   }
                               ]
                           }

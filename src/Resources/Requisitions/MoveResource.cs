@@ -51,5 +51,7 @@ namespace Linn.Stores2.Resources.Requisitions
         public bool? IsFrom { get; set; }
         
         public bool? IsTo { get; set; }
+        
+        public bool? IsAddition { get; set; }
     }
 }

@@ -21,6 +21,12 @@ function Document1({
         clearData: clearPurchaseOrder
     } = useGet(itemTypes.purchaseOrder.url, true);
 
+    const {
+        send: fetchCreditNote,
+        result: creditNote,
+        clearData: clearCreditNote
+    } = useGet(itemTypes.creditNotes.url, true);
+
     useEffect(() => {
         if (purchaseOrder) {
             onSelect({
@@ -32,6 +38,20 @@ function Document1({
             clearPurchaseOrder();
         }
     }, [purchaseOrder, onSelect, clearPurchaseOrder]);
+
+    useEffect(() => {
+        if (creditNote && document1Line) {
+            let line = creditNote.details.find(f => f.lineNumber === document1Line);
+            if (line) {
+                onSelect({
+                    partNumber: line.articleNumber,
+                    partDescription: line.description,
+                    document1Line
+                });
+                clearCreditNote();
+            }
+        }
+    }, [creditNote, document1Line, onSelect, clearCreditNote]);
 
     if (!shouldRender) {
         return '';
@@ -52,6 +72,8 @@ function Document1({
                             if (data.keyCode == 13 || data.keyCode == 9) {
                                 if (partSource === 'PO') {
                                     fetchPurchaseOrder(document1);
+                                } else if (partSource == 'C') {
+                                    fetchCreditNote(document1);
                                 }
                             }
                         }

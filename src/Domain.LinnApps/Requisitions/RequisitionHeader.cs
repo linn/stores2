@@ -128,6 +128,7 @@
             int? document2Number = null,
             string document2Type = null)
         {
+            this.ReqSource = "STORES2";
             this.CreatedBy = createdBy;
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
@@ -183,6 +184,11 @@
             {
                 yield return "Please choose a Function.";
                 yield break;  // don't even have a function, so no need to continue with function specific validation
+            }
+
+            if (this.CreatedBy == null)
+            {
+                yield return "Invalid CreatedBy Employee";
             }
 
             if (this.StoresFunction.Document1Required())
@@ -283,11 +289,25 @@
                 throw new RequisitionException("Cannot add lines to a booked req");
             }
 
+            if (toAdd.TransactionDefinition == null)
+            {
+                throw new RequisitionException("Line must have a transaction definition");
+            }
+
+            var transactionTypesForFunction = this.StoresFunction.TransactionsTypes;
+            var transactionReqType = transactionTypesForFunction
+                ?.FirstOrDefault(t => t.TransactionDefinition.TransactionCode == toAdd.TransactionDefinition.TransactionCode)?.ReqType;
+            if (transactionReqType != this.ReqType)
+            {
+                throw new RequisitionException(
+                    $"Cannot add a {toAdd.TransactionDefinition?.TransactionCode} line to a req of type {this.ReqType}");
+            }
+            
             if (toAdd.Part == null || toAdd.Qty == 0)
             {
                 throw new RequisitionException("Line must specify part number and qty");
             }
-
+            
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
             this.Lines.Add(toAdd);
@@ -298,6 +318,10 @@
         public bool IsBooked() => this.DateBooked != null;
 
         public bool IsAuthorised() => this.DateAuthorised != null || this.AuthorisedBy != null;
+
+        public bool HasDocument1() => !string.IsNullOrEmpty(this.Document1Name) && this.Document1.HasValue;
+
+        public bool HasDocument1WithLine() => this.HasDocument1() && this.Document1Line.HasValue;
 
         public void Book(Employee bookedBy)
         {

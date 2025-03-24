@@ -31,7 +31,7 @@
                 123,
                 new Employee(),
                 new StoresFunction { FunctionCode = "F1" },
-                "F",
+                null,
                 12345678,
                 "TYPE",
                 dept,

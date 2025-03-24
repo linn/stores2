@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -11,7 +12,10 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
+    
     using NSubstitute;
 
     using NUnit.Framework;
@@ -41,7 +45,7 @@
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
             this.header = new RequisitionHeader(
                 new Employee { Id = 33087 },
-                new StoresFunction("LDREQ"),
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 null,
                 null,
@@ -69,7 +73,7 @@
                                 },
                 PartNumber = this.part.PartNumber,
                 Qty = 10,
-                TransactionDefinition = "DEF"
+                TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode
             };
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
                 .Returns(this.department);
@@ -84,11 +88,11 @@
                     null,
                     512,
                     "LINN",
-                    "DEF")
+                    TestTransDefs.StockToLinnDept.TransactionCode)
                 .Returns(new ProcessResult(
                     true, string.Empty));
-            this.TransactionDefinitionRepository.FindByIdAsync("DEF")
-                .Returns(new StoresTransactionDefinition("DEF"));
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
+                .Returns(new StoresTransactionDefinition(TestTransDefs.StockToLinnDept.TransactionCode));
             this.ReqStoredProcedures.CreateNominals(
                 Arg.Any<int>(),
                 10,
@@ -97,7 +101,8 @@
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 512).Returns(true);
-
+            this.PalletRepository.FindByAsync(Arg.Any<Expression<Func<StoresPallet, bool>>>())
+                .Returns(new StoresPallet());
             this.ReqStoredProcedures.InsertReqOntos(
                 Arg.Any<int>(),
                 10,

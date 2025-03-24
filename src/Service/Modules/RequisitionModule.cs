@@ -140,6 +140,7 @@
             RequisitionHeaderResource resource,
             IRequisitionFacadeService service)
         {
+            resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(await service.Validate(resource));
         }
 

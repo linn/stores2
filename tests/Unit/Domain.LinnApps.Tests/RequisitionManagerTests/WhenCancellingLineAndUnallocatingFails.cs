@@ -11,7 +11,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
@@ -29,13 +31,13 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.req = new ReqWithReqNumber(
                     123,
                     new Employee(),
-                    new StoresFunction { FunctionCode = "FUNC" },
+                    TestFunctionCodes.LinnDeptReq,
                     "F",
                     123,
                     "REQ",
                     new Department(),
                     new Nominal());
-            var requisitionLine = new RequisitionLine(123, 1, new Part(), 10, new StoresTransactionDefinition());
+            var requisitionLine = new RequisitionLine(123, 1, new Part(), 10, TestTransDefs.StockToLinnDept);
             this.req.AddLine(requisitionLine);
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
 

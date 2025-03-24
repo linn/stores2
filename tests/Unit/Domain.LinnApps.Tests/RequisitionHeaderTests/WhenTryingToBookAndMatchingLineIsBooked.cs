@@ -6,7 +6,9 @@
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
 
     using NUnit.Framework;
 
@@ -17,11 +19,11 @@
         [SetUp]
         public void SetUp()
         {
-            var line = new LineWithMoves(123, 1);
+            var line = new LineWithMoves(123, 1, TestTransDefs.StockToLinnDept);
 
             this.sut = new RequisitionHeader(
                 new Employee(),
-                new StoresFunction { FunctionCode = "F1" },
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 12345678,
                 "TYPE",

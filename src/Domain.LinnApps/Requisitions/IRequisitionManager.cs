@@ -64,8 +64,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string fromState = null,
             string toState = null,
             string batchRef = null,
-            DateTime? batchDate = null);
+            DateTime? batchDate = null,
+            int? document1Line = null);
+
 
         DocumentResult GetDocument(string docName, int docNumber, int? lineNumber);
+
+        Task CheckDocumentLineForOverAndFullyBooked(RequisitionHeader header, DocumentResult document);
     }
 }

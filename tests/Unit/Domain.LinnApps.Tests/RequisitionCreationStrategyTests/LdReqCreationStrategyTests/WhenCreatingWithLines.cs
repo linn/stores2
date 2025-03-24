@@ -8,6 +8,7 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
+    using Linn.Stores2.TestData.FunctionCodes;
 
     using NSubstitute;
 
@@ -51,6 +52,23 @@
                     AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
                     Arg.Any<IEnumerable<string>>())
                 .Returns(true);
+
+
+            this.RequisitionManager.Validate(
+                Arg.Any<int>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<int?>(),
+                Arg.Any<string>(),
+                Arg.Any<string>(),
+                Arg.Any<string>()).ReturnsForAnyArgs(new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.LinnDeptReq,
+                "F",
+                null,
+                null,
+                new Department(),
+                new Nominal()));
 
             this.Repository.FindByIdAsync(Arg.Any<int>())
                 .Returns(

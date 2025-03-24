@@ -22,6 +22,7 @@
                                                       PartNumber = "PART",
                                                       CreatedByUserNumber = 123
                                                   };
+            this.EmployeeRepository.FindByIdAsync(123).Returns(new Employee());
             this.AuthorisationService.HasPermissionFor(
                     AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode), 
                     Arg.Any<List<string>>())
