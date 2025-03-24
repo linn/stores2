@@ -29,7 +29,7 @@
                                    FunctionCode = "CUSTRET",
                                    Description = "RETURN GOODS FROM CUSTOMER TO STOCK/INSPECTION"
                                };
-            var requisitions = new List<RequisitionHeader>()
+            var requisitions = new List<RequisitionHeader>
                                    {
                                        new RequisitionHeader(
                                            emp,
@@ -39,18 +39,9 @@
                                            "C",
                                            null,
                                            null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           part,
-                                           6,
-                                           1),
+                                           part: part,
+                                           quantity: 6,
+                                           document1Line: 1),
                                        new RequisitionHeader(
                                            emp,
                                            function,
@@ -59,18 +50,9 @@
                                            "C",
                                            null,
                                            null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           null,
-                                           part,
-                                           3,
-                                           1)
+                                           part: part,
+                                           quantity: 3,
+                                           document1Line: 1),
                                    };
             var header = new RequisitionHeader(
                 emp,
@@ -80,18 +62,8 @@
                 "C",
                 null,
                 null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                part,
-                null,
-                1);
+                part: part,
+                document1Line: 1);
             var document = new DocumentResult("C", 1, 1, 9, part.PartNumber);
             this.ReqRepository.FilterByAsync(Arg.Any<Expression<Func<RequisitionHeader, bool>>>())
                 .Returns(requisitions);
