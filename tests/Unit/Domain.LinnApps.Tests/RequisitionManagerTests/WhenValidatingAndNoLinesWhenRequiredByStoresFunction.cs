@@ -1,22 +1,21 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using System;
-    using System.Threading.Tasks;
-
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
     using NUnit.Framework;
 
-    public class WhenValidatingAndMoveHasNoQty : ContextBase
+    public class WhenValidatingAndNoLinesWhenRequiredByStoresFunction : ContextBase
     {
-        private Func<Task> action;
+        private RequisitionHeader result;
 
         [SetUp]
         public void SetUp()
@@ -28,7 +27,13 @@
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.LinnDeptReq.FunctionCode)
                 .Returns(TestFunctionCodes.LinnDeptReq);
-            this.action = () => this.Sut.Validate(
+            this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet());
+            this.ReqStoredProcedures.CanPutPartOnPallet("PART", 666).Returns(true);
+            this.PartRepository.FindByIdAsync("PART").Returns(new Part());
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
+                .Returns(TestTransDefs.StockToLinnDept);
+
+            this.result = this.Sut.Validate(
                 33087,
                 TestFunctionCodes.LinnDeptReq.FunctionCode,
                 "F",
@@ -38,14 +43,17 @@
                 "2963",
                 new LineCandidate
                     {
-                        Moves = new[] { new MoveSpecification { Qty = 0 } }
-                    });
+                        Qty = 1,
+                        TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
+                        PartNumber = "PART",
+                        Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 666 } }
+                    }).Result;
         }
 
         [Test]
-        public async Task ShouldThrowException()
+        public void ShouldReturnValidated()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>().WithMessage("Move qty is invalid");
+            this.result.Should().NotBeNull();
         }
     }
 }

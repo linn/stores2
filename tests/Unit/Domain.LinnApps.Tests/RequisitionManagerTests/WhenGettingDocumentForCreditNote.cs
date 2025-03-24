@@ -16,7 +16,7 @@
 
             this.DocumentProxy.GetCreditNote(1, 1).Returns(creditNoteDocument);
 
-            this.result = this.Sut.GetDocument("C", 1, 1);
+            this.result = this.Sut.GetDocument("C", 1, 1).Result;
         }
 
         [Test]

@@ -271,64 +271,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        private async Task CheckMoves(string partNumber, IEnumerable<MoveSpecification> moves)
-        {
-            foreach (var m in moves)
-            {
-                if (m.Qty <= 0)
-                {
-                    throw new RequisitionException("Move qty is invalid");
-                }
-
-                if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && !m.FromPallet.HasValue
-                    && string.IsNullOrEmpty(m.FromLocation))
-                {
-                    throw new RequisitionException("Moves are missing location information");
-                }
-
-                // just checking moves onto for now, but could extend if required
-                if (m.ToPallet.HasValue || !string.IsNullOrEmpty(m.ToLocation))
-                {
-                    if ((m.ToPallet.HasValue && !string.IsNullOrEmpty(m.ToLocation))
-                        || (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation)))
-                    {
-                        throw new InsertReqOntosException("Move onto must specify either location code or pallet number");
-                    }
-
-                    if (m.ToPallet.HasValue)
-                    {
-                        var pallet = await this.palletRepository.FindByAsync(
-                                         x => x.PalletNumber == m.ToPallet.Value && !x.DateInvalid.HasValue);
-                        
-                        if (pallet == null)
-                        {
-                            throw new InsertReqOntosException($"Pallet {m.ToPallet.Value} is invalid");
-                        }
-
-                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
-                                                     partNumber,
-                                                     m.ToPallet.Value);
-                        if (!canPutPartOnPallet)
-                        {
-                            throw new CannotPutPartOnPalletException(
-                                $"Cannot put part {partNumber} onto P{m.ToPallet}");
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(m.ToLocation))
-                    {
-                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == m.ToLocation);
-                        if (toLocation == null)
-                        {
-                            throw new InsertReqOntosException($"Location {m.ToLocation} not found");
-                        }
-                        
-                        m.ToLocationId = toLocation.LocationId;
-                    }
-                }
-            }
-        }
-
         public async Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd)
         {
             var part = await this.partRepository.FindByIdAsync(toAdd.PartNumber);
@@ -616,14 +558,23 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 batchRef,
                 batchDate);
 
-            // loan out is weird in that all the cresation actually happens in PLSQL
-            // so don't validate anything else here
             if (functionCode == "LOAN OUT")
             {
-                // could make some proxy calls to check a valid loan number was entered
+                var loan = await this.documentProxy.GetLoan(document1Number.GetValueOrDefault());
+                if (loan == null)
+                {
+                    throw new CreateRequisitionException($"Loan Number {document1Number} does not exist");
+                }
+
                 return req;
             }
-            
+
+            if (function.LinesRequired == "Y" && firstLine == null)
+            {
+                throw new CreateRequisitionException($"Lines are required for {functionCode}");
+            }
+
+
             if (firstLine != null)
             {
                 var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
@@ -648,7 +599,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
-            if (req.Part == null && req.Lines.Count == 0 && (function.LinesRequired == "Y" || function.PartSource != "C"))
+            if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
             }
@@ -696,11 +647,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return req;
         }
 
-        public DocumentResult GetDocument(string docName, int docNumber, int? lineNumber)
+        public async Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber)
         {
             if (docName == "C")
             {
-                var result = this.documentProxy.GetCreditNote(docNumber, lineNumber).Result;
+                var result = await this.documentProxy.GetCreditNote(docNumber, lineNumber);
 
                 if (result == null)
                 {
@@ -708,20 +659,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         throw new DocumentException($"Could not find credit note {docNumber} with line {lineNumber}");
                     }
-                    else
-                    {
-                        throw new DocumentException($"Could not find credit note {docNumber}");
-                    }
-                }
-                else
-                {
-                    if (lineNumber.HasValue && result.Quantity == 0)
-                    {
-                        throw new DocumentException($"Credit note {docNumber} line {lineNumber} is cancelled");
-                    }
 
-                    return result;
+                    throw new DocumentException($"Could not find credit note {docNumber}");
                 }
+
+                if (lineNumber.HasValue && result.Quantity == 0)
+                {
+                    throw new DocumentException($"Credit note {docNumber} line {lineNumber} is cancelled");
+                }
+
+                return result;
             }
 
             return null;
@@ -737,7 +684,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (reqs.Any())
                 {
-                    var bookQty = reqs.Sum(r => r.Quantity.Value);
+                    var bookQty = reqs.Sum(r => r.Quantity.GetValueOrDefault());
 
                     if (header.Quantity.HasValue)
                     {
@@ -753,6 +700,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
             }
         }
+
 
         private static void DoProcessResultCheck(ProcessResult result)
         {
@@ -772,15 +720,72 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return false;
         }
 
+        private async Task CheckMoves(string partNumber, IEnumerable<MoveSpecification> moves)
+        {
+            foreach (var m in moves)
+            {
+                if (m.Qty <= 0)
+                {
+                    throw new RequisitionException("Move qty is invalid");
+                }
+
+                if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && !m.FromPallet.HasValue
+                    && string.IsNullOrEmpty(m.FromLocation))
+                {
+                    throw new RequisitionException("Moves are missing location information");
+                }
+
+                // just checking moves onto for now, but could extend if required
+                if (m.ToPallet.HasValue || !string.IsNullOrEmpty(m.ToLocation))
+                {
+                    if ((m.ToPallet.HasValue && !string.IsNullOrEmpty(m.ToLocation))
+                        || (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation)))
+                    {
+                        throw new InsertReqOntosException("Move onto must specify either location code or pallet number");
+                    }
+
+                    if (m.ToPallet.HasValue)
+                    {
+                        var pallet = await this.palletRepository.FindByIdAsync(m.ToPallet.Value);
+
+                        if (pallet == null || pallet.DateInvalid.HasValue)
+                        {
+                            throw new InsertReqOntosException($"Pallet {m.ToPallet.Value} is invalid");
+                        }
+
+                        var canPutPartOnPallet = await this.requisitionStoredProcedures.CanPutPartOnPallet(
+                                                     partNumber,
+                                                     m.ToPallet.Value);
+                        if (!canPutPartOnPallet)
+                        {
+                            throw new CannotPutPartOnPalletException(
+                                $"Cannot put part {partNumber} onto P{m.ToPallet}");
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(m.ToLocation))
+                    {
+                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == m.ToLocation);
+                        if (toLocation == null)
+                        {
+                            throw new InsertReqOntosException($"Location {m.ToLocation} not found");
+                        }
+
+                        m.ToLocationId = toLocation.LocationId;
+                    }
+                }
+            }
+        }
+
         private async Task DoChecksForHeaderWithPartSpecified(RequisitionHeader header)
         {
             StoresPallet toPallet = null;
             if (header.ToPalletNumber.HasValue)
             {
                 toPallet = await this.palletRepository.FindByIdAsync(header.ToPalletNumber.Value);
-                if (toPallet == null)
+                if (toPallet == null || toPallet.DateInvalid.HasValue)
                 {
-                    throw new RequisitionException($"Pallet number {header.ToPalletNumber} does not exist");
+                    throw new RequisitionException($"Pallet number {header.ToPalletNumber} is invalid");
                 }
             }
 

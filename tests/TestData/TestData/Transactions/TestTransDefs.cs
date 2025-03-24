@@ -411,5 +411,12 @@ namespace Linn.Stores2.TestData.Transactions
                     new StoresTransactionState("O", "CUSTR", "STORES")
                 }
             };
+
+        public static readonly StoresTransactionDefinition StoresMove =
+            new StoresTransactionDefinition
+                {
+                    TransactionCode = "STSM",
+                    Description = "MOVE STOCK"
+                };
     }
 }

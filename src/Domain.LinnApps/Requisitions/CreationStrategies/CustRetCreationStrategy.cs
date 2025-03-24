@@ -57,7 +57,7 @@
                 throw new CreateRequisitionException("CUSTRET function requires a credit note");
             }
 
-            var document = this.requisitionManager.GetDocument(
+            var document = await this.requisitionManager.GetDocument(
                 context.Document1Type, 
                 context.Document1Number.Value,
                 context.Document1Line);

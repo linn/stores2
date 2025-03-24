@@ -27,9 +27,18 @@
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
+            this.Part = part;
 
-            this.Part = part ?? throw new RequisitionException("Requisition line requires a part");
-            this.TransactionDefinition = transaction ?? throw new RequisitionException("Requisition line requires a transaction");
+            if (this.Part == null)
+            {
+                throw new RequisitionException("Requisition line requires a part");
+            }
+
+            this.TransactionDefinition = transaction;
+            if (this.TransactionDefinition == null)
+            {
+                throw new RequisitionException("Requisition line requires a transaction");
+            }
 
             this.Qty = qty;
 

@@ -68,7 +68,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? document1Line = null);
 
 
-        DocumentResult GetDocument(string docName, int docNumber, int? lineNumber);
+        Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 
         Task CheckDocumentLineForOverAndFullyBooked(RequisitionHeader header, DocumentResult document);
     }

@@ -8,13 +8,14 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
 
     using NSubstitute;
 
     using NUnit.Framework;
 
-    public class WhenValidatingAndMoveHasNoQty : ContextBase
+    public class WhenValidatingAndMoveOntoSpecifiesInvalidPallet : ContextBase
     {
         private Func<Task> action;
 
@@ -28,6 +29,7 @@
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.LinnDeptReq.FunctionCode)
                 .Returns(TestFunctionCodes.LinnDeptReq);
+            this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Now });
             this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.LinnDeptReq.FunctionCode,
@@ -38,14 +40,15 @@
                 "2963",
                 new LineCandidate
                     {
-                        Moves = new[] { new MoveSpecification { Qty = 0 } }
+                        Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 666 } }
                     });
         }
 
         [Test]
         public async Task ShouldThrowException()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>().WithMessage("Move qty is invalid");
+            await this.action.Should()
+                .ThrowAsync<InsertReqOntosException>().WithMessage("Pallet 666 is invalid");
         }
     }
 }

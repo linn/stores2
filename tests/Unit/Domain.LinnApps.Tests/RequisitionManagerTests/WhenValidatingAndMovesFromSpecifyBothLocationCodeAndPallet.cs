@@ -14,7 +14,7 @@
 
     using NUnit.Framework;
 
-    public class WhenValidatingAndMoveHasNoQty : ContextBase
+    public class WhenValidatingAndMovesFromSpecifyBothLocationCodeAndPallet : ContextBase
     {
         private Func<Task> action;
 
@@ -38,14 +38,16 @@
                 "2963",
                 new LineCandidate
                     {
-                        Moves = new[] { new MoveSpecification { Qty = 0 } }
+                        Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123, ToLocation = "LOC" } }
                     });
         }
 
         [Test]
         public async Task ShouldThrowException()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>().WithMessage("Move qty is invalid");
+            await this.action.Should()
+                .ThrowAsync<InsertReqOntosException>()
+                .WithMessage("Move onto must specify either location code or pallet number");
         }
     }
 }
