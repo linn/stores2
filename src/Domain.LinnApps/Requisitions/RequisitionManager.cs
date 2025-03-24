@@ -795,6 +795,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException($"To State {header.ToState} does not exist");
             }
 
+            var stockPool = await this.stockPoolRepository.FindByIdAsync(header.ToStockPool);
+            if (!string.IsNullOrEmpty(header.ToStockPool) && stockPool == null)
+            {
+                throw new RequisitionException($"To Stock Pool {header.ToStockPool} does not exist");
+            }
+
             DoProcessResultCheck(await this.storesService.ValidOntoLocation(
                                      header.Part,
                                      header.ToLocation,
@@ -815,12 +821,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                      header.StoresFunction,
                                      header.ToState,
                                      "O"));
-
-            var stockPool = await this.stockPoolRepository.FindByIdAsync(header.ToStockPool);
-            if (!string.IsNullOrEmpty(header.ToStockPool) && stockPool == null)
-            {
-                throw new RequisitionException($"To Stock Pool {header.ToStockPool} does not exist");
-            }
 
             DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
         }

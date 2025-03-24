@@ -16,9 +16,9 @@
 
     using NUnit.Framework;
 
-    public class WhenValidatingAndNoLinesWhenRequiredByStoresFunction : ContextBase
+    public class WhenValidatingAndHeaderSpecifiesNonExistentToState : ContextBase
     {
-        private Func<Task> action;
+        private Func<Task> act;
 
         [SetUp]
         public void SetUp()
@@ -28,31 +28,32 @@
             this.NominalRepository.FindByIdAsync("2963")
                 .Returns(new Nominal("2963", "DESC"));
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
-            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.LinnDeptReq.FunctionCode)
-                .Returns(TestFunctionCodes.LinnDeptReq);
-            this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet());
+            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.Move.FunctionCode)
+                .Returns(TestFunctionCodes.Move);
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 666).Returns(true);
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
-            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
-                .Returns(TestTransDefs.StockToLinnDept);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StoresMove.TransactionCode)
+                .Returns(TestTransDefs.StoresMove);
+            this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet());
 
-            this.action = () => this.Sut.Validate(
+            this.act = () => this.Sut.Validate(
                 33087,
-                TestFunctionCodes.LinnDeptReq.FunctionCode,
+                TestFunctionCodes.Move.FunctionCode,
                 "F",
                 null,
                 null,
                 "1607",
                 "2963",
-                null);
+                null,
+                partNumber: "PART",
+                toPalletNumber: 666,
+                toState: "BLAH");
         }
 
         [Test]
-        public async Task ShouldThrowException()
+        public async Task ShouldThrow()
         {
-            await this.action.Should()
-                .ThrowAsync<CreateRequisitionException>().WithMessage(
-                    $"Lines are required for {TestFunctionCodes.LinnDeptReq.FunctionCode}");
+            await this.act.Should().ThrowAsync<RequisitionException>().WithMessage("To state BLAH does not exist");
         }
     }
 }
