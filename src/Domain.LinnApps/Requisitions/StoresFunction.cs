@@ -63,6 +63,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
+        public string LinesRequired { get; set;  }
+
         public bool AuditFunction() => this.FunctionCode == "AUDIT" || this.FunctionCode == "KOUNT";
 
         public bool Document1Required() => this.Document1RequiredFlag is "Y" or "O" or "X";

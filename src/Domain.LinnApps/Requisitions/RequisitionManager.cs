@@ -271,7 +271,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        public async Task CheckMoves(string partNumber, IEnumerable<MoveSpecification> moves)
+        private async Task CheckMoves(string partNumber, IEnumerable<MoveSpecification> moves)
         {
             foreach (var m in moves)
             {
@@ -616,10 +616,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 batchRef,
                 batchDate);
 
-            // loan out is weird in that all the creation actually happens in PLSQL
+            // loan out is weird in that all the cresation actually happens in PLSQL
             // so don't validate anything else here
-            // TODO - are there any other cases where we want to skip further validation?
-            // TODO - if so, is there a better way to group these cases than checking function code?
             if (functionCode == "LOAN OUT")
             {
                 // could make some proxy calls to check a valid loan number was entered
@@ -650,9 +648,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
-            // todo - theres nothing about LDREQ and adjacent function codes that will get us into this if
-            // todo - but we do want to throw an exception if no lines in these cases, so add extra lines_required column to function_codes?
-            if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
+            if (req.Part == null && req.Lines.Count == 0 && (function.LinesRequired == "Y" || function.PartSource != "C"))
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
             }
