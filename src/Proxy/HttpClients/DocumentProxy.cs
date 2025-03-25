@@ -72,5 +72,31 @@
 
             return new DocumentResult("L", loan.DocumentNumber, null, null, null);
         }
+
+        public async Task<PurchaseOrderResult> GetPurchaseOrder(int orderNumber)
+        {
+            var uri = $"{ConfigurationManager.Configuration["PROXY_ROOT"]}/purchasing/purchase-orders/{orderNumber}";
+
+            var response = await this.restClient.Get(
+                               CancellationToken.None,
+                               new Uri(uri, UriKind.RelativeOrAbsolute),
+                               new Dictionary<string, string>(),
+                               HttpHeaders.AcceptJson);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
+
+            var json = new JsonSerializer();
+            var po = json.Deserialize<PurchaseOrderResource>(response.Value);
+
+            return new PurchaseOrderResult
+                       {
+                           OrderNumber = po.OrderNumber,
+                           IsAuthorised = po.AuthorisedBy.HasValue,
+                           IsFilCancelled = !string.IsNullOrEmpty(po.DateFilCancelled)
+                       };
+        }
     }
 }

@@ -427,5 +427,12 @@ namespace Linn.Stores2.TestData.Transactions
                     TransactionCode = "STSM",
                     Description = "MOVE STOCK"
                 };
+
+        public static readonly StoresTransactionDefinition InspectionToStores =
+            new StoresTransactionDefinition
+                {
+                    TransactionCode = "GISTI1",
+                    Description = "BOOK PARTS FROM INSPECTION INTO STORES AGAINST PO"
+            };
     }
 }

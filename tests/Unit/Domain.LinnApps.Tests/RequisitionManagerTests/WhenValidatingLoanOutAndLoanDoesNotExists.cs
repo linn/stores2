@@ -35,7 +35,7 @@
         }
 
         [Test]
-        public async Task ShouldReturnValidated()
+        public async Task ShouldThrow()
         {
             await this.act.Should().ThrowAsync<CreateRequisitionException>()
                 .WithMessage("Loan Number 123 does not exist");

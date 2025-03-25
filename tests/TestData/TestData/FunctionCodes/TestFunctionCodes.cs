@@ -288,9 +288,19 @@
                     FromStockPoolRequired = "Y",
                     ToStockPoolRequired = "Y",
                     DepartmentNominalRequired = "N",
+                    PartSource = "PO",
                     Document1RequiredFlag = "Y",
-                    Document1LineRequiredFlag = "O"
-                };
+                    Document1LineRequiredFlag = "O",
+                    TransactionsTypes = new List<StoresFunctionTransaction>
+                                            {
+                                                new StoresFunctionTransaction
+                                                    {
+                                                        Seq = 1,
+                                                        TransactionDefinition = TestTransDefs.InspectionToStores,
+                                                        TransactionCode = TestTransDefs.InspectionToStores.TransactionCode
+                                                    }
+                                            }
+            };
 
         public static readonly StoresFunction AdjustLoc =
             new StoresFunction("ADJUST LOC")

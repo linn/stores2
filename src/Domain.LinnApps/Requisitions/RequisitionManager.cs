@@ -599,6 +599,26 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
+            if (function.PartSource == "PO")
+            {
+                var po = await this.documentProxy.GetPurchaseOrder(document1Number.GetValueOrDefault());
+
+                if (po == null)
+                {
+                    throw new CreateRequisitionException($"PO {document1Number} does not exist!");
+                }
+                
+                if (!po.IsAuthorised)
+                {
+                    throw new CreateRequisitionException($"PO {document1Number} is not authorised!");
+                }
+
+                if (po.IsFilCancelled)
+                {
+                    throw new CreateRequisitionException($"PO {document1Number} is FIL Cancelled!");
+                }
+            }
+
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
