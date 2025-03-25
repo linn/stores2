@@ -94,7 +94,7 @@
             return new PurchaseOrderResult
                        {
                            OrderNumber = po.OrderNumber,
-                           IsAuthorised = po.AuthorisedBy.HasValue,
+                           IsAuthorised = po.AuthorisedBy?.Id != null,
                            IsFilCancelled = !string.IsNullOrEmpty(po.DateFilCancelled)
                        };
         }

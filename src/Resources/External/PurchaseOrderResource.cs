@@ -6,6 +6,6 @@
 
         public string DateFilCancelled { get; set; }
 
-        public int? AuthorisedBy { get; set; }
+        public EmployeeResource AuthorisedBy { get; set; }
     }
 }
