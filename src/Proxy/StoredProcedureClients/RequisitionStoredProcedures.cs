@@ -1,6 +1,4 @@
-﻿using Linn.Common.Proxy;
-
-namespace Linn.Stores2.Proxy
+﻿namespace Linn.Stores2.Proxy.StoredProcedureClients
 {
     using System.Data;
     using System.Threading.Tasks;
