@@ -6,5 +6,9 @@
     public interface IDocumentProxy
     {
         Task<DocumentResult> GetCreditNote(int documentNumber, int? documentLine);
+
+        Task<DocumentResult> GetLoan(int loanNumber);
+
+        Task<PurchaseOrderResult> GetPurchaseOrder(int orderNumber);
     }
 }

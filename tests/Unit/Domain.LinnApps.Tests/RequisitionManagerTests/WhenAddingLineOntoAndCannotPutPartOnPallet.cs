@@ -109,7 +109,7 @@
                 this.header.ToStockPool,
                 this.header.ToState,
                 "FREE").Returns(new ProcessResult(true, string.Empty));
-            this.PalletRepository.FindByAsync(Arg.Any<Expression<Func<StoresPallet, bool>>>())
+            this.PalletRepository.FindByIdAsync(512)
                 .Returns(new StoresPallet());
             this.action = () => this.Sut.AddRequisitionLine(this.header, this.line);
         }

@@ -162,6 +162,7 @@
                 Description = "BOOK PARTS IN/OUT OF STORES ON REQUISITION",
                 DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
+                LinesRequired = "Y",
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "N",
                 PartSource = "N",
@@ -287,9 +288,19 @@
                     FromStockPoolRequired = "Y",
                     ToStockPoolRequired = "Y",
                     DepartmentNominalRequired = "N",
+                    PartSource = "PO",
                     Document1RequiredFlag = "Y",
-                    Document1LineRequiredFlag = "O"
-                };
+                    Document1LineRequiredFlag = "O",
+                    TransactionsTypes = new List<StoresFunctionTransaction>
+                                            {
+                                                new StoresFunctionTransaction
+                                                    {
+                                                        Seq = 1,
+                                                        TransactionDefinition = TestTransDefs.InspectionToStores,
+                                                        TransactionCode = TestTransDefs.InspectionToStores.TransactionCode
+                                                    }
+                                            }
+            };
 
         public static readonly StoresFunction AdjustLoc =
             new StoresFunction("ADJUST LOC")
@@ -304,6 +315,21 @@
                 {
                     ToStateRequired = "Y",
                     ToStockPool = "LINN"
+                };
+
+        public static readonly StoresFunction Move =
+            new StoresFunction("MOVE")
+                {
+                    Description = "STOCK MOVE",
+                    TransactionsTypes = new List<StoresFunctionTransaction>
+                                            {
+                                                new StoresFunctionTransaction
+                                                    {
+                                                        FunctionCode = "MOVE",
+                                                        TransactionDefinition = TestTransDefs.StoresMove,
+                                                        TransactionCode = TestTransDefs.StoresMove.TransactionCode
+                                                    }
+                                            }
                 };
     }
 }

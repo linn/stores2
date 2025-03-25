@@ -69,7 +69,7 @@
             }
 
             // mix states currently not allowed ever
-            if (state != null && stockLocators.Count > 0)
+            if (stockLocators.Count > 0)
             {
                 if (stockLocators.Any(a => a.State != state.State))
                 {

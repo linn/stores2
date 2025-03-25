@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
+    using System.Threading.Tasks;
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -9,7 +10,7 @@
 
     public class WhenGettingDocumentAndCreditNoteLineIsCancelled : ContextBase
     {
-        private Action action;
+        private Func<Task> action;
 
         [SetUp]
         public void SetUp()
@@ -22,9 +23,9 @@
         }
 
         [Test]
-        public void ShouldThrow()
+        public async Task ShouldThrow()
         {
-            this.action.Should().Throw<DocumentException>()
+            await this.action.Should().ThrowAsync<DocumentException>()
                 .WithMessage("Credit note 1 line 1 is cancelled");
         }
     }

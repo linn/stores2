@@ -7,7 +7,7 @@
     using Linn.Stores2.TestData.Parts;
     using NUnit.Framework;
 
-    public class WhenCreatingWithoutATransaction
+    public class WhenCreatingWithoutAQty
     {
         private Action action;
 
@@ -15,16 +15,16 @@
         public void SetUp()
         {
             this.action = () =>
-            {
-                var sut = new RequisitionLine(1, 1, TestParts.Cap003, 2, null);
-            };
+                {
+                    var sut = new RequisitionLine(1, 1, TestParts.Cap003 ,0, new StoresTransactionDefinition());
+                };
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<RequisitionException>()
-                .WithMessage("Requisition line requires a transaction");
+                .WithMessage("Requisition line requires a qty");
         }
     }
 }

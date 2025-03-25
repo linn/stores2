@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Proxy
+﻿namespace Linn.Stores2.Proxy.StoredProcedureClients
 {
     using Linn.Common.Proxy.LinnApps;
     using Linn.Stores2.Domain.LinnApps.External;

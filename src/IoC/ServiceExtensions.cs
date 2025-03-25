@@ -25,6 +25,7 @@
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Proxy;
     using Linn.Stores2.Proxy.External;
+    using Linn.Stores2.Proxy.StoredProcedureClients;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;

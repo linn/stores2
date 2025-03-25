@@ -101,7 +101,7 @@
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 512).Returns(true);
-            this.PalletRepository.FindByAsync(Arg.Any<Expression<Func<StoresPallet, bool>>>())
+            this.PalletRepository.FindByIdAsync(512)
                 .Returns(new StoresPallet());
             this.ReqStoredProcedures.InsertReqOntos(
                 Arg.Any<int>(),
