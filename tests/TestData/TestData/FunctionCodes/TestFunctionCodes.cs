@@ -21,14 +21,16 @@
                         FunctionCode = "ADJUST",
                         Seq = 1,
                         TransactionDefinition = TestTransDefs.StockToAdjust,
-                        TransactionCode = TestTransDefs.StockToAdjust.TransactionCode
+                        TransactionCode = TestTransDefs.StockToAdjust.TransactionCode,
+                        ReqType = "F"
                     },
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "ADJUST",
                         Seq = 2,
                         TransactionDefinition = TestTransDefs.AdjustToStock,
-                        TransactionCode = TestTransDefs.AdjustToStock.TransactionCode
+                        TransactionCode = TestTransDefs.AdjustToStock.TransactionCode,
+                        ReqType = "O"
                     }
                 }
             };
@@ -134,6 +136,7 @@
                 Document2RequiredFlag = "Y",
                 FromStateRequired = "N",
                 ToStateRequired = "Y",
+                ToLocationRequired = "O",
                 ToStockPoolRequired = "Y",
                 ToStockPool = "LINN",
                 PartSource = "C",
@@ -268,14 +271,16 @@
                         FunctionCode = "WOFF",
                         Seq = 1,
                         TransactionDefinition = TestTransDefs.WriteOff,
-                        TransactionCode = TestTransDefs.WriteOff.TransactionCode
+                        TransactionCode = TestTransDefs.WriteOff.TransactionCode,
+                        ReqType = "F"
                     },
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "WOFF",
                         Seq = 2,
                         TransactionDefinition = TestTransDefs.WriteOn,
-                        TransactionCode = TestTransDefs.WriteOn.TransactionCode
+                        TransactionCode = TestTransDefs.WriteOn.TransactionCode,
+                        ReqType = "O"
                     }
                 }
             };
