@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq.Expressions;
-using Linn.Stores2.TestData.Parts;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Transactions;
     using NSubstitute;
-    using NSubstitute.ReceivedExtensions;
     using NUnit.Framework;
 
     public class WhenValidatingAndCreditNotePartSourceButOverbookingLine : ContextBase
