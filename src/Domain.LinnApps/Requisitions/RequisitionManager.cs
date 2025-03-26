@@ -618,6 +618,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException($"PO {document1Number} is FIL Cancelled!");
                 }
             }
+            else if (function.PartSource == "C" && function.Document1Required())
+            {
+                if (document1Type != "C")
+                {
+                    throw new CreateRequisitionException("Function requires a credit note");
+                }
+
+                var document = await this.GetDocument(
+                    document1Type,
+                    document1Number.Value,
+                    document1Line);
+
+                await this.CheckDocumentLineForOverAndFullyBooked(req, document);
+            }
 
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
             {

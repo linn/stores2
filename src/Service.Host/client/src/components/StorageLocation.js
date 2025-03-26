@@ -369,7 +369,7 @@ function StorageLocation({ creating }) {
                             </Grid>
                             <Grid size={3}>
                                 <InputField
-                                    value={formValues.salesAccountId}
+                                    value={formValues.storesKittingPriority}
                                     type="number"
                                     fullWidth
                                     label="Stores Kit Priority"
