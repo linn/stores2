@@ -27,7 +27,8 @@
                         new Nominal("0000004710", "STOCK ADJUSTMENTS"),
                         reference: null,
                         comments: "constructor test",
-                        fromState: "STORES", 
+                        fromState: "QC", 
+                        toState: "QC",
                         quantity: 10,
                         fromStockPool: "LINN",
                         toStockPool: "LINN");
@@ -39,7 +40,7 @@
         {
             this.action.Should().Throw<CreateRequisitionException>()
                 .WithMessage(
-                    "Validation failed with the following errors: From state must be one of QC");
+                    "Validation failed with the following errors: To state must be one of STORES");
         }
     }
 }

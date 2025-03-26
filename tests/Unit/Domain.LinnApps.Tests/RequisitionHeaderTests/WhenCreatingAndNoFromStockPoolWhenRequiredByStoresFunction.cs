@@ -25,7 +25,8 @@
                                     new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
                                     reference: null,
                                     comments: "adjust qc test",
-                                    fromState: "STATE",
+                                    fromState: "QC",
+                                    toState: "STORES",
                                     quantity: 10,
                                     toStockPool: "POOL");
         }
