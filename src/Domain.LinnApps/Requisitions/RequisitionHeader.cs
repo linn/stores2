@@ -38,9 +38,9 @@
 
         public StorageLocation FromLocation { get; protected set; }
 
-        public int? FromPalletNumber { get; protected set; }
+        public int? FromPalletNumber { get; protected set; } // todo - we could relate the StoresPallet now for a richer model
 
-        public int? ToPalletNumber { get; protected set; }
+        public int? ToPalletNumber { get; protected set; } // as above
 
         public string Cancelled { get; protected set; }
 
@@ -120,8 +120,8 @@
             Part part = null,
             decimal? quantity = null,
             int? document1Line = null,
-            string toState = null,
-            string fromState = null,
+            string toState = null, // todo - we could pass the whole 
+            string fromState = null, 
             string batchRef = null,
             DateTime? batchDate = null,
             string category = null,
@@ -152,7 +152,6 @@
             this.BatchDate = batchDate;
             this.ToCategory = category;
             this.Document1 = document1Number;
-
             this.Department = department;
             this.Nominal = nominal;
             this.Reference = reference;
@@ -240,18 +239,46 @@
                 }
             }
 
+
             if (this.StoresFunction.FromStateRequired == "Y")
             {
                 if (string.IsNullOrEmpty(this.FromState))
                 {
-                    yield return "From state must be present";
+                    yield return $"From state must be specified for {this.StoresFunction.FunctionCode}";
                 }
+            }
 
-                if (!this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
+            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
+            {
+                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
+            }
+
+            // TODO - I noticed similar checks for From/To State (possible duplication) in IStoresService
+            // I would argue having them here is better since 
+            // better for encapsulation, consistency
+            // Why do we need an IStoresService seperate from a rich domain entity just to do some checks
+            // that the entity can do on itself?
+            if (!string.IsNullOrEmpty(this.FromState))
+            {
+                var validFromStates = this.StoresFunction.GetTransactionStates("F");
+                if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
+                    && !this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
                 {
                     yield return 
                         $"From state must be one of "
-                        + $"{string.Join(",", this.StoresFunction.GetTransactionStates("F"))}";
+                        + $"{string.Join(",", validFromStates)}";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(this.ToState))
+            {
+                var validToStates = this.StoresFunction.GetTransactionStates("O");
+                if (validToStates.Count > 0 // does no transaction states mean anything is allowed?
+                    && !this.StoresFunction.GetTransactionStates("O").Contains(this.ToState))
+                {
+                    yield return
+                        $"To state must be one of "
+                        + $"{string.Join(",", validToStates)}";
                 }
             }
 
@@ -263,11 +290,6 @@
             if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
             {
                 yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
-            }
-
-            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
-            {
-                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
         }
 

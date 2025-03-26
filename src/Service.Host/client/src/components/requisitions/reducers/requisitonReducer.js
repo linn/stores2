@@ -43,13 +43,13 @@ function reducer(state, action) {
                     document2: action.payload.newValue
                 };
             } else if (action.payload.fieldName === 'storesFunction') {
+                let state = { ...state, storesFunction: action.payload.newValue };
                 if (
                     action.payload.newValue?.nominalCode &&
                     action.payload.newValue?.nominalDescription
                 ) {
-                    return {
+                    state = {
                         ...state,
-                        storesFunction: action.payload.newValue,
                         nominal: {
                             nominalCode: action.payload.newValue?.nominalCode,
                             description: action.payload.newValue?.nominalDescription
@@ -61,13 +61,22 @@ function reducer(state, action) {
                     action.payload.newValue?.defaultToState ||
                     action.payload.newValue?.toStockPool
                 ) {
-                    return {
+                    state = {
                         ...state,
-                        storesFunction: action.payload.newValue,
                         toState: action.payload.newValue?.defaultToState,
                         toStockPool: action.payload.newValue?.toStockPool
                     };
                 }
+
+                if (action.payload.newValue.transactionTypes?.length === 1) {
+                    state = {
+                        ...state,
+                        fromState: action.payload.newValue.transactionTypes[0]?.fromStates?.[0],
+                        toState: action.payload.newValue.transactionTypes[0]?.fromStates?.[0]
+                    };
+                }
+
+                return state;
             }
 
             let newValue = action.payload.newValue;

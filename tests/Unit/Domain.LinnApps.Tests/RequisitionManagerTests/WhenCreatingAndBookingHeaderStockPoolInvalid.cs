@@ -11,6 +11,7 @@
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
@@ -35,7 +36,7 @@
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee { Id = this.employeeId },
-                new StoresFunction { FunctionCode = "FUNC" },
+                TestFunctionCodes.Move,
                 "F",
                 null,
                 "REQ",

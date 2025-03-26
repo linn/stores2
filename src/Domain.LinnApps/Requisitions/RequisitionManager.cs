@@ -617,6 +617,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     throw new CreateRequisitionException($"PO {document1Number} is FIL Cancelled!");
                 }
+
+                // todo - check part matches PO Part
+                // todo - check from state is qc if po part is qc_on_receipt? 
             }
 
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
@@ -819,6 +822,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (!string.IsNullOrEmpty(header.ToStockPool) && stockPool == null)
             {
                 throw new RequisitionException($"To Stock Pool {header.ToStockPool} does not exist");
+            }
+
+
+
+            if (!string.IsNullOrEmpty(header.BatchRef)) 
+            {
+                // todo - only for GIST PO for now? Or req
+                // todo - check there is enough stock at the location
             }
 
             DoProcessResultCheck(await this.storesService.ValidOntoLocation(
