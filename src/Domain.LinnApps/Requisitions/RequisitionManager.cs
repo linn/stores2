@@ -325,7 +325,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                 moveOnto.ToPallet,
                                                 moveOnto.ToStockPool,
                                                 moveOnto.ToState,
-                                                "FREE", // TODO
+                                                "FREE",
                                                 createdMoves ? "U" : "I");
 
                     if (!insertOntosResult.Success)
@@ -408,7 +408,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                             header.ReqNumber,
                             lineWithPicks.LineNumber,
                             pick.Qty,
-                            fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
+                            fromLocation?.LocationId,
                             pick.FromPallet,
                             header.FromStockPool,
                             lineWithPicks.TransactionDefinition);
@@ -599,6 +599,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
+            // move below to its own function?
             if (function.PartSource == "PO")
             {
                 var po = await this.documentProxy.GetPurchaseOrder(document1Number.GetValueOrDefault());
@@ -618,8 +619,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException($"PO {document1Number} is FIL Cancelled!");
                 }
 
-                // todo - check part matches PO Part
-                // todo - check from state is qc if po part is qc_on_receipt? 
+                if (batchRef != $"P{document1Number.Value}")
+                {
+                    throw new CreateRequisitionException(
+                            "You are trying to pass stock for payment from a different PO");
+                }
+
+                // todo - check enough stock with batch ref at location?
+                // todo check whole PO hasn't already been passed for payment?
             }
 
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
@@ -822,14 +829,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (!string.IsNullOrEmpty(header.ToStockPool) && stockPool == null)
             {
                 throw new RequisitionException($"To Stock Pool {header.ToStockPool} does not exist");
-            }
-
-
-
-            if (!string.IsNullOrEmpty(header.BatchRef)) 
-            {
-                // todo - only for GIST PO for now? Or req
-                // todo - check there is enough stock at the location
             }
 
             DoProcessResultCheck(await this.storesService.ValidOntoLocation(

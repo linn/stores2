@@ -38,9 +38,9 @@
 
         public StorageLocation FromLocation { get; protected set; }
 
-        public int? FromPalletNumber { get; protected set; } // todo - we could relate the StoresPallet now for a richer model
+        public int? FromPalletNumber { get; protected set; }
 
-        public int? ToPalletNumber { get; protected set; } // as above
+        public int? ToPalletNumber { get; protected set; }
 
         public string Cancelled { get; protected set; }
 
@@ -120,7 +120,7 @@
             Part part = null,
             decimal? quantity = null,
             int? document1Line = null,
-            string toState = null, // todo - we could pass the whole 
+            string toState = null,
             string fromState = null, 
             string batchRef = null,
             DateTime? batchDate = null,
@@ -238,9 +238,6 @@
                     yield return $"To location or pallet required for: {this.StoresFunction.FunctionCode}";
                 }
             }
-
-
-
 
             // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
             if (this.StoresFunction.FromStateRequired == "Y")

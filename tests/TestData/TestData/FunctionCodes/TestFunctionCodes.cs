@@ -288,6 +288,7 @@
                     FromStockPoolRequired = "Y",
                     ToStockPoolRequired = "Y",
                     DepartmentNominalRequired = "N",
+                    BatchRequired = "Y",
                     PartSource = "PO",
                     Document1RequiredFlag = "Y",
                     Document1LineRequiredFlag = "O",

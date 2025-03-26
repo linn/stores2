@@ -49,6 +49,7 @@
                 null,
                 partNumber: "PART",
                 fromStockPool: "QC",
+                batchRef: "P1234567",
                 toStockPool: "STORES",
                 quantity: 10,
                 toPalletNumber: 666);

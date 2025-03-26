@@ -72,7 +72,7 @@ function reducer(state, action) {
                     state = {
                         ...state,
                         fromState: action.payload.newValue.transactionTypes[0]?.fromStates?.[0],
-                        toState: action.payload.newValue.transactionTypes[0]?.fromStates?.[0]
+                        toState: action.payload.newValue.transactionTypes[0]?.toStates?.[0]
                     };
                 }
 
@@ -251,7 +251,7 @@ function reducer(state, action) {
             return {
                 ...state,
                 lines: state.lines.map(line =>
-                    line.lineNumber === action.payload.lineNumber
+                    line.lineNumber === action.payload.lineNumbto
                         ? {
                               ...line,
                               moves: [
