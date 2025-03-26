@@ -240,6 +240,9 @@
             }
 
 
+
+
+            // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
             if (this.StoresFunction.FromStateRequired == "Y")
             {
                 if (string.IsNullOrEmpty(this.FromState))
@@ -253,11 +256,6 @@
                 yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
 
-            // TODO - I noticed similar checks for From/To State (possible duplication) in IStoresService
-            // I would argue having them here is better since 
-            // better for encapsulation, consistency
-            // Why do we need an IStoresService seperate from a rich domain entity just to do some checks
-            // that the entity can do on itself?
             if (!string.IsNullOrEmpty(this.FromState))
             {
                 var validFromStates = this.StoresFunction.GetTransactionStates("F");
