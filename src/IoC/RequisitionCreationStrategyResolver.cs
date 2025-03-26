@@ -36,12 +36,7 @@
                 return this.serviceProvider.GetRequiredService<GistPoCreationStrategy>();
             }
 
-            if (context.Function.FunctionCode == "CUSTRET")
-            {
-                return this.serviceProvider.GetRequiredService<CustRetCreationStrategy>();
-            }
-
-            if (context.PartNumber != null && context.Function.FunctionType == "A")
+            if ((context.PartNumber != null || context.Document1Number != null) && context.Function.FunctionType == "A")
             {
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }

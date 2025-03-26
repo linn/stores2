@@ -1,8 +1,9 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
@@ -10,23 +11,21 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingCustRet : ContextBase
+    public class WhenValidatingAndCreditNotePartSourceButLineDoesntExist : ContextBase
     {
-        private RequisitionHeader result;
+        private Func<Task> act;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.CustomerReturn.FunctionCode)
                 .Returns(TestFunctionCodes.CustomerReturn);
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.CustomerToGoodStock.TransactionCode)
                 .Returns(TestTransDefs.CustomerToGoodStock);
-            this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet());
-            this.PartRepository.FindByIdAsync("PART").Returns(new Part());
-            this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
+            this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Today });
             this.DocumentProxy.GetCreditNote(1234, null).Returns(new DocumentResult("C", 1234, null, null, null));
-            this.result = await this.Sut.Validate(
+            this.act = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.CustomerReturn.FunctionCode,
                 null,
@@ -34,21 +33,17 @@
                 "C",
                 null,
                 null,
-                new LineCandidate
-                {
-                    PartNumber = "PART",
-                    Qty = 1,
-                    TransactionDefinition = TestTransDefs.CustomerToGoodStock.TransactionCode,
-                    Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
-                },
-                toStockPool: "LINN",
-                toState: "STORES");
+                null,
+                document1Line: 1,
+                toStockPool: "STORES",
+                toState: "LINN",
+                toPalletNumber: 666);
         }
 
         [Test]
-        public void ShouldReturnValidated()
+        public async Task ShouldThrow()
         {
-            this.result.Should().NotBeNull();
+            await this.act.Should().ThrowAsync<DocumentException>().WithMessage("Could not find credit note 1234 with line 1");
         }
     }
 }
