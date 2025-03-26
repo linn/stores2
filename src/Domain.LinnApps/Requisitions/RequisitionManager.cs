@@ -620,7 +620,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
             else if (function.PartSource == "C" && function.Document1Required())
             {
-                if (document1Type != "C" || document1Number == null)
+                if (document1Type != "C")
                 {
                     throw new CreateRequisitionException("Function requires a credit note");
                 }
