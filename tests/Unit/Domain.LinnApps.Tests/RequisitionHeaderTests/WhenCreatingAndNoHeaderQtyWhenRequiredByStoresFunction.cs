@@ -25,7 +25,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
                 reference: null,
                 comments: "adjust qc test",
-                fromState: "S",
+                fromState: "QC",
+                toState: "STORES",
                 toStockPool: "STOCK",
                 fromStockPool: "POOL");
         }

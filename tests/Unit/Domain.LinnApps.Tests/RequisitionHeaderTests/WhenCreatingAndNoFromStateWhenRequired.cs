@@ -31,7 +31,7 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .Where(ex => ex.Message.Contains("From state must be present"));
+                .Where(ex => ex.Message.Contains("From state must be specified for ADJUST QC"));
         }
     }
 }

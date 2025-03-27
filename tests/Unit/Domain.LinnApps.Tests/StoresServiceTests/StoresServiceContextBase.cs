@@ -27,6 +27,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
         protected StockState OnToState { get; set; }
 
         protected IRepository<StoresTransactionState, StoresTransactionStateKey> StoresTransactionStateRepository { get; private set; }
+        
+        protected IRepository<StoresBudget, int> StoresBudgetRepository { get; private set; }
 
         [SetUp]
         public void SetUpServiceContext()
@@ -37,7 +39,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
             this.Pallet = new StoresPallet();
             this.OnToState = new StockState();
             this.StoresTransactionStateRepository = Substitute.For<IRepository<StoresTransactionState, StoresTransactionStateKey>>();
-            this.Sut = new StoresService(this.StockService, this.StoresTransactionStateRepository);
+            this.StoresBudgetRepository = Substitute.For<IRepository<StoresBudget, int>>();
+            this.Sut = new StoresService(
+                this.StockService, 
+                this.StoresTransactionStateRepository, 
+                this.StoresBudgetRepository);
         }
     }
 }

@@ -50,6 +50,32 @@
                 throw new UnauthorisedActionException($"You are not authorised to raise {context.Function.FunctionCode}");
             }
 
+            await this.requisitionManager.Validate(
+                context.CreatedByUserNumber,
+                context.Function.FunctionCode,
+                context.ReqType,
+                context.Document1Number,
+                context.Document1Type,
+                context.DepartmentCode,
+                context.NominalCode,
+                context.FirstLineCandidate,
+                context.Reference,
+                context.Comments,
+                context.ManualPick,
+                context.FromStockPool,
+                context.ToStockPool,
+                context.FromPallet,
+                context.ToPallet,
+                context.FromLocationCode,
+                context.ToLocationCode,
+                context.PartNumber,
+                context.Quantity,
+                context.FromState,
+                context.ToState,
+                context.BatchRef,
+                context.BatchDate,
+                context.Document1Line);
+
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
             var fromLocation = string.IsNullOrEmpty(context.FromLocationCode) ? null 

@@ -1,5 +1,7 @@
 namespace Linn.Stores2.Resources.Requisitions
 {
+    using System.Collections.Generic;
+
     public class FunctionCodeTransactionResource
     {
         public int Seq { get; set; }
@@ -11,5 +13,9 @@ namespace Linn.Stores2.Resources.Requisitions
         public string TransactionDescription { get; set; }
 
         public bool? StockAllocations { get; set; }
+
+        public IEnumerable<string> FromStates { get; set; }
+
+        public IEnumerable<string> ToStates { get; set; }
     }
 }
