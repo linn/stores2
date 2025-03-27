@@ -37,7 +37,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
 
             this.DbContext.StockLocators.AddAndSave(
                 this.DbContext,
-                new StockLocator { Id = 1, LocationId = this.LocationId, PartNumber = this.PartNumber, State = "OK", Category = "C1", CurrentStock = "Y" });
+                new StockLocator { Id = 1, LocationId = this.LocationId, PartNumber = this.PartNumber, State = "OK", Category = "C1", CurrentStock = "Y", Quantity = 100, QuantityAllocated = 0 });
             this.DbContext.StockLocators.AddAndSave(
                 this.DbContext,
                 new StockLocator { Id = 2, LocationId = this.LocationId, PartNumber = this.PartNumber, State = "OK", Category = "C1", CurrentStock = "Y" });
@@ -47,6 +47,15 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
             this.DbContext.StockLocators.AddAndSave(
                 this.DbContext,
                 new StockLocator { Id = 4, LocationId = this.LocationId, PartNumber = "P2", State = "OK", Category = "C1", CurrentStock = "Y" });
+            this.DbContext.StockLocators.AddAndSave(
+                this.DbContext,
+                new StockLocator { Id = 5, PalletNumber = 900, PartNumber = "2STATES", State = "OK", Category = "C1", CurrentStock = "Y", Quantity = 100, QuantityAllocated = 0 });
+            this.DbContext.StockLocators.AddAndSave(
+                this.DbContext,
+                new StockLocator { Id = 6, PalletNumber = 900, PartNumber = "2STATES", State = "QC", Category = "C1", CurrentStock = "Y", Quantity = 100, QuantityAllocated = 0  });
+            this.DbContext.StockLocators.AddAndSave(
+                this.DbContext,
+                new StockLocator { Id = 7, PalletNumber = 1000, PartNumber = "INDEMAND", State = "OK", Category = "C1", CurrentStock = "Y", Quantity = 100, QuantityAllocated = 90  });
 
             this.Sut = new StockService(this.StockLocatorRepository);
         }

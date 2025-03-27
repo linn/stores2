@@ -621,7 +621,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (batchRef != $"P{document1Number.Value}")
                 {
-                    throw new CreateRequisitionException(
+                    throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");
                 }
 
