@@ -627,9 +627,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");
-                }
-
-                // todo check whole PO hasn't already been passed for payment?
+                }   
             }
 
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
