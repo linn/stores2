@@ -1,8 +1,3 @@
-using Linn.Stores2.Domain.LinnApps.Parts;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using Linn.Stores2.TestData.FunctionCodes;
-using Linn.Stores2.TestData.Transactions;
-
 namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTests
 {
     using System;
@@ -11,10 +6,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
     using System.Threading.Tasks;
     using FluentAssertions;
     using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stores;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
     using NSubstitute;
     using NUnit.Framework;
-
+    
     public class WhenEverythingOnOrderAlreadyPassedForPayment : StoresServiceContextBase
     {
         private ProcessResult result;
@@ -35,7 +34,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
                 quantity: 100,
                 toState: "QC",
                 toStockPool: "STOCK");
-
             
             var gisti1ReqLine = new RequisitionLine(123, 1, new Part(), 100, TestTransDefs.InspectionToStores);
 
