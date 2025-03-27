@@ -282,15 +282,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             await this.transactionManager.CommitAsync();
 
             var createdMoves = false;
-            
-            if (toAdd.Moves != null && toAdd.Moves.Any())
+            var movesToAdd = toAdd.Moves?.ToList();
+
+            if (movesToAdd != null && movesToAdd.Any())
             {
-                await this.CheckMoves(toAdd.PartNumber, toAdd.Moves);
+                await this.CheckMoves(toAdd.PartNumber, movesToAdd);
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
-                foreach (var pick in toAdd.Moves.Where(x => x.FromPallet.HasValue 
-                                                            || !string.IsNullOrEmpty(x.FromLocation)))
+                foreach (var pick in movesToAdd.Where(x => x.FromPallet.HasValue 
+                                                           || !string.IsNullOrEmpty(x.FromLocation)))
                 {
                     var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
                                            ? null
@@ -315,7 +316,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 // write ons
                 foreach (var moveOnto 
-                         in toAdd.Moves.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
+                         in movesToAdd.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
                 {
                     var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
                                                 header.ReqNumber,
@@ -485,7 +486,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
-                    await this.CheckMoves(line.PartNumber, line.Moves);
+                    await this.CheckMoves(line.PartNumber, line.Moves.ToList());
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -585,7 +586,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (firstLine.Moves != null && firstLine.Moves.Any())
                 {
-                    await this.CheckMoves(firstLine.PartNumber, firstLine.Moves);
+                    await this.CheckMoves(firstLine.PartNumber, firstLine.Moves.ToList());
                 }
 
                 req.AddLine(new RequisitionLine(
@@ -754,7 +755,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return false;
         }
 
-        private async Task CheckMoves(string partNumber, IEnumerable<MoveSpecification> moves)
+        private async Task CheckMoves(string partNumber, IList<MoveSpecification> moves)
         {
             foreach (var m in moves)
             {
@@ -775,7 +776,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     if ((m.ToPallet.HasValue && !string.IsNullOrEmpty(m.ToLocation))
                         || (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation)))
                     {
-                        throw new InsertReqOntosException("Move onto must specify either location code or pallet number");
+                        throw new InsertReqOntosException(
+                            "Move onto must specify either location code or pallet number");
                     }
 
                     if (m.ToPallet.HasValue)
@@ -796,10 +798,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                 $"Cannot put part {partNumber} onto P{m.ToPallet}");
                         }
                     }
-
-                    if (!string.IsNullOrEmpty(m.ToLocation))
+                    else if (!string.IsNullOrEmpty(m.ToLocation))
                     {
-                        var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == m.ToLocation);
+                        var toLocation =
+                            await this.storageLocationRepository.FindByAsync(x => x.LocationCode == m.ToLocation);
                         if (toLocation == null)
                         {
                             throw new InsertReqOntosException($"Location {m.ToLocation} not found");
