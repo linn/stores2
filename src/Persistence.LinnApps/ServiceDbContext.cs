@@ -419,7 +419,8 @@
             e.HasOne(r => r.StoresFunction).WithMany().HasForeignKey("FUNCTION_CODE");
             e.HasOne(r => r.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
             e.Property(r => r.DateBooked).HasColumnName("DATE_BOOKED");
-            e.Property(r => r.Reversed).HasColumnName("REVERSED").HasMaxLength(1);
+            e.Property(r => r.IsReversed).HasColumnName("REVERSED").HasMaxLength(1);
+            e.Property(r => r.IsReverseTransaction).HasColumnName("REVERSE_TRANS").HasMaxLength(1);
             e.HasMany(r => r.CancelDetails).WithOne().HasForeignKey(c => c.ReqNumber);
             e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
             e.HasOne(r => r.Department).WithMany().HasForeignKey("DEPARTMENT");

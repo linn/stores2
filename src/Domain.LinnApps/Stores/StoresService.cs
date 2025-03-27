@@ -169,7 +169,10 @@
 
             var passedForPayment = storesBudgets.Where(x => x.TransactionCode == "GISTI1");
 
-            if (bookedIn.Sum(x => x.Quantity) == passedForPayment.Sum(x => x.Quantity))
+            if (bookedIn.Sum(x => 
+                    x.RequisitionLine.RequisitionHeader.IsReverseTransaction == "Y" ? -x.Quantity : x.Quantity) 
+                == passedForPayment.Sum(x =>
+                    x.RequisitionLine.RequisitionHeader.IsReverseTransaction == "Y" ? -x.Quantity : x.Quantity))
             {
                 return new ProcessResult(
                     false, $"Everything on {batchRef} has already been passed for payment");

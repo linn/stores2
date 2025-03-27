@@ -58,7 +58,9 @@
         
         public Employee BookedBy { get; protected set; }
         
-        public string Reversed { get; protected set; }
+        public string IsReversed { get; protected set; }
+        
+        public string IsReverseTransaction { get; set; }
 
         public ICollection<CancelDetails> CancelDetails { get; protected set; }
 
@@ -159,7 +161,7 @@
             this.Document2 = document2Number;
             this.Document2Name = Document2Name;
 
-            this.Reversed = "N";
+            this.IsReversed = "N";
 
             this.Lines = new List<RequisitionLine>();
 
