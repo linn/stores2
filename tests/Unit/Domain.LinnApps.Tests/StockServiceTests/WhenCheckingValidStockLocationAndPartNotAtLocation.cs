@@ -1,14 +1,9 @@
-using System.Threading.Tasks;
 
 namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
+    using System.Threading.Tasks;
     using FluentAssertions;
     using Linn.Common.Domain;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using NSubstitute;
     using NUnit.Framework;
     
     public class WhenCheckingValidStockLocationAndPartNotAtLocation : ContextBase

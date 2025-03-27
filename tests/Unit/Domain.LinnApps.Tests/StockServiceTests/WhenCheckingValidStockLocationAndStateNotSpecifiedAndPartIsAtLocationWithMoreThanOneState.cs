@@ -5,7 +5,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
     using Linn.Common.Domain;
     using NUnit.Framework;
 
-    public class WhenCheckingValidStockLocationAndStateNotSpecigiedAndPartIsAtLocationWithMoreThanOneState : ContextBase
+    public class WhenCheckingValidStockLocationAndStateNotSpecifiedAndPartIsAtLocationWithMoreThanOneState : ContextBase
     {
         private ProcessResult result;
     

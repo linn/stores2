@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using Linn.Stores2.Domain.LinnApps.Stores;
-using NSubstitute;
-
 namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Stores;
+    using NSubstitute;
     using NUnit.Framework;
 
     public class WhenEverythingOnOrderAlreadyPassedForPayment : StoresServiceContextBase

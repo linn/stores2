@@ -1,11 +1,9 @@
-﻿using System.Linq;
-using Linn.Common.Domain;
-
-namespace Linn.Stores2.Domain.LinnApps.Stock
+﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
+    using System.Linq;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
+    using Linn.Common.Domain;
     using Linn.Common.Persistence;
 
     public class StockService : IStockService 
