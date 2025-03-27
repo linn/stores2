@@ -300,12 +300,12 @@ function Requisition({ creating }) {
         }
 
         // Allow saving if stock is picked for an either a new or existing line
-        if (formState.lines.some(l => l.stockPicked)) {
+        if (formState.lines?.some(l => l.stockPicked)) {
             return true;
         }
 
         // Allow saving if new move(s)
-        if (formState.lines.some(l => l.moves?.some(x => x.isAddition))) {
+        if (formState.lines?.some(l => l.moves?.some(x => x.isAddition))) {
             return true;
         }
 

@@ -216,7 +216,7 @@ function reducer(state, action) {
                     fromPalletNumber: action.payload.palletNumber,
                     batchRef: action.payload.batchRef,
                     batchDate: action.payload.stockRotationDate,
-                    toState: action.payload.state,
+                    // toState: action.payload.state,
                     toStockPool: action.payload.stockPoolCode,
                     quantity: action.payload.quantityToPick
                 };
