@@ -58,7 +58,7 @@
                            BookedByName = header.BookedBy?.Name,
                            CreatedBy = header.CreatedBy?.Id,
                            CreatedByName = header.CreatedBy?.Name,
-                           Reversed = header.IsReversed,
+                           IsReversed = header.IsReversed,
                            Lines = header.Lines?.Select(l => reqLineBuilder.Build(l, null)),
                            Nominal = new NominalResource
                                          {
