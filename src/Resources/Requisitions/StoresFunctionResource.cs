@@ -72,5 +72,7 @@
         public IEnumerable<string> ToStates { get; set; }
 
         public IEnumerable<FunctionCodeTransactionResource> TransactionTypes { get; set; }
+
+        public string DefaultFromState { get; set; }
     }
 }

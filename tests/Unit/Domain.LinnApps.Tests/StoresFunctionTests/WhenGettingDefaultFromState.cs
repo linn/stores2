@@ -4,12 +4,13 @@
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stores;
-
     using NUnit.Framework;
 
-    public class WhenGettingDocument2Name
+    public class WhenGettingDefaultFromState
     {
         private StoresFunction sut;
+
+        private string result;
 
         [SetUp]
         public void SetUp()
@@ -20,10 +21,11 @@
                 DepartmentNominalRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document2RequiredFlag = "Y",
-                FromStateRequired = "N",
+                FromStateRequired = "Y",
+                ToStateRequired = "N",
                 PartSource = "C",
                 TransactionsTypes = new List<StoresFunctionTransaction>
-                {
+                                        {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "CUSTRET",
@@ -39,6 +41,7 @@
                             RequiresAuth = "N",
                             DocType = "C",
                             Doc2Type = "R",
+                            InspectedState = "FAIL",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
                                 new StoresTransactionPosting("CUGIR", "C", null),
@@ -66,6 +69,7 @@
                             TakePriceFrom = "P",
                             RequiresAuth = "N",
                             DocType = "C",
+                            InspectedState = "STORES",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
                                 new StoresTransactionPosting("CUSTR", "D", null),
@@ -80,12 +84,14 @@
                     }
                 }
             };
+
+            this.result = this.sut.DefaultFromState();
         }
 
         [Test]
-        public void ShouldReturnCorrectDocument1Name()
+        public void ShouldHaveDefaultFromState()
         {
-            this.sut.Document2Name().Should().Be("R");
+            this.result.Should().Be("STORES");
         }
     }
 }

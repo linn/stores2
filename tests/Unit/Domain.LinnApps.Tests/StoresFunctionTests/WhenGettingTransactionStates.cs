@@ -1,14 +1,15 @@
-﻿using System.Linq;
-using Linn.Stores2.Domain.LinnApps.Stores;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.TestData.Transactions;
+    using Linn.Stores2.Domain.LinnApps.Stores;
+
     using NUnit.Framework;
-    using System.Collections.Generic;
 
     public class WhenGettingTransactionStates
     {
@@ -26,8 +27,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
                 Document1RequiredFlag = "N",
                 FromStateRequired = "Y",
                 PartSource = "N",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
-                {
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                                        {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "ADJUST QC",
