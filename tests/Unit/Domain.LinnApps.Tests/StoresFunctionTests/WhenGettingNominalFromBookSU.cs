@@ -1,11 +1,13 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
 {
+    using System.Collections.Generic;
+
+    using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.TestData.Transactions;
+
     using NUnit.Framework;
-    using System.Collections.Generic;
-    using FluentAssertions;
 
     public class WhenGettingNominalFromBookSU
     {
@@ -20,8 +22,8 @@
                 Document1RequiredFlag = "Y",
                 Document1Text = "Order Number",
                 PartSource = "PO",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
-                {
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                                        {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "BOOKSU",

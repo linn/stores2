@@ -59,10 +59,13 @@ function reducer(state, action) {
                     };
                 } else if (
                     action.payload.newValue?.defaultToState ||
+                    action.payload.newValue?.defaultFromState ||
                     action.payload.newValue?.toStockPool
                 ) {
-                    newState = {
+                    return {
                         ...newState,
+                        storesFunction: action.payload.newValue,
+                        fromState: action.payload.newValue?.defaultFromState,
                         toState: action.payload.newValue?.defaultToState,
                         toStockPool: action.payload.newValue?.toStockPool
                     };

@@ -1,25 +1,22 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
-    
+
     using NSubstitute;
 
     using NUnit.Framework;
 
-    public class WhenAddingLineAnInsertOntosFails : ContextBase
+    public class WhenAddingLineAndMovesOntoPallet : ContextBase
     {
         private RequisitionHeader header;
 
@@ -30,8 +27,6 @@
         private Nominal nominal;
 
         private Department department;
-
-        private Func<Task> action;
 
         [SetUp]
         public void SetUp()
@@ -49,9 +44,7 @@
                 null,
                 null,
                 this.department,
-                this.nominal,
-                toStockPool: "LINN",
-                toState: "STATE");
+                this.nominal);
             this.part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
             this.line = new LineCandidate
@@ -91,7 +84,7 @@
                 .Returns(new ProcessResult(
                     true, string.Empty));
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
-                .Returns(new StoresTransactionDefinition(TestTransDefs.StockToLinnDept.TransactionCode));
+                .Returns(TestTransDefs.StockToLinnDept);
             this.ReqStoredProcedures.CreateNominals(
                 Arg.Any<int>(),
                 10,
@@ -110,16 +103,37 @@
                 512,
                 "LINN",
                 "STORES",
-                "FREE").Returns(new ProcessResult(false, "no can do onto"));
+                "FREE").Returns(new ProcessResult(true, string.Empty));
 
-             this.action = () => this.Sut.AddRequisitionLine(this.header, this.line);
+            this.Sut.AddRequisitionLine(this.header, this.line);
         }
 
         [Test]
-        public async Task ShouldThrow()
+        public void ShouldAdd()
         {
-            await this.action.Should().ThrowAsync<InsertReqOntosException>()
-                .WithMessage("Failed in insert_req_ontos: no can do onto");
+            this.header.Lines.Count.Should().Be(1);
+        }
+
+        [Test]
+        public void ShouldCreateOntos()
+        {
+            this.ReqStoredProcedures.Received(1)
+                .InsertReqOntos(
+                    Arg.Any<int>(),
+                    10, 
+                    1,
+                    null,
+                    512, 
+                    "LINN", 
+                    "STORES",
+                    "FREE");
+        }
+
+        [Test]
+        public void ShouldCreateNominalPostings()
+        {
+            this.ReqStoredProcedures.Received(1).CreateNominals(
+                Arg.Any<int>(), 10, 1, this.nominal.NominalCode, this.department.DepartmentCode);
         }
     }
 }
