@@ -1,4 +1,3 @@
-
 namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
 {
     using System.Threading.Tasks;
