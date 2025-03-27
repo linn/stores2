@@ -4,10 +4,9 @@
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stores;
-
     using NUnit.Framework;
 
-    public class WhenGettingDocument2Name
+    public class WhenGettingDefaultOptionalToState
     {
         private StoresFunction sut;
 
@@ -21,9 +20,10 @@
                 Document1RequiredFlag = "Y",
                 Document2RequiredFlag = "Y",
                 FromStateRequired = "N",
+                ToStateRequired = "O",
                 PartSource = "C",
                 TransactionsTypes = new List<StoresFunctionTransaction>
-                {
+                                        {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "CUSTRET",
@@ -39,6 +39,7 @@
                             RequiresAuth = "N",
                             DocType = "C",
                             Doc2Type = "R",
+                            InspectedState = "FAIL",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
                                 new StoresTransactionPosting("CUGIR", "C", null),
@@ -66,6 +67,7 @@
                             TakePriceFrom = "P",
                             RequiresAuth = "N",
                             DocType = "C",
+                            InspectedState = "STORES",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {
                                 new StoresTransactionPosting("CUSTR", "D", null),
@@ -83,9 +85,9 @@
         }
 
         [Test]
-        public void ShouldReturnCorrectDocument1Name()
+        public void ShouldHaveDefaultToState()
         {
-            this.sut.Document2Name().Should().Be("R");
+            this.sut.DefaultToState().Should().Be("STORES");
         }
     }
 }

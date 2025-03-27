@@ -1,7 +1,4 @@
-﻿using Linn.Stores2.TestData.FunctionCodes;
-using Linn.Stores2.TestData.Transactions;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -14,12 +11,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
     using NUnit.Framework;
 
-    public class WhenAddingLineAndMovesOnto : ContextBase
+    public class WhenAddingLineAndMovesOntoLocation : ContextBase
     {
         private RequisitionHeader header;
 
@@ -50,6 +49,22 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.nominal);
             this.part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
+            this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
+                .Returns(
+                    new StorageLocation(
+                        111,
+                        "E-L-1",
+                        "Desc",
+                        new StorageSite(),
+                        new StorageArea(),
+                        new AccountingCompany(),
+                        "Y",
+                        null,
+                        "N",
+                        "A",
+                        "A",
+                        null,
+                        null));
             this.line = new LineCandidate
             {
                 LineNumber = 1,
@@ -60,7 +75,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                                 {
                                     new MoveSpecification
                                         {
-                                            ToPallet = 512,
+                                            ToLocation = "E-L-1",
                                             Qty = 10,
                                             ToState = "STORES",
                                             ToStockPool = "LINN"
@@ -80,8 +95,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                     Arg.Any<int>(),
                     1,
                     10,
+                    111,
                     null,
-                    512,
                     "LINN",
                     TestTransDefs.StockToLinnDept.TransactionCode)
                 .Returns(new ProcessResult(
@@ -95,15 +110,13 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.nominal.NominalCode,
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
-            this.ReqStoredProcedures.CanPutPartOnPallet("PART", 512).Returns(true);
-            this.PalletRepository.FindByIdAsync(512)
-                .Returns(new StoresPallet());
+
             this.ReqStoredProcedures.InsertReqOntos(
                 Arg.Any<int>(),
                 10,
                 1,
+                111,
                 null,
-                512,
                 "LINN",
                 "STORES",
                 "FREE").Returns(new ProcessResult(true, string.Empty));
@@ -125,8 +138,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                     Arg.Any<int>(),
                     10, 
                     1,
-                    null,
-                    512, 
+                    111,
+                    null, 
                     "LINN", 
                     "STORES",
                     "FREE");

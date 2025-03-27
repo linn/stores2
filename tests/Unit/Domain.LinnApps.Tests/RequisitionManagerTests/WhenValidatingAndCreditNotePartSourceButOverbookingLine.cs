@@ -27,7 +27,8 @@
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.CustomerToGoodStock.TransactionCode)
                 .Returns(TestTransDefs.CustomerToGoodStock);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Today });
-            this.DocumentProxy.GetCreditNote(1234, 1).Returns(new DocumentResult("C", 1234, 1, 9, TestParts.SelektHub.PartNumber));
+            this.DocumentProxy.GetCreditNote(1234, 1)
+                .Returns(new DocumentResult("C", 1234, 1, 9, TestParts.SelektHub.PartNumber));
 
             var requisitions = new List<RequisitionHeader>
             {

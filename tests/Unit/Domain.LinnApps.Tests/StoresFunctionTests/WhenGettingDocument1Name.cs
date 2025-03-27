@@ -1,12 +1,13 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
 {
-    using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Stores;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.TestData.Transactions;
-    using NUnit.Framework;
     using System.Collections.Generic;
+
+    using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stores;
+
+    using NUnit.Framework;
 
     public class WhenGettingDocument1Name
     {
