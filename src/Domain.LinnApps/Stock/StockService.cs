@@ -82,7 +82,11 @@ namespace Linn.Stores2.Domain.LinnApps.Stock
 
             if (!string.IsNullOrEmpty(state) && stateQty < qty)
             {
-                return new ProcessResult { Success = false, Message = $"Not enough stock at this location, unallocated qty: {stateQty}" };
+                return new ProcessResult
+                {
+                    Success = false, 
+                    Message = $"Not enough stock at this location, unallocated qty: {stateQty}"
+                };
             }
 
             return new ProcessResult { Success = true };

@@ -34,6 +34,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         private readonly ITransactionManager transactionManager;
 
         private readonly IStoresService storesService;
+        
+        private readonly IStockService stockService;
 
         private readonly IRepository<StoresPallet, int> palletRepository;
 
@@ -65,7 +67,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<StoresFunction, string> storesFunctionRepository,
             IRepository<Department, string> departmentRepository,
             IRepository<Nominal, string> nominalRepository,
-            IDocumentProxy documentProxy)
+            IDocumentProxy documentProxy,
+            IStockService stockService)
         {
             this.authService = authService;
             this.repository = repository;
@@ -83,6 +86,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.departmentRepository = departmentRepository;
             this.nominalRepository = nominalRepository;
             this.documentProxy = documentProxy;
+            this.stockService = stockService;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -527,6 +531,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                           ? await this.nominalRepository.FindByIdAsync(nominalCode) : null;
             var fromLocation = !string.IsNullOrEmpty(fromLocationCode) 
                                    ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == fromLocationCode) : null;
+            
             var toLocation = !string.IsNullOrEmpty(toLocationCode)
                                  ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
             var part = !string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
@@ -573,8 +578,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateRequisitionException($"Lines are required for {functionCode}");
             }
-
-
+            
             if (firstLine != null)
             {
                 var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
@@ -625,7 +629,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                             "You are trying to pass stock for payment from a different PO");
                 }
 
-                // todo - check enough stock with batch ref at location?
                 // todo check whole PO hasn't already been passed for payment?
             }
 
@@ -853,6 +856,18 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                      "O"));
 
             DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
+            
+            // todo - check this isn't going to break anything? 
+            if (header.FromLocation != null || header.FromPalletNumber.HasValue)
+            {
+                var validStock = await this.stockService.ValidStockLocation(
+                    header.FromLocation?.LocationId, header.FromPalletNumber, header.Part?.PartNumber, header.Quantity.GetValueOrDefault(), header.FromState);
+
+                if (!validStock.Success)
+                {
+                    throw new CreateRequisitionException(validStock.Message);
+                }
+            }
         }
     }
 }

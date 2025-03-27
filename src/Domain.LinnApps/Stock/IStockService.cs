@@ -1,10 +1,10 @@
-﻿using Linn.Common.Domain;
-
-namespace Linn.Stores2.Domain.LinnApps.Stock
+﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
-
+    
+    using Linn.Common.Domain;
+    
     public interface IStockService
     {
         Task<IList<StockLocator>> GetStockLocators(string partNumber, int? locationId, int? palletNumber);

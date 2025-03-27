@@ -14,15 +14,19 @@
         private readonly IStockService stockService;
 
         private readonly IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository;
+        
+        private readonly IRepository<StoresBudget, int> storesBudgetRepository;
 
         // This service is intended for stores_oo replacement methods that are not
         // suitable to be written in the requisition class itself
         public StoresService(
             IStockService stockService,
-            IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository)
+            IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository,
+            IRepository<StoresBudget, int> storesBudgetRepository)
         {
             this.stockService = stockService;
             this.storesTransactionStateRepository = storesTransactionStateRepository;
+            this.storesBudgetRepository = storesBudgetRepository;
         }
 
         public async Task<ProcessResult> ValidOntoLocation(
@@ -141,6 +145,37 @@
             }
 
             return new ProcessResult(true, $"Stock Pool {stockPool.StockPoolCode} is valid for part {part.PartNumber}");
+        }
+
+        public async Task<ProcessResult> ValidPoQcBatch(string batchRef, int orderNumber, int orderLine)
+        {
+            if (batchRef.Substring(1) != orderNumber.ToString())
+            {
+                return new ProcessResult(
+                    false, $"You are trying to pass batch {batchRef} for payment against the wrong Order Number: {orderNumber}");
+            }
+
+            var storesBudgets = await this.storesBudgetRepository.FilterByAsync(
+                x => x.RequisitionLine.Document1Number == orderNumber
+                     && x.RequisitionLine.Document1Line == orderLine);
+            
+            var bookedIn = storesBudgets.Where(x => x.TransactionCode == "SUGII").ToList();
+
+            if (bookedIn.Count == 0 || bookedIn.Sum(x => x.Quantity) == 0)
+            {
+                return new ProcessResult(
+                    false, $"Nothing found to pass for payment - Check order {orderNumber} has been booked in.");
+            }
+
+            var passedForPayment = storesBudgets.Where(x => x.TransactionCode == "GISTI1");
+
+            if (bookedIn.Sum(x => x.Quantity) == passedForPayment.Sum(x => x.Quantity))
+            {
+                return new ProcessResult(
+                    false, $"Everything on {batchRef} has already been passed for payment");
+            }
+            
+            return new ProcessResult(true, $"Order {orderNumber} is valid for part {orderLine}");
         }
     }
 }
