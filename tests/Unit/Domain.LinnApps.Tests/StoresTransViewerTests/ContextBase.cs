@@ -2,7 +2,6 @@
 {
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
-    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Stock;
 

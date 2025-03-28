@@ -24,7 +24,8 @@
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.CustomerToGoodStock.TransactionCode)
                 .Returns(TestTransDefs.CustomerToGoodStock);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Today });
-            this.DocumentProxy.GetCreditNote(1234, null).Returns(new DocumentResult("C", 1234, null, null, null));
+            this.DocumentProxy.GetCreditNote(1234, null)
+                .Returns(new DocumentResult("C", 1234, null, null, null));
             this.act = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.CustomerReturn.FunctionCode,

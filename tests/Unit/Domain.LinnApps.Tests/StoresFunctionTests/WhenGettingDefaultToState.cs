@@ -22,8 +22,8 @@
                 FromStateRequired = "N",
                 ToStateRequired = "Y",
                 PartSource = "C",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
-                {
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                                        {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "CUSTRET",

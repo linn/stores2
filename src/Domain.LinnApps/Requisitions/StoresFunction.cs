@@ -124,13 +124,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return string.Empty;
         }
 
-        public string DefaultToState()
+        public string DefaultFromState()
         {
-            if (this.ToStateRequired == "Y" && this.TransactionsTypes != null)
+            if ((this.FromStateRequired == "Y" || this.FromStateRequired == "O") && this.TransactionsTypes != null)
             {
                 var states = this.TransactionsTypes
                     .Where(t => !string.IsNullOrEmpty(t.TransactionDefinition?.InspectedState))
-                    .Select(t => t.TransactionDefinition?.InspectedState);
+                    .Select(t => t.TransactionDefinition?.InspectedState).ToList();
+
                 if (states.Contains("STORES"))
                 {
                     return "STORES";
@@ -138,6 +139,26 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 return states.FirstOrDefault();
             }
+
+            return string.Empty;
+        }
+
+        public string DefaultToState()
+        {
+            if ((this.ToStateRequired == "Y" || this.ToStateRequired == "O") && this.TransactionsTypes != null)
+            {
+                var states = this.TransactionsTypes
+                    .Where(t => !string.IsNullOrEmpty(t.TransactionDefinition?.InspectedState))
+                    .Select(t => t.TransactionDefinition?.InspectedState).ToList();
+              
+                if (states.Contains("STORES"))
+                {
+                    return "STORES";
+                }
+
+                return states.FirstOrDefault();
+            }
+
             return string.Empty;
         }
     }

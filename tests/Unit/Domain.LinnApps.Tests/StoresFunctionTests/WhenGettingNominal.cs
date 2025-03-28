@@ -19,8 +19,8 @@
                 Description = "ADJUST PARTS UP/DOWN IN STOCK",
                 Document1RequiredFlag = "N",
                 PartSource = "N",
-                TransactionsTypes = new List<StoresFunctionTransaction>()
-                {
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                                        {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "ADJUST",
