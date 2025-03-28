@@ -164,19 +164,21 @@ function StockOptions({
                         />
                     </Grid>
                     <Grid size={2}>
-                        <InputField
-                            value={batchRef}
-                            onChange={setItemValue}
-                            disabled={disabled}
-                            label="Batch Ref"
-                            propertyName="batchRef"
-                        />
+                        {functionCode?.batchRequired !== 'N' && (
+                            <InputField
+                                value={batchRef}
+                                onChange={setItemValue}
+                                disabled={disabled}
+                                label="Batch Ref"
+                                propertyName="batchRef"
+                            />
+                        )}
                     </Grid>
                     <Grid size={6} />
                 </>
             )}
             <Grid size={2}>
-                {functionCode?.fromStates && (
+                {functionCode?.toStates && functionCode?.toStateRequired !== 'N' && (
                     <Dropdown
                         value={toState}
                         disabled={disabled}

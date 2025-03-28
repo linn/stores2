@@ -353,7 +353,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task CheckAndBookRequisitionHeader(RequisitionHeader header)
         {
-            await this.DoChecksForHeaderWithPartSpecified(header);
+            await this.DoChecksForAutoHeader(header);
 
             await this.repository.AddAsync(header);
 
@@ -634,12 +634,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckDocumentLineForOverAndFullyBooked(req, document);
             }
 
-            if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C")
+            if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C" && function.LinesRequired != "N")
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
             }
 
-            if (req.Part != null && req.Lines.Count == 0)
+            if (function.AutomaticFunctionType() && req.Lines.Count == 0)
             {
                 if (FieldIsNeededOrOptional(req.StoresFunction.QuantityRequired) && req.Quantity == null)
                 {
@@ -666,7 +666,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A to location or pallet is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.ToStockPoolRequired) && string.IsNullOrEmpty(req.ToStockPool))
+                if (FieldIsNeededWithPart(req.StoresFunction.ToStockPoolRequired, req.Part) && string.IsNullOrEmpty(req.ToStockPool))
                 {
                     throw new RequisitionException("A to stock pool is required");
                 }
@@ -676,7 +676,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A to state is required");
                 }
 
-                await this.DoChecksForHeaderWithPartSpecified(req);
+                if (req.StoresFunction.PartNumberRequired() && req.Part == null)
+                {
+                    throw new RequisitionException("Part number is required");
+                }
+
+                await this.DoChecksForAutoHeader(req);
             }
 
             return req;
@@ -755,6 +760,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return false;
         }
 
+        private static bool FieldIsNeededWithPart(string code, Part part)
+        {
+            if (part != null)
+            {
+                return FieldIsNeededOrOptional(code);
+            }
+
+            return (code == "Y");
+        }
+
         private async Task CheckMoves(string partNumber, IList<MoveSpecification> moves)
         {
             foreach (var m in moves)
@@ -813,7 +828,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        private async Task DoChecksForHeaderWithPartSpecified(RequisitionHeader header)
+        private async Task DoChecksForAutoHeader(RequisitionHeader header)
         {
             StoresPallet toPallet = null;
             if (header.ToPalletNumber.HasValue)
@@ -837,11 +852,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException($"To Stock Pool {header.ToStockPool} does not exist");
             }
 
-            DoProcessResultCheck(await this.storesService.ValidOntoLocation(
-                                     header.Part,
-                                     header.ToLocation,
-                                     toPallet,
-                                     toState));
+            if (header.Part != null)
+            {
+                DoProcessResultCheck(await this.storesService.ValidOntoLocation(
+                    header.Part,
+                    header.ToLocation,
+                    toPallet,
+                    toState));
+            }
 
             if (!string.IsNullOrEmpty(header.FromState))
             {
@@ -852,13 +870,19 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     "F"));
             }
 
-            DoProcessResultCheck(await this.storesService.ValidState(
-                                     null,
-                                     header.StoresFunction,
-                                     header.ToState,
-                                     "O"));
+            if (!string.IsNullOrEmpty(header.ToState))
+            {
+                DoProcessResultCheck(await this.storesService.ValidState(
+                    null,
+                    header.StoresFunction,
+                    header.ToState,
+                    "O"));
+            }
 
-            DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
+            if (header.Part != null)
+            {
+                DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
+            }
         }
     }
 }

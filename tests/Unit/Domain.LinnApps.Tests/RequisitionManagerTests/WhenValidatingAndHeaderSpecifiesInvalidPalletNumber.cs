@@ -45,7 +45,9 @@
                 "2963",
                 null,
                 partNumber: "PART",
-                toPalletNumber: 666);
+                toPalletNumber: 666,
+                toStockPool: "LINN",
+                toState: "STORES");
         }
 
         [Test]
