@@ -14,6 +14,8 @@
 
         private List<string> ldreqFunctions = ["LDREQ", "ADJUST", "WOFF", "ADJUST QC", "WOFF QC", "RSN"];
 
+        private List<string> movelocFunctions = ["MOVELOC", "SUREQ"];
+
         public RequisitionCreationStrategyResolver(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider; 
@@ -36,7 +38,7 @@
                 return this.serviceProvider.GetRequiredService<GistPoCreationStrategy>();
             }
 
-            if ((context.PartNumber != null || context.Document1Number != null) && context.Function.FunctionType == "A")
+            if ((context.PartNumber != null || context.Document1Number != null || movelocFunctions.Contains(context.Function.FunctionCode)) && context.Function.AutomaticFunctionType())
             {
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }

@@ -9,12 +9,14 @@
             new StoresFunction("ADJUST")
             {
                 Description = "ADJUST PARTS UP/DOWN IN STOCK",
+                BatchRequired = "N",
                 DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
                 PartSource = "N",
+                ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -40,12 +42,14 @@
             new StoresFunction("ADJUST QC")
             {
                 Description = "ADJUST PARTS UP/DOWN IN INSPECTION",
+                BatchRequired = "N",
                 DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "Y",
                 FunctionType = "M",
                 PartSource = "N",
+                ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -69,35 +73,41 @@
             new StoresFunction("AUDIT")
             {
                 Description = "STOCK CHECK ADJUSTMENTS",
+                BatchRequired = "N",
                 Document1RequiredFlag = "N",
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
-                PartSource = "N"
+                PartSource = "N",
+                ToStateRequired = "N"
             };
 
         public static readonly StoresFunction BookWorksOrder =
             new StoresFunction("BOOKWO")
             {
                 Description = "BOOK IN WORKS ORDER",
+                BatchRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document1LineRequiredFlag = "N",
                 Document1Text = "Works Order",
                 FromStateRequired = "N",
                 FunctionType = "A",
-                PartSource = "WO"
+                PartSource = "WO",
+                ToStateRequired = "O"
             };
 
         public static readonly StoresFunction BookFromSupplier =
             new StoresFunction("BOOKSU")
             {
                 Description = "BOOK IN GOODS FROM SUPPLIER FOR PO",
+                BatchRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document1LineRequiredFlag = "Y",
                 Document1Text = "Order Number",
                 FromStateRequired = "N",
                 FunctionType = "A",
                 PartSource = "PO",
+                ToStateRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -135,6 +145,7 @@
             new StoresFunction("CUSTRET")
             {
                 Description = "RETURN GOODS FROM CUSTOMER TO STOCK/INSPECTION",
+                BatchRequired = "N",
                 DepartmentNominalRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document1LineRequiredFlag = "O",
@@ -169,6 +180,7 @@
             new StoresFunction("LDREQ")
             {
                 Description = "BOOK PARTS IN/OUT OF STORES ON REQUISITION",
+                BatchRequired = "N",
                 DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
                 LinesRequired = "Y",
@@ -176,6 +188,8 @@
                 FromStateRequired = "N",
                 FunctionType = "M",
                 PartSource = "N",
+                ToStateRequired = "N",
+                ToStockPoolRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -201,6 +215,7 @@
             new StoresFunction("LOAN OUT")
             {
                 Description = "BOOK OUT PRODUCTS TO LOAN ACCOUNT",
+                BatchRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document1Text = "Loan Number",
                 Document1LineRequiredFlag = "N",
@@ -208,6 +223,8 @@
                 FromStateRequired = "N",
                 FunctionType = "M",
                 PartSource = "N",
+                ToStateRequired = "N",
+                ToStockPoolRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -224,6 +241,7 @@
             new StoresFunction("RSN")
             {
                 Description = "BOOKS PARTS TO A RSN",
+                BatchRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document1Text = "RSN Number",
                 Document1LineRequiredFlag = "N",
@@ -231,6 +249,7 @@
                 FromStateRequired = "N",
                 FunctionType = "M",
                 PartSource = "N",
+                ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -256,25 +275,30 @@
             new StoresFunction("SUKIT")
             {
                 Description = "KIT PARTS TO SUPPLIER STORE",
+                BatchRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document1LineRequiredFlag = "N",
                 Document1Text = "Order Number",
                 FromStateRequired = "N",
                 FunctionType = "A",
                 PartSource = "PO",
-                ToLocationRequired = "Y"
+                ToLocationRequired = "Y",
+                ToStateRequired = "N"
             };
 
         public static readonly StoresFunction WriteOff =
             new StoresFunction("WOFF")
             {
                 Description = "WRITE OFF/ON PARTS IN STOCK",
+                BatchRequired = "N",
                 DepartmentNominalRequired = "Y",
                 Document1RequiredFlag = "N",
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
                 PartSource = "N",
+                ToStockPoolRequired = "O",
+                ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -301,6 +325,7 @@
                 {
                     QuantityRequired = "Y",
                     Description = "BOOK STOCK INTO STORES FROM QC ON A PO",
+                    BatchRequired = "Y",
                     FromStockPoolRequired = "Y",
                     ToStockPoolRequired = "Y",
                     DepartmentNominalRequired = "N",
@@ -308,6 +333,7 @@
                     Document1RequiredFlag = "Y",
                     Document1LineRequiredFlag = "O",
                     FunctionType = "A",
+                    ToStateRequired = "X",
                     TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
@@ -325,8 +351,10 @@
                     QuantityRequired = "N",
                     ToLocationRequired = "N",
                     FromLocationRequired = "Y",
-                    FunctionType = "A"
-                };
+                    FunctionType = "A",
+                    ToStateRequired = "N",
+                    BatchRequired = "N"
+            };
 
         public static readonly StoresFunction SupplierReturn =
             new StoresFunction("SURETURN")
@@ -334,13 +362,16 @@
                     FunctionType = "A",
                     ToStateRequired = "Y",
                     ToStockPool = "LINN"
-                };
+            };
 
         public static readonly StoresFunction Move =
             new StoresFunction("MOVE")
                 {
                     Description = "STOCK MOVE",
                     FunctionType = "A",
+                    BatchRequired = "N",
+                    ToStateRequired = "O",
+                    ToStockPoolRequired = "O",
                     TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
@@ -351,5 +382,29 @@
                                                     }
                                             }
                 };
+
+        public static readonly StoresFunction MoveLocation =
+            new StoresFunction("MOVELOC")
+            {
+                Description = "MOVE ALL STOCK FROM ONE STORAGE PLACE TO ANOTHER",
+                FunctionType = "A",
+                ToLocationRequired = "N",
+                FromLocationRequired = "Y",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "N",
+                LinesRequired = "N",
+                PartSource = "N",
+                ToStateRequired = "N",
+                ToStockPoolRequired = "O",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "MOVELOC",
+                        TransactionDefinition = TestTransDefs.StoresMove,
+                        TransactionCode = TestTransDefs.StoresMove.TransactionCode
+                    }
+                }
+            };
     }
 }
