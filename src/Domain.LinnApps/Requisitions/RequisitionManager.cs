@@ -888,6 +888,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     header.StoresFunction,
                     header.ToState,
                     "O"));
+            }
 
             DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             
