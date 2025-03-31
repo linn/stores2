@@ -33,7 +33,7 @@
                 null,
                 null,
                 toStockPool: "STORES",
-                toState: "LINN",
+                toState: "STORES",
                 toPalletNumber: 666);
         }
 

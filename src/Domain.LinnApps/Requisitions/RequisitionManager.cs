@@ -34,6 +34,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         private readonly ITransactionManager transactionManager;
 
         private readonly IStoresService storesService;
+        
+        private readonly IStockService stockService;
 
         private readonly IRepository<StoresPallet, int> palletRepository;
 
@@ -65,7 +67,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<StoresFunction, string> storesFunctionRepository,
             IRepository<Department, string> departmentRepository,
             IRepository<Nominal, string> nominalRepository,
-            IDocumentProxy documentProxy)
+            IDocumentProxy documentProxy,
+            IStockService stockService)
         {
             this.authService = authService;
             this.repository = repository;
@@ -83,6 +86,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.departmentRepository = departmentRepository;
             this.nominalRepository = nominalRepository;
             this.documentProxy = documentProxy;
+            this.stockService = stockService;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -326,7 +330,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                 moveOnto.ToPallet,
                                                 moveOnto.ToStockPool,
                                                 moveOnto.ToState,
-                                                "FREE", // TODO
+                                                "FREE",
                                                 createdMoves ? "U" : "I");
 
                     if (!insertOntosResult.Success)
@@ -409,7 +413,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                             header.ReqNumber,
                             lineWithPicks.LineNumber,
                             pick.Qty,
-                            fromLocation?.LocationId, // todo - do we pass a value here if palletNumber?
+                            fromLocation?.LocationId,
                             pick.FromPallet,
                             header.FromStockPool,
                             lineWithPicks.TransactionDefinition);
@@ -528,6 +532,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                           ? await this.nominalRepository.FindByIdAsync(nominalCode) : null;
             var fromLocation = !string.IsNullOrEmpty(fromLocationCode) 
                                    ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == fromLocationCode) : null;
+            
             var toLocation = !string.IsNullOrEmpty(toLocationCode)
                                  ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
             var part = !string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
@@ -574,8 +579,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateRequisitionException($"Lines are required for {functionCode}");
             }
-
-
+            
             if (firstLine != null)
             {
                 var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
@@ -600,6 +604,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     firstLine.Document1Type));
             }
 
+            // move below to its own function?
             if (function.PartSource == "PO")
             {
                 var po = await this.documentProxy.GetPurchaseOrder(document1Number.GetValueOrDefault());
@@ -618,6 +623,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     throw new CreateRequisitionException($"PO {document1Number} is FIL Cancelled!");
                 }
+
+                if (batchRef != $"P{document1Number.Value}")
+                {
+                    throw new CreateRequisitionException(   
+                            "You are trying to pass stock for payment from a different PO");
+                }   
             }
             else if (function.PartSource == "C" && function.Document1Required())
             {
@@ -879,8 +890,21 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     "O"));
             }
 
+            DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
+            
             if (header.Part != null)
             {
+                if (header.FromLocation != null || header.FromPalletNumber.HasValue)
+                {
+                    DoProcessResultCheck(
+                        await this.stockService.ValidStockLocation(
+                            header.FromLocation?.LocationId,
+                            header.FromPalletNumber,
+                            header.Part?.PartNumber,
+                            header.Quantity.GetValueOrDefault(),
+                            header.FromState));
+                }
+
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
         }

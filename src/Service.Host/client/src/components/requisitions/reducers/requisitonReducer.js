@@ -43,13 +43,13 @@ function reducer(state, action) {
                     document2: action.payload.newValue
                 };
             } else if (action.payload.fieldName === 'storesFunction') {
+                let newState = { ...state, storesFunction: action.payload.newValue };
                 if (
                     action.payload.newValue?.nominalCode &&
                     action.payload.newValue?.nominalDescription
                 ) {
-                    return {
-                        ...state,
-                        storesFunction: action.payload.newValue,
+                    newState = {
+                        ...newState,
                         nominal: {
                             nominalCode: action.payload.newValue?.nominalCode,
                             description: action.payload.newValue?.nominalDescription
@@ -63,13 +63,23 @@ function reducer(state, action) {
                     action.payload.newValue?.toStockPool
                 ) {
                     return {
-                        ...state,
+                        ...newState,
                         storesFunction: action.payload.newValue,
                         fromState: action.payload.newValue?.defaultFromState,
                         toState: action.payload.newValue?.defaultToState,
                         toStockPool: action.payload.newValue?.toStockPool
                     };
                 }
+
+                if (action.payload.newValue.transactionTypes?.length === 1) {
+                    newState = {
+                        ...newState,
+                        fromState: action.payload.newValue.transactionTypes[0]?.fromStates?.[0],
+                        toState: action.payload.newValue.transactionTypes[0]?.toStates?.[0]
+                    };
+                }
+
+                return { ...newState };
             }
 
             let newValue = action.payload.newValue;
@@ -108,7 +118,9 @@ function reducer(state, action) {
             }
 
             // use the next available line number
-            const maxLineNumber = Math.max(...state.lines.map(line => line.lineNumber), 0);
+            const maxLineNumber = state.lines?.length
+                ? Math.max(...state.lines.map(line => line.lineNumber), 0)
+                : 0;
             const newLine = { lineNumber: maxLineNumber + 1, isAddition: true, ...lineTransaction };
 
             // this behaviour might differ for differing function code parameters
@@ -209,7 +221,7 @@ function reducer(state, action) {
                     fromPalletNumber: action.payload.palletNumber,
                     batchRef: action.payload.batchRef,
                     batchDate: action.payload.stockRotationDate,
-                    toState: action.payload.state,
+                    // toState: action.payload.state,
                     toStockPool: action.payload.stockPoolCode,
                     quantity: action.payload.quantityToPick
                 };
@@ -244,7 +256,7 @@ function reducer(state, action) {
             return {
                 ...state,
                 lines: state.lines.map(line =>
-                    line.lineNumber === action.payload.lineNumber
+                    line.lineNumber === action.payload.lineNumbto
                         ? {
                               ...line,
                               moves: [

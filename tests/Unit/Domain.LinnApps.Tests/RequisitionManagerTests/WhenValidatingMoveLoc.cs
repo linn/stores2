@@ -2,7 +2,7 @@
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
@@ -24,6 +24,8 @@
                 .Returns(TestTransDefs.CustomerToGoodStock);
             this.PalletRepository.FindByIdAsync(502).Returns(new StoresPallet());
             this.PalletRepository.FindByIdAsync(503).Returns(new StoresPallet());
+            this.StockService.ValidStockLocation(null, 502, Arg.Any<string>(), Arg.Any<decimal>(), Arg.Any<string>())
+                .Returns(new ProcessResult(true, null));
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.MoveLocation.FunctionCode,

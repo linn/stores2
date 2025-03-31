@@ -64,7 +64,7 @@
         
         public string CreatedByName { get; set; }
         
-        public string Reversed { get; set; }
+        public string IsReversed { get; set; }
 
         public bool? RequiresAuthorisation { get; set; }
 

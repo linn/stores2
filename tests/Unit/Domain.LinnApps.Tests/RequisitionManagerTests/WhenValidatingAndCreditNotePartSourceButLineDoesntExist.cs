@@ -36,8 +36,8 @@
                 null,
                 null,
                 document1Line: 1,
-                toStockPool: "STORES",
-                toState: "LINN",
+                toStockPool: "LINN",
+                toState: "STORES",
                 toPalletNumber: 666);
         }
 
