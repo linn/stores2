@@ -79,6 +79,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public bool PartNumberRequired() => this.PartSource != "N";
 
+        public bool AutomaticFunctionType() => this.FunctionType == "A";
+
         public bool FunctionAvailable() => this.FunctionAvailableFlag == "Y";
 
         public Nominal GetNominal()

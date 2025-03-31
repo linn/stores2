@@ -47,6 +47,7 @@
                 null,
                 partNumber: "PART",
                 toPalletNumber: 666,
+                toStockPool: "LINN",
                 toState: "BLAH");
         }
 
