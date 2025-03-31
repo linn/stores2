@@ -895,13 +895,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // todo - check this isn't going to break anything? 
             if (header.FromLocation != null || header.FromPalletNumber.HasValue)
             {
-                var validStock = await this.stockService.ValidStockLocation(
-                    header.FromLocation?.LocationId, header.FromPalletNumber, header.Part?.PartNumber, header.Quantity.GetValueOrDefault(), header.FromState);
-
-                if (!validStock.Success)
-                {
-                    throw new CreateRequisitionException(validStock.Message);
-                }
+                
+                DoProcessResultCheck(
+                    await this.stockService.ValidStockLocation(
+                        header.FromLocation?.LocationId, 
+                        header.FromPalletNumber, 
+                        header.Part?.PartNumber,
+                        header.Quantity.GetValueOrDefault(), 
+                        header.FromState));
             }
             
             if (header.Part != null)
