@@ -892,20 +892,19 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             
-            // todo - check this isn't going to break anything? 
-            if (header.FromLocation != null || header.FromPalletNumber.HasValue)
-            {
-                DoProcessResultCheck(
-                    await this.stockService.ValidStockLocation(
-                        header.FromLocation?.LocationId, 
-                        header.FromPalletNumber, 
-                        header.Part?.PartNumber,
-                        header.Quantity.GetValueOrDefault(), 
-                        header.FromState));
-            }
-            
             if (header.Part != null)
             {
+                if (header.FromLocation != null || header.FromPalletNumber.HasValue)
+                {
+                    DoProcessResultCheck(
+                        await this.stockService.ValidStockLocation(
+                            header.FromLocation?.LocationId,
+                            header.FromPalletNumber,
+                            header.Part?.PartNumber,
+                            header.Quantity.GetValueOrDefault(),
+                            header.FromState));
+                }
+
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
         }
