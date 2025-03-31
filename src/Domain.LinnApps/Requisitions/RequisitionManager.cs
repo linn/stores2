@@ -895,7 +895,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             // todo - check this isn't going to break anything? 
             if (header.FromLocation != null || header.FromPalletNumber.HasValue)
             {
-                
                 DoProcessResultCheck(
                     await this.stockService.ValidStockLocation(
                         header.FromLocation?.LocationId, 
