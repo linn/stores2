@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿using Linn.Common.Domain;
+
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Threading.Tasks;
     using FluentAssertions;
@@ -24,6 +26,8 @@
                 .Returns(TestTransDefs.CustomerToGoodStock);
             this.PalletRepository.FindByIdAsync(502).Returns(new StoresPallet());
             this.PalletRepository.FindByIdAsync(503).Returns(new StoresPallet());
+            this.StockService.ValidStockLocation(null, 502, Arg.Any<string>(), Arg.Any<decimal>(), Arg.Any<string>())
+                .Returns(new ProcessResult(true, null));
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.MoveLocation.FunctionCode,
