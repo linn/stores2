@@ -1,10 +1,8 @@
-﻿using Linn.Common.Domain;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Threading.Tasks;
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
