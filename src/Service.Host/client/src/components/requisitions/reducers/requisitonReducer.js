@@ -43,13 +43,16 @@ function reducer(state, action) {
                     document2: action.payload.newValue
                 };
             } else if (action.payload.fieldName === 'storesFunction') {
-				
-                const mapping = { M: 'Y', A: 'N', X: null };
+
                 let newState = {
                     ...state,
-                    storesFunction: action.payload.newValue,
-                    manualPick: mapping[action.payload.newValue?.manualPickRequired]
+                    storesFunction: action.payload.newValue
                 };
+
+                if (action.payload.newValue.manualPickRequired) {
+                    const mapping = { M: 'Y', A: 'N', X: null };
+                    newState.manualPick = mapping[action.payload.newValue.manualPickRequired];
+                }
 
                 if (
                     action.payload.newValue?.nominalCode &&
@@ -68,18 +71,19 @@ function reducer(state, action) {
                 if (action.payload.newValue?.defaultToState) {
                     newState.toState = action.payload.newValue?.defaultToState;
                 }
-								
-				if (action.payload.newValue.transactionTypes?.length === 1) {
-					
-					if (!action.payload.newValue?.defaultFromState) {
-						newState.fromState = action.payload.newValue.transactionTypes[0]?.fromStates?.[0];
-					}
-					if (!action.payload.newValue?.defaultToState) {
-						newState.toState = action.payload.newValue.transactionTypes[0]?.toStates?.[0];
-					}
+
+                if (action.payload.newValue.transactionTypes?.length === 1) {
+                    if (!action.payload.newValue?.defaultFromState) {
+                        newState.fromState =
+                            action.payload.newValue.transactionTypes[0]?.fromStates?.[0];
+                    }
+                    if (!action.payload.newValue?.defaultToState) {
+                        newState.toState =
+                            action.payload.newValue.transactionTypes[0]?.toStates?.[0];
+                    }
                 }
-				
-				if (action.payload.newValue?.toStockPool) {
+
+                if (action.payload.newValue?.toStockPool) {
                     newState.toStockPool = action.payload.newValue?.toStockPool;
                 }
 
