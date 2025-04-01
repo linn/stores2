@@ -56,6 +56,7 @@
                           BatchRequired = model.BatchRequired,
                           NominalCode = model.GetNominal()?.NominalCode,
                           NominalDescription = model.GetNominal()?.Description,
+                          LinesRequired = model.LinesRequired,
                           FunctionAvailable = model.FunctionAvailable(),
                           DefaultFromState = model.DefaultFromState(),
                           DefaultToState = model.DefaultToState(),

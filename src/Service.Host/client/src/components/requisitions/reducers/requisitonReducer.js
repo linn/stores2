@@ -43,33 +43,36 @@ function reducer(state, action) {
                     document2: action.payload.newValue
                 };
             } else if (action.payload.fieldName === 'storesFunction') {
+                const mapping = { M: 'Y', A: 'N', X: null };
+                let newState = {
+                    ...state,
+                    storesFunction: action.payload.newValue,
+                    manualPick: mapping[action.payload.newValue?.manualPickRequired]
+                };
+
                 if (
                     action.payload.newValue?.nominalCode &&
                     action.payload.newValue?.nominalDescription
                 ) {
-                    return {
-                        ...state,
-                        storesFunction: action.payload.newValue,
-                        nominal: {
-                            nominalCode: action.payload.newValue?.nominalCode,
-                            description: action.payload.newValue?.nominalDescription
-                        },
-                        toState: action.payload.newValue?.defaultToState,
-                        toStockPool: action.payload.newValue?.toStockPool
-                    };
-                } else if (
-                    action.payload.newValue?.defaultToState ||
-                    action.payload.newValue?.defaultFromState ||
-                    action.payload.newValue?.toStockPool
-                ) {
-                    return {
-                        ...state,
-                        storesFunction: action.payload.newValue,
-                        fromState: action.payload.newValue?.defaultFromState,
-                        toState: action.payload.newValue?.defaultToState,
-                        toStockPool: action.payload.newValue?.toStockPool
+                    newState.nominal = {
+                        nominalCode: action.payload.newValue?.nominalCode,
+                        description: action.payload.newValue?.nominalDescription
                     };
                 }
+
+                if (action.payload.newValue?.defaultFromState) {
+                    newState.fromState = action.payload.newValue?.defaultFromState;
+                }
+
+                if (action.payload.newValue?.defaultToState) {
+                    newState.toState = action.payload.newValue?.defaultToState;
+                }
+
+                if (action.payload.newValue?.toStockPool) {
+                    newState.toStockPool = action.payload.newValue?.toStockPool;
+                }
+
+                return newState;
             }
 
             let newValue = action.payload.newValue;

@@ -263,6 +263,10 @@ function Requisition({ creating }) {
             return false;
         }
 
+        if (formState.storesFunction?.linesRequired === 'Y') {
+            return true;
+        }
+
         return validDepartmentNominal() && validFromState();
     };
 
@@ -319,18 +323,6 @@ function Requisition({ creating }) {
         }
     };
 
-    const setDefaultHeaderFieldsForFunctionCode = selectedFunction => {
-        if (selectedFunction.manualPickRequired === 'M') {
-            dispatch({
-                type: 'set_header_value',
-                payload: {
-                    fieldName: 'manualPick',
-                    newValue: 'Y'
-                }
-            });
-        }
-    };
-
     const getAndSetFunctionCode = () => {
         if (formState.storesFunction?.code) {
             const code = functionCodes.find(
@@ -346,7 +338,6 @@ function Requisition({ creating }) {
                         }
                     });
                     setFunctionCodeError(null);
-                    setDefaultHeaderFieldsForFunctionCode(code);
                 } else {
                     setFunctionCodeError(`You dont have permission for ${code.code}`);
                 }
@@ -403,7 +394,6 @@ function Requisition({ creating }) {
         selectedLine &&
         ((formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O') ||
             (formState?.manualPick && formState?.reqType === 'O'));
-
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
@@ -600,7 +590,6 @@ function Requisition({ creating }) {
                                                     }
                                                 });
                                                 setFunctionCodeError(null);
-                                                setDefaultHeaderFieldsForFunctionCode(r);
                                             } else {
                                                 setFunctionCodeError(
                                                     `You dont have permission for ${r.code}`
@@ -703,18 +692,20 @@ function Requisition({ creating }) {
                             {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
                                 <>
                                     <Grid size={2}>
-                                        <Dropdown
-                                            fullWidth
-                                            items={[
-                                                { id: 'Y', displayText: 'Yes' },
-                                                { id: 'N', displayText: 'No' }
-                                            ]}
-                                            allowNoValue
-                                            value={formState.manualPick}
-                                            onChange={() => {}}
-                                            label="Manual Pick"
-                                            propertyName="manualPick"
-                                        />
+                                        {formState.storesFunction?.manualPickRequired !== 'X' && (
+                                            <Dropdown
+                                                fullWidth
+                                                items={[
+                                                    { id: 'Y', displayText: 'Yes' },
+                                                    { id: 'N', displayText: 'No' }
+                                                ]}
+                                                allowNoValue
+                                                value={formState.manualPick}
+                                                onChange={handleHeaderFieldChange}
+                                                label="Manual Pick"
+                                                propertyName="manualPick"
+                                            />
+                                        )}
                                     </Grid>
                                     <Grid size={2}>
                                         <Dropdown
