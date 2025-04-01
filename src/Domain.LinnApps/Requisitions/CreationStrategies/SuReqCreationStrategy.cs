@@ -1,17 +1,13 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Linn.Common.Authorisation;
-using Linn.Common.Domain.Exceptions;
-using Linn.Common.Logging;
-using Linn.Common.Persistence;
-using Linn.Stores2.Domain.LinnApps.Accounts;
-using Linn.Stores2.Domain.LinnApps.Exceptions;
-using Linn.Stores2.Domain.LinnApps.Parts;
-using Linn.Stores2.Domain.LinnApps.Stock;
-using Microsoft.CodeAnalysis;
-
-namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
+﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Linn.Common.Authorisation;
+    using Linn.Common.Domain.Exceptions;
+    using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+
     public class SuReqCreationStrategy : ICreationStrategy
     {
         private readonly IAuthorisationService authService;
