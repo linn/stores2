@@ -70,7 +70,9 @@
                                            ReqType = t.ReqType,
                                            TransactionDefinition = t.TransactionDefinition?.TransactionCode,
                                            TransactionDescription = t.TransactionDefinition?.Description,
-                                           StockAllocations = t.TransactionDefinition?.StockAllocations == "Y"
+                                           StockAllocations = t.TransactionDefinition?.StockAllocations == "Y",
+                                           FromStates = t.TransactionDefinition?.GetTransactionStates("F"),
+                                           ToStates = t.TransactionDefinition?.GetTransactionStates("O")
                                        }),
                           Links = this.BuildLinks(model, claims).ToArray()
             };

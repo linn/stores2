@@ -43,6 +43,7 @@ function reducer(state, action) {
                     document2: action.payload.newValue
                 };
             } else if (action.payload.fieldName === 'storesFunction') {
+				
                 const mapping = { M: 'Y', A: 'N', X: null };
                 let newState = {
                     ...state,
@@ -67,8 +68,18 @@ function reducer(state, action) {
                 if (action.payload.newValue?.defaultToState) {
                     newState.toState = action.payload.newValue?.defaultToState;
                 }
-
-                if (action.payload.newValue?.toStockPool) {
+								
+				if (action.payload.newValue.transactionTypes?.length === 1) {
+					
+					if (!action.payload.newValue?.defaultFromState) {
+						newState.fromState = action.payload.newValue.transactionTypes[0]?.fromStates?.[0];
+					}
+					if (!action.payload.newValue?.defaultToState) {
+						newState.toState = action.payload.newValue.transactionTypes[0]?.toStates?.[0];
+					}
+                }
+				
+				if (action.payload.newValue?.toStockPool) {
                     newState.toStockPool = action.payload.newValue?.toStockPool;
                 }
 
@@ -111,7 +122,9 @@ function reducer(state, action) {
             }
 
             // use the next available line number
-            const maxLineNumber = Math.max(...state.lines.map(line => line.lineNumber), 0);
+            const maxLineNumber = state.lines?.length
+                ? Math.max(...state.lines.map(line => line.lineNumber), 0)
+                : 0;
             const newLine = { lineNumber: maxLineNumber + 1, isAddition: true, ...lineTransaction };
 
             // this behaviour might differ for differing function code parameters
@@ -212,7 +225,7 @@ function reducer(state, action) {
                     fromPalletNumber: action.payload.palletNumber,
                     batchRef: action.payload.batchRef,
                     batchDate: action.payload.stockRotationDate,
-                    toState: action.payload.state,
+                    // toState: action.payload.state,
                     toStockPool: action.payload.stockPoolCode,
                     quantity: action.payload.quantityToPick
                 };
@@ -247,7 +260,7 @@ function reducer(state, action) {
             return {
                 ...state,
                 lines: state.lines.map(line =>
-                    line.lineNumber === action.payload.lineNumber
+                    line.lineNumber === action.payload.lineNumbto
                         ? {
                               ...line,
                               moves: [

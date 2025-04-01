@@ -58,7 +58,9 @@
         
         public Employee BookedBy { get; protected set; }
         
-        public string Reversed { get; protected set; }
+        public string IsReversed { get; protected set; }
+        
+        public string IsReverseTransaction { get; set; }
 
         public ICollection<CancelDetails> CancelDetails { get; protected set; }
 
@@ -121,7 +123,7 @@
             decimal? quantity = null,
             int? document1Line = null,
             string toState = null,
-            string fromState = null,
+            string fromState = null, 
             string batchRef = null,
             DateTime? batchDate = null,
             string category = null,
@@ -152,7 +154,6 @@
             this.BatchDate = batchDate;
             this.ToCategory = category;
             this.Document1 = document1Number;
-
             this.Department = department;
             this.Nominal = nominal;
             this.Reference = reference;
@@ -160,7 +161,7 @@
             this.Document2 = document2Number;
             this.Document2Name = Document2Name;
 
-            this.Reversed = "N";
+            this.IsReversed = "N";
 
             this.Lines = new List<RequisitionLine>();
 
@@ -240,18 +241,41 @@
                 }
             }
 
+            // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
             if (this.StoresFunction.FromStateRequired == "Y")
             {
                 if (string.IsNullOrEmpty(this.FromState))
                 {
-                    yield return "From state must be present";
+                    yield return $"From state must be specified for {this.StoresFunction.FunctionCode}";
                 }
+            }
 
-                if (!this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
+            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
+            {
+                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
+            }
+
+            if (!string.IsNullOrEmpty(this.FromState))
+            {
+                var validFromStates = this.StoresFunction.GetTransactionStates("F");
+                if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
+                    && !this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
                 {
                     yield return 
                         $"From state must be one of "
-                        + $"{string.Join(",", this.StoresFunction.GetTransactionStates("F"))}";
+                        + $"{string.Join(",", validFromStates)}";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(this.ToState))
+            {
+                var validToStates = this.StoresFunction.GetTransactionStates("O");
+                if (validToStates.Count > 0 // does no transaction states mean anything is allowed?
+                    && !this.StoresFunction.GetTransactionStates("O").Contains(this.ToState))
+                {
+                    yield return
+                        $"To state must be one of "
+                        + $"{string.Join(",", validToStates)}";
                 }
             }
 
@@ -263,11 +287,6 @@
             if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
             {
                 yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
-            }
-
-            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
-            {
-                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
         }
 

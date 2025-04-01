@@ -43,8 +43,8 @@
                     part: TestParts.SelektHub,
                     quantity: 6,
                     document1Line: 1,
-                    toStockPool: "STORES",
-                    toState: "LINN"),
+                    toStockPool: "LINN",
+                    toState: "STORES"),
                 new RequisitionHeader(
                     new Employee(),
                     TestFunctionCodes.CustomerReturn,
@@ -56,8 +56,8 @@
                     part: TestParts.SelektHub,
                     quantity: 3,
                     document1Line: 1,
-                    toStockPool: "STORES",
-                    toState: "LINN"),
+                    toStockPool: "LINN",
+                    toState: "STORES")
             };
             this.ReqRepository.FilterByAsync(Arg.Any<Expression<Func<RequisitionHeader, bool>>>())
                 .Returns(requisitions);
@@ -68,13 +68,13 @@
                 null,
                 1234,
                 "C",
+                null, 
                 null,
-            null,
                 null,
                 quantity: 1,
                 document1Line: 1,
-                toStockPool: "STORES",
-                toState: "LINN",
+                toStockPool: "LINN",
+                toState: "STORES",
                 toPalletNumber: 666);
         }
 

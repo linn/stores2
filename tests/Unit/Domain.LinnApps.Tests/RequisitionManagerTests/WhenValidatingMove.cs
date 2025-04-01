@@ -25,15 +25,16 @@
                 .Returns(TestTransDefs.CustomerToGoodStock);
             this.PalletRepository.FindByIdAsync(502).Returns(new StoresPallet());
             this.PalletRepository.FindByIdAsync(503).Returns(new StoresPallet());
-            this.PartRepository.FindByIdAsync("PART").Returns(new Part());
+            this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART" });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
             this.StockPoolRepository.FindByIdAsync("LINN").Returns(new StockPool());
+            this.StockService.ValidStockLocation(null, 502, "PART", Arg.Any<decimal>(), Arg.Any<string>())
+                .Returns(new ProcessResult(true, null));
             this.StoresService.ValidOntoLocation(
                 Arg.Any<Part>(),
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
-
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.Move.FunctionCode,
