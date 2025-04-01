@@ -43,43 +43,51 @@ function reducer(state, action) {
                     document2: action.payload.newValue
                 };
             } else if (action.payload.fieldName === 'storesFunction') {
-                let newState = { ...state, storesFunction: action.payload.newValue };
+
+                let newState = {
+                    ...state,
+                    storesFunction: action.payload.newValue
+                };
+
+                if (action.payload.newValue.manualPickRequired) {
+                    const mapping = { M: 'Y', A: 'N', X: null };
+                    newState.manualPick = mapping[action.payload.newValue.manualPickRequired];
+                }
+
                 if (
                     action.payload.newValue?.nominalCode &&
                     action.payload.newValue?.nominalDescription
                 ) {
-                    newState = {
-                        ...newState,
-                        nominal: {
-                            nominalCode: action.payload.newValue?.nominalCode,
-                            description: action.payload.newValue?.nominalDescription
-                        },
-                        toState: action.payload.newValue?.defaultToState,
-                        toStockPool: action.payload.newValue?.toStockPool
+                    newState.nominal = {
+                        nominalCode: action.payload.newValue?.nominalCode,
+                        description: action.payload.newValue?.nominalDescription
                     };
-                } else if (
-                    action.payload.newValue?.defaultToState ||
-                    action.payload.newValue?.defaultFromState ||
-                    action.payload.newValue?.toStockPool
-                ) {
-                    return {
-                        ...newState,
-                        storesFunction: action.payload.newValue,
-                        fromState: action.payload.newValue?.defaultFromState,
-                        toState: action.payload.newValue?.defaultToState,
-                        toStockPool: action.payload.newValue?.toStockPool
-                    };
+                }
+
+                if (action.payload.newValue?.defaultFromState) {
+                    newState.fromState = action.payload.newValue?.defaultFromState;
+                }
+
+                if (action.payload.newValue?.defaultToState) {
+                    newState.toState = action.payload.newValue?.defaultToState;
                 }
 
                 if (action.payload.newValue.transactionTypes?.length === 1) {
-                    newState = {
-                        ...newState,
-                        fromState: action.payload.newValue.transactionTypes[0]?.fromStates?.[0],
-                        toState: action.payload.newValue.transactionTypes[0]?.toStates?.[0]
-                    };
+                    if (!action.payload.newValue?.defaultFromState) {
+                        newState.fromState =
+                            action.payload.newValue.transactionTypes[0]?.fromStates?.[0];
+                    }
+                    if (!action.payload.newValue?.defaultToState) {
+                        newState.toState =
+                            action.payload.newValue.transactionTypes[0]?.toStates?.[0];
+                    }
                 }
 
-                return { ...newState };
+                if (action.payload.newValue?.toStockPool) {
+                    newState.toStockPool = action.payload.newValue?.toStockPool;
+                }
+
+                return newState;
             }
 
             let newValue = action.payload.newValue;

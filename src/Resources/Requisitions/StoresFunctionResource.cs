@@ -61,6 +61,8 @@
 
         public string NominalDescription { get; set; }
 
+        public string LinesRequired { get; set; }
+
         public bool FunctionAvailable { get; set; }
 
         public string DefaultToState { get; set; }

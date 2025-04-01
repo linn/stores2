@@ -67,7 +67,8 @@
                 .AddScoped<LinesProvidedStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
-                .AddScoped<GistPoCreationStrategy>();
+                .AddScoped<GistPoCreationStrategy>()
+                .AddScoped<SuReqCreationStrategy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

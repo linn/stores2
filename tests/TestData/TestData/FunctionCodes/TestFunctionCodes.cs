@@ -15,6 +15,7 @@
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
+                ManualPickRequired = "M",
                 PartSource = "N",
                 ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -48,6 +49,7 @@
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "Y",
                 FunctionType = "M",
+                ManualPickRequired = "M",
                 PartSource = "N",
                 ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -78,6 +80,7 @@
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
+                ManualPickRequired = "M",
                 PartSource = "N",
                 ToStateRequired = "N"
             };
@@ -92,6 +95,7 @@
                 Document1Text = "Works Order",
                 FromStateRequired = "N",
                 FunctionType = "A",
+                ManualPickRequired = "X",
                 PartSource = "WO",
                 ToStateRequired = "O"
             };
@@ -106,6 +110,7 @@
                 Document1Text = "Order Number",
                 FromStateRequired = "N",
                 FunctionType = "A",
+                ManualPickRequired = "X",
                 PartSource = "PO",
                 ToStateRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -156,6 +161,7 @@
                 ToLocationRequired = "O",
                 ToStockPoolRequired = "Y",
                 ToStockPool = "LINN",
+                ManualPickRequired = "M",
                 PartSource = "C",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
@@ -187,6 +193,7 @@
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
+                ManualPickRequired = "A",
                 PartSource = "N",
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
@@ -222,6 +229,7 @@
                 DepartmentNominalRequired = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
+                ManualPickRequired = "M",
                 PartSource = "N",
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
@@ -248,6 +256,7 @@
                 DepartmentNominalRequired = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
+                ManualPickRequired = "A",
                 PartSource = "N",
                 ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -281,6 +290,7 @@
                 Document1Text = "Order Number",
                 FromStateRequired = "N",
                 FunctionType = "A",
+                ManualPickRequired = "A",
                 PartSource = "PO",
                 ToLocationRequired = "Y",
                 ToStateRequired = "N"
@@ -296,6 +306,7 @@
                 Document1LineRequiredFlag = "N",
                 FromStateRequired = "N",
                 FunctionType = "M",
+                ManualPickRequired = "M",
                 PartSource = "N",
                 ToStockPoolRequired = "O",
                 ToStateRequired = "N",
@@ -329,6 +340,7 @@
                     FromStockPoolRequired = "Y",
                     ToStockPoolRequired = "Y",
                     DepartmentNominalRequired = "N",
+                    ManualPickRequired = "M",
                     PartSource = "PO",
                     Document1RequiredFlag = "Y",
                     Document1LineRequiredFlag = "O",
@@ -352,6 +364,7 @@
                     ToLocationRequired = "N",
                     FromLocationRequired = "Y",
                     FunctionType = "A",
+                    ManualPickRequired = "X",
                     ToStateRequired = "N",
                     BatchRequired = "N"
             };
@@ -360,6 +373,7 @@
             new StoresFunction("SURETURN")
                 {
                     FunctionType = "A",
+                    ManualPickRequired = "M",
                     ToStateRequired = "Y",
                     ToStockPool = "LINN"
             };
@@ -370,6 +384,7 @@
                     Description = "STOCK MOVE",
                     FunctionType = "A",
                     BatchRequired = "N",
+                    ManualPickRequired = "M",
                     ToStateRequired = "O",
                     ToStockPoolRequired = "O",
                     TransactionsTypes = new List<StoresFunctionTransaction>
@@ -393,6 +408,7 @@
                 BatchRequired = "N",
                 DepartmentNominalRequired = "N",
                 LinesRequired = "N",
+                ManualPickRequired = "X",
                 PartSource = "N",
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
@@ -403,6 +419,31 @@
                         FunctionCode = "MOVELOC",
                         TransactionDefinition = TestTransDefs.StoresMove,
                         TransactionCode = TestTransDefs.StoresMove.TransactionCode
+                    }
+                }
+            };
+
+        public static readonly StoresFunction StockToSupplier =
+            new StoresFunction("SUREQ")
+            {
+                Description = "BOOK PARTS FROM STOCK TO A SUPPLIER WITH A REQ",
+                FunctionType = "M",
+                ToLocationRequired = "Y",
+                FromLocationRequired = "O",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "N",
+                LinesRequired = "Y",
+                ManualPickRequired = "A",
+                PartSource = "N",
+                ToStateRequired = "N",
+                ToStockPoolRequired = "O",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "SUREQ",
+                        TransactionDefinition = TestTransDefs.StockToSupplier,
+                        TransactionCode = TestTransDefs.StockToSupplier.TransactionCode
                     }
                 }
             };

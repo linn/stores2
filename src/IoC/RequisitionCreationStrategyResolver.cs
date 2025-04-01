@@ -38,6 +38,11 @@
                 return this.serviceProvider.GetRequiredService<GistPoCreationStrategy>();
             }
 
+            if (context.Function.FunctionCode == "SUREQ")
+            {
+                return this.serviceProvider.GetRequiredService<SuReqCreationStrategy>();
+            }
+
             if ((context.PartNumber != null || context.Document1Number != null || movelocFunctions.Contains(context.Function.FunctionCode)) && context.Function.AutomaticFunctionType())
             {
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();

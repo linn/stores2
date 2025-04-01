@@ -147,7 +147,7 @@ function StoresFunction() {
                                         { id: 'X', displayText: 'X' }
                                     ]}
                                     disabled
-                                    value={result.functionType}
+                                    value={result.manualPickRequired}
                                     onChange={() => {}}
                                     propertyName="manualPickRequired"
                                 />
