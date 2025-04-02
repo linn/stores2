@@ -128,7 +128,8 @@
             DateTime? batchDate = null,
             string category = null,
             int? document2Number = null,
-            string document2Type = null)
+            string document2Type = null,
+            string reverseTrans = "N")
         {
             this.ReqSource = "STORES2";
             this.CreatedBy = createdBy;
@@ -161,6 +162,7 @@
             this.Document2 = document2Number;
             this.Document2Name = Document2Name;
 
+            this.IsReverseTransaction = reverseTrans;
             this.IsReversed = "N";
 
             this.Lines = new List<RequisitionLine>();
