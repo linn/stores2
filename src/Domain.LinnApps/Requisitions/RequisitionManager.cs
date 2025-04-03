@@ -339,6 +339,46 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     }
                 }
             }
+            else if (header.ManualPick == "N" && transactionDefinition.RequiresStockAllocations)
+            {
+                // todo can we make automatic from picks see CREATE_REQ_MOVES in REQ_UT.fmb
+
+                var autopickResult = await this.requisitionStoredProcedures.PickStock(
+                    toAdd.PartNumber,
+                    header.ReqNumber,
+                    toAdd.LineNumber,
+                    toAdd.Qty,
+                    header.FromLocation?.LocationId,
+                    header.FromPalletNumber,
+                    header.FromStockPool,
+                    toAdd.TransactionDefinition);
+
+                if (!autopickResult.Success)
+                {
+                    throw new PickStockException("failed in pick_stock: " + autopickResult.Message);
+                }
+
+                // todo what about the ontos
+                if (transactionDefinition.RequiresOntoTransactions)
+                {
+                    var ontoResult = await this.requisitionStoredProcedures.InsertReqOntos(
+                        header.ReqNumber,
+                        toAdd.Qty,
+                        toAdd.LineNumber,
+                        header.ToLocation?.LocationId,
+                        header.ToPalletNumber,
+                        header.ToStockPool,
+                        header.ToState,
+                        "FREE",
+                        "U");
+
+                    if (!ontoResult.Success)
+                    {
+                        throw new InsertReqOntosException($"Failed in insert_req_ontos: {ontoResult.Message}");
+                    }
+                }
+
+            }
 
             // todo - consider what has to happen if a move is from one place to another
             // i.e. cases where both a 'from' and a 'to' location or pallet is set
