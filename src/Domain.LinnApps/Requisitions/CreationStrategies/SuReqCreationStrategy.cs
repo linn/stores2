@@ -106,10 +106,14 @@
 
             await this.repository.AddAsync(req);
 
+
             // lines
             try
             {
-                await this.requisitionManager.AddRequisitionLine(req, context.FirstLineCandidate);
+                foreach (var line in context.Lines)
+                {
+                    await this.requisitionManager.AddRequisitionLine(req, line);
+                }
             }
             catch (DomainException ex)
             {
