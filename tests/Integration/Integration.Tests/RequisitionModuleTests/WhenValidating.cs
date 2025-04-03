@@ -5,9 +5,6 @@
     using System.Net.Http.Json;
 
     using FluentAssertions;
-
-    using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Resources.Accounts;
@@ -74,7 +71,8 @@
                 null,
                 null,
                 null,
-                null).Throws(new CancelRequisitionException("error"));
+                null,
+                lines: Arg.Any<IEnumerable<LineCandidate>>()).Throws(new CancelRequisitionException("error"));
             this.Response = this.Client.PostAsJsonAsync("/requisitions/validate", this.resource).Result;
         }
 
