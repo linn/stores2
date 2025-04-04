@@ -2,7 +2,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using Linn.Common.Authorisation;
     using Linn.Common.Domain;
-    using Linn.Common.Logging;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;

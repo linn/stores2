@@ -6,14 +6,11 @@
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
-    using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
     using NSubstitute.ExceptionExtensions;
