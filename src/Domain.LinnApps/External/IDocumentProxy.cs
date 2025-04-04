@@ -10,5 +10,7 @@
         Task<DocumentResult> GetLoan(int loanNumber);
 
         Task<PurchaseOrderResult> GetPurchaseOrder(int orderNumber);
+
+        Task<WorksOrderResult> GetWorksOrder(int orderNumber);
     }
 }

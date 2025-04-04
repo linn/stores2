@@ -43,6 +43,8 @@
         
         public DbSet<StoresBudget> StoresBudgets { get; set; }
 
+        public DbSet<PotentialMoveDetail> PotentialMoveDetails { get; set; }
+
         public DbSet<StorageSite> StorageSites { get; set; }
 
         public DbSet<StoresFunction> StoresFunctionCodes { get; set; }
@@ -106,6 +108,7 @@
             BuildRequisitionHistory(builder);
             BuildStockTransactions(builder);
             BuildStockTransactionPostings(builder);
+            BuildPotentialMoveDetails(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -765,6 +768,22 @@
             e.Property(s => s.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
             e.Property(s => s.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT").HasMaxLength(1);
             e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
+        }
+
+        private static void BuildPotentialMoveDetails(ModelBuilder builder)
+        {
+            var e = builder.Entity<PotentialMoveDetail>().ToTable("TEMP_MOVES");
+            e.HasKey(l => new { l.DocumentType, l.DocumentId, l.Sequence });
+            e.Property(s => s.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(s => s.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            e.Property(s => s.Quantity).HasColumnName("QTY");
+            e.Property(s => s.BuiltBy).HasColumnName("BUILT_BY");
+            e.Property(s => s.QuantityMoved).HasColumnName("QTY_MOVED");
+            e.Property(s => s.DocumentType).HasColumnName("DOC_TYPE").HasMaxLength(6);
+            e.Property(s => s.DocumentId).HasColumnName("DOC_NUMBER");
+            e.Property(s => s.LocationId).HasColumnName("LOCATION_ID");
+            e.Property(s => s.PalletNumber).HasColumnName("PALLET_NUMBER");
+            e.Property(s => s.SernosNumber).HasColumnName("SERNOS_NUMBER");
         }
     }
 }

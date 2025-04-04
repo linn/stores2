@@ -47,9 +47,13 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
         protected IRepository<StoresTransactionDefinition, string> TransactionDefinitionRepository { get; set; }
 
+        protected IRepository<PotentialMoveDetail, PotentialMoveDetailKey> PotentialMoveDetailRepository { get; set; }
+
         protected IStoresService StoresService { get; private set; }
 
         protected IDocumentProxy DocumentProxy { get; private set; }
+
+        protected ISalesProxy SalesProxy { get; private set; }
 
         protected IStockService StockService { get; private set; }
 
@@ -66,12 +70,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.PartRepository = Substitute.For<IRepository<Part, string>>();
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
             this.TransactionDefinitionRepository = Substitute.For<IRepository<StoresTransactionDefinition, string>>();
+            this.PotentialMoveDetailRepository = Substitute.For<IRepository<PotentialMoveDetail, PotentialMoveDetailKey>>();
             this.TransactionManager = Substitute.For<ITransactionManager>();
             this.StoresService = Substitute.For<IStoresService>();
             this.StateRepository = Substitute.For<IRepository<StockState, string>>();
             this.StockPoolRepository = Substitute.For<IRepository<StockPool, string>>();
             this.PalletRepository = Substitute.For<IRepository<StoresPallet, int>>();
             this.DocumentProxy = Substitute.For<IDocumentProxy>();
+            this.SalesProxy = Substitute.For<ISalesProxy>();
             this.StockService = Substitute.For<IStockService>();
 
             this.StoresService.ValidStockPool(Arg.Any<Part>(), Arg.Any<StockPool>())
@@ -100,7 +106,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.DepartmentRepository,
                 this.NominalRepository,
                 this.DocumentProxy,
-                this.StockService);
+                this.StockService,
+                this.SalesProxy,
+                this.PotentialMoveDetailRepository);
         }
     }
 }

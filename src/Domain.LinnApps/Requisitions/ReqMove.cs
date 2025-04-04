@@ -11,7 +11,17 @@
                 
         }
 
-        public ReqMove(int reqNumber , int lineNumber, int seq, decimal qty, int? stockLocatorId, int? palletNumber, int? locationId, string stockPool, string state, string category)
+        public ReqMove(
+            int reqNumber,
+            int lineNumber,
+            int seq,
+            decimal qty,
+            int? stockLocatorId,
+            int? palletNumber,
+            int? locationId,
+            string stockPool,
+            string state,
+            string category)
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;

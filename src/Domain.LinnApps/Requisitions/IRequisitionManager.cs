@@ -67,9 +67,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             DateTime? batchDate = null,
             int? document1Line = null);
 
-
         Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 
         Task CheckDocumentLineForOverAndFullyBooked(RequisitionHeader header, DocumentResult document);
+
+        Task<IEnumerable<PotentialMoveDetail>> AddPotentialMoveDetails(
+            string documentType,
+            int documentId,
+            decimal? quantity,
+            string partNumber,
+            int? builtById,
+            int? toLocationId,
+            int? toPalletNumber);
     }
 }

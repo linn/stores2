@@ -380,10 +380,29 @@ function Requisition({ creating }) {
                 newValue: selected.document1Line
             }
         });
+        dispatch({
+            type: 'set_document1_details',
+            payload: selected
+        });
+
         if (selected.batchRef) {
             dispatch({
                 type: 'set_header_value',
                 payload: { fieldName: 'batchRef', newValue: selected.batchRef }
+            });
+        }
+    };
+
+    const handleDocument1PartSelect = part => {
+        dispatch({
+            type: 'set_part_details',
+            payload: part
+        });
+
+        if (formState.storesFunction?.partSource === 'WO') {
+            dispatch({
+                type: 'set_header_details_for_WO',
+                payload: part
             });
         }
     };
@@ -708,19 +727,21 @@ function Requisition({ creating }) {
                                         )}
                                     </Grid>
                                     <Grid size={2}>
-                                        <Dropdown
-                                            fullWidth
-                                            items={[
-                                                { id: 'F', displayText: 'From Stock' },
-                                                { id: 'O', displayText: 'Return To Stock' }
-                                            ]}
-                                            allowNoValue
-                                            disabled={!creating || formState.lines?.length}
-                                            value={formState.reqType}
-                                            onChange={handleHeaderFieldChange}
-                                            label="Req Type"
-                                            propertyName="reqType"
-                                        />
+                                        {shouldRender(requiresDepartmentNominal) && (
+                                            <Dropdown
+                                                fullWidth
+                                                items={[
+                                                    { id: 'F', displayText: 'From Stock' },
+                                                    { id: 'O', displayText: 'Return To Stock' }
+                                                ]}
+                                                allowNoValue
+                                                disabled={!creating || formState.lines?.length}
+                                                value={formState.reqType}
+                                                onChange={handleHeaderFieldChange}
+                                                label="Req Type"
+                                                propertyName="reqType"
+                                            />
+                                        )}
                                     </Grid>
                                     <Grid size={8} />
                                 </>
@@ -740,6 +761,7 @@ function Requisition({ creating }) {
                                 shouldEnter={formState.storesFunction?.document1Entered && creating}
                                 onSelect={handleDocument1Select}
                                 partSource={formState.storesFunction?.partSource}
+                                onSelectPart={handleDocument1PartSelect}
                             />
                             <Document2
                                 document2={formState.document2}
@@ -756,19 +778,23 @@ function Requisition({ creating }) {
                                 partDescription={formState.part?.description}
                                 showQuantity
                                 quantity={formState.quantity}
-                                setPart={newPart => {
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: { fieldName: 'part', newValue: newPart }
-                                    });
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: {
-                                            fieldName: 'partNumber',
-                                            newValue: newPart?.partNumber
-                                        }
-                                    });
-                                }}
+                                setPart={
+                                    formState.storesFunction?.partSource === 'IP'
+                                        ? newPart => {
+                                              dispatch({
+                                                  type: 'set_header_value',
+                                                  payload: { fieldName: 'part', newValue: newPart }
+                                              });
+                                              dispatch({
+                                                  type: 'set_header_value',
+                                                  payload: {
+                                                      fieldName: 'partNumber',
+                                                      newValue: newPart?.partNumber
+                                                  }
+                                              });
+                                          }
+                                        : null
+                                }
                                 setQuantity={newQty =>
                                     dispatch({
                                         type: 'set_header_value',

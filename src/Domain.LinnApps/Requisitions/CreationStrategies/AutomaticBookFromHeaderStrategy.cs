@@ -57,6 +57,32 @@
                 throw new UnauthorisedActionException($"You are not authorised to raise {context.Function.FunctionCode}");
             }
 
+            await this.requisitionManager.Validate(
+                context.CreatedByUserNumber,
+                context.Function.FunctionCode,
+                context.ReqType,
+                context.Document1Number,
+                context.Document1Type,
+                context.DepartmentCode,
+                context.NominalCode,
+                context.FirstLineCandidate,
+                context.Reference,
+                context.Comments,
+                context.ManualPick,
+                context.FromStockPool,
+                context.ToStockPool,
+                context.FromPallet,
+                context.ToPallet,
+                context.FromLocationCode,
+                context.ToLocationCode,
+                context.PartNumber,
+                context.Quantity,
+                context.FromState,
+                context.ToState,
+                context.BatchRef,
+                context.BatchDate,
+                context.Document1Line);
+
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
             var nominal = await this.nominalRepository.FindByIdAsync(context.NominalCode);
@@ -88,6 +114,19 @@
                 context.FromState,
                 context.BatchRef,
                 context.BatchDate);
+
+            if (req.Document1Name == "WO" && req.Document1.HasValue)
+            {
+                await this.requisitionManager.AddPotentialMoveDetails(
+                    req.Document1Name,
+                    req.Document1.Value,
+                    req.Quantity,
+                    req.Part.PartNumber,
+                    req.CreatedBy.Id,
+                    req.ToLocation?.LocationId,
+                    req.ToPalletNumber);
+            }
+
             await this.requisitionManager.CheckAndBookRequisitionHeader(req);
 
             return await this.repository.FindByIdAsync(req.ReqNumber);

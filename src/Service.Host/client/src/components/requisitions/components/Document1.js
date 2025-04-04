@@ -13,7 +13,8 @@ function Document1({
     shouldRender,
     shouldEnter,
     onSelect,
-    partSource
+    partSource,
+    onSelectPart = null
 }) {
     const {
         send: fetchPurchaseOrder,
@@ -26,6 +27,18 @@ function Document1({
         result: creditNote,
         clearData: clearCreditNote
     } = useGet(itemTypes.creditNotes.url, true);
+
+    const {
+        send: fetchWorksOrder,
+        result: worksOrder,
+        clearData: clearWorksOrder
+    } = useGet(itemTypes.worksOrder.url, true);
+
+    const {
+        send: fetchPart,
+        result: document1Part,
+        clearData: clearDocument1Part
+    } = useGet(itemTypes.parts.url, true);
 
     useEffect(() => {
         if (purchaseOrder) {
@@ -53,6 +66,34 @@ function Document1({
         }
     }, [creditNote, document1Line, onSelect, clearCreditNote]);
 
+    useEffect(() => {
+        if (worksOrder) {
+            onSelect({
+                partNumber: worksOrder.partNumber,
+                partDescription: worksOrder.partDescription,
+                workStationCode: worksOrder.workStationCode,
+                batchNumber: worksOrder.batchNumber,
+                docType: worksOrder.docType,
+                orderNumber: worksOrder.orderNumber,
+                outstanding: worksOrder.outstanding,
+                quantity: worksOrder.quantity,
+                quantityBuilt: worksOrder.quantityBuilt,
+                dateCancelled: worksOrder.dateCancelled
+            });
+
+            fetchPart(null, `?searchTerm=${worksOrder.partNumber}&exactOnly=true`);
+            clearWorksOrder();
+        }
+    }, [worksOrder, onSelect, clearWorksOrder, fetchPart]);
+
+    useEffect(() => {
+        if (document1Part && document1Part.length === 1) {
+            onSelectPart(document1Part[0]);
+
+            clearDocument1Part();
+        }
+    }, [document1Part, onSelectPart, clearDocument1Part]);
+
     if (!shouldRender) {
         return '';
     }
@@ -74,6 +115,8 @@ function Document1({
                                     fetchPurchaseOrder(document1);
                                 } else if (partSource == 'C') {
                                     fetchCreditNote(document1);
+                                } else if (partSource == 'WO') {
+                                    fetchWorksOrder(document1);
                                 }
                             }
                         }
