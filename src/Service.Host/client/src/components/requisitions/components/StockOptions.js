@@ -138,7 +138,10 @@ function StockOptions({
                                             'fromLocationCode',
                                             fromLocationCode?.toUpperCase()
                                         );
-                                        if (fromLocationCode) {
+                                        if (
+                                            fromLocationCode &&
+                                            fromLocationCode !== 'E-BB-PALLETS'
+                                        ) {
                                             setItemValue('fromPalletNumber', null);
                                         }
                                     }
@@ -233,7 +236,7 @@ function StockOptions({
                             keyCode: 9,
                             action: () => {
                                 setItemValue('toLocationCode', toLocationCode?.toUpperCase());
-                                if (toLocationCode) {
+                                if (toLocationCode && toLocationCode !== 'E-BB-PALLETS') {
                                     setItemValue('toPalletNumber', null);
                                 }
                             }

@@ -818,7 +818,11 @@ function Requisition({ creating }) {
                                 quantity={formState.quantity}
                                 fromLocationCode={formState.fromLocationCode}
                                 fromPalletNumber={formState.fromPalletNumber}
-                                doPickStock={doPickStock}
+                                doPickStock={
+                                    formState.storesFunction?.manualPickRequired === 'X'
+                                        ? null
+                                        : doPickStock
+                                }
                                 toLocationCode={formState.toLocationCode}
                                 toPalletNumber={formState.toPalletNumber}
                                 functionCode={formState.storesFunction}
