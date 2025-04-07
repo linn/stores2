@@ -36,7 +36,7 @@
         {
             this.RequisitionManager
                 .Received()
-                .CheckAndBookRequisitionHeader(Arg.Is<RequisitionHeader>(a => a.ToState == "S1"));
+                .CreateLinesAndBookAutoRequisitionHeader(Arg.Is<RequisitionHeader>(a => a.ToState == "S1"));
         }
     }
 }

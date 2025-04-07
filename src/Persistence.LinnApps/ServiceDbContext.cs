@@ -775,6 +775,7 @@
             var e = builder.Entity<PotentialMoveDetail>().ToTable("TEMP_MOVES");
             e.HasKey(l => new { l.DocumentType, l.DocumentId, l.Sequence });
             e.Property(s => s.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(s => s.Sequence).HasColumnName("SEQ");
             e.Property(s => s.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             e.Property(s => s.Quantity).HasColumnName("QTY");
             e.Property(s => s.BuiltBy).HasColumnName("BUILT_BY");

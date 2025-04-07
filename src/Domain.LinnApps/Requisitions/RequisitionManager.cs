@@ -402,12 +402,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        public async Task CheckAndBookRequisitionHeader(RequisitionHeader header)
+        public async Task CreateLinesAndBookAutoRequisitionHeader(RequisitionHeader header)
         {
-            await this.DoChecksForAutoHeader(header);
-
-            await this.repository.AddAsync(header);
-
             DoProcessResultCheck(  
                 await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
 
@@ -812,12 +808,21 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? toLocationId,
             int? toPalletNumber)
         {
+            var potentialMoves =
+                await this.potentialMoveRepository.FilterByAsync(
+                    a => a.DocumentId == documentId && a.DocumentType == documentType);
+            var seq = 1;
+            if (potentialMoves != null && potentialMoves.Any())
+            {
+                seq = potentialMoves.Max(a => a.Sequence) + 1;
+            }
+
             var potentialMove = new PotentialMoveDetail
                                     {
                                         PartNumber = partNumber,
                                         Quantity = quantity,
                                         BuiltBy = builtById,
-                                        Sequence = 1,
+                                        Sequence = seq,
                                         DocumentType = documentType,
                                         DocumentId = documentId,
                                         LocationId = toLocationId,

@@ -60,7 +60,7 @@
             this.StateRepository.FindByIdAsync("S2")
                 .Returns(new StockState("S2", "S2 desc"));
 
-            await this.Sut.CheckAndBookRequisitionHeader(this.req);
+            await this.Sut.CreateLinesAndBookAutoRequisitionHeader(this.req);
         }
 
         [Test]

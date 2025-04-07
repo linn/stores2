@@ -9,6 +9,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using MimeKit;
 
     public class AutomaticBookFromHeaderStrategy : ICreationStrategy
     {
@@ -115,6 +116,8 @@
                 context.BatchRef,
                 context.BatchDate);
 
+            await this.repository.AddAsync(req);
+
             if (req.Document1Name == "WO" && req.Document1.HasValue)
             {
                 await this.requisitionManager.AddPotentialMoveDetails(
@@ -127,7 +130,7 @@
                     req.ToPalletNumber);
             }
 
-            await this.requisitionManager.CheckAndBookRequisitionHeader(req);
+            await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);
 
             return await this.repository.FindByIdAsync(req.ReqNumber);
         }

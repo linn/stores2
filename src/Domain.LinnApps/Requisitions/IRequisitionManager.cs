@@ -30,7 +30,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         
         Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd);
 
-        Task CheckAndBookRequisitionHeader(RequisitionHeader header);
+        Task CreateLinesAndBookAutoRequisitionHeader(RequisitionHeader header);
 
         Task<RequisitionHeader> CreateLoanReq(int loanNumber);
 
