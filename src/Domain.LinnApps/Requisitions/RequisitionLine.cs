@@ -54,7 +54,7 @@
             this.Cancelled = "N";
             
             this.Document1Number = document1Number ?? reqNumber;
-            this.Document1Line = document1Line;
+            this.Document1Line = string.IsNullOrEmpty(document1Name) ? lineNumber: document1Line;
             this.Document1Type = string.IsNullOrEmpty(document1Name) ? "REQ" : document1Name;
         }
         

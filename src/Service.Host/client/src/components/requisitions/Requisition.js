@@ -240,7 +240,7 @@ function Requisition({ creating }) {
 
     const canAddLines = () => {
         // can only add one line when creating
-        if (creating && formState.lines?.length) {
+        if (creating && formState.lines?.length && formState.storesFunction?.code != 'SUREQ') {
             return false;
         }
 
