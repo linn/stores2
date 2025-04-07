@@ -9,7 +9,6 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using MimeKit;
 
     public class AutomaticBookFromHeaderStrategy : ICreationStrategy
     {
@@ -87,8 +86,10 @@
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
             var nominal = await this.nominalRepository.FindByIdAsync(context.NominalCode);
-            var fromLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == context.FromLocationCode);
-            var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == context.ToLocationCode);
+            var fromLocation = await this.storageLocationRepository
+                                   .FindByAsync(x => x.LocationCode == context.FromLocationCode);
+            var toLocation = await this.storageLocationRepository
+                                 .FindByAsync(x => x.LocationCode == context.ToLocationCode);
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
 
             var req = new RequisitionHeader(

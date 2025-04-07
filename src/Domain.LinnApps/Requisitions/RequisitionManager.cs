@@ -882,14 +882,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (worksOrder.Quantity == 0 || worksOrder.Quantity <= worksOrder.QuantityBuilt)
             {
-                throw new CreateRequisitionException($"There is nothing left to build on Works Order {document1Number}");
+                throw new CreateRequisitionException($"There is nothing left to build on Works Order {document1Number}.");
             }
 
             var salesPart = await this.salesProxy.GetSalesArticle(worksOrder.PartNumber);
             if (salesPart != null && (salesPart.TypeOfSerialNumber == "S" || salesPart.TypeOfSerialNumber == "P1"
                                                                           || salesPart.TypeOfSerialNumber == "P2"))
             {
-                throw new CreateRequisitionException("You cannot book serial numbered parts in. Please use the relevant works order screen");
+                throw new CreateRequisitionException("You cannot book serial numbered parts in. Please use the relevant works order screen.");
             }
         }
 
