@@ -563,7 +563,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string toState = null,
             string batchRef = null,
             DateTime? batchDate = null,
-            int? document1Line = null)
+            int? document1Line = null,
+            IEnumerable<LineCandidate> lines = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
@@ -622,29 +623,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateRequisitionException($"Lines are required for {functionCode}");
             }
-            
-            if (firstLine != null)
+
+            if (lines != null)
             {
-                var firstLinePart = !string.IsNullOrEmpty(firstLine?.PartNumber)
-                                        ? await this.partRepository.FindByIdAsync(firstLine.PartNumber)
-                                        : null;
-                var transactionDefinition = !string.IsNullOrEmpty(firstLine?.TransactionDefinition)
-                                                ? await this.transactionDefinitionRepository.FindByIdAsync(firstLine.TransactionDefinition) : null;
-
-                if (firstLine.Moves != null && firstLine.Moves.Any())
+                foreach (var candidate in lines)
                 {
-                    await this.CheckMoves(firstLine.PartNumber, firstLine.Moves.ToList());
+                    req.AddLine(await this.ValidateLineCandidate(candidate));
                 }
-
-                req.AddLine(new RequisitionLine(
-                    0,
-                    1,
-                    firstLinePart,
-                    firstLine.Qty,
-                    transactionDefinition,
-                    firstLine.Document1,
-                    firstLine.Document1Line.GetValueOrDefault(),
-                    firstLine.Document1Type));
+            }
+            else if (firstLine != null)
+            {
+                req.AddLine(await this.ValidateLineCandidate(firstLine));
             }
 
             // move below to its own function?
@@ -743,6 +732,33 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             return req;
+        }
+
+        public async Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate)
+        {
+            var part = !string.IsNullOrEmpty(candidate?.PartNumber)
+                ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
+                : null;
+
+            var transactionDefinition = !string.IsNullOrEmpty(candidate?.TransactionDefinition)
+                ? await this.transactionDefinitionRepository.FindByIdAsync(candidate.TransactionDefinition) : null;
+
+            if (candidate.Moves != null && candidate.Moves.Any())
+            {
+                await this.CheckMoves(candidate.PartNumber, candidate.Moves.ToList());
+            }
+
+            var line = new RequisitionLine(
+                0,
+                candidate.LineNumber,
+                part,
+                candidate.Qty,
+                transactionDefinition,
+                candidate.Document1,
+                candidate.Document1Line.GetValueOrDefault(),
+                candidate.Document1Type);
+
+            return line;
         }
 
         public async Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber)

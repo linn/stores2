@@ -160,7 +160,9 @@
                     resource.FromState,
                     resource.ToState,
                     resource.BatchRef,
-                    string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate));
+                    string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
+                    resource.Document1Line,
+                    resource.Lines.Select(BuildLineCandidateFromResource));
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }
