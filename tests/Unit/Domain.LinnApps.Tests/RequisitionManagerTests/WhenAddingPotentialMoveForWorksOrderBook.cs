@@ -41,5 +41,13 @@
             this.results.First().BuiltBy.Should().Be(888);
             this.results.First().PalletNumber.Should().Be(567);
         }
+
+        [Test]
+        public void ShouldSavePotentialMove()
+        {
+            this.PotentialMoveDetailRepository
+                .Received()
+                .AddAsync(Arg.Is<PotentialMoveDetail>(m => m.DocumentId == 1234));
+        }
     }
 }

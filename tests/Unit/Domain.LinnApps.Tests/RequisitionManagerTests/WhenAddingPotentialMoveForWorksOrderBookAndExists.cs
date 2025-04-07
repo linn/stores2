@@ -39,5 +39,13 @@
             this.results.Should().HaveCount(1);
             this.results.First().Sequence.Should().Be(3);
         }
+
+        [Test]
+        public void ShouldSavePotentialMove()
+        {
+            this.PotentialMoveDetailRepository
+                .Received()
+                .AddAsync(Arg.Is<PotentialMoveDetail>(m => m.DocumentId == 1234));
+        }
     }
 }
