@@ -2,7 +2,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import Typography from '@mui/material/Typography';
 import { useNavigate, useParams } from 'react-router-dom';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';

@@ -2,13 +2,13 @@ import React from 'react';
 import Typography from '@mui/material/Typography';
 import { Link } from 'react-router-dom';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { CreateButton, Loading, utilities } from '@linn-it/linn-form-components-library';
 import ListItem from '@mui/material/ListItem';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
+import Page from './Page';
 
 function Carriers() {
     const { isLoading, result } = useInitialise(itemTypes.carriers.url);

@@ -6,7 +6,7 @@ import {
     InputField,
     Search
 } from '@linn-it/linn-form-components-library';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import itemTypes from '../../../itemTypes';
 import useSearch from '../../../hooks/useSearch';

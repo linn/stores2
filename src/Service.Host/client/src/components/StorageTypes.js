@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { DataGrid } from '@mui/x-data-grid';
 import { Loading, ErrorCard, SnackbarMessage } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
@@ -154,12 +154,12 @@ function StorageTypes() {
                         }}
                     />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <Button onClick={addNewRow} variant="outlined" disabled={creating}>
                         Add Storage Type
                     </Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <Button
                         onClick={() => {
                             const updatedStorageType = storageTypes.find(sp => sp.updated === true);
@@ -193,7 +193,7 @@ function StorageTypes() {
                     />
                 </Grid>
                 {(updateError || createStorageTypeError) && (
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <ErrorCard
                             errorMessage={
                                 updateError ? updateError?.details : createStorageTypeError

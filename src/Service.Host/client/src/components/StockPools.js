@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import Dialog from '@mui/material/Dialog';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
@@ -311,12 +311,12 @@ function StockPools() {
                         }}
                     />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <Button onClick={addNewRow} variant="outlined" disabled={rowUpdated}>
                         Add Stock Pool
                     </Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <Button
                         onClick={() => {
                             const updatedStockPool = stockPools.find(sp => sp.updated === true);
@@ -347,7 +347,7 @@ function StockPools() {
                     />
                 </Grid>
                 {(updateError || createStockPoolError) && (
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <ErrorCard
                             errorMessage={updateError ? updateError?.details : createStockPoolError}
                         />

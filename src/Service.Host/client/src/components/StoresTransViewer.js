@@ -8,7 +8,7 @@ import {
     Search
 } from '@linn-it/linn-form-components-library';
 import { DataGrid } from '@mui/x-data-grid';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
@@ -223,7 +223,7 @@ function StoresTransViewer() {
                     </Button>
                 </Grid>
                 {isLoading ? (
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Loading />
                     </Grid>
                 ) : (

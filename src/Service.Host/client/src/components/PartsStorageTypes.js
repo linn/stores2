@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { Loading, CreateButton, utilities } from '@linn-it/linn-form-components-library';
@@ -44,7 +44,7 @@ function PartsStorageTypes() {
                 <Grid size={11}>
                     <Typography variant="h4">Part Storage Types</Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid size={1}>
                     <CreateButton createUrl="/stores2/parts-storage-types/create" />
                 </Grid>
                 {isPartsStorageTypesLoading && (

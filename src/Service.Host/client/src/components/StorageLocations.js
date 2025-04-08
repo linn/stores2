@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { CreateButton, Dropdown, InputField, Loading } from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';

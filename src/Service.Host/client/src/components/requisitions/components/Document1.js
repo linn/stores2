@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { InputField } from '@linn-it/linn-form-components-library';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import itemTypes from '../../../itemTypes';
 import useGet from '../../../hooks/useGet';
 

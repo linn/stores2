@@ -1,5 +1,5 @@
 import React from 'react';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { InputField, Search } from '@linn-it/linn-form-components-library';
 import PropTypes from 'prop-types';
 import itemTypes from '../../../itemTypes';

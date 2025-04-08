@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import {
     Dropdown,
     ErrorCard,
@@ -128,7 +128,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.line1}
@@ -139,7 +139,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={6}>
                                 <InputField
                                     disabled={!creating}
@@ -150,7 +150,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.line3}
@@ -161,7 +161,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.line4}
@@ -172,7 +172,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.postCode}
@@ -183,7 +183,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={6}>
                                 <Dropdown
                                     value={formValues.countryCode}
@@ -199,7 +199,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.phoneNumber}
@@ -209,7 +209,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={6}>
                                 <InputField
                                     value={formValues.vatRegistrationNumber}
@@ -220,7 +220,7 @@ function Carrier({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item size={6} />
+                            <Grid size={6} />
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/carriers')}

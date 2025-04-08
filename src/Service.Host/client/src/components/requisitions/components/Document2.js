@@ -1,6 +1,6 @@
 import React from 'react';
 import { InputField } from '@linn-it/linn-form-components-library';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 
 function Document2({ document2, document2Text, handleFieldChange, shouldRender, shouldEnter }) {
     if (!shouldRender) {
