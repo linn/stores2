@@ -4,7 +4,7 @@ import { useLocation } from 'react-router';
 import queryString from 'query-string';
 import moment from 'moment';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import {

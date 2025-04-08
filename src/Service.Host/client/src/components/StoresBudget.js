@@ -3,7 +3,7 @@ import { utilities } from '@linn-it/linn-form-components-library';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';

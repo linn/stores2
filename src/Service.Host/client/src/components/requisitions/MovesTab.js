@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import moment from 'moment';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { Search } from '@linn-it/linn-form-components-library';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import Dialog from '@mui/material/Dialog';

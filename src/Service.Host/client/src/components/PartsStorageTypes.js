@@ -1,6 +1,6 @@
 import React from 'react';
 import Typography from '@mui/material/Typography';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
 import { Loading, CreateButton, utilities } from '@linn-it/linn-form-components-library';

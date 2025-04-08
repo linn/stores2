@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { DataGrid } from '@mui/x-data-grid';
 import { Loading, ErrorCard, SnackbarMessage } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';

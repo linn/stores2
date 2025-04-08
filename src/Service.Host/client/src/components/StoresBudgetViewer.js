@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Loading, InputField } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';

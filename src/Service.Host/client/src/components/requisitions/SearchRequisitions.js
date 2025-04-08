@@ -5,7 +5,7 @@ import queryString from 'query-string';
 import moment from 'moment';
 import { DataGrid } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import {
     utilities,
     InputField,

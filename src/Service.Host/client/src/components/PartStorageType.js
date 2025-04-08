@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
 import {
     Loading,

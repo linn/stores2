@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputField } from '@linn-it/linn-form-components-library';
 import moment from 'moment';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 
 function BookedBy({

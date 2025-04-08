@@ -6,7 +6,7 @@ import {
     Loading,
     Search
 } from '@linn-it/linn-form-components-library';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import queryString from 'query-string';
 import Typography from '@mui/material/Typography';

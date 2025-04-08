@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import { DataGrid } from '@mui/x-data-grid';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';

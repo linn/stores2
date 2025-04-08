@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { Loading, ExportButton, Search } from '@linn-it/linn-form-components-library';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { DataGrid } from '@mui/x-data-grid';

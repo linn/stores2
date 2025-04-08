@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import List from '@mui/material/List';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import {
     Dropdown,
     ErrorCard,

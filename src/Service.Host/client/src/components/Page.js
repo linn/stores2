@@ -2,7 +2,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import { green, red } from '@mui/material/colors';
-import makeStyles from '@mui/styles/makeStyles';
+import { makeStyles } from '@mui/styles';
 import { useSnackbar } from 'notistack';
 import { useAuth } from 'react-oidc-context';
 import React, { useEffect } from 'react';

@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography';
 import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { DataGrid } from '@mui/x-data-grid';
-import Grid from '@mui/material/Grid2';
+import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import { utilities, Dropdown, Search } from '@linn-it/linn-form-components-library';
 import Page from '../Page';
