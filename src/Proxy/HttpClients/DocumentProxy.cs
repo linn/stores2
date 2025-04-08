@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Proxy.External
+﻿namespace Linn.Stores2.Proxy.HttpClients
 {
     using System;
     using System.Collections.Generic;
@@ -12,6 +12,7 @@
     using Linn.Common.Serialization.Json;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Proxy.External;
     using Linn.Stores2.Resources.External;
 
     public class DocumentProxy : IDocumentProxy
@@ -96,6 +97,37 @@
                            OrderNumber = po.OrderNumber,
                            IsAuthorised = po.AuthorisedBy?.Id != null,
                            IsFilCancelled = !string.IsNullOrEmpty(po.DateFilCancelled)
+                       };
+        }
+
+        public async Task<WorksOrderResult> GetWorksOrder(int orderNumber)
+        {
+            var uri = $"{ConfigurationManager.Configuration["PROXY_ROOT"]}/production/works-orders/{orderNumber}";
+
+            var response = await this.restClient.Get(
+                               CancellationToken.None,
+                               new Uri(uri, UriKind.RelativeOrAbsolute),
+                               new Dictionary<string, string>(),
+                               HttpHeaders.AcceptJson);
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return null;
+            }
+
+            var json = new JsonSerializer();
+            var details = json.Deserialize<WorksOrderResource>(response.Value);
+
+            return new WorksOrderResult
+                       {
+                           OrderNumber = details.OrderNumber,
+                           DateCancelled = details.DateCancelled,
+                           PartNumber = details.PartNumber,
+                           PartDescription = details.PartDescription,
+                           WorkStationCode = details.WorkStationCode,
+                           Outstanding = details.Outstanding,
+                           Quantity = details.Quantity,
+                           QuantityBuilt = details.QuantityBuilt
                        };
         }
     }

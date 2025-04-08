@@ -6,13 +6,11 @@
     using FluentAssertions;
 
     using Linn.Common.Domain;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
-    using Linn.Stores2.TestData.Requisitions;
 
     using NSubstitute;
 
@@ -33,29 +31,19 @@
         {
             this.employeeId = 567;
             this.quantity = 49;
-            this.req = new ReqWithReqNumber(
-                123,
-                new Employee { Id = this.employeeId },
-                TestFunctionCodes.Move,
-                "F",
-                null,
-                "REQ",
-                new Department(),
-                new Nominal(),
-                part: new Part { PartNumber = "P1" },
-                quantity: this.quantity,
-                fromState: "S1",
-                toState: "S2");
-            this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.req);
             this.StateRepository.FindByIdAsync("S2")
                 .Returns(new StockState("S2", "S2 desc"));
-
+            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.Move.FunctionCode)
+                .Returns(TestFunctionCodes.Move);
             this.StoresService.ValidOntoLocation(
                 Arg.Is<Part>(p => p.PartNumber == "P1"),
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>())
                 .Returns(new ProcessResult(true, "ok"));
+            this.PartRepository.FindByIdAsync("P1").Returns(new Part { PartNumber = "P1" });
+            this.PartRepository.FindByIdAsync("P1").Returns(new Part { PartNumber = "P1" });
+            this.EmployeeRepository.FindByIdAsync(this.employeeId).Returns(new Employee());
             this.StoresService.ValidStockPool(Arg.Is<Part>(b => b.PartNumber == "P1"), Arg.Any<StockPool>())
                 .Returns(new ProcessResult(false, "Stock pool is bad"));
             this.ReqStoredProcedures.CreateRequisitionLines(123, null)
@@ -64,8 +52,34 @@
                 .Returns(new ProcessResult(true, "can book ok"));
             this.ReqStoredProcedures.DoRequisition(Arg.Any<int>(), null, this.employeeId)
                 .Returns(new ProcessResult(true, "still ok"));
-
-            this.action = async () => await this.Sut.CheckAndBookRequisitionHeader(this.req);
+            this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet { PalletNumber = 123 });
+            this.StockPoolRepository.FindByIdAsync("SP1").Returns(
+                new StockPool("SP1", null, null, new AccountingCompany(), null, null, null, null, null, null));
+            this.action = async () => await this.Sut.Validate(
+                                          this.employeeId,
+                                          TestFunctionCodes.Move.FunctionCode,
+                                          "F",
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          null,
+                                          "SP1",
+                                          "SP1",
+                                          123,
+                                          123,
+                                          null,
+                                          null,
+                                          "P1",
+                                          1,
+                                          "S1",
+                                          "S2",
+                                          null,
+                                          null,
+                                          null);
         }
 
         [Test]

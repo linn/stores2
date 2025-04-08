@@ -59,7 +59,8 @@
                     r => new EntityFrameworkRepository<RequisitionHistory, int>(r.GetService<ServiceDbContext>()?.RequisitionHistory))
                 .AddScoped<IRepository<StoresTransactionState, StoresTransactionStateKey>, EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>>(
                     r => new EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>(r.GetService<ServiceDbContext>()?.StoresTransactionStates))
-                .AddScoped<IRepository<StockTransaction, int>, StockTransactionRepository>();
+                .AddScoped<IRepository<PotentialMoveDetail, PotentialMoveDetailKey>, EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>>(
+                    r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(r.GetService<ServiceDbContext>()?.PotentialMoveDetails));
         }
     }
 }

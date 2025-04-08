@@ -160,7 +160,7 @@
             this.Reference = reference;
             this.ReqType = reqType;
             this.Document2 = document2Number;
-            this.Document2Name = Document2Name;
+            this.Document2Name = document2Type;
 
             this.IsReverseTransaction = reverseTrans;
             this.IsReversed = "N";
@@ -291,7 +291,6 @@
                 yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
             }
         }
-
 
         public void Update(string comments)
         {

@@ -49,7 +49,10 @@
             req.Lines.Add(new RequisitionLine(123, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLinnDept));
             req.Authorise(authorisedBy);
 
-            this.ReqManager.AuthoriseRequisition(this.resource.ReqNumber, Arg.Any<int>(), Arg.Any<IEnumerable<string>>())
+            this.ReqManager.AuthoriseRequisition(
+                    this.resource.ReqNumber,
+                    Arg.Any<int>(),
+                    Arg.Any<IEnumerable<string>>())
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/authorise", this.resource).Result;
         }

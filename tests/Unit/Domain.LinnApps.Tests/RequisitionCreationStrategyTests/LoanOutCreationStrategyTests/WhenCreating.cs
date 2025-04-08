@@ -62,7 +62,7 @@
         }
 
         [Test]
-        public void ShoudReturnReq()
+        public void ShouldReturnReq()
         {
             this.Result.Should().NotBeNull();
             this.Result.StoresFunction.Should().NotBeNull();

@@ -83,8 +83,8 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<RequisitionHeaderResource>();
-            resource.ReqNumber.Should().Be(123);
+            var returnResource = this.Response.DeserializeBody<RequisitionHeaderResource>();
+            returnResource.ReqNumber.Should().Be(123);
         }
     }
 }

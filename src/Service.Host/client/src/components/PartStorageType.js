@@ -11,13 +11,13 @@ import {
     SnackbarMessage
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
+import Page from './Page';
 
 function PartStorageType({ creating }) {
     const { id } = useParams();

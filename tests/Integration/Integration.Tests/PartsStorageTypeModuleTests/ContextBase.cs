@@ -1,7 +1,5 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
-    using NSubstitute;
-
     using System.Net.Http;
 
     using Linn.Common.Persistence.EntityFramework;
@@ -19,6 +17,8 @@
     using Linn.Stores2.Service.Modules;
 
     using Microsoft.Extensions.DependencyInjection;
+
+    using NSubstitute;
 
     using NUnit.Framework;
 

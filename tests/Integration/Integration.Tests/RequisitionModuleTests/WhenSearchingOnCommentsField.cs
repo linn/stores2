@@ -30,8 +30,8 @@
                 "F",
                 12345678,
                 "TYPE",
-                new Department { DepartmentCode = "DEP1"},
-                new Nominal { NominalCode = "NOM1"},
+                new Department { DepartmentCode = "DEP1" },
+                new Nominal { NominalCode = "NOM1" },
                 reference: null,
                 comments: "Hello Requisitions");
             this.req456 = new RequisitionHeader(

@@ -43,7 +43,6 @@ function reducer(state, action) {
                     document2: action.payload.newValue
                 };
             } else if (action.payload.fieldName === 'storesFunction') {
-
                 let newState = {
                     ...state,
                     storesFunction: action.payload.newValue
@@ -96,6 +95,21 @@ function reducer(state, action) {
             }
 
             return { ...state, [action.payload.fieldName]: newValue };
+        }
+        case 'set_document1_details': {
+            return { ...state, document1Details: action.payload };
+        }
+        case 'set_part_details': {
+            return { ...state, partDetails: action.payload };
+        }
+        case 'set_header_details_for_WO': {
+            return {
+                ...state,
+                toStockPool: action.payload.accountingCompany,
+                fromStockPool: action.payload.accountingCompany,
+                fromState: 'STORES',
+                toState: action.payload.qcOnReceipt === 'Y' ? 'QC' : 'STORES'
+            };
         }
         case 'add_line': {
             // need to set the line transaction type based on the function code and req type

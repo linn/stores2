@@ -39,7 +39,11 @@
                 new Department(),
                 new Nominal());
             req.Cancel("just cos", new Employee());
-            this.ReqManager.BookRequisition(this.resource.ReqNumber, null, Arg.Any<int>(), Arg.Any<IEnumerable<string>>())
+            this.ReqManager.BookRequisition(
+                    this.resource.ReqNumber,
+                    null,
+                    Arg.Any<int>(),
+                    Arg.Any<IEnumerable<string>>())
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/book", this.resource).Result;
         }

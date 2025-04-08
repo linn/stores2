@@ -72,7 +72,9 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
                                         };
 
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
-            this.Response = this.Client.PutAsJsonAsync($"/stores2/parts-storage-types/{this.partsStorageType.BridgeId}", this.updateResource).Result;
+            this.Response = this.Client.PutAsJsonAsync(
+                $"/stores2/parts-storage-types/{this.partsStorageType.BridgeId}",
+                this.updateResource).Result;
         }
 
         [Test]
@@ -91,7 +93,9 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
         [Test]
         public void ShouldUpdateEntity()
         {
-            this.DbContext.PartsStorageTypes.First(x => x.PartNumber == this.partsStorageType.PartNumber && x.StorageTypeCode == this.partsStorageType.StorageTypeCode)
+            this.DbContext.PartsStorageTypes.First(
+                    x => x.PartNumber == this.partsStorageType.PartNumber
+                         && x.StorageTypeCode == this.partsStorageType.StorageTypeCode)
                 .Remarks.Should().Be(this.updateResource.Remarks);
         }
         

@@ -37,6 +37,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         
         private readonly IStockService stockService;
 
+        private readonly ISalesProxy salesProxy;
+
+        private readonly IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository;
+
         private readonly IRepository<StoresPallet, int> palletRepository;
 
         private readonly IRepository<StockState, string> stateRepository;
@@ -68,7 +72,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IRepository<Department, string> departmentRepository,
             IRepository<Nominal, string> nominalRepository,
             IDocumentProxy documentProxy,
-            IStockService stockService)
+            IStockService stockService,
+            ISalesProxy salesProxy,
+            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -87,6 +93,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.nominalRepository = nominalRepository;
             this.documentProxy = documentProxy;
             this.stockService = stockService;
+            this.salesProxy = salesProxy;
+            this.potentialMoveRepository = potentialMoveRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -377,7 +385,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         throw new InsertReqOntosException($"Failed in insert_req_ontos: {ontoResult.Message}");
                     }
                 }
-
             }
 
             // todo - consider what has to happen if a move is from one place to another
@@ -395,12 +402,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        public async Task CheckAndBookRequisitionHeader(RequisitionHeader header)
+        public async Task CreateLinesAndBookAutoRequisitionHeader(RequisitionHeader header)
         {
-            await this.DoChecksForAutoHeader(header);
-
-            await this.repository.AddAsync(header);
-
             DoProcessResultCheck(  
                 await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
 
@@ -658,6 +661,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");
                 }   
+            } 
+            else if (function.PartSource == "WO")
+            {
+                await this.CheckValidWorksOrder(document1Number, part);
             }
             else if (function.PartSource == "C" && function.Document1Required())
             {
@@ -808,6 +815,39 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
+        public async Task<IEnumerable<PotentialMoveDetail>> AddPotentialMoveDetails(
+            string documentType,
+            int documentId,
+            decimal? quantity,
+            string partNumber,
+            int? builtById,
+            int? toLocationId,
+            int? toPalletNumber)
+        {
+            var potentialMoves =
+                await this.potentialMoveRepository.FilterByAsync(
+                    a => a.DocumentId == documentId && a.DocumentType == documentType);
+            var seq = 1;
+            if (potentialMoves != null && potentialMoves.Any())
+            {
+                seq = potentialMoves.Max(a => a.Sequence) + 1;
+            }
+
+            var potentialMove = new PotentialMoveDetail
+                                    {
+                                        PartNumber = partNumber,
+                                        Quantity = quantity,
+                                        BuiltBy = builtById,
+                                        Sequence = seq,
+                                        DocumentType = documentType,
+                                        DocumentId = documentId,
+                                        LocationId = toLocationId,
+                                        PalletNumber = toPalletNumber
+                                    };
+            await this.potentialMoveRepository.AddAsync(potentialMove);
+
+            return new List<PotentialMoveDetail> { potentialMove }.AsEnumerable();
+        }
 
         private static void DoProcessResultCheck(ProcessResult result)
         {
@@ -834,7 +874,39 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 return FieldIsNeededOrOptional(code);
             }
 
-            return (code == "Y");
+            return code == "Y";
+        }
+
+        private async Task CheckValidWorksOrder(int? document1Number, Part part)
+        {
+            var worksOrder = await this.documentProxy.GetWorksOrder(document1Number.GetValueOrDefault());
+
+            if (worksOrder == null)
+            {
+                throw new CreateRequisitionException($"Works Order {document1Number} does not exist.");
+            }
+
+            if (!string.IsNullOrEmpty(worksOrder.DateCancelled))
+            {
+                throw new CreateRequisitionException($"Works Order {document1Number} is cancelled.");
+            }
+
+            if (worksOrder.PartNumber != part.PartNumber)
+            {
+                throw new CreateRequisitionException($"Works Order {document1Number} is for a different part.");
+            }
+
+            if (worksOrder.Quantity == 0 || worksOrder.Quantity <= worksOrder.QuantityBuilt)
+            {
+                throw new CreateRequisitionException($"There is nothing left to build on Works Order {document1Number}.");
+            }
+
+            var salesPart = await this.salesProxy.GetSalesArticle(worksOrder.PartNumber);
+            if (salesPart != null && (salesPart.TypeOfSerialNumber == "S" || salesPart.TypeOfSerialNumber == "P1"
+                                                                          || salesPart.TypeOfSerialNumber == "P2"))
+            {
+                throw new CreateRequisitionException("You cannot book serial numbered parts in. Please use the relevant works order screen.");
+            }
         }
 
         private async Task CheckMoves(string partNumber, IList<MoveSpecification> moves)

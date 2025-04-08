@@ -1,7 +1,5 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
-    using NSubstitute;
-
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
@@ -13,6 +11,8 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Parts;
+
+    using NSubstitute;
 
     using NUnit.Framework;
 
@@ -50,9 +50,6 @@
             this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
 
             this.DatabaseService.GetNextVal("PARTS_STORAGE_TYPES_ID_SEQ").Returns(1);
-
-
-            
 
             this.Response = this.Client.PostAsJsonAsync($"/stores2/parts-storage-types", this.partsStorageType).Result;
         }

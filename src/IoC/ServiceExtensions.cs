@@ -23,8 +23,7 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
-    using Linn.Stores2.Proxy;
-    using Linn.Stores2.Proxy.External;
+    using Linn.Stores2.Proxy.HttpClients;
     using Linn.Stores2.Proxy.StoredProcedureClients;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
@@ -67,6 +66,7 @@
                 .AddScoped<LinesProvidedStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
+                .AddScoped<ISalesProxy, SalesProxy>()
                 .AddScoped<GistPoCreationStrategy>()
                 .AddScoped<SuReqCreationStrategy>();
         }

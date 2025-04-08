@@ -59,7 +59,7 @@
             this.ReqStoredProcedures.CreateRequisitionLines(123, null)
                 .Returns(new ProcessResult(false, "lines not ok"));
 
-            this.action = async () => await this.Sut.CheckAndBookRequisitionHeader(this.req);
+            this.action = async () => await this.Sut.CreateLinesAndBookAutoRequisitionHeader(this.req);
         }
 
         [Test]

@@ -111,9 +111,11 @@
                 context.BatchRef,
                 context.BatchDate,
                 "FREE");
-            
+
+            await this.reqRepository.AddAsync(req);
+
             // add lines and book
-            await this.requisitionManager.CheckAndBookRequisitionHeader(req);
+            await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);
             
             // re-query the database for the data after stored procedures have run etc
             return await this.reqRepository.FindByIdAsync(req.ReqNumber);

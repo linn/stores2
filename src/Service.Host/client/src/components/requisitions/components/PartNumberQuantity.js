@@ -8,10 +8,10 @@ import useSearch from '../../../hooks/useSearch';
 function PartNumberQuantity({
     partNumber = null,
     partDescription = null,
-    setPart,
+    setPart = null,
     quantity = null,
     disabled = false,
-    setQuantity,
+    setQuantity = null,
     showQuantity = true,
     shouldRender = true
 }) {
@@ -36,7 +36,7 @@ function PartNumberQuantity({
                     resultLimit={100}
                     helperText="<Enter> to search part. <Tab> to select"
                     value={partNumber}
-                    disabled={disabled}
+                    disabled={disabled || !setPart}
                     handleValueChange={(_, newVal) => {
                         setPart({ partNumber: newVal });
                     }}
@@ -72,7 +72,7 @@ function PartNumberQuantity({
                     <InputField
                         value={quantity}
                         onChange={(_, val) => setQuantity(val)}
-                        disabled={disabled}
+                        disabled={disabled || !setQuantity}
                         label="Qty"
                         propertyName="quantity"
                     />
