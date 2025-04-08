@@ -85,17 +85,17 @@ function Page({
 
     return (
         <Grid container spacing={3} sx={{ width: '100%' }}>
-            <Grid item xs={1} />
-            <Grid item xs={10} className="hide-when-printing">
+            <Grid size={1} />
+            <Grid size={10} className="hide-when-printing">
                 {showBreadcrumbs && (
                     <div style={{ marginTop: '80px' }}>
                         <Breadcrumbs navigate={navigate} location={location} homeUrl={homeUrl} />
                     </div>
                 )}
             </Grid>
-            <Grid item xs={1} />
-            <Grid item xs={columnWidth[width] || false} />
-            <Grid item xs={pageWidth[width]}>
+            <Grid size={1} />
+            <Grid size={columnWidth[width] || false} />
+            <Grid size={pageWidth[width]}>
                 <Paper
                     square
                     sx={{
@@ -108,7 +108,7 @@ function Page({
                     </>
                 </Paper>
             </Grid>
-            <Grid item xs={columnWidth[width] || false} />
+            <Grid size={columnWidth[width] || false} />
         </Grid>
     );
 }

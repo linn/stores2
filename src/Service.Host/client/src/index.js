@@ -34,28 +34,20 @@ const oidcConfig = {
     },
     userStore: new WebStorageStateStore({ store: window.localStorage })
 };
-const theme = createTheme({
-    // cssVariables: {
-    //     colorSchemeSelector: 'class'
-    // },
-    // colorSchemes: {
-    //     light: true,
-    //     dark: true
-    // }
-});
+const theme = createTheme({});
 const render = Component => {
     root.render(
         <BrowserRouter>
             <AuthProvider {...oidcConfig}>
-                {/* <StyledEngineProvider injectFirst> */}
-                <ThemeProvider theme={theme}>
-                    <SnackbarProvider dense maxSnack={5}>
-                        <LocalizationProvider dateAdapter={AdapterMoment} locale="en-GB">
-                            <Component />
-                        </LocalizationProvider>
-                    </SnackbarProvider>
-                </ThemeProvider>
-                {/* </StyledEngineProvider> */}
+                <StyledEngineProvider injectFirst>
+                    <ThemeProvider theme={theme}>
+                        <SnackbarProvider dense maxSnack={5}>
+                            <LocalizationProvider dateAdapter={AdapterMoment} locale="en-GB">
+                                <Component />
+                            </LocalizationProvider>
+                        </SnackbarProvider>
+                    </ThemeProvider>
+                </StyledEngineProvider>
             </AuthProvider>
         </BrowserRouter>
     );

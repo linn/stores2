@@ -9,7 +9,7 @@ import Page from './Page';
 
 function App() {
     return (
-        <Page homeUrl={config.appRoot}>
+        <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
                 <Grid size={12}>
                     <Typography variant="h4">stores2</Typography>
