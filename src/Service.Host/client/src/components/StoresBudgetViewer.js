@@ -50,7 +50,7 @@ function StoresBudgetViewer() {
                         Go
                     </Button>
                 </Grid>
-                <Grid item size={8} />
+                <Grid size={8} />
                 {isLoading && (
                     <Grid size={12}>
                         <Loading />

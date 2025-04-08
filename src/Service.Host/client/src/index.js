@@ -1,8 +1,7 @@
 ﻿import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { SnackbarProvider } from 'notistack';
-import { ThemeProvider, StyledEngineProvider } from '@mui/material/styles';
-import { linnTheme } from '@linn-it/linn-form-components-library';
+import { ThemeProvider, StyledEngineProvider, createTheme } from '@mui/material/styles';
 import { AuthProvider } from 'react-oidc-context';
 import { WebStorageStateStore } from 'oidc-client-ts';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -35,20 +34,28 @@ const oidcConfig = {
     },
     userStore: new WebStorageStateStore({ store: window.localStorage })
 };
-
+const theme = createTheme({
+    // cssVariables: {
+    //     colorSchemeSelector: 'class'
+    // },
+    // colorSchemes: {
+    //     light: true,
+    //     dark: true
+    // }
+});
 const render = Component => {
     root.render(
         <BrowserRouter>
             <AuthProvider {...oidcConfig}>
-                <StyledEngineProvider injectFirst>
-                    <ThemeProvider theme={linnTheme}>
-                        <SnackbarProvider dense maxSnack={5}>
-                            <LocalizationProvider dateAdapter={AdapterMoment} locale="en-GB">
-                                <Component />
-                            </LocalizationProvider>
-                        </SnackbarProvider>
-                    </ThemeProvider>
-                </StyledEngineProvider>
+                {/* <StyledEngineProvider injectFirst> */}
+                <ThemeProvider theme={theme}>
+                    <SnackbarProvider dense maxSnack={5}>
+                        <LocalizationProvider dateAdapter={AdapterMoment} locale="en-GB">
+                            <Component />
+                        </LocalizationProvider>
+                    </SnackbarProvider>
+                </ThemeProvider>
+                {/* </StyledEngineProvider> */}
             </AuthProvider>
         </BrowserRouter>
     );

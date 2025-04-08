@@ -223,7 +223,7 @@ function StoresTransViewer() {
                     </Button>
                 </Grid>
                 {isLoading ? (
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Loading />
                     </Grid>
                 ) : (

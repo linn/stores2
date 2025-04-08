@@ -53,6 +53,9 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        conditionNames: ['mui-modern', '...']
+    },
     plugins: [
         // To strip all locales except “en”
         new MomentLocalesPlugin()

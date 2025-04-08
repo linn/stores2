@@ -154,12 +154,12 @@ function StorageTypes() {
                         }}
                     />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <Button onClick={addNewRow} variant="outlined" disabled={creating}>
                         Add Storage Type
                     </Button>
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <Button
                         onClick={() => {
                             const updatedStorageType = storageTypes.find(sp => sp.updated === true);
@@ -193,7 +193,7 @@ function StorageTypes() {
                     />
                 </Grid>
                 {(updateError || createStorageTypeError) && (
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <ErrorCard
                             errorMessage={
                                 updateError ? updateError?.details : createStorageTypeError

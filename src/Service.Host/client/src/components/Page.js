@@ -2,31 +2,13 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import { green, red } from '@mui/material/colors';
-import { makeStyles } from '@mui/styles';
 import { useSnackbar } from 'notistack';
 import { useAuth } from 'react-oidc-context';
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { Breadcrumbs, Loading } from '@linn-it/linn-form-components-library';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useLocation, useNavigate } from 'react-router-dom';
-
-const useStyles = makeStyles(theme => ({
-    root: {
-        padding: theme.spacing(4)
-    },
-    breadcrumbs: {
-        // marginTop: theme.spacing(4),
-        marginLeft: theme.spacing(4),
-        marginRight: theme.spacing(4),
-        padding: theme.spacing(2)
-    },
-    grid: {
-        // marginTop: theme.spacing(4),
-        width: '100%'
-    }
-}));
 
 const pageWidth = {
     xs: 4,
@@ -46,17 +28,17 @@ const columnWidth = {
 
 function Page({
     children,
-    width,
-    requestErrors,
-    showRequestErrors,
-    homeUrl,
-    showBreadcrumbs,
-    showAuthUi
+    width = 'l',
+    requestErrors = [],
+    showRequestErrors = false,
+    homeUrl = null,
+    showBreadcrumbs = true,
+    showAuthUi = true
 }) {
-    const classes = useStyles();
     const navigate = useNavigate();
     const location = useLocation();
     const { enqueueSnackbar } = useSnackbar();
+
     useEffect(() => {
         if (requestErrors && showRequestErrors) {
             requestErrors.forEach(t => {
@@ -100,8 +82,9 @@ function Page({
             </Tooltip>
         );
     };
+
     return (
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={3} sx={{ width: '100%' }}>
             <Grid item xs={1} />
             <Grid item xs={10} className="hide-when-printing">
                 {showBreadcrumbs && (
@@ -111,38 +94,23 @@ function Page({
                 )}
             </Grid>
             <Grid item xs={1} />
-
-            <Grid item xs={columnWidth[width]} />
+            <Grid item xs={columnWidth[width] || false} />
             <Grid item xs={pageWidth[width]}>
-                <Paper className={classes.root} square>
+                <Paper
+                    square
+                    sx={{
+                        p: 4
+                    }}
+                >
                     <>
                         {showAuthUi && <div style={{ float: 'right' }}>{authUi()}</div>}
                         {children}
                     </>
                 </Paper>
             </Grid>
-            <Grid item xs={columnWidth[width]} />
+            <Grid item xs={columnWidth[width] || false} />
         </Grid>
     );
 }
-
-Page.propTypes = {
-    children: PropTypes.node.isRequired,
-    width: PropTypes.oneOf(['xs', 's', 'm', 'l', 'xl']),
-    showRequestErrors: PropTypes.bool,
-    requestErrors: PropTypes.arrayOf(PropTypes.shape({})),
-    homeUrl: PropTypes.string,
-    showBreadcrumbs: PropTypes.bool,
-    showAuthUi: PropTypes.bool
-};
-
-Page.defaultProps = {
-    width: 'l',
-    showRequestErrors: false,
-    requestErrors: [],
-    homeUrl: null,
-    showBreadcrumbs: true,
-    showAuthUi: true
-};
 
 export default Page;

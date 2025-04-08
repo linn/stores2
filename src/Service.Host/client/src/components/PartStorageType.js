@@ -105,7 +105,7 @@ function PartStorageType({ creating }) {
                         <Loading />
                     </Grid>
                 )}
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <InputField
                         propertyName="partNumber"
                         label="Part Number"
@@ -114,7 +114,7 @@ function PartStorageType({ creating }) {
                         disabled
                     />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <InputField
                         propertyName="partDescription"
                         label="Part Description"
@@ -124,7 +124,7 @@ function PartStorageType({ creating }) {
                     />
                 </Grid>
                 {creating && (
-                    <Grid item xs={3}>
+                    <Grid size={3}>
                         <Search
                             autoFocus
                             propertyName="part"
@@ -143,7 +143,7 @@ function PartStorageType({ creating }) {
                     </Grid>
                 )}
 
-                <Grid item xs={4}>
+                <Grid size={4}>
                     <InputField
                         propertyName="storageTypeCode"
                         label="Storage Type Code"
@@ -154,7 +154,7 @@ function PartStorageType({ creating }) {
                     />
                 </Grid>
                 {creating && (
-                    <Grid item xs={3}>
+                    <Grid size={3}>
                         <Search
                             autoFocus
                             propertyName="storageType"
@@ -172,7 +172,7 @@ function PartStorageType({ creating }) {
                         />
                     </Grid>
                 )}
-                <Grid item xs={8}>
+                <Grid size={8}>
                     <InputField
                         propertyName="storageTypeDescription"
                         label="Storage Type Description"
@@ -183,7 +183,7 @@ function PartStorageType({ creating }) {
                 </Grid>
             </Grid>
             <Grid container spacing={3}>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <InputField
                         propertyName="remarks"
                         label="Remarks"
@@ -192,7 +192,7 @@ function PartStorageType({ creating }) {
                         onChange={handleFieldChange}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <InputField
                         propertyName="maximum"
                         label="Maximum"
@@ -201,7 +201,7 @@ function PartStorageType({ creating }) {
                         onChange={handleFieldChange}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <InputField
                         propertyName="incr"
                         label="Incr"
@@ -210,7 +210,7 @@ function PartStorageType({ creating }) {
                         onChange={handleFieldChange}
                     />
                 </Grid>
-                <Grid item xs={13}>
+                <Grid size={13}>
                     <InputField
                         propertyName="preference"
                         label="Preference"
@@ -221,7 +221,7 @@ function PartStorageType({ creating }) {
                 </Grid>
             </Grid>
             <Grid container spacing={3}>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <Button
                         variant="contained"
                         fullWidth
@@ -241,7 +241,7 @@ function PartStorageType({ creating }) {
                         {creating ? 'Create ' : 'Save'}
                     </Button>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid size={12}>
                     <SnackbarMessage
                         visible={snackbarVisible}
                         onClose={() => setSnackbarVisible(false)}
@@ -249,7 +249,7 @@ function PartStorageType({ creating }) {
                     />
                 </Grid>
                 {(updateError || createError) && (
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <ErrorCard
                             errorMessage={updateError ? updateError?.details : createError}
                         />

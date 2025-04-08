@@ -241,7 +241,7 @@ function StoragePlaceAudit() {
                     />
                 </Grid>
                 {isLoading || createAuditReqsLoading ? (
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Loading />
                     </Grid>
                 ) : (
@@ -259,7 +259,7 @@ function StoragePlaceAudit() {
                         Create Audit Reqs
                     </Button>
                 </Grid>
-                <Grid item size={10} />
+                <Grid size={10} />
                 {createAuditErrorMessage && (
                     <Grid size={12}>
                         <Typography variant="h6" color="red">

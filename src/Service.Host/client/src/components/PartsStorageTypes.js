@@ -44,7 +44,7 @@ function PartsStorageTypes() {
                 <Grid size={11}>
                     <Typography variant="h4">Part Storage Types</Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid size={1}>
                     <CreateButton createUrl="/stores2/parts-storage-types/create" />
                 </Grid>
                 {isPartsStorageTypesLoading && (

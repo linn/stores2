@@ -66,7 +66,8 @@ module.exports = {
             react: path.resolve('./node_modules/react'),
             notistack: path.resolve('./node_modules/notistack'),
             '@material-ui/styles': path.resolve('./node_modules/@material-ui/styles')
-        }
+        },
+        conditionNames: ['mui-modern', '...']
         //modules: [path.resolve('node_modules'), 'node_modules'].concat(/* ... */)
     },
     optimization: {
