@@ -656,7 +656,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException($"PO {document1Number} is FIL Cancelled!");
                 }
 
-                if (!batchRef.EndsWith(po.OrderNumber.ToString()))
+                var poRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
+                if (batchRef != poRef)
                 {
                     throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");
