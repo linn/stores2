@@ -98,7 +98,6 @@
                            IsAuthorised = po.AuthorisedBy?.Id != null,
                            IsFilCancelled = !string.IsNullOrEmpty(po.DateFilCancelled),
                            DocumentType = po.DocumentType?.Name
-                           
                        };
         }
 
