@@ -762,6 +762,7 @@ function Requisition({ creating }) {
                                 onSelect={handleDocument1Select}
                                 partSource={formState.storesFunction?.partSource}
                                 onSelectPart={handleDocument1PartSelect}
+                                document1Details={formState.document1Details}
                             />
                             <Document2
                                 document2={formState.document2}
