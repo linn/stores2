@@ -47,10 +47,11 @@ function Document1({
 
     useEffect(() => {
         if (purchaseOrder) {
+            const docType = purchaseOrder.documentType.name;
             onSelect({
                 partNumber: purchaseOrder.details[0].partNumber,
                 partDescription: purchaseOrder.details[0].partDescription,
-                batchRef: `P${purchaseOrder.orderNumber}`,
+                batchRef: `${docType.charAt(0)}${purchaseOrder.orderNumber}`,
                 document1Line: 1
             });
             clearPurchaseOrder();
