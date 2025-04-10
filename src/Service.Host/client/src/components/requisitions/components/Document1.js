@@ -14,8 +14,13 @@ function Document1({
     shouldEnter,
     onSelect,
     partSource,
-    onSelectPart = null
+    onSelectPart = null,
+    document1Details = null
 }) {
+    const displayDetails1 =
+        document1Details && partSource === 'WO'
+            ? { render: true, label: 'Work Station', value: document1Details.workStationCode }
+            : { render: false, label: null, value: null };
     const {
         send: fetchPurchaseOrder,
         result: purchaseOrder,
@@ -135,7 +140,18 @@ function Document1({
                     />
                 )}
             </Grid>
-            <Grid size={6} />
+            <Grid size={2}>
+                {displayDetails1.render && (
+                    <InputField
+                        value={displayDetails1.value}
+                        disabled
+                        label={displayDetails1.label}
+                        onChange={() => {}}
+                        propertyName="displayDetails1"
+                    />
+                )}
+            </Grid>
+            <Grid size={4} />
         </>
     );
 }
