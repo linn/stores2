@@ -8,6 +8,6 @@
 
         public bool IsAuthorised { get; set; }
         
-        public PurchaseOrderType DocumentType { get; set; }
+        public string DocumentType { get; set; }
     }
 }

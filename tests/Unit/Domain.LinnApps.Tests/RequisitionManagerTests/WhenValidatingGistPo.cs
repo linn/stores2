@@ -37,7 +37,7 @@
                     IsAuthorised = true, 
                     IsFilCancelled = false, 
                     OrderNumber = 1234567, 
-                    DocumentType = new PurchaseOrderType { Name = "PO" }
+                    DocumentType = "PO"
                 });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "Stores"));
             this.StockPoolRepository.FindByIdAsync("STORES").Returns(new StockPool());
