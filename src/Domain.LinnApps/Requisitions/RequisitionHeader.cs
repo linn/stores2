@@ -86,6 +86,8 @@
 
         public string ToState { get; protected set; }
 
+        public string FromCategory { get; set; }
+
         public string ToCategory { get; protected set; }
 
         public DateTime? BatchDate { get; set; }
@@ -97,6 +99,8 @@
         public string ReqSource { get; set; }
         
         public string UnitOfMeasure { get; protected set; }
+
+        public string WorkStationCode { get; set; }
 
         protected RequisitionHeader()
         {

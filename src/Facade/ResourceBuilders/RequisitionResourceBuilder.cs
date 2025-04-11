@@ -87,6 +87,9 @@
                            LoanNumber = header.LoanNumber,
                            Document2 = header.Document2,
                            Document2Name = header.Document2Name,
+                           WorkStationCode = header.WorkStationCode,
+                           FromCategory = header.FromCategory,
+                           ToCategory = header.ToCategory,
                            Links = this.BuildLinks(header, claims?.ToList()).ToArray()
                         };
         }

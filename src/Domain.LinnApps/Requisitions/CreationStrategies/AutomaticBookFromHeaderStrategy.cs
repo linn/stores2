@@ -7,6 +7,7 @@
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
@@ -28,6 +29,8 @@
 
         private readonly IAuthorisationService authorisationService;
 
+        private readonly IDocumentProxy documentProxy;
+
         public AutomaticBookFromHeaderStrategy(
             IRepository<RequisitionHeader, int> repository,
             IRequisitionManager requisitionManager,
@@ -36,7 +39,8 @@
             IRepository<Employee, int> employeeRepository,
             IRepository<Part, string> partRepository,
             IRepository<StorageLocation, int> storageLocationRepository,
-            IAuthorisationService authorisationService)
+            IAuthorisationService authorisationService,
+            IDocumentProxy documentProxy)
         {
             this.repository = repository;
             this.requisitionManager = requisitionManager;
@@ -46,6 +50,7 @@
             this.partRepository = partRepository;
             this.storageLocationRepository = storageLocationRepository;
             this.authorisationService = authorisationService;
+            this.documentProxy = documentProxy;
         }
 
         public async Task<RequisitionHeader> Create(RequisitionCreationContext context)
@@ -121,6 +126,10 @@
 
             if (req.Document1Name == "WO" && req.Document1.HasValue)
             {
+                var worksOrder = await this.documentProxy.GetWorksOrder(req.Document1.Value);
+                req.WorkStationCode = worksOrder.WorkStationCode;
+                req.FromCategory = req.StoresFunction.FromCategory;
+
                 await this.requisitionManager.AddPotentialMoveDetails(
                     req.Document1Name,
                     req.Document1.Value,

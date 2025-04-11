@@ -22,6 +22,8 @@
         public string FromLocationRequired { get; set; }
 
         public string FromStockPoolRequired { get; set; }
+      
+        public string FromCategory { get; set; }
 
         public string QuantityRequired { get; set; }
 

@@ -3,6 +3,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.Au
     using Linn.Common.Authorisation;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -27,6 +28,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.Au
 
         protected IAuthorisationService AuthorisationService { get; set; }
 
+        protected IDocumentProxy DocumentProxy { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -36,6 +39,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.Au
             this.PartRepository = Substitute.For<IRepository<Part, string>>();
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            this.DocumentProxy = Substitute.For<IDocumentProxy>();
+
             this.Sut = new AutomaticBookFromHeaderStrategy(
                 this.RequisitionRepository, 
                 this.RequisitionManager,
@@ -44,7 +49,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.Au
                 this.EmployeeRepository,
                 this.PartRepository,
                 this.StorageLocationRepository,
-                this.AuthorisationService);
+                this.AuthorisationService,
+                this.DocumentProxy);
         }
     }
 }
