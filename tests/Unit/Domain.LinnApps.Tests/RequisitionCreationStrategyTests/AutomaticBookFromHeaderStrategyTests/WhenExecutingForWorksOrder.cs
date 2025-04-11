@@ -41,7 +41,7 @@
                     Arg.Any<List<string>>())
                 .Returns(true);
 
-            this.result = await this.Sut.Create(this.RequisitionCreationContext);
+            await this.Sut.Create(this.RequisitionCreationContext);
         }
 
         [Test]
