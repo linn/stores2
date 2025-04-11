@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
@@ -14,16 +15,21 @@
 
     public class WhenExecutingForWorksOrder : ContextBase
     {
+        private int worksOrderNumber;
+
         [SetUp]
         public async Task SetUp()
         {
+            this.worksOrderNumber = 132;
+            this.DocumentProxy.GetWorksOrder(this.worksOrderNumber)
+                .Returns(new WorksOrderResult { WorkStationCode = "WSC" });
             this.RequisitionCreationContext = new RequisitionCreationContext
                                                   {
                                                       Function = TestFunctionCodes.BookWorksOrder,
                                                       ToState = "S1",
                                                       PartNumber = "PART",
                                                       CreatedByUserNumber = 123,
-                                                      Document1Number = 777,
+                                                      Document1Number = this.worksOrderNumber,
                                                       Document1Type = "WO",
                                                       Quantity = 1,
                                                       ToPallet = 5534
@@ -35,7 +41,7 @@
                     Arg.Any<List<string>>())
                 .Returns(true);
 
-            await this.Sut.Create(this.RequisitionCreationContext);
+            this.result = await this.Sut.Create(this.RequisitionCreationContext);
         }
 
         [Test]
@@ -43,7 +49,7 @@
         {
             this.RequisitionManager.Received().AddPotentialMoveDetails(
                 this.RequisitionCreationContext.Document1Type,
-                this.RequisitionCreationContext.Document1Number.GetValueOrDefault(),
+                this.worksOrderNumber,
                 this.RequisitionCreationContext.Quantity,
                 this.RequisitionCreationContext.PartNumber,
                 this.RequisitionCreationContext.CreatedByUserNumber,
@@ -52,11 +58,20 @@
         }
 
         [Test]
-        public void ShouldCallManager()
+        public void ShouldGetWO()
+        {
+            this.DocumentProxy.Received().GetWorksOrder(this.worksOrderNumber);
+        }
+
+        [Test]
+        public void ShouldCallManagerWithCorrectReq()
         {
             this.RequisitionManager
                 .Received()
-                .CreateLinesAndBookAutoRequisitionHeader(Arg.Is<RequisitionHeader>(a => a.ToState == "S1"));
+                .CreateLinesAndBookAutoRequisitionHeader(
+                    Arg.Is<RequisitionHeader>(a => a.ToState == "S1" 
+                                                   && a.Document1 == this.worksOrderNumber 
+                                                   && a.WorkStationCode == "WSC"));
         }
     }
 }

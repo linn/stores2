@@ -99,5 +99,11 @@
         public string AccountingCompanyCode { get; set; }
 
         public int? LoanNumber { get; set; }
+
+        public string WorkStationCode { get; set; }
+
+        public string FromCategory { get; set; }
+        
+        public string ToCategory { get; set; }
     }
 }

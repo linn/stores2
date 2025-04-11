@@ -35,6 +35,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string QuantityRequired { get; set; }
 
+        public string FromCategory { get; set; }
+
         public string ToStateRequired { get; set; }
         
         public string ToStockPoolRequired { get; set; }

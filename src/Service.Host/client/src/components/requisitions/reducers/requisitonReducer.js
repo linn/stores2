@@ -6,7 +6,12 @@ function reducer(state, action) {
         case 'load_state': {
             // this action type is for updating the entire state of the form,
             // e.g. to reflect an API result from an update or similar
-            return action.payload;
+            const newState = action.payload;
+            if (action.payload.workStationCode) {
+                newState.document1Details = { workStationCode: action.payload.workStationCode };
+            }
+
+            return newState;
         }
         case 'load_create': {
             // this action type initialses the state for when creating a new record

@@ -8,7 +8,6 @@
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
 
@@ -18,8 +17,6 @@
 
     public class WhenCreatingAndBookingHeaderStockPoolInvalid : ContextBase
     {
-        private RequisitionHeader req;
-
         private decimal quantity;
 
         private int employeeId;

@@ -443,10 +443,12 @@
             e.Property(r => r.BatchDate).HasColumnName("BATCH_DATE");
             e.Property(r => r.BatchRef).HasColumnName("BATCH_REF").HasMaxLength(20);
             e.Property(r => r.LoanNumber).HasColumnName("LOAN_NUMBER");
+            e.Property(r => r.FromCategory).HasColumnName("FROM_CATEGORY").HasMaxLength(6);
             e.Property(r => r.ToCategory).HasColumnName("CATEGORY").HasMaxLength(6);
             e.Property(r => r.UnitOfMeasure).HasColumnName("UNIT_OF_MEASURE").HasMaxLength(14);
             e.Property(r => r.Document2).HasColumnName("DOCUMENT_2");
             e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
+            e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
         }
 
         private static void BuildRequisitionHistory(ModelBuilder builder)
@@ -501,6 +503,7 @@
             r.Property(c => c.ManualPickRequired).HasColumnName("MANUAL_PICK_REQUIRED").HasMaxLength(1);
             r.Property(c => c.FromLocationRequired).HasColumnName("FROM_LOC_REQUIRED").HasMaxLength(1);
             r.Property(c => c.FromStateRequired).HasColumnName("FROM_STATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.FromCategory).HasColumnName("CATEGORY").HasMaxLength(6);
             r.Property(c => c.FromStockPoolRequired).HasColumnName("FROM_STOCK_POOL_REQUIRED").HasMaxLength(1);
             r.Property(c => c.QuantityRequired).HasColumnName("QTY_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ToLocationRequired).HasColumnName("ONTO_LOC_REQUIRED").HasMaxLength(1);
