@@ -31,7 +31,14 @@
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.InspectionToStores.TransactionCode)
                 .Returns(TestTransDefs.InspectionToStores);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = null });
-            this.DocumentProxy.GetPurchaseOrder(1234567).Returns(new PurchaseOrderResult { IsAuthorised = true, IsFilCancelled = false, OrderNumber = 1234567 });
+            this.DocumentProxy.GetPurchaseOrder(1234567).Returns(
+                new PurchaseOrderResult
+                {
+                    IsAuthorised = true, 
+                    IsFilCancelled = false, 
+                    OrderNumber = 1234567, 
+                    DocumentType = "PO"
+                });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "Stores"));
             this.StockPoolRepository.FindByIdAsync("STORES").Returns(new StockPool());
             this.StoresService.ValidOntoLocation(

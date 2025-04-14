@@ -7,5 +7,7 @@
         public string DateFilCancelled { get; set; }
 
         public EmployeeResource AuthorisedBy { get; set; }
+        
+        public PurchaseOrderTypeResource DocumentType { get; set; }
     }
 }

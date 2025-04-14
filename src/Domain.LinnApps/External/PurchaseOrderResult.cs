@@ -7,5 +7,7 @@
         public bool IsFilCancelled { get; set; }
 
         public bool IsAuthorised { get; set; }
+        
+        public string DocumentType { get; set; }
     }
 }
