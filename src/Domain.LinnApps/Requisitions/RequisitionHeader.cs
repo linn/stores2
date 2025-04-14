@@ -102,6 +102,8 @@
 
         public string WorkStationCode { get; set; }
 
+        public int? OriginalReqNumber { get; set; }
+
         protected RequisitionHeader()
         {
         }
@@ -133,7 +135,8 @@
             string category = null,
             int? document2Number = null,
             string document2Type = null,
-            string reverseTrans = "N")
+            string reverseTrans = "N",
+            int? originalReqNumber = null)
         {
             this.ReqSource = "STORES2";
             this.CreatedBy = createdBy;
@@ -165,7 +168,7 @@
             this.ReqType = reqType;
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
-
+            this.OriginalReqNumber = originalReqNumber;
             this.IsReverseTransaction = reverseTrans;
             this.IsReversed = "N";
 

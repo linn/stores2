@@ -23,6 +23,11 @@
 
         public RequisitionHeaderResource Build(RequisitionHeader header, IEnumerable<string> claims)
         {
+            if (header == null)
+            {
+                return new RequisitionHeaderResource { Links = this.BuildLinks(null, claims.ToList()).ToArray() };
+            }
+
             var reqLineBuilder = new RequisitionLineResourceBuilder();
             var storeFunctionBuilder = new StoresFunctionResourceBuilder(this.authService);
 
@@ -90,8 +95,10 @@
                            WorkStationCode = header.WorkStationCode,
                            FromCategory = header.FromCategory,
                            ToCategory = header.ToCategory,
+                           IsReverseTransaction = header.IsReverseTransaction,
+                           OriginalReqNumber = header.OriginalReqNumber,
                            Links = this.BuildLinks(header, claims?.ToList()).ToArray()
-                        };
+                       };
         }
 
         public string GetLocation(RequisitionHeader model)
@@ -107,6 +114,11 @@
             if (claims?.Count > 0)
             {
                 yield return new LinkResource { Rel = "create", Href = "/requisitions/create" };
+            }
+            
+            if (this.authService.HasPermissionFor(AuthorisedActions.ReverseRequisition, claims))
+            {
+                yield return new LinkResource { Rel = "create-reverse", Href = "/requisitions/create" };
             }
 
             if (model != null)

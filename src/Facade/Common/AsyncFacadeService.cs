@@ -182,11 +182,9 @@
             return new SuccessResult<TResource>(this.BuildResource(entity, privilegesList));
         }
 
-        public Task<IResult<TResource>> GetApplicationState(
-            IEnumerable<string> privileges = null)
+        public IResult<TResource> GetApplicationState(IEnumerable<string> privileges = null)
         {
-            // todo
-            throw new NotImplementedException();
+            return new SuccessResult<TResource>(this.BuildResource(default, privileges));
         }
 
         public Task<IResult<TResource>> DeleteOrObsolete(
