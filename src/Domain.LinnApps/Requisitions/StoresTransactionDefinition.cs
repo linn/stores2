@@ -58,6 +58,8 @@
 
         public string FromState { get; set; }
 
+        public string FromCategory { get; set; }
+
         public string OntoCategory { get; set; }
 
         public string AuthorisePrivilege()

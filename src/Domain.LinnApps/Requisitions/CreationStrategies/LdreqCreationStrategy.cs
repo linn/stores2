@@ -137,9 +137,11 @@
 
                 var transactionDefinition = await this.transactionDefinitionRepository
                                                 .FindByIdAsync(context.FirstLineCandidate.TransactionDefinition);
-
                 req.SetStateAndCategory(
-                    transactionDefinition.FromState, transactionDefinition.InspectedState, transactionDefinition.OntoCategory); 
+                    transactionDefinition.FromState, 
+                    transactionDefinition.InspectedState, 
+                    transactionDefinition.OntoCategory,
+                    transactionDefinition.FromCategory); 
             }
             catch (DomainException ex)
             {
