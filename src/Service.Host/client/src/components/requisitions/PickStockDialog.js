@@ -84,7 +84,11 @@ function PickStockDialog({
         if (result?.length && !moves?.length) {
             setMoves(
                 result
-                    .filter(x => !batchRef || x.batchRef === batchRef)
+                    .filter(
+                        x =>
+                            (!batchRef || x.batchRef === batchRef) &&
+                            x.quantity > x.quantityAllocated
+                    )
                     .sort(sortIt)
                     .map((x, i) => ({ ...x, id: i }))
             );

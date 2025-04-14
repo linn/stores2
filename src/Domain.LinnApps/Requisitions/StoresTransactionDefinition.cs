@@ -56,6 +56,10 @@
 
         public bool MaterialVarianceTransaction => this.TakePriceFrom == "M";
 
+        public string FromState { get; set; }
+
+        public string OntoCategory { get; set; }
+
         public string AuthorisePrivilege()
         {
             if (this.RequiresAuthorisation && !string.IsNullOrEmpty(this.AuthOpCode))

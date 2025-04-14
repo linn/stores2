@@ -35,6 +35,12 @@
 
         protected ICreationStrategy Sut { get; private set; }
 
+        protected IRepository<StoresTransactionDefinition, string> StoresTransactionDefinitionRepository
+        {
+            get;
+            private set;
+        }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -47,7 +53,8 @@
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
             this.DepartmentRepository = Substitute.For<IRepository<Department, string>>();
             this.NominalRepository = Substitute.For<IRepository<Nominal, string>>();
-
+            this.StoresTransactionDefinitionRepository =
+                Substitute.For<IRepository<StoresTransactionDefinition, string>>();
             this.Sut = new LdreqCreationStrategy(
                 this.AuthService,
                 this.Repository,
@@ -57,7 +64,8 @@
                 this.PartRepository,
                 this.StorageLocationRepository,
                 this.DepartmentRepository,
-                this.NominalRepository);
+                this.NominalRepository,
+                this.StoresTransactionDefinitionRepository);
         }
     }
 }
