@@ -25,7 +25,10 @@
         {
             if (header == null)
             {
-                return new RequisitionHeaderResource { Links = this.BuildLinks(null, claims.ToList()).ToArray() };
+                return new RequisitionHeaderResource
+                           { 
+                               Links = this.BuildLinks(null, claims.ToList()).ToArray()
+                           };
             }
 
             var reqLineBuilder = new RequisitionLineResourceBuilder();
