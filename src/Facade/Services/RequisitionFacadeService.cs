@@ -162,6 +162,7 @@
                     resource.BatchRef,
                     string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
                     resource.Document1Line,
+                    resource.NewPart?.PartNumber,
                     resource.Lines.Select(BuildLineCandidateFromResource));
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);

@@ -122,7 +122,7 @@
                 context.BatchRef,
                 context.BatchDate);
 
-            if (context.Function.FunctionCode == "PARTNO CH")
+            if (context.Function.NewPartNumberRequired())
             {
                 // just for the magical part number change
                 var newPart = await this.partRepository.FindByIdAsync(context.NewPartNumber);

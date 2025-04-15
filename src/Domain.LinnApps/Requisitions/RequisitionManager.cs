@@ -564,6 +564,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string batchRef = null,
             DateTime? batchDate = null,
             int? document1Line = null,
+            string newPartNumber = null,
             IEnumerable<LineCandidate> lines = null)
         {
             // just try and construct a req with a single line
@@ -580,6 +581,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var toLocation = !string.IsNullOrEmpty(toLocationCode)
                                  ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
             var part = !string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
+
+            var newPart = !string.IsNullOrEmpty(newPartNumber) ? await this.partRepository.FindByIdAsync(newPartNumber) : null;
 
             var employee = await this.employeeRepository.FindByIdAsync(createdBy);
 
@@ -727,6 +730,18 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (req.StoresFunction.PartNumberRequired() && req.Part == null)
                 {
                     throw new RequisitionException("Part number is required");
+                }
+
+                if (req.StoresFunction.NewPartNumberRequired())
+                {
+                    if (newPart == null)
+                    {
+                        throw new RequisitionException("New part number is required");
+                    }
+                    else if (req.Part?.ProductAnalysisCode != newPart.ProductAnalysisCode)
+                    {
+                        throw new RequisitionException($"Old part is for product group {req.Part?.ProductAnalysisCode} new part is for product group {newPart.ProductAnalysisCode}");
+                    }
                 }
 
                 await this.DoChecksForAutoHeader(req);
