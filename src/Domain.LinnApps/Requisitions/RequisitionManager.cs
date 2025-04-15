@@ -762,7 +762,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
                 line.TransactionDefinition.RequiresOntoTransactions)
             {
-                throw new CreateRequisitionException("Must specify moves onto for transaction");
+                throw new CreateRequisitionException($"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
             }
 
             return line;

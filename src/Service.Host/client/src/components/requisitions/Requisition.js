@@ -148,6 +148,11 @@ function Requisition({ creating }) {
     useEffect(
         () => () => {
             dispatch({ type: 'clear' });
+            // clearAuthoriseResult();
+            // clearBookResult();
+            // clearReqResult();
+            // clearValidation();
+            // clearUpdateResult();
         },
         []
     );
