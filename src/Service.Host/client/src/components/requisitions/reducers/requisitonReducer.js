@@ -76,7 +76,7 @@ function reducer(state, action) {
                     newState.toState = action.payload.newValue?.defaultToState;
                 }
 
-                // set header from / to state if their is only one possibility for the given stores function
+                // set header from / to state if there is only one possibility for the given stores function
                 if (action.payload.newValue.transactionTypes?.length === 1) {
                     if (!action.payload.newValue?.defaultFromState) {
                         newState.fromState =
