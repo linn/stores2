@@ -73,6 +73,10 @@ function Requisition({ creating }) {
             fetchReq(reqNumber);
         }
 
+        if (creating) {
+            fetchReq(null, '/application-state');
+        }
+
         fetchFunctionCodes();
         setHasFetched(reqNumber ?? 1);
     }
@@ -143,6 +147,7 @@ function Requisition({ creating }) {
     const cancelHref = utilities.getHref(formState, 'cancel');
     const bookHref = utilities.getHref(formState, 'book');
     const authoriseHref = utilities.getHref(formState, 'authorise');
+    const reverseHref = utilities.getHref(formState, 'create-reverse');
 
     useEffect(
         () => () => {
@@ -548,11 +553,15 @@ function Requisition({ creating }) {
                                     <Grid size={2}>
                                         <Dropdown
                                             fullWidth
-                                            items={['Y', 'N']}
-                                            value={formState.reversed}
+                                            items={[
+                                                { id: 'Y', displayText: 'Yes' },
+                                                { id: 'N', displayText: 'No ' }
+                                            ]}
+                                            value={formState.isReversed}
                                             onChange={() => {}}
                                             label="Reversed"
-                                            propertyName="reversed"
+                                            disabled
+                                            propertyName="isReversed"
                                         />
                                     </Grid>
                                     <BookedBy
@@ -681,6 +690,33 @@ function Requisition({ creating }) {
                                 />
                             </Grid>
                             <Grid size={2}>
+                                <Dropdown
+                                    fullWidth
+                                    allowNoValue={false}
+                                    disabled={!reverseHref || !creating}
+                                    onChange={handleHeaderFieldChange}
+                                    items={[
+                                        { id: 'Y', displayText: 'Yes' },
+                                        { id: 'N', displayText: 'No ' }
+                                    ]}
+                                    value={formState.isReverseTransaction}
+                                    label="Reverse"
+                                    propertyName="isReverseTransaction"
+                                />
+                            </Grid>
+                            <Grid size={2}>
+                                {shouldRender(null, false) && (
+                                    <InputField
+                                        fullWidth
+                                        value={formState.originalReqNumber}
+                                        onChange={() => {}}
+                                        disabled
+                                        label="Original Req No"
+                                        propertyName="originalReqNumber"
+                                    />
+                                )}
+                            </Grid>
+                            <Grid size={2}>
                                 {shouldRender(() => !!cancelHref, false) && (
                                     <Button
                                         disabled={
@@ -696,7 +732,7 @@ function Requisition({ creating }) {
                                     </Button>
                                 )}
                             </Grid>
-                            <Grid size={6} />
+                            <Grid size={2} />
                             <DepartmentNominal
                                 departmentCode={formState.department?.departmentCode}
                                 departmentDescription={formState.department?.description}
