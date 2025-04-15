@@ -7,11 +7,15 @@ function reducer(state, action) {
             // this action type is for updating the entire state of the form,
             // e.g. to reflect an API result from an update or similar
             const newState = action.payload;
-            if (action.payload.workStationCode) {
+            if (newState.workStationCode) {
                 newState.document1Details = { workStationCode: action.payload.workStationCode };
             }
 
-            return newState;
+            if (newState.reqNumber) {
+                return newState;
+            } else {
+                return { ...state, links: newState.links };
+            }
         }
         case 'load_create': {
             // this action type initialses the state for when creating a new record
@@ -21,6 +25,8 @@ function reducer(state, action) {
                 dateBooked: null,
                 lines: [],
                 cancelled: 'N',
+                isReverseTransaction: 'N',
+                isReversed: 'N',
                 createdByName: action.payload.userName
             };
         }

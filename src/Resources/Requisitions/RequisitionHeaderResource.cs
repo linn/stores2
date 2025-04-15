@@ -66,6 +66,8 @@
         
         public string IsReversed { get; set; }
 
+        public string IsReverseTransaction { get; set; }
+
         public bool? RequiresAuthorisation { get; set; }
 
         public int? AuthorisedBy { get; set; }
@@ -105,5 +107,7 @@
         public string FromCategory { get; set; }
         
         public string ToCategory { get; set; }
+  
+        public int? OriginalReqNumber { get; set; }
     }
 }

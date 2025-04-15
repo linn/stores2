@@ -448,6 +448,7 @@
             e.Property(r => r.UnitOfMeasure).HasColumnName("UNIT_OF_MEASURE").HasMaxLength(14);
             e.Property(r => r.Document2).HasColumnName("DOCUMENT_2");
             e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
+            e.Property(r => r.OriginalReqNumber).HasColumnName("ORIG_REQ_NUMBER");
             e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
         }
 
