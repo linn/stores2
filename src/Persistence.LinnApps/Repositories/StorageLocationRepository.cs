@@ -40,6 +40,7 @@
                 .Include(loc => loc.StorageArea)
                 .Include(loc => loc.AuditedBy)
                 .Include(loc => loc.AuditedByDepartment)
+                .Include(loc => loc.StorageType)
                 .FirstOrDefaultAsync(loc => loc.LocationId == key);
             return result;
         }

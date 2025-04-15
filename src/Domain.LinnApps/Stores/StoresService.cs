@@ -71,6 +71,7 @@
                 {
                     return new ProcessResult(false, "Only inspected stock can be placed on this location");
                 }
+
                 if (stateAllowedAtLocation == "Q" && state.State == "STORES")
                 {
                     return new ProcessResult(false, "Only uninspected/failed stock can be placed on this location");
@@ -97,7 +98,7 @@
                 if (isKardexMove)
                 {
                     // ok to mix parts if location has no StorageType, so skip following checks if so
-                    if (!string.IsNullOrEmpty(location.StorageTypeCode)) 
+                    if (location.StorageType != null) 
                     {
                         var otherPartsAtLocation =
                             await this.stockLocatorRepository
@@ -110,15 +111,15 @@
                         // otherwise if different part(s) are at this location, cannot mix
                         if (otherPartsAtLocation.Any())
                         {
-                            return new ProcessResult(
-                                false, 
-                                $"Part {otherPartsAtLocation.First().PartNumber} already at this location");
+                            var msg = $"Part {otherPartsAtLocation.First().PartNumber} already at this location. "
+                                      + $"Cannot mix parts since kardex location has storage type {location.StorageType.StorageTypeCode}";
+
+                            return new ProcessResult(false, msg);
                         }
                     }
                 }
             }
-          
-
+            
             return new ProcessResult(true, $"Part {part.PartNumber} is valid for this location");
         }
 

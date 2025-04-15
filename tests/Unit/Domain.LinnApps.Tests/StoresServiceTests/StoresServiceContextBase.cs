@@ -37,7 +37,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
         {
             this.StockService = Substitute.For<IStockService>();
             this.Part = new Part { PartNumber = "P1" };
-            this.Location = new StorageLocation { LocationId = 123, LocationCode = "LOC"};
+            this.Location = new StorageLocation { LocationId = 123, LocationCode = "LOC" };
             this.Pallet = new StoresPallet();
             this.OnToState = new StockState();
             this.StoresTransactionStateRepository = Substitute.For<IRepository<StoresTransactionState, StoresTransactionStateKey>>();
