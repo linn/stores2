@@ -3,8 +3,6 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Amazon.Runtime;
-
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
