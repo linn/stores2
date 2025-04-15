@@ -734,13 +734,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (req.StoresFunction.NewPartNumberRequired())
                 {
-                    if (newPart == null)
+                    var checkPartNumberChange = this.storesService.ValidPartNumberChange(part, newPart);
+                    if (!checkPartNumberChange.Success)
                     {
-                        throw new RequisitionException("New part number is required");
-                    }
-                    else if (req.Part?.ProductAnalysisCode != newPart.ProductAnalysisCode)
-                    {
-                        throw new RequisitionException($"Old part is for product group {req.Part?.ProductAnalysisCode} new part is for product group {newPart.ProductAnalysisCode}");
+                        throw new RequisitionException(checkPartNumberChange.Message);
                     }
                 }
 

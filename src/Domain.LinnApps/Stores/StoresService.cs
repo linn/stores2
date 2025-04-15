@@ -5,9 +5,11 @@
 
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Org.BouncyCastle.Ocsp;
 
     public class StoresService : IStoresService 
     {
@@ -179,6 +181,28 @@
             }
             
             return new ProcessResult(true, $"Order {orderNumber} is valid for part {orderLine}");
+        }
+
+        public ProcessResult ValidPartNumberChange(Part part, Part newPart)
+        {
+            // logic from STORES_OO_VALIDATE.VALID_PART_NUMBER_CHANGE
+
+            if (part == null)
+            {
+                return new ProcessResult(false, "Part number change requires old part");
+            }
+
+            if (newPart == null)
+            {
+                return new ProcessResult(false, "Part number change requires new part");
+            }
+
+            if (part.ProductAnalysisCode != newPart.ProductAnalysisCode)
+            {
+                return new ProcessResult(false, $"Old part is for product group {part.ProductAnalysisCode} new part is for product group {newPart.ProductAnalysisCode}");
+            }
+
+            return new ProcessResult(true, $"Part number can be changed from ${part.PartNumber} to ${newPart.PartNumber}");
         }
     }
 }

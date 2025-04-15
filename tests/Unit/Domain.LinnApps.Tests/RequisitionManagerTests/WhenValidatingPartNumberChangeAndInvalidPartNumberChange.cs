@@ -12,7 +12,7 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingPartNumberChangeAndNoNewPartNumber : ContextBase
+    public class WhenValidatingPartNumberChangeAndInvalidPartNumberChange : ContextBase
     {
         private Func<Task> action;
 
@@ -29,6 +29,7 @@
             this.PalletRepository.FindByIdAsync(365).Returns(new StoresPallet());
             this.PalletRepository.FindByIdAsync(1000).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("ADIKT").Returns(new Part { PartNumber = "ADIKT", ProductAnalysisCode = "ADIKT" });
+            this.PartRepository.FindByIdAsync("KEEL").Returns(new Part { PartNumber = "KEEL", ProductAnalysisCode = "LP12" });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "MY LOVELY STOCK"));
             this.StockPoolRepository.FindByIdAsync("LOAN POOL").Returns(new StockPool());
             this.StockService.ValidStockLocation(null, 365, Arg.Any<string>(), Arg.Any<decimal>(), Arg.Any<string>())
@@ -38,6 +39,7 @@
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
+            this.StoresService.ValidPartNumberChange(Arg.Any<Part>(), Arg.Any<Part>()).Returns(new ProcessResult(false, "Invalid part number change"));
             this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.PartNumberChange.FunctionCode,
@@ -48,7 +50,7 @@
                 "0000000480",
                 null,
                 partNumber: "ADIKT",
-                newPartNumber: null,
+                newPartNumber: "KEEL",
                 fromState: "STORES",
                 fromStockPool: "LOAN POOL",
                 fromPalletNumber: 365,
@@ -63,7 +65,7 @@
         public async Task ShouldThrowCorrectException()
         {
             await this.action.Should().ThrowAsync<RequisitionException>()
-                .WithMessage("New part number is required");
+                .WithMessage("Invalid part number change");
         }
     }
 }
