@@ -122,6 +122,16 @@
                 context.BatchRef,
                 context.BatchDate);
 
+            if (context.Function.FunctionCode == "PARTNO CH")
+            {
+                // just for the magical part number change
+                var newPart = await this.partRepository.FindByIdAsync(context.NewPartNumber);
+                if (newPart != null)
+                {
+                    req.NewPart = newPart;
+                }
+            }
+
             await this.repository.AddAsync(req);
 
             if (req.Document1Name == "WO" && req.Document1.HasValue)

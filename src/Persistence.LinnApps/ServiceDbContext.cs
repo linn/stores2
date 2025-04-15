@@ -449,6 +449,7 @@
             e.Property(r => r.Document2).HasColumnName("DOCUMENT_2");
             e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
             e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.HasOne(r => r.NewPart).WithMany().HasForeignKey("NEW_PART_NUMBER");
         }
 
         private static void BuildRequisitionHistory(ModelBuilder builder)

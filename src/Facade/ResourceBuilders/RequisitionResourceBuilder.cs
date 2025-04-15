@@ -90,7 +90,14 @@
                            WorkStationCode = header.WorkStationCode,
                            FromCategory = header.FromCategory,
                            ToCategory = header.ToCategory,
-                           Links = this.BuildLinks(header, claims?.ToList()).ToArray()
+                           NewPart = header.NewPart == null
+                               ? null
+                               : new PartResource
+                               {
+                                   PartNumber = header.NewPart.PartNumber,
+                                   Description = header.NewPart.Description
+                               },
+                Links = this.BuildLinks(header, claims?.ToList()).ToArray()
                         };
         }
 

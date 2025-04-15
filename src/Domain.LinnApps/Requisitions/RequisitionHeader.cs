@@ -102,6 +102,8 @@
 
         public string WorkStationCode { get; set; }
 
+        public Part NewPart { get; set; }
+
         protected RequisitionHeader()
         {
         }

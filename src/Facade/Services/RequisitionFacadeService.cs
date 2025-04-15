@@ -199,6 +199,7 @@
                              fromLocationCode: resource.FromLocationCode, 
                              toLocationCode: resource.ToLocationCode, 
                              partNumber: resource.Part?.PartNumber, 
+                             newPartNumber: resource.NewPart?.PartNumber,
                              quantity: resource.Quantity,
                              fromState: resource.FromState,
                              toState: resource.ToState,
