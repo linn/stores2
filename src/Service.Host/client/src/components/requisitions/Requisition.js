@@ -157,6 +157,7 @@ function Requisition({ creating }) {
 
     useEffect(() => {
         if (creating && !hasLoadedDefaultState && userNumber) {
+            setHasFetched(false);
             setHasLoadedDefaultState(true);
             const defaults = { userNumber, userName: name };
             dispatch({
@@ -416,11 +417,10 @@ function Requisition({ creating }) {
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
-    // todo - move to dedicated file
     const debouncedFormState = useDebounceValue(formState);
 
     useEffect(() => {
-        if (!debouncedFormState) return;
+        if (!debouncedFormState || debouncedFormState.reqNumber) return;
         clearValidation();
         setValidated(false);
         validateReq(null, debouncedFormState, false);
@@ -446,15 +446,6 @@ function Requisition({ creating }) {
         }
 
         return '';
-    };
-
-    const clearResults = () => {
-        clearUpdateResult();
-        clearAuthoriseResult();
-        clearBookResult();
-        clearReqResult();
-        clearCancelResult();
-        clearValidation();
     };
 
     return (
@@ -483,7 +474,8 @@ function Requisition({ creating }) {
                             variant="outlined"
                             onClick={() => {
                                 const defaults = { userNumber, userName: name };
-                                clearResults();
+                                clearValidation();
+                                clearReqResult();
                                 dispatch({
                                     type: 'load_create',
                                     payload: defaults
