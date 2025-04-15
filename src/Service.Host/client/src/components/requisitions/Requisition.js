@@ -14,7 +14,8 @@ import {
     ErrorCard,
     Search,
     SaveBackCancelButtons,
-    utilities
+    utilities,
+    CreateButton
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -114,7 +115,7 @@ function Requisition({ creating }) {
         clearPostResult: clearValidation,
         postResult: validationSuccess,
         cancelRequest: cancelValidation
-    } = usePost(`${itemTypes.requisitions.url}/validate`, true, true);
+    } = usePost(`${itemTypes.requisitions.url}/validate`, true, false);
 
     useEffect(() => {
         if (validationSuccess) {
@@ -423,7 +424,7 @@ function Requisition({ creating }) {
         if (!debouncedFormState) return;
         clearValidation();
         setValidated(false);
-        validateReq(null, debouncedFormState);
+        validateReq(null, debouncedFormState, false);
 
         return () => cancelValidation();
     }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
@@ -460,13 +461,16 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={12}>
+                <Grid size={10}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={1}>
+                    <CreateButton createUrl="/requisitions/create" />
                 </Grid>
                 {functionCodeError && (
                     <Grid size={12}>
