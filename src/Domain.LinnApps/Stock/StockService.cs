@@ -1,8 +1,9 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
-    using System.Linq;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
+
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
 
