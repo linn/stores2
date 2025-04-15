@@ -14,8 +14,7 @@ import {
     ErrorCard,
     Search,
     SaveBackCancelButtons,
-    utilities,
-    CreateButton
+    utilities
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -148,11 +147,6 @@ function Requisition({ creating }) {
     useEffect(
         () => () => {
             dispatch({ type: 'clear' });
-            // clearAuthoriseResult();
-            // clearBookResult();
-            // clearReqResult();
-            // clearValidation();
-            // clearUpdateResult();
         },
         []
     );
@@ -475,7 +469,22 @@ function Requisition({ creating }) {
                     </Typography>
                 </Grid>
                 <Grid size={1}>
-                    <CreateButton createUrl="/requisitions/create" />
+                    {!creating && (
+                        <Button
+                            variant="outlined"
+                            onClick={() => {
+                                const defaults = { userNumber, userName: name };
+
+                                dispatch({
+                                    type: 'load_create',
+                                    payload: defaults
+                                });
+                                navigate('/requisitions/create');
+                            }}
+                        >
+                            Create New
+                        </Button>
+                    )}
                 </Grid>
                 {functionCodeError && (
                     <Grid size={12}>
