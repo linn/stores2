@@ -448,6 +448,15 @@ function Requisition({ creating }) {
         return '';
     };
 
+    const clearResults = () => {
+        clearUpdateResult();
+        clearAuthoriseResult();
+        clearBookResult();
+        clearReqResult();
+        clearCancelResult();
+        clearValidation();
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false} title="Req Ut">
             <Grid container spacing={3}>
@@ -474,7 +483,7 @@ function Requisition({ creating }) {
                             variant="outlined"
                             onClick={() => {
                                 const defaults = { userNumber, userName: name };
-
+                                clearResults();
                                 dispatch({
                                     type: 'load_create',
                                     payload: defaults
