@@ -1,10 +1,10 @@
-﻿using FluentAssertions;
-using Linn.Stores2.Domain.LinnApps.Parts;
-using NUnit.Framework;
-using System;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPartNumberChangeTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPartNumberChangeTests
 {
+    using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using NUnit.Framework;
+    using System;
+
     public class WhenPriceDiffIsTooMuch: ContextBase
     {
         [SetUp]
