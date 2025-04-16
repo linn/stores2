@@ -162,6 +162,7 @@
                     resource.BatchRef,
                     string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
                     resource.Document1Line,
+                    resource.NewPart?.PartNumber,
                     resource.Lines.Select(BuildLineCandidateFromResource),
                     resource.IsReverseTransaction,
                     resource.OriginalReqNumber);
@@ -201,6 +202,7 @@
                              fromLocationCode: resource.FromLocationCode, 
                              toLocationCode: resource.ToLocationCode, 
                              partNumber: resource.Part?.PartNumber, 
+                             newPartNumber: resource.NewPart?.PartNumber,
                              quantity: resource.Quantity,
                              fromState: resource.FromState,
                              toState: resource.ToState,

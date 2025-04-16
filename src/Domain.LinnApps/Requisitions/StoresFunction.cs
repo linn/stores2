@@ -85,13 +85,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public bool PartNumberRequired() => this.PartSource != "N";
 
+        public bool NewPartNumberRequired() => this.FunctionCode == "PARTNO CH";
+
         public bool AutomaticFunctionType() => this.FunctionType == "A";
 
         public bool FunctionAvailable() => this.FunctionAvailableFlag == "Y";
 
         public Nominal GetNominal()
         {
-            if (this.TransactionsTypes != null)
+            // for some reason PARTNO CH gets this wrong wanting to default nom to Stock Adjustments
+            if (this.TransactionsTypes != null && this.FunctionCode != "PARTNO CH")
             {
                 return this.TransactionsTypes.FirstOrDefault(t => t.TransactionDefinition?.GetNominal() != null)
                     ?.TransactionDefinition.GetNominal();

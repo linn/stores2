@@ -42,6 +42,10 @@
                     AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode), 
                     Arg.Any<List<string>>())
                 .Returns(true);
+            this.AuthorisationService.HasPermissionFor(
+                    AuthorisedActions.ReverseRequisition,
+                    Arg.Any<List<string>>())
+                .Returns(true);
 
             await this.Sut.Create(this.RequisitionCreationContext);
         }

@@ -120,7 +120,7 @@ function Requisition({ creating }) {
         clearPostResult: clearValidation,
         postResult: validationSuccess,
         cancelRequest: cancelValidation
-    } = usePost(`${itemTypes.requisitions.url}/validate`, true, true);
+    } = usePost(`${itemTypes.requisitions.url}/validate`, true, false);
 
     useEffect(() => {
         if (validationSuccess) {
@@ -150,6 +150,7 @@ function Requisition({ creating }) {
     const bookHref = utilities.getHref(formState, 'book');
     const authoriseHref = utilities.getHref(formState, 'authorise');
     const reverseHref = utilities.getHref(formState, 'create-reverse');
+    const createHref = utilities.getHref(formState, 'create');
 
     useEffect(
         () => () => {
@@ -164,6 +165,7 @@ function Requisition({ creating }) {
 
     useEffect(() => {
         if (creating && !hasLoadedDefaultState && userNumber) {
+            setHasFetched(false);
             setHasLoadedDefaultState(true);
             const defaults = { userNumber, userName: name };
             dispatch({
@@ -427,14 +429,13 @@ function Requisition({ creating }) {
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
-    // todo - move to dedicated file
     const debouncedFormState = useDebounceValue(formState);
 
     useEffect(() => {
-        if (!debouncedFormState) return;
+        if (!debouncedFormState || debouncedFormState.reqNumber) return;
         clearValidation();
         setValidated(false);
-        validateReq(null, debouncedFormState);
+        validateReq(null, debouncedFormState, false);
 
         return () => cancelValidation();
     }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
@@ -460,7 +461,7 @@ function Requisition({ creating }) {
     };
 
     return (
-        <Page homeUrl={config.appRoot} showAuthUi={false} title="Reqs">
+        <Page homeUrl={config.appRoot} showAuthUi={false} title="Req Ut">
             <Grid container spacing={3}>
                 {cancelDialogVisible && (
                     <CancelWithReasonDialog
@@ -471,13 +472,33 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={12}>
+                <Grid size={10}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={2}>
+                    {!creating && (
+                        <Button
+                            disabled={!createHref}
+                            variant="outlined"
+                            onClick={() => {
+                                const defaults = { userNumber, userName: name };
+                                clearValidation();
+                                clearReqResult();
+                                dispatch({
+                                    type: 'load_create',
+                                    payload: defaults
+                                });
+                                navigate('/requisitions/create');
+                            }}
+                        >
+                            Create New
+                        </Button>
+                    )}
                 </Grid>
                 {functionCodeError && (
                     <Grid size={12}>
@@ -824,6 +845,8 @@ function Requisition({ creating }) {
                             <PartNumberQuantity
                                 partNumber={formState.part?.partNumber}
                                 partDescription={formState.part?.description}
+                                partNumberProperty="partNumber"
+                                partDescriptionProperty="partDescription"
                                 showQuantity
                                 quantity={formState.quantity}
                                 setPart={
@@ -855,6 +878,38 @@ function Requisition({ creating }) {
                                     formState.storesFunction?.partNumberRequired
                                 }
                             />
+                            {formState.storesFunction?.code === 'PARTNO CH' && (
+                                <PartNumberQuantity
+                                    partNumber={formState.newPart?.partNumber}
+                                    partDescription={formState.newPart?.description}
+                                    partNumberProperty="newPartNumber"
+                                    partDescriptionProperty="newPartDescription"
+                                    partLabel="New Part"
+                                    showQuantity={false}
+                                    setPart={newPart => {
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: {
+                                                fieldName: 'newPart',
+                                                newValue: newPart
+                                            }
+                                        });
+
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: {
+                                                fieldName: 'newPartNumber',
+                                                newValue: newPart?.partNumber
+                                            }
+                                        });
+                                    }}
+                                    disabled={!creating}
+                                    shouldRender={
+                                        formState.storesFunction &&
+                                        formState.storesFunction?.code === 'PARTNO CH'
+                                    }
+                                />
+                            )}
                             <StockOptions
                                 fromState={formState.fromState}
                                 fromStockPool={formState.fromStockPool}

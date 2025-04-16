@@ -7,14 +7,13 @@
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
     using NSubstitute;
 
     using NUnit.Framework;
 
-    public class WhenNoPrivilege : ContextBase
+    public class WhenNoReversePrivilege : ContextBase
     {
         private Func<Task> action;
 
@@ -23,14 +22,18 @@
         {
             this.RequisitionCreationContext = new RequisitionCreationContext
                                                   {
-                                                      Function = new StoresFunction("MOVE"),
+                                                      Function = TestData.FunctionCodes.TestFunctionCodes.BookWorksOrder,
                                                       ToState = "S1",
                                                       PartNumber = "PART",
-                                                      CreatedByUserNumber = 123
+                                                      CreatedByUserNumber = 123,
+                                                      IsReverseTransaction = "Y",
+                                                      OriginalReqNumber = 249678845
                                                   };
             this.AuthorisationService.HasPermissionFor(
                     AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode),
                     Arg.Any<List<string>>())
+                .Returns(true); 
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.ReverseRequisition, Arg.Any<List<string>>())
                 .Returns(false);
 
             this.action = () => this.Sut.Create(this.RequisitionCreationContext);
@@ -40,7 +43,7 @@
         public async Task ShouldThrowUnauthorised()
         {
             await this.action.Should().ThrowAsync<UnauthorisedActionException>()
-                .WithMessage("You are not authorised to raise MOVE");
+                .WithMessage("You are not authorised to reverse requisitions");
         }
     }
 }

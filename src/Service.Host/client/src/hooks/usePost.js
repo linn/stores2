@@ -54,6 +54,7 @@ function usePost(url, requiresAuth = false, redirectOnSuccess = false) {
                     const result = await response.json();
                     setPostResult(result);
                     if (redirectOnSuccess) {
+                        setPostResult(null);
                         navigate(utilities.getSelfHref(result));
                     }
                 } else {

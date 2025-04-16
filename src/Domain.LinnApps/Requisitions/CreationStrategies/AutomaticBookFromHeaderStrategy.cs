@@ -62,6 +62,13 @@
                 throw new UnauthorisedActionException($"You are not authorised to raise {context.Function.FunctionCode}");
             }
 
+            if (context.IsReverseTransaction == "Y" && !this.authorisationService.HasPermissionFor(
+                    AuthorisedActions.ReverseRequisition,
+                    privilegesList))
+            {
+                throw new UnauthorisedActionException($"You are not authorised to reverse requisitions");
+            }
+
             await this.requisitionManager.Validate(
                 context.CreatedByUserNumber,
                 context.Function.FunctionCode,
@@ -87,6 +94,7 @@
                 context.BatchRef,
                 context.BatchDate,
                 context.Document1Line,
+                context.NewPartNumber,
                 null,
                 context.IsReverseTransaction,
                 context.OriginalReqNumber);
@@ -129,6 +137,16 @@
                 null,
                 context.IsReverseTransaction,
                 context.OriginalReqNumber);
+
+            if (context.Function.NewPartNumberRequired())
+            {
+                // just for the magical part number change
+                var newPart = await this.partRepository.FindByIdAsync(context.NewPartNumber);
+                if (newPart != null)
+                {
+                    req.NewPart = newPart;
+                }
+            }
 
             await this.repository.AddAsync(req);
 

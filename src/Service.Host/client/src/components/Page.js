@@ -33,7 +33,8 @@ function Page({
     showRequestErrors = false,
     homeUrl = null,
     showBreadcrumbs = true,
-    showAuthUi = true
+    showAuthUi = true,
+    title = null
 }) {
     const navigate = useNavigate();
     const location = useLocation();
@@ -49,6 +50,15 @@ function Page({
             });
         }
     }, [requestErrors, enqueueSnackbar, showRequestErrors]);
+
+    useEffect(() => {
+        if (title) {
+            document.title = title;
+        }
+        return () => {
+            document.title = 'Stores2';
+        };
+    }, [title]);
 
     const auth = useAuth();
 

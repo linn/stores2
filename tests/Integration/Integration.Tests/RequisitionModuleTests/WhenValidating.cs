@@ -77,6 +77,7 @@
                 null,
                 null,
                 null,
+                null,
                 Arg.Any<IEnumerable<LineCandidate>>(),
                 null,
                 null)

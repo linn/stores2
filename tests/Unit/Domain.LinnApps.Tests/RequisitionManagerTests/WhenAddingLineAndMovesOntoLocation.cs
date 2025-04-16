@@ -49,22 +49,22 @@
                 this.nominal);
             this.part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
+            var loc = new StorageLocation(
+                111,
+                "E-L-1",
+                "Desc",
+                new StorageSite(),
+                new StorageArea(),
+                new AccountingCompany(),
+                "Y",
+                null,
+                "N",
+                "A",
+                "A",
+                null,
+                null);
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
-                .Returns(
-                    new StorageLocation(
-                        111,
-                        "E-L-1",
-                        "Desc",
-                        new StorageSite(),
-                        new StorageArea(),
-                        new AccountingCompany(),
-                        "Y",
-                        null,
-                        "N",
-                        "A",
-                        "A",
-                        null,
-                        null));
+                .Returns(loc);
             this.line = new LineCandidate
             {
                 LineNumber = 1,
@@ -110,7 +110,10 @@
                 this.nominal.NominalCode,
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
-
+            var state = new StockState("STORES", "DESC");
+            this.StateRepository.FindByIdAsync("STORES").Returns(state);
+            this.StoresService.ValidOntoLocation(this.part, loc, null, state)
+                .Returns(new ProcessResult(true, string.Empty));
             this.ReqStoredProcedures.InsertReqOntos(
                 Arg.Any<int>(),
                 10,

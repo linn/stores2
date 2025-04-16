@@ -449,5 +449,52 @@
                     }
                 }
             };
+
+        public static readonly StoresFunction PartNumberChange =
+            new StoresFunction("PARTNO CH")
+            {
+                Description = "ADJUST PART NUMBER DOWN AND NEW PART NUMBER UP",
+                FunctionType = "A",
+                ToLocationRequired = "O",
+                FromLocationRequired = "O",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "Y",
+                LinesRequired = "N",
+                ManualPickRequired = "M",
+                PartSource = "IP",
+                ToStateRequired = "O",
+                ToStockPoolRequired = "O",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "PARTNO CH",
+                        TransactionDefinition = TestTransDefs.StockToAdjust,
+                        TransactionCode = TestTransDefs.StockToAdjust.TransactionCode,
+                        Seq = 1
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "PARTNO CH",
+                        TransactionDefinition = TestTransDefs.QCToAdjust,
+                        TransactionCode = TestTransDefs.QCToAdjust.TransactionCode,
+                        Seq = 2
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "PARTNO CH",
+                        TransactionDefinition = TestTransDefs.AdjustToQC,
+                        TransactionCode = TestTransDefs.AdjustToQC.TransactionCode,
+                        Seq = 3
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "PARTNO CH",
+                        TransactionDefinition = TestTransDefs.AdjustToStock,
+                        TransactionCode = TestTransDefs.AdjustToStock.TransactionCode,
+                        Seq = 4
+                    }
+                }
+            };
     }
 }

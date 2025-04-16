@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Stores
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -17,16 +18,20 @@
         
         private readonly IRepository<StoresBudget, int> storesBudgetRepository;
 
+        private readonly IRepository<StockLocator, int> stockLocatorRepository;
+
         // This service is intended for stores_oo replacement methods that are not
         // suitable to be written in the requisition class itself
         public StoresService(
             IStockService stockService,
             IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository,
-            IRepository<StoresBudget, int> storesBudgetRepository)
+            IRepository<StoresBudget, int> storesBudgetRepository,
+            IRepository<StockLocator, int> stockLocatorRepository)
         {
             this.stockService = stockService;
             this.storesTransactionStateRepository = storesTransactionStateRepository;
             this.storesBudgetRepository = storesBudgetRepository;
+            this.stockLocatorRepository = stockLocatorRepository;
         }
 
         public async Task<ProcessResult> ValidOntoLocation(
@@ -60,13 +65,14 @@
                 }
             }
 
-            if (!string.IsNullOrEmpty(stateAllowedAtLocation) && state != null && stateAllowedAtLocation != "A")
+            if (!string.IsNullOrEmpty(stateAllowedAtLocation) && stateAllowedAtLocation != "A")
             {
                 if (stateAllowedAtLocation == "I" && (state.State == "QC" || state.State == "FAIL"))
                 {
                     return new ProcessResult(false, "Only inspected stock can be placed on this location");
                 }
-                else if (stateAllowedAtLocation == "Q" && state.State == "STORES")
+
+                if (stateAllowedAtLocation == "Q" && state.State == "STORES")
                 {
                     return new ProcessResult(false, "Only uninspected/failed stock can be placed on this location");
                 }
@@ -83,6 +89,37 @@
                 }
             }
 
+            // check valid kardex move
+            if (location != null && !string.IsNullOrEmpty(location.LocationCode))
+            {
+                var isKardexMove = Enumerable.Range(1, 5)
+                    .Select(i => $"E-K{i}")
+                    .Any(prefix => location.LocationCode.StartsWith(prefix, StringComparison.OrdinalIgnoreCase));
+                if (isKardexMove)
+                {
+                    // ok to mix parts if location has no StorageType, so skip following checks if so
+                    if (location.StorageType != null) 
+                    {
+                        var otherPartsAtLocation =
+                            await this.stockLocatorRepository
+                                .FilterByAsync(
+                                x => 
+                                    x.Quantity > 0
+                                    && x.PartNumber != part.PartNumber
+                                    && x.LocationId == location.LocationId);
+
+                        // otherwise if different part(s) are at this location, cannot mix
+                        if (otherPartsAtLocation.Any())
+                        {
+                            var msg = $"Part {otherPartsAtLocation.First().PartNumber} already at this location. "
+                                      + $"Cannot mix parts since kardex location has storage type {location.StorageType.StorageTypeCode}";
+
+                            return new ProcessResult(false, msg);
+                        }
+                    }
+                }
+            }
+            
             return new ProcessResult(true, $"Part {part.PartNumber} is valid for this location");
         }
 
@@ -179,6 +216,52 @@
             }
             
             return new ProcessResult(true, $"Order {orderNumber} is valid for part {orderLine}");
+        }
+
+        public ProcessResult ValidPartNumberChange(Part part, Part newPart)
+        {
+            // logic from STORES_OO_VALIDATE.VALID_PART_NUMBER_CHANGE
+
+            if (part == null)
+            {
+                return new ProcessResult(false, "Part number change requires old part");
+            }
+
+            if (!part.IsLive())
+            {
+                return new ProcessResult(false, $"Old part number {part.PartNumber} is not live");
+            }
+
+            if (newPart == null)
+            {
+                return new ProcessResult(false, "Part number change requires new part");
+            }
+
+            if (!newPart.IsLive())
+            {
+                return new ProcessResult(false, $"New part number {newPart.PartNumber} is not live");
+            }
+
+            if (part.ProductAnalysisCode != newPart.ProductAnalysisCode)
+            {
+                return new ProcessResult(false, $"Old part is for product group {part.ProductAnalysisCode} new part is for product group {newPart.ProductAnalysisCode}");
+            }
+
+            if (part.IsBoardPartNumber() && part.BoardNumber() != newPart.BoardNumber())
+            {
+                return new ProcessResult(false, $"Old part {part.PartNumber} is a different board from {newPart.PartNumber}");
+            }
+
+            // here is the line for STORES_OO_VALIDATE that says the difference is 10% but actual values are more generous
+            // if not ( v_new_price / v_old_price between 0.6 and 1.7) then
+            // g_error := 'Cannot price change between parts with more than 10% difference in price';
+            var priceRatio = (part.BaseUnitPrice ?? 0) / (newPart.BaseUnitPrice ?? 1);
+            if (priceRatio < 0.6m || priceRatio > 1.7m)
+            {
+                return new ProcessResult(false, $"Price change of {Math.Round(priceRatio * 100)}% not allowed");
+            }
+
+            return new ProcessResult(true, $"Part number can be changed from ${part.PartNumber} to ${newPart.PartNumber}");
         }
     }
 }

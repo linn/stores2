@@ -1,7 +1,6 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
 import { InputField, Search } from '@linn-it/linn-form-components-library';
-import PropTypes from 'prop-types';
 import itemTypes from '../../../itemTypes';
 import useSearch from '../../../hooks/useSearch';
 
@@ -13,7 +12,10 @@ function PartNumberQuantity({
     disabled = false,
     setQuantity = null,
     showQuantity = true,
-    shouldRender = true
+    shouldRender = true,
+    partNumberProperty = 'partNumber',
+    partDescriptionProperty = 'partDescription',
+    partLabel = 'Part'
 }) {
     const {
         search: searchParts,
@@ -30,11 +32,11 @@ function PartNumberQuantity({
         <>
             <Grid size={2}>
                 <Search
-                    propertyName="partNumber"
-                    label="Part"
+                    propertyName={partNumberProperty}
+                    label={partLabel}
                     resultsInModal
                     resultLimit={100}
-                    helperText="<Enter> to search part. <Tab> to select"
+                    helperText={disabled ? '' : '<Enter> to search part. <Tab> to select'}
                     value={partNumber}
                     disabled={disabled || !setPart}
                     handleValueChange={(_, newVal) => {
@@ -61,10 +63,10 @@ function PartNumberQuantity({
                 <InputField
                     fullWidth
                     value={partDescription}
-                    disabled={disabled}
+                    disabled
                     onChange={() => {}}
                     label="Desc"
-                    propertyName="partDescription"
+                    propertyName={partDescriptionProperty}
                 />
             </Grid>
             {showQuantity ? (
@@ -84,25 +86,5 @@ function PartNumberQuantity({
         </>
     );
 }
-
-PartNumberQuantity.propTypes = {
-    partNumber: PropTypes.string,
-    partDescription: PropTypes.string,
-    setPart: PropTypes.func.isRequired,
-    disabled: PropTypes.bool,
-    quantity: PropTypes.number,
-    setQuantity: PropTypes.func.isRequired,
-    showQuantity: PropTypes.bool,
-    shouldRender: PropTypes.bool
-};
-
-PartNumberQuantity.defaultProps = {
-    partNumber: null,
-    partDescription: null,
-    quantity: null,
-    showQuantity: true,
-    shouldRender: true,
-    disabled: false
-};
 
 export default PartNumberQuantity;

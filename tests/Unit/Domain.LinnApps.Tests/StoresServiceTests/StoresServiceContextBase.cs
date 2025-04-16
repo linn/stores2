@@ -30,20 +30,24 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
         
         protected IRepository<StoresBudget, int> StoresBudgetRepository { get; private set; }
 
+        protected IRepository<StockLocator, int> StockLocatorRepository { get; private set; }
+
         [SetUp]
         public void SetUpServiceContext()
         {
             this.StockService = Substitute.For<IStockService>();
             this.Part = new Part { PartNumber = "P1" };
-            this.Location = new StorageLocation { LocationId = 123 };
+            this.Location = new StorageLocation { LocationId = 123, LocationCode = "LOC" };
             this.Pallet = new StoresPallet();
             this.OnToState = new StockState();
             this.StoresTransactionStateRepository = Substitute.For<IRepository<StoresTransactionState, StoresTransactionStateKey>>();
             this.StoresBudgetRepository = Substitute.For<IRepository<StoresBudget, int>>();
+            this.StockLocatorRepository = Substitute.For<IRepository<StockLocator, int>>();
             this.Sut = new StoresService(
                 this.StockService, 
                 this.StoresTransactionStateRepository, 
-                this.StoresBudgetRepository);
+                this.StoresBudgetRepository,
+                this.StockLocatorRepository);
         }
     }
 }

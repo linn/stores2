@@ -9,6 +9,7 @@
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
@@ -34,14 +35,12 @@
                 {
                     Qty = 1,
                     LineNumber = 1,
-                    TransactionDefinition = "DEF",
+                    TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
                     PartNumber = "PART",
                 },
-                Function = new StoresFunction("LDREQ")
-                {
-                    DepartmentNominalRequired = "Y"
-                }
+                Function = TestFunctionCodes.LinnDeptReq
             };
+
             var employee = new Employee();
             var dept = new Department();
             var nom = new Nominal();
@@ -52,7 +51,8 @@
                     AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
                     Arg.Any<IEnumerable<string>>())
                 .Returns(true);
-
+            this.StoresTransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
+                .Returns(TestTransDefs.StockToLinnDept);
 
             this.RequisitionManager.Validate(
                 Arg.Any<int>(),

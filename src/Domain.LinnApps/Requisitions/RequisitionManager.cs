@@ -564,6 +564,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string batchRef = null,
             DateTime? batchDate = null,
             int? document1Line = null,
+            string newPartNumber = null,
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
             int? originalDocumentNumber = null)
@@ -663,8 +664,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException($"PO {document1Number} is FIL Cancelled!");
                 }
 
-                var poRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
-                if (batchRef != poRef)
+                var orderRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
+                if (batchRef != orderRef)
                 {
                     throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");
@@ -736,6 +737,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("Part number is required");
                 }
 
+                if (req.StoresFunction.NewPartNumberRequired())
+                {
+                    var newPart = !string.IsNullOrEmpty(newPartNumber) ? await this.partRepository.FindByIdAsync(newPartNumber) : null;
+                    var checkPartNumberChange = this.storesService.ValidPartNumberChange(part, newPart);
+                    if (!checkPartNumberChange.Success)
+                    {
+                        throw new RequisitionException(checkPartNumberChange.Message);
+                    }
+                }
+
                 await this.DoChecksForAutoHeader(req);
             }
 
@@ -751,11 +762,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var transactionDefinition = !string.IsNullOrEmpty(candidate?.TransactionDefinition)
                 ? await this.transactionDefinitionRepository.FindByIdAsync(candidate.TransactionDefinition) : null;
 
-            if (candidate.Moves != null && candidate.Moves.Any())
-            {
-                await this.CheckMoves(candidate.PartNumber, candidate.Moves.ToList());
-            }
-
             var line = new RequisitionLine(
                 0,
                 candidate.LineNumber,
@@ -765,6 +771,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 candidate.Document1,
                 candidate.Document1Line.GetValueOrDefault(),
                 candidate.Document1Type);
+
+            if (candidate.Moves != null && candidate.Moves.Any())
+            {
+                await this.CheckMoves(candidate.PartNumber, candidate.Moves.ToList());
+            }
+
+            if ((candidate.Moves == null || !candidate.Moves.Any()) &&
+                line.TransactionDefinition.RequiresOntoTransactions)
+            {
+                throw new CreateRequisitionException($"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
+            }
 
             return line;
         }
@@ -973,6 +990,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         {
                             throw new InsertReqOntosException($"Location {m.ToLocation} not found");
                         }
+
+                        var part = await this.partRepository.FindByIdAsync(partNumber);
+                        var state = await this.stateRepository.FindByIdAsync(m.ToState);
+
+                        DoProcessResultCheck(await this.storesService.ValidOntoLocation(part, toLocation, null, state));
 
                         m.ToLocationId = toLocation.LocationId;
                     }

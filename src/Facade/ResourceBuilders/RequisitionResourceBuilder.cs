@@ -98,6 +98,13 @@
                            WorkStationCode = header.WorkStationCode,
                            FromCategory = header.FromCategory,
                            ToCategory = header.ToCategory,
+                           NewPart = header.NewPart == null
+                               ? null
+                               : new PartResource
+                               {
+                                   PartNumber = header.NewPart.PartNumber,
+                                   Description = header.NewPart.Description
+                               },
                            IsReverseTransaction = header.IsReverseTransaction,
                            OriginalReqNumber = header.OriginalReqNumber,
                            Links = this.BuildLinks(header, claims?.ToList()).ToArray()
