@@ -872,7 +872,7 @@ function Requisition({ creating }) {
                                         payload: { fieldName: 'quantity', newValue: newQty }
                                     })
                                 }
-                                disabled={!creating}
+                                disabled={!creating || formState.isReverseTransaction == 'Y'}
                                 shouldRender={
                                     formState.storesFunction &&
                                     formState.storesFunction?.partNumberRequired

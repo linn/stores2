@@ -53,6 +53,21 @@ function reducer(state, action) {
                     document2Name: state.storesFunction?.document1Name,
                     document2: action.payload.newValue
                 };
+            } else if (action.payload.fieldName === 'isReverseTransaction') {
+                if (action.payload.newValue === 'N') {
+                    return {
+                        ...state,
+                        originalReqNumber: null,
+                        quantity: null,
+                        reference: null,
+                        isReverseTransaction: action.payload.newValue
+                    };
+                } else {
+                    return {
+                        ...state,
+                        isReverseTransaction: action.payload.newValue
+                    };
+                }
             } else if (action.payload.fieldName === 'storesFunction') {
                 let newState = {
                     ...state,
