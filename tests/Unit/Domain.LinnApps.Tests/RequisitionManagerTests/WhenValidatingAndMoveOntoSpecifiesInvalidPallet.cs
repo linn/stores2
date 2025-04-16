@@ -7,9 +7,11 @@
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
@@ -29,17 +31,24 @@
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.LinnDeptReq.FunctionCode)
                 .Returns(TestFunctionCodes.LinnDeptReq);
+            var part = new Part { PartNumber = "PART" };
+            this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
+                .Returns(TestTransDefs.StockToLinnDept);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Now });
             this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.LinnDeptReq.FunctionCode,
-                "F",
+                "O",
                 null,
                 null,
                 "1607",
                 "2963",
                 new LineCandidate
                     {
+                        Qty = 1,
+                        PartNumber = part.PartNumber,
+                        TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
                         Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 666 } }
                     });
         }

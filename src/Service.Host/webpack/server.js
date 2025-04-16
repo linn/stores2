@@ -10,7 +10,15 @@ const devServer = new Server(
         static: {
             directory: path.join(__dirname, '../')
         },
-        client: { overlay: false },
+        client: {
+            overlay: false,
+            webSocketURL: {
+                hostname: '127.0.0.1',
+                port: 3000,
+                pathname: '/ws',
+                protocol: 'ws'
+            }
+        },
         devMiddleware: {
             index: true,
             mimeTypes: { 'text/html': ['phtml'] },

@@ -118,6 +118,7 @@ function DepartmentNominal({
                     fullWidth
                     value={departmentDescription}
                     onChange={() => {}}
+                    disabled
                     label="Desc"
                     propertyName="departmentDescription"
                 />
@@ -156,6 +157,7 @@ function DepartmentNominal({
                     value={nominalDescription}
                     onChange={() => {}}
                     label="Desc"
+                    disabled
                     propertyName="nominalDescription"
                 />
             </Grid>

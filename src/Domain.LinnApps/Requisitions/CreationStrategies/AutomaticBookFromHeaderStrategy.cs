@@ -86,7 +86,8 @@
                 context.ToState,
                 context.BatchRef,
                 context.BatchDate,
-                context.Document1Line);
+                context.Document1Line,
+                context.NewPartNumber);
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);

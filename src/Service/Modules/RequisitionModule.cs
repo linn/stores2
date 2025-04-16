@@ -30,6 +30,7 @@
             app.MapGet("/requisitions/stores-functions/{code}", this.GetStoresFunction);
             app.MapPost("/requisitions/validate", this.Validate);
             app.MapGet("/requisitions/{reqNumber:int}", this.GetById);
+            app.MapGet("/requisitions/application-state", this.GetRequisitionApplicationState);
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
         }
@@ -122,6 +123,18 @@
                 resource.ReqNumber,
                 req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
                 req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task GetRequisitionApplicationState(
+            HttpRequest req,
+            HttpResponse res,
+            IRequisitionFacadeService service)
+        {
+            var privileges = req.HttpContext.GetPrivileges();
+
+            var result = service.GetApplicationState(privileges);
+
+            await res.Negotiate(result);
         }
 
         private async Task Create(

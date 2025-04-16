@@ -9,6 +9,7 @@
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
+    using Linn.Stores2.Service.ResultHandlers;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +28,7 @@
                 .AddSingleton<IHandler, JsonResultHandler<RequisitionHeaderResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<RequisitionHeaderResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StorageTypeResource>>()
+                .AddTransient<IHandler, RequisitionApplicationStateResultHandler>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageTypeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<PartsStorageTypeResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PartsStorageTypeResource>>>()

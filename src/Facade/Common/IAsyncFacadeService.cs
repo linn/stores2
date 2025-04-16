@@ -46,7 +46,7 @@
             int? userNumber = null,
             bool reloadEntity = false);
 
-        Task<IResult<TResource>> GetApplicationState(IEnumerable<string> privileges = null);
+        IResult<TResource> GetApplicationState(IEnumerable<string> privileges = null);
 
         Task<IResult<TResource>> DeleteOrObsolete(
             TKey id, 

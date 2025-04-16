@@ -373,6 +373,9 @@
             q.Property(d => d.RequiresAuth).HasColumnName("REQUIRES_AUTH").HasMaxLength(1);
             q.Property(d => d.AuthOpCode).HasColumnName("AUTH_OP_CODE").HasMaxLength(10);
             q.Property(d => d.InspectedState).HasColumnName("INSPECTED_STATE").HasMaxLength(10);
+            q.Property(d => d.FromState).HasColumnName("FROM_STATE").HasMaxLength(10);
+            q.Property(d => d.OntoCategory).HasColumnName("ONTO_CATEGORY").HasMaxLength(10);
+            q.Property(d => d.FromCategory).HasColumnName("FROM_CATEGORY").HasMaxLength(10);
             q.HasMany(t => t.StoresTransactionPostings).WithOne().HasForeignKey(p => p.TransactionCode);
             q.HasMany(t => t.StoresTransactionStates).WithOne().HasForeignKey(p => p.TransactionCode);
         }
@@ -424,6 +427,7 @@
             e.HasOne(r => r.BookedBy).WithMany().HasForeignKey("BOOKED_BY");
             e.Property(r => r.DateBooked).HasColumnName("DATE_BOOKED");
             e.Property(r => r.IsReversed).HasColumnName("REVERSED").HasMaxLength(1);
+            e.Property(r => r.Booked).HasColumnName("BOOKED").HasMaxLength(1);
             e.Property(r => r.IsReverseTransaction).HasColumnName("REVERSE_TRANS").HasMaxLength(1);
             e.HasMany(r => r.CancelDetails).WithOne().HasForeignKey(c => c.ReqNumber);
             e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
@@ -449,6 +453,7 @@
             e.Property(r => r.UnitOfMeasure).HasColumnName("UNIT_OF_MEASURE").HasMaxLength(14);
             e.Property(r => r.Document2).HasColumnName("DOCUMENT_2");
             e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
+            e.Property(r => r.OriginalReqNumber).HasColumnName("ORIG_REQ_NUMBER");
             e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.HasOne(r => r.NewPart).WithMany().HasForeignKey("NEW_PART_NUMBER");
         }
@@ -487,6 +492,7 @@
             r.HasMany(t => t.Moves).WithOne().HasForeignKey(reqMove => new { reqMove.ReqNumber, reqMove.LineNumber });
             r.Property(l => l.Cancelled).HasColumnName("CANCELLED").HasMaxLength(1);
             r.Property(l => l.DateBooked).HasColumnName("DATE_BOOKED");
+            r.Property(l => l.Booked).HasColumnName("BOOKED").HasMaxLength(1);
             r.HasMany(l => l.StoresBudgets).WithOne(a => a.RequisitionLine)
                 .HasForeignKey(p => new { p.RequisitionNumber, p.LineNumber });
             r.HasMany(l => l.NominalAccountPostings).WithOne()

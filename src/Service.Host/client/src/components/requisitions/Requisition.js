@@ -73,6 +73,10 @@ function Requisition({ creating }) {
             fetchReq(reqNumber);
         }
 
+        if (creating) {
+            fetchReq(null, '/application-state');
+        }
+
         fetchFunctionCodes();
         setHasFetched(reqNumber ?? 1);
     }
@@ -114,7 +118,7 @@ function Requisition({ creating }) {
         clearPostResult: clearValidation,
         postResult: validationSuccess,
         cancelRequest: cancelValidation
-    } = usePost(`${itemTypes.requisitions.url}/validate`, true, true);
+    } = usePost(`${itemTypes.requisitions.url}/validate`, true, false);
 
     useEffect(() => {
         if (validationSuccess) {
@@ -143,6 +147,7 @@ function Requisition({ creating }) {
     const cancelHref = utilities.getHref(formState, 'cancel');
     const bookHref = utilities.getHref(formState, 'book');
     const authoriseHref = utilities.getHref(formState, 'authorise');
+    const reverseHref = utilities.getHref(formState, 'create-reverse');
 
     useEffect(
         () => () => {
@@ -157,6 +162,7 @@ function Requisition({ creating }) {
 
     useEffect(() => {
         if (creating && !hasLoadedDefaultState && userNumber) {
+            setHasFetched(false);
             setHasLoadedDefaultState(true);
             const defaults = { userNumber, userName: name };
             dispatch({
@@ -416,14 +422,13 @@ function Requisition({ creating }) {
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
 
-    // todo - move to dedicated file
     const debouncedFormState = useDebounceValue(formState);
 
     useEffect(() => {
-        if (!debouncedFormState) return;
+        if (!debouncedFormState || debouncedFormState.reqNumber) return;
         clearValidation();
         setValidated(false);
-        validateReq(null, debouncedFormState);
+        validateReq(null, debouncedFormState, false);
 
         return () => cancelValidation();
     }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
@@ -449,7 +454,7 @@ function Requisition({ creating }) {
     };
 
     return (
-        <Page homeUrl={config.appRoot} showAuthUi={false} title="Reqs">
+        <Page homeUrl={config.appRoot} showAuthUi={false} title="Req Ut">
             <Grid container spacing={3}>
                 {cancelDialogVisible && (
                     <CancelWithReasonDialog
@@ -460,13 +465,32 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={12}>
+                <Grid size={10}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={1}>
+                    {!creating && (
+                        <Button
+                            variant="outlined"
+                            onClick={() => {
+                                const defaults = { userNumber, userName: name };
+                                clearValidation();
+                                clearReqResult();
+                                dispatch({
+                                    type: 'load_create',
+                                    payload: defaults
+                                });
+                                navigate('/requisitions/create');
+                            }}
+                        >
+                            Create New
+                        </Button>
+                    )}
                 </Grid>
                 {functionCodeError && (
                     <Grid size={12}>
@@ -529,11 +553,15 @@ function Requisition({ creating }) {
                                     <Grid size={2}>
                                         <Dropdown
                                             fullWidth
-                                            items={['Y', 'N']}
-                                            value={formState.reversed}
+                                            items={[
+                                                { id: 'Y', displayText: 'Yes' },
+                                                { id: 'N', displayText: 'No ' }
+                                            ]}
+                                            value={formState.isReversed}
                                             onChange={() => {}}
                                             label="Reversed"
-                                            propertyName="reversed"
+                                            disabled
+                                            propertyName="isReversed"
                                         />
                                     </Grid>
                                     <BookedBy
@@ -662,6 +690,33 @@ function Requisition({ creating }) {
                                 />
                             </Grid>
                             <Grid size={2}>
+                                <Dropdown
+                                    fullWidth
+                                    allowNoValue={false}
+                                    disabled={!reverseHref || !creating}
+                                    onChange={handleHeaderFieldChange}
+                                    items={[
+                                        { id: 'Y', displayText: 'Yes' },
+                                        { id: 'N', displayText: 'No ' }
+                                    ]}
+                                    value={formState.isReverseTransaction}
+                                    label="Reverse"
+                                    propertyName="isReverseTransaction"
+                                />
+                            </Grid>
+                            <Grid size={2}>
+                                {shouldRender(null, false) && (
+                                    <InputField
+                                        fullWidth
+                                        value={formState.originalReqNumber}
+                                        onChange={() => {}}
+                                        disabled
+                                        label="Original Req No"
+                                        propertyName="originalReqNumber"
+                                    />
+                                )}
+                            </Grid>
+                            <Grid size={2}>
                                 {shouldRender(() => !!cancelHref, false) && (
                                     <Button
                                         disabled={
@@ -677,7 +732,7 @@ function Requisition({ creating }) {
                                     </Button>
                                 )}
                             </Grid>
-                            <Grid size={6} />
+                            <Grid size={2} />
                             <DepartmentNominal
                                 departmentCode={formState.department?.departmentCode}
                                 departmentDescription={formState.department?.description}
