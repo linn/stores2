@@ -832,6 +832,8 @@ function Requisition({ creating }) {
                             <PartNumberQuantity
                                 partNumber={formState.part?.partNumber}
                                 partDescription={formState.part?.description}
+                                partNumberProperty="partNumber"
+                                partDescriptionProperty="partDescription"
                                 showQuantity
                                 quantity={formState.quantity}
                                 setPart={
@@ -863,6 +865,38 @@ function Requisition({ creating }) {
                                     formState.storesFunction?.partNumberRequired
                                 }
                             />
+                            {formState.storesFunction?.code === 'PARTNO CH' && (
+                                <PartNumberQuantity
+                                    partNumber={formState.newPart?.partNumber}
+                                    partDescription={formState.newPart?.description}
+                                    partNumberProperty="newPartNumber"
+                                    partDescriptionProperty="newPartDescription"
+                                    partLabel="New Part"
+                                    showQuantity={false}
+                                    setPart={newPart => {
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: {
+                                                fieldName: 'newPart',
+                                                newValue: newPart
+                                            }
+                                        });
+
+                                        dispatch({
+                                            type: 'set_header_value',
+                                            payload: {
+                                                fieldName: 'newPartNumber',
+                                                newValue: newPart?.partNumber
+                                            }
+                                        });
+                                    }}
+                                    disabled={!creating}
+                                    shouldRender={
+                                        formState.storesFunction &&
+                                        formState.storesFunction?.code === 'PARTNO CH'
+                                    }
+                                />
+                            )}
                             <StockOptions
                                 fromState={formState.fromState}
                                 fromStockPool={formState.fromStockPool}

@@ -25,5 +25,7 @@
         ProcessResult ValidStockPool(Part part, StockPool stockPool);
 
         Task<ProcessResult> ValidPoQcBatch(string batchRef, int orderNumber, int orderLine);
+
+        ProcessResult ValidPartNumberChange(Part part, Part newPart);
     }
 }

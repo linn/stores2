@@ -86,7 +86,8 @@
                 context.ToState,
                 context.BatchRef,
                 context.BatchDate,
-                context.Document1Line);
+                context.Document1Line,
+                context.NewPartNumber);
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
@@ -121,6 +122,16 @@
                 context.FromState,
                 context.BatchRef,
                 context.BatchDate);
+
+            if (context.Function.NewPartNumberRequired())
+            {
+                // just for the magical part number change
+                var newPart = await this.partRepository.FindByIdAsync(context.NewPartNumber);
+                if (newPart != null)
+                {
+                    req.NewPart = newPart;
+                }
+            }
 
             await this.repository.AddAsync(req);
 

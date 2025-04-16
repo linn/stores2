@@ -104,6 +104,8 @@
 
         public string WorkStationCode { get; set; }
 
+        public Part NewPart { get; set; }
+		
         public int? OriginalReqNumber { get; set; }
 
         protected RequisitionHeader()

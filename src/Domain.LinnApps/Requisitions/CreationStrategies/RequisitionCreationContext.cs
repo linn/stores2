@@ -45,6 +45,8 @@
 
         public string PartNumber { get; set; }
 
+        public string NewPartNumber { get; set; }
+
         public decimal? Quantity { get; set; }
 
         public string FromState { get; set; }

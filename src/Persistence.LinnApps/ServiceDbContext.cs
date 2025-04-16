@@ -250,6 +250,7 @@
             e.Property(p => p.Id).HasColumnName("BRIDGE_ID");
             e.Property(p => p.Description).HasColumnName("DESCRIPTION").HasMaxLength(200);
             e.Property(p => p.RootProduct).HasColumnName("ROOT_PRODUCT").HasMaxLength(10);
+            e.Property(p => p.ProductAnalysisCode).HasColumnName("PRODUCT_ANALYSIS_CODE").HasMaxLength(10);
             e.Property(p => p.AccountingCompanyCode).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
             e.Property(p => p.StockControlled).HasColumnName("STOCK_CONTROLLED").HasMaxLength(1);
             e.Property(p => p.SafetyCriticalPart).HasColumnName("SAFETY_CRITICAL_PART").HasMaxLength(1);
@@ -454,6 +455,7 @@
             e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
             e.Property(r => r.OriginalReqNumber).HasColumnName("ORIG_REQ_NUMBER");
             e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.HasOne(r => r.NewPart).WithMany().HasForeignKey("NEW_PART_NUMBER");
         }
 
         private static void BuildRequisitionHistory(ModelBuilder builder)

@@ -66,6 +66,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string batchRef = null,
             DateTime? batchDate = null,
             int? document1Line = null,
+            string newPartNumber = null,
             IEnumerable<LineCandidate> lines = null);
 
         Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate);

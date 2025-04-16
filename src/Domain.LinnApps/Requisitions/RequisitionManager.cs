@@ -564,6 +564,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string batchRef = null,
             DateTime? batchDate = null,
             int? document1Line = null,
+            string newPartNumber = null,
             IEnumerable<LineCandidate> lines = null)
         {
             // just try and construct a req with a single line
@@ -727,6 +728,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (req.StoresFunction.PartNumberRequired() && req.Part == null)
                 {
                     throw new RequisitionException("Part number is required");
+                }
+
+                if (req.StoresFunction.NewPartNumberRequired())
+                {
+                    var newPart = !string.IsNullOrEmpty(newPartNumber) ? await this.partRepository.FindByIdAsync(newPartNumber) : null;
+                    var checkPartNumberChange = this.storesService.ValidPartNumberChange(part, newPart);
+                    if (!checkPartNumberChange.Success)
+                    {
+                        throw new RequisitionException(checkPartNumberChange.Message);
+                    }
                 }
 
                 await this.DoChecksForAutoHeader(req);

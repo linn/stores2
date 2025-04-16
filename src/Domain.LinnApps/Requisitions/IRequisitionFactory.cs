@@ -28,6 +28,7 @@
             string fromLocationCode = null,
             string toLocationCode = null,
             string partNumber = null,
+            string newPartNumber = null,
             decimal? quantity = null,
             string fromState = null,
             string toState = null,
