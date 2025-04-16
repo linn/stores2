@@ -43,23 +43,24 @@ namespace Linn.Stores2.TestData.Transactions
         public static readonly StoresTransactionDefinition StockToLinnDept =
             new StoresTransactionDefinition
                 {
-                TransactionCode = "STLDI",
-                Description = "From Transaction",
-                StockAllocations = "Y",
-                OntoTransactions = "N",
-                DecrementTransaction = "N",
-                TakePriceFrom = "P",
-                RequiresAuth = "Y",
-                AuthOpCode = "AUTH",
-                StoresTransactionPostings = new List<StoresTransactionPosting>
-                {
-                    new StoresTransactionPosting("STLDI", "C", null),
-                    new StoresTransactionPosting("STLDI", "D", null)
-                },
-                StoresTransactionStates = new List<StoresTransactionState>
-                {
-                    new StoresTransactionState("F", "LDSTR", "STORES")
-                }
+                    TransactionCode = "STLDI",
+                    Description = "From Transaction",
+                    StockAllocations = "Y",
+                    OntoTransactions = "N",
+                    DecrementTransaction = "N",
+                    TakePriceFrom = "P",
+                    RequiresAuth = "Y",
+                    AuthOpCode = "AUTH",
+                    FromState = "STORES",
+                    StoresTransactionPostings = new List<StoresTransactionPosting>
+                                                    {
+                                                        new StoresTransactionPosting("STLDI", "C", null),
+                                                        new StoresTransactionPosting("STLDI", "D", null)
+                                                    },
+                    StoresTransactionStates = new List<StoresTransactionState>
+                    {
+                        new StoresTransactionState("F", "LDSTR", "STORES")
+                    }
             };
 
         // used in BOOKWO function to decrement stock

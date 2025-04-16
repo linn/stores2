@@ -28,7 +28,7 @@
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
             this.Part = part;
-
+            this.Booked = "N";
             if (this.Part == null)
             {
                 throw new RequisitionException("Requisition line requires a part");
@@ -91,6 +91,8 @@
         public string Cancelled { get; protected set; }
 
         public DateTime? DateBooked { get; protected set; }
+
+        public string Booked { get; protected set; }
 
         public ICollection<RequisitionLinePosting> NominalAccountPostings { get; protected set; }
 

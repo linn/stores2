@@ -57,6 +57,8 @@
         public DateTime? DateBooked { get; protected set; }
         
         public Employee BookedBy { get; protected set; }
+
+        public string Booked { get; protected set; }
         
         public string IsReversed { get; protected set; }
         
@@ -139,6 +141,7 @@
             int? originalReqNumber = null)
         {
             this.ReqSource = "STORES2";
+            this.Booked = "N";
             this.CreatedBy = createdBy;
             this.Comments = comments;
             this.DateCreated = DateTime.Now;
@@ -171,7 +174,6 @@
             this.OriginalReqNumber = originalReqNumber;
             this.IsReverseTransaction = reverseTrans;
             this.IsReversed = "N";
-
             this.Lines = new List<RequisitionLine>();
 
             var errors = this.Validate().ToList();
@@ -510,11 +512,15 @@
             return null;
         }
 
-        public void SetStateAndCategory(string fromState, string toState, string toCategory)
+        public void SetStateAndCategory(string fromState, 
+                                        string toState, 
+                                        string toCategory = "FREE", 
+                                        string fromCategory = "FREE")
         {
             this.FromState = fromState;
             this.ToState = toState;
             this.ToCategory = toCategory;
+            this.FromCategory = fromCategory;
         }
     }
 }

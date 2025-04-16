@@ -82,6 +82,7 @@ function reducer(state, action) {
                     newState.toState = action.payload.newValue?.defaultToState;
                 }
 
+                // set header from / to state if there is only one possibility for the given stores function
                 if (action.payload.newValue.transactionTypes?.length === 1) {
                     if (!action.payload.newValue?.defaultFromState) {
                         newState.fromState =
@@ -127,8 +128,11 @@ function reducer(state, action) {
             const storesFunctionTransactions = state.storesFunction.transactionTypes;
             let lineTransaction = {};
             var transactionReqType = '';
+            var headerFromState = null;
+            var headerToState = null;
+            let lineTransactionType = null;
             if (state.reqType && storesFunctionTransactions) {
-                const lineTransactionType = storesFunctionTransactions.find(
+                lineTransactionType = storesFunctionTransactions.find(
                     x => x.reqType === state.reqType
                 );
                 if (lineTransactionType) {
@@ -139,7 +143,7 @@ function reducer(state, action) {
                     };
                 }
             } else if (storesFunctionTransactions && storesFunctionTransactions.length) {
-                const lineTransactionType = storesFunctionTransactions[0];
+                lineTransactionType = storesFunctionTransactions[0];
                 transactionReqType = lineTransactionType.reqType;
                 if (lineTransactionType) {
                     lineTransaction = {
@@ -149,6 +153,13 @@ function reducer(state, action) {
                     };
                 }
             }
+
+            headerFromState = lineTransactionType?.fromStates?.length
+                ? lineTransactionType.fromStates[0]
+                : null;
+            headerToState = lineTransactionType?.toStates?.length
+                ? lineTransactionType.fromStates[0]
+                : null;
 
             // use the next available line number
             const maxLineNumber = state.lines?.length
@@ -160,11 +171,13 @@ function reducer(state, action) {
             // but for now...
             newLine.document1Type = 'REQ';
             newLine.document1Line = newLine.lineNumber;
-
             return {
                 ...state,
                 reqType: state.reqType ?? transactionReqType,
-                lines: [...state.lines, newLine]
+                lines: [...state.lines, newLine],
+                // set header states if dictated by new line transaction type,
+                fromState: headerFromState ?? state.fromState,
+                toState: headerToState ?? state.toState
             };
         }
         case 'set_line_value':

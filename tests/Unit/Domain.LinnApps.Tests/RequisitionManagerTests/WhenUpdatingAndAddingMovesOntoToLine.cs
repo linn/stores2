@@ -2,11 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-
-    using FluentAssertions;
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -79,8 +76,24 @@
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
                 .Returns(TestTransDefs.LinnDeptToStock);
 
+            var loc = new StorageLocation { LocationCode = "LOC", LocationId = 567 };
+
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
-                .Returns(new StorageLocation { LocationCode = "LOC", LocationId = 567 });
+                .Returns(loc);
+
+            var toState = new StockState("S", "STATE");
+
+            this.StateRepository.FindByIdAsync(toState.State).Returns(toState);
+
+            this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
+                .Returns(loc);
+
+            this.StoresService
+                .ValidOntoLocation(
+                    Arg.Any<Part>(), 
+                    loc, 
+                    null, 
+                    toState).Returns(new ProcessResult(true, string.Empty));
 
             this.ReqStoredProcedures.InsertReqOntos(
                                         this.req.ReqNumber,

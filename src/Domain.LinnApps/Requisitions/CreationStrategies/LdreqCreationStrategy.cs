@@ -32,9 +32,8 @@
 
         private readonly IRepository<Nominal, string> nominalRepository;
 
-        // todo  - this will probably need renamed or refactored
-        // when it becomes clear some of this code will not be specifically tied
-        // to LDREQs
+        private readonly IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository;
+
         public LdreqCreationStrategy(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -44,7 +43,8 @@
             IRepository<Part, string> partRepository,
             IRepository<StorageLocation, int> storageLocationRepository,
             IRepository<Department, string> departmentRepository,
-            IRepository<Nominal, string> nominalRepository)
+            IRepository<Nominal, string> nominalRepository,
+            IRepository<StoresTransactionDefinition, string> transactionDefinitionRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -55,6 +55,7 @@
             this.logger = logger;
             this.departmentRepository = departmentRepository;
             this.nominalRepository = nominalRepository;
+            this.transactionDefinitionRepository = transactionDefinitionRepository;
         }
 
         public async Task<RequisitionHeader> Create(
@@ -133,6 +134,14 @@
             try
             {
                 await this.requisitionManager.AddRequisitionLine(req, context.FirstLineCandidate);
+
+                var transactionDefinition = await this.transactionDefinitionRepository
+                                                .FindByIdAsync(context.FirstLineCandidate.TransactionDefinition);
+                req.SetStateAndCategory(
+                    transactionDefinition.FromState, 
+                    transactionDefinition.InspectedState, 
+                    transactionDefinition.OntoCategory,
+                    transactionDefinition.FromCategory); 
             }
             catch (DomainException ex)
             {

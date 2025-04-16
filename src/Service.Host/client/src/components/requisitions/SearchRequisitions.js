@@ -76,7 +76,7 @@ function SearchRequisitions() {
     ];
 
     return (
-        <Page homeUrl={config.appRoot} showAuthUi={false}>
+        <Page homeUrl={config.appRoot} showAuthUi={false} title="Search Reqs">
             <Grid container spacing={3}>
                 <Grid size={11}>
                     <Typography variant="h4">View, Search, Create Requisitions</Typography>
