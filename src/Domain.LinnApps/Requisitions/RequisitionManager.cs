@@ -932,7 +932,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var salesPart = await this.salesProxy.GetSalesArticle(worksOrder.PartNumber);
-            if (salesPart != null && (salesPart.TypeOfSerialNumber == "S" || salesPart.TypeOfSerialNumber == "P1"
+            if (salesPart != null && isReverseTransaction != "Y"
+                                  && (salesPart.TypeOfSerialNumber == "S" || salesPart.TypeOfSerialNumber == "P1"
                                                                           || salesPart.TypeOfSerialNumber == "P2"))
             {
                 throw new CreateRequisitionException("You cannot book serial numbered parts in. Please use the relevant works order screen.");
