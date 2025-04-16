@@ -1,15 +1,14 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Stores
 {
+    using System;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using Org.BouncyCastle.Ocsp;
 
     public class StoresService : IStoresService 
     {
@@ -192,14 +191,38 @@
                 return new ProcessResult(false, "Part number change requires old part");
             }
 
+            if (!part.IsLive())
+            {
+                return new ProcessResult(false, $"Old part number {part.PartNumber} is not live");
+            }
+
             if (newPart == null)
             {
                 return new ProcessResult(false, "Part number change requires new part");
             }
 
+            if (!newPart.IsLive())
+            {
+                return new ProcessResult(false, $"New part number {newPart.PartNumber} is not live");
+            }
+
             if (part.ProductAnalysisCode != newPart.ProductAnalysisCode)
             {
                 return new ProcessResult(false, $"Old part is for product group {part.ProductAnalysisCode} new part is for product group {newPart.ProductAnalysisCode}");
+            }
+
+            if (part.IsBoardPartNumber() && part.BoardNumber() != newPart.BoardNumber())
+            {
+                return new ProcessResult(false, $"Old part {part.PartNumber} is a different board from {newPart.PartNumber}");
+            }
+
+            // here is the line for STORES_OO_VALIDATE that says the difference is 10% but actual values are more generous
+            // if not ( v_new_price / v_old_price between 0.6 and 1.7) then
+            // g_error := 'Cannot price change between parts with more than 10% difference in price';
+            var priceRatio = (part.BaseUnitPrice ?? 0) / (newPart.BaseUnitPrice ?? 1);
+            if (priceRatio < 0.6m || priceRatio > 1.7m)
+            {
+                return new ProcessResult(false, $"Price change of {Math.Round(priceRatio * 100)}% not allowed");
             }
 
             return new ProcessResult(true, $"Part number can be changed from ${part.PartNumber} to ${newPart.PartNumber}");

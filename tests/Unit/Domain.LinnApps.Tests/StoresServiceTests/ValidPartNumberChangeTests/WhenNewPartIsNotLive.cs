@@ -5,13 +5,13 @@
     using Linn.Stores2.Domain.LinnApps.Parts;
     using NUnit.Framework;
 
-    public class WhenDifferentProductAnalysisCodes : ContextBase
+    public class WhenNewPartIsNotLive : ContextBase
     {
         [SetUp]
         public void SetUp()
         {
-            this.Part = new Part { PartNumber = "ADIKT", DateLive = DateTime.Now, ProductAnalysisCode = "ADIKT" };
-            this.NewPart = new Part { PartNumber = "KEEL", DateLive = DateTime.Now, ProductAnalysisCode = "LP12" };
+            this.Part = new Part { PartNumber = "ADIKT", ProductAnalysisCode = "ADIKT", DateLive = DateTime.Now };
+            this.NewPart = new Part { PartNumber = "ADIKT/X", ProductAnalysisCode = "ADIKT" };
 
             this.Result = this.Sut.ValidPartNumberChange(this.Part, this.NewPart);
         }
@@ -20,7 +20,7 @@
         public void ShouldReturnFalse()
         {
             this.Result.Success.Should().BeFalse();
-            this.Result.Message.Should().Be($"Old part is for product group ADIKT new part is for product group LP12");
+            this.Result.Message.Should().Be("New part number ADIKT/X is not live");
         }
     }
 }

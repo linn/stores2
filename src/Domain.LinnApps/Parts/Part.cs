@@ -167,5 +167,19 @@
         public decimal? ResistorTolerance { get; set; }
 
         public bool IsFinishedGoods() => this.RawOrFinished == "F";
+
+        public bool IsBoardPartNumber() => this.PartNumber.StartsWith("PCAS") || this.PartNumber.StartsWith("PCSM");
+
+        public string BoardNumber()
+        {
+            if (this.IsBoardPartNumber())
+            {
+                return this.PartNumber.Substring(4, this.PartNumber.IndexOf("/") - 4).TrimStart();
+            }
+
+            return string.Empty;
+        }
+
+        public bool IsLive() => this.DateLive != null;
     }
 }
