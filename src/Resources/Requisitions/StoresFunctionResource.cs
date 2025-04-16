@@ -71,6 +71,10 @@
 
         public string ToStockPool { get; set; }
 
+        public string CanBeReversed { get; set; }
+
+        public string CanBeCancelled { get; set; }
+
         public IEnumerable<string> FromStates { get; set; }
 
         public IEnumerable<string> ToStates { get; set; }

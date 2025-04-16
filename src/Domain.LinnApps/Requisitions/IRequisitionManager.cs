@@ -66,7 +66,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string batchRef = null,
             DateTime? batchDate = null,
             int? document1Line = null,
-            IEnumerable<LineCandidate> lines = null);
+            IEnumerable<LineCandidate> lines = null,
+            string isReverseTransaction = "N",
+            int? originalDocumentNumber = null);
 
         Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate);
 

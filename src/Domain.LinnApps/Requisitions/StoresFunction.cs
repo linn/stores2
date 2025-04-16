@@ -65,6 +65,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string ToStockPool { get; set; }
 
+        public string CanBeReversed { get; set; }
+        
+        public string CanBeCancelled { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public string LinesRequired { get; set;  }

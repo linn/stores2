@@ -37,6 +37,7 @@ import PartNumberQuantity from './components/PartNumberQuantity';
 import StockOptions from './components/StockOptions';
 import Document1 from './components/Document1';
 import Document2 from './components/Document2';
+import PickRequisitionDialog from './PickRequisitionDialog';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -51,6 +52,7 @@ function Requisition({ creating }) {
     } = useGet(itemTypes.requisitions.url, true);
     const [hasFetched, setHasFetched] = useState(0);
     const [functionCodeError, setFunctionCodeError] = useState(null);
+    const [pickRequisitionDialogVisible, setPickRequisitionDialogVisible] = useState(false);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -390,6 +392,10 @@ function Requisition({ creating }) {
             payload: selected
         });
 
+        if (formState.isReverseTransaction === 'Y' && selected.orderNumber) {
+            setPickRequisitionDialogVisible(true);
+        }
+
         if (selected.batchRef) {
             dispatch({
                 type: 'set_header_value',
@@ -674,7 +680,11 @@ function Requisition({ creating }) {
                                 <Dropdown
                                     fullWidth
                                     allowNoValue={false}
-                                    disabled={!reverseHref || !creating}
+                                    disabled={
+                                        !reverseHref ||
+                                        !creating ||
+                                        formState.storesFunction?.canBeReversed !== 'Y'
+                                    }
                                     onChange={handleHeaderFieldChange}
                                     items={[
                                         { id: 'Y', displayText: 'Yes' },
@@ -686,7 +696,7 @@ function Requisition({ creating }) {
                                 />
                             </Grid>
                             <Grid size={2}>
-                                {shouldRender(null, false) && (
+                                {shouldRender(() => formState.isReverseTransaction === 'Y') && (
                                     <InputField
                                         fullWidth
                                         value={formState.originalReqNumber}
@@ -703,7 +713,8 @@ function Requisition({ creating }) {
                                         disabled={
                                             formState.cancelled === 'Y' ||
                                             formState.dateBooked ||
-                                            creating
+                                            creating ||
+                                            formState.storesFunction?.canBeCancelled !== 'Y'
                                         }
                                         variant="contained"
                                         sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
@@ -1039,6 +1050,20 @@ function Requisition({ creating }) {
                                     }}
                                 />
                             </Grid>
+                            {pickRequisitionDialogVisible && (
+                                <PickRequisitionDialog
+                                    open={pickRequisitionDialogVisible}
+                                    setOpen={setPickRequisitionDialogVisible}
+                                    documentNumber={formState.document1}
+                                    documentType={formState.document1Name}
+                                    handleSelect={reqDetails => {
+                                        dispatch({
+                                            type: 'set_reverse_details',
+                                            payload: reqDetails
+                                        });
+                                    }}
+                                />
+                            )}
                         </>
                     )}
             </Grid>

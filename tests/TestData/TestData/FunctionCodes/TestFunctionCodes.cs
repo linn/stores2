@@ -97,7 +97,8 @@
                 FunctionType = "A",
                 ManualPickRequired = "X",
                 PartSource = "WO",
-                ToStateRequired = "O"
+                ToStateRequired = "O",
+                CanBeReversed = "Y"
             };
 
         public static readonly StoresFunction BookFromSupplier =
@@ -387,6 +388,7 @@
                     ManualPickRequired = "M",
                     ToStateRequired = "O",
                     ToStockPoolRequired = "O",
+                    CanBeReversed = "N",
                     TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction

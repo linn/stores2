@@ -86,7 +86,10 @@
                 context.ToState,
                 context.BatchRef,
                 context.BatchDate,
-                context.Document1Line);
+                context.Document1Line,
+                null,
+                context.IsReverseTransaction,
+                context.OriginalReqNumber);
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
@@ -120,7 +123,12 @@
                 context.ToState,
                 context.FromState,
                 context.BatchRef,
-                context.BatchDate);
+                context.BatchDate,
+                null,
+                null,
+                null,
+                context.IsReverseTransaction,
+                context.OriginalReqNumber);
 
             await this.repository.AddAsync(req);
 
@@ -130,14 +138,17 @@
                 req.WorkStationCode = worksOrder.WorkStationCode;
                 req.FromCategory = req.StoresFunction.FromCategory;
 
-                await this.requisitionManager.AddPotentialMoveDetails(
-                    req.Document1Name,
-                    req.Document1.Value,
-                    req.Quantity,
-                    req.Part.PartNumber,
-                    req.CreatedBy.Id,
-                    req.ToLocation?.LocationId,
-                    req.ToPalletNumber);
+                if (req.IsReverseTransaction != "Y")
+                {
+                    await this.requisitionManager.AddPotentialMoveDetails(
+                        req.Document1Name,
+                        req.Document1.Value,
+                        req.Quantity,
+                        req.Part.PartNumber,
+                        req.CreatedBy.Id,
+                        req.ToLocation?.LocationId,
+                        req.ToPalletNumber);
+                }
             }
 
             await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);

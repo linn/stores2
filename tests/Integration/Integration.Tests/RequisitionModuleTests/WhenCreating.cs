@@ -54,11 +54,11 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                                     FromStockPool = "LINN"
                                 };
             this.RequisitionFactory.CreateRequisition(
-                Arg.Any<int>(), 
+                Arg.Any<int>(),
                 Arg.Any<IEnumerable<string>>(),
                 this.resource.StoresFunction.Code,
                 this.resource.ReqType,
-                null, 
+                null,
                 null,
                 null,
                 null,
@@ -66,30 +66,29 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                 this.resource.Department.DepartmentCode,
                 this.resource.Nominal.NominalCode,
                 Arg.Any<LineCandidate>(),
-                reference: null,
-                comments: null,
-                manualPick: null,
-                fromStockPool: this.resource.FromStockPool,
-                toStockPool: null,
-                fromPalletNumber: null,
-                toPalletNumber: null,
-                fromLocationCode: null,
-                toLocationCode: null,
-                partNumber: null,
-                quantity: null,
-                lines: Arg.Any<IEnumerable<LineCandidate>>()).Returns(
+                null,
+                null,
+                null,
+                this.resource.FromStockPool,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                lines: Arg.Any<IEnumerable<LineCandidate>>(),
+                isReverseTransaction: null).Returns(
                 new ReqWithReqNumber(
-                123,
-                new Employee(),
-                new StoresFunction
-                    {
-                        FunctionCode = this.resource.StoresFunction.Code
-                    },
-                "F",
-                123,
-                "REQ",
-                new Department { DepartmentCode = this.resource.Department.DepartmentCode },
-                new Nominal { NominalCode = this.resource.Nominal.NominalCode }));
+                    123,
+                    new Employee(),
+                    new StoresFunction { FunctionCode = this.resource.StoresFunction.Code },
+                    "F",
+                    123,
+                    "REQ",
+                    new Department { DepartmentCode = this.resource.Department.DepartmentCode },
+                    new Nominal { NominalCode = this.resource.Nominal.NominalCode }));
+
             this.Response = this.Client.PostAsJsonAsync("/requisitions", this.resource).Result;
         }
 

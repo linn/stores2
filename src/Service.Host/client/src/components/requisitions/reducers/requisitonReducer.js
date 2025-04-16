@@ -107,6 +107,18 @@ function reducer(state, action) {
 
             return { ...state, [action.payload.fieldName]: newValue };
         }
+        case 'set_reverse_details': {
+            if (action.payload.reqNumber) {
+                return {
+                    ...state,
+                    originalReqNumber: action.payload.reqNumber,
+                    quantity: action.payload.quantity * -1,
+                    reference: action.payload.reference
+                };
+            } else {
+                return { ...state, originalReqNumber: null, quantity: null, reference: null };
+            }
+        }
         case 'set_document1_details': {
             return { ...state, document1Details: action.payload };
         }

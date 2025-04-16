@@ -564,7 +564,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string batchRef = null,
             DateTime? batchDate = null,
             int? document1Line = null,
-            IEnumerable<LineCandidate> lines = null)
+            IEnumerable<LineCandidate> lines = null,
+            string isReverseTransaction = "N",
+            int? originalDocumentNumber = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
@@ -606,7 +608,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 toState,
                 fromState,
                 batchRef,
-                batchDate);
+                batchDate,
+                null,
+                null,
+                null,
+                isReverseTransaction ?? "N",
+                originalDocumentNumber);
 
             if (functionCode == "LOAN OUT")
             {
@@ -665,7 +672,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             } 
             else if (function.PartSource == "WO")
             {
-                await this.CheckValidWorksOrder(document1Number, part);
+                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction);
             }
             else if (function.PartSource == "C" && function.Document1Required())
             {
@@ -878,7 +885,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return code == "Y";
         }
 
-        private async Task CheckValidWorksOrder(int? document1Number, Part part)
+        private async Task CheckValidWorksOrder(int? document1Number, Part part, string isReverseTransaction)
         {
             var worksOrder = await this.documentProxy.GetWorksOrder(document1Number.GetValueOrDefault());
 
@@ -897,9 +904,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new CreateRequisitionException($"Works Order {document1Number} is for a different part.");
             }
 
-            if (worksOrder.Quantity == 0 || worksOrder.Quantity <= worksOrder.QuantityBuilt)
+            if ((worksOrder.Quantity == 0 || worksOrder.Quantity <= worksOrder.QuantityBuilt) && isReverseTransaction != "Y")
             {
                 throw new CreateRequisitionException($"There is nothing left to build on Works Order {document1Number}.");
+            }
+
+            if ((worksOrder.Quantity == 0 || worksOrder.QuantityBuilt == 0) && isReverseTransaction == "Y")
+            {
+                throw new CreateRequisitionException($"Nothing built on Works Order {document1Number} that can be reversed.");
             }
 
             var salesPart = await this.salesProxy.GetSalesArticle(worksOrder.PartNumber);
@@ -992,7 +1004,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException($"To Stock Pool {header.ToStockPool} does not exist");
             }
 
-            if (header.Part != null)
+            if (header.Part != null && header.IsReverseTransaction != "Y")
             {
                 DoProcessResultCheck(await this.storesService.ValidOntoLocation(
                     header.Part,

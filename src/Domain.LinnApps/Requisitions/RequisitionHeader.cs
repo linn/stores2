@@ -135,7 +135,7 @@
             string category = null,
             int? document2Number = null,
             string document2Type = null,
-            string reverseTrans = "N",
+            string isReverseTrans = "N",
             int? originalReqNumber = null)
         {
             this.ReqSource = "STORES2";
@@ -169,7 +169,7 @@
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
             this.OriginalReqNumber = originalReqNumber;
-            this.IsReverseTransaction = reverseTrans;
+            this.IsReverseTransaction = isReverseTrans;
             this.IsReversed = "N";
 
             this.Lines = new List<RequisitionLine>();
@@ -242,12 +242,22 @@
                 }
             }
 
-            if (this.StoresFunction.ToLocationRequired == "Y")
+            if (this.StoresFunction.ToLocationRequired == "Y" && this.IsReverseTransaction != "Y")
             {
                 if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
                 {
                     yield return $"To location or pallet required for: {this.StoresFunction.FunctionCode}";
                 }
+            }
+
+            if (this.IsReverseTransaction == "Y" && this.StoresFunction.CanBeReversed != "Y")
+            {
+                yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
+            }
+
+            if (this.IsReverseTransaction == "Y" && !this.OriginalReqNumber.HasValue)
+            {
+                yield return "You must specify a req number to reverse";
             }
 
             // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService

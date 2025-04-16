@@ -8,7 +8,7 @@
     using Linn.Stores2.TestData.FunctionCodes;
     using NUnit.Framework;
 
-    public class WhenCreatingAndNoToLocationOrPalletWhenRequiredByStoresFunction
+    public class WhenReversingButNoOriginalReqSpecified
     {
         private Action action;
 
@@ -17,7 +17,7 @@
         {
             this.action = () => _ = new RequisitionHeader(
                                     new Employee(),
-                                    TestFunctionCodes.SupplierKit,
+                                    TestFunctionCodes.BookWorksOrder,
                                     "F",
                                     123,
                                     null,
@@ -29,15 +29,17 @@
                                     fromState: "STATE",
                                     fromStockPool: "A",
                                     quantity: 10,
-                                    toPalletNumber: null,
-                                    fromPalletNumber: 123);
+                                    toPalletNumber: 1233,
+                                    fromPalletNumber: 123,
+                                    isReverseTrans: "Y",
+                                    originalReqNumber: null);
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: To location or pallet required for: SUKIT");
+                .WithMessage("Validation failed with the following errors: You must specify a req number to reverse");
         }
     }
 }
