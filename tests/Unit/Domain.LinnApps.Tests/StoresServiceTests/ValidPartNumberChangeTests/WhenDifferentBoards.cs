@@ -10,8 +10,18 @@
         [SetUp]
         public void SetUp()
         {
-            this.Part = new Part { PartNumber = "PCAS 100/L1R1", DateLive = DateTime.Now, ProductAnalysisCode = "ELECTRONIC" };
-            this.NewPart = new Part { PartNumber = "PCAS 656/L2R2", DateLive = DateTime.Now, ProductAnalysisCode = "ELECTRONIC" };
+            this.Part = new Part
+                            {
+                                PartNumber = "PCAS 100/L1R1",
+                                DateLive = DateTime.Now,
+                                ProductAnalysisCode = "ELECTRONIC"
+                            };
+            this.NewPart = new Part
+                               {
+                                   PartNumber = "PCAS 656/L2R2",
+                                   DateLive = DateTime.Now,
+                                   ProductAnalysisCode = "ELECTRONIC"
+                               };
 
             this.Result = this.Sut.ValidPartNumberChange(this.Part, this.NewPart);
         }

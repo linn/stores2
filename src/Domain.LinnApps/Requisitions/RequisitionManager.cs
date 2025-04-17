@@ -690,6 +690,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckDocumentLineForOverAndFullyBooked(req, document);
             }
 
+            if (req.IsReverseTransaction == "Y" && req.Quantity != null)
+            {
+                if (req.OriginalReqNumber == null)
+                {
+                    throw new CreateRequisitionException("An original req number must be supplied for a reverse");
+                }
+
+                DoProcessResultCheck(
+                    await this.storesService.ValidReverseQuantity(req.OriginalReqNumber.Value, req.Quantity.Value));
+            }
+
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C" && function.LinesRequired != "N")
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
@@ -739,12 +750,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (req.StoresFunction.NewPartNumberRequired())
                 {
-                    var newPart = !string.IsNullOrEmpty(newPartNumber) ? await this.partRepository.FindByIdAsync(newPartNumber) : null;
-                    var checkPartNumberChange = this.storesService.ValidPartNumberChange(part, newPart);
-                    if (!checkPartNumberChange.Success)
-                    {
-                        throw new RequisitionException(checkPartNumberChange.Message);
-                    }
+                    var newPart = !string.IsNullOrEmpty(newPartNumber)
+                                      ? await this.partRepository.FindByIdAsync(newPartNumber)
+                                      : null;
+                    DoProcessResultCheck(this.storesService.ValidPartNumberChange(part, newPart));
                 }
 
                 await this.DoChecksForAutoHeader(req);

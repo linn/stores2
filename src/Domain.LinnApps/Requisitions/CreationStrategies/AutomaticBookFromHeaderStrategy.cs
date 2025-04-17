@@ -66,7 +66,7 @@
                     AuthorisedActions.ReverseRequisition,
                     privilegesList))
             {
-                throw new UnauthorisedActionException($"You are not authorised to reverse requisitions");
+                throw new UnauthorisedActionException("You are not authorised to reverse requisitions");
             }
 
             await this.requisitionManager.Validate(
