@@ -20,18 +20,22 @@
 
         private readonly IRepository<StockLocator, int> stockLocatorRepository;
 
+        private readonly IRepository<RequisitionHeader, int> requisitionRepository;
+
         // This service is intended for stores_oo replacement methods that are not
         // suitable to be written in the requisition class itself
         public StoresService(
             IStockService stockService,
             IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository,
             IRepository<StoresBudget, int> storesBudgetRepository,
-            IRepository<StockLocator, int> stockLocatorRepository)
+            IRepository<StockLocator, int> stockLocatorRepository,
+            IRepository<RequisitionHeader, int> requisitionRepository)
         {
             this.stockService = stockService;
             this.storesTransactionStateRepository = storesTransactionStateRepository;
             this.storesBudgetRepository = storesBudgetRepository;
             this.stockLocatorRepository = stockLocatorRepository;
+            this.requisitionRepository = requisitionRepository;
         }
 
         public async Task<ProcessResult> ValidOntoLocation(
@@ -221,7 +225,6 @@
         public ProcessResult ValidPartNumberChange(Part part, Part newPart)
         {
             // logic from STORES_OO_VALIDATE.VALID_PART_NUMBER_CHANGE
-
             if (part == null)
             {
                 return new ProcessResult(false, "Part number change requires old part");
@@ -262,6 +265,30 @@
             }
 
             return new ProcessResult(true, $"Part number can be changed from ${part.PartNumber} to ${newPart.PartNumber}");
+        }
+
+        public async Task<ProcessResult> ValidReverseQuantity(int originalReqNumber, decimal quantity)
+        {
+            // stores_oo.validate_reverse_qty
+            if (quantity >= 0)
+            {
+                return new ProcessResult(false, "A reverse quantity must be negative");
+            }
+
+            var originalReq = await this.requisitionRepository.FindByIdAsync(originalReqNumber);
+            if (originalReq == null)
+            {
+                return new ProcessResult(false, $"Original requisition {originalReqNumber} does not exist");
+            }
+
+            if (originalReq.Quantity < quantity * -1)
+            {
+                return new ProcessResult(
+                    false,
+                    $"Cannot reverse qty {quantity}. Original req {originalReqNumber} was for only {originalReq.Quantity}.");
+            }
+
+            return new ProcessResult(true, $"Reverse quantity of {quantity} for req {originalReqNumber} is valid");
         }
     }
 }

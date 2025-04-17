@@ -3,6 +3,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
 
@@ -32,6 +33,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
 
         protected IRepository<StockLocator, int> StockLocatorRepository { get; private set; }
 
+        protected IRepository<RequisitionHeader, int> RequisitionRepository { get; private set; }
+
         [SetUp]
         public void SetUpServiceContext()
         {
@@ -43,11 +46,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
             this.StoresTransactionStateRepository = Substitute.For<IRepository<StoresTransactionState, StoresTransactionStateKey>>();
             this.StoresBudgetRepository = Substitute.For<IRepository<StoresBudget, int>>();
             this.StockLocatorRepository = Substitute.For<IRepository<StockLocator, int>>();
+            this.RequisitionRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
+
             this.Sut = new StoresService(
                 this.StockService, 
                 this.StoresTransactionStateRepository, 
                 this.StoresBudgetRepository,
-                this.StockLocatorRepository);
+                this.StockLocatorRepository,
+                this.RequisitionRepository);
         }
     }
 }

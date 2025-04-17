@@ -27,5 +27,8 @@
         Task<ProcessResult> ValidPoQcBatch(string batchRef, int orderNumber, int orderLine);
 
         ProcessResult ValidPartNumberChange(Part part, Part newPart);
+
+        // stores_oo.validate_reverse_qty
+        Task<ProcessResult> ValidReverseQuantity(int originalReqNumber, decimal quantity);
     }
 }

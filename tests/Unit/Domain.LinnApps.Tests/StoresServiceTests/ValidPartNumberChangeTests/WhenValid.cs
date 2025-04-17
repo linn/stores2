@@ -10,8 +10,20 @@
         [SetUp]
         public void SetUp()
         {
-            this.Part = new Part { PartNumber = "ADIKT", DateLive = DateTime.Now, ProductAnalysisCode = "ADIKT", BaseUnitPrice = 1000 };
-            this.NewPart = new Part { PartNumber = "ADIKT/X", DateLive = DateTime.Now, ProductAnalysisCode = "ADIKT", BaseUnitPrice = 1099 };
+            this.Part = new Part
+                            {
+                                PartNumber = "ADIKT",
+                                DateLive = DateTime.Now,
+                                ProductAnalysisCode = "ADIKT",
+                                BaseUnitPrice = 1000
+                            };
+            this.NewPart = new Part
+                               {
+                                   PartNumber = "ADIKT/X",
+                                   DateLive = DateTime.Now,
+                                   ProductAnalysisCode = "ADIKT",
+                                   BaseUnitPrice = 1099
+                               };
 
             this.Result = this.Sut.ValidPartNumberChange(this.Part, this.NewPart);
         }
