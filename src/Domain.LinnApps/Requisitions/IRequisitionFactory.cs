@@ -6,7 +6,8 @@
 
     public interface IRequisitionFactory
     {
-        Task<RequisitionHeader> CreateRequisition(int createdBy,
+        Task<RequisitionHeader> CreateRequisition(
+            int createdBy,
             IEnumerable<string> privileges,
             string functionCode,
             string reqType,
@@ -34,6 +35,8 @@
             string toState = null,
             string batchRef = null,
             DateTime? batchDate = null,
-            IEnumerable<LineCandidate> lines = null);
+            IEnumerable<LineCandidate> lines = null,
+            string isReverseTransaction = "N",
+            int? originalReqNumber = null);
     }
 }

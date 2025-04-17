@@ -62,6 +62,8 @@
                           DefaultFromState = model.DefaultFromState(),
                           DefaultToState = model.DefaultToState(),
                           ToStockPool = model.ToStockPool,
+                          CanBeCancelled = model.CanBeCancelled,
+                          CanBeReversed = model.CanBeReversed,
                           FromStates = model.GetTransactionStates("F"),
                           ToStates = model.GetTransactionStates("O"),
                           TransactionTypes = model.TransactionsTypes?.Select(

@@ -62,6 +62,13 @@
                 throw new UnauthorisedActionException($"You are not authorised to raise {context.Function.FunctionCode}");
             }
 
+            if (context.IsReverseTransaction == "Y" && !this.authorisationService.HasPermissionFor(
+                    AuthorisedActions.ReverseRequisition,
+                    privilegesList))
+            {
+                throw new UnauthorisedActionException($"You are not authorised to reverse requisitions");
+            }
+
             await this.requisitionManager.Validate(
                 context.CreatedByUserNumber,
                 context.Function.FunctionCode,
@@ -87,7 +94,10 @@
                 context.BatchRef,
                 context.BatchDate,
                 context.Document1Line,
-                context.NewPartNumber);
+                context.NewPartNumber,
+                null,
+                context.IsReverseTransaction,
+                context.OriginalReqNumber);
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
@@ -121,7 +131,12 @@
                 context.ToState,
                 context.FromState,
                 context.BatchRef,
-                context.BatchDate);
+                context.BatchDate,
+                null,
+                null,
+                null,
+                context.IsReverseTransaction,
+                context.OriginalReqNumber);
 
             if (context.Function.NewPartNumberRequired())
             {
@@ -141,14 +156,17 @@
                 req.WorkStationCode = worksOrder.WorkStationCode;
                 req.FromCategory = req.StoresFunction.FromCategory;
 
-                await this.requisitionManager.AddPotentialMoveDetails(
-                    req.Document1Name,
-                    req.Document1.Value,
-                    req.Quantity,
-                    req.Part.PartNumber,
-                    req.CreatedBy.Id,
-                    req.ToLocation?.LocationId,
-                    req.ToPalletNumber);
+                if (req.IsReverseTransaction != "Y")
+                {
+                    await this.requisitionManager.AddPotentialMoveDetails(
+                        req.Document1Name,
+                        req.Document1.Value,
+                        req.Quantity,
+                        req.Part.PartNumber,
+                        req.CreatedBy.Id,
+                        req.ToLocation?.LocationId,
+                        req.ToPalletNumber);
+                }
             }
 
             await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);

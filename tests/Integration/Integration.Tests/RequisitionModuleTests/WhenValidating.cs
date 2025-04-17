@@ -72,7 +72,17 @@
                 null,
                 null,
                 null,
-                lines: Arg.Any<IEnumerable<LineCandidate>>()).Throws(new CancelRequisitionException("error"));
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Arg.Any<IEnumerable<LineCandidate>>(),
+                null,
+                null)
+                .Throws(new CancelRequisitionException("error"));
+
             this.Response = this.Client.PostAsJsonAsync("/requisitions/validate", this.resource).Result;
         }
 

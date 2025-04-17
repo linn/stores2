@@ -52,7 +52,9 @@
             string toState = null,
             string batchRef = null,
             DateTime? batchDate = null,
-            IEnumerable<LineCandidate> lines = null)
+            IEnumerable<LineCandidate> lines = null,
+            string isReverseTransaction = "N",
+            int? originalReqNumber = null)
         {
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
            
@@ -86,7 +88,9 @@
                                   ToPallet = toPalletNumber,
                                   BatchRef = batchRef,
                                   BatchDate = batchDate,
-                                  Lines = lines
+                                  Lines = lines,
+                                  IsReverseTransaction = isReverseTransaction,
+                                  OriginalReqNumber = originalReqNumber
                               };
 
             var strategy = this.creationStrategyResolver.Resolve(context);

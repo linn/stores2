@@ -62,5 +62,9 @@
         public string BatchRef { get; set; }
 
         public IEnumerable<LineCandidate> Lines { get; set; }
+
+        public int? OriginalReqNumber { get; set; }
+
+        public string IsReverseTransaction { get; set; }
     }
 }

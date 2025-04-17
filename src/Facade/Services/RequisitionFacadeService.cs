@@ -163,7 +163,9 @@
                     string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
                     resource.Document1Line,
                     resource.NewPart?.PartNumber,
-                    resource.Lines.Select(BuildLineCandidateFromResource));
+                    resource.Lines.Select(BuildLineCandidateFromResource),
+                    resource.IsReverseTransaction,
+                    resource.OriginalReqNumber);
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }
@@ -206,7 +208,9 @@
                              toState: resource.ToState,
                              batchRef: resource.BatchRef,
                              batchDate: string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
-                             lines: resource.Lines?.Select(BuildLineCandidateFromResource));
+                             lines: resource.Lines?.Select(BuildLineCandidateFromResource),
+                             resource.IsReverseTransaction,
+                             resource.OriginalReqNumber);
             return result;
         }
 

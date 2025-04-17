@@ -17,6 +17,7 @@ function TransactionsTab({ transactions = [] }) {
         { field: 'partNumber', headerName: 'Part', width: 150 },
         { field: 'transactionCode', headerName: 'Trans Code', width: 150 },
         { field: 'reference', headerName: 'Ref', width: 150 },
+        { field: 'quantity', headerName: 'Qty', width: 110 },
         { field: 'partPrice', headerName: 'Part Price', width: 150 },
         { field: 'materialPrice', headerName: 'Mat. Price', width: 150 },
         { field: 'machinePrice', headerName: 'Machine Price', width: 150 },
