@@ -8,11 +8,11 @@ import { CreateButton, Dropdown, InputField, Loading } from '@linn-it/linn-form-
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
 import useGet from '../hooks/useGet';
+import Page from './Page';
 
 function StorageLocations() {
     const { isLoading, result } = useInitialise(itemTypes.storageSites.url);

@@ -3,6 +3,7 @@ import { InputField } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import itemTypes from '../../../itemTypes';
 import useGet from '../../../hooks/useGet';
+import LinkField from '../../LinkField';
 
 function Document1({
     document1,
@@ -104,30 +105,53 @@ function Document1({
         return '';
     }
 
+    const href = () => {
+        switch (partSource) {
+            case 'C':
+                return itemTypes.creditNotes.url;
+            case 'WO':
+                return itemTypes.worksOrder.url;
+            case 'PO':
+                return itemTypes.purchaseOrder.url;
+            default:
+                return '';
+        }
+    };
+
     return (
         <>
             <Grid size={4}>
-                <InputField
-                    value={document1}
-                    type="number"
-                    disabled={!shouldEnter}
-                    label={document1Text}
-                    onChange={handleFieldChange}
-                    propertyName="document1"
-                    textFieldProps={{
-                        onKeyDown: data => {
-                            if (data.keyCode == 13 || data.keyCode == 9) {
-                                if (partSource === 'PO') {
-                                    fetchPurchaseOrder(document1);
-                                } else if (partSource == 'C') {
-                                    fetchCreditNote(document1);
-                                } else if (partSource == 'WO') {
-                                    fetchWorksOrder(document1);
+                {!shouldEnter ? (
+                    <LinkField
+                        value={document1}
+                        label={document1Text}
+                        to={`${href()}/${document1}`}
+                        external
+                        openLinksInNewTabs
+                    />
+                ) : (
+                    <InputField
+                        value={document1}
+                        type="number"
+                        disabled={!shouldEnter}
+                        label={document1Text}
+                        onChange={handleFieldChange}
+                        propertyName="document1"
+                        textFieldProps={{
+                            onKeyDown: data => {
+                                if (data.keyCode == 13 || data.keyCode == 9) {
+                                    if (partSource === 'PO') {
+                                        fetchPurchaseOrder(document1);
+                                    } else if (partSource == 'C') {
+                                        fetchCreditNote(document1);
+                                    } else if (partSource == 'WO') {
+                                        fetchWorksOrder(document1);
+                                    }
                                 }
                             }
-                        }
-                    }}
-                />
+                        }}
+                    />
+                )}
             </Grid>
             <Grid size={2}>
                 {document1LineRequired !== 'N' && (
