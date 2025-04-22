@@ -181,12 +181,14 @@ function reducer(state, action) {
                 }
             }
 
-            headerFromState = lineTransactionType?.fromStates?.length
-                ? lineTransactionType.fromStates[0]
-                : null;
-            headerToState = lineTransactionType?.toStates?.length
-                ? lineTransactionType.fromStates[0]
-                : null;
+            headerFromState =
+                lineTransactionType?.fromStates?.length === 1
+                    ? lineTransactionType.fromStates[0]
+                    : null;
+            headerToState =
+                lineTransactionType?.toStates?.length === 1
+                    ? lineTransactionType.fromStates[0]
+                    : null;
 
             // use the next available line number
             const maxLineNumber = state.lines?.length
