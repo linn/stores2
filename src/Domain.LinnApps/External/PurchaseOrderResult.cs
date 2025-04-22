@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Linn.Stores2.Domain.LinnApps.External
+﻿namespace Linn.Stores2.Domain.LinnApps.External
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class PurchaseOrderResult
     {
         public int OrderNumber { get; set; }
