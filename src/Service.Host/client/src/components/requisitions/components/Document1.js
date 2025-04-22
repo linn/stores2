@@ -15,7 +15,8 @@ function Document1({
     onSelect,
     partSource,
     onSelectPart = null,
-    document1Details = null
+    document1Details = null,
+    storesFunction = null
 }) {
     const displayDetails1 =
         document1Details && partSource === 'WO'
@@ -51,7 +52,10 @@ function Document1({
             onSelect({
                 partNumber: purchaseOrder.details[0].partNumber,
                 partDescription: purchaseOrder.details[0].partDescription,
-                batchRef: `${docType.charAt(0)}${purchaseOrder.orderNumber}`,
+                batchRef:
+                    storesFunction?.batchRequired === 'Y'
+                        ? `${docType.charAt(0)}${purchaseOrder.orderNumber}`
+                        : null,
                 document1Line: 1
             });
             clearPurchaseOrder();

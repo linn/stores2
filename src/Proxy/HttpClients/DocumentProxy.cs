@@ -97,7 +97,13 @@
                            OrderNumber = po.OrderNumber,
                            IsAuthorised = po.AuthorisedBy?.Id != null,
                            IsFilCancelled = !string.IsNullOrEmpty(po.DateFilCancelled),
-                           DocumentType = po.DocumentType?.Name
+                           DocumentType = po.DocumentType?.Name,
+                           Details = po.Details.Select(d => new PurchaseOrderDetailResult
+                           {
+                               Line = d.Line,
+                               OurQty = d.OurQty,
+                               PartNumber = d.PartNumber
+                           })
                        };
         }
 

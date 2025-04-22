@@ -1,3 +1,5 @@
+using Linn.Stores2.Domain.LinnApps.External;
+
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
@@ -83,5 +85,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? builtById,
             int? toLocationId,
             int? toPalletNumber);
+
+        Task CheckPurchaseOrderForOverAndFullyKitted(RequisitionHeader header, PurchaseOrderResult purchaseOrder);
     }
 }

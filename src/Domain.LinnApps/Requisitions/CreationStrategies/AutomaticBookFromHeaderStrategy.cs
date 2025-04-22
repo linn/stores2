@@ -1,4 +1,7 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
+﻿using System;
+using Org.BouncyCastle.Ocsp;
+
+namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -131,6 +134,12 @@
                 {
                     req.NewPart = newPart;
                 }
+            }
+
+            if (context.Function.FunctionCode == "SUKIT")
+            {
+                req.FromCategory = "FREE";
+                req.ToCategory = "FREE";
             }
 
             await this.repository.AddAsync(req);

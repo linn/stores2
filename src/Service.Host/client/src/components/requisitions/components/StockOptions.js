@@ -219,7 +219,7 @@ function StockOptions({
                     label="To Loc"
                     resultsInModal
                     resultLimit={100}
-                    helperText="<Enter> to search or <Tab> to select"
+                    helperText={disabled ? '' : '<Enter> to search or <Tab> to select'}
                     value={toLocationCode}
                     handleValueChange={setItemValue}
                     search={searchLocations}

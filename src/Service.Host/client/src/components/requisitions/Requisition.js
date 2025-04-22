@@ -585,7 +585,9 @@ function Requisition({ creating }) {
                                         resultsInModal
                                         resultLimit={100}
                                         disabled={!creating || !!formState.lines?.length}
-                                        helperText="<Enter> to search or <Tab> to select"
+                                        helperText={
+                                            creating ? '<Enter> to search or <Tab> to select' : ''
+                                        }
                                         value={formState.storesFunction?.code}
                                         handleValueChange={(_, newVal) => {
                                             dispatch({
@@ -818,6 +820,7 @@ function Requisition({ creating }) {
                                 partSource={formState.storesFunction?.partSource}
                                 onSelectPart={handleDocument1PartSelect}
                                 document1Details={formState.document1Details}
+                                storesFunction={formState.storesFunction}
                             />
                             <Document2
                                 document2={formState.document2}
