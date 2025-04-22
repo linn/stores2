@@ -36,7 +36,9 @@ function PartNumberQuantity({
                     label={partLabel}
                     resultsInModal
                     resultLimit={100}
-                    helperText={disabled ? '' : '<Enter> to search part. <Tab> to select'}
+                    helperText={
+                        disabled || !setPart ? '' : '<Enter> to search part. <Tab> to select'
+                    }
                     value={partNumber}
                     disabled={disabled || !setPart}
                     handleValueChange={(_, newVal) => {

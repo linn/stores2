@@ -286,6 +286,7 @@
             {
                 Description = "KIT PARTS TO SUPPLIER STORE",
                 BatchRequired = "N",
+                DepartmentNominalRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document1LineRequiredFlag = "N",
                 Document1Text = "Order Number",
@@ -294,7 +295,16 @@
                 ManualPickRequired = "A",
                 PartSource = "PO",
                 ToLocationRequired = "Y",
-                ToStateRequired = "N"
+                ToStateRequired = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "SUKIT",
+                        TransactionDefinition = TestTransDefs.StockToSupplierKit,
+                        TransactionCode = TestTransDefs.StockToSupplierKit.TransactionCode
+                    }
+                }
             };
 
         public static readonly StoresFunction WriteOff =

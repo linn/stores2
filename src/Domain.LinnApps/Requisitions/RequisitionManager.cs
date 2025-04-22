@@ -404,18 +404,29 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task CreateLinesAndBookAutoRequisitionHeader(RequisitionHeader header)
         {
-            DoProcessResultCheck(  
-                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
+            try
+            {
+                DoProcessResultCheck(
+                    await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
 
-            DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
-                                     header.ReqNumber,
-                                     null,
-                                     header.Quantity.GetValueOrDefault()));
+                DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
+                    header.ReqNumber,
+                    null,
+                    header.Quantity.GetValueOrDefault()));
 
-            DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
-                                     header.ReqNumber,
-                                     null,
-                                     header.CreatedBy.Id));
+                DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
+                    header.ReqNumber,
+                    null,
+                    header.CreatedBy.Id));
+            }
+            catch (Exception e)
+            {
+                // cancel the req so it doesn't hang around unbooked and mess up validation
+                header.Cancel(e.Message, header.CreatedBy);
+                await this.transactionManager.CommitAsync();
+
+                throw;
+            }
         }
 
         public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
@@ -665,11 +676,18 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
 
                 var orderRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
-                if (batchRef != orderRef)
+                if (function.BatchRequired == "Y" && batchRef != orderRef)
                 {
                     throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");
-                }   
+                }
+                
+                // SUKIT validation to replace STORES_OO.CAN_BE_KITTED
+                if (function.FunctionCode == "SUKIT")
+                {
+                    await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
+                }
+
             } 
             else if (function.PartSource == "WO")
             {
@@ -881,6 +899,34 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             await this.potentialMoveRepository.AddAsync(potentialMove);
 
             return new List<PotentialMoveDetail> { potentialMove }.AsEnumerable();
+        }
+
+        public async Task CheckPurchaseOrderForOverAndFullyKitted(RequisitionHeader header, PurchaseOrderResult purchaseOrder)
+        {
+            if (header.Document1Name == "PO" && purchaseOrder != null && purchaseOrder.OrderQty(header.Document1Line).HasValue)
+            {
+                var reqs = await this.repository.FilterByAsync(r =>
+                    r.Document1Name == header.Document1Name && r.Document1 == header.Document1.Value &&
+                    r.Cancelled == "N" && r.Quantity != null && r.StoresFunction.FunctionCode == "SUKIT" && r.ReqNumber != header.ReqNumber);
+
+                if (reqs.Any())
+                {
+                    var kittedQty = reqs.Sum(r => r.Quantity.GetValueOrDefault());
+
+                    if (kittedQty >= purchaseOrder.OrderQty(header.Document1Line))
+                    {
+                        throw new DocumentException($"Full order qty {purchaseOrder.OrderQty(header.Document1Line)} on order {header.Document1} has already been kitted");
+                    }
+
+                    if (header.Quantity.HasValue)
+                    {
+                        if (kittedQty + header.Quantity > purchaseOrder.OrderQty(header.Document1Line))
+                        {
+                            throw new DocumentException($"Only {purchaseOrder.OrderQty(header.Document1Line) - kittedQty} left to kit for order {header.Document1}");
+                        }
+                    }
+                }
+            }
         }
 
         private static void DoProcessResultCheck(ProcessResult result)

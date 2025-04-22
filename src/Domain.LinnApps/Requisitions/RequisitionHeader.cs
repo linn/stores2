@@ -90,7 +90,7 @@
 
         public string FromCategory { get; set; }
 
-        public string ToCategory { get; protected set; }
+        public string ToCategory { get; set; }
 
         public DateTime? BatchDate { get; set; }
 

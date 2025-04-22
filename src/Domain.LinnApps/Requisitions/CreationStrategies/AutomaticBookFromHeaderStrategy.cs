@@ -148,6 +148,12 @@
                 }
             }
 
+            if (context.Function.FunctionCode == "SUKIT")
+            {
+                req.FromCategory = "FREE";
+                req.ToCategory = "FREE";
+            }
+
             await this.repository.AddAsync(req);
 
             if (req.Document1Name == "WO" && req.Document1.HasValue)
