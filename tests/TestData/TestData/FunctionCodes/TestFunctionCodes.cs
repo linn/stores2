@@ -399,6 +399,7 @@
                     ToStateRequired = "O",
                     ToStockPoolRequired = "O",
                     CanBeReversed = "N",
+                    ToLocationRequired = "O",
                     TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction

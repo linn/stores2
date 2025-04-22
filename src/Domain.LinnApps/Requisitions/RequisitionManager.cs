@@ -298,7 +298,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (movesToAdd != null && movesToAdd.Any())
             {
-                await this.CheckMoves(toAdd.PartNumber, movesToAdd);
+                await this.CheckMoves(
+                    toAdd.PartNumber,
+                    movesToAdd,
+                    FieldIsNeededOrOptional(header.StoresFunction.ToLocationRequired));
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
@@ -536,7 +539,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         continue;
                     }
 
-                    await this.CheckMoves(line.PartNumber, movesToAdd);
+                    await this.CheckMoves(
+                        line.PartNumber,
+                        movesToAdd,
+                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
@@ -544,7 +550,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
-                    await this.CheckMoves(line.PartNumber, line.Moves.ToList());
+                    await this.CheckMoves(
+                        line.PartNumber,
+                        line.Moves.ToList(),
+                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -647,12 +656,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 foreach (var candidate in lines)
                 {
-                    req.AddLine(await this.ValidateLineCandidate(candidate));
+                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction));
                 }
             }
             else if (firstLine != null)
             {
-                req.AddLine(await this.ValidateLineCandidate(firstLine));
+                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction));
             }
 
             // move below to its own function?
@@ -780,7 +789,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return req;
         }
 
-        public async Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate)
+        public async Task<RequisitionLine> ValidateLineCandidate(
+            LineCandidate candidate,
+            StoresFunction storesFunction = null)
         {
             var part = !string.IsNullOrEmpty(candidate?.PartNumber)
                 ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
@@ -801,13 +812,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (candidate.Moves != null && candidate.Moves.Any())
             {
-                await this.CheckMoves(candidate.PartNumber, candidate.Moves.ToList());
+                await this.CheckMoves(
+                    candidate.PartNumber,
+                    candidate.Moves.ToList(),
+                    FieldIsNeededOrOptional(storesFunction?.ToLocationRequired));
             }
 
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
                 line.TransactionDefinition.RequiresOntoTransactions)
             {
-                throw new CreateRequisitionException($"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
+                throw new CreateRequisitionException(
+                    $"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
             }
 
             return line;
@@ -995,7 +1010,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        private async Task CheckMoves(string partNumber, IList<MoveSpecification> moves)
+        private async Task CheckMoves(
+            string partNumber,
+            IList<MoveSpecification> moves,
+            bool toLocationRequired = false)
         {
             foreach (var m in moves)
             {
@@ -1008,6 +1026,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     && string.IsNullOrEmpty(m.FromLocation))
                 {
                     throw new RequisitionException("Moves are missing location information");
+                }
+
+                if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && toLocationRequired)
+                {
+                    throw new RequisitionException("You must provide a to location or pallet");
                 }
 
                 // just checking moves onto for now, but could extend if required
