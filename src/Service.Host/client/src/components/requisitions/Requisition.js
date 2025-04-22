@@ -26,6 +26,7 @@ import usePost from '../../hooks/usePost';
 import useUserProfile from '../../hooks/useUserProfile';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import useDebounceValue from '../../hooks/useDebounceValue';
+import LinkField from '../LinkField';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import MovesTab from './MovesTab';
@@ -717,7 +718,9 @@ function Requisition({ creating }) {
                                 />
                             </Grid>
                             <Grid size={2}>
-                                {shouldRender(() => formState.isReverseTransaction === 'Y') && (
+                                {shouldRender(
+                                    () => formState.isReverseTransaction === 'Y' && creating
+                                ) && (
                                     <InputField
                                         fullWidth
                                         value={formState.originalReqNumber}
@@ -725,6 +728,16 @@ function Requisition({ creating }) {
                                         disabled
                                         label="Original Req No"
                                         propertyName="originalReqNumber"
+                                    />
+                                )}
+                                {shouldRender(
+                                    () => formState.isReverseTransaction === 'Y' && !creating
+                                ) && (
+                                    <LinkField
+                                        value={formState.originalReqNumber}
+                                        label="Original Req No"
+                                        to={`/requisitions/${formState.originalReqNumber}`}
+                                        external={false}
                                     />
                                 )}
                             </Grid>
