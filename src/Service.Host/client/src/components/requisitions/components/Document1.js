@@ -50,19 +50,6 @@ function Document1({
     useEffect(() => {
         if (purchaseOrder) {
             const docType = purchaseOrder.documentType.name;
-            console.log({
-                partNumber: purchaseOrder.details[0].partNumber,
-                partDescription: purchaseOrder.details[0].partDescription,
-                batchRef:
-                    storesFunction?.batchRequired === 'Y'
-                        ? `${docType.charAt(0)}${purchaseOrder.orderNumber}`
-                        : null,
-                document1Line: 1,
-                toLocationCode:
-                    storesFunction?.toLocationRequired === 'Y'
-                        ? `S-SU-${purchaseOrder.supplier.id}`
-                        : null
-            });
             onSelect({
                 partNumber: purchaseOrder.details[0].partNumber,
                 partDescription: purchaseOrder.details[0].partDescription,
