@@ -405,6 +405,13 @@ function Requisition({ creating }) {
                 payload: { fieldName: 'batchRef', newValue: selected.batchRef }
             });
         }
+
+        if (selected.toLocationCode) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'toLocationCode', newValue: selected.toLocationCode }
+            });
+        }
     };
 
     const handleDocument1PartSelect = part => {

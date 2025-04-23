@@ -29,7 +29,7 @@
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee { Id = this.employeeId },
-                new StoresFunction { FunctionCode = "FUNC" },
+                new StoresFunction { FunctionCode = "FUNC", ProcessStage = 2 },
                 "F",
                 null,
                 "REQ",

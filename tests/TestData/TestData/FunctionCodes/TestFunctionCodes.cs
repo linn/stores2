@@ -17,6 +17,7 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
@@ -51,6 +52,7 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
@@ -82,6 +84,7 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N"
             };
 
@@ -97,6 +100,7 @@
                 FunctionType = "A",
                 ManualPickRequired = "X",
                 PartSource = "WO",
+                ProcessStage = 2,
                 ToStateRequired = "O",
                 CanBeReversed = "Y"
             };
@@ -113,6 +117,7 @@
                 FunctionType = "A",
                 ManualPickRequired = "X",
                 PartSource = "PO",
+                ProcessStage = 2,
                 ToStateRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
@@ -164,6 +169,7 @@
                 ToStockPool = "LINN",
                 ManualPickRequired = "M",
                 PartSource = "C",
+                ProcessStage = 2,
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
                     new StoresFunctionTransaction
@@ -196,6 +202,7 @@
                 FunctionType = "M",
                 ManualPickRequired = "A",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -232,6 +239,7 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -259,6 +267,7 @@
                 FunctionType = "M",
                 ManualPickRequired = "A",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
@@ -294,6 +303,7 @@
                 FunctionType = "A",
                 ManualPickRequired = "A",
                 PartSource = "PO",
+                ProcessStage = 1,
                 ToLocationRequired = "Y",
                 ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -319,6 +329,7 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 2,
                 ToStockPoolRequired = "O",
                 ToStateRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -353,6 +364,7 @@
                     DepartmentNominalRequired = "N",
                     ManualPickRequired = "M",
                     PartSource = "PO",
+                    ProcessStage = 2,
                     Document1RequiredFlag = "Y",
                     Document1LineRequiredFlag = "O",
                     FunctionType = "A",
@@ -377,7 +389,8 @@
                     FunctionType = "A",
                     ManualPickRequired = "X",
                     ToStateRequired = "N",
-                    BatchRequired = "N"
+                    BatchRequired = "N",
+                    ProcessStage = 1
             };
 
         public static readonly StoresFunction SupplierReturn =
@@ -386,7 +399,8 @@
                     FunctionType = "A",
                     ManualPickRequired = "M",
                     ToStateRequired = "Y",
-                    ToStockPool = "LINN"
+                    ToStockPool = "LINN",
+                    ProcessStage = 1
             };
 
         public static readonly StoresFunction Move =
@@ -399,6 +413,7 @@
                     ToStateRequired = "O",
                     ToStockPoolRequired = "O",
                     CanBeReversed = "N",
+                    ProcessStage = 2,
                     ToLocationRequired = "O",
                     TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
@@ -423,6 +438,7 @@
                 LinesRequired = "N",
                 ManualPickRequired = "X",
                 PartSource = "N",
+                ProcessStage = 2,
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -448,6 +464,7 @@
                 LinesRequired = "Y",
                 ManualPickRequired = "A",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
@@ -473,6 +490,7 @@
                 LinesRequired = "N",
                 ManualPickRequired = "M",
                 PartSource = "IP",
+                ProcessStage = 2,
                 ToStateRequired = "O",
                 ToStockPoolRequired = "O",
                 TransactionsTypes = new List<StoresFunctionTransaction>
