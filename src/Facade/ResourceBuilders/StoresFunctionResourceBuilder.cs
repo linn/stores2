@@ -64,6 +64,7 @@
                           ToStockPool = model.ToStockPool,
                           CanBeCancelled = model.CanBeCancelled,
                           CanBeReversed = model.CanBeReversed,
+                          ProcessStage = model.ProcessStage,
                           FromStates = model.GetTransactionStates("F"),
                           ToStates = model.GetTransactionStates("O"),
                           TransactionTypes = model.TransactionsTypes?.Select(
