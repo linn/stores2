@@ -409,15 +409,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 DoProcessResultCheck(
                     await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
 
-                DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
-                    header.ReqNumber,
-                    null,
-                    header.Quantity.GetValueOrDefault()));
+                // from REQ_UT REQHEADS.POST-INSERT
+                // function codes that are function_Type A and process stage 1 incl LOAN OUT, SUKIT
+                if (header.StoresFunction.ProcessStage == 2)
+                {
+                    DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
+                        header.ReqNumber,
+                        null,
+                        header.Quantity.GetValueOrDefault()));
 
-                DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
-                    header.ReqNumber,
-                    null,
-                    header.CreatedBy.Id));
+                    DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
+                        header.ReqNumber,
+                        null,
+                        header.CreatedBy.Id));
+                }
             }
             catch (Exception e)
             {

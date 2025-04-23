@@ -75,6 +75,8 @@
 
         public string CanBeCancelled { get; set; }
 
+        public int ProcessStage { get; set; }
+
         public IEnumerable<string> FromStates { get; set; }
 
         public IEnumerable<string> ToStates { get; set; }

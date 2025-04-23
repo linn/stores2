@@ -69,6 +69,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         
         public string CanBeCancelled { get; set; }
 
+        public int ProcessStage { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public string LinesRequired { get; set;  }

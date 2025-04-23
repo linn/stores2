@@ -57,11 +57,15 @@ function Document1({
                     storesFunction?.batchRequired === 'Y'
                         ? `${docType.charAt(0)}${purchaseOrder.orderNumber}`
                         : null,
-                document1Line: 1
+                document1Line: 1,
+                toLocationCode:
+                    storesFunction?.toLocationRequired === 'Y'
+                        ? `S-SU-${purchaseOrder.supplier.id}`
+                        : null
             });
             clearPurchaseOrder();
         }
-    }, [purchaseOrder, onSelect, clearPurchaseOrder]);
+    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction]);
 
     useEffect(() => {
         if (creditNote && document1Line) {
