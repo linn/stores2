@@ -494,6 +494,7 @@ function Requisition({ creating }) {
                                     type: 'load_create',
                                     payload: defaults
                                 });
+                                setTab(0);
                                 navigate('/requisitions/create');
                             }}
                         >

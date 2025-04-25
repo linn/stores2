@@ -67,7 +67,7 @@
                                                                 FromLocationDescription = m.StockLocator?.StorageLocation?.Description,
                                                                 QtyAllocated = m.StockLocator?.QuantityAllocated,
                                                                 FromStockPool = m.StockLocator?.StockPoolCode,
-                                                                QtyAtLocation = m.Quantity,
+                                                                QtyAtLocation = m.StockLocator?.Quantity,
                                                                 ToLocationCode = m.Location?.LocationCode,
                                                                 ToLocationDescription = m.Location?.Description,
                                                                 ToPalletNumber = m.PalletNumber,
