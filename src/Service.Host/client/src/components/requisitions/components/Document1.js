@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { InputField } from '@linn-it/linn-form-components-library';
+import { InputField, LinkField } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import itemTypes from '../../../itemTypes';
 import useGet from '../../../hooks/useGet';
-import LinkField from '../../LinkField';
 
 function Document1({
     document1,
