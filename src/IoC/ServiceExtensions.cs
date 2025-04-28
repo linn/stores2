@@ -4,6 +4,7 @@
 
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
+    using Linn.Common.Domain.LinnApps.Services;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
     using Linn.Common.Proxy;
@@ -59,6 +60,7 @@
                 .AddScoped<IDocumentProxy, DocumentProxy>()
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()
+                .AddTransient<ILabelPrinter, BartenderLabelPack>()
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>()
                 .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
                 .AddScoped<LdreqCreationStrategy>()

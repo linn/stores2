@@ -5,6 +5,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -61,7 +62,9 @@
                 .AddScoped<IRepository<StoresTransactionState, StoresTransactionStateKey>, EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>>(
                     r => new EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>(r.GetService<ServiceDbContext>()?.StoresTransactionStates))
                 .AddScoped<IRepository<PotentialMoveDetail, PotentialMoveDetailKey>, EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>>(
-                    r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(r.GetService<ServiceDbContext>()?.PotentialMoveDetails));
+                    r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(r.GetService<ServiceDbContext>()?.PotentialMoveDetails))
+                .AddScoped<IQueryRepository<LabelType>, EntityFrameworkQueryRepository<LabelType>>(
+                    r => new EntityFrameworkQueryRepository<LabelType>(r.GetService<ServiceDbContext>()?.LabelTypes));
         }
     }
 }

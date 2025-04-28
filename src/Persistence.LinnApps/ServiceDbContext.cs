@@ -4,6 +4,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -67,6 +68,8 @@
 
         public DbSet<StockTransaction> StockTransactions { get; set; }
 
+        public DbSet<LabelType> LabelTypes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -109,6 +112,7 @@
             BuildStockTransactions(builder);
             BuildStockTransactionPostings(builder);
             BuildPotentialMoveDetails(builder);
+            this.BuildLabelTypes(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -798,6 +802,15 @@
             e.Property(s => s.LocationId).HasColumnName("LOCATION_ID");
             e.Property(s => s.PalletNumber).HasColumnName("PALLET_NUMBER");
             e.Property(s => s.SernosNumber).HasColumnName("SERNOS_NUMBER");
+        }
+
+        private void BuildLabelTypes(ModelBuilder builder)
+        {
+            var e = builder.Entity<LabelType>().ToTable("STORES_LABEL_TYPES");
+            e.HasNoKey();
+            e.Property(t => t.Code).HasColumnName("LABEL_TYPE_CODE");
+            e.Property(t => t.DefaultPrinter).HasColumnName("DEFAULT_PRINTER");
+            e.Property(t => t.FileName).HasColumnName("FILENAME");
         }
     }
 }
