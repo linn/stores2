@@ -7,6 +7,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
     using Linn.Common.Authorisation;
     using Linn.Common.Domain;
+    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -427,7 +428,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         header.CreatedBy.Id));
                 }
             }
-            catch (Exception e)
+            catch (DomainException e)
             {
                 // cancel the req so it doesn't hang around unbooked and mess up validation
                 header.Cancel(e.Message, header.CreatedBy);
