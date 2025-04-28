@@ -7,7 +7,7 @@
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
     using Linn.Common.Proxy;
-    using Linn.Common.Proxy.LinnApps;
+    using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ResourceBuilders;

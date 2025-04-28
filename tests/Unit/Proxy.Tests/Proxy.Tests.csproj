@@ -8,7 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="7.2.0" />
-		<PackageReference Include="Linn.Common.Proxy.LinnApps" Version="3.2.0" />
+		<PackageReference Include="Linn.Common.Proxy.LinnApps" Version="4.0.0" />
 		<PackageReference Include="Linn.Common.Serialization.Json" Version="3.1.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
 		<PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />

@@ -1,6 +1,6 @@
 ﻿namespace Linn.Stores2.Proxy.StoredProcedureClients
 {
-    using Linn.Common.Proxy.LinnApps;
+    using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Stores2.Domain.LinnApps.External;
 
     public class DatabaseSequenceService : IDatabaseSequenceService

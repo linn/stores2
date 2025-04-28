@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Common.Proxy.LinnApps;
+    using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
