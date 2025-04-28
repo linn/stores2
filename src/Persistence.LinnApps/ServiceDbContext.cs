@@ -800,5 +800,17 @@
             e.Property(s => s.PalletNumber).HasColumnName("PALLET_NUMBER");
             e.Property(s => s.SernosNumber).HasColumnName("SERNOS_NUMBER");
         }
+
+        private static void BuildWorkstations(ModelBuilder builder)
+        {
+            var e = builder.Entity<Workstation>().ToTable("WORK_STATION");
+            e.HasKey(l => new { l.WorkstationCode });
+            e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.Property(s => s.CitCode).HasColumnName("CIT_CODE").HasMaxLength(10);
+            e.Property(s => s.VaxWorkstation).HasColumnName("VAX_WORK_STATION").HasMaxLength(8);
+            e.Property(s => s.AlternativeWorkstationCode).HasColumnName("ALTERNATIVE_WORK_STATION_CODE").HasMaxLength(16);
+            e.Property(s => s.ZoneType).HasColumnName("ZONE_TYPE").HasMaxLength(20);
+        }
     }
 }
