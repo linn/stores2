@@ -14,7 +14,8 @@ import {
     ErrorCard,
     Search,
     SaveBackCancelButtons,
-    utilities
+    utilities,
+    LinkField
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -26,7 +27,6 @@ import usePost from '../../hooks/usePost';
 import useUserProfile from '../../hooks/useUserProfile';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import useDebounceValue from '../../hooks/useDebounceValue';
-import LinkField from '../LinkField';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import MovesTab from './MovesTab';
