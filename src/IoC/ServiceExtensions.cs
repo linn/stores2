@@ -89,7 +89,7 @@
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
-                .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationResource>, WorkstationFacadeService>();
+                .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
@@ -108,7 +108,9 @@
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
-                .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>();
+                .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
+                .AddScoped<IBuilder<Workstation>, WorkstationResourceBuilder>()
+                .AddScoped<IBuilder<WorkstationElement>, WorkstationElementsResourceBuilder>();
         }
     }
 }

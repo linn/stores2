@@ -12,8 +12,6 @@ namespace Linn.Stores2.Resources.Stores
 
         public string VaxWorkstation { get; set; }
 
-        public string AlternativeWorkstationCode { get; set; }
-
         public string ZoneType { get; set; }
 
         public IEnumerable<WorkstationElementResource> WorkstationElements { get; set; }

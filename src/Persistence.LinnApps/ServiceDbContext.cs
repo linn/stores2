@@ -811,7 +811,6 @@
             e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             e.Property(s => s.CitCode).HasColumnName("CIT_CODE").HasMaxLength(10);
             e.Property(s => s.VaxWorkstation).HasColumnName("VAX_WORK_STATION").HasMaxLength(8);
-            e.Property(s => s.AlternativeWorkstationCode).HasColumnName("ALTERNATIVE_WORK_STATION_CODE").HasMaxLength(16);
             e.Property(s => s.ZoneType).HasColumnName("ZONE_TYPE").HasMaxLength(20);
             e.HasMany(w => w.WorkstationElements).WithOne().HasForeignKey(w => w.WorkstationCode);
         }

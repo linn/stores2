@@ -12,8 +12,6 @@
 
         public string VaxWorkstation { get; set; }
 
-        public string AlternativeWorkstationCode { get; set; }
-
         public string ZoneType { get; set; }
 
         public IEnumerable<WorkstationElement> WorkstationElements { get; set; }
