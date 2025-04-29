@@ -79,7 +79,7 @@
                     null,
                     part: part,
                     quantity: 3,
-                    toLocation: loc),
+                    toLocation: loc)
             };
             this.ReqRepository.FilterByAsync(Arg.Any<Expression<Func<RequisitionHeader, bool>>>())
                 .Returns(requisitions);
