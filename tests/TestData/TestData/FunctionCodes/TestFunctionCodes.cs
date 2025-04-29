@@ -427,6 +427,7 @@
                     ToStockPoolRequired = "O",
                     CanBeReversed = "N",
                     ProcessStage = 2,
+                    ToLocationRequired = "O",
                     TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction

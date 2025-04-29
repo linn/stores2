@@ -1,8 +1,7 @@
 import React from 'react';
-import { InputField } from '@linn-it/linn-form-components-library';
+import { InputField, LinkField } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import itemTypes from '../../../itemTypes';
-import LinkField from '../../LinkField';
 
 function Document2({
     document2,

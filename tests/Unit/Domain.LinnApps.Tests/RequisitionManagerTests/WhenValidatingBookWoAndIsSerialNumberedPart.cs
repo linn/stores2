@@ -49,6 +49,7 @@
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
+
             this.action = () => this.Sut.Validate(
                 123,
                 TestFunctionCodes.BookWorksOrder.FunctionCode,
@@ -58,6 +59,7 @@
                 null,
                 null,
                 partNumber: "PART",
+                quantity: 1,
                 fromPalletNumber: 502,
                 toPalletNumber: 503,
                 toStockPool: "LINN",

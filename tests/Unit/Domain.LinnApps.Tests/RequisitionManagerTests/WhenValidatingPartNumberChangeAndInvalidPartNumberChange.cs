@@ -17,7 +17,7 @@
         private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.DepartmentRepository.FindByIdAsync("0000042808")
                 .Returns(new Department("0000042808", "FINAL ASSEMBLY"));
@@ -39,7 +39,9 @@
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
-            this.StoresService.ValidPartNumberChange(Arg.Any<Part>(), Arg.Any<Part>()).Returns(new ProcessResult(false, "Invalid part number change"));
+            this.StoresService.ValidPartNumberChange(Arg.Any<Part>(), Arg.Any<Part>())
+                .Returns(new ProcessResult(false, "Invalid part number change"));
+
             this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.PartNumberChange.FunctionCode,

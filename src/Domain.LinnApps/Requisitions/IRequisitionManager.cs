@@ -72,7 +72,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string isReverseTransaction = "N",
             int? originalDocumentNumber = null);
 
-        Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate);
+        Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate, StoresFunction storesFunction = null);
 
         Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 

@@ -68,6 +68,27 @@ function reducer(state, action) {
                         isReverseTransaction: action.payload.newValue
                     };
                 }
+            } else if (action.payload.fieldName === 'toLocationCode') {
+                if (
+                    action.payload.newValue &&
+                    (action.payload.newValue.toUpperCase() === 'E-PARTS-FAIL' ||
+                        action.payload.newValue.toUpperCase() === 'E-CAB-FAIL')
+                ) {
+                    return {
+                        ...state,
+                        message: {
+                            showMessage: true,
+                            text: 'Have you filled out a part fail log for this? Please make sure every part moved here has one',
+                            severity: 'warning'
+                        },
+                        toLocationCode: action.payload.newValue
+                    };
+                } else {
+                    return {
+                        ...state,
+                        toLocationCode: action.payload.newValue
+                    };
+                }
             } else if (action.payload.fieldName === 'storesFunction') {
                 let newState = {
                     ...state,
@@ -369,6 +390,11 @@ function reducer(state, action) {
                           }
                         : line;
                 })
+            };
+        case 'close_message':
+            return {
+                ...state,
+                message: { showMessage: false, text: '', severity: 'info' }
             };
         default:
             return state;

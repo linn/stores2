@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { InputField, utilities } from '@linn-it/linn-form-components-library';
+import { InputField, utilities, LinkField } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import itemTypes from '../../../itemTypes';
 import useGet from '../../../hooks/useGet';
-import LinkField from '../../LinkField';
 
 function Document1({
     document1,
@@ -48,7 +47,6 @@ function Document1({
     } = useGet(itemTypes.parts.url, true);
 
     function toIntId(href) {
-        console.log(href);
         if (href) {
             const segments = href.split('/');
             return Number(segments[segments.length - 1]);
@@ -76,11 +74,9 @@ function Document1({
                     docType
                 });
             } else if (docType === 'RO') {
-                console.log(purchaseOrder);
                 const debitNote = toIntId(
                     utilities.getHref(purchaseOrder, 'ret-credit-debit-note')
                 );
-                console.log(debitNote);
 
                 onSelect({
                     partNumber: purchaseOrder.details[0].partNumber,

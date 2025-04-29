@@ -7,6 +7,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
     using Linn.Common.Authorisation;
     using Linn.Common.Domain;
+    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -41,6 +42,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository;
 
+        private readonly IBomVerificationProxy bomVerificationProxy;
+
         private readonly IRepository<StoresPallet, int> palletRepository;
 
         private readonly IRepository<StockState, string> stateRepository;
@@ -74,7 +77,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IDocumentProxy documentProxy,
             IStockService stockService,
             ISalesProxy salesProxy,
-            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository)
+            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository,
+            IBomVerificationProxy bomVerificationProxy)
         {
             this.authService = authService;
             this.repository = repository;
@@ -95,6 +99,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.stockService = stockService;
             this.salesProxy = salesProxy;
             this.potentialMoveRepository = potentialMoveRepository;
+            this.bomVerificationProxy = bomVerificationProxy;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -298,7 +303,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (movesToAdd != null && movesToAdd.Any())
             {
-                await this.CheckMoves(toAdd.PartNumber, movesToAdd);
+                await this.CheckMoves(
+                    toAdd.PartNumber,
+                    movesToAdd,
+                    FieldIsNeededOrOptional(header.StoresFunction.ToLocationRequired));
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
@@ -424,7 +432,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         header.CreatedBy.Id));
                 }
             }
-            catch (Exception e)
+            catch (DomainException e)
             {
                 // cancel the req so it doesn't hang around unbooked and mess up validation
                 header.Cancel(e.Message, header.CreatedBy);
@@ -541,7 +549,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         continue;
                     }
 
-                    await this.CheckMoves(line.PartNumber, movesToAdd);
+                    await this.CheckMoves(
+                        line.PartNumber,
+                        movesToAdd,
+                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
@@ -549,7 +560,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
-                    await this.CheckMoves(line.PartNumber, line.Moves.ToList());
+                    await this.CheckMoves(
+                        line.PartNumber,
+                        line.Moves.ToList(),
+                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -652,12 +666,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 foreach (var candidate in lines)
                 {
-                    req.AddLine(await this.ValidateLineCandidate(candidate));
+                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction));
                 }
             }
             else if (firstLine != null)
             {
-                req.AddLine(await this.ValidateLineCandidate(firstLine));
+                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction));
             }
 
             // move below to its own function?
@@ -697,7 +711,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
                 }
-
             }
             else if (function.PartSource == "RO")
             {
@@ -717,7 +730,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
             else if (function.PartSource == "WO")
             {
-                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction);
+                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction, quantity);
             }
             else if (function.PartSource == "C" && function.Document1Required())
             {
@@ -806,7 +819,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return req;
         }
 
-        public async Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate)
+        public async Task<RequisitionLine> ValidateLineCandidate(
+            LineCandidate candidate,
+            StoresFunction storesFunction = null)
         {
             var part = !string.IsNullOrEmpty(candidate?.PartNumber)
                 ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
@@ -827,13 +842,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (candidate.Moves != null && candidate.Moves.Any())
             {
-                await this.CheckMoves(candidate.PartNumber, candidate.Moves.ToList());
+                await this.CheckMoves(
+                    candidate.PartNumber,
+                    candidate.Moves.ToList(),
+                    FieldIsNeededOrOptional(storesFunction?.ToLocationRequired));
             }
 
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
                 line.TransactionDefinition.RequiresOntoTransactions)
             {
-                throw new CreateRequisitionException($"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
+                throw new CreateRequisitionException(
+                    $"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
             }
 
             return line;
@@ -1001,7 +1020,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return code == "Y";
         }
 
-        private async Task CheckValidWorksOrder(int? document1Number, Part part, string isReverseTransaction)
+        private async Task CheckValidWorksOrder(
+            int? document1Number,
+            Part part,
+            string isReverseTransaction,
+            decimal? quantity)
         {
             var worksOrder = await this.documentProxy.GetWorksOrder(document1Number.GetValueOrDefault());
 
@@ -1013,6 +1036,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (!string.IsNullOrEmpty(worksOrder.DateCancelled))
             {
                 throw new CreateRequisitionException($"Works Order {document1Number} is cancelled.");
+            }
+
+            if (!quantity.HasValue && isReverseTransaction != "Y")
+            {
+                throw new CreateRequisitionException($"You must specify a quantity to book in from works order {document1Number}.");
             }
 
             if (worksOrder.PartNumber != part.PartNumber)
@@ -1037,9 +1065,28 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateRequisitionException("You cannot book serial numbered parts in. Please use the relevant works order screen.");
             }
+
+            if (part.BomVerifyFreqWeeks.GetValueOrDefault() > 0)
+            {
+                var verifications = await this.bomVerificationProxy.GetBomVerifications(worksOrder.PartNumber);
+                if (verifications == null || !verifications.Any())
+                {
+                    throw new CreateRequisitionException($"Part number {worksOrder.PartNumber} requires bom verification.");
+                }
+
+                var latestDate = verifications.Max(a => a.DateVerified);
+                var dateDue = latestDate.AddDays(part.BomVerifyFreqWeeks.GetValueOrDefault() * 7);
+                if (dateDue < DateTime.Today)
+                {
+                    throw new CreateRequisitionException($"Part number {worksOrder.PartNumber} was due for bom verification on {dateDue:dd-MMM-yyyy}.");
+                }
+            }
         }
 
-        private async Task CheckMoves(string partNumber, IList<MoveSpecification> moves)
+        private async Task CheckMoves(
+            string partNumber,
+            IList<MoveSpecification> moves,
+            bool toLocationRequired = false)
         {
             foreach (var m in moves)
             {
@@ -1052,6 +1099,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     && string.IsNullOrEmpty(m.FromLocation))
                 {
                     throw new RequisitionException("Moves are missing location information");
+                }
+
+                if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && toLocationRequired)
+                {
+                    throw new RequisitionException("You must provide a to location or pallet");
                 }
 
                 // just checking moves onto for now, but could extend if required

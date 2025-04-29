@@ -154,8 +154,6 @@
                 req.ToCategory = "FREE";
             }
 
-            await this.repository.AddAsync(req);
-
             if (req.Document1Name == "WO" && req.Document1.HasValue)
             {
                 var worksOrder = await this.documentProxy.GetWorksOrder(req.Document1.Value);
@@ -175,6 +173,8 @@
                 }
             }
 
+            await this.repository.AddAsync(req);
+            
             await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);
 
             return await this.repository.FindByIdAsync(req.ReqNumber);
