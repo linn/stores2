@@ -639,5 +639,42 @@
 
             return new ProcessResult(successParameter.Value?.ToString() == "1", messageParameter.Value?.ToString());
         }
+
+        public async Task<decimal> GetQtyReturned(int returnOrderNumber, int lineNumber)
+        {
+            await using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
+
+            var cmd = new OracleCommand("stores_oo.qty_returned", connection)
+            {
+                CommandType = CommandType.StoredProcedure
+            };
+
+            var result = new OracleParameter(null, OracleDbType.Decimal)
+            {
+                Direction = ParameterDirection.ReturnValue,
+            };
+            cmd.Parameters.Add(result);
+
+            var arg1 = new OracleParameter("p_order_number", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = returnOrderNumber
+            };
+            cmd.Parameters.Add(arg1);
+
+            var arg2 = new OracleParameter("p_order_line", OracleDbType.Int32)
+            {
+                Direction = ParameterDirection.Input,
+                Value = lineNumber
+            };
+            cmd.Parameters.Add(arg2);
+
+
+            await connection.OpenAsync();
+            await cmd.ExecuteNonQueryAsync();
+            await connection.CloseAsync();
+
+            return decimal.Parse(result.Value.ToString());
+        }
     }
 }

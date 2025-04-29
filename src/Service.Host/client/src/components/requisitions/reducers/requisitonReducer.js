@@ -50,7 +50,7 @@ function reducer(state, action) {
             } else if (action.payload.fieldName === 'document2') {
                 return {
                     ...state,
-                    document2Name: state.storesFunction?.document1Name,
+                    document2Name: state.storesFunction?.document2Name,
                     document2: action.payload.newValue
                 };
             } else if (action.payload.fieldName === 'isReverseTransaction') {

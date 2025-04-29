@@ -133,8 +133,8 @@
                 context.BatchRef,
                 context.BatchDate,
                 null,
-                null,
-                null,
+                context.Document2Number,
+                context.Document2Type,
                 context.IsReverseTransaction,
                 context.OriginalReqNumber);
 

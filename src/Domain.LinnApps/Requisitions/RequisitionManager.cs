@@ -670,6 +670,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException($"PO {document1Number} does not exist!");
                 }
                 
+                if (po.DocumentType != "PO")
+                {
+                    throw new CreateRequisitionException($"Order {document1Number} is not a purchase order!");
+                }
+
                 if (!po.IsAuthorised)
                 {
                     throw new CreateRequisitionException($"PO {document1Number} is not authorised!");
@@ -693,7 +698,23 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
                 }
 
-            } 
+            }
+            else if (function.PartSource == "RO")
+            {
+                var ro = await this.documentProxy.GetPurchaseOrder(document1Number.GetValueOrDefault());
+
+                if (ro == null)
+                {
+                    throw new CreateRequisitionException($"PO {document1Number} does not exist!");
+                }
+
+                if (ro.DocumentType != "RO")
+                {
+                    throw new CreateRequisitionException($"Order {document1Number} is not a purchase order!");
+                }
+
+                await this.CheckReturnOrderForFullyBooked(req, ro);
+            }
             else if (function.PartSource == "WO")
             {
                 await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction);
@@ -934,6 +955,24 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
+        public async Task CheckReturnOrderForFullyBooked(RequisitionHeader header, PurchaseOrderResult purchaseOrder)
+        {
+            if (header.Document1Name == "RO" && purchaseOrder != null && purchaseOrder.OrderQty(header.Document1Line).HasValue)
+            {
+                // call to STORES_OO.QTY_RETURNED could rewrite in c# but a bit involved
+                var qty = await this.requisitionStoredProcedures.GetQtyReturned(header.Document1.Value,
+                    header.Document1Line.Value);
+                if (header.IsReverseTransaction == "Y" && header.Quantity.Value >= qty)
+                {
+                    throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
+                }
+                else if (header.IsReverseTransaction != "Y" && header.Quantity.Value - qty <= 0)
+                {
+                    throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} is fully booked");
+                }
+            }
+        }
+
         private static void DoProcessResultCheck(ProcessResult result)
         {
             if (!result.Success)
@@ -1087,7 +1126,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException($"To Stock Pool {header.ToStockPool} does not exist");
             }
 
-            if (header.Part != null && header.IsReverseTransaction != "Y")
+            if (header.Part != null && header.IsReverseTransaction != "Y" && header.StoresFunction?.ToLocationRequired != "N")
             {
                 DoProcessResultCheck(await this.storesService.ValidOntoLocation(
                     header.Part,

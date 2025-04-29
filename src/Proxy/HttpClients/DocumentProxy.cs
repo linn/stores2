@@ -102,7 +102,8 @@
                            {
                                Line = d.Line,
                                OurQty = d.OurQty,
-                               PartNumber = d.PartNumber
+                               PartNumber = d.PartNumber,
+                               OriginalOrderNumber = d.OriginalOrderNumber
                            })
                        };
         }
