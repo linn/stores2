@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Resources.Stores
+﻿using System.Collections.Generic;
+
+namespace Linn.Stores2.Resources.Stores
 {
     public class WorkstationResource
     {
@@ -13,5 +15,7 @@
         public string AlternativeWorkstationCode { get; set; }
 
         public string ZoneType { get; set; }
+
+        public IEnumerable<WorkstationElementResource> WorkstationElements { get; set; }
     }
 }

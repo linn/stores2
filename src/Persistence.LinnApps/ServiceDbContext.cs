@@ -109,6 +109,8 @@
             BuildStockTransactions(builder);
             BuildStockTransactionPostings(builder);
             BuildPotentialMoveDetails(builder);
+            BuildWorkstations(builder);
+            BuildWorkstationElements(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -811,6 +813,19 @@
             e.Property(s => s.VaxWorkstation).HasColumnName("VAX_WORK_STATION").HasMaxLength(8);
             e.Property(s => s.AlternativeWorkstationCode).HasColumnName("ALTERNATIVE_WORK_STATION_CODE").HasMaxLength(16);
             e.Property(s => s.ZoneType).HasColumnName("ZONE_TYPE").HasMaxLength(20);
+            e.HasMany(w => w.WorkstationElements).WithOne().HasForeignKey(w => w.WorkstationCode);
+        }
+
+        private static void BuildWorkstationElements(ModelBuilder builder)
+        {
+            var e = builder.Entity<WorkstationElement>().ToTable("WORK_STATION_ELEMENTS");
+            e.HasKey(l => new { l.WorkstationElementId });
+            e.Property(s => s.WorkstationElementId).HasColumnName("WSE_ID");
+            e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.HasOne(s => s.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
+            e.Property(s => s.DateCreated).HasColumnName("DATE_CREATED");
+            e.Property(s => s.LocationId).HasColumnName("LOCATION_ID");
+            e.Property(s => s.PalletNumber).HasColumnName("PALLET_NUMBER");
         }
     }
 }
