@@ -88,7 +88,8 @@
                 .AddScoped<IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>, StockStateFacadeService>()
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
-                .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>();
+                .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
+                .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationResource>, WorkstationFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

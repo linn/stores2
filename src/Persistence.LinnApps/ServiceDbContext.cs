@@ -827,5 +827,13 @@
             e.Property(s => s.LocationId).HasColumnName("LOCATION_ID");
             e.Property(s => s.PalletNumber).HasColumnName("PALLET_NUMBER");
         }
+
+        private static void BuildCits(ModelBuilder builder)
+        {
+            var e = builder.Entity<Cit>().ToTable("CITS");
+            e.HasKey(l => new { l.Code });
+            e.Property(s => s.Code).HasColumnName("CODE").HasMaxLength(10);
+            e.Property(s => s.Name).HasColumnName("NAME").HasMaxLength(50);
+        }
     }
 }
