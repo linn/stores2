@@ -6,6 +6,8 @@ import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import {
     InputField,
     Loading,
@@ -353,6 +355,14 @@ function Requisition({ creating }) {
                 }
             }
         }
+    };
+
+    const closeMessage = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        dispatch({ type: 'close_message' });
     };
 
     const shouldRender = (renderFunction, showOnCreate = true) => {
@@ -1145,6 +1155,20 @@ function Requisition({ creating }) {
                         </>
                     )}
             </Grid>
+            <Snackbar
+                open={formState?.message?.showMessage}
+                autoHideDuration={7000}
+                onClose={closeMessage}
+            >
+                <Alert
+                    onClose={closeMessage}
+                    severity={formState?.message?.severity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {formState?.message?.text}
+                </Alert>
+            </Snackbar>
         </Page>
     );
 }
