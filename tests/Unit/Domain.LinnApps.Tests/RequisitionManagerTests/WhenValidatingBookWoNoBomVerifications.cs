@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
 
@@ -14,7 +15,7 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingBookWoAndIsSerialNumberedPart : ContextBase
+    public class WhenValidatingBookWoNoBomVerifications : ContextBase
     {
         private Func<Task> action;
 
@@ -28,7 +29,7 @@
                 .Returns(TestTransDefs.CustomerToGoodStock);
             this.PalletRepository.FindByIdAsync(502).Returns(new StoresPallet());
             this.PalletRepository.FindByIdAsync(503).Returns(new StoresPallet());
-            this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART" });
+            this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART", BomVerifyFreqWeeks = 12 });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
             this.StockPoolRepository.FindByIdAsync("LINN").Returns(new StockPool());
             this.StockService.ValidStockLocation(null, 502, "PART", Arg.Any<decimal>(), Arg.Any<string>())
@@ -43,12 +44,13 @@
                         Outstanding = "Y",
                         WorkStationCode = "WS1"
                     });
-            this.SalesProxy.GetSalesArticle("PART").Returns(new SalesArticleResult { TypeOfSerialNumber = "S" });
+            this.SalesProxy.GetSalesArticle("PART").Returns(new SalesArticleResult { TypeOfSerialNumber = "N" });
             this.StoresService.ValidOntoLocation(
                 Arg.Any<Part>(),
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
+            this.BomVerificationProxy.GetBomVerifications("PART").Returns(new List<BomVerificationHistory>());
 
             this.action = () => this.Sut.Validate(
                 123,
@@ -69,7 +71,7 @@
         public async Task ShouldThrowCorrectException()
         {
             await this.action.Should().ThrowAsync<CreateRequisitionException>()
-                .WithMessage("You cannot book serial numbered parts in. Please use the relevant works order screen.");
+                .WithMessage("Part number PART requires bom verification.");
         }
     }
 }

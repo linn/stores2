@@ -18,10 +18,10 @@
 
     public class WhenValidatingSupplierKitAndOrderAlreadyBeenKitted : ContextBase
     {
-        private Func<Task> act;
+        private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.SupplierKit.FunctionCode)
@@ -53,7 +53,8 @@
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
-            this.StockService.ValidStockLocation(null, 666, "PART", 10, "QC").Returns(new ProcessResult(true, null));
+            this.StockService.ValidStockLocation(null, 666, "PART", 10, "QC")
+                .Returns(new ProcessResult(true, null));
 
             var requisitions = new List<RequisitionHeader>
             {
@@ -83,27 +84,27 @@
             this.ReqRepository.FilterByAsync(Arg.Any<Expression<Func<RequisitionHeader, bool>>>())
                 .Returns(requisitions);
 
-            this.act = () => this.Sut.Validate(
-                33087,
-                TestFunctionCodes.SupplierKit.FunctionCode,
-                null,
-                827753,
-                "PO",
-                null,
-                null,
-                null,
-                partNumber: "ADIKT",
-                quantity: 1,
-                fromState: "STORES",
-                toState: "STORES",
-                toLocationCode: "S-SU-1234",
-                toStockPool: "SUPPLIER");
+            this.action = () => this.Sut.Validate(
+                                    33087,
+                                    TestFunctionCodes.SupplierKit.FunctionCode,
+                                    null,
+                                    827753,
+                                    "PO",
+                                    null,
+                                    null,
+                                    null,
+                                    partNumber: "ADIKT",
+                                    quantity: 1,
+                                    fromState: "STORES",
+                                    toState: "STORES",
+                                    toLocationCode: "S-SU-1234",
+                                    toStockPool: "SUPPLIER");
         }
 
         [Test]
         public async Task ShouldThrow()
         {
-            await this.act.Should().ThrowAsync<DocumentException>()
+            await this.action.Should().ThrowAsync<DocumentException>()
                 .WithMessage("Full order qty 1 on order 827753 has already been kitted");
         }
     }

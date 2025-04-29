@@ -42,6 +42,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository;
 
+        private readonly IBomVerificationProxy bomVerificationProxy;
+
         private readonly IRepository<StoresPallet, int> palletRepository;
 
         private readonly IRepository<StockState, string> stateRepository;
@@ -75,7 +77,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IDocumentProxy documentProxy,
             IStockService stockService,
             ISalesProxy salesProxy,
-            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository)
+            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository,
+            IBomVerificationProxy bomVerificationProxy)
         {
             this.authService = authService;
             this.repository = repository;
@@ -96,6 +99,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.stockService = stockService;
             this.salesProxy = salesProxy;
             this.potentialMoveRepository = potentialMoveRepository;
+            this.bomVerificationProxy = bomVerificationProxy;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -702,7 +706,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
                 }
-
             } 
             else if (function.PartSource == "WO")
             {
@@ -1013,6 +1016,22 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                                           || salesPart.TypeOfSerialNumber == "P2"))
             {
                 throw new CreateRequisitionException("You cannot book serial numbered parts in. Please use the relevant works order screen.");
+            }
+
+            if (part.BomVerifyFreqWeeks.GetValueOrDefault() > 0)
+            {
+                var verifications = await this.bomVerificationProxy.GetBomVerifications(worksOrder.PartNumber);
+                if (verifications == null || !verifications.Any())
+                {
+                    throw new CreateRequisitionException($"Part number {worksOrder.PartNumber} requires bom verification.");
+                }
+
+                var latestDate = verifications.Max(a => a.DateVerified);
+                var dateDue = latestDate.AddDays(part.BomVerifyFreqWeeks.GetValueOrDefault() * 7);
+                if (dateDue < DateTime.Today)
+                {
+                    throw new CreateRequisitionException($"Part number {worksOrder.PartNumber} was due for bom verification on {dateDue:dd-MMM-yyyy}.");
+                }
             }
         }
 
