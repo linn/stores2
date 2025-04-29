@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Linn.Common.Domain;
-using Linn.Stores2.Domain.LinnApps.External;
-using Linn.Stores2.Domain.LinnApps.Parts;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using Linn.Stores2.Domain.LinnApps.Stock;
-using Linn.Stores2.TestData.FunctionCodes;
-using Linn.Stores2.TestData.Transactions;
-using NSubstitute;
-using NUnit.Framework;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
+    using NSubstitute;
+    using NUnit.Framework;
+
     public class WhenValidatingReturnToSupplier : ContextBase
     {
         private RequisitionHeader result;

@@ -1,18 +1,18 @@
-﻿using Linn.Stores2.Domain.LinnApps.Exceptions;
-using Linn.Stores2.Domain.LinnApps.External;
-using Linn.Stores2.Domain.LinnApps.Parts;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using Linn.Stores2.Domain.LinnApps.Stock;
-using Linn.Stores2.TestData.FunctionCodes;
-using NSubstitute;
-using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System;
-using FluentAssertions;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using NSubstitute;
+    using NUnit.Framework;
+
     public class WhenCheckingReturnsOrderAndCannotReverse : ContextBase
     {
         private Func<Task> action;
