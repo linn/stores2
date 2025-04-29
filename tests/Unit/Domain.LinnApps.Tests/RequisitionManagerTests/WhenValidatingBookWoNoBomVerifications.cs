@@ -61,6 +61,7 @@
                 null,
                 null,
                 partNumber: "PART",
+                quantity: 1,
                 fromPalletNumber: 502,
                 toPalletNumber: 503,
                 toStockPool: "LINN",

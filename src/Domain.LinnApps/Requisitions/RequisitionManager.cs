@@ -709,7 +709,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             } 
             else if (function.PartSource == "WO")
             {
-                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction);
+                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction, quantity);
             }
             else if (function.PartSource == "C" && function.Document1Required())
             {
@@ -981,7 +981,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return code == "Y";
         }
 
-        private async Task CheckValidWorksOrder(int? document1Number, Part part, string isReverseTransaction)
+        private async Task CheckValidWorksOrder(
+            int? document1Number,
+            Part part,
+            string isReverseTransaction,
+            decimal? quantity)
         {
             var worksOrder = await this.documentProxy.GetWorksOrder(document1Number.GetValueOrDefault());
 
@@ -993,6 +997,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (!string.IsNullOrEmpty(worksOrder.DateCancelled))
             {
                 throw new CreateRequisitionException($"Works Order {document1Number} is cancelled.");
+            }
+
+            if (!quantity.HasValue && isReverseTransaction != "Y")
+            {
+                throw new CreateRequisitionException($"You must specify a quantity to book in from works order {document1Number}.");
             }
 
             if (worksOrder.PartNumber != part.PartNumber)
