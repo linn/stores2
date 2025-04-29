@@ -42,6 +42,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository;
 
+        private readonly IBomVerificationProxy bomVerificationProxy;
+
         private readonly IRepository<StoresPallet, int> palletRepository;
 
         private readonly IRepository<StockState, string> stateRepository;
@@ -75,7 +77,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IDocumentProxy documentProxy,
             IStockService stockService,
             ISalesProxy salesProxy,
-            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository)
+            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository,
+            IBomVerificationProxy bomVerificationProxy)
         {
             this.authService = authService;
             this.repository = repository;
@@ -96,6 +99,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.stockService = stockService;
             this.salesProxy = salesProxy;
             this.potentialMoveRepository = potentialMoveRepository;
+            this.bomVerificationProxy = bomVerificationProxy;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -702,11 +706,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
                 }
-
             } 
             else if (function.PartSource == "WO")
             {
-                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction);
+                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction, quantity);
             }
             else if (function.PartSource == "C" && function.Document1Required())
             {
@@ -978,7 +981,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return code == "Y";
         }
 
-        private async Task CheckValidWorksOrder(int? document1Number, Part part, string isReverseTransaction)
+        private async Task CheckValidWorksOrder(
+            int? document1Number,
+            Part part,
+            string isReverseTransaction,
+            decimal? quantity)
         {
             var worksOrder = await this.documentProxy.GetWorksOrder(document1Number.GetValueOrDefault());
 
@@ -990,6 +997,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (!string.IsNullOrEmpty(worksOrder.DateCancelled))
             {
                 throw new CreateRequisitionException($"Works Order {document1Number} is cancelled.");
+            }
+
+            if (!quantity.HasValue && isReverseTransaction != "Y")
+            {
+                throw new CreateRequisitionException($"You must specify a quantity to book in from works order {document1Number}.");
             }
 
             if (worksOrder.PartNumber != part.PartNumber)
@@ -1013,6 +1025,22 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                                           || salesPart.TypeOfSerialNumber == "P2"))
             {
                 throw new CreateRequisitionException("You cannot book serial numbered parts in. Please use the relevant works order screen.");
+            }
+
+            if (part.BomVerifyFreqWeeks.GetValueOrDefault() > 0)
+            {
+                var verifications = await this.bomVerificationProxy.GetBomVerifications(worksOrder.PartNumber);
+                if (verifications == null || !verifications.Any())
+                {
+                    throw new CreateRequisitionException($"Part number {worksOrder.PartNumber} requires bom verification.");
+                }
+
+                var latestDate = verifications.Max(a => a.DateVerified);
+                var dateDue = latestDate.AddDays(part.BomVerifyFreqWeeks.GetValueOrDefault() * 7);
+                if (dateDue < DateTime.Today)
+                {
+                    throw new CreateRequisitionException($"Part number {worksOrder.PartNumber} was due for bom verification on {dateDue:dd-MMM-yyyy}.");
+                }
             }
         }
 
