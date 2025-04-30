@@ -108,6 +108,8 @@
 		
         public int? OriginalReqNumber { get; set; }
 
+        public int? Document3 { get; set; }
+
         protected RequisitionHeader()
         {
         }

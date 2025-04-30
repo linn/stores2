@@ -210,7 +210,8 @@
                              batchDate: string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
                              lines: resource.Lines?.Select(BuildLineCandidateFromResource),
                              resource.IsReverseTransaction,
-                             resource.OriginalReqNumber);
+                             resource.OriginalReqNumber,
+                             resource.Document3);
             return result;
         }
 
