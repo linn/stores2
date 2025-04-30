@@ -683,11 +683,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     throw new CreateRequisitionException($"PO {document1Number} does not exist!");
                 }
-                
-                if (po.DocumentType != "PO")
-                {
-                    throw new CreateRequisitionException($"Order {document1Number} is not a purchase order!");
-                }
 
                 if (!po.IsAuthorised)
                 {

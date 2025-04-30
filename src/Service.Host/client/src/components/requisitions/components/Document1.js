@@ -58,22 +58,7 @@ function Document1({
         if (purchaseOrder) {
             const docType = purchaseOrder.documentType.name;
 
-            if (docType === 'PO') {
-                onSelect({
-                    partNumber: purchaseOrder.details[0].partNumber,
-                    partDescription: purchaseOrder.details[0].partDescription,
-                    batchRef:
-                        storesFunction?.batchRequired === 'Y'
-                            ? `${docType.charAt(0)}${purchaseOrder.orderNumber}`
-                            : null,
-                    document1Line: 1,
-                    toLocationCode:
-                        storesFunction?.toLocationRequired === 'Y'
-                            ? `S-SU-${purchaseOrder.supplier.id}`
-                            : null,
-                    docType
-                });
-            } else if (docType === 'RO') {
+            if (storesFunction?.code === 'RETSU') {
                 const debitNote = toIntId(
                     utilities.getHref(purchaseOrder, 'ret-credit-debit-note')
                 );
@@ -88,6 +73,21 @@ function Document1({
                     document2: debitNote,
                     docType,
                     quantity: purchaseOrder.details[0].ourQty
+                });
+            } else {
+                onSelect({
+                    partNumber: purchaseOrder.details[0].partNumber,
+                    partDescription: purchaseOrder.details[0].partDescription,
+                    batchRef:
+                        storesFunction?.batchRequired === 'Y'
+                            ? `${docType.charAt(0)}${purchaseOrder.orderNumber}`
+                            : null,
+                    document1Line: 1,
+                    toLocationCode:
+                        storesFunction?.toLocationRequired === 'Y'
+                            ? `S-SU-${purchaseOrder.supplier.id}`
+                            : null,
+                    docType
                 });
             }
 
