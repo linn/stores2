@@ -115,6 +115,7 @@
             BuildPotentialMoveDetails(builder);
             BuildWorkstations(builder);
             BuildWorkstationElements(builder);
+            BuildCits(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
