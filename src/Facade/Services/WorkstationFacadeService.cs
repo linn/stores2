@@ -7,6 +7,7 @@
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
@@ -16,13 +17,21 @@
     {
         private readonly IRepository<Workstation, string> repository;
 
+        private readonly IRepository<Employee, int> employeeRepository;
+
+        private readonly IRepository<Cit, string> citRepository;
+
         public WorkstationFacadeService(
             IRepository<Workstation, string> repository,
+            IRepository<Employee, int> employeeRepository,
+            IRepository<Cit, string> citRepository,
             ITransactionManager transactionManager,
             IBuilder<Workstation> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.repository = repository;
+            this.employeeRepository = employeeRepository;
+            this.citRepository = citRepository;
         }
 
         protected override async Task<Workstation> CreateFromResourceAsync(
@@ -33,8 +42,11 @@
 
             if (workstation != null)
             {
-                throw new WorkstationException("Storage Type Code already exists!");
+                throw new WorkstationException("Work station already exists!");
             }
+
+            var cit = this.citRepository.FindById(resource.CitCode);
+
 
             return new Workstation();
         }
