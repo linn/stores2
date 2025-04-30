@@ -20,5 +20,10 @@
             var detail = this.Details.SingleOrDefault(d => d.Line == (lineNumber ?? 1));
             return detail?.OurQty;
         }
+
+        public int? OriginalOrderNumber(int? lineNumber = null)
+        {
+            return this.Details.SingleOrDefault(d => d.Line == (lineNumber ?? 1))?.OriginalOrderNumber; ;
+        }
     }
 }

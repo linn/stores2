@@ -1,9 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Threading.Tasks;
-
     using FluentAssertions;
-
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -11,12 +9,10 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
-
     using NSubstitute;
-
     using NUnit.Framework;
 
-    public class WhenValidatingGistPo : ContextBase
+    public class WhenValidatingGistPoAndReturnsOrder : ContextBase
     {
         private RequisitionHeader result;
 
@@ -34,10 +30,10 @@
             this.DocumentProxy.GetPurchaseOrder(1234567).Returns(
                 new PurchaseOrderResult
                 {
-                    IsAuthorised = true, 
-                    IsFilCancelled = false, 
-                    OrderNumber = 1234567, 
-                    DocumentType = "PO"
+                    IsAuthorised = true,
+                    IsFilCancelled = false,
+                    OrderNumber = 1234567,
+                    DocumentType = "RO"
                 });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "Stores"));
             this.StockPoolRepository.FindByIdAsync("STORES").Returns(new StockPool());
@@ -53,17 +49,17 @@
                 TestFunctionCodes.GistPo.FunctionCode,
                 null,
                 1234567,
-                "PO",
+                "RO",
                 null,
                 null,
                 null,
                 partNumber: "PART",
                 fromStockPool: "QC",
-                batchRef: "P1234567",
+                batchRef: "R1234567",
                 toStockPool: "STORES",
                 quantity: 10,
                 fromPalletNumber: 666,
-                fromState:"QC",
+                fromState: "QC",
                 toState: "STORES",
                 toPalletNumber: 666);
         }

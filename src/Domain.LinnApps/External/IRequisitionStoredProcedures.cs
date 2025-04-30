@@ -47,5 +47,7 @@
         Task<bool> CanPutPartOnPallet(string partNumber, int palletNumber);
 
         Task<ProcessResult> CreateLoanReq(int loanNumber);
+
+        Task<decimal> GetQtyReturned(int returnOrderNumber, int lineNumber);
     }
 }

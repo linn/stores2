@@ -422,6 +422,20 @@ function Requisition({ creating }) {
                 payload: { fieldName: 'toLocationCode', newValue: selected.toLocationCode }
             });
         }
+
+        if (selected.document2) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'document2', newValue: selected.document2 }
+            });
+        }
+
+        if (selected.quantity) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'quantity', newValue: selected.quantity }
+            });
+        }
     };
 
     const handleDocument1PartSelect = part => {
@@ -868,6 +882,7 @@ function Requisition({ creating }) {
                             <Document2
                                 document2={formState.document2}
                                 document2Text={formState.storesFunction?.document2Text}
+                                document2Name={formState.document2Name}
                                 handleFieldChange={handleHeaderFieldChange}
                                 shouldRender={
                                     formState.storesFunction &&
