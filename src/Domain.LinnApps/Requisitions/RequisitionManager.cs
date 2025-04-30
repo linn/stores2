@@ -713,12 +713,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (ro == null)
                 {
-                    throw new CreateRequisitionException($"PO {document1Number} does not exist!");
+                    throw new CreateRequisitionException($"RO {document1Number} does not exist!");
                 }
 
-                if (ro.DocumentType != "RO")
+                // not a seperate part source for credit orders get lumped in with RO
+                if (ro.DocumentType != "RO" && ro.DocumentType != "CO")
                 {
-                    throw new CreateRequisitionException($"Order {document1Number} is not a purchase order!");
+                    throw new CreateRequisitionException($"Order {document1Number} is not a returns/credit order!");
                 }
 
                 await this.CheckReturnOrderForFullyBooked(req, ro);
