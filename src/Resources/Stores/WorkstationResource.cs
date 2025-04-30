@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Linn.Stores2.Resources.Stores
+﻿namespace Linn.Stores2.Resources.Stores
 {
+    using System.Collections.Generic;
+
     public class WorkstationResource
     {
         public string WorkstationCode { get; set; }
@@ -9,6 +9,8 @@ namespace Linn.Stores2.Resources.Stores
         public string Description { get; set; }
 
         public string CitCode { get; set; }
+
+        public string CitName { get; set; }
 
         public string VaxWorkstation { get; set; }
 

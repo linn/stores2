@@ -67,6 +67,10 @@
 
         public DbSet<StockTransaction> StockTransactions { get; set; }
 
+        public DbSet<Workstation> Workstations { get; set; }
+
+        public DbSet<Cit> Cits { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -809,7 +813,7 @@
             e.HasKey(l => new { l.WorkstationCode });
             e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
-            e.Property(s => s.CitCode).HasColumnName("CIT_CODE").HasMaxLength(10);
+            e.HasOne(a => a.Cit).WithMany().HasForeignKey("CIT_CODE");
             e.Property(s => s.VaxWorkstation).HasColumnName("VAX_WORK_STATION").HasMaxLength(8);
             e.Property(s => s.ZoneType).HasColumnName("ZONE_TYPE").HasMaxLength(20);
             e.HasMany(w => w.WorkstationElements).WithOne().HasForeignKey(w => w.WorkstationCode);

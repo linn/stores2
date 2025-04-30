@@ -24,7 +24,8 @@
             return new WorkstationResource
                        {
                            WorkstationCode = model.WorkstationCode,
-                           CitCode = model.CitCode,
+                           CitCode = model.Cit?.Code,
+                           CitName = model.Cit?.Name,
                            Description = model.Description,
                            VaxWorkstation = model.VaxWorkstation,
                            ZoneType = model.ZoneType,

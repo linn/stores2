@@ -8,7 +8,7 @@
 
         public string Description { get; set; }
 
-        public string CitCode { get; set; }
+        public Cit Cit { get; set; }
 
         public string VaxWorkstation { get; set; }
 
