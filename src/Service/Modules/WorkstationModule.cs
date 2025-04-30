@@ -16,25 +16,33 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/work-stations", this.GetAll);
+            app.MapGet("/stores2/work-stations", this.Search);
             app.MapPost("/stores2/work-stations", this.Create);
             app.MapGet("/stores2/work-stations/{code}", this.GetById);
             app.MapPut("/stores2/work-stations/{code}", this.Update);
         }
 
-        private async Task GetAll(
+        private async Task Search(
             HttpRequest _,
             HttpResponse res,
-            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationResource> service)
+            string workstationCode,
+            string citCode,
+            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> service)
         {
-            await res.Negotiate(await service.GetAll());
+            var workstations = await service.FilterBy(
+                                   new WorkstationSearchResource
+                                       {
+                                           WorkstationCode = workstationCode,
+                                           CitCode = citCode
+                                       });
+            await res.Negotiate(workstations);
         }
 
         private async Task GetById(
             HttpRequest _,
             HttpResponse res,
             string code,
-            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationResource> service)
+            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> service)
         {
             await res.Negotiate(await service.GetById(code));
         }
@@ -43,7 +51,7 @@
             HttpRequest _,
             HttpResponse res,
             WorkstationResource resource,
-            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationResource> service)
+            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> service)
         {
             await res.Negotiate(await service.Add(resource));
         }
@@ -53,7 +61,7 @@
             HttpResponse res,
             string code,
             WorkstationResource resource,
-            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationResource> service)
+            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> service)
         {
             await res.Negotiate(await service.Update(code, resource));
         }
