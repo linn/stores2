@@ -151,12 +151,18 @@ function reducer(state, action) {
                 // set header from / to state if there is only one possibility for the given stores function
                 if (action.payload.newValue.transactionTypes?.length === 1) {
                     if (!action.payload.newValue?.defaultFromState) {
-                        newState.req.fromState =
-                            action.payload.newValue.transactionTypes[0]?.fromStates?.[0];
+                        // dont override if functions like MOVELOC don't want it
+                        if (action.payload.newValue?.fromStateRequired !== 'N') {
+                            newState.req.fromState =
+                                action.payload.newValue.transactionTypes[0]?.fromStates?.[0];
+                        }
                     }
                     if (!action.payload.newValue?.defaultToState) {
-                        newState.req.toState =
-                            action.payload.newValue.transactionTypes[0]?.toStates?.[0];
+                        // dont override if functions like MOVELOC don't want it
+                        if (action.payload.newValue?.toStateRequired !== 'N') {
+                            newState.req.toState =
+                                action.payload.newValue.transactionTypes[0]?.toStates?.[0];
+                        }
                     }
                 }
 
