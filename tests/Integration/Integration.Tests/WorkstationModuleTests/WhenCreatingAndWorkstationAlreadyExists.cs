@@ -49,7 +49,7 @@
                                                                     {
                                                                         new WorkstationElementResource
                                                                             {
-                                                                                WorkstationCode = "WORKSTATIONCODE",
+                                                                                WorkstationCode = "Test",
                                                                                 CreatedBy = 33156,
                                                                                 CreatedByName = "RSTEWART",
                                                                                 DateCreated = DateTime.Today.ToString("o"),
@@ -59,7 +59,7 @@
                                                                             },
                                                                         new WorkstationElementResource
                                                                             {
-                                                                                WorkstationCode = "WORKSTATIONCODE",
+                                                                                WorkstationCode = "Test",
                                                                                 CreatedBy = 33156,
                                                                                 CreatedByName = "RSTEWART",
                                                                                 DateCreated = DateTime.Today.ToString("o"),
