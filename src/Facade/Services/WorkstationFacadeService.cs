@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
@@ -47,8 +48,19 @@
 
             var cit = this.citRepository.FindById(resource.CitCode);
 
-
-            return new Workstation();
+            return new Workstation(
+                resource.WorkstationCode, 
+                resource.Description, 
+                cit, 
+                resource.VaxWorkstation, 
+                resource.ZoneType, 
+                resource.WorkstationElements.Select(e => new WorkstationElement(
+                    e.WorkstationElementId,
+                    e.WorkstationCode,
+                    e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
+                    DateTime.Parse(e.DateCreated),
+                    e.LocationId,
+                    e.PalletNumber)));
         }
 
         protected override void UpdateFromResource(
@@ -56,7 +68,23 @@
             WorkstationResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            //entity.Update(updateResource.Description);
+            var cit = this.citRepository.FindById(updateResource.CitCode);
+
+            var updateDetails = updateResource.WorkstationElements.Select(e => new WorkstationElement(
+                    e.WorkstationElementId,
+                    e.WorkstationCode,
+                    e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
+                    DateTime.Parse(e.DateCreated),
+                    e.LocationId,
+                    e.PalletNumber));
+           
+            entity.Update(
+                updateResource.WorkstationCode,
+                updateResource.Description,
+                cit,
+                updateResource.VaxWorkstation,
+                updateResource.ZoneType,
+                updateDetails);
         }
 
         protected override Expression<Func<Workstation, bool>> SearchExpression(string searchTerm)

@@ -4,6 +4,22 @@
 
     public class WorkstationElement
     {
+        public WorkstationElement(
+            int workstationElementId,
+            string workstationCode,
+            Employee createdBy,
+            DateTime dateCreated,
+            int? locationId,
+            int? palletNumber)
+        {
+            this.WorkstationElementId = workstationElementId;
+            this.WorkstationCode = workstationCode;
+            this.CreatedBy = createdBy;
+            this.DateCreated = dateCreated;
+            this.LocationId = locationId;
+            this.PalletNumber = palletNumber;
+        }
+
         public int WorkstationElementId { get; set; }
 
         public string WorkstationCode { get; set; }
