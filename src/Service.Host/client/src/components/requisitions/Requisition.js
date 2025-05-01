@@ -40,6 +40,7 @@ import PartNumberQuantity from './components/PartNumberQuantity';
 import StockOptions from './components/StockOptions';
 import Document1 from './components/Document1';
 import Document2 from './components/Document2';
+import Document3 from './components/Document3';
 import PickRequisitionDialog from './PickRequisitionDialog';
 
 function Requisition({ creating }) {
@@ -436,6 +437,13 @@ function Requisition({ creating }) {
             dispatch({
                 type: 'set_header_value',
                 payload: { fieldName: 'document2', newValue: selected.document2 }
+            });
+        }
+
+        if (selected.document3) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'document3', newValue: selected.document3 }
             });
         }
 
@@ -904,6 +912,11 @@ function Requisition({ creating }) {
                                 shouldEnter={
                                     formState.req.storesFunction?.document2Entered && creating
                                 }
+                                document3={formState.req.document3}
+                            />
+                            <Document3
+                                document3={formState.req.document3}
+                                storesFunction={formState.req.storesFunction}
                             />
                             <PartNumberQuantity
                                 partNumber={formState.req.part?.partNumber}

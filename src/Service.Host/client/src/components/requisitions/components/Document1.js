@@ -71,6 +71,7 @@ function Document1({
                         : null,
                     document1Line: 1,
                     document2: debitNote,
+                    document3: purchaseOrder.details[0].originalOrderNumber,
                     docType,
                     quantity: purchaseOrder.details[0].ourQty
                 });
