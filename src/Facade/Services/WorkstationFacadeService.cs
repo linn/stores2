@@ -49,18 +49,20 @@
             var cit = this.citRepository.FindById(resource.CitCode);
 
             return new Workstation(
-                resource.WorkstationCode, 
-                resource.Description, 
-                cit, 
-                resource.VaxWorkstation, 
-                resource.ZoneType, 
-                resource.WorkstationElements.Select(e => new WorkstationElement(
-                    e.WorkstationElementId,
-                    e.WorkstationCode,
-                    e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
-                    DateTime.Parse(e.DateCreated),
-                    e.LocationId,
-                    e.PalletNumber)));
+                resource.WorkstationCode,
+                resource.Description,
+                cit,
+                resource.VaxWorkstation,
+                resource.ZoneType,
+                resource.WorkstationElements
+                    .Select(e => new WorkstationElement(
+                        e.WorkstationElementId,
+                        e.WorkstationCode,
+                        e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
+                        DateTime.Parse(e.DateCreated),
+                        e.LocationId,
+                        e.PalletNumber))
+                    .ToList());
         }
 
         protected override void UpdateFromResource(
@@ -70,14 +72,16 @@
         {
             var cit = this.citRepository.FindById(updateResource.CitCode);
 
-            var updateDetails = updateResource.WorkstationElements.Select(e => new WorkstationElement(
+            var updateDetails = updateResource.WorkstationElements
+                .Select(e => new WorkstationElement(
                     e.WorkstationElementId,
                     e.WorkstationCode,
                     e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
                     DateTime.Parse(e.DateCreated),
                     e.LocationId,
-                    e.PalletNumber));
-           
+                    e.PalletNumber))
+                .ToList();
+
             entity.Update(
                 updateResource.WorkstationCode,
                 updateResource.Description,

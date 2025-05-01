@@ -16,6 +16,6 @@
 
         public string ZoneType { get; set; }
 
-        public IEnumerable<WorkstationElementResource> WorkstationElements { get; set; }
+        public ICollection<WorkstationElementResource> WorkstationElements { get; set; }
     }
 }

@@ -67,7 +67,6 @@
         [TearDown]
         public void Teardown()
         {
-            this.DbContext.Workstations.RemoveAllAndSave(this.DbContext);
             this.DbContext.Cits.RemoveAllAndSave(this.DbContext);
         }
     }
