@@ -114,6 +114,22 @@ function BookInPostingsDialog({
         setBookInPostings(bookInPostingsToUpdate);
     };
 
+    const addFullPosting = () => {
+        const id = (bookInPostings.length ?? 0) + 1;
+        const newBookInPosting = {
+            id,
+            qty: orderDetail.ourQty,
+            departmentCode: orderDetail.orderPosting.nominalAccount.department.departmentCode,
+            departmentDescription:
+                orderDetail.orderPosting.nominalAccount.department.departmentDescription,
+            nominalCode: orderDetail.orderPosting.nominalAccount.nominal.nominalCode,
+            nominalDescription: orderDetail.orderPosting.nominalAccount.nominal.description
+        };
+
+        const bookInPostingsToUpdate = [...bookInPostings, newBookInPosting];
+        setBookInPostings(bookInPostingsToUpdate);
+    };
+
     const handleClose = () => {
         setOpen(false);
     };
@@ -540,9 +556,13 @@ function BookInPostingsDialog({
                     <Grid size={12}>
                         <Typography variant="h6">Book In Postings</Typography>
                     </Grid>
-                    <Grid size={12}>
+                    <Grid size={2}>
                         <Button onClick={addPosting}>Add New Posting</Button>
                     </Grid>
+                    <Grid size={2}>
+                        <Button onClick={addFullPosting}>Add Full Posting</Button>
+                    </Grid>
+                    <Grid size={8} />
                     <Grid size={12}>
                         <DataGrid
                             rows={bookInPostings ?? []}
