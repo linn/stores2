@@ -4,6 +4,10 @@
 
     public class WorkstationElement
     {
+        public WorkstationElement()
+        {
+        }
+
         public WorkstationElement(
             int workstationElementId,
             string workstationCode,

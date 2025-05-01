@@ -4,6 +4,10 @@
 
     public class Workstation
     {
+        public Workstation()
+        {
+        }
+
         public Workstation(
             string workstationCode,
             string description,
