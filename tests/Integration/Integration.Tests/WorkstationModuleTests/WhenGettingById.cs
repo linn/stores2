@@ -35,7 +35,7 @@
             this.DbContext.Workstations.AddAndSave(this.DbContext, this.workstation);
 
             this.Response = this.Client.Get(
-                "/stores2/work-stations/test",
+                "/stores2/work-stations/Test",
                 with =>
                     {
                         with.Accept("application/json");
@@ -59,7 +59,7 @@
         public void ShouldReturnJsonBody()
         {
             var resource = this.Response.DeserializeBody<WorkstationResource>();
-            resource.WorkstationCode.Should().Be("test");
+            resource.WorkstationCode.Should().Be("Test");
             resource.Description.Should().Be("description");
         }
     }

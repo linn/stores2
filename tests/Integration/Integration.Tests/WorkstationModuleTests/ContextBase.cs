@@ -49,7 +49,7 @@
                     transactionManager,
                     new WorkstationResourceBuilder(new WorkstationElementsResourceBuilder()));
 
-            this.Client = TestClient.With<StorageTypeModule>(
+            this.Client = TestClient.With<WorkstationModule>(
                 services =>
                 {
                     services.AddSingleton(workstationFacadeService);

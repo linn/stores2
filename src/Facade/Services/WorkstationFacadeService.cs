@@ -104,7 +104,9 @@
 
         protected override Expression<Func<Workstation, bool>> FilterExpression(WorkstationSearchResource searchResource)
         {
-            throw new NotImplementedException();
+            return w =>
+                (string.IsNullOrEmpty(searchResource.WorkstationCode) || w.WorkstationCode == searchResource.WorkstationCode)
+                && (string.IsNullOrEmpty(searchResource.CitCode) || w.Cit.Code == searchResource.CitCode);
         }
 
         protected override Expression<Func<Workstation, bool>> FindExpression(WorkstationSearchResource searchResource)

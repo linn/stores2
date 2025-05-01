@@ -31,7 +31,7 @@
                                           VaxWorkstation = "161",
                                           WorkstationElements = new List<WorkstationElementResource>
                                                                     {
-                                                                        new WorkstationElementResource
+                                                                        new WorkstationElementResource()
                                                                             {
                                                                                 WorkstationCode = "WORKSTATIONCODE",
                                                                                 CreatedBy = 33156,
@@ -41,7 +41,7 @@
                                                                                 PalletNumber = 567,
                                                                                 WorkstationElementId = 1
                                                                             },
-                                                                        new WorkstationElementResource
+                                                                        new WorkstationElementResource()
                                                                             {
                                                                                 WorkstationCode = "WORKSTATIONCODE",
                                                                                 CreatedBy = 33156,
@@ -83,7 +83,7 @@
         {
             var resource = this.Response.DeserializeBody<WorkstationResource>();
             resource.WorkstationCode.Should().Be("WORKSTATIONCODE");
-            resource.Description.Should().Be("A DESCRIPTION");
+            resource.Description.Should().Be("A TEST WORKSTATION");
         }
     }
 }

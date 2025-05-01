@@ -60,7 +60,7 @@
         public void ShouldReturnJsonBody()
         {
             var resource = this.Response.DeserializeBody<IEnumerable<WorkstationResource>>();
-            resource.First().WorkstationCode.Should().Be("test");
+            resource.First().WorkstationCode.Should().Be("Test");
             resource.First().Description.Should().Be("description");
         }
     }
