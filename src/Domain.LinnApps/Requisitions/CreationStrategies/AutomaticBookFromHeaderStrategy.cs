@@ -154,6 +154,8 @@
                 req.ToCategory = "FREE";
             }
 
+            req.Document3 = context.Document3Number;
+
             if (req.Document1Name == "WO" && req.Document1.HasValue)
             {
                 var worksOrder = await this.documentProxy.GetWorksOrder(req.Document1.Value);

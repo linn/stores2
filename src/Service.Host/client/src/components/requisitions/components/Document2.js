@@ -9,7 +9,8 @@ function Document2({
     document2Name,
     handleFieldChange,
     shouldRender,
-    shouldEnter
+    shouldEnter,
+    document3
 }) {
     if (!shouldRender) {
         return '';
@@ -47,7 +48,7 @@ function Document2({
                     />
                 )}
             </Grid>
-            <Grid size={8} />
+            {document3 ? <Grid size={4} /> : <Grid size={8} />}
         </>
     );
 }

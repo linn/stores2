@@ -37,6 +37,7 @@
             DateTime? batchDate = null,
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
-            int? originalReqNumber = null);
+            int? originalReqNumber = null,
+            int? document3Number = null);
     }
 }
