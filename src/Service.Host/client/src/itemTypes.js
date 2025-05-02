@@ -28,7 +28,8 @@ const itemTypes = {
     storesTransViewer: { url: `${config.appRoot}/stores2/stores-trans-viewer/report` },
     purchaseOrder: { url: `${config.proxyRoot}/purchasing/purchase-orders` },
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
-    worksOrder: { url: `${config.proxyRoot}/production/works-orders` }
+    worksOrder: { url: `${config.proxyRoot}/production/works-orders` },
+    debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` }
 };
 
 export default itemTypes;

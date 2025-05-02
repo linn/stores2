@@ -133,8 +133,8 @@
                 context.BatchRef,
                 context.BatchDate,
                 null,
-                null,
-                null,
+                context.Document2Number,
+                context.Document2Type,
                 context.IsReverseTransaction,
                 context.OriginalReqNumber);
 
@@ -154,7 +154,7 @@
                 req.ToCategory = "FREE";
             }
 
-            await this.repository.AddAsync(req);
+            req.Document3 = context.Document3Number;
 
             if (req.Document1Name == "WO" && req.Document1.HasValue)
             {
@@ -175,6 +175,8 @@
                 }
             }
 
+            await this.repository.AddAsync(req);
+            
             await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);
 
             return await this.repository.FindByIdAsync(req.ReqNumber);

@@ -31,7 +31,7 @@
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.InspectionToStores.TransactionCode)
                 .Returns(TestTransDefs.InspectionToStores);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Today });
-            this.DocumentProxy.GetPurchaseOrder(1234567).Returns(new PurchaseOrderResult { IsAuthorised = false });
+            this.DocumentProxy.GetPurchaseOrder(1234567).Returns(new PurchaseOrderResult { IsAuthorised = false, DocumentType = "PO" });
             this.act = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.GistPo.FunctionCode,

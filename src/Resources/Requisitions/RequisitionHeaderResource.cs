@@ -111,5 +111,7 @@
         public PartResource NewPart { get; set; }
   
         public int? OriginalReqNumber { get; set; }
+
+        public int? Document3 { get; set; }
     }
 }

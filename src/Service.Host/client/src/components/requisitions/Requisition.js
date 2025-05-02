@@ -6,6 +6,8 @@ import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 import {
     InputField,
     Loading,
@@ -14,7 +16,8 @@ import {
     ErrorCard,
     Search,
     SaveBackCancelButtons,
-    utilities
+    utilities,
+    LinkField
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -26,7 +29,6 @@ import usePost from '../../hooks/usePost';
 import useUserProfile from '../../hooks/useUserProfile';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import useDebounceValue from '../../hooks/useDebounceValue';
-import LinkField from '../LinkField';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import MovesTab from './MovesTab';
@@ -38,6 +40,7 @@ import PartNumberQuantity from './components/PartNumberQuantity';
 import StockOptions from './components/StockOptions';
 import Document1 from './components/Document1';
 import Document2 from './components/Document2';
+import Document3 from './components/Document3';
 import PickRequisitionDialog from './PickRequisitionDialog';
 
 function Requisition({ creating }) {
@@ -146,12 +149,12 @@ function Requisition({ creating }) {
         setTab(newValue);
     };
 
-    const [formState, dispatch] = useReducer(requisitionReducer, null);
-    const cancelHref = utilities.getHref(formState, 'cancel');
-    const bookHref = utilities.getHref(formState, 'book');
-    const authoriseHref = utilities.getHref(formState, 'authorise');
-    const reverseHref = utilities.getHref(formState, 'create-reverse');
-    const createHref = utilities.getHref(formState, 'create');
+    const [formState, dispatch] = useReducer(requisitionReducer, { req: null, popUpMessage: null });
+    const cancelHref = utilities.getHref(formState.req, 'cancel');
+    const bookHref = utilities.getHref(formState.req, 'book');
+    const authoriseHref = utilities.getHref(formState.req, 'authorise');
+    const reverseHref = utilities.getHref(formState.req, 'create-reverse');
+    const createHref = utilities.getHref(formState.req, 'create');
 
     useEffect(
         () => () => {
@@ -168,7 +171,7 @@ function Requisition({ creating }) {
         if (creating && !hasLoadedDefaultState && userNumber) {
             setHasFetched(false);
             setHasLoadedDefaultState(true);
-            const defaults = { userNumber, userName: name };
+            const defaults = { req: { userNumber, userName: name } };
             dispatch({
                 type: 'load_create',
                 payload: defaults
@@ -194,6 +197,7 @@ function Requisition({ creating }) {
             dispatch({ type: 'load_state', payload: result });
             setRevertState(result);
             clearReqResult();
+            setCommentsUpdated(false);
         }
         if (updateResult) {
             dispatch({ type: 'load_state', payload: updateResult });
@@ -222,11 +226,11 @@ function Requisition({ creating }) {
     };
 
     const requiresDepartmentNominal = () => {
-        if (formState.storesFunction) {
+        if (formState.req?.storesFunction) {
             // either departmentNominalRequired is null or Y
             return (
-                !formState.storesFunction?.departmentNominalRequired ||
-                formState.storesFunction?.departmentNominalRequired === 'Y'
+                !formState.req.storesFunction?.departmentNominalRequired ||
+                formState.req.storesFunction?.departmentNominalRequired === 'Y'
             );
         }
         return false;
@@ -237,12 +241,15 @@ function Requisition({ creating }) {
             return true;
         }
 
-        return formState.nominal?.nominalCode && formState.department?.departmentCode;
+        return formState.req?.nominal?.nominalCode && formState.req?.department?.departmentCode;
     };
 
     const validFromState = () => {
-        if (formState.reqType === 'F' && formState.storesFunction?.fromStateRequired === 'Y') {
-            return !!formState.fromState;
+        if (
+            formState.req?.reqType === 'F' &&
+            formState.req?.storesFunction?.fromStateRequired === 'Y'
+        ) {
+            return !!formState.req.fromState;
         }
 
         return true;
@@ -250,30 +257,34 @@ function Requisition({ creating }) {
 
     const canAddLines = () => {
         // can only add one line when creating
-        if (creating && formState.lines?.length && formState.storesFunction?.code != 'SUREQ') {
+        if (
+            creating &&
+            formState.req?.lines?.length &&
+            formState.req?.storesFunction?.code != 'SUREQ'
+        ) {
             return false;
         }
 
-        if (!formState.storesFunction) {
+        if (!formState.req?.storesFunction) {
             return false;
         }
 
-        if (formState.cancelled === 'Y' || formState.dateBooked) {
+        if (formState.req?.cancelled === 'Y' || formState.req?.dateBooked) {
             return false;
         }
 
-        if (formState.part?.partNumber) {
+        if (formState.req?.part?.partNumber) {
             // if front page part no need for lines
             return false;
         }
 
         // from hardcoding in REQLINES.when-new-record-instance
         const partNosNotRequiredFuncs = ['LOAN OUT', 'LOAN BACK', 'CUSTRET', 'SUKIT'];
-        if (partNosNotRequiredFuncs.includes(formState.storesFunction?.code)) {
+        if (partNosNotRequiredFuncs.includes(formState.req?.storesFunction?.code)) {
             return false;
         }
 
-        if (formState.storesFunction?.linesRequired === 'Y') {
+        if (formState.req?.storesFunction?.linesRequired === 'Y') {
             return true;
         }
 
@@ -292,7 +303,7 @@ function Requisition({ creating }) {
     const [commentsUpdated, setCommentsUpdated] = useState(false);
 
     const movesOntoAreValid = () => {
-        const newLines = formState.lines?.filter(x => x.isAddition);
+        const newLines = formState.req?.lines?.filter(x => x.isAddition);
         if (newLines?.length) {
             if (
                 newLines.every(l =>
@@ -304,6 +315,7 @@ function Requisition({ creating }) {
                 return true;
             }
         }
+
         return false;
     };
 
@@ -314,12 +326,12 @@ function Requisition({ creating }) {
         }
 
         // Allow saving if stock is picked for an either a new or existing line
-        if (formState.lines.some(l => l.stockPicked)) {
+        if (formState.req?.lines.some(l => l.stockPicked)) {
             return true;
         }
 
         // Allow saving if new move(s)
-        if (formState.lines.some(l => l.moves?.some(x => x.isAddition))) {
+        if (formState.req?.lines.some(l => l.moves?.some(x => x.isAddition))) {
             return true;
         }
 
@@ -334,9 +346,9 @@ function Requisition({ creating }) {
     };
 
     const getAndSetFunctionCode = () => {
-        if (formState.storesFunction?.code) {
+        if (formState.req?.storesFunction?.code) {
             const code = functionCodes.find(
-                a => a.code === formState.storesFunction.code.toUpperCase()
+                a => a.code === formState.req.storesFunction.code.toUpperCase()
             );
             if (code) {
                 if (utilities.getHref(code, 'create-req')) {
@@ -353,6 +365,14 @@ function Requisition({ creating }) {
                 }
             }
         }
+    };
+
+    const closeMessage = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        dispatch({ type: 'close_message' });
     };
 
     const shouldRender = (renderFunction, showOnCreate = true) => {
@@ -395,7 +415,7 @@ function Requisition({ creating }) {
             payload: selected
         });
 
-        if (formState.isReverseTransaction === 'Y' && selected.orderNumber) {
+        if (formState.req?.isReverseTransaction === 'Y' && selected.orderNumber) {
             setPickRequisitionDialogVisible(true);
         }
 
@@ -412,6 +432,27 @@ function Requisition({ creating }) {
                 payload: { fieldName: 'toLocationCode', newValue: selected.toLocationCode }
             });
         }
+
+        if (selected.document2) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'document2', newValue: selected.document2 }
+            });
+        }
+
+        if (selected.document3) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'document3', newValue: selected.document3 }
+            });
+        }
+
+        if (selected.quantity) {
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'quantity', newValue: selected.quantity }
+            });
+        }
     };
 
     const handleDocument1PartSelect = part => {
@@ -420,7 +461,7 @@ function Requisition({ creating }) {
             payload: part
         });
 
-        if (formState.storesFunction?.partSource === 'WO') {
+        if (formState.req?.storesFunction?.partSource === 'WO') {
             dispatch({
                 type: 'set_header_details_for_WO',
                 payload: part
@@ -432,18 +473,18 @@ function Requisition({ creating }) {
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
         selectedLine &&
-        ((formState?.storesFunction?.code === 'LDREQ' && formState?.reqType === 'O') ||
-            (formState?.manualPick && formState?.reqType === 'O'));
+        ((formState?.req?.storesFunction?.code === 'LDREQ' && formState?.req?.reqType === 'O') ||
+            (formState?.req?.manualPick && formState?.req?.reqreqType === 'O'));
     //todo also needs to be improved
-    const canAddMoves = selectedLine && formState?.storesFunction?.code === 'MOVE';
+    const canAddMoves = selectedLine && formState?.req?.storesFunction?.code === 'MOVE';
 
     const debouncedFormState = useDebounceValue(formState);
 
     useEffect(() => {
-        if (!debouncedFormState || debouncedFormState.reqNumber) return;
+        if (!debouncedFormState.req || debouncedFormState.req?.reqNumber) return;
         clearValidation();
         setValidated(false);
-        validateReq(null, debouncedFormState, false);
+        validateReq(null, debouncedFormState.req, false);
 
         return () => cancelValidation();
     }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
@@ -483,7 +524,7 @@ function Requisition({ creating }) {
                 <Grid size={10}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
-                        {formState?.cancelled === 'Y' && (
+                        {formState?.req?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
@@ -494,7 +535,7 @@ function Requisition({ creating }) {
                             disabled={!createHref}
                             variant="outlined"
                             onClick={() => {
-                                const defaults = { userNumber, userName: name };
+                                const defaults = { req: { userNumber, userName: name } };
                                 clearValidation();
                                 clearReqResult();
                                 dispatch({
@@ -552,14 +593,15 @@ function Requisition({ creating }) {
                     !cancelLoading &&
                     !createLoading &&
                     !updateLoading &&
-                    formState && (
+                    formState &&
+                    formState.req && (
                         <>
                             {shouldRender(null, false) && (
                                 <>
                                     <Grid size={2}>
                                         <InputField
                                             fullWidth
-                                            value={formState.reqNumber}
+                                            value={formState.req.reqNumber}
                                             type="number"
                                             onChange={() => {}}
                                             label="Req Number"
@@ -573,7 +615,7 @@ function Requisition({ creating }) {
                                                 { id: 'Y', displayText: 'Yes' },
                                                 { id: 'N', displayText: 'No ' }
                                             ]}
-                                            value={formState.isReversed}
+                                            value={formState.req.isReversed}
                                             onChange={() => {}}
                                             label="Reversed"
                                             disabled
@@ -582,8 +624,8 @@ function Requisition({ creating }) {
                                     </Grid>
                                     <BookedBy
                                         shouldRender={shouldRender(null, false)}
-                                        dateBooked={formState.dateBooked}
-                                        bookedByName={formState.bookedByName}
+                                        dateBooked={formState.req.dateBooked}
+                                        bookedByName={formState.req.bookedByName}
                                         bookUrl={bookHref}
                                         onBook={() => {
                                             book(null, { reqNumber });
@@ -600,11 +642,11 @@ function Requisition({ creating }) {
                                         label="Function"
                                         resultsInModal
                                         resultLimit={100}
-                                        disabled={!creating || !!formState.lines?.length}
+                                        disabled={!creating || !!formState.req.lines?.length}
                                         helperText={
                                             creating ? '<Enter> to search or <Tab> to select' : ''
                                         }
-                                        value={formState.storesFunction?.code}
+                                        value={formState.req.storesFunction?.code}
                                         handleValueChange={(_, newVal) => {
                                             dispatch({
                                                 type: 'set_header_value',
@@ -622,7 +664,7 @@ function Requisition({ creating }) {
                                                 f =>
                                                     f.functionAvailable &&
                                                     f.code.includes(
-                                                        formState.storesFunction?.code
+                                                        formState.req.storesFunction?.code
                                                             ?.trim()
                                                             .toUpperCase()
                                                     )
@@ -669,7 +711,7 @@ function Requisition({ creating }) {
                             <Grid size={4}>
                                 <InputField
                                     fullWidth
-                                    value={formState.storesFunction?.description}
+                                    value={formState.req.storesFunction?.description}
                                     onChange={() => {}}
                                     label="Function Code Description"
                                     propertyName="storesFunctionDescription"
@@ -692,7 +734,7 @@ function Requisition({ creating }) {
                             <Grid size={2}>
                                 <InputField
                                     fullWidth
-                                    value={formState.createdByName}
+                                    value={formState.req.createdByName}
                                     onChange={() => {}}
                                     label="Created By"
                                     propertyName="createdByName"
@@ -700,7 +742,7 @@ function Requisition({ creating }) {
                             </Grid>
                             <Grid size={2}>
                                 <DatePicker
-                                    value={formState.dateCreated}
+                                    value={formState.req.dateCreated}
                                     onChange={() => {}}
                                     disabled
                                     label="Date Created"
@@ -714,25 +756,25 @@ function Requisition({ creating }) {
                                     disabled={
                                         !reverseHref ||
                                         !creating ||
-                                        formState.storesFunction?.canBeReversed !== 'Y'
+                                        formState.req.storesFunction?.canBeReversed !== 'Y'
                                     }
                                     onChange={handleHeaderFieldChange}
                                     items={[
                                         { id: 'Y', displayText: 'Yes' },
                                         { id: 'N', displayText: 'No ' }
                                     ]}
-                                    value={formState.isReverseTransaction}
+                                    value={formState.req.isReverseTransaction}
                                     label="Reverse"
                                     propertyName="isReverseTransaction"
                                 />
                             </Grid>
                             <Grid size={2}>
                                 {shouldRender(
-                                    () => formState.isReverseTransaction === 'Y' && creating
+                                    () => formState.req.isReverseTransaction === 'Y' && creating
                                 ) && (
                                     <InputField
                                         fullWidth
-                                        value={formState.originalReqNumber}
+                                        value={formState.req.originalReqNumber}
                                         onChange={() => {}}
                                         disabled
                                         label="Original Req No"
@@ -740,12 +782,12 @@ function Requisition({ creating }) {
                                     />
                                 )}
                                 {shouldRender(
-                                    () => formState.isReverseTransaction === 'Y' && !creating
+                                    () => formState.req.isReverseTransaction === 'Y' && !creating
                                 ) && (
                                     <LinkField
-                                        value={formState.originalReqNumber}
+                                        value={formState.req.originalReqNumber}
                                         label="Original Req No"
-                                        to={`/requisitions/${formState.originalReqNumber}`}
+                                        to={`/requisitions/${formState.req.originalReqNumber}`}
                                         external={false}
                                     />
                                 )}
@@ -754,10 +796,10 @@ function Requisition({ creating }) {
                                 {shouldRender(() => !!cancelHref, false) && (
                                     <Button
                                         disabled={
-                                            formState.cancelled === 'Y' ||
-                                            formState.dateBooked ||
+                                            formState.req.cancelled === 'Y' ||
+                                            formState.req.dateBooked ||
                                             creating ||
-                                            formState.storesFunction?.canBeCancelled !== 'Y'
+                                            formState.req.storesFunction?.canBeCancelled !== 'Y'
                                         }
                                         variant="contained"
                                         sx={{ marginTop: '30px', backgroundColor: 'error.light' }}
@@ -769,8 +811,8 @@ function Requisition({ creating }) {
                             </Grid>
                             <Grid size={2} />
                             <DepartmentNominal
-                                departmentCode={formState.department?.departmentCode}
-                                departmentDescription={formState.department?.description}
+                                departmentCode={formState.req.department?.departmentCode}
+                                departmentDescription={formState.req.department?.description}
                                 disabled={!creating} // todo - maybe disable changing dept/nom if lines have already been added?
                                 setDepartment={newDept =>
                                     dispatch({
@@ -778,8 +820,8 @@ function Requisition({ creating }) {
                                         payload: { fieldName: 'department', newValue: newDept }
                                     })
                                 }
-                                nominalCode={formState.nominal?.nominalCode}
-                                nominalDescription={formState.nominal?.description}
+                                nominalCode={formState.req.nominal?.nominalCode}
+                                nominalDescription={formState.req.nominal?.description}
                                 setNominal={newNominal =>
                                     dispatch({
                                         type: 'set_header_value',
@@ -787,21 +829,22 @@ function Requisition({ creating }) {
                                     })
                                 }
                                 shouldRender={shouldRender(requiresDepartmentNominal)}
-                                enterNominal={!formState?.storesFunction?.nominalCode}
+                                enterNominal={!formState.req.storesFunction?.nominalCode}
                             />
                             <AuthBy
-                                dateAuthorised={formState.dateAuthorised}
-                                authorisedByName={formState.authorisedByName}
+                                dateAuthorised={formState.req.dateAuthorised}
+                                authorisedByName={formState.req.authorisedByName}
                                 shouldRender={shouldRender(null, false)}
                                 authoriseUrl={authoriseHref}
                                 onAuthorise={() => {
                                     authorise(null, { reqNumber });
                                 }}
                             />
-                            {shouldRender(() => formState.storesFunction?.code !== 'MOVE') && (
+                            {shouldRender(() => formState.req.storesFunction?.code !== 'MOVE') && (
                                 <>
                                     <Grid size={2}>
-                                        {formState.storesFunction?.manualPickRequired !== 'X' && (
+                                        {formState.req.storesFunction?.manualPickRequired !==
+                                            'X' && (
                                             <Dropdown
                                                 fullWidth
                                                 items={[
@@ -809,7 +852,7 @@ function Requisition({ creating }) {
                                                     { id: 'N', displayText: 'No' }
                                                 ]}
                                                 allowNoValue
-                                                value={formState.manualPick}
+                                                value={formState.req.manualPick}
                                                 onChange={handleHeaderFieldChange}
                                                 label="Manual Pick"
                                                 propertyName="manualPick"
@@ -825,8 +868,8 @@ function Requisition({ creating }) {
                                                     { id: 'O', displayText: 'Return To Stock' }
                                                 ]}
                                                 allowNoValue
-                                                disabled={!creating || formState.lines?.length}
-                                                value={formState.reqType}
+                                                disabled={!creating || formState.req.lines?.length}
+                                                value={formState.req.reqType}
                                                 onChange={handleHeaderFieldChange}
                                                 label="Req Type"
                                                 propertyName="reqType"
@@ -837,43 +880,53 @@ function Requisition({ creating }) {
                                 </>
                             )}
                             <Document1
-                                document1={formState.document1}
-                                document1Text={formState.storesFunction?.document1Text}
-                                document1Line={formState.document1Line}
+                                document1={formState.req.document1}
+                                document1Text={formState.req.storesFunction?.document1Text}
+                                document1Line={formState.req.document1Line}
                                 document1LineRequired={
-                                    formState.storesFunction?.document1LineRequired
+                                    formState.req.storesFunction?.document1LineRequired
                                 }
                                 handleFieldChange={handleHeaderFieldChange}
                                 shouldRender={
-                                    formState.storesFunction &&
-                                    formState.storesFunction.document1Required
+                                    formState.req.storesFunction &&
+                                    formState.req.storesFunction.document1Required
                                 }
-                                shouldEnter={formState.storesFunction?.document1Entered && creating}
+                                shouldEnter={
+                                    formState.req.storesFunction?.document1Entered && creating
+                                }
                                 onSelect={handleDocument1Select}
-                                partSource={formState.storesFunction?.partSource}
+                                partSource={formState.req.storesFunction?.partSource}
                                 onSelectPart={handleDocument1PartSelect}
                                 document1Details={formState.document1Details}
-                                storesFunction={formState.storesFunction}
+                                storesFunction={formState.req.storesFunction}
                             />
                             <Document2
-                                document2={formState.document2}
-                                document2Text={formState.storesFunction?.document2Text}
+                                document2={formState.req.document2}
+                                document2Text={formState.req.storesFunction?.document2Text}
+                                document2Name={formState.req.document2Name}
                                 handleFieldChange={handleHeaderFieldChange}
                                 shouldRender={
-                                    formState.storesFunction &&
-                                    formState.storesFunction.document2Required
+                                    formState.req.storesFunction &&
+                                    formState.req.storesFunction.document2Required
                                 }
-                                shouldEnter={formState.storesFunction?.document2Entered && creating}
+                                shouldEnter={
+                                    formState.req.storesFunction?.document2Entered && creating
+                                }
+                                document3={formState.req.document3}
+                            />
+                            <Document3
+                                document3={formState.req.document3}
+                                storesFunction={formState.req.storesFunction}
                             />
                             <PartNumberQuantity
-                                partNumber={formState.part?.partNumber}
-                                partDescription={formState.part?.description}
+                                partNumber={formState.req.part?.partNumber}
+                                partDescription={formState.req.part?.description}
                                 partNumberProperty="partNumber"
                                 partDescriptionProperty="partDescription"
                                 showQuantity
-                                quantity={formState.quantity}
+                                quantity={formState.req.quantity}
                                 setPart={
-                                    formState.storesFunction?.partSource === 'IP'
+                                    formState.req.storesFunction?.partSource === 'IP'
                                         ? newPart => {
                                               dispatch({
                                                   type: 'set_header_value',
@@ -895,16 +948,16 @@ function Requisition({ creating }) {
                                         payload: { fieldName: 'quantity', newValue: newQty }
                                     })
                                 }
-                                disabled={!creating || formState.isReverseTransaction == 'Y'}
+                                disabled={!creating || formState.req.isReverseTransaction == 'Y'}
                                 shouldRender={
-                                    formState.storesFunction &&
-                                    formState.storesFunction?.partNumberRequired
+                                    formState.req.storesFunction &&
+                                    formState.req.storesFunction?.partNumberRequired
                                 }
                             />
-                            {formState.storesFunction?.code === 'PARTNO CH' && (
+                            {formState.req.storesFunction?.code === 'PARTNO CH' && (
                                 <PartNumberQuantity
-                                    partNumber={formState.newPart?.partNumber}
-                                    partDescription={formState.newPart?.description}
+                                    partNumber={formState.req.newPart?.partNumber}
+                                    partDescription={formState.req.newPart?.description}
                                     partNumberProperty="newPartNumber"
                                     partDescriptionProperty="newPartDescription"
                                     partLabel="New Part"
@@ -928,31 +981,31 @@ function Requisition({ creating }) {
                                     }}
                                     disabled={!creating}
                                     shouldRender={
-                                        formState.storesFunction &&
-                                        formState.storesFunction?.code === 'PARTNO CH'
+                                        formState.req.storesFunction &&
+                                        formState.req.storesFunction?.code === 'PARTNO CH'
                                     }
                                 />
                             )}
                             <StockOptions
-                                fromState={formState.fromState}
-                                fromStockPool={formState.fromStockPool}
-                                batchDate={formState.batchDate}
-                                toState={formState.toState}
-                                toStockPool={formState.toStockPool}
+                                fromState={formState.req.fromState}
+                                fromStockPool={formState.req.fromStockPool}
+                                batchDate={formState.req.batchDate}
+                                toState={formState.req.toState}
+                                toStockPool={formState.req.toStockPool}
                                 stockPools={stockPools}
-                                partNumber={formState.part?.partNumber}
-                                quantity={formState.quantity}
-                                fromLocationCode={formState.fromLocationCode}
-                                fromPalletNumber={formState.fromPalletNumber}
+                                partNumber={formState.req.part?.partNumber}
+                                quantity={formState.req.quantity}
+                                fromLocationCode={formState.req.fromLocationCode}
+                                fromPalletNumber={formState.req.fromPalletNumber}
                                 doPickStock={
-                                    formState.storesFunction?.manualPickRequired === 'X'
+                                    formState.req.storesFunction?.manualPickRequired === 'X'
                                         ? null
                                         : doPickStock
                                 }
-                                toLocationCode={formState.toLocationCode}
-                                toPalletNumber={formState.toPalletNumber}
-                                functionCode={formState.storesFunction}
-                                batchRef={formState.batchRef}
+                                toLocationCode={formState.req.toLocationCode}
+                                toPalletNumber={formState.req.toPalletNumber}
+                                functionCode={formState.req.storesFunction}
+                                batchRef={formState.req.batchRef}
                                 setItemValue={(fieldName, newValue) =>
                                     dispatch({
                                         type: 'set_header_value',
@@ -962,12 +1015,13 @@ function Requisition({ creating }) {
                                 disabled={stockStatesLoading || stockPoolsLoading || !creating}
                                 shouldRender={shouldRender(() => {
                                     const isMoveFunction =
-                                        formState.storesFunction?.code === 'MOVE';
+                                        formState.req.storesFunction?.code === 'MOVE';
                                     const isLocationRequired =
-                                        formState.fromLocationRequired !== 'N' ||
-                                        formState.toLocationRequired !== 'N';
+                                        formState.req.fromLocationRequired !== 'N' ||
+                                        formState.req.toLocationRequired !== 'N';
                                     const isLoanOutWhileCreating =
-                                        formState.storesFunction?.code === 'LOAN OUT' && creating;
+                                        formState.req.storesFunction?.code === 'LOAN OUT' &&
+                                        creating;
 
                                     return (
                                         isMoveFunction ||
@@ -978,7 +1032,7 @@ function Requisition({ creating }) {
                             <Grid size={6}>
                                 <InputField
                                     fullWidth
-                                    value={formState.comments}
+                                    value={formState.req.comments}
                                     onChange={(propertyName, newValue) => {
                                         handleHeaderFieldChange(propertyName, newValue);
                                         setCommentsUpdated(true);
@@ -990,7 +1044,7 @@ function Requisition({ creating }) {
                             <Grid size={6}>
                                 <InputField
                                     fullWidth
-                                    value={formState.reference}
+                                    value={formState.req.reference}
                                     onChange={handleHeaderFieldChange}
                                     disabled={!creating}
                                     label="Reference"
@@ -1009,7 +1063,7 @@ function Requisition({ creating }) {
                                             label={`Transactions (L${selectedLine ?? ''})`}
                                             disabled={
                                                 creating ||
-                                                !formState.lines?.find(
+                                                !formState.req.lines?.find(
                                                     x => x.lineNumber === selectedLine
                                                 )?.moves?.length
                                             }
@@ -1020,14 +1074,14 @@ function Requisition({ creating }) {
                             <Grid size={12}>
                                 {tab === 0 && (
                                     <LinesTab
-                                        lines={formState.lines}
+                                        lines={formState.req.lines}
                                         selected={selectedLine}
                                         setSelected={setSelectedLine}
                                         cancelLine={cancel}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
                                         isFromStock={
-                                            formState.reqType === 'F' || !formState.reqType
+                                            formState.req.reqType === 'F' || !formState.req.reqType
                                         }
                                         addLine={() => {
                                             dispatch({ type: 'add_line' });
@@ -1052,14 +1106,14 @@ function Requisition({ creating }) {
                                         bookLine={lineNumber => {
                                             book(null, { reqNumber, lineNumber });
                                         }}
-                                        fromState={formState.fromState}
-                                        fromStockPool={formState.fromStockPool}
+                                        fromState={formState.req.fromState}
+                                        fromStockPool={formState.req.fromStockPool}
                                     />
                                 )}
                                 {tab === 1 && (
                                     <MovesTab
                                         moves={
-                                            formState.lines?.find(
+                                            formState.req.lines?.find(
                                                 x => x.lineNumber === selectedLine
                                             )?.moves
                                         }
@@ -1103,7 +1157,7 @@ function Requisition({ creating }) {
                                 {tab === 2 && (
                                     <TransactionsTab
                                         transactions={
-                                            formState.lines?.find(
+                                            formState.req.lines?.find(
                                                 x => x.lineNumber === selectedLine
                                             )?.storesBudgets
                                         }
@@ -1118,9 +1172,9 @@ function Requisition({ creating }) {
                                     }}
                                     saveClick={() => {
                                         if (creating) {
-                                            createReq(null, formState);
+                                            createReq(null, formState.req);
                                         } else {
-                                            updateReq(reqNumber, formState);
+                                            updateReq(reqNumber, formState.req);
                                         }
                                     }}
                                     backClick={() => {
@@ -1132,8 +1186,8 @@ function Requisition({ creating }) {
                                 <PickRequisitionDialog
                                     open={pickRequisitionDialogVisible}
                                     setOpen={setPickRequisitionDialogVisible}
-                                    documentNumber={formState.document1}
-                                    documentType={formState.document1Name}
+                                    documentNumber={formState.req.document1}
+                                    documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {
                                         dispatch({
                                             type: 'set_reverse_details',
@@ -1145,6 +1199,20 @@ function Requisition({ creating }) {
                         </>
                     )}
             </Grid>
+            <Snackbar
+                open={formState?.popUpMessage?.showMessage}
+                autoHideDuration={7000}
+                onClose={closeMessage}
+            >
+                <Alert
+                    onClose={closeMessage}
+                    severity={formState?.popUpMessage?.severity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {formState?.popUpMessage?.text}
+                </Alert>
+            </Snackbar>
         </Page>
     );
 }

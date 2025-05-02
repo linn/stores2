@@ -25,7 +25,8 @@
             this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
-            this.DocumentProxy.GetCreditNote(1234, null).Returns(new DocumentResult("C", 1234, null, null, null));
+            this.DocumentProxy.GetCreditNote(1234, null)
+                .Returns(new DocumentResult("C", 1234, null, null, null));
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.CustomerReturn.FunctionCode,

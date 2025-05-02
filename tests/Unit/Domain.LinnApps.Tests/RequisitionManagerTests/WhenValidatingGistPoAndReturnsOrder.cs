@@ -1,12 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq.Expressions;
     using System.Threading.Tasks;
-
     using FluentAssertions;
-
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -14,12 +9,10 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
-
     using NSubstitute;
-
     using NUnit.Framework;
 
-    public class WhenValidatingSupplierKit : ContextBase
+    public class WhenValidatingGistPoAndReturnsOrder : ContextBase
     {
         private RequisitionHeader result;
 
@@ -27,50 +20,48 @@
         public async Task SetUp()
         {
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
-            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.SupplierKit.FunctionCode)
-                .Returns(TestFunctionCodes.SupplierKit);
-            this.ReqStoredProcedures.CanPutPartOnPallet("ADIKT", 666).Returns(true);
-            this.PartRepository.FindByIdAsync("ADIKT").Returns(new Part { PartNumber = "ADIKT" });
+            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.GistPo.FunctionCode)
+                .Returns(TestFunctionCodes.GistPo);
+            this.ReqStoredProcedures.CanPutPartOnPallet("PART", 666).Returns(true);
+            this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART" });
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.InspectionToStores.TransactionCode)
                 .Returns(TestTransDefs.InspectionToStores);
-            var loc = new StorageLocation { LocationId = 1, LocationCode = "S-SU-1234" };
-            this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
-                .Returns(loc);
-            this.DocumentProxy.GetPurchaseOrder(827753).Returns(
+            this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = null });
+            this.DocumentProxy.GetPurchaseOrder(1234567).Returns(
                 new PurchaseOrderResult
                 {
                     IsAuthorised = true,
                     IsFilCancelled = false,
-                    OrderNumber = 827753,
-                    DocumentType = "PO",
-                    Details = new List<PurchaseOrderDetailResult>
-                    {
-                        new PurchaseOrderDetailResult { Line = 1, OurQty = 1, PartNumber = "ADIKT" }
-                    }
+                    OrderNumber = 1234567,
+                    DocumentType = "RO"
                 });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "Stores"));
-            this.StockPoolRepository.FindByIdAsync("SUPPLIER").Returns(new StockPool());
+            this.StockPoolRepository.FindByIdAsync("STORES").Returns(new StockPool());
             this.StoresService.ValidOntoLocation(
                 Arg.Any<Part>(),
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
-            this.StockService.ValidStockLocation(null, 666, "PART", 10, "QC").Returns(new ProcessResult(true, null));
+            this.StockService.ValidStockLocation(null, 666, "PART", 10, "QC")
+                .Returns(new ProcessResult(true, null));
             this.result = await this.Sut.Validate(
                 33087,
-                TestFunctionCodes.SupplierKit.FunctionCode,
+                TestFunctionCodes.GistPo.FunctionCode,
                 null,
-                827753,
+                1234567,
+                "RO",
                 null,
                 null,
                 null,
-                null,
-                partNumber: "ADIKT",
-                quantity: 1,
-                fromState: "STORES",
+                partNumber: "PART",
+                fromStockPool: "QC",
+                batchRef: "R1234567",
+                toStockPool: "STORES",
+                quantity: 10,
+                fromPalletNumber: 666,
+                fromState: "QC",
                 toState: "STORES",
-                toLocationCode: "S-SU-1234",
-                toStockPool: "SUPPLIER");
+                toPalletNumber: 666);
         }
 
         [Test]

@@ -4,9 +4,7 @@
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-
     using FluentAssertions;
-
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -14,12 +12,10 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
-
     using NSubstitute;
-
     using NUnit.Framework;
 
-    public class WhenValidatingSupplierKit : ContextBase
+    public class WhenValidatingReturnToSupplier : ContextBase
     {
         private RequisitionHeader result;
 
@@ -27,22 +23,19 @@
         public async Task SetUp()
         {
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
-            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.SupplierKit.FunctionCode)
-                .Returns(TestFunctionCodes.SupplierKit);
+            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.ReturnToSupplier.FunctionCode)
+                .Returns(TestFunctionCodes.ReturnToSupplier);
             this.ReqStoredProcedures.CanPutPartOnPallet("ADIKT", 666).Returns(true);
             this.PartRepository.FindByIdAsync("ADIKT").Returns(new Part { PartNumber = "ADIKT" });
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.InspectionToStores.TransactionCode)
                 .Returns(TestTransDefs.InspectionToStores);
-            var loc = new StorageLocation { LocationId = 1, LocationCode = "S-SU-1234" };
-            this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
-                .Returns(loc);
-            this.DocumentProxy.GetPurchaseOrder(827753).Returns(
+            this.DocumentProxy.GetPurchaseOrder(894006).Returns(
                 new PurchaseOrderResult
                 {
                     IsAuthorised = true,
                     IsFilCancelled = false,
-                    OrderNumber = 827753,
-                    DocumentType = "PO",
+                    OrderNumber = 894006,
+                    DocumentType = "RO",
                     Details = new List<PurchaseOrderDetailResult>
                     {
                         new PurchaseOrderDetailResult { Line = 1, OurQty = 1, PartNumber = "ADIKT" }
@@ -50,27 +43,36 @@
                 });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "Stores"));
             this.StockPoolRepository.FindByIdAsync("SUPPLIER").Returns(new StockPool());
+
+            this.ReqStoredProcedures.GetQtyReturned(894006, 1)
+                .Returns(0);
+
+            var loc = new StorageLocation { LocationId = 1, LocationCode = "E-PUR-RET" };
+            this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
+                .Returns(loc);
+
             this.StoresService.ValidOntoLocation(
                 Arg.Any<Part>(),
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
-            this.StockService.ValidStockLocation(null, 666, "PART", 10, "QC").Returns(new ProcessResult(true, null));
+
+            this.StockService.ValidStockLocation(1, null, "ADIKT", 1, "STORES").Returns(new ProcessResult(true, null));
+
             this.result = await this.Sut.Validate(
                 33087,
-                TestFunctionCodes.SupplierKit.FunctionCode,
+                TestFunctionCodes.ReturnToSupplier.FunctionCode,
                 null,
-                827753,
-                null,
+                894006,
+                "RO",
                 null,
                 null,
                 null,
                 partNumber: "ADIKT",
                 quantity: 1,
                 fromState: "STORES",
-                toState: "STORES",
-                toLocationCode: "S-SU-1234",
-                toStockPool: "SUPPLIER");
+                fromLocationCode: "E-PUR-RET",
+                document1Line: 1);
         }
 
         [Test]

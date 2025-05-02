@@ -267,7 +267,7 @@ function StoresFunction() {
                             </Grid>
                             {showRequired('From Location', result.fromLocationRequired)}
                             {showRequired('From State', result.fromStateRequired)}
-                            {showRequired('From Stock Pool', result.fromStockPool)}
+                            {showRequired('From Stock Pool', result.fromStockPoolRequired)}
                             {showRequired('Batch', result.batchRequired)}
                             {showRequired('Batch Date', result.batchDateRequired)}
                             <Grid size={4} />
