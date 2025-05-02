@@ -52,8 +52,7 @@
                                                       CreatedByName = "RSTEWART",
                                                       DateCreated = DateTime.Today.ToString("o"),
                                                       LocationId = 123,
-                                                      PalletNumber = 567,
-                                                      WorkstationElementId = 1
+                                                      PalletNumber = 567
                                                   },
                                               new WorkstationElementResource
                                                   {
@@ -62,8 +61,7 @@
                                                       CreatedByName = "RSTEWART",
                                                       DateCreated = DateTime.Today.ToString("o"),
                                                       LocationId = 567,
-                                                      PalletNumber = 890,
-                                                      WorkstationElementId = 2
+                                                      PalletNumber = 890
                                                   }
                                           }
             };
@@ -97,8 +95,9 @@
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {
-            var resource = this.Response.DeserializeBody<Workstation>();
+            var resource = this.Response.DeserializeBody<WorkstationResource>();
             resource.Description.Should().Be("A TEST WORKSTATION");
+            resource.WorkstationElements.Count().Should().Be(2);
         }
     }
 }
