@@ -1201,8 +1201,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     "O"));
             }
 
-            DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
-            
+            if (!string.IsNullOrEmpty(header.ToStockPool))
+            {
+                DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
+            }
+
             if (header.Part != null)
             {
                 if (header.FromLocation != null || header.FromPalletNumber.HasValue)
@@ -1215,8 +1218,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                             header.Quantity.GetValueOrDefault(),
                             header.FromState));
                 }
-
-                DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
         }
     }
