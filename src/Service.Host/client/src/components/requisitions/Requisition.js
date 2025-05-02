@@ -393,6 +393,7 @@ function Requisition({ creating }) {
     };
 
     const handleDocument1Select = selected => {
+        console.log(selected);
         dispatch({
             type: 'set_header_value',
             payload: {

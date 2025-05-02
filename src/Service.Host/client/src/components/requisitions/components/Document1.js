@@ -96,7 +96,7 @@ function Document1({
 
             clearPurchaseOrder();
         }
-    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction]);
+    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction, isReverseTransaction]);
 
     useEffect(() => {
         if (creditNote && document1Line) {
@@ -105,12 +105,13 @@ function Document1({
                 onSelect({
                     partNumber: line.articleNumber,
                     partDescription: line.description,
-                    document1Line
+                    document1Line,
+                    getReqToReverse: isReverseTransaction
                 });
                 clearCreditNote();
             }
         }
-    }, [creditNote, document1Line, onSelect, clearCreditNote]);
+    }, [creditNote, document1Line, onSelect, clearCreditNote, isReverseTransaction]);
 
     useEffect(() => {
         if (worksOrder) {
@@ -131,7 +132,7 @@ function Document1({
             fetchPart(null, `?searchTerm=${worksOrder.partNumber}&exactOnly=true`);
             clearWorksOrder();
         }
-    }, [worksOrder, onSelect, clearWorksOrder, fetchPart]);
+    }, [worksOrder, onSelect, clearWorksOrder, fetchPart, isReverseTransaction]);
 
     useEffect(() => {
         if (document1Part && document1Part.length === 1) {
