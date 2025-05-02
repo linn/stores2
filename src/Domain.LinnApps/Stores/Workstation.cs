@@ -14,7 +14,7 @@
             Cit cit,
             string vaxWorkstation,
             string zoneType,
-            ICollection<WorkstationElement> elements)
+            IEnumerable<WorkstationElement> elements)
         {
             this.WorkstationCode = workstationCode;
             this.Description = description;
@@ -34,7 +34,7 @@
 
         public string ZoneType { get; set; }
 
-        public ICollection<WorkstationElement> WorkstationElements { get; set; }
+        public IEnumerable<WorkstationElement> WorkstationElements { get; set; }
 
         public void Update(
             string workstationCode,
@@ -42,7 +42,7 @@
             Cit cit,
             string vaxWorkstation,
             string zoneType,
-            ICollection<WorkstationElement> elements)
+            IEnumerable<WorkstationElement> elements)
         {
             this.WorkstationCode = workstationCode;
             this.Description = description;
