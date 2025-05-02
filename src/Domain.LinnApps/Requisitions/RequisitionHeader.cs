@@ -267,7 +267,7 @@
             }
 
             // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
-            if (this.StoresFunction.FromStateRequired == "Y")
+            if (this.StoresFunction.FromStateRequired == "Y"  && this.IsReverseTransaction != "Y")
             {
                 if (string.IsNullOrEmpty(this.FromState))
                 {

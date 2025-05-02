@@ -415,7 +415,7 @@ function Requisition({ creating }) {
             payload: selected
         });
 
-        if (formState.req?.isReverseTransaction === 'Y' && selected.orderNumber) {
+        if (formState.req?.isReverseTransaction === 'Y' && selected.getReqToReverse) {
             setPickRequisitionDialogVisible(true);
         }
 
@@ -899,6 +899,7 @@ function Requisition({ creating }) {
                                 onSelectPart={handleDocument1PartSelect}
                                 document1Details={formState.document1Details}
                                 storesFunction={formState.req.storesFunction}
+                                isReverseTransaction={formState.req.isReverseTransaction}
                             />
                             <Document2
                                 document2={formState.req.document2}

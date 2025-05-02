@@ -16,7 +16,8 @@ function Document1({
     partSource,
     onSelectPart = null,
     document1Details = null,
-    storesFunction = null
+    storesFunction = null,
+    isReverseTransaction = false
 }) {
     const displayDetails1 =
         document1Details && partSource === 'WO'
@@ -73,7 +74,8 @@ function Document1({
                     document2: debitNote,
                     document3: purchaseOrder.details[0].originalOrderNumber,
                     docType,
-                    quantity: purchaseOrder.details[0].ourQty
+                    quantity: purchaseOrder.details[0].ourQty,
+                    getReqToReverse: isReverseTransaction
                 });
             } else {
                 onSelect({
@@ -122,7 +124,8 @@ function Document1({
                 outstanding: worksOrder.outstanding,
                 quantity: worksOrder.quantity,
                 quantityBuilt: worksOrder.quantityBuilt,
-                dateCancelled: worksOrder.dateCancelled
+                dateCancelled: worksOrder.dateCancelled,
+                getReqToReverse: isReverseTransaction
             });
 
             fetchPart(null, `?searchTerm=${worksOrder.partNumber}&exactOnly=true`);

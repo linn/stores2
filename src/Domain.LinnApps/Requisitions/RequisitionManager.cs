@@ -776,7 +776,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A from stock pool is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState))
+                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState) && req.IsReverseTransaction != "Y")
                 {
                     throw new RequisitionException("A from state is required");
                 }
@@ -977,7 +977,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 // call to STORES_OO.QTY_RETURNED could rewrite in c# but a bit involved
                 var qty = await this.requisitionStoredProcedures.GetQtyReturned(header.Document1.Value,
                     header.Document1Line.Value);
-                if (header.IsReverseTransaction == "Y" && header.Quantity.Value >= qty)
+                if (header.IsReverseTransaction == "Y" && header.Quantity.Value > qty)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
                 }
@@ -1206,7 +1206,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
             
-            if (header.Part != null)
+            if (header.Part != null && header.IsReverseTransaction != "Y")
             {
                 if (header.FromLocation != null || header.FromPalletNumber.HasValue)
                 {
