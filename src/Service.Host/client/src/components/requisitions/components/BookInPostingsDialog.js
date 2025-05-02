@@ -90,6 +90,11 @@ function BookInPostingsDialog({
         loading: nominalsSearchLoading
     } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
 
+    const bookedInQuantity = orderDetail.purchaseDeliveries.reduce(
+        (a, b) => a + b.qtyNetReceived,
+        0
+    );
+
     const searchRenderCell = params => (
         <>
             <GridSearchIcon
@@ -118,7 +123,7 @@ function BookInPostingsDialog({
         const id = (bookInPostings.length ?? 0) + 1;
         const newBookInPosting = {
             id,
-            qty: orderDetail.ourQty,
+            qty: orderDetail.ourQty - bookedInQuantity,
             departmentCode: orderDetail.orderPosting.nominalAccount.department.departmentCode,
             departmentDescription:
                 orderDetail.orderPosting.nominalAccount.department.departmentDescription,
@@ -140,8 +145,17 @@ function BookInPostingsDialog({
     };
 
     const handleConfirmClick = () => {
-        handleClose();
-        handleSelect({ bookInPostings });
+        const qtyLeft = orderDetail.ourQty - bookedInQuantity;
+        const selectedQty = bookInPostings.reduce((a, b) => a + b.qty, 0);
+        if (Number(qtyLeft) < Number(selectedQty)) {
+            setSnackbar({
+                message: `Quantity left on order line is ${qtyLeft} but quantity picked is ${Number(selectedQty)}`,
+                backgroundColour: 'red'
+            });
+        } else {
+            handleClose();
+            handleSelect({ bookInPostings, quantityBooked: Number(selectedQty) });
+        }
     };
 
     useEffect(() => {
@@ -518,11 +532,11 @@ function BookInPostingsDialog({
                     <Grid size={2}>
                         <InputField
                             fullWidth
-                            value={orderDetail.line}
+                            value={bookedInQuantity}
                             onChange={() => {}}
-                            label="Booked In"
+                            label="Booked In Qty"
                             disabled
-                            propertyName="bookedIn"
+                            propertyName="bookedInQuantity"
                         />
                     </Grid>
                     <Grid size={2}>
