@@ -2,7 +2,9 @@
 {
     using System.Collections.Generic;
 
-    public class WorkstationResource
+    using Linn.Common.Resources;
+
+    public class WorkstationResource : HypermediaResource
     {
         public string WorkstationCode { get; set; }
 

@@ -812,7 +812,7 @@
         private static void BuildWorkstations(ModelBuilder builder)
         {
             var e = builder.Entity<Workstation>().ToTable("WORK_STATION");
-            e.HasKey(l => new { l.WorkstationCode });
+            e.HasKey(l => l.WorkstationCode);
             e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             e.HasOne(a => a.Cit).WithMany().HasForeignKey("CIT_CODE");
@@ -824,7 +824,7 @@
         private static void BuildWorkstationElements(ModelBuilder builder)
         {
             var e = builder.Entity<WorkstationElement>().ToTable("WORK_STATION_ELEMENTS");
-            e.HasKey(l => new { l.WorkstationElementId });
+            e.HasKey(l => l.WorkstationElementId);
             e.Property(s => s.WorkstationElementId).HasColumnName("WSE_ID");
             e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.HasOne(s => s.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
@@ -836,7 +836,7 @@
         private static void BuildCits(ModelBuilder builder)
         {
             var e = builder.Entity<Cit>().ToTable("CITS");
-            e.HasKey(l => new { l.Code });
+            e.HasKey(l => l.Code);
             e.Property(s => s.Code).HasColumnName("CODE").HasMaxLength(10);
             e.Property(s => s.Name).HasColumnName("NAME").HasMaxLength(50);
         }

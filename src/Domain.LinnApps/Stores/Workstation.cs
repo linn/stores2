@@ -14,7 +14,7 @@
             Cit cit,
             string vaxWorkstation,
             string zoneType,
-            IEnumerable<WorkstationElement> elements)
+            ICollection<WorkstationElement> elements)
         {
             this.WorkstationCode = workstationCode;
             this.Description = description;
@@ -24,17 +24,17 @@
             this.WorkstationElements = elements;
         }
 
-        public string WorkstationCode { get; set; }
+        public string WorkstationCode { get; protected set; }
 
-        public string Description { get; set; }
+        public string Description { get; protected set; }
 
-        public Cit Cit { get; set; }
+        public Cit Cit { get; protected set; }
 
-        public string VaxWorkstation { get; set; }
+        public string VaxWorkstation { get; protected set; }
 
-        public string ZoneType { get; set; }
+        public string ZoneType { get; protected set; }
 
-        public IEnumerable<WorkstationElement> WorkstationElements { get; set; }
+        public ICollection<WorkstationElement> WorkstationElements { get; protected set; }
 
         public void Update(
             string workstationCode,
@@ -42,7 +42,7 @@
             Cit cit,
             string vaxWorkstation,
             string zoneType,
-            IEnumerable<WorkstationElement> elements)
+            ICollection<WorkstationElement> elements)
         {
             this.WorkstationCode = workstationCode;
             this.Description = description;

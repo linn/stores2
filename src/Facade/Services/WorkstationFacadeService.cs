@@ -41,12 +41,7 @@
         {
             var workstation = await this.repository.FindByIdAsync(resource.WorkstationCode);
 
-            if (workstation != null)
-            {
-                throw new WorkstationException("Work station already exists!");
-            }
-
-            var cit = this.citRepository.FindById(resource.CitCode);
+            var cit = await this.citRepository.FindByIdAsync(resource.CitCode);
 
             return new Workstation(
                 resource.WorkstationCode,
@@ -65,12 +60,12 @@
                     .ToList());
         }
 
-        protected override void UpdateFromResource(
+        protected override async Task UpdateFromResourceAsync(
             Workstation entity,
             WorkstationResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            var cit = this.citRepository.FindById(updateResource.CitCode);
+            var cit = await this.citRepository.FindByIdAsync(updateResource.CitCode);
 
             var updateDetails = updateResource.WorkstationElements
                 .Select(e => new WorkstationElement(

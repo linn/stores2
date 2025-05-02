@@ -8,13 +8,14 @@
 
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Integration.Tests.Extensions;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Stores;
-
     using NUnit.Framework;
 
-    public class WhenGettingAll : ContextBase
+    public class WhenSearching : ContextBase
     {
         private Workstation workstation;
+        private Workstation secondWorkstation;
 
         [SetUp]
         public void SetUp()
@@ -33,10 +34,26 @@
                     {
                     });
 
+            this.secondWorkstation = new Workstation(
+                "aredundantworkstation",
+                "description",
+                new Cit
+                    {
+                        Code = "S",
+                        Name = "S CODE"
+                    },
+                "U",
+                "D",
+                new List<WorkstationElement>
+                    {
+                    });
+
             this.DbContext.Workstations.AddAndSave(this.DbContext, this.workstation);
+            this.DbContext.Workstations.AddAndSave(this.DbContext, this.secondWorkstation);
+
 
             this.Response = this.Client.Get(
-                "/stores2/work-stations/",
+                "/stores2/work-stations?workstationCode=Test",
                 with =>
                     {
                         with.Accept("application/json");
@@ -59,9 +76,10 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<WorkstationResource>>();
-            resource.First().WorkstationCode.Should().Be("Test");
-            resource.First().Description.Should().Be("description");
+            var resources = this.Response.DeserializeBody<IEnumerable<WorkstationResource>>().ToList();
+            resources.Count.Should().Be(1);
+            resources.First().WorkstationCode.Should().Be("Test");
+            resources.First().Description.Should().Be("description");
         }
     }
 }

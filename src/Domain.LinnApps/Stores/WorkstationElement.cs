@@ -24,16 +24,16 @@
             this.PalletNumber = palletNumber;
         }
 
-        public int WorkstationElementId { get; set; }
+        public int WorkstationElementId { get; protected set; }
 
-        public string WorkstationCode { get; set; }
+        public string WorkstationCode { get; protected set; }
 
-        public Employee CreatedBy { get; set; }
+        public Employee CreatedBy { get; protected set; }
 
-        public DateTime DateCreated { get; set; }
+        public DateTime DateCreated { get; protected set; }
 
-        public int? LocationId { get; set; }
+        public int? LocationId { get; protected set; }
 
-        public int? PalletNumber { get; set; }
+        public int? PalletNumber { get; protected set; }
     }
 }

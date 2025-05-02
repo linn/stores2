@@ -22,7 +22,8 @@
                 LocationId = model.LocationId,
                 DateCreated = model.DateCreated.ToString("o"),
                 CreatedBy = model.CreatedBy?.Id,
-                CreatedByName = model.CreatedBy?.Name
+                CreatedByName = model.CreatedBy?.Name,
+                Links = this.BuildLinks(model, claims).ToArray()
             };
         }
 

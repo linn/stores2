@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Resources.Stores
 {
-    public class WorkstationElementResource
+    using Linn.Common.Resources;
+
+    public class WorkstationElementResource : HypermediaResource
     {
         public int WorkstationElementId { get; set; }
 

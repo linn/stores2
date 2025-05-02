@@ -5,6 +5,7 @@
 
     using Linn.Common.Facade;
     using Linn.Common.Resources;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Resources.Stores;
 
@@ -31,7 +32,8 @@
                            ZoneType = model.ZoneType,
                            WorkstationElements = model.WorkstationElements
                                ?.Select(c => (WorkstationElementResource)this.workstationElementsBuilder
-                                   .Build(c, claimsList))
+                                   .Build(c, claimsList)), 
+                           Links = this.BuildLinks(model, claims).ToArray()
             };
         }
 
