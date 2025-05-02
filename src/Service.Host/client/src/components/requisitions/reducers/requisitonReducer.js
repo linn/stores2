@@ -192,6 +192,16 @@ function reducer(state, action) {
                 };
             }
         }
+        case 'set_book_in_postings': {
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    quantity: action.payload.quantityBooked,
+                    bookInPostings: action.payload.bookInPostings
+                }
+            };
+        }
         case 'set_document1_details': {
             return { ...state, document1Details: action.payload };
         }
