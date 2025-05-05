@@ -9,13 +9,13 @@
 
         public string StorageTypeCode { get; set; }
 
-        public string Maximum { get; set; }
+        public int Maximum { get; set; }
 
         public int Incr { get; set; }
 
         public string Remarks { get; set; }
 
-        public int Preference { get; set; }
+        public string Preference { get; set; }
 
         public StorageTypeResource StorageType { get; set; }
 

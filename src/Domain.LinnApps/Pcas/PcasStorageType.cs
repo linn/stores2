@@ -8,10 +8,10 @@
         public PcasStorageType(
             string boardCode,
             string storageTypeCode,
-            string maximum,
+            int maximum,
             int incr,
             string remarks,
-            int preference)
+            string preference)
         {
             this.BoardCode = boardCode;
             this.StorageTypeCode = storageTypeCode;
@@ -27,23 +27,23 @@
 
         public string StorageTypeCode { get; set; }
 
-        public string Maximum { get; set; }
+        public int Maximum { get; set; }
 
         public int Incr { get; set; }
 
         public string Remarks { get; set; }
 
-        public int Preference { get; set; }
+        public string Preference { get; set; }
 
         public StorageType StorageType { get; set; }
 
         public PcasBoard PcasBoard { get; set; }
 
         public void Update(
-            string maximum,
+            int maximum,
             int incr,
             string remarks,
-            int preference)
+            string preference)
         {
             this.Maximum = maximum;
             this.Incr = incr;
