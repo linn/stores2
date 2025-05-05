@@ -52,7 +52,7 @@
             };
 
             this.ReqStoredProcedures.GetQtyReturned(1, 1)
-                .Returns(1);
+                .Returns(0);
 
             this.action = async () => await this.Sut.CheckReturnOrderForFullyBooked(header, purchaseOrder);
         }
