@@ -417,7 +417,7 @@ function Requisition({ creating }) {
             payload: selected
         });
 
-        if (formState.req?.isReverseTransaction === 'Y' && selected.orderNumber) {
+        if (formState.req?.isReverseTransaction === 'Y' && selected.canReverse) {
             setPickRequisitionDialogVisible(true);
         }
 

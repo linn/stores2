@@ -751,7 +751,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckDocumentLineForOverAndFullyBooked(req, document);
             }
 
-            if (req.IsReverseTransaction == "Y" && req.Quantity != null)
+            if (req.IsReverseTrans() && req.Quantity != null)
             {
                 if (req.OriginalReqNumber == null)
                 {
@@ -784,7 +784,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A from stock pool is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState))
+                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState) && !req.IsReverseTrans())
                 {
                     throw new RequisitionException("A from state is required");
                 }
@@ -901,17 +901,25 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     var bookQty = reqs.Sum(r => r.Quantity.GetValueOrDefault());
 
-                    if (header.Quantity.HasValue)
+                    if (!header.IsReverseTrans())
                     {
-                        if (bookQty + header.Quantity > document.Quantity)
+                        if (header.Quantity.HasValue)
                         {
-                            throw new DocumentException("Trying to overbook this line");
+                            if (bookQty + header.Quantity > document.Quantity)
+                            {
+                                throw new DocumentException("Trying to overbook this line");
+                            }
+                        }
+                        else if (bookQty == document.Quantity)
+                        {
+                            throw new DocumentException("Line is already fully booked");
                         }
                     }
-                    else if (bookQty == document.Quantity)
+                    else if (bookQty == 0)
                     {
-                        throw new DocumentException("Line is already fully booked");
+                        throw new DocumentException("Line has never been booked");
                     }
+
                 }
             }
         }
@@ -987,7 +995,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 var qty = await this.requisitionStoredProcedures.GetQtyReturned(
                               header.Document1.Value,
                               header.Document1Line.Value);
-                if (header.IsReverseTransaction == "Y" && header.Quantity.Value >= qty)
+                if (header.IsReverseTrans() && header.Quantity.Value > qty)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
                 }
@@ -1217,7 +1225,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
 
-            if (header.Part != null)
+            
+            if (header.Part != null && !header.IsReverseTrans())
             {
                 if (header.FromLocation != null || header.FromPalletNumber.HasValue)
                 {

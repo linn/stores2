@@ -151,12 +151,18 @@ function reducer(state, action) {
                 // set header from / to state if there is only one possibility for the given stores function
                 if (action.payload.newValue.transactionTypes?.length === 1) {
                     if (!action.payload.newValue?.defaultFromState) {
-                        newState.req.fromState =
-                            action.payload.newValue.transactionTypes[0]?.fromStates?.[0];
+                        // dont override if functions like MOVELOC don't want it
+                        if (action.payload.newValue?.fromStateRequired !== 'N') {
+                            newState.req.fromState =
+                                action.payload.newValue.transactionTypes[0]?.fromStates?.[0];
+                        }
                     }
                     if (!action.payload.newValue?.defaultToState) {
-                        newState.req.toState =
-                            action.payload.newValue.transactionTypes[0]?.toStates?.[0];
+                        // dont override if functions like MOVELOC don't want it
+                        if (action.payload.newValue?.toStateRequired !== 'N') {
+                            newState.req.toState =
+                                action.payload.newValue.transactionTypes[0]?.toStates?.[0];
+                        }
                     }
                 }
 
@@ -176,13 +182,21 @@ function reducer(state, action) {
         }
         case 'set_reverse_details': {
             if (action.payload.reqNumber) {
+                // TODO replicate all GET_REQ_FOR_REVERSAL in REQ_UT.fmb functionality
                 return {
                     ...state,
                     req: {
                         ...state.req,
                         originalReqNumber: action.payload.reqNumber,
                         quantity: action.payload.quantity * -1,
-                        reference: action.payload.reference
+                        reference: action.payload.reference,
+                        fromState: action.payload.toState
+                            ? action.payload.toState
+                            : state.req.fromState,
+                        fromStockPool:
+                            action.payload.storesFunction?.fromStockPoolRequired !== 'N'
+                                ? action.payload.fromStockPool
+                                : state.req.fromStockPool
                     }
                 };
             } else {
