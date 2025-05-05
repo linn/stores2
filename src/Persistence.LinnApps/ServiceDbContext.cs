@@ -864,7 +864,7 @@
 
         private static void BuildPcasBoard(ModelBuilder builder)
         {
-            var v = builder.Entity<PcasBoard>().ToTable("WORK_STATION_ELEMENTS");
+            var v = builder.Entity<PcasBoard>().ToTable("PCAS_BOARDS");
             v.HasKey(l => l.BoardCode);
             v.Property(s => s.BoardCode).HasColumnName("BOARD_CODE");
             v.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(200);

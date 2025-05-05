@@ -7,6 +7,7 @@
     using Linn.Common.Service.Core.Handlers;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
+    using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
     using Linn.Stores2.Service.ResultHandlers;
@@ -42,7 +43,11 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresFunctionResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StoresFunctionResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<WorkstationResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<WorkstationResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<WorkstationResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<PcasStorageTypeResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasStorageTypeResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<PcasBoardResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasBoardResource>>>();
         }
     }
 }
