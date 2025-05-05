@@ -22,7 +22,31 @@
             IBuilder<PcasStorageType> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
+        }
 
+        protected override async Task<PcasStorageType> CreateFromResourceAsync(
+            PcasStorageTypeResource resource,
+            IEnumerable<string> privileges = null)
+        {
+            return new PcasStorageType(
+                resource.BoardCode,
+                resource.StorageTypeCode,
+                resource.Maximum,
+                resource.Incr,
+                resource.Remarks,
+                resource.Preference);
+        }
+
+        protected override async Task UpdateFromResourceAsync(
+            PcasStorageType entity,
+            PcasStorageTypeResource updateResource,
+            IEnumerable<string> privileges = null)
+        {
+            entity.Update(
+                updateResource.Maximum,
+                updateResource.Incr,
+                updateResource.Remarks,
+                updateResource.Preference);
         }
 
         protected override Task SaveToLogTable(string actionType, int userNumber, PcasStorageType entity, PcasStorageTypeResource resource, PcasStorageTypeResource updateResource)

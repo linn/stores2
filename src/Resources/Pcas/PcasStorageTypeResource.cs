@@ -1,8 +1,9 @@
 ﻿namespace Linn.Stores2.Resources.Pcas
 {
+    using Linn.Common.Resources;
     using Linn.Stores2.Resources;
 
-    public class PcasStorageTypeResource
+    public class PcasStorageTypeResource : HypermediaResource
     {
         public string BoardCode { get; set; }
 
