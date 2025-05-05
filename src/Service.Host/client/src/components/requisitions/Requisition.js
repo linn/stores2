@@ -953,7 +953,8 @@ function Requisition({ creating }) {
                                         : null
                                 }
                                 setQuantity={
-                                    formState.req.storesFunction?.quantityRequired !== 'X'
+                                    formState.req.storesFunction?.quantityRequired !== 'X' ||
+                                    formState.req.storesFunction?.code === 'BOOKWO'
                                         ? newQty => {
                                               dispatch({
                                                   type: 'set_header_value',

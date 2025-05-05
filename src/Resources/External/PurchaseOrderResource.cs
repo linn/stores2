@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Linn.Stores2.Resources.External
+﻿namespace Linn.Stores2.Resources.External
 {
+    using System.Collections.Generic;
+
     public class PurchaseOrderResource
     {
         public int OrderNumber { get; set; }

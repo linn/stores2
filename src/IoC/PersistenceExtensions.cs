@@ -61,7 +61,9 @@
                 .AddScoped<IRepository<StoresTransactionState, StoresTransactionStateKey>, EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>>(
                     r => new EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>(r.GetService<ServiceDbContext>()?.StoresTransactionStates))
                 .AddScoped<IRepository<PotentialMoveDetail, PotentialMoveDetailKey>, EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>>(
-                    r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(r.GetService<ServiceDbContext>()?.PotentialMoveDetails));
+                    r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(r.GetService<ServiceDbContext>()?.PotentialMoveDetails))
+                .AddScoped<IRepository<BookInOrderDetail, BookInOrderDetailKey>, EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>>(
+                    r => new EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>(r.GetService<ServiceDbContext>()?.BookInOrderDetails));
         }
     }
 }

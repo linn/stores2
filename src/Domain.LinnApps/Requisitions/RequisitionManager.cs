@@ -706,6 +706,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
                 }
+
+                if (function.FunctionCode == "BOOKLD")
+                {
+                    if (!quantity.HasValue || quantity.Value == 0)
+                    {
+                        throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
+                    }
+                }
             }
             else if (function.PartSource == "RO")
             {
@@ -972,16 +980,19 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task CheckReturnOrderForFullyBooked(RequisitionHeader header, PurchaseOrderResult purchaseOrder)
         {
-            if (header.Document1Name == "RO" && purchaseOrder != null && purchaseOrder.OrderQty(header.Document1Line).HasValue)
+            if (header.Document1Name == "RO" && purchaseOrder != null
+                                             && purchaseOrder.OrderQty(header.Document1Line).HasValue)
             {
                 // call to STORES_OO.QTY_RETURNED could rewrite in c# but a bit involved
-                var qty = await this.requisitionStoredProcedures.GetQtyReturned(header.Document1.Value,
-                    header.Document1Line.Value);
+                var qty = await this.requisitionStoredProcedures.GetQtyReturned(
+                              header.Document1.Value,
+                              header.Document1Line.Value);
                 if (header.IsReverseTransaction == "Y" && header.Quantity.Value >= qty)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
                 }
-                else if (header.IsReverseTransaction != "Y" && header.Quantity.Value - qty <= 0)
+
+                if (header.IsReverseTransaction != "Y" && header.Quantity.Value - qty <= 0)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} is fully booked");
                 }
@@ -1034,7 +1045,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new CreateRequisitionException($"Works Order {document1Number} is cancelled.");
             }
 
-            if (!quantity.HasValue && isReverseTransaction != "Y")
+            if ((!quantity.HasValue || quantity.Value == 0) && isReverseTransaction != "Y")
             {
                 throw new CreateRequisitionException($"You must specify a quantity to book in from works order {document1Number}.");
             }

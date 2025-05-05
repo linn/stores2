@@ -198,7 +198,7 @@ function reducer(state, action) {
                 req: {
                     ...state.req,
                     quantity: action.payload.quantityBooked,
-                    bookInPostings: action.payload.bookInPostings
+                    bookInOrderDetails: action.payload.bookInPostings
                 }
             };
         }

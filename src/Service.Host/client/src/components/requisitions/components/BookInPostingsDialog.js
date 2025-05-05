@@ -113,7 +113,11 @@ function BookInPostingsDialog({
     const addPosting = () => {
         const id = (bookInPostings.length ?? 0) + 1;
         const newBookInPosting = {
-            id
+            id,
+            sequence: id,
+            orderNumber: orderDetail.orderNumber,
+            orderLine: orderDetail.line,
+            isReverse: 'N'
         };
         const bookInPostingsToUpdate = [...bookInPostings, newBookInPosting];
         setBookInPostings(bookInPostingsToUpdate);
@@ -123,16 +127,24 @@ function BookInPostingsDialog({
         const id = (bookInPostings.length ?? 0) + 1;
         const newBookInPosting = {
             id,
-            qty: orderDetail.ourQty - bookedInQuantity,
+            sequence: id,
+            orderNumber: orderDetail.orderNumber,
+            orderLine: orderDetail.line,
+            quantity: orderDetail.ourQty - bookedInQuantity,
             departmentCode: orderDetail.orderPosting.nominalAccount.department.departmentCode,
             departmentDescription:
                 orderDetail.orderPosting.nominalAccount.department.departmentDescription,
             nominalCode: orderDetail.orderPosting.nominalAccount.nominal.nominalCode,
-            nominalDescription: orderDetail.orderPosting.nominalAccount.nominal.description
+            nominalDescription: orderDetail.orderPosting.nominalAccount.nominal.description,
+            isReverse: 'N'
         };
 
         const bookInPostingsToUpdate = [...bookInPostings, newBookInPosting];
         setBookInPostings(bookInPostingsToUpdate);
+        searchNominalAccounts(
+            null,
+            `?departmentCode=${newBookInPosting.departmentCode}&nominalCode=${newBookInPosting.nominalCode}&exactMatch=true`
+        );
     };
 
     const handleClose = () => {
@@ -146,15 +158,24 @@ function BookInPostingsDialog({
 
     const handleConfirmClick = () => {
         const qtyLeft = orderDetail.ourQty - bookedInQuantity;
-        const selectedQty = bookInPostings.reduce((a, b) => a + b.qty, 0);
-        if (Number(qtyLeft) < Number(selectedQty)) {
+        const selectedQty = bookInPostings.reduce((a, b) => a + Number(b.quantity), 0);
+        if (Number(qtyLeft) < selectedQty) {
             setSnackbar({
-                message: `Quantity left on order line is ${qtyLeft} but quantity picked is ${Number(selectedQty)}`,
+                message: `Quantity left on order line is ${qtyLeft} but quantity picked is ${selectedQty}`,
+                backgroundColour: 'red'
+            });
+        } else if (
+            !bookInPostings.every(
+                a => a.departmentCode && a.nominalCode && a.nominalPostsAllowed === 'Y'
+            )
+        ) {
+            setSnackbar({
+                message: 'Department / nominal details are incomplete or invalid',
                 backgroundColour: 'red'
             });
         } else {
             handleClose();
-            handleSelect({ bookInPostings, quantityBooked: Number(selectedQty) });
+            handleSelect({ bookInPostings, quantityBooked: selectedQty });
         }
     };
 
@@ -357,7 +378,7 @@ function BookInPostingsDialog({
     };
 
     const bookInPostingsColumns = [
-        { field: 'qty', headerName: 'Qty', editable: true, width: 160 },
+        { field: 'quantity', headerName: 'Qty', editable: true, width: 160 },
         {
             field: 'departmentCode',
             headerName: 'Department',
