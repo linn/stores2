@@ -44,6 +44,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IBomVerificationProxy bomVerificationProxy;
 
+        private readonly IRepository<BookInOrderDetail, BookInOrderDetailKey> bookInOrderDetailRepository;
+
         private readonly IRepository<StoresPallet, int> palletRepository;
 
         private readonly IRepository<StockState, string> stateRepository;
@@ -78,7 +80,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IStockService stockService,
             ISalesProxy salesProxy,
             IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository,
-            IBomVerificationProxy bomVerificationProxy)
+            IBomVerificationProxy bomVerificationProxy,
+            IRepository<BookInOrderDetail, BookInOrderDetailKey> bookInOrderDetailRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -100,6 +103,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.salesProxy = salesProxy;
             this.potentialMoveRepository = potentialMoveRepository;
             this.bomVerificationProxy = bomVerificationProxy;
+            this.bookInOrderDetailRepository = bookInOrderDetailRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -956,6 +960,29 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             await this.potentialMoveRepository.AddAsync(potentialMove);
 
             return new List<PotentialMoveDetail> { potentialMove }.AsEnumerable();
+        }
+
+        public async Task AddBookInOrderDetails(IList<BookInOrderDetail> details)
+        {
+            if (details != null && details.Count > 0)
+            {
+                var first = details.First();
+                var existing = await this.bookInOrderDetailRepository.FilterByAsync(a =>
+                                   a.OrderNumber == first.OrderNumber && a.OrderLine == first.OrderLine);
+
+                if (existing.Count > 0)
+                {
+                    foreach (var existingBookInOrderDetail in existing)
+                    { 
+                       this.bookInOrderDetailRepository.Remove(existingBookInOrderDetail);
+                    }
+                }
+
+                foreach (var bookInOrderDetail in details)
+                {
+                    await this.bookInOrderDetailRepository.AddAsync(bookInOrderDetail);
+                }
+            }
         }
 
         public async Task CheckPurchaseOrderForOverAndFullyKitted(RequisitionHeader header, PurchaseOrderResult purchaseOrder)

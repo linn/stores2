@@ -87,6 +87,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? toLocationId,
             int? toPalletNumber);
 
+        Task AddBookInOrderDetails(IList<BookInOrderDetail> details);
+
         Task CheckPurchaseOrderForOverAndFullyKitted(RequisitionHeader header, PurchaseOrderResult purchaseOrder);
 
         Task CheckReturnOrderForFullyBooked(RequisitionHeader header, PurchaseOrderResult purchaseOrder);

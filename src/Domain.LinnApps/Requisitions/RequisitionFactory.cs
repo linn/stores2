@@ -55,7 +55,8 @@
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
             int? originalReqNumber = null,
-            int? document3Number = null)
+            int? document3Number = null,
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null)
         {
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
            
@@ -92,7 +93,8 @@
                                   Lines = lines,
                                   IsReverseTransaction = isReverseTransaction,
                                   OriginalReqNumber = originalReqNumber,
-                                  Document3Number = document3Number
+                                  Document3Number = document3Number,
+                                  BookInOrderDetails = bookInOrderDetails
                               };
 
             var strategy = this.creationStrategyResolver.Resolve(context);
