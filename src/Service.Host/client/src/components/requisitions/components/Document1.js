@@ -16,8 +16,7 @@ function Document1({
     partSource,
     onSelectPart = null,
     document1Details = null,
-    storesFunction = null,
-    isReverseTransaction = false
+    storesFunction = null
 }) {
     const displayDetails1 =
         document1Details && partSource === 'WO'
@@ -75,7 +74,7 @@ function Document1({
                     document3: purchaseOrder.details[0].originalOrderNumber,
                     docType,
                     quantity: purchaseOrder.details[0].ourQty,
-                    getReqToReverse: isReverseTransaction
+                    canReverse: 'Y'
                 });
             } else {
                 onSelect({
@@ -96,7 +95,7 @@ function Document1({
 
             clearPurchaseOrder();
         }
-    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction, isReverseTransaction]);
+    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction]);
 
     useEffect(() => {
         if (creditNote && document1Line) {
@@ -106,12 +105,12 @@ function Document1({
                     partNumber: line.articleNumber,
                     partDescription: line.description,
                     document1Line,
-                    getReqToReverse: isReverseTransaction
+                    canReverse: 'Y'
                 });
                 clearCreditNote();
             }
         }
-    }, [creditNote, document1Line, onSelect, clearCreditNote, isReverseTransaction]);
+    }, [creditNote, document1Line, onSelect, clearCreditNote]);
 
     useEffect(() => {
         if (worksOrder) {
@@ -126,13 +125,13 @@ function Document1({
                 quantity: worksOrder.quantity,
                 quantityBuilt: worksOrder.quantityBuilt,
                 dateCancelled: worksOrder.dateCancelled,
-                getReqToReverse: isReverseTransaction
+                canReverse: 'Y'
             });
 
             fetchPart(null, `?searchTerm=${worksOrder.partNumber}&exactOnly=true`);
             clearWorksOrder();
         }
-    }, [worksOrder, onSelect, clearWorksOrder, fetchPart, isReverseTransaction]);
+    }, [worksOrder, onSelect, clearWorksOrder, fetchPart]);
 
     useEffect(() => {
         if (document1Part && document1Part.length === 1) {
