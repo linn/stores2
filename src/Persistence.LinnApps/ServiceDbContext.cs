@@ -5,6 +5,7 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -71,6 +72,10 @@
 
         public DbSet<Cit> Cits { get; set; }
 
+        public DbSet<PcasStorageType> PcasStorageTypes { get; set; }
+
+        public DbSet<PcasBoard> PcasBoards { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -116,6 +121,8 @@
             BuildWorkstations(builder);
             BuildWorkstationElements(builder);
             BuildCits(builder);
+            BuildPcasStorageTypes(builder);
+            BuildPcasBoard(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -839,6 +846,28 @@
             e.HasKey(l => l.Code);
             e.Property(s => s.Code).HasColumnName("CODE").HasMaxLength(10);
             e.Property(s => s.Name).HasColumnName("NAME").HasMaxLength(50);
+        }
+
+        private static void BuildPcasStorageTypes(ModelBuilder builder)
+        {
+            var v = builder.Entity<PcasStorageType>().ToTable("PCAS_STORAGE_TYPES");
+            v.HasKey(p => new { p.BoardCode, p.StorageTypeCode });
+            v.Property(e => e.BoardCode).HasColumnName("BOARD_CODE");
+            v.Property(e => e.StorageTypeCode).HasColumnName("STORAGE_TYPE");
+            v.Property(e => e.Maximum).HasColumnName("MAXIMUM");
+            v.Property(e => e.Incr).HasColumnName("INCR");
+            v.Property(e => e.Remarks).HasColumnName("REMARKS");
+            v.Property(e => e.Preference).HasColumnName("PREFERENCE");
+            v.HasOne(e => e.PcasBoard).WithMany().HasForeignKey(e => e.BoardCode);
+            v.HasOne(e => e.StorageType).WithMany().HasForeignKey(e => e.StorageTypeCode);
+        }
+
+        private static void BuildPcasBoard(ModelBuilder builder)
+        {
+            var v = builder.Entity<PcasBoard>().ToTable("WORK_STATION_ELEMENTS");
+            v.HasKey(l => l.BoardCode);
+            v.Property(s => s.BoardCode).HasColumnName("BOARD_CODE");
+            v.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(200);
         }
     }
 }
