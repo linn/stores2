@@ -5,9 +5,7 @@
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps.Pcas;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Pcas;
 
     using Microsoft.AspNetCore.Builder;
@@ -20,8 +18,8 @@
         {
             app.MapGet("/stores2/pcas-storage-types", this.GetAll);
             app.MapPost("/stores2/pcas-storage-types", this.Create);
-            app.MapGet("/stores2/pcas-storage-types/{boardCode}/{storageTypeCode}", this.GetById);
-            app.MapPut("/stores2/pcas-storage-types/{boardCode}/{storageTypeCode}", this.Update);
+            app.MapGet("/stores2/pcas-storage-type/{boardCode}/{storageTypeCode}", this.GetById);
+            app.MapPut("/stores2/pcas-storage-type/{boardCode}/{storageTypeCode}", this.Update);
         }
 
         private async Task GetAll(

@@ -19,9 +19,11 @@
 
         public override IQueryable<PcasStorageType> FindAll()
         {
-            return this.serviceDbContext.PcasStorageTypes
+            var result = this.serviceDbContext.PcasStorageTypes
                 .Include(a => a.PcasBoard)
                 .Include(l => l.StorageType);
+
+            return result;
         }
 
         public override async Task<PcasStorageType> FindByIdAsync(PcasStorageTypeKey key)
@@ -29,7 +31,7 @@
             var result = await this.serviceDbContext.PcasStorageTypes
                              .Include(a => a.PcasBoard)
                              .Include(l => l.StorageType)
-                             .FirstOrDefaultAsync(pcasStorageType => pcasStorageType.Key == key);
+                             .FirstOrDefaultAsync(pcasStorageType => pcasStorageType.BoardCode == key.BoardCode && pcasStorageType.StorageTypeCode == key.StorageTypeCode);
             return result;
         }
     }

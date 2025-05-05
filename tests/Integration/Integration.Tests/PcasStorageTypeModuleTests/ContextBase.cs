@@ -3,17 +3,13 @@
     using System.Net.Http;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Common.Proxy.LinnApps;
-    using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
-    using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Service.Modules;
     using Microsoft.Extensions.DependencyInjection;
@@ -48,7 +44,7 @@
                     transactionManager,
                     new PcasStorageTypeResourceBuilder());
 
-            this.Client = TestClient.With<PartsStorageTypeModule>(
+            this.Client = TestClient.With<PcasStorageTypeModule>(
                 services =>
                 {
                     services.AddSingleton(pcasStorageTypeFacadeService);

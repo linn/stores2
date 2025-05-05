@@ -20,15 +20,15 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
         {
             this.createResource = new PcasStorageTypeResource
                                       {
-                                          BoardCode = "NEW-TEST-BOARD-CODE",
-                                          StorageTypeCode = "NEW-TEST-STORAGE-TYPE-CODE",
+                                          BoardCode = "TEST BOARD CODE",
+                                          StorageTypeCode = "TEST STORAGE TYPE CODE",
                                           Maximum = 100,
                                           Incr = 1,
-                                          Remarks = "NEW REMARKS",
+                                          Remarks = "A REMARKS",
                                           Preference = "1",
                                       };
 
-            this.Response = this.Client.PostAsJsonAsync($"/stores2/pcas-storage-types", this.createResource).Result;
+            this.Response = this.Client.PostAsJsonAsync("/stores2/pcas-storage-types", this.createResource).Result;
         }
 
         [Test]

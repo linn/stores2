@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Pcas
 {
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using System;
 
     public class PcasStorageType
     {

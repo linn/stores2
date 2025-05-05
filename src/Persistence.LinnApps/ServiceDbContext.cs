@@ -860,6 +860,8 @@
             v.Property(e => e.Preference).HasColumnName("PREFERENCE");
             v.HasOne(e => e.PcasBoard).WithMany().HasForeignKey(e => e.BoardCode);
             v.HasOne(e => e.StorageType).WithMany().HasForeignKey(e => e.StorageTypeCode);
+            builder.Entity<PcasStorageTypeKey>()
+                .HasKey(p => new { p.BoardCode, p.StorageTypeCode });
         }
 
         private static void BuildPcasBoard(ModelBuilder builder)

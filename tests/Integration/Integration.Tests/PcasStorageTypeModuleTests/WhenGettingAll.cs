@@ -9,6 +9,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Pcas;
 
+
     using NUnit.Framework;
 
     public class WhenGettingAll : ContextBase
@@ -53,8 +54,8 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
         public void ShouldReturnJsonBody()
         {
             var resource = this.Response.DeserializeBody<IEnumerable<PcasStorageTypeResource>>().ToList();
-            resource.First().BoardCode.Should().Be("TEST BOARD CODE");
-            resource.First().StorageTypeCode.Should().Be("TEST STORAGE TYPE CODE");
+            resource.First().BoardCode.Should().Be("TEST-BOARD-CODE");
+            resource.First().StorageTypeCode.Should().Be("TEST-STORAGE-TYPE-CODE");
             resource.First().Preference.Should().Be("1");
         }
     }

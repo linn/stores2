@@ -11,6 +11,7 @@
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
+    using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Pcas;
 
@@ -66,7 +67,7 @@
 
         protected override Expression<Func<PcasStorageType, bool>> FindExpression(PcasStorageTypeResource searchResource)
         {
-            throw new NotImplementedException();
+            return pst => pst.BoardCode == searchResource.BoardCode && pst.StorageTypeCode == searchResource.StorageTypeCode;
         }
 
         protected override Expression<Func<PcasStorageType, bool>> SearchExpression(string searchTerm)

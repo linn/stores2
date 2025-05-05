@@ -32,6 +32,8 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                 "REMARKS",
                 "1");
 
+
+
             this.updateResource = new PcasStorageTypeResource
             {
                                           BoardCode = "TEST-BOARD-CODE",
@@ -71,8 +73,10 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {
-            var resource = this.Response.DeserializeBody<StockPoolResource>();
-            resource.StockPoolDescription.Should().Be("A NEW DESCRIPTION");
+            var resource = this.Response.DeserializeBody<PcasStorageTypeResource>();
+            resource.BoardCode.Should().Be("TEST-BOARD-CODE");
+            resource.StorageTypeCode.Should().Be("TEST-STORAGE-TYPE-CODE");
+            resource.Remarks.Should().Be("NEW REMARKS");
         }
     }
 }
