@@ -71,7 +71,7 @@ function Workstations() {
     ];
 
     const createUrl = () => {
-        return '/stores2/work-stations/locations/create';
+        return '/stores2/work-stations/create';
     };
 
     return (
