@@ -1,10 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
 
     using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -13,14 +15,14 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingBookLd : ContextBase
+    public class WhenValidatingBookLdAndNoNominalAccount : ContextBase
     {
-        private RequisitionHeader result;
+        private Func<Task> action;
 
         private IEnumerable<BookInOrderDetail> bookInOrderDetails;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.EmployeeRepository.FindByIdAsync(123).Returns(new Employee { Id = 123 });
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.BookToLinnDepartment.FunctionCode)
@@ -41,24 +43,24 @@
                                                   }
                                           };
             this.StoresService.ValidDepartmentNominal("0000011111", "0000022222")
-                .Returns(new ProcessResult(true, "ok"));
+                .Returns(new ProcessResult(false, "Dept/Nom not valid"));
             this.DocumentProxy.GetPurchaseOrder(1234).Returns(
                 new PurchaseOrderResult
-                    {
-                        OrderNumber = 1234,
-                        IsFilCancelled = false,
-                        IsAuthorised = true,
-                        DocumentType = "PO",
-                        Details = new List<PurchaseOrderDetailResult>
+                {
+                    OrderNumber = 1234,
+                    IsFilCancelled = false,
+                    IsAuthorised = true,
+                    DocumentType = "PO",
+                    Details = new List<PurchaseOrderDetailResult>
                                       {
                                           new PurchaseOrderDetailResult
                                               {
                                                   PartNumber = "SUNDRY PART"
                                               }
                                       }
-                    });
-            
-            this.result = await this.Sut.Validate(
+                });
+
+            this.action = () => this.Sut.Validate(
                 123,
                 TestFunctionCodes.BookToLinnDepartment.FunctionCode,
                 null,
@@ -73,15 +75,10 @@
         }
 
         [Test]
-        public void ShouldGetOrder()
+        public async Task ShouldThrowCorrectException()
         {
-            this.DocumentProxy.Received().GetPurchaseOrder(1234);
-        }
-
-        [Test]
-        public void ShouldReturnValidated()
-        {
-            this.result.Should().NotBeNull();
+            await this.action.Should().ThrowAsync<RequisitionException>()
+                .WithMessage("Dept/Nom not valid");
         }
     }
 }

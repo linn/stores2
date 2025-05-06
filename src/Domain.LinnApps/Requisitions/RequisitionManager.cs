@@ -16,6 +16,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
 
+    using Microsoft.CodeAnalysis.CSharp.Syntax;
+
     public class RequisitionManager : IRequisitionManager
     {
         private readonly IAuthorisationService authService;
@@ -714,7 +716,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (function.FunctionCode == "BOOKLD")
                 {
-                    CheckBookInOrderAndDetails(
+                    await this.CheckBookInOrderAndDetails(
                         document1Number,
                         quantity,
                         isReverseTransaction,
@@ -1045,7 +1047,27 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        private static void CheckBookInOrderAndDetails(
+        private static bool FieldIsNeededOrOptional(string code)
+        {
+            if (code == "Y" || code == "O")
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool FieldIsNeededWithPart(string code, Part part)
+        {
+            if (part != null)
+            {
+                return FieldIsNeededOrOptional(code);
+            }
+
+            return code == "Y";
+        }
+
+        private async Task CheckBookInOrderAndDetails(
             int? document1Number,
             decimal? quantity,
             string isReverseTransaction,
@@ -1055,7 +1077,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (bookInOrderDetails == null || bookInOrderDetails.Count == 0)
             {
                 throw new CreateRequisitionException("No book in order details supplied for BOOKLD transaction");
-            } 
+            }
 
             if (!quantity.HasValue || quantity.Value == 0)
             {
@@ -1077,26 +1099,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateRequisitionException("Department or Nominal missing on book in order details.");
             }
-        }
 
-        private static bool FieldIsNeededOrOptional(string code)
-        {
-            if (code == "Y" || code == "O")
+            foreach (var bookInOrderDetail in bookInOrderDetails)
             {
-                return true;
+                DoProcessResultCheck(
+                    await this.storesService.ValidDepartmentNominal(
+                        bookInOrderDetail.DepartmentCode,
+                        bookInOrderDetail.NominalCode));
             }
-
-            return false;
-        }
-
-        private static bool FieldIsNeededWithPart(string code, Part part)
-        {
-            if (part != null)
-            {
-                return FieldIsNeededOrOptional(code);
-            }
-
-            return code == "Y";
         }
 
         private async Task CheckValidWorksOrder(
