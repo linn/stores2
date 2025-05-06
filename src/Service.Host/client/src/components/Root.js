@@ -22,6 +22,7 @@ import PartStorageType from './PartStorageType';
 import StoresTransViewer from './StoresTransViewer';
 import StoresFunctions from './StoresFunctions';
 import StoresFunction from './StoresFunction';
+import Workstations from './Workstations';
 
 function Root() {
     useSignIn();
@@ -75,6 +76,7 @@ function Root() {
                     <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
                     <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />
+                    <Route path="/stores2/work-stations" element={<Workstations />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>
