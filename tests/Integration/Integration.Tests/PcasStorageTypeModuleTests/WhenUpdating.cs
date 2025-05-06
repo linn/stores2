@@ -1,12 +1,10 @@
 namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
 {
-    using System;
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
 
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;

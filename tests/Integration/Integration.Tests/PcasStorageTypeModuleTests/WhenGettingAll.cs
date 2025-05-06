@@ -10,7 +10,6 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Pcas;
 
-
     using NUnit.Framework;
 
     public class WhenGettingAll : ContextBase

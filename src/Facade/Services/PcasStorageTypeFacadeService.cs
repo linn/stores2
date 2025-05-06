@@ -7,12 +7,8 @@
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Pcas;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
-    using Linn.Stores2.Persistence.LinnApps.Repositories;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Pcas;
 
     public class PcasStorageTypeFacadeService : AsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>
