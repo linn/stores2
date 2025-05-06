@@ -261,7 +261,8 @@
                 yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
             }
 
-            if (this.IsReverseTrans() && !this.OriginalReqNumber.HasValue)
+            if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
+                                      && !this.OriginalReqNumber.HasValue)
             {
                 yield return "You must specify a req number to reverse";
             }

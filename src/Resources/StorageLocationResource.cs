@@ -18,8 +18,6 @@
 
         public string StorageType { get; set; }
 
-        public string StorageTypeDescription { get; set; }
-
         public string SiteCode { get; set; }
 
         public string StorageAreaCode { get; set; }

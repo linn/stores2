@@ -601,7 +601,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string newPartNumber = null,
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
-            int? originalDocumentNumber = null)
+            int? originalDocumentNumber = null,
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
@@ -713,10 +714,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (function.FunctionCode == "BOOKLD")
                 {
-                    if (!quantity.HasValue || quantity.Value == 0)
-                    {
-                        throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
-                    }
+                    CheckBookInOrderAndDetails(
+                        document1Number,
+                        quantity,
+                        isReverseTransaction,
+                        partNumber,
+                        bookInOrderDetails?.ToList());
                 }
             }
             else if (function.PartSource == "RO")
@@ -1039,6 +1042,40 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (!result.Success)
             {
                 throw new RequisitionException(result.Message);
+            }
+        }
+
+        private static void CheckBookInOrderAndDetails(
+            int? document1Number,
+            decimal? quantity,
+            string isReverseTransaction,
+            string partNumber,
+            IList<BookInOrderDetail> bookInOrderDetails)
+        {
+            if (bookInOrderDetails == null || bookInOrderDetails.Count == 0)
+            {
+                throw new CreateRequisitionException("No book in order details supplied for BOOKLD transaction");
+            } 
+
+            if (!quantity.HasValue || quantity.Value == 0)
+            {
+                throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
+            }
+
+            if (isReverseTransaction == "Y" && quantity >= 0)
+            {
+                throw new CreateRequisitionException($"You must specify a negative quantity for reverse but {quantity} supplied.");
+            }
+
+            if (bookInOrderDetails.Any(p => p.PartNumber != partNumber))
+            {
+                throw new CreateRequisitionException("Part number is missing or incorrect on book in order details.");
+            }
+
+            if (bookInOrderDetails.Any(p =>
+                    string.IsNullOrEmpty(p.DepartmentCode) || string.IsNullOrEmpty(p.NominalCode)))
+            {
+                throw new CreateRequisitionException("Department or Nominal missing on book in order details.");
             }
         }
 

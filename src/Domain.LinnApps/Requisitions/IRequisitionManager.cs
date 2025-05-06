@@ -70,7 +70,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string newPartNumber = null,
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
-            int? originalDocumentNumber = null);
+            int? originalDocumentNumber = null,
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null);
 
         Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate, StoresFunction storesFunction = null);
 

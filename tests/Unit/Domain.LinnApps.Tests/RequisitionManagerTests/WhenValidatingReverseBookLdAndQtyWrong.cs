@@ -14,11 +14,11 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingBookLdAndNoQuantity : ContextBase
+    public class WhenValidatingReverseBookLdAndQtyWrong : ContextBase
     {
         private Func<Task> action;
 
-        private IEnumerable<BookInOrderDetail> bookinOrderDetails;
+        private IEnumerable<BookInOrderDetail> bookInOrderDetails;
 
         [SetUp]
         public void SetUp()
@@ -27,14 +27,14 @@
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.BookToLinnDepartment.FunctionCode)
                 .Returns(TestFunctionCodes.BookToLinnDepartment);
             this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART", BomVerifyFreqWeeks = 12 });
-            this.bookinOrderDetails = new List<BookInOrderDetail>
+            this.bookInOrderDetails = new List<BookInOrderDetail>
                                           {
                                               new BookInOrderDetail
                                                   {
                                                       OrderNumber = 1234,
                                                       OrderLine = 1,
                                                       Sequence = 1,
-                                                      Quantity = null,
+                                                      Quantity = 1,
                                                       DepartmentCode = null,
                                                       NominalCode = null,
                                                       PartNumber = null,
@@ -60,16 +60,17 @@
                 null,
                 null,
                 null,
+                isReverseTransaction: "Y",
                 partNumber: "PART",
-                quantity: 0,
-                bookInOrderDetails: this.bookinOrderDetails);
+                quantity: 1,
+                bookInOrderDetails: this.bookInOrderDetails);
         }
 
         [Test]
         public async Task ShouldThrowCorrectException()
         {
             await this.action.Should().ThrowAsync<CreateRequisitionException>()
-                .WithMessage("You must specify a quantity to book for PO 1234.");
+                .WithMessage($"You must specify a negative quantity for reverse but 1 supplied.");
         }
     }
 }
