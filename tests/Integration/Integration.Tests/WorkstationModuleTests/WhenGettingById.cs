@@ -26,7 +26,6 @@
                         Code = "R",
                         Name = "R CODE"
                     }, 
-                "V", 
                 "Z", 
                 new List<WorkstationElement> 
                 {

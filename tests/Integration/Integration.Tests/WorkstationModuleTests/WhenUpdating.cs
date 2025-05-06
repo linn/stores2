@@ -31,7 +31,6 @@
                         Code = "R",
                         Name = "R CODE"
                     },
-                "V",
                 "Z",
                 null);
 
