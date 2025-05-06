@@ -1,5 +1,8 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.External
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class PurchaseOrderResult
     {
         public int OrderNumber { get; set; }
@@ -10,11 +13,21 @@
         
         public string DocumentType { get; set; }
 
-        // todo - populate
-        public int SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
-        public int SupplierName { get; set; }
+        public string SupplierName { get; set; }
 
-        public string RohsCompliant { get; set; }
+        public IEnumerable<PurchaseOrderDetailResult> Details { get; set; }
+
+        public decimal? OrderQty(int? lineNumber = null)
+        {
+            var detail = this.Details.SingleOrDefault(d => d.Line == (lineNumber ?? 1));
+            return detail?.OurQty;
+        }
+
+        public int? OriginalOrderNumber(int? lineNumber = null)
+        {
+            return this.Details.SingleOrDefault(d => d.Line == (lineNumber ?? 1))?.OriginalOrderNumber;
+        }
     }
 }

@@ -46,13 +46,14 @@
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
-            this.StockService.ValidStockLocation(null, 666, "PART", 10, "QC").Returns(new ProcessResult(true, null));
+            this.StockService.ValidStockLocation(null, 666, "PART", 10, "QC")
+                .Returns(new ProcessResult(true, null));
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.GistPo.FunctionCode,
                 null,
                 1234567,
-                null,
+                "PO",
                 null,
                 null,
                 null,

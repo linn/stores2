@@ -64,7 +64,12 @@
                 .AddScoped<IRepository<PotentialMoveDetail, PotentialMoveDetailKey>, EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>>(
                     r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(r.GetService<ServiceDbContext>()?.PotentialMoveDetails))
                 .AddScoped<IQueryRepository<LabelType>, EntityFrameworkQueryRepository<LabelType>>(
-                    r => new EntityFrameworkQueryRepository<LabelType>(r.GetService<ServiceDbContext>()?.LabelTypes));
+                    r => new EntityFrameworkQueryRepository<LabelType>(r.GetService<ServiceDbContext>()?.LabelTypes))
+                .AddScoped<IRepository<BookInOrderDetail, BookInOrderDetailKey>, EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>>(
+                    r => new EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>(r.GetService<ServiceDbContext>()?.BookInOrderDetails))
+                .AddTransient<IRepository<Cit, string>, EntityFrameworkRepository<Cit, string>>(r =>
+                    new EntityFrameworkRepository<Cit, string>(r.GetService<ServiceDbContext>()?.Cits))
+                .AddScoped<IRepository<Workstation, string>, WorkstationRepository>();
         }
     }
 }

@@ -3,6 +3,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+    using Linn.Stores2.Domain.LinnApps.External;
 
     public interface IRequisitionManager
     {
@@ -71,7 +72,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string isReverseTransaction = "N",
             int? originalDocumentNumber = null);
 
-        Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate);
+        Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate, StoresFunction storesFunction = null);
 
         Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 
@@ -85,5 +86,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? builtById,
             int? toLocationId,
             int? toPalletNumber);
+
+        Task AddBookInOrderDetails(IList<BookInOrderDetail> details);
+
+        Task CheckPurchaseOrderForOverAndFullyKitted(RequisitionHeader header, PurchaseOrderResult purchaseOrder);
+
+        Task CheckReturnOrderForFullyBooked(RequisitionHeader header, PurchaseOrderResult purchaseOrder);
     }
 }

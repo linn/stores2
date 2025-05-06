@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
-import { InputField } from '@linn-it/linn-form-components-library';
+import { InputField, utilities, LinkField } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import itemTypes from '../../../itemTypes';
 import useGet from '../../../hooks/useGet';
-import LinkField from '../../LinkField';
 
 function Document1({
     document1,
@@ -16,7 +15,8 @@ function Document1({
     onSelect,
     partSource,
     onSelectPart = null,
-    document1Details = null
+    document1Details = null,
+    storesFunction = null
 }) {
     const displayDetails1 =
         document1Details && partSource === 'WO'
@@ -46,18 +46,58 @@ function Document1({
         clearData: clearDocument1Part
     } = useGet(itemTypes.parts.url, true);
 
+    function toIntId(href) {
+        if (href) {
+            const segments = href.split('/');
+            return Number(segments[segments.length - 1]);
+        }
+        return null;
+    }
+
     useEffect(() => {
         if (purchaseOrder) {
             const docType = purchaseOrder.documentType.name;
-            onSelect({
-                partNumber: purchaseOrder.details[0].partNumber,
-                partDescription: purchaseOrder.details[0].partDescription,
-                batchRef: `${docType.charAt(0)}${purchaseOrder.orderNumber}`,
-                document1Line: 1
-            });
+
+            if (storesFunction?.code === 'RETSU') {
+                const debitNote = toIntId(
+                    utilities.getHref(purchaseOrder, 'ret-credit-debit-note')
+                );
+
+                onSelect({
+                    partNumber: purchaseOrder.details[0].partNumber,
+                    partDescription: purchaseOrder.details[0].partDescription,
+                    batchRef: purchaseOrder.details[0].originalOrderNumber
+                        ? `P${purchaseOrder.details[0].originalOrderNumber}`
+                        : null,
+                    document1Line: 1,
+                    document2: debitNote,
+                    document3: purchaseOrder.details[0].originalOrderNumber,
+                    docType,
+                    quantity: purchaseOrder.details[0].ourQty,
+                    canReverse: 'Y'
+                });
+            } else {
+                onSelect({
+                    partNumber: purchaseOrder.details[0].partNumber,
+                    partDescription: purchaseOrder.details[0].partDescription,
+                    batchRef:
+                        storesFunction?.batchRequired === 'Y'
+                            ? `${docType.charAt(0)}${purchaseOrder.orderNumber}`
+                            : null,
+                    document1: purchaseOrder.orderNumber,
+                    document1Line: 1,
+                    toLocationCode:
+                        storesFunction?.toLocationRequired === 'Y'
+                            ? `S-SU-${purchaseOrder.supplier.id}`
+                            : null,
+                    docType,
+                    orderDetail: purchaseOrder.details[0]
+                });
+            }
+
             clearPurchaseOrder();
         }
-    }, [purchaseOrder, onSelect, clearPurchaseOrder]);
+    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction]);
 
     useEffect(() => {
         if (creditNote && document1Line) {
@@ -66,7 +106,8 @@ function Document1({
                 onSelect({
                     partNumber: line.articleNumber,
                     partDescription: line.description,
-                    document1Line
+                    document1Line,
+                    canReverse: 'Y'
                 });
                 clearCreditNote();
             }
@@ -85,7 +126,8 @@ function Document1({
                 outstanding: worksOrder.outstanding,
                 quantity: worksOrder.quantity,
                 quantityBuilt: worksOrder.quantityBuilt,
-                dateCancelled: worksOrder.dateCancelled
+                dateCancelled: worksOrder.dateCancelled,
+                canReverse: 'Y'
             });
 
             fetchPart(null, `?searchTerm=${worksOrder.partNumber}&exactOnly=true`);
@@ -113,6 +155,10 @@ function Document1({
                 return itemTypes.worksOrder.url;
             case 'PO':
                 return itemTypes.purchaseOrder.url;
+            case 'RO':
+                return itemTypes.purchaseOrder.url;
+            case 'CO':
+                return itemTypes.purchaseOrder.url;
             default:
                 return '';
         }
@@ -120,7 +166,7 @@ function Document1({
 
     return (
         <>
-            <Grid size={4}>
+            <Grid size={2}>
                 {!shouldEnter ? (
                     <LinkField
                         value={document1}
@@ -140,7 +186,7 @@ function Document1({
                         textFieldProps={{
                             onKeyDown: data => {
                                 if (data.keyCode == 13 || data.keyCode == 9) {
-                                    if (partSource === 'PO') {
+                                    if (partSource === 'PO' || partSource === 'RO') {
                                         fetchPurchaseOrder(document1);
                                     } else if (partSource == 'C') {
                                         fetchCreditNote(document1);
@@ -176,7 +222,7 @@ function Document1({
                     />
                 )}
             </Grid>
-            <Grid size={4} />
+            <Grid size={6} />
         </>
     );
 }

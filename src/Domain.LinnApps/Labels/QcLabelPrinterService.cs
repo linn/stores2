@@ -38,12 +38,10 @@
 
         public async Task<ProcessResult> PrintLabels(QcLabelPrintRequest request)
         {
-            var totalMessage = string.Empty;
             var result = new ProcessResult(true, string.Empty);
 
             if (!string.IsNullOrEmpty(request.KardexLocation))
             {
-                var kardexMessage = string.Empty;
                 var labelName = $"KGI{request.OrderNumber}";
                 var kardexData = $"\"{request.KardexLocation.Replace("\"", "''")}\",\"{request.ReqNumber}\"";
                 var kardexLabelType = this.labelTypeRepository.FindBy(x => x.Code == "KARDEX");
@@ -52,17 +50,18 @@
                                this.labelTypeRepository.FindBy(x => x.DefaultPrinter.ToLower() == request.PrinterName.ToLower())
                                    .DefaultPrinter;
 
-                var kardexResult = this.labelPrinter.PrintLabelsAsync(
+                var kardexResult = await this.labelPrinter.PrintLabelsAsync(
                     labelName,
                     printer,
                     request.Lines == null ? 1 : request.Lines.Count() + 1,
                     kardexLabelType.FileName,
                     kardexData);
 
-                result.Message = kardexMessage;
-
-                // todo - check that request.kardexLocation case means we never need to worry about the next lines bit
-                return result;
+                if (!kardexResult.Success)
+                {
+                    result.Message += kardexResult.Message;
+                    result.Success = false;
+                }
             }
              
             var labelType = await this.labelTypeRepository.FindByAsync(x => x.Code == request.QcState);
@@ -78,7 +77,6 @@
             foreach (var line in request.Lines)
             {
                 var printString = string.Empty;
-                var labelMessage = string.Empty;
                 switch (request.QcState)
                 {
                     case "QUARANTINE":
@@ -121,7 +119,7 @@
                         printString += Environment.NewLine;
                         break;
                     case "PASS":
-                        var partMessage = purchaseOrder.RohsCompliant == "Y"
+                        var partMessage = purchaseOrder.Details.First().RohsCompliant == "Y"
                                                ? "**ROHS Compliant**"
                                                : null;
                         printString += "\"";
@@ -160,11 +158,10 @@
                     labelType.FileName,
                     printString);
 
-                result.Message += linesResult.Message;
-
                 if (!linesResult.Success)
                 {
                     result.Success = false;
+                    result.Message += linesResult.Message;
                 }
             }
 

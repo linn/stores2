@@ -69,6 +69,12 @@
         public DbSet<StockTransaction> StockTransactions { get; set; }
 
         public DbSet<LabelType> LabelTypes { get; set; }
+        
+        public DbSet<Workstation> Workstations { get; set; }
+
+        public DbSet<Cit> Cits { get; set; }
+
+        public DbSet<BookInOrderDetail> BookInOrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -112,7 +118,11 @@
             BuildStockTransactions(builder);
             BuildStockTransactionPostings(builder);
             BuildPotentialMoveDetails(builder);
-            this.BuildLabelTypes(builder);
+            BuildLabelTypes(builder);
+            BuildWorkstations(builder);
+            BuildWorkstationElements(builder);
+            BuildCits(builder);
+            BuildBookInOrderDetails(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -459,6 +469,7 @@
             e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
             e.Property(r => r.OriginalReqNumber).HasColumnName("ORIG_REQ_NUMBER");
             e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.Property(r => r.Document3).HasColumnName("DOCUMENT_3");
             e.HasOne(r => r.NewPart).WithMany().HasForeignKey("NEW_PART_NUMBER");
         }
 
@@ -534,6 +545,7 @@
             r.Property(c => c.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
             r.Property(c => c.CanBeReversed).HasColumnName("CAN_BE_REVERSED").HasMaxLength(1);
             r.Property(c => c.CanBeCancelled).HasColumnName("CAN_BE_CANCELLED").HasMaxLength(1);
+            r.Property(c => c.ProcessStage).HasColumnName("PROCESS_STAGE");
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
 
@@ -804,13 +816,60 @@
             e.Property(s => s.SernosNumber).HasColumnName("SERNOS_NUMBER");
         }
 
-        private void BuildLabelTypes(ModelBuilder builder)
+        private static void BuildLabelTypes(ModelBuilder builder)
         {
             var e = builder.Entity<LabelType>().ToTable("STORES_LABEL_TYPES");
             e.HasNoKey();
             e.Property(t => t.Code).HasColumnName("LABEL_TYPE_CODE");
             e.Property(t => t.DefaultPrinter).HasColumnName("DEFAULT_PRINTER");
             e.Property(t => t.FileName).HasColumnName("FILENAME");
+        }
+
+        private static void BuildWorkstations(ModelBuilder builder)
+        {
+            var e = builder.Entity<Workstation>().ToTable("WORK_STATION");
+            e.HasKey(l => l.WorkstationCode);
+            e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.HasOne(a => a.Cit).WithMany().HasForeignKey("CIT_CODE");
+            e.Property(s => s.VaxWorkstation).HasColumnName("VAX_WORK_STATION").HasMaxLength(8);
+            e.Property(s => s.ZoneType).HasColumnName("ZONE_TYPE").HasMaxLength(20);
+            e.HasMany(w => w.WorkstationElements).WithOne().HasForeignKey(w => w.WorkstationCode);
+        }
+
+        private static void BuildWorkstationElements(ModelBuilder builder)
+        {
+            var e = builder.Entity<WorkstationElement>().ToTable("WORK_STATION_ELEMENTS");
+            e.HasKey(l => l.WorkstationElementId);
+            e.Property(s => s.WorkstationElementId).HasColumnName("WSE_ID");
+            e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.HasOne(s => s.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
+            e.Property(s => s.DateCreated).HasColumnName("DATE_CREATED");
+            e.Property(s => s.LocationId).HasColumnName("LOCATION_ID");
+            e.Property(s => s.PalletNumber).HasColumnName("PALLET_NUMBER");
+        }
+
+        private static void BuildCits(ModelBuilder builder)
+        {
+            var e = builder.Entity<Cit>().ToTable("CITS");
+            e.HasKey(l => l.Code);
+            e.Property(s => s.Code).HasColumnName("CODE").HasMaxLength(10);
+            e.Property(s => s.Name).HasColumnName("NAME").HasMaxLength(50);
+        }
+
+        private static void BuildBookInOrderDetails(ModelBuilder builder)
+        {
+            var e = builder.Entity<BookInOrderDetail>().ToTable("BOOKIN_ORDER_DETAILS");
+            e.HasKey(l => new { l.OrderNumber, l.OrderLine, l.Sequence });
+            e.Property(s => s.OrderNumber).HasColumnName("ORDER_NUMBER");
+            e.Property(s => s.OrderLine).HasColumnName("ORDER_LINE");
+            e.Property(s => s.Sequence).HasColumnName("SEQ");
+            e.Property(s => s.Quantity).HasColumnName("QTY");
+            e.Property(s => s.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(s => s.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
+            e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
+            e.Property(s => s.IsReverse).HasColumnName("REVERSE").HasMaxLength(1);
         }
     }
 }

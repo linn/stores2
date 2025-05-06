@@ -153,6 +153,22 @@ function StoresFunction() {
                                 />
                             </Grid>
                             <Grid size={2}>
+                                {<Typography variant="body1">Process Stage</Typography>}
+                            </Grid>
+                            <Grid size={2}>
+                                <InputField
+                                    value={result.processStage}
+                                    fullWidth
+                                    propertyName="processStage"
+                                />
+                            </Grid>
+                            {yesNoIcon(
+                                'Can Cancel',
+                                result.canBeCancelled,
+                                'Can be cancelled',
+                                'Cannot be cancelled'
+                            )}
+                            <Grid size={2}>
                                 {<Typography variant="body1">Cancel Function</Typography>}
                             </Grid>
                             <Grid size={2}>
@@ -162,6 +178,13 @@ function StoresFunction() {
                                     propertyName="cancelFunction"
                                 />
                             </Grid>
+                            {yesNoIcon(
+                                'Can Reverse',
+                                result.canBeReversed,
+                                'Can be reversed',
+                                'Cannot be reversed'
+                            )}
+
                             {showRequired('Dept/Nom', result.departmentNominalRequired)}
                             <Grid size={2}>
                                 <Typography variant="body1">Nominal</Typography>
@@ -244,7 +267,7 @@ function StoresFunction() {
                             </Grid>
                             {showRequired('From Location', result.fromLocationRequired)}
                             {showRequired('From State', result.fromStateRequired)}
-                            {showRequired('From Stock Pool', result.fromStockPool)}
+                            {showRequired('From Stock Pool', result.fromStockPoolRequired)}
                             {showRequired('Batch', result.batchRequired)}
                             {showRequired('Batch Date', result.batchDateRequired)}
                             <Grid size={4} />

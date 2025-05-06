@@ -17,7 +17,9 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
+                CanBeReversed = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -51,7 +53,9 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
+                CanBeReversed = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -82,7 +86,9 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
-                ToStateRequired = "N"
+                ProcessStage = 1,
+                ToStateRequired = "N",
+                CanBeReversed = "N"
             };
 
         public static readonly StoresFunction BookWorksOrder =
@@ -97,9 +103,28 @@
                 FunctionType = "A",
                 ManualPickRequired = "X",
                 PartSource = "WO",
+                ProcessStage = 2,
                 ToStateRequired = "O",
                 CanBeReversed = "Y"
             };
+
+        public static readonly StoresFunction BookToLinnDepartment =
+            new StoresFunction("BOOKLD")
+                {
+                    Description = "BOOK IN GOODS FROM SUPPLIER TO LINN DEPARTMENT",
+                    BatchRequired = "N",
+                    Document1RequiredFlag = "Y",
+                    Document1LineRequiredFlag = "N",
+                    Document1Text = "Purchase Order",
+                    FromStateRequired = "N",
+                    FunctionType = "A",
+                    ManualPickRequired = "X",
+                    PartSource = "PO",
+                    ProcessStage = 2,
+                    ToStateRequired = "N",
+                    CanBeReversed = "Y",
+                    ToLocationRequired = "N"
+                };
 
         public static readonly StoresFunction BookFromSupplier =
             new StoresFunction("BOOKSU")
@@ -113,7 +138,9 @@
                 FunctionType = "A",
                 ManualPickRequired = "X",
                 PartSource = "PO",
+                ProcessStage = 2,
                 ToStateRequired = "O",
+                CanBeReversed = "Y",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -164,6 +191,8 @@
                 ToStockPool = "LINN",
                 ManualPickRequired = "M",
                 PartSource = "C",
+                ProcessStage = 2,
+                CanBeReversed = "Y",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
                     new StoresFunctionTransaction
@@ -196,8 +225,10 @@
                 FunctionType = "M",
                 ManualPickRequired = "A",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
+                CanBeReversed = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -232,8 +263,10 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
+                CanBeReversed = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -259,7 +292,9 @@
                 FunctionType = "M",
                 ManualPickRequired = "A",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
+                CanBeReversed = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -286,6 +321,7 @@
             {
                 Description = "KIT PARTS TO SUPPLIER STORE",
                 BatchRequired = "N",
+                DepartmentNominalRequired = "N",
                 Document1RequiredFlag = "Y",
                 Document1LineRequiredFlag = "N",
                 Document1Text = "Order Number",
@@ -293,8 +329,19 @@
                 FunctionType = "A",
                 ManualPickRequired = "A",
                 PartSource = "PO",
+                ProcessStage = 1,
                 ToLocationRequired = "Y",
-                ToStateRequired = "N"
+                ToStateRequired = "N",
+                CanBeReversed = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "SUKIT",
+                        TransactionDefinition = TestTransDefs.StockToSupplierKit,
+                        TransactionCode = TestTransDefs.StockToSupplierKit.TransactionCode
+                    }
+                }
             };
 
         public static readonly StoresFunction WriteOff =
@@ -309,8 +356,10 @@
                 FunctionType = "M",
                 ManualPickRequired = "M",
                 PartSource = "N",
+                ProcessStage = 2,
                 ToStockPoolRequired = "O",
                 ToStateRequired = "N",
+                CanBeReversed = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -343,10 +392,12 @@
                     DepartmentNominalRequired = "N",
                     ManualPickRequired = "M",
                     PartSource = "PO",
+                    ProcessStage = 2,
                     Document1RequiredFlag = "Y",
                     Document1LineRequiredFlag = "O",
                     FunctionType = "A",
                     ToStateRequired = "X",
+                    CanBeReversed = "Y",
                     TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
@@ -367,7 +418,9 @@
                     FunctionType = "A",
                     ManualPickRequired = "X",
                     ToStateRequired = "N",
-                    BatchRequired = "N"
+                    BatchRequired = "N",
+                    ProcessStage = 1,
+                    CanBeReversed = "N"
             };
 
         public static readonly StoresFunction SupplierReturn =
@@ -376,7 +429,9 @@
                     FunctionType = "A",
                     ManualPickRequired = "M",
                     ToStateRequired = "Y",
-                    ToStockPool = "LINN"
+                    ToStockPool = "LINN",
+                    ProcessStage = 1,
+                    CanBeReversed = "N"
             };
 
         public static readonly StoresFunction Move =
@@ -389,6 +444,8 @@
                     ToStateRequired = "O",
                     ToStockPoolRequired = "O",
                     CanBeReversed = "N",
+                    ProcessStage = 2,
+                    ToLocationRequired = "O",
                     TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
@@ -412,8 +469,10 @@
                 LinesRequired = "N",
                 ManualPickRequired = "X",
                 PartSource = "N",
+                ProcessStage = 2,
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
+                CanBeReversed = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -421,6 +480,57 @@
                         FunctionCode = "MOVELOC",
                         TransactionDefinition = TestTransDefs.StoresMove,
                         TransactionCode = TestTransDefs.StoresMove.TransactionCode
+                    }
+                }
+            };
+
+        public static readonly StoresFunction ReturnToSupplier =
+            new StoresFunction("RETSU")
+            {
+                Description = "RETURN GOODS TO SUPPLIER",
+                FunctionType = "A",
+                FromLocationRequired = "O",
+                FromStateRequired = "Y",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "N",
+                LinesRequired = "N",
+                ManualPickRequired = "A",
+                PartSource = "RO",
+                ProcessStage = 2,
+                QuantityRequired = "Y",
+                ToLocationRequired = "N",
+                ToStateRequired = "N",
+                ToStockPoolRequired = "N",
+                CanBeReversed = "Y",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "RETSU",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.ReturnGoodsInToInspection,
+                        TransactionCode = TestTransDefs.ReturnGoodsInToInspection.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "RETSU",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.ReturnStockToSupplier,
+                        TransactionCode = TestTransDefs.ReturnStockToSupplier.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "RETSU",
+                        Seq = 3,
+                        TransactionDefinition = TestTransDefs.StockToMaterialVarianceReturn,
+                        TransactionCode = TestTransDefs.StockToMaterialVarianceReturn.TransactionCode
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "RETSU",
+                        Seq = 4,
+                        TransactionDefinition = TestTransDefs.MaterialVarianceToStockReturn,
+                        TransactionCode = TestTransDefs.MaterialVarianceToStockReturn.TransactionCode
                     }
                 }
             };
@@ -437,8 +547,10 @@
                 LinesRequired = "Y",
                 ManualPickRequired = "A",
                 PartSource = "N",
+                ProcessStage = 1,
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
+                CanBeCancelled = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -462,8 +574,10 @@
                 LinesRequired = "N",
                 ManualPickRequired = "M",
                 PartSource = "IP",
+                ProcessStage = 2,
                 ToStateRequired = "O",
                 ToStockPoolRequired = "O",
+                CanBeCancelled = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction

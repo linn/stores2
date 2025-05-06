@@ -39,7 +39,8 @@
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
-            this.StoresService.ValidPartNumberChange(Arg.Any<Part>(), Arg.Any<Part>()).Returns(new ProcessResult(true, null));
+            this.StoresService.ValidPartNumberChange(Arg.Any<Part>(), Arg.Any<Part>())
+                .Returns(new ProcessResult(true, null));
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.PartNumberChange.FunctionCode,

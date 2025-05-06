@@ -7,6 +7,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
     using Linn.Common.Authorisation;
     using Linn.Common.Domain;
+    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -41,6 +42,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository;
 
+        private readonly IBomVerificationProxy bomVerificationProxy;
+
+        private readonly IRepository<BookInOrderDetail, BookInOrderDetailKey> bookInOrderDetailRepository;
+
         private readonly IRepository<StoresPallet, int> palletRepository;
 
         private readonly IRepository<StockState, string> stateRepository;
@@ -74,7 +79,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IDocumentProxy documentProxy,
             IStockService stockService,
             ISalesProxy salesProxy,
-            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository)
+            IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository,
+            IBomVerificationProxy bomVerificationProxy,
+            IRepository<BookInOrderDetail, BookInOrderDetailKey> bookInOrderDetailRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -95,6 +102,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.stockService = stockService;
             this.salesProxy = salesProxy;
             this.potentialMoveRepository = potentialMoveRepository;
+            this.bomVerificationProxy = bomVerificationProxy;
+            this.bookInOrderDetailRepository = bookInOrderDetailRepository;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -298,7 +307,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (movesToAdd != null && movesToAdd.Any())
             {
-                await this.CheckMoves(toAdd.PartNumber, movesToAdd);
+                await this.CheckMoves(
+                    toAdd.PartNumber,
+                    movesToAdd,
+                    FieldIsNeededOrOptional(header.StoresFunction.ToLocationRequired));
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
@@ -404,18 +416,34 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task CreateLinesAndBookAutoRequisitionHeader(RequisitionHeader header)
         {
-            DoProcessResultCheck(  
-                await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
+            try
+            {
+                DoProcessResultCheck(
+                    await this.requisitionStoredProcedures.CreateRequisitionLines(header.ReqNumber, null));
 
-            DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
-                                     header.ReqNumber,
-                                     null,
-                                     header.Quantity.GetValueOrDefault()));
+                // from REQ_UT REQHEADS.POST-INSERT
+                // function codes that are function_Type A and process stage 1 incl LOAN OUT, SUKIT
+                if (header.StoresFunction.ProcessStage == 2)
+                {
+                    DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
+                        header.ReqNumber,
+                        null,
+                        header.Quantity.GetValueOrDefault()));
 
-            DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
-                                     header.ReqNumber,
-                                     null,
-                                     header.CreatedBy.Id));
+                    DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
+                        header.ReqNumber,
+                        null,
+                        header.CreatedBy.Id));
+                }
+            }
+            catch (DomainException e)
+            {
+                // cancel the req so it doesn't hang around unbooked and mess up validation
+                header.Cancel(e.Message, header.CreatedBy);
+                await this.transactionManager.CommitAsync();
+
+                throw;
+            }
         }
 
         public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
@@ -525,7 +553,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         continue;
                     }
 
-                    await this.CheckMoves(line.PartNumber, movesToAdd);
+                    await this.CheckMoves(
+                        line.PartNumber,
+                        movesToAdd,
+                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
@@ -533,7 +564,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
-                    await this.CheckMoves(line.PartNumber, line.Moves.ToList());
+                    await this.CheckMoves(
+                        line.PartNumber,
+                        line.Moves.ToList(),
+                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -636,12 +670,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 foreach (var candidate in lines)
                 {
-                    req.AddLine(await this.ValidateLineCandidate(candidate));
+                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction));
                 }
             }
             else if (firstLine != null)
             {
-                req.AddLine(await this.ValidateLineCandidate(firstLine));
+                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction));
             }
 
             // move below to its own function?
@@ -653,7 +687,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     throw new CreateRequisitionException($"PO {document1Number} does not exist!");
                 }
-                
+
                 if (!po.IsAuthorised)
                 {
                     throw new CreateRequisitionException($"PO {document1Number} is not authorised!");
@@ -665,15 +699,46 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
 
                 var orderRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
-                if (batchRef != orderRef)
+                if (function.BatchRequired == "Y" && batchRef != orderRef)
                 {
                     throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");
-                }   
-            } 
+                }
+                
+                // SUKIT validation to replace STORES_OO.CAN_BE_KITTED
+                if (function.FunctionCode == "SUKIT")
+                {
+                    await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
+                }
+
+                if (function.FunctionCode == "BOOKLD")
+                {
+                    if (!quantity.HasValue || quantity.Value == 0)
+                    {
+                        throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
+                    }
+                }
+            }
+            else if (function.PartSource == "RO")
+            {
+                var ro = await this.documentProxy.GetPurchaseOrder(document1Number.GetValueOrDefault());
+
+                if (ro == null)
+                {
+                    throw new CreateRequisitionException($"RO {document1Number} does not exist!");
+                }
+
+                // not a seperate part source for credit orders get lumped in with RO
+                if (ro.DocumentType != "RO" && ro.DocumentType != "CO")
+                {
+                    throw new CreateRequisitionException($"Order {document1Number} is not a returns/credit order!");
+                }
+
+                await this.CheckReturnOrderForFullyBooked(req, ro);
+            }
             else if (function.PartSource == "WO")
             {
-                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction);
+                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction, quantity);
             }
             else if (function.PartSource == "C" && function.Document1Required())
             {
@@ -690,7 +755,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckDocumentLineForOverAndFullyBooked(req, document);
             }
 
-            if (req.IsReverseTransaction == "Y" && req.Quantity != null)
+            if (req.IsReverseTrans() && req.Quantity != null)
             {
                 if (req.OriginalReqNumber == null)
                 {
@@ -723,7 +788,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A from stock pool is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState))
+                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState) && !req.IsReverseTrans())
                 {
                     throw new RequisitionException("A from state is required");
                 }
@@ -762,7 +827,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return req;
         }
 
-        public async Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate)
+        public async Task<RequisitionLine> ValidateLineCandidate(
+            LineCandidate candidate,
+            StoresFunction storesFunction = null)
         {
             var part = !string.IsNullOrEmpty(candidate?.PartNumber)
                 ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
@@ -783,13 +850,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (candidate.Moves != null && candidate.Moves.Any())
             {
-                await this.CheckMoves(candidate.PartNumber, candidate.Moves.ToList());
+                await this.CheckMoves(
+                    candidate.PartNumber,
+                    candidate.Moves.ToList(),
+                    FieldIsNeededOrOptional(storesFunction?.ToLocationRequired));
             }
 
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
                 line.TransactionDefinition.RequiresOntoTransactions)
             {
-                throw new CreateRequisitionException($"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
+                throw new CreateRequisitionException(
+                    $"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
             }
 
             return line;
@@ -834,17 +905,25 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     var bookQty = reqs.Sum(r => r.Quantity.GetValueOrDefault());
 
-                    if (header.Quantity.HasValue)
+                    if (!header.IsReverseTrans())
                     {
-                        if (bookQty + header.Quantity > document.Quantity)
+                        if (header.Quantity.HasValue)
                         {
-                            throw new DocumentException("Trying to overbook this line");
+                            if (bookQty + header.Quantity > document.Quantity)
+                            {
+                                throw new DocumentException("Trying to overbook this line");
+                            }
+                        }
+                        else if (bookQty == document.Quantity)
+                        {
+                            throw new DocumentException("Line is already fully booked");
                         }
                     }
-                    else if (bookQty == document.Quantity)
+                    else if (bookQty == 0)
                     {
-                        throw new DocumentException("Line is already fully booked");
+                        throw new DocumentException("Line has never been booked");
                     }
+
                 }
             }
         }
@@ -883,6 +962,78 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return new List<PotentialMoveDetail> { potentialMove }.AsEnumerable();
         }
 
+        public async Task AddBookInOrderDetails(IList<BookInOrderDetail> details)
+        {
+            if (details != null && details.Count > 0)
+            {
+                var first = details.First();
+                var existing = await this.bookInOrderDetailRepository.FilterByAsync(a =>
+                                   a.OrderNumber == first.OrderNumber && a.OrderLine == first.OrderLine);
+
+                if (existing.Count > 0)
+                {
+                    foreach (var existingBookInOrderDetail in existing)
+                    { 
+                       this.bookInOrderDetailRepository.Remove(existingBookInOrderDetail);
+                    }
+                }
+
+                foreach (var bookInOrderDetail in details)
+                {
+                    await this.bookInOrderDetailRepository.AddAsync(bookInOrderDetail);
+                }
+            }
+        }
+
+        public async Task CheckPurchaseOrderForOverAndFullyKitted(RequisitionHeader header, PurchaseOrderResult purchaseOrder)
+        {
+            if (header.Document1Name == "PO" && purchaseOrder != null && purchaseOrder.OrderQty(header.Document1Line).HasValue)
+            {
+                var reqs = await this.repository.FilterByAsync(r =>
+                    r.Document1Name == header.Document1Name && r.Document1 == header.Document1.Value &&
+                    r.Cancelled == "N" && r.Quantity != null && r.StoresFunction.FunctionCode == "SUKIT" && r.ReqNumber != header.ReqNumber);
+
+                if (reqs.Any())
+                {
+                    var kittedQty = reqs.Sum(r => r.Quantity.GetValueOrDefault());
+
+                    if (kittedQty >= purchaseOrder.OrderQty(header.Document1Line))
+                    {
+                        throw new DocumentException($"Full order qty {purchaseOrder.OrderQty(header.Document1Line)} on order {header.Document1} has already been kitted");
+                    }
+
+                    if (header.Quantity.HasValue)
+                    {
+                        if (kittedQty + header.Quantity > purchaseOrder.OrderQty(header.Document1Line))
+                        {
+                            throw new DocumentException($"Only {purchaseOrder.OrderQty(header.Document1Line) - kittedQty} left to kit for order {header.Document1}");
+                        }
+                    }
+                }
+            }
+        }
+
+        public async Task CheckReturnOrderForFullyBooked(RequisitionHeader header, PurchaseOrderResult purchaseOrder)
+        {
+            if (header.Document1Name == "RO" && purchaseOrder != null
+                                             && purchaseOrder.OrderQty(header.Document1Line).HasValue)
+            {
+                // call to STORES_OO.QTY_RETURNED could rewrite in c# but a bit involved
+                var qty = await this.requisitionStoredProcedures.GetQtyReturned(
+                              header.Document1.Value,
+                              header.Document1Line.Value);
+                if (header.IsReverseTrans() && header.Quantity.Value > qty)
+                {
+                    throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
+                }
+
+                if (header.IsReverseTransaction != "Y" && header.Quantity.Value - qty <= 0)
+                {
+                    throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} is fully booked");
+                }
+            }
+        }
+
         private static void DoProcessResultCheck(ProcessResult result)
         {
             if (!result.Success)
@@ -911,7 +1062,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return code == "Y";
         }
 
-        private async Task CheckValidWorksOrder(int? document1Number, Part part, string isReverseTransaction)
+        private async Task CheckValidWorksOrder(
+            int? document1Number,
+            Part part,
+            string isReverseTransaction,
+            decimal? quantity)
         {
             var worksOrder = await this.documentProxy.GetWorksOrder(document1Number.GetValueOrDefault());
 
@@ -923,6 +1078,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (!string.IsNullOrEmpty(worksOrder.DateCancelled))
             {
                 throw new CreateRequisitionException($"Works Order {document1Number} is cancelled.");
+            }
+
+            if ((!quantity.HasValue || quantity.Value == 0) && isReverseTransaction != "Y")
+            {
+                throw new CreateRequisitionException($"You must specify a quantity to book in from works order {document1Number}.");
             }
 
             if (worksOrder.PartNumber != part.PartNumber)
@@ -947,9 +1107,28 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateRequisitionException("You cannot book serial numbered parts in. Please use the relevant works order screen.");
             }
+
+            if (part.BomVerifyFreqWeeks.GetValueOrDefault() > 0)
+            {
+                var verifications = await this.bomVerificationProxy.GetBomVerifications(worksOrder.PartNumber);
+                if (verifications == null || !verifications.Any())
+                {
+                    throw new CreateRequisitionException($"Part number {worksOrder.PartNumber} requires bom verification.");
+                }
+
+                var latestDate = verifications.Max(a => a.DateVerified);
+                var dateDue = latestDate.AddDays(part.BomVerifyFreqWeeks.GetValueOrDefault() * 7);
+                if (dateDue < DateTime.Today)
+                {
+                    throw new CreateRequisitionException($"Part number {worksOrder.PartNumber} was due for bom verification on {dateDue:dd-MMM-yyyy}.");
+                }
+            }
         }
 
-        private async Task CheckMoves(string partNumber, IList<MoveSpecification> moves)
+        private async Task CheckMoves(
+            string partNumber,
+            IList<MoveSpecification> moves,
+            bool toLocationRequired = false)
         {
             foreach (var m in moves)
             {
@@ -962,6 +1141,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     && string.IsNullOrEmpty(m.FromLocation))
                 {
                     throw new RequisitionException("Moves are missing location information");
+                }
+
+                if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && toLocationRequired)
+                {
+                    throw new RequisitionException("You must provide a to location or pallet");
                 }
 
                 // just checking moves onto for now, but could extend if required
@@ -1036,7 +1220,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException($"To Stock Pool {header.ToStockPool} does not exist");
             }
 
-            if (header.Part != null && header.IsReverseTransaction != "Y")
+            if (header.Part != null && header.IsReverseTransaction != "Y" && header.StoresFunction?.ToLocationRequired != "N")
             {
                 DoProcessResultCheck(await this.storesService.ValidOntoLocation(
                     header.Part,
@@ -1063,9 +1247,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     "O"));
             }
 
-            DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
+            if (!string.IsNullOrEmpty(header.ToStockPool))
+            {
+                DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
+            }
+
             
-            if (header.Part != null)
+            if (header.Part != null && !header.IsReverseTrans())
             {
                 if (header.FromLocation != null || header.FromPalletNumber.HasValue)
                 {
@@ -1077,8 +1265,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                             header.Quantity.GetValueOrDefault(),
                             header.FromState));
                 }
-
-                DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
         }
     }

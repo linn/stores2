@@ -107,6 +107,7 @@
                                },
                            IsReverseTransaction = header.IsReverseTransaction,
                            OriginalReqNumber = header.OriginalReqNumber,
+                           Document3 = header.Document3,
                            Links = this.BuildLinks(header, claims?.ToList()).ToArray()
                        };
         }

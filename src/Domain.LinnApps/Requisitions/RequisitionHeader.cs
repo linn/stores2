@@ -90,7 +90,7 @@
 
         public string FromCategory { get; set; }
 
-        public string ToCategory { get; protected set; }
+        public string ToCategory { get; set; }
 
         public DateTime? BatchDate { get; set; }
 
@@ -107,6 +107,8 @@
         public Part NewPart { get; set; }
 		
         public int? OriginalReqNumber { get; set; }
+
+        public int? Document3 { get; set; }
 
         protected RequisitionHeader()
         {
@@ -246,7 +248,7 @@
                 }
             }
 
-            if (this.StoresFunction.ToLocationRequired == "Y" && this.IsReverseTransaction != "Y")
+            if (this.StoresFunction.ToLocationRequired == "Y" && !this.IsReverseTrans())
             {
                 if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
                 {
@@ -254,18 +256,18 @@
                 }
             }
 
-            if (this.IsReverseTransaction == "Y" && this.StoresFunction.CanBeReversed != "Y")
+            if (this.IsReverseTrans() && this.StoresFunction.CanBeReversed != "Y")
             {
                 yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
             }
 
-            if (this.IsReverseTransaction == "Y" && !this.OriginalReqNumber.HasValue)
+            if (this.IsReverseTrans() && !this.OriginalReqNumber.HasValue)
             {
                 yield return "You must specify a req number to reverse";
             }
 
             // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
-            if (this.StoresFunction.FromStateRequired == "Y")
+            if (this.StoresFunction.FromStateRequired == "Y"  && !this.IsReverseTrans())
             {
                 if (string.IsNullOrEmpty(this.FromState))
                 {
@@ -357,6 +359,8 @@
         public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
 
         public bool IsBooked() => this.DateBooked != null;
+
+        public bool IsReverseTrans() => this.IsReverseTransaction == "Y";
 
         public bool IsAuthorised() => this.DateAuthorised != null || this.AuthorisedBy != null;
 

@@ -1,5 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Linn.Common.Domain;
@@ -26,7 +28,7 @@
                 .Returns(TestTransDefs.CustomerToGoodStock);
             this.PalletRepository.FindByIdAsync(502).Returns(new StoresPallet());
             this.PalletRepository.FindByIdAsync(503).Returns(new StoresPallet());
-            this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART" });
+            this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART", BomVerifyFreqWeeks = 12 });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
             this.StockPoolRepository.FindByIdAsync("LINN").Returns(new StockPool());
             this.StockService.ValidStockLocation(null, 502, "PART", Arg.Any<decimal>(), Arg.Any<string>())
@@ -48,6 +50,9 @@
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
+            this.BomVerificationProxy.GetBomVerifications("PART").Returns(
+                new List<BomVerificationHistory> { new BomVerificationHistory { DateVerified = DateTime.Today } });
+            
             this.result = await this.Sut.Validate(
                 123,
                 TestFunctionCodes.BookWorksOrder.FunctionCode,
@@ -58,6 +63,7 @@
                 null,
                 null,
                 partNumber: "PART",
+                quantity: 1,
                 fromPalletNumber: 502,
                 toPalletNumber: 503,
                 toStockPool: "LINN",
@@ -74,6 +80,12 @@
         public void ShouldGetSalesArticle()
         {
             this.SalesProxy.Received().GetSalesArticle("PART");
+        }
+
+        [Test]
+        public void ShouldCheckBomVerification()
+        {
+            this.BomVerificationProxy.Received().GetBomVerifications("PART");
         }
 
         [Test]

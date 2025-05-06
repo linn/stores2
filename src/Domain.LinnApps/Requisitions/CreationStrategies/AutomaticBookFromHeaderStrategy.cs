@@ -133,8 +133,8 @@
                 context.BatchRef,
                 context.BatchDate,
                 null,
-                null,
-                null,
+                context.Document2Number,
+                context.Document2Type,
                 context.IsReverseTransaction,
                 context.OriginalReqNumber);
 
@@ -148,7 +148,13 @@
                 }
             }
 
-            await this.repository.AddAsync(req);
+            if (context.Function.FunctionCode == "SUKIT")
+            {
+                req.FromCategory = "FREE";
+                req.ToCategory = "FREE";
+            }
+
+            req.Document3 = context.Document3Number;
 
             if (req.Document1Name == "WO" && req.Document1.HasValue)
             {
@@ -169,6 +175,13 @@
                 }
             }
 
+            if (req.StoresFunction.FunctionCode == "BOOKLD")
+            {
+                await this.requisitionManager.AddBookInOrderDetails(context.BookInOrderDetails.ToList());
+            }
+
+            await this.repository.AddAsync(req);
+            
             await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);
 
             return await this.repository.FindByIdAsync(req.ReqNumber);
