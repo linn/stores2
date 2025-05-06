@@ -8,14 +8,14 @@
             string boardCode,
             string storageTypeCode,
             int? maximum,
-            int? incr,
+            int? increment,
             string remarks,
             string preference)
         {
             this.BoardCode = boardCode;
             this.StorageTypeCode = storageTypeCode;
             this.Maximum = maximum;
-            this.Incr = incr;
+            this.Increment = increment;
             this.Remarks = remarks;
             this.Preference = preference;
         }
@@ -28,7 +28,7 @@
 
         public int? Maximum { get; set; }
 
-        public int? Incr { get; set; }
+        public int? Increment { get; set; }
 
         public string Remarks { get; set; }
 
@@ -40,12 +40,12 @@
 
         public void Update(
             int? maximum,
-            int? incr,
+            int? increment,
             string remarks,
             string preference)
         {
             this.Maximum = maximum;
-            this.Incr = incr;
+            this.Increment = increment;
             this.Remarks = remarks;
             this.Preference = preference;
         }

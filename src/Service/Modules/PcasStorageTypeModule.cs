@@ -37,8 +37,8 @@
             string storageTypeCode,
             IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource> service)
         {
-            var searchResource = new PcasStorageTypeResource { BoardCode = boardCode, StorageTypeCode = storageTypeCode};
-            await res.Negotiate(await service.FindBy(searchResource));
+            var key = new PcasStorageTypeKey { BoardCode = boardCode, StorageTypeCode = storageTypeCode };
+            await res.Negotiate(await service.GetById(key));
         }
 
         private async Task Create(

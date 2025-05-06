@@ -855,7 +855,7 @@
             v.Property(e => e.BoardCode).HasColumnName("BOARD_CODE");
             v.Property(e => e.StorageTypeCode).HasColumnName("STORAGE_TYPE");
             v.Property(e => e.Maximum).HasColumnName("MAXIMUM");
-            v.Property(e => e.Incr).HasColumnName("INCR");
+            v.Property(e => e.Increment).HasColumnName("INCR");
             v.Property(e => e.Remarks).HasColumnName("REMARKS");
             v.Property(e => e.Preference).HasColumnName("PREFERENCE");
             v.HasOne(e => e.PcasBoard).WithMany().HasForeignKey(e => e.BoardCode);

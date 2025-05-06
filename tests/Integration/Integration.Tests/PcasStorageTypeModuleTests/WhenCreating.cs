@@ -23,7 +23,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                                           BoardCode = "TEST BOARD CODE",
                                           StorageTypeCode = "TEST STORAGE TYPE CODE",
                                           Maximum = 100,
-                                          Incr = 1,
+                                          Increment = 1,
                                           Remarks = "A REMARKS",
                                           Preference = "1",
                                       };
@@ -53,7 +53,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
         }
         
         [Test]
-        public void ShouldReturnUpdatedJsonBody()
+        public void ShouldReturnCreatedJsonBody()
         {
             var resource = this.Response.DeserializeBody<PcasStorageTypeResource>();
             resource.BoardCode.Should().Be("TEST BOARD CODE");

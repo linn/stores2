@@ -29,7 +29,7 @@
                 resource.BoardCode,
                 resource.StorageTypeCode,
                 resource.Maximum,
-                resource.Incr,
+                resource.Increment,
                 resource.Remarks,
                 resource.Preference);
         }
@@ -41,7 +41,7 @@
         {
             entity.Update(
                 updateResource.Maximum,
-                updateResource.Incr,
+                updateResource.Increment,
                 updateResource.Remarks,
                 updateResource.Preference);
         }
@@ -63,7 +63,7 @@
 
         protected override Expression<Func<PcasStorageType, bool>> FindExpression(PcasStorageTypeResource searchResource)
         {
-            return pst => pst.BoardCode == searchResource.BoardCode && pst.StorageTypeCode == searchResource.StorageTypeCode;
+            throw new NotImplementedException();
         }
 
         protected override Expression<Func<PcasStorageType, bool>> SearchExpression(string searchTerm)

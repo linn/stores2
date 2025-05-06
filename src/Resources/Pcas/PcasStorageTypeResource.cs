@@ -11,7 +11,7 @@
 
         public int? Maximum { get; set; }
 
-        public int? Incr { get; set; }
+        public int? Increment { get; set; }
 
         public string Remarks { get; set; }
 

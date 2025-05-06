@@ -18,7 +18,7 @@
             {
                 BoardCode = pcasStorageType.BoardCode,
                 StorageTypeCode = pcasStorageType.StorageTypeCode,
-                Incr = pcasStorageType.Incr,
+                Increment = pcasStorageType.Increment,
                 Maximum = pcasStorageType.Maximum,
                 Remarks = pcasStorageType.Remarks,
                 Preference = pcasStorageType.Preference,

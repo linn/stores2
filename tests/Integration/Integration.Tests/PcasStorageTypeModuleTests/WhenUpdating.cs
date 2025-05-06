@@ -46,14 +46,12 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                 "REMARKS",
                 "1");
 
-
-
             this.updateResource = new PcasStorageTypeResource
             {
                                           BoardCode = "TEST-BOARD-CODE",
                                           StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
                                           Maximum = 100,
-                                          Incr = 1,
+                                          Increment = 1,
                                           Remarks = "NEW REMARKS",
                                           Preference = "1",
                                           StorageType = new StorageTypeResource

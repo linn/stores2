@@ -25,8 +25,6 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
-        protected IDatabaseService DatabaseService { get; set; }
-
         [SetUp]
         public void SetUpContext()
         {
@@ -35,8 +33,6 @@
             var transactionManager = new TransactionManager(this.DbContext);
 
             var pcaStorageTypeRepository = new PcasStorageTypeRepository(this.DbContext);
-
-            this.DatabaseService = Substitute.For<IDatabaseService>();
 
             IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource> pcasStorageTypeFacadeService
                 = new PcasStorageTypeFacadeService(
