@@ -211,7 +211,9 @@
                              lines: resource.Lines?.Select(BuildLineCandidateFromResource),
                              resource.IsReverseTransaction,
                              resource.OriginalReqNumber,
-                             resource.Document3);
+                             resource.Document3,
+                             resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource));
+      
             return result;
         }
 
@@ -281,6 +283,22 @@
             RequisitionSearchResource searchResource)
         {
             throw new NotImplementedException();
+        }
+
+        private static BookInOrderDetail BuildBookInOrderDetailFromResource(BookInOrderDetailResource resource)
+        {
+            return new BookInOrderDetail
+                       {
+                           OrderNumber = resource.OrderNumber,
+                           OrderLine = resource.OrderLine,
+                           Sequence = resource.Sequence,
+                           Quantity = resource.Quantity,
+                           DepartmentCode = resource.DepartmentCode,
+                           NominalCode = resource.NominalCode,
+                           PartNumber = resource.PartNumber,
+                           ReqNumber = resource.ReqNumber,
+                           IsReverse = resource.IsReverse
+                       };
         }
 
         private static LineCandidate BuildLineCandidateFromResource(RequisitionLineResource resource)

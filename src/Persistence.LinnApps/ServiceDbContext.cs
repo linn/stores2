@@ -71,6 +71,8 @@
 
         public DbSet<Cit> Cits { get; set; }
 
+        public DbSet<BookInOrderDetail> BookInOrderDetails { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -116,6 +118,7 @@
             BuildWorkstations(builder);
             BuildWorkstationElements(builder);
             BuildCits(builder);
+            BuildBookInOrderDetails(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -839,6 +842,21 @@
             e.HasKey(l => l.Code);
             e.Property(s => s.Code).HasColumnName("CODE").HasMaxLength(10);
             e.Property(s => s.Name).HasColumnName("NAME").HasMaxLength(50);
+        }
+
+        private static void BuildBookInOrderDetails(ModelBuilder builder)
+        {
+            var e = builder.Entity<BookInOrderDetail>().ToTable("BOOKIN_ORDER_DETAILS");
+            e.HasKey(l => new { l.OrderNumber, l.OrderLine, l.Sequence });
+            e.Property(s => s.OrderNumber).HasColumnName("ORDER_NUMBER");
+            e.Property(s => s.OrderLine).HasColumnName("ORDER_LINE");
+            e.Property(s => s.Sequence).HasColumnName("SEQ");
+            e.Property(s => s.Quantity).HasColumnName("QTY");
+            e.Property(s => s.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(s => s.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
+            e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
+            e.Property(s => s.IsReverse).HasColumnName("REVERSE").HasMaxLength(1);
         }
     }
 }

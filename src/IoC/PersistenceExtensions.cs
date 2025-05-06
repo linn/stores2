@@ -62,6 +62,8 @@
                     r => new EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>(r.GetService<ServiceDbContext>()?.StoresTransactionStates))
                 .AddScoped<IRepository<PotentialMoveDetail, PotentialMoveDetailKey>, EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>>(
                     r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(r.GetService<ServiceDbContext>()?.PotentialMoveDetails))
+                .AddScoped<IRepository<BookInOrderDetail, BookInOrderDetailKey>, EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>>(
+                    r => new EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>(r.GetService<ServiceDbContext>()?.BookInOrderDetails))
                 .AddTransient<IRepository<Cit, string>, EntityFrameworkRepository<Cit, string>>(r =>
                     new EntityFrameworkRepository<Cit, string>(r.GetService<ServiceDbContext>()?.Cits))
                 .AddScoped<IRepository<Workstation, string>, WorkstationRepository>();

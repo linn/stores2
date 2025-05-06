@@ -84,12 +84,14 @@ function Document1({
                         storesFunction?.batchRequired === 'Y'
                             ? `${docType.charAt(0)}${purchaseOrder.orderNumber}`
                             : null,
+                    document1: purchaseOrder.orderNumber,
                     document1Line: 1,
                     toLocationCode:
                         storesFunction?.toLocationRequired === 'Y'
                             ? `S-SU-${purchaseOrder.supplier.id}`
                             : null,
-                    docType
+                    docType,
+                    orderDetail: purchaseOrder.details[0]
                 });
             }
 
@@ -164,7 +166,7 @@ function Document1({
 
     return (
         <>
-            <Grid size={4}>
+            <Grid size={2}>
                 {!shouldEnter ? (
                     <LinkField
                         value={document1}
@@ -220,7 +222,7 @@ function Document1({
                     />
                 )}
             </Grid>
-            <Grid size={4} />
+            <Grid size={6} />
         </>
     );
 }

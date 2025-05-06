@@ -42,6 +42,7 @@ import Document1 from './components/Document1';
 import Document2 from './components/Document2';
 import Document3 from './components/Document3';
 import PickRequisitionDialog from './PickRequisitionDialog';
+import BookInPostingsDialog from './components/BookInPostingsDialog';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -57,6 +58,7 @@ function Requisition({ creating }) {
     const [hasFetched, setHasFetched] = useState(0);
     const [functionCodeError, setFunctionCodeError] = useState(null);
     const [pickRequisitionDialogVisible, setPickRequisitionDialogVisible] = useState(false);
+    const [bookInPostingsDialogVisible, setBookInPostingsDialogVisible] = useState(false);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -417,6 +419,14 @@ function Requisition({ creating }) {
 
         if (formState.req?.isReverseTransaction === 'Y' && selected.canReverse) {
             setPickRequisitionDialogVisible(true);
+        }
+
+        if (
+            formState.req.storesFunction?.code === 'BOOKLD' &&
+            selected.document1 &&
+            selected.document1Line
+        ) {
+            setBookInPostingsDialogVisible(true);
         }
 
         if (selected.batchRef) {
@@ -942,11 +952,19 @@ function Requisition({ creating }) {
                                           }
                                         : null
                                 }
-                                setQuantity={newQty =>
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: { fieldName: 'quantity', newValue: newQty }
-                                    })
+                                setQuantity={
+                                    formState.req.storesFunction?.quantityRequired !== 'X' ||
+                                    formState.req.storesFunction?.code === 'BOOKWO'
+                                        ? newQty => {
+                                              dispatch({
+                                                  type: 'set_header_value',
+                                                  payload: {
+                                                      fieldName: 'quantity',
+                                                      newValue: newQty
+                                                  }
+                                              });
+                                          }
+                                        : null
                                 }
                                 disabled={!creating || formState.req.isReverseTransaction == 'Y'}
                                 shouldRender={
@@ -1192,6 +1210,23 @@ function Requisition({ creating }) {
                                         dispatch({
                                             type: 'set_reverse_details',
                                             payload: reqDetails
+                                        });
+                                    }}
+                                />
+                            )}
+                            {bookInPostingsDialogVisible && (
+                                <BookInPostingsDialog
+                                    open={bookInPostingsDialogVisible}
+                                    setOpen={setBookInPostingsDialogVisible}
+                                    documentNumber={formState.req.document1}
+                                    documentLine={formState.req.document1Line}
+                                    documentType={formState.req.document1Name}
+                                    orderDetail={formState.document1Details.orderDetail}
+                                    bookInOrderDetails={formState.req.bookInOrderDetails}
+                                    handleSelect={bookInPostings => {
+                                        dispatch({
+                                            type: 'set_book_in_postings',
+                                            payload: bookInPostings
                                         });
                                     }}
                                 />
