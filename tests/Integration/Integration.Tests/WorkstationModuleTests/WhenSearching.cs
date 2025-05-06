@@ -28,7 +28,6 @@
                         Code = "R",
                         Name = "R CODE"
                     },
-                "V",
                 "Z",
                 new List<WorkstationElement>
                     {
@@ -42,7 +41,6 @@
                         Code = "S",
                         Name = "S CODE"
                     },
-                "U",
                 "D",
                 new List<WorkstationElement>
                     {
