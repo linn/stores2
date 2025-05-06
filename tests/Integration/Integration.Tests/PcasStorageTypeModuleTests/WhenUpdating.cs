@@ -75,7 +75,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
             this.DbContext.PcasStorageTypes.AddAndSave(this.DbContext, this.pcasStorageType);
 
             this.Response = this.Client.PutAsJsonAsync(
-                    $"/stores2/pcas-storage-type/{this.pcasStorageType.BoardCode}/{this.pcasStorageType.StorageTypeCode}", this.updateResource).Result;
+                    $"/stores2/pcas-storage-types/{this.pcasStorageType.BoardCode}/{this.pcasStorageType.StorageTypeCode}", this.updateResource).Result;
         }
 
         [Test]

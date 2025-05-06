@@ -27,7 +27,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
             this.DbContext.PcasStorageTypes.AddAndSave(this.DbContext, this.pcasStorageType);
 
             this.Response = this.Client.Get(
-                $"/stores2/pcas-storage-type/{this.pcasStorageType.BoardCode}/{this.pcasStorageType.StorageTypeCode}",
+                $"/stores2/pcas-storage-types/{this.pcasStorageType.BoardCode}/{this.pcasStorageType.StorageTypeCode}",
                 with =>
                     {
                         with.Accept("application/json");
