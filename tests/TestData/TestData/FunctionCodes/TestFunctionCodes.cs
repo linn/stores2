@@ -108,6 +108,24 @@
                 CanBeReversed = "Y"
             };
 
+        public static readonly StoresFunction BookToLinnDepartment =
+            new StoresFunction("BOOKLD")
+                {
+                    Description = "BOOK IN GOODS FROM SUPPLIER TO LINN DEPARTMENT",
+                    BatchRequired = "N",
+                    Document1RequiredFlag = "Y",
+                    Document1LineRequiredFlag = "N",
+                    Document1Text = "Purchase Order",
+                    FromStateRequired = "N",
+                    FunctionType = "A",
+                    ManualPickRequired = "X",
+                    PartSource = "PO",
+                    ProcessStage = 2,
+                    ToStateRequired = "N",
+                    CanBeReversed = "Y",
+                    ToLocationRequired = "N"
+                };
+
         public static readonly StoresFunction BookFromSupplier =
             new StoresFunction("BOOKSU")
             {

@@ -175,6 +175,11 @@
                 }
             }
 
+            if (req.StoresFunction.FunctionCode == "BOOKLD")
+            {
+                await this.requisitionManager.AddBookInOrderDetails(context.BookInOrderDetails.ToList());
+            }
+
             await this.repository.AddAsync(req);
             
             await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);

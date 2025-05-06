@@ -107,11 +107,13 @@
         public string FromCategory { get; set; }
         
         public string ToCategory { get; set; }
-		
+
         public PartResource NewPart { get; set; }
   
         public int? OriginalReqNumber { get; set; }
 
         public int? Document3 { get; set; }
+
+        public IEnumerable<BookInOrderDetailResource> BookInOrderDetails { get; set; }
     }
 }

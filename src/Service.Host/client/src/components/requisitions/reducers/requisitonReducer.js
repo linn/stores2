@@ -182,13 +182,21 @@ function reducer(state, action) {
         }
         case 'set_reverse_details': {
             if (action.payload.reqNumber) {
+                // TODO replicate all GET_REQ_FOR_REVERSAL in REQ_UT.fmb functionality
                 return {
                     ...state,
                     req: {
                         ...state.req,
                         originalReqNumber: action.payload.reqNumber,
                         quantity: action.payload.quantity * -1,
-                        reference: action.payload.reference
+                        reference: action.payload.reference,
+                        fromState: action.payload.toState
+                            ? action.payload.toState
+                            : state.req.fromState,
+                        fromStockPool:
+                            action.payload.storesFunction?.fromStockPoolRequired !== 'N'
+                                ? action.payload.fromStockPool
+                                : state.req.fromStockPool
                     }
                 };
             } else {
@@ -197,6 +205,16 @@ function reducer(state, action) {
                     req: { ...state.req, originalReqNumber: null, quantity: null, reference: null }
                 };
             }
+        }
+        case 'set_book_in_postings': {
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    quantity: action.payload.quantityBooked,
+                    bookInOrderDetails: action.payload.bookInPostings
+                }
+            };
         }
         case 'set_document1_details': {
             return { ...state, document1Details: action.payload };
