@@ -33,7 +33,7 @@ function Workstations() {
         result: workStationsResult
     } = useGet(itemTypes.workStations.url);
 
-    const locationsColumns = [
+    const workStationColumns = [
         {
             field: 'workStationCode',
             headerName: 'Workstation Code',
@@ -88,7 +88,7 @@ function Workstations() {
                     </Grid>
                 ) : (
                     <>
-                        <Grid size={5}>
+                        <Grid size={12}>
                             <InputField
                                 value={workStationCode}
                                 fullWidth
@@ -97,9 +97,7 @@ function Workstations() {
                                 onChange={handleFieldChange}
                             />
                         </Grid>
-                        <Grid size={2} />
-                        <Grid size={2} />
-                        <Grid size={5}>
+                        <Grid size={12}>
                             <InputField
                                 value={citCode}
                                 fullWidth
@@ -108,7 +106,6 @@ function Workstations() {
                                 onChange={handleFieldChange}
                             />
                         </Grid>
-                        <Grid size={7} />
                         <Grid size={6}>
                             <Button
                                 disabled={isLoading}
@@ -132,7 +129,7 @@ function Workstations() {
                                 <DataGrid
                                     getRowId={r => r.workStationCode}
                                     rows={workStationsResult}
-                                    columns={locationsColumns}
+                                    columns={workStationColumns}
                                     hideFooter
                                     density="compact"
                                     loading={workStationsLoading}
