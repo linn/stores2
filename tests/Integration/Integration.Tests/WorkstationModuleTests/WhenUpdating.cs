@@ -42,7 +42,6 @@
                 CitName = "R CODE",
                 Description = "A TEST WORKSTATION",
                 ZoneType = "Z",
-                VaxWorkstation = "161",
                 WorkstationElements = new List<WorkstationElementResource>
                                           {
                                               new WorkstationElementResource

@@ -47,7 +47,6 @@
                 resource.WorkstationCode,
                 resource.Description,
                 cit,
-                resource.VaxWorkstation,
                 resource.ZoneType,
                 resource.WorkstationElements
                     .Select(e => new WorkstationElement(
