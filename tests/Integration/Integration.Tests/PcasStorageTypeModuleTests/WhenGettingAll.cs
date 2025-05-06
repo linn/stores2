@@ -36,8 +36,8 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                                  };
 
             this.pcasStorageTypes = new PcasStorageType(
-                "TEST-BOARD-CODE",
-                "TEST-STORAGE-TYPE-CODE",
+                this.pcasBoard,
+                this.storageType,
                 2,
                 1,
                 "REMARKS",

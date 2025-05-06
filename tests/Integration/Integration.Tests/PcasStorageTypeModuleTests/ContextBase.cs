@@ -3,7 +3,9 @@
     using System.Net.Http;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Common.Proxy.LinnApps;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -30,15 +32,20 @@
         {
             this.DbContext = new TestServiceDbContext();
 
+            var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
+            var pcasBoardsRepository = new EntityFrameworkRepository<PcasBoard, string>(this.DbContext.PcasBoards);
+
             var transactionManager = new TransactionManager(this.DbContext);
 
-            var pcaStorageTypeRepository = new PcasStorageTypeRepository(this.DbContext);
+            var pcasStorageTypeRepository = new PcasStorageTypeRepository(this.DbContext);
 
             IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource> pcasStorageTypeFacadeService
                 = new PcasStorageTypeFacadeService(
-                    pcaStorageTypeRepository,
+                    pcasStorageTypeRepository,
                     transactionManager,
-                    new PcasStorageTypeResourceBuilder());
+                    new PcasStorageTypeResourceBuilder(),
+                    storageTypeRepository,
+                    pcasBoardsRepository);
 
             this.Client = TestClient.With<PcasStorageTypeModule>(
                 services =>

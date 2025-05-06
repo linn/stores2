@@ -26,12 +26,12 @@
             return result;
         }
 
-        public override async Task<PcasStorageType> FindByIdAsync(PcasStorageTypeKey key)
+        public override async Task<PcasStorageType> FindByIdAsync(PcasStorageTypeKey Id)
         {
             var result = await this.serviceDbContext.PcasStorageTypes
                              .Include(a => a.PcasBoard)
                              .Include(l => l.StorageType)
-                             .FirstOrDefaultAsync(pcasStorageType => pcasStorageType.BoardCode == key.BoardCode && pcasStorageType.StorageTypeCode == key.StorageTypeCode);
+                             .FirstOrDefaultAsync(pcasStorageType => pcasStorageType.BoardCode == Id.BoardCode && pcasStorageType.StorageTypeCode == Id.StorageTypeCode);
             return result;
         }
     }

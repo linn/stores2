@@ -17,7 +17,17 @@
             return new PcasStorageTypeResource
             {
                 BoardCode = pcasStorageType.BoardCode,
+                PcasBoard = new PcasBoardResource
+                                {
+                                    BoardCode = pcasStorageType.PcasBoard.BoardCode,
+                                    Description = pcasStorageType.PcasBoard.Description
+                                },
                 StorageTypeCode = pcasStorageType.StorageTypeCode,
+                StorageType = new StorageTypeResource
+                                  {
+                                      StorageTypeCode = pcasStorageType.StorageType.StorageTypeCode,
+                                      Description = pcasStorageType.StorageType.Description
+                                  },
                 Increment = pcasStorageType.Increment,
                 Maximum = pcasStorageType.Maximum,
                 Remarks = pcasStorageType.Remarks,

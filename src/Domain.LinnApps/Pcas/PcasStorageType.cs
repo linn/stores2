@@ -4,16 +4,20 @@
 
     public class PcasStorageType
     {
+        public PcasStorageType()
+        {
+        }
+
         public PcasStorageType(
-            string boardCode,
-            string storageTypeCode,
+            PcasBoard pcasBoard,
+            StorageType storageType,
             int? maximum,
             int? increment,
             string remarks,
             string preference)
         {
-            this.BoardCode = boardCode;
-            this.StorageTypeCode = storageTypeCode;
+            this.BoardCode = pcasBoard.BoardCode;
+            this.StorageTypeCode = storageType.StorageTypeCode;
             this.Maximum = maximum;
             this.Increment = increment;
             this.Remarks = remarks;
