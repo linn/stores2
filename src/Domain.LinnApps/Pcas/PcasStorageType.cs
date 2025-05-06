@@ -7,8 +7,8 @@
         public PcasStorageType(
             string boardCode,
             string storageTypeCode,
-            int maximum,
-            int incr,
+            int? maximum,
+            int? incr,
             string remarks,
             string preference)
         {
@@ -26,9 +26,9 @@
 
         public string StorageTypeCode { get; set; }
 
-        public int Maximum { get; set; }
+        public int? Maximum { get; set; }
 
-        public int Incr { get; set; }
+        public int? Incr { get; set; }
 
         public string Remarks { get; set; }
 
@@ -39,8 +39,8 @@
         public PcasBoard PcasBoard { get; set; }
 
         public void Update(
-            int maximum,
-            int incr,
+            int? maximum,
+            int? incr,
             string remarks,
             string preference)
         {

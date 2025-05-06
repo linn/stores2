@@ -21,9 +21,25 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
 
         private PcasStorageTypeResource updateResource;
 
+        private StorageType storageType;
+
+        private PcasBoard pcasBoard;
+
         [SetUp]
         public void SetUp()
         {
+            this.storageType = new StorageType
+                                   {
+                                       StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
+                                       Description = "Storage Type Description"
+                                   };
+
+            this.pcasBoard = new PcasBoard
+                                 {
+                                     BoardCode = "TEST-BOARD-CODE",
+                                     Description = "PCAS Board Description"
+                                 };
+
             this.pcasStorageType = new PcasStorageType(
                 "TEST-BOARD-CODE",
                 "TEST-STORAGE-TYPE-CODE",
@@ -42,9 +58,22 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                                           Incr = 1,
                                           Remarks = "NEW REMARKS",
                                           Preference = "1",
+                                          StorageType = new StorageTypeResource
+                                                            {
+                                                                StorageTypeCode = this.storageType.StorageTypeCode,
+                                                                Description = this.storageType.Description
+                                                            },
+                                          PcasBoard = new PcasBoardResource
+                                                          {
+                                                              BoardCode = this.pcasBoard.BoardCode,
+                                                              Description = this.pcasBoard.Description
+                                                          }
                                       };
 
+            this.DbContext.PcasBoards.AddAndSave(this.DbContext, this.pcasBoard);
+            this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
             this.DbContext.PcasStorageTypes.AddAndSave(this.DbContext, this.pcasStorageType);
+
             this.Response = this.Client.PutAsJsonAsync(
                     $"/stores2/pcas-storage-type/{this.pcasStorageType.BoardCode}/{this.pcasStorageType.StorageTypeCode}", this.updateResource).Result;
         }

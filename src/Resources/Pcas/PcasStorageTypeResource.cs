@@ -9,9 +9,9 @@
 
         public string StorageTypeCode { get; set; }
 
-        public int Maximum { get; set; }
+        public int? Maximum { get; set; }
 
-        public int Incr { get; set; }
+        public int? Incr { get; set; }
 
         public string Remarks { get; set; }
 
