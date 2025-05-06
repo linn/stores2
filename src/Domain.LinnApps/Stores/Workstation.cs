@@ -12,14 +12,12 @@
             string workstationCode,
             string description,
             Cit cit,
-            string vaxWorkstation,
             string zoneType,
             ICollection<WorkstationElement> elements)
         {
             this.WorkstationCode = workstationCode;
             this.Description = description;
             this.Cit = cit;
-            this.VaxWorkstation = vaxWorkstation;
             this.ZoneType = zoneType;
             this.WorkstationElements = elements;
         }
@@ -30,8 +28,6 @@
 
         public Cit Cit { get; protected set; }
 
-        public string VaxWorkstation { get; protected set; }
-
         public string ZoneType { get; protected set; }
 
         public ICollection<WorkstationElement> WorkstationElements { get; protected set; }
@@ -40,14 +36,12 @@
             string workstationCode,
             string description,
             Cit cit,
-            string vaxWorkstation,
             string zoneType,
             ICollection<WorkstationElement> elements)
         {
             this.WorkstationCode = workstationCode;
             this.Description = description;
             this.Cit = cit;
-            this.VaxWorkstation = vaxWorkstation;
             this.ZoneType = zoneType;
             this.WorkstationElements = elements;
         }

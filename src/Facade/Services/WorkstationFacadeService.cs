@@ -81,7 +81,6 @@
                 updateResource.WorkstationCode,
                 updateResource.Description,
                 cit,
-                updateResource.VaxWorkstation,
                 updateResource.ZoneType,
                 updateDetails);
         }

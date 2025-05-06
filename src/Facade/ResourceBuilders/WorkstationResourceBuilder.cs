@@ -28,7 +28,6 @@
                            CitCode = model.Cit?.Code,
                            CitName = model.Cit?.Name,
                            Description = model.Description,
-                           VaxWorkstation = model.VaxWorkstation,
                            ZoneType = model.ZoneType,
                            WorkstationElements = model.WorkstationElements
                                ?.Select(c => (WorkstationElementResource)this.workstationElementsBuilder
