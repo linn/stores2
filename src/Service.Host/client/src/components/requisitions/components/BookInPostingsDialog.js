@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Link from '@mui/material/Link';
 import { makeStyles } from '@mui/styles';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
@@ -520,8 +521,20 @@ function BookInPostingsDialog({
                     .filter(c => c.type === 'search')
                     .map(c => renderSearchDialog(c))}
                 <Grid container spacing={3}>
-                    <Grid size={12}>
+                    <Grid size={9}>
                         <Typography variant="h6">Order Line</Typography>
+                    </Grid>
+                    <Grid size={3}>
+                        <Link
+                            target={'_blank'}
+                            rel={'noopener noreferrer'}
+                            variant="body1"
+                            underline="hover"
+                            href={`/ledgers/purchase/inv-post?orderNumber=${orderDetail.orderNumber}`}
+                            color="secondary"
+                        >
+                            View Receipts/Invoices
+                        </Link>
                     </Grid>
                     <Grid size={2}>
                         <InputField
