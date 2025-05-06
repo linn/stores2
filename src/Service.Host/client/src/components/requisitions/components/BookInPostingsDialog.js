@@ -117,6 +117,7 @@ function BookInPostingsDialog({
             sequence: id,
             orderNumber: orderDetail.orderNumber,
             orderLine: orderDetail.line,
+            partNumber: orderDetail.partNumber,
             isReverse: 'N'
         };
         const bookInPostingsToUpdate = [...bookInPostings, newBookInPosting];
@@ -130,6 +131,7 @@ function BookInPostingsDialog({
             sequence: id,
             orderNumber: orderDetail.orderNumber,
             orderLine: orderDetail.line,
+            partNumber: orderDetail.partNumber,
             quantity: orderDetail.ourQty - bookedInQuantity,
             departmentCode: orderDetail.orderPosting.nominalAccount.department.departmentCode,
             departmentDescription:
