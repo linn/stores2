@@ -30,11 +30,12 @@ function BookInPostingsDialog({
     documentType,
     documentNumber,
     documentLine,
-    orderDetail
+    orderDetail,
+    bookInOrderDetails
 }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
-    const [bookInPostings, setBookInPostings] = useState([]);
+    const [bookInPostings, setBookInPostings] = useState(bookInOrderDetails ?? []);
     const [searchDialogOpen, setSearchDialogOpen] = useState({ forRow: null, forColumn: null });
     const [departmentSearchTerm, setDepartmentSearchTerm] = useState('');
     const [nominalSearchTerm, setNominalSearchTerm] = useState('');
