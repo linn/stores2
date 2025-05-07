@@ -1070,6 +1070,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             Part part,
             IList<BookInOrderDetail> bookInOrderDetails)
         {
+            if (part == null)
+            {
+                throw new CreateRequisitionException("A sundry part must be specified for BOOKLD");
+            }
+
             if (part.StockControlled == "Y")
             {
                 throw new CreateRequisitionException($"Part {part.PartNumber} is stock controlled and BOOKLD must be sundry.");

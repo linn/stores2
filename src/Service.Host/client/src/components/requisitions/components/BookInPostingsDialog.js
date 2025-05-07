@@ -112,7 +112,7 @@ function BookInPostingsDialog({
         </>
     );
 
-    const addPosting = () => {
+    const addBookIn = () => {
         const id = (bookInOrderDetails.length ?? 0) + 1;
         const newBookInOrderDetail = {
             id,
@@ -126,7 +126,7 @@ function BookInPostingsDialog({
         setBookInOrderDetails(bookInOrderDetailsToUpdate);
     };
 
-    const addFullPosting = () => {
+    const addFullBookIn = () => {
         const id = (bookInOrderDetails.length ?? 0) + 1;
         const newBookInOrderDetail = {
             id,
@@ -516,7 +516,7 @@ function BookInPostingsDialog({
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
             <DialogTitle>
-                Book In Postings for {documentType} {documentNumber} / {documentLine}
+                Book In Details for {documentType} {documentNumber} / {documentLine}
             </DialogTitle>
             <DialogContent>
                 {bookInOrderDetailsColumns
@@ -607,13 +607,13 @@ function BookInPostingsDialog({
                         />
                     </Grid>
                     <Grid size={12}>
-                        <Typography variant="h6">Book In Postings</Typography>
+                        <Typography variant="h6">Book In Details</Typography>
                     </Grid>
                     <Grid size={2}>
-                        <Button onClick={addPosting}>Add New Posting</Button>
+                        <Button onClick={addBookIn}>Add New Book In</Button>
                     </Grid>
                     <Grid size={2}>
-                        <Button onClick={addFullPosting}>Add Full Posting</Button>
+                        <Button onClick={addFullBookIn}>Add Full Book In</Button>
                     </Grid>
                     <Grid size={8} />
                     <Grid size={12}>
