@@ -44,11 +44,19 @@
             {
                 var labelName = $"KGI{request.OrderNumber}";
                 var kardexData = $"\"{request.KardexLocation.Replace("\"", "''")}\",\"{request.ReqNumber}\"";
-                var kardexLabelType = this.labelTypeRepository.FindBy(x => x.Code == "KARDEX");
-                var printer = string.IsNullOrEmpty(request.PrinterName) ?
-                               kardexLabelType.DefaultPrinter :
-                               this.labelTypeRepository.FindBy(x => x.DefaultPrinter.ToLower() == request.PrinterName.ToLower())
-                                   .DefaultPrinter;
+                var kardexLabelType = await this.labelTypeRepository.FindByAsync(x => x.Code == "KARDEX");
+                string printer;
+
+                if (string.IsNullOrEmpty(request.PrinterName))
+                {
+                    printer = kardexLabelType.DefaultPrinter;
+                }
+                else
+                {
+                    var printerLabelType = await this.labelTypeRepository.FindByAsync(
+                        x => x.DefaultPrinter.ToLower() == request.PrinterName.ToLower());
+                    printer = printerLabelType.DefaultPrinter;
+                }
 
                 var kardexResult = await this.labelPrinter.PrintLabelsAsync(
                     labelName,
@@ -74,94 +82,97 @@
                 .Where(name => !string.IsNullOrWhiteSpace(name))
                 .Select(name => name[0].ToString().ToUpper()));
 
-            foreach (var line in request.Lines)
+            if (request.Lines != null)
             {
-                var printString = string.Empty;
-                switch (request.QcState)
+                foreach (var line in request.Lines)
                 {
-                    case "QUARANTINE":
-                        printString += $"\"{request.DocType}{request.OrderNumber}";
-                        printString += "\",\"";
-                        printString += part.PartNumber;
-                        printString += "\",\"";
-                        printString += part.Description;
-                        printString += "\",\"";
-                        printString += request.DeliveryRef;
-                        printString += "\",\"";
-                        printString += DateTime.Now.ToString("MMMddyyyy").ToUpper();
-                        printString += "\",\"";
-                        printString += part.OurUnitOfMeasure;
-                        printString += "\",\"";
-                        printString += initials;
-                        printString += "\",\"";
-                        printString += DateTime.Now.ToString("MMMddyyyy").ToUpper();
-                        printString += "\",\"";
-                        printString += string.IsNullOrEmpty(part.QcInformation) ? "NO QC INFO" : part.QcInformation;
-                        printString += "\",\"";
-                        printString += purchaseOrder.SupplierId;
-                        printString += "\",\"";
-                        printString += purchaseOrder.SupplierName;
-                        printString += "\",\"";
-                        printString += request.Qty;
-                        printString += "\",\"";
-                        printString += request.NumberOfLines;
-                        printString += "\",\"";
-                        printString += line.Qty;
-                        printString += "\",\"";
-                        printString += line.LineNumber + 1;
-                        printString += "\",\"";
-                        printString += request.QcState;
-                        printString += "\",\"";
-                        printString += "DATE TESTED";
-                        printString += "\",\"";
-                        printString += request.ReqNumber;
-                        printString += "\"";
-                        printString += Environment.NewLine;
-                        break;
-                    case "PASS":
-                        var partMessage = purchaseOrder.Details.First().RohsCompliant == "Y"
-                                               ? "**ROHS Compliant**"
-                                               : null;
-                        printString += "\"";
-                        printString += request.OrderNumber;
-                        printString += "\",\"";
-                        printString += request.PartNumber;
-                        printString += "\",\"";
-                        printString += line.Qty;
-                        printString += "\",\"";
-                        printString += initials;
-                        printString += "\",\"";
-                        printString += part.Description;
-                        printString += "\",\"";
-                        printString += request.ReqNumber;
-                        printString += "\",\"";
-                        printString += DateTime.Now.ToString("MMMddyyyy").ToUpper();
-                        printString += "\",\"";
-                        printString += partMessage;
-                        printString += "\"";
-                        printString += Environment.NewLine;
-                        break;
-                }
+                    var printString = string.Empty;
+                    switch (request.QcState)
+                    {
+                        case "QUARANTINE":
+                            printString += $"\"{request.DocType}{request.OrderNumber}";
+                            printString += "\",\"";
+                            printString += part.PartNumber;
+                            printString += "\",\"";
+                            printString += part.Description;
+                            printString += "\",\"";
+                            printString += request.DeliveryRef;
+                            printString += "\",\"";
+                            printString += DateTime.Now.ToString("MMMddyyyy").ToUpper();
+                            printString += "\",\"";
+                            printString += part.OurUnitOfMeasure;
+                            printString += "\",\"";
+                            printString += initials;
+                            printString += "\",\"";
+                            printString += DateTime.Now.ToString("MMMddyyyy").ToUpper();
+                            printString += "\",\"";
+                            printString += string.IsNullOrEmpty(part.QcInformation) ? "NO QC INFO" : part.QcInformation;
+                            printString += "\",\"";
+                            printString += purchaseOrder.SupplierId;
+                            printString += "\",\"";
+                            printString += purchaseOrder.SupplierName;
+                            printString += "\",\"";
+                            printString += request.Qty;
+                            printString += "\",\"";
+                            printString += request.NumberOfLines;
+                            printString += "\",\"";
+                            printString += line.Qty;
+                            printString += "\",\"";
+                            printString += line.LineNumber + 1;
+                            printString += "\",\"";
+                            printString += request.QcState;
+                            printString += "\",\"";
+                            printString += "DATE TESTED";
+                            printString += "\",\"";
+                            printString += request.ReqNumber;
+                            printString += "\"";
+                            printString += Environment.NewLine;
+                            break;
+                        case "PASS":
+                            var partMessage = purchaseOrder.Details.First().RohsCompliant == "Y"
+                                                   ? "**ROHS Compliant**"
+                                                   : null;
+                            printString += "\"";
+                            printString += request.OrderNumber;
+                            printString += "\",\"";
+                            printString += request.PartNumber;
+                            printString += "\",\"";
+                            printString += line.Qty;
+                            printString += "\",\"";
+                            printString += initials;
+                            printString += "\",\"";
+                            printString += part.Description;
+                            printString += "\",\"";
+                            printString += request.ReqNumber;
+                            printString += "\",\"";
+                            printString += DateTime.Now.ToString("MMMddyyyy").ToUpper();
+                            printString += "\",\"";
+                            printString += partMessage;
+                            printString += "\"";
+                            printString += Environment.NewLine;
+                            break;
+                    }
 
-                var printer = labelType.DefaultPrinter;
-                if (!string.IsNullOrEmpty(request.PrinterName))
-                {
-                    var type = await this.labelTypeRepository.FindByAsync(
-                                   x => x.DefaultPrinter.ToLower() == request.PrinterName.ToLower());
-                    printer = type.DefaultPrinter;
-                }
-                
-                var linesResult = await this.labelPrinter.PrintLabelsAsync(
-                    $"QC {request.OrderNumber}-{line.LineNumber}", 
-                    printer,
-                    1,
-                    labelType.FileName,
-                    printString);
+                    var printer = labelType.DefaultPrinter;
+                    if (!string.IsNullOrEmpty(request.PrinterName))
+                    {
+                        var type = await this.labelTypeRepository.FindByAsync(
+                                       x => x.DefaultPrinter.ToLower() == request.PrinterName.ToLower());
+                        printer = type.DefaultPrinter;
+                    }
 
-                if (!linesResult.Success)
-                {
-                    result.Success = false;
-                    result.Message += linesResult.Message;
+                    var linesResult = await this.labelPrinter.PrintLabelsAsync(
+                        $"QC {request.OrderNumber}-{line.LineNumber}",
+                        printer,
+                        1,
+                        labelType.FileName,
+                        printString);
+
+                    if (!linesResult.Success)
+                    {
+                        result.Success = false;
+                        result.Message += linesResult.Message;
+                    }
                 }
             }
 

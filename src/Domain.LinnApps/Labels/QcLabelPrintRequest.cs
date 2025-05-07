@@ -27,6 +27,5 @@
         public IEnumerable<LabelLine> Lines { get; set; }
 
         public string PrinterName { get; set; }
-
     }
 }
