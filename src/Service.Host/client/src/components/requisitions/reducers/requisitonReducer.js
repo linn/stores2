@@ -217,7 +217,20 @@ function reducer(state, action) {
             };
         }
         case 'set_document1_details': {
-            return { ...state, document1Details: action.payload };
+            const message = { showMessage: false };
+            if (action.payload && state.req.storesFunction?.code === 'BOOKLD') {
+                if (
+                    action.payload.orderDetail?.orderPosting?.nominalAccount?.department
+                        ?.projectDepartment === 'Y'
+                ) {
+                    message.showMessage = true;
+                    message.severity = 'info';
+                    message.text =
+                        'This is a project department. Make a copy of the invoice if you have it';
+                }
+            }
+
+            return { ...state, document1Details: action.payload, popUpMessage: message };
         }
         case 'set_part_details': {
             return { ...state, partDetails: action.payload };
