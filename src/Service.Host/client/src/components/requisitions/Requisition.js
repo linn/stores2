@@ -1050,6 +1050,16 @@ function Requisition({ creating }) {
                             <Grid size={6}>
                                 <InputField
                                     fullWidth
+                                    value={formState.req.reference}
+                                    onChange={handleHeaderFieldChange}
+                                    disabled={!creating}
+                                    label="Reference"
+                                    propertyName="reference"
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    fullWidth
                                     value={formState.req.comments}
                                     onChange={(propertyName, newValue) => {
                                         handleHeaderFieldChange(propertyName, newValue);
@@ -1057,16 +1067,6 @@ function Requisition({ creating }) {
                                     }}
                                     label="Comments"
                                     propertyName="comments"
-                                />
-                            </Grid>
-                            <Grid size={6}>
-                                <InputField
-                                    fullWidth
-                                    value={formState.req.reference}
-                                    onChange={handleHeaderFieldChange}
-                                    disabled={!creating}
-                                    label="Reference"
-                                    propertyName="reference"
                                 />
                             </Grid>
                             <Grid size={12}>
@@ -1222,7 +1222,7 @@ function Requisition({ creating }) {
                                     documentLine={formState.req.document1Line}
                                     documentType={formState.req.document1Name}
                                     orderDetail={formState.document1Details.orderDetail}
-                                    bookInOrderDetails={formState.req.bookInOrderDetails}
+                                    existingBookInOrderDetails={formState.req.bookInOrderDetails}
                                     handleSelect={bookInPostings => {
                                         dispatch({
                                             type: 'set_book_in_postings',

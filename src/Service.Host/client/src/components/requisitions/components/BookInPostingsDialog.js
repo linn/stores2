@@ -32,11 +32,11 @@ function BookInPostingsDialog({
     documentNumber,
     documentLine,
     orderDetail,
-    bookInOrderDetails
+    existingBookInOrderDetails
 }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
-    const [bookInPostings, setBookInPostings] = useState(bookInOrderDetails ?? []);
+    const [bookInOrderDetails, setBookInOrderDetails] = useState(existingBookInOrderDetails ?? []);
     const [searchDialogOpen, setSearchDialogOpen] = useState({ forRow: null, forColumn: null });
     const [departmentSearchTerm, setDepartmentSearchTerm] = useState('');
     const [nominalSearchTerm, setNominalSearchTerm] = useState('');
@@ -112,9 +112,9 @@ function BookInPostingsDialog({
         </>
     );
 
-    const addPosting = () => {
-        const id = (bookInPostings.length ?? 0) + 1;
-        const newBookInPosting = {
+    const addBookIn = () => {
+        const id = (bookInOrderDetails.length ?? 0) + 1;
+        const newBookInOrderDetail = {
             id,
             sequence: id,
             orderNumber: orderDetail.orderNumber,
@@ -122,13 +122,13 @@ function BookInPostingsDialog({
             partNumber: orderDetail.partNumber,
             isReverse: 'N'
         };
-        const bookInPostingsToUpdate = [...bookInPostings, newBookInPosting];
-        setBookInPostings(bookInPostingsToUpdate);
+        const bookInOrderDetailsToUpdate = [...bookInOrderDetails, newBookInOrderDetail];
+        setBookInOrderDetails(bookInOrderDetailsToUpdate);
     };
 
-    const addFullPosting = () => {
-        const id = (bookInPostings.length ?? 0) + 1;
-        const newBookInPosting = {
+    const addFullBookIn = () => {
+        const id = (bookInOrderDetails.length ?? 0) + 1;
+        const newBookInOrderDetail = {
             id,
             sequence: id,
             orderNumber: orderDetail.orderNumber,
@@ -143,11 +143,11 @@ function BookInPostingsDialog({
             isReverse: 'N'
         };
 
-        const bookInPostingsToUpdate = [...bookInPostings, newBookInPosting];
-        setBookInPostings(bookInPostingsToUpdate);
+        const bookInOrderDetailsToUpdate = [...bookInOrderDetails, newBookInOrderDetail];
+        setBookInOrderDetails(bookInOrderDetailsToUpdate);
         searchNominalAccounts(
             null,
-            `?departmentCode=${newBookInPosting.departmentCode}&nominalCode=${newBookInPosting.nominalCode}&exactMatch=true`
+            `?departmentCode=${newBookInOrderDetail.departmentCode}&nominalCode=${newBookInOrderDetail.nominalCode}&exactMatch=true`
         );
     };
 
@@ -156,20 +156,20 @@ function BookInPostingsDialog({
     };
 
     const handleDeleteRow = () => {
-        const bookInPostingsToUpdate = [...bookInPostings];
-        setBookInPostings(bookInPostingsToUpdate.slice(0, -1));
+        const bookInOrderDetailsToUpdate = [...bookInOrderDetails];
+        setBookInOrderDetails(bookInOrderDetailsToUpdate.slice(0, -1));
     };
 
     const handleConfirmClick = () => {
         const qtyLeft = orderDetail.ourQty - bookedInQuantity;
-        const selectedQty = bookInPostings.reduce((a, b) => a + Number(b.quantity), 0);
+        const selectedQty = bookInOrderDetails.reduce((a, b) => a + Number(b.quantity), 0);
         if (Number(qtyLeft) < selectedQty) {
             setSnackbar({
                 message: `Quantity left on order line is ${qtyLeft} but quantity picked is ${selectedQty}`,
                 backgroundColour: 'red'
             });
         } else if (
-            !bookInPostings.every(
+            !bookInOrderDetails.every(
                 a => a.departmentCode && a.nominalCode && a.nominalPostsAllowed === 'Y'
             )
         ) {
@@ -179,58 +179,60 @@ function BookInPostingsDialog({
             });
         } else {
             handleClose();
-            handleSelect({ bookInPostings, quantityBooked: selectedQty });
+            handleSelect({ bookInOrderDetails, quantityBooked: selectedQty });
         }
     };
 
     useEffect(() => {
-        if (departmentValue && bookInPostings?.length) {
-            const newBookInPostings = [...bookInPostings];
-            const items = newBookInPostings.filter(
+        if (departmentValue && bookInOrderDetails?.length) {
+            const newBookInOrderDetails = [...bookInOrderDetails];
+            const items = newBookInOrderDetails.filter(
                 a => a.departmentCode === departmentValue.departmentCode
             );
             items.forEach(item => {
-                const current = newBookInPostings.find(a => a.id === item.id);
+                const current = newBookInOrderDetails.find(a => a.id === item.id);
                 current.departmentDescription = departmentValue.description;
             });
 
             clearDepartment();
-            setBookInPostings(newBookInPostings);
+            setBookInOrderDetails(newBookInOrderDetails);
         }
-    }, [clearDepartment, departmentValue, bookInPostings]);
+    }, [clearDepartment, departmentValue, bookInOrderDetails]);
 
     useEffect(() => {
-        if (nominalValue && bookInPostings?.length) {
-            const newBookInPostings = [...bookInPostings];
-            const items = newBookInPostings.filter(a => a.nominalCode === nominalValue.nominalCode);
+        if (nominalValue && bookInOrderDetails?.length) {
+            const newBookInOrderDetail = [...bookInOrderDetails];
+            const items = newBookInOrderDetail.filter(
+                a => a.nominalCode === nominalValue.nominalCode
+            );
             items.forEach(item => {
-                const current = newBookInPostings.find(a => a.id === item.id);
+                const current = newBookInOrderDetail.find(a => a.id === item.id);
                 current.nominalDescription = nominalValue.description;
             });
 
             clearNominal();
-            setBookInPostings(newBookInPostings);
+            setBookInOrderDetails(newBookInOrderDetail);
         }
-    }, [clearNominal, nominalValue, bookInPostings]);
+    }, [clearNominal, nominalValue, bookInOrderDetails]);
 
     useEffect(() => {
-        if (searchNominalAccountsResult?.length && bookInPostings?.length) {
+        if (searchNominalAccountsResult?.length && bookInOrderDetails?.length) {
             const currentResult = searchNominalAccountsResult[0];
-            const newBookInPostings = [...bookInPostings];
-            const items = newBookInPostings.filter(
+            const newBookInOrderDetail = [...bookInOrderDetails];
+            const items = newBookInOrderDetail.filter(
                 a =>
                     a.nominalCode === currentResult?.nominal?.nominalCode &&
                     a.departmentCode === currentResult?.department?.departmentCode
             );
             items.forEach(item => {
-                const current = newBookInPostings.find(a => a.id === item.id);
+                const current = newBookInOrderDetail.find(a => a.id === item.id);
                 current.nominalPostsAllowed = currentResult.nominalPostsAllowed;
             });
 
             clearNominalAccountsSearch();
-            setBookInPostings(newBookInPostings);
+            setBookInOrderDetails(newBookInOrderDetail);
         }
-    }, [clearNominalAccountsSearch, searchNominalAccountsResult, bookInPostings]);
+    }, [clearNominalAccountsSearch, searchNominalAccountsResult, bookInOrderDetails]);
 
     const renderSearchDialog = c => {
         const handleClose = () => {
@@ -238,7 +240,7 @@ function BookInPostingsDialog({
         };
 
         const handleSearchResultSelect = selected => {
-            const currentRow = bookInPostings.find(r => r.id === searchDialogOpen.forRow);
+            const currentRow = bookInOrderDetails.find(r => r.id === searchDialogOpen.forRow);
             let newRow = {
                 ...currentRow,
                 [c.field]: selected.id
@@ -324,12 +326,12 @@ function BookInPostingsDialog({
             updatedNewRow.comments = newRow.comments.toUpperCase();
         }
 
-        setBookInPostings(r => r.map(s => (s.id === newRow.id ? updatedNewRow : s)));
+        setBookInOrderDetails(r => r.map(s => (s.id === newRow.id ? updatedNewRow : s)));
 
         return { ...newRow };
     };
 
-    const detailPostingColumns = [
+    const orderDetailPostingColumns = [
         {
             field: 'qty',
             headerName: 'Qty',
@@ -381,7 +383,7 @@ function BookInPostingsDialog({
         return null;
     };
 
-    const bookInPostingsColumns = [
+    const bookInOrderDetailsColumns = [
         { field: 'quantity', headerName: 'Qty', editable: true, width: 160 },
         {
             field: 'departmentCode',
@@ -426,7 +428,7 @@ function BookInPostingsDialog({
             headerName: '',
             width: 120,
             renderCell: params =>
-                Number(params.row.id) === bookInPostings.length ? (
+                Number(params.row.id) === bookInOrderDetails.length ? (
                     <Tooltip title="Delete">
                         <div>
                             <IconButton aria-label="delete" size="small" onClick={handleDeleteRow}>
@@ -500,7 +502,7 @@ function BookInPostingsDialog({
         apiRef.current.setCellFocus(id, field);
     };
 
-    const postingRows = [
+    const orderDetailPostingRows = [
         {
             ...orderDetail.orderPosting,
             id: orderDetail.orderPosting.lineNumber,
@@ -514,10 +516,10 @@ function BookInPostingsDialog({
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
             <DialogTitle>
-                Book In Postings for {documentType} {documentNumber} / {documentLine}
+                Book In Details for {documentType} {documentNumber} / {documentLine}
             </DialogTitle>
             <DialogContent>
-                {bookInPostingsColumns
+                {bookInOrderDetailsColumns
                     .filter(c => c.type === 'search')
                     .map(c => renderSearchDialog(c))}
                 <Grid container spacing={3}>
@@ -598,26 +600,26 @@ function BookInPostingsDialog({
                     </Grid>
                     <Grid size={12}>
                         <DataGrid
-                            rows={postingRows ?? []}
-                            columns={detailPostingColumns}
+                            rows={orderDetailPostingRows ?? []}
+                            columns={orderDetailPostingColumns}
                             hideFooter
                             density="compact"
                         />
                     </Grid>
                     <Grid size={12}>
-                        <Typography variant="h6">Book In Postings</Typography>
+                        <Typography variant="h6">Book In Details</Typography>
                     </Grid>
                     <Grid size={2}>
-                        <Button onClick={addPosting}>Add New Posting</Button>
+                        <Button onClick={addBookIn}>Add New Book In</Button>
                     </Grid>
                     <Grid size={2}>
-                        <Button onClick={addFullPosting}>Add Full Posting</Button>
+                        <Button onClick={addFullBookIn}>Add Full Book In</Button>
                     </Grid>
                     <Grid size={8} />
                     <Grid size={12}>
                         <DataGrid
-                            rows={bookInPostings ?? []}
-                            columns={bookInPostingsColumns}
+                            rows={bookInOrderDetails ?? []}
+                            columns={bookInOrderDetailsColumns}
                             density="compact"
                             onCellKeyDown={handleCellKeyDown}
                             apiRef={apiRef}

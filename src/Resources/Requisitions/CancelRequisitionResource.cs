@@ -6,6 +6,6 @@
 
         public string Reason { get; set; }
 
-        public int? LineNumber{ get; set; }
+        public int? LineNumber { get; set; }
     }
 }

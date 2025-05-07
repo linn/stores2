@@ -61,8 +61,6 @@
 
             this.StockService.ValidStockLocation(1, null, "ADIKT", -1, null).Returns(new ProcessResult(true, null));
 
-
-
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.ReturnToSupplier.FunctionCode,

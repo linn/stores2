@@ -6,6 +6,7 @@
 
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -22,6 +23,8 @@
 
         private readonly IRepository<RequisitionHeader, int> requisitionRepository;
 
+        private readonly IRepository<NominalAccount, int> nominalAccountRepository;
+
         // This service is intended for stores_oo replacement methods that are not
         // suitable to be written in the requisition class itself
         public StoresService(
@@ -29,13 +32,15 @@
             IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository,
             IRepository<StoresBudget, int> storesBudgetRepository,
             IRepository<StockLocator, int> stockLocatorRepository,
-            IRepository<RequisitionHeader, int> requisitionRepository)
+            IRepository<RequisitionHeader, int> requisitionRepository,
+            IRepository<NominalAccount, int> nominalAccountRepository)
         {
             this.stockService = stockService;
             this.storesTransactionStateRepository = storesTransactionStateRepository;
             this.storesBudgetRepository = storesBudgetRepository;
             this.stockLocatorRepository = stockLocatorRepository;
             this.requisitionRepository = requisitionRepository;
+            this.nominalAccountRepository = nominalAccountRepository;
         }
 
         public async Task<ProcessResult> ValidOntoLocation(
@@ -289,6 +294,25 @@
             }
 
             return new ProcessResult(true, $"Reverse quantity of {quantity} for req {originalReqNumber} is valid");
+        }
+
+        public async Task<ProcessResult> ValidDepartmentNominal(string departmentCode, string nominalCode)
+        {
+            // stores_oo.valid_dept_nom
+            var nominalAccount = await this.nominalAccountRepository.FindByAsync(a =>
+                a.DepartmentCode == departmentCode && a.NominalCode == nominalCode);
+
+            if (nominalAccount == null)
+            {
+                return new ProcessResult(false, $"Department / Nominal {departmentCode} / { nominalCode} are not a valid combination");
+            }
+
+            if (nominalAccount.StoresPostsAllowed != "Y")
+            {
+                return new ProcessResult(false, $"Department / Nominal {departmentCode} / {nominalCode} are not a valid for stores posting");
+            }
+
+            return new ProcessResult(true, $"Department / Nominal {departmentCode} / {nominalCode} are a valid combination for stores");
         }
     }
 }

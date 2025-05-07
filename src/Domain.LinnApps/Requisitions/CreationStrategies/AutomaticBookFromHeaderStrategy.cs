@@ -97,7 +97,8 @@
                 context.NewPartNumber,
                 null,
                 context.IsReverseTransaction,
-                context.OriginalReqNumber);
+                context.OriginalReqNumber,
+                context.BookInOrderDetails);
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
