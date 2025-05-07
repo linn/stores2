@@ -325,6 +325,7 @@
                 Document1RequiredFlag = "Y",
                 Document1LineRequiredFlag = "N",
                 Document1Text = "Order Number",
+                FromStockPoolRequired = "O",
                 FromStateRequired = "N",
                 FunctionType = "A",
                 ManualPickRequired = "A",
