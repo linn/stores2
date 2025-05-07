@@ -1222,7 +1222,7 @@ function Requisition({ creating }) {
                                     documentLine={formState.req.document1Line}
                                     documentType={formState.req.document1Name}
                                     orderDetail={formState.document1Details.orderDetail}
-                                    bookInOrderDetails={formState.req.bookInOrderDetails}
+                                    existingBookInOrderDetails={formState.req.bookInOrderDetails}
                                     handleSelect={bookInPostings => {
                                         dispatch({
                                             type: 'set_book_in_postings',

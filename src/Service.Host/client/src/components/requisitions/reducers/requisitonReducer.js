@@ -212,7 +212,7 @@ function reducer(state, action) {
                 req: {
                     ...state.req,
                     quantity: action.payload.quantityBooked,
-                    bookInOrderDetails: action.payload.bookInPostings
+                    bookInOrderDetails: action.payload.bookInOrderDetails
                 }
             };
         }
