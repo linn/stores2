@@ -362,7 +362,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             else if (header.ManualPick == "N" && transactionDefinition.RequiresStockAllocations)
             {
                 // todo can we make automatic from picks see CREATE_REQ_MOVES in REQ_UT.fmb
-
                 var autopickResult = await this.requisitionStoredProcedures.PickStock(
                     toAdd.PartNumber,
                     header.ReqNumber,
@@ -926,7 +925,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         throw new DocumentException("Line has never been booked");
                     }
-
                 }
             }
         }
@@ -1302,7 +1300,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
 
-            
             if (header.Part != null && !header.IsReverseTrans())
             {
                 if (header.FromLocation != null || header.FromPalletNumber.HasValue)
