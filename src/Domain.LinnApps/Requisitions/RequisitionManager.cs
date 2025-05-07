@@ -720,7 +720,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         document1Number,
                         quantity,
                         isReverseTransaction,
-                        partNumber,
+                        part,
                         bookInOrderDetails?.ToList());
                 }
             }
@@ -1071,9 +1071,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? document1Number,
             decimal? quantity,
             string isReverseTransaction,
-            string partNumber,
+            Part part,
             IList<BookInOrderDetail> bookInOrderDetails)
         {
+            if (part.StockControlled == "Y")
+            {
+                throw new CreateRequisitionException($"Part {part.PartNumber} is stock controlled and BOOKLD must be sundry.");
+            }
+            
             if (bookInOrderDetails == null || bookInOrderDetails.Count == 0)
             {
                 throw new CreateRequisitionException("No book in order details supplied for BOOKLD transaction");
@@ -1089,7 +1094,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new CreateRequisitionException($"You must specify a negative quantity for reverse but {quantity} supplied.");
             }
 
-            if (bookInOrderDetails.Any(p => p.PartNumber != partNumber))
+            if (bookInOrderDetails.Any(p => p.PartNumber != part.PartNumber))
             {
                 throw new CreateRequisitionException("Part number is missing or incorrect on book in order details.");
             }
