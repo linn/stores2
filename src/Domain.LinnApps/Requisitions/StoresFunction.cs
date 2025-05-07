@@ -156,7 +156,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string DefaultToState()
         {
-            if ((this.ToStateRequired == "Y" || this.ToStateRequired == "O") && this.TransactionsTypes != null)
+            if ((this.ToStateRequired == "Y" || this.ToStateRequired == "O" || this.FunctionCode == "SUKIT") && this.TransactionsTypes != null)
             {
                 var states = this.TransactionsTypes
                     .Where(t => !string.IsNullOrEmpty(t.TransactionDefinition?.InspectedState))
