@@ -76,7 +76,7 @@
         {
             var resources = this.Response.DeserializeBody<IEnumerable<WorkstationResource>>().ToList();
             resources.Count.Should().Be(1);
-            resources.First().WorkstationCode.Should().Be("Test");
+            resources.First().WorkStationCode.Should().Be("Test");
             resources.First().Description.Should().Be("description");
         }
     }

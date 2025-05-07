@@ -23,7 +23,7 @@
         {
             this.createResource = new WorkstationResource 
                                       {
-                                          WorkstationCode = "WORKSTATIONCODE",
+                                          WorkStationCode = "WORKSTATIONCODE",
                                           CitCode = "R",
                                           CitName = "R CODE",
                                           Description = "A TEST WORKSTATION",
@@ -73,7 +73,7 @@
         public void ShouldAdd()
         {
             this.DbContext.Workstations
-                .First(x => x.WorkstationCode == this.createResource.WorkstationCode).Description
+                .First(x => x.WorkstationCode == this.createResource.WorkStationCode).Description
                 .Should().Be(this.createResource.Description);
         }
 
@@ -81,7 +81,7 @@
         public void ShouldReturnUpdatedJsonBody()
         {
             var resource = this.Response.DeserializeBody<WorkstationResource>();
-            resource.WorkstationCode.Should().Be("WORKSTATIONCODE");
+            resource.WorkStationCode.Should().Be("WORKSTATIONCODE");
             resource.Description.Should().Be("A TEST WORKSTATION");
         }
     }

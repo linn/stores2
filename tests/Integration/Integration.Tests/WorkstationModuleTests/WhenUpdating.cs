@@ -36,7 +36,7 @@
 
             this.updateResource = new WorkstationResource
             {
-                WorkstationCode = "Test",
+                WorkStationCode = "Test",
                 CitCode = "R",
                 CitName = "R CODE",
                 Description = "A TEST WORKSTATION",

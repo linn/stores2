@@ -24,7 +24,7 @@
 
             return new WorkstationResource
                        {
-                           WorkstationCode = model.WorkstationCode,
+                           WorkStationCode = model.WorkstationCode,
                            CitCode = model.Cit?.Code,
                            CitName = model.Cit?.Name,
                            Description = model.Description,

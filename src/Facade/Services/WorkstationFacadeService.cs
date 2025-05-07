@@ -39,12 +39,12 @@
             WorkstationResource resource,
             IEnumerable<string> privileges = null)
         {
-            var workstation = await this.repository.FindByIdAsync(resource.WorkstationCode);
+            var workstation = await this.repository.FindByIdAsync(resource.WorkStationCode);
 
             var cit = await this.citRepository.FindByIdAsync(resource.CitCode);
 
             return new Workstation(
-                resource.WorkstationCode,
+                resource.WorkStationCode,
                 resource.Description,
                 cit,
                 resource.ZoneType,
@@ -77,7 +77,7 @@
                 .ToList();
 
             entity.Update(
-                updateResource.WorkstationCode,
+                updateResource.WorkStationCode,
                 updateResource.Description,
                 cit,
                 updateResource.ZoneType,

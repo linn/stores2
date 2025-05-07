@@ -58,7 +58,7 @@
         public void ShouldReturnJsonBody()
         {
             var resource = this.Response.DeserializeBody<WorkstationResource>();
-            resource.WorkstationCode.Should().Be("Test");
+            resource.WorkStationCode.Should().Be("Test");
             resource.Description.Should().Be("description");
         }
     }

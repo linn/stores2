@@ -26,11 +26,13 @@ function Workstations() {
     const [creating, setCreating] = useState(false);
     const [workStations, setWorkStations] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
-    const [workStationCode, setWorkstationSearchTerm] = useState('');
-    const [citCode, setCitCodeSearchTerm] = useState('');
+    const [rowUpdated, setRowUpdated] = useState();
+
+    const [workStationCodeSearch, setWorkstationSearchTerm] = useState('');
+    const [citCodeSearch, setCitCodeSearchTerm] = useState('');
 
     const handleFieldChange = (propertyName, newValue) => {
-        if (propertyName === 'workStationCode') {
+        if (propertyName === 'workStationCodeSearch') {
             setWorkstationSearchTerm(newValue);
         } else if (propertyName === 'citCode') {
             setCitCodeSearchTerm(newValue);
@@ -59,6 +61,13 @@ function Workstations() {
         result: workStationsResult
     } = useGet(itemTypes.workStations.url);
 
+    const [hasFetched, setHasFetched] = useState(false);
+
+    if (!hasFetched) {
+        setHasFetched(true);
+        getWorkStations();
+    }
+
     useEffect(() => {
         setWorkStations(workStationsResult);
     }, [workStationsResult]);
@@ -82,29 +91,53 @@ function Workstations() {
         setWorkStations([
             ...workStations,
             {
-                workstationCode: '',
+                workStationCode: '',
                 description: '',
                 citName: '',
                 citCode: '',
                 zoneType: '',
+                workStationElements: null,
                 creating: true
             }
         ]);
         setCreating(true);
     };
 
+    const handleCancelSelect = () => {
+        const oldRow = workStationsResult.find(st => st.workStationCode === rowUpdated);
+
+        setWorkStations(prevRows =>
+            prevRows.map(row => (row.workStationCode === oldRow.workStationCode ? oldRow : row))
+        );
+
+        setRowUpdated(null);
+    };
+
+    const processRowUpdate = newRow => {
+        const updatedRow = { ...newRow, updated: true };
+        setWorkStations(prevRows =>
+            prevRows.map(row =>
+                row.workStationCode === newRow.workStationCode || row.workStationCode === ''
+                    ? updatedRow
+                    : row
+            )
+        );
+        setRowUpdated(newRow.workStationCode);
+        return newRow;
+    };
+
     const workStationColumns = [
         {
-            field: 'workstationCode',
+            field: 'workStationCode',
             headerName: 'Workstation Code',
             width: 300,
             renderCell: params => (
                 <Link
                     component={RouterLink}
                     variant="body2"
-                    to={`/stores2/work-stations/${params.row.workstationCode}`}
+                    to={`/stores2/work-stations/${params.row.workStationCode}`}
                 >
-                    {params.row.workstationCode}
+                    {params.row.workStationCode}
                 </Link>
             )
         },
@@ -147,7 +180,7 @@ function Workstations() {
                     ))}
                 <Grid size={4}>
                     <InputField
-                        value={workStationCode}
+                        value={workStationCodeSearch}
                         fullWidth
                         label="Workstation Code"
                         propertyName="workStationCode"
@@ -156,7 +189,7 @@ function Workstations() {
                 </Grid>
                 <Grid size={4}>
                     <InputField
-                        value={citCode}
+                        value={citCodeSearch}
                         fullWidth
                         label="CIT Code"
                         propertyName="citCode"
@@ -170,7 +203,7 @@ function Workstations() {
                         onClick={() =>
                             getWorkStations(
                                 null,
-                                `?workStationCode=${workStationCode || ''}&citCode=${citCode || ''}`
+                                `?workStationCode=${workStationCodeSearch || ''}&citCode=${citCodeSearch || ''}`
                             )
                         }
                     >
@@ -181,12 +214,26 @@ function Workstations() {
                     {workStationsLoading && <Loading />}
                     {workStationsResult && (
                         <DataGrid
-                            getRowId={row => row.workstationCode}
-                            rows={workStationsResult}
+                            editMode="cell"
+                            processRowUpdate={processRowUpdate}
+                            getRowId={row => row.workStationCode}
+                            rows={workStations}
                             columns={workStationColumns}
-                            hideFooter
                             density="compact"
-                            loading={workStationsLoading}
+                            loading={false}
+                            rowSelectionModel={[rowUpdated]}
+                            isCellEditable={params => {
+                                if (params.field === 'workStationCode' && params.row.creating) {
+                                    return true;
+                                }
+                                if (
+                                    (!rowUpdated || params.id === rowUpdated) &&
+                                    params.field !== 'workStationCode'
+                                ) {
+                                    return true;
+                                }
+                                return false;
+                            }}
                         />
                     )}
                 </Grid>
@@ -195,12 +242,38 @@ function Workstations() {
                         Add new Workstation
                     </Button>
                 </Grid>
+                <Grid size={4}>
+                    <Button
+                        onClick={() => {
+                            const updatedWorkStation = workStations.find(w => w.updated === true);
+                            if (updatedWorkStation.creating) {
+                                clearCreateWorkStation();
+                                createWorkStation(null, updatedWorkStation);
+                            } else {
+                                updateWorkStation(
+                                    updatedWorkStation.workStationCode,
+                                    updatedWorkStation
+                                );
+                            }
+                            setRowUpdated(null);
+                        }}
+                        variant="outlined"
+                        disabled={workStationsResult === workStations}
+                    >
+                        Save
+                    </Button>
+                </Grid>
                 <Grid>
                     <SnackbarMessage
                         visible={snackbarVisible}
                         onClose={() => setSnackbarVisible(false)}
                         message="Save Successful"
                     />
+                </Grid>
+                <Grid size={4}>
+                    <Button onClick={handleCancelSelect} variant="outlined" disabled={!rowUpdated}>
+                        Cancel
+                    </Button>
                 </Grid>
                 {(updateError || createWorkStationError) && (
                     <Grid size={12}>
