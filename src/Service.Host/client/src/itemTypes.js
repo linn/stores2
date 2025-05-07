@@ -30,7 +30,7 @@ const itemTypes = {
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
     worksOrder: { url: `${config.proxyRoot}/production/works-orders` },
     debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
-    workStations: { url: `${config.proxyRoot}/stores2/work-stations` }
+    workStations: { url: `${config.appRoot}/stores2/work-stations` }
 };
 
 export default itemTypes;

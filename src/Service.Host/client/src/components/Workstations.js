@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
-import { CreateButton, InputField, Loading } from '@linn-it/linn-form-components-library';
+import { InputField, Loading } from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
@@ -35,16 +35,16 @@ function Workstations() {
 
     const workStationColumns = [
         {
-            field: 'workStationCode',
+            field: 'workstationCode',
             headerName: 'Workstation Code',
             width: 150,
             renderCell: params => (
                 <Link
                     component={RouterLink}
                     variant="body2"
-                    to={`/stores2/work-stations/${params.row.workStationCode}`}
+                    to={`/stores2/work-stations/${params.row.workstationCode}`}
                 >
-                    {params.row.workStationCode}
+                    {params.row.workstationCode}
                 </Link>
             )
         },
@@ -65,7 +65,7 @@ function Workstations() {
         },
         {
             field: 'zoneType',
-            headerName: 'zoneType',
+            headerName: 'Zone Type',
             width: 100
         }
     ];
@@ -80,64 +80,58 @@ function Workstations() {
                 <Grid size={12}>
                     <Typography variant="h4">Workstation Utility</Typography>
                 </Grid>
-                {isLoading ? (
+                {isLoading && (
                     <Grid size={12}>
                         <List>
                             <Loading />
                         </List>
                     </Grid>
-                ) : (
-                    <>
-                        <Grid size={12}>
-                            <InputField
-                                value={workStationCode}
-                                fullWidth
-                                label="Workstation Code"
-                                propertyName="workStationCode"
-                                onChange={handleFieldChange}
-                            />
-                        </Grid>
-                        <Grid size={12}>
-                            <InputField
-                                value={citCode}
-                                fullWidth
-                                label="CIT Code"
-                                propertyName="citCode"
-                                onChange={handleFieldChange}
-                            />
-                        </Grid>
-                        <Grid size={6}>
-                            <Button
-                                disabled={isLoading}
-                                variant="outlined"
-                                onClick={() =>
-                                    getWorkStations(
-                                        null,
-                                        `?workStationCode=${workStationCode || ''}&citCode=${citCode || ''}`
-                                    )
-                                }
-                            >
-                                Search
-                            </Button>
-                        </Grid>
-                        <Grid size={6}>
-                            <CreateButton createUrl={createUrl()} />
-                        </Grid>
-                        <Grid size={12}>
-                            {workStationsLoading && <Loading />}
-                            {workStationsResult && (
-                                <DataGrid
-                                    getRowId={r => r.workStationCode}
-                                    rows={workStationsResult}
-                                    columns={workStationColumns}
-                                    hideFooter
-                                    density="compact"
-                                    loading={workStationsLoading}
-                                />
-                            )}
-                        </Grid>
-                    </>
                 )}
+                <Grid size={12}>
+                    <InputField
+                        value={workStationCode}
+                        fullWidth
+                        label="Workstation Code"
+                        propertyName="workStationCode"
+                        onChange={handleFieldChange}
+                    />
+                </Grid>
+                <Grid size={12}>
+                    <InputField
+                        value={citCode}
+                        fullWidth
+                        label="CIT Code"
+                        propertyName="citCode"
+                        onChange={handleFieldChange}
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <Button
+                        disabled={isLoading}
+                        variant="outlined"
+                        onClick={() =>
+                            getWorkStations(
+                                null,
+                                `?workStationCode=${workStationCode || ''}&citCode=${citCode || ''}`
+                            )
+                        }
+                    >
+                        Search
+                    </Button>
+                </Grid>
+                <Grid size={12}>
+                    {workStationsLoading && <Loading />}
+                    {workStationsResult && (
+                        <DataGrid
+                            getRowId={row => row.workstationCode}
+                            rows={workStationsResult}
+                            columns={workStationColumns}
+                            hideFooter
+                            density="compact"
+                            loading={workStationsLoading}
+                        />
+                    )}
+                </Grid>
             </Grid>
         </Page>
     );
