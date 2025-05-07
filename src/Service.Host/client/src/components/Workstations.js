@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
-import { InputField, Loading } from '@linn-it/linn-form-components-library';
+import {
+    InputField,
+    Loading,
+    ErrorCard,
+    SnackbarMessage
+} from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
@@ -12,10 +17,15 @@ import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
 import useGet from '../hooks/useGet';
+import usePut from '../hooks/usePut';
+import usePost from '../hooks/usePost';
 import Page from './Page';
 
 function Workstations() {
     const { isLoading } = useInitialise(itemTypes.workStations.url);
+    const [creating, setCreating] = useState(false);
+    const [workStations, setWorkStations] = useState();
+    const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [workStationCode, setWorkstationSearchTerm] = useState('');
     const [citCode, setCitCodeSearchTerm] = useState('');
 
@@ -28,16 +38,66 @@ function Workstations() {
     };
 
     const {
+        send: updateWorkStation,
+        isLoading: updateLoading,
+        errorMessage: updateError,
+        putResult: updateResult,
+        clearPutResult: clearUpdateResult
+    } = usePut(itemTypes.workStations.url, true);
+
+    const {
+        send: createWorkStation,
+        createWorkStationLoading,
+        errorMessage: createWorkStationError,
+        postResult: createWorkStationResult,
+        clearPostResult: clearCreateWorkStation
+    } = usePost(itemTypes.workStations.url);
+
+    const {
         send: getWorkStations,
         workStationsLoading,
         result: workStationsResult
     } = useGet(itemTypes.workStations.url);
 
+    useEffect(() => {
+        setWorkStations(workStationsResult);
+    }, [workStationsResult]);
+
+    useEffect(() => {
+        if (!!updateResult || !!createWorkStationResult) {
+            getWorkStations();
+            setSnackbarVisible(true);
+            clearCreateWorkStation();
+            clearUpdateResult();
+        }
+    }, [
+        clearCreateWorkStation,
+        updateResult,
+        getWorkStations,
+        createWorkStationResult,
+        clearUpdateResult
+    ]);
+
+    const addNewRow = () => {
+        setWorkStations([
+            ...workStations,
+            {
+                workstationCode: '',
+                description: '',
+                citName: '',
+                citCode: '',
+                zoneType: '',
+                creating: true
+            }
+        ]);
+        setCreating(true);
+    };
+
     const workStationColumns = [
         {
             field: 'workstationCode',
             headerName: 'Workstation Code',
-            width: 150,
+            width: 300,
             renderCell: params => (
                 <Link
                     component={RouterLink}
@@ -51,28 +111,24 @@ function Workstations() {
         {
             field: 'description',
             headerName: 'Description',
-            width: 300
+            width: 400
         },
         {
             field: 'citName',
             headerName: 'CIT Name',
-            width: 140
+            width: 200
         },
         {
             field: 'citCode',
             headerName: 'CIT Code',
-            width: 140
+            width: 200
         },
         {
             field: 'zoneType',
             headerName: 'Zone Type',
-            width: 100
+            width: 150
         }
     ];
-
-    const createUrl = () => {
-        return '/stores2/work-stations/create';
-    };
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -80,14 +136,16 @@ function Workstations() {
                 <Grid size={12}>
                     <Typography variant="h4">Workstation Utility</Typography>
                 </Grid>
-                {isLoading && (
-                    <Grid size={12}>
-                        <List>
-                            <Loading />
-                        </List>
-                    </Grid>
-                )}
-                <Grid size={12}>
+                {isLoading ||
+                    createWorkStationLoading ||
+                    (updateLoading && (
+                        <Grid size={12}>
+                            <List>
+                                <Loading />
+                            </List>
+                        </Grid>
+                    ))}
+                <Grid size={4}>
                     <InputField
                         value={workStationCode}
                         fullWidth
@@ -96,7 +154,7 @@ function Workstations() {
                         onChange={handleFieldChange}
                     />
                 </Grid>
-                <Grid size={12}>
+                <Grid size={4}>
                     <InputField
                         value={citCode}
                         fullWidth
@@ -132,6 +190,27 @@ function Workstations() {
                         />
                     )}
                 </Grid>
+                <Grid size={4}>
+                    <Button onClick={addNewRow} variant="outlined" disabled={creating}>
+                        Add new Workstation
+                    </Button>
+                </Grid>
+                <Grid>
+                    <SnackbarMessage
+                        visible={snackbarVisible}
+                        onClose={() => setSnackbarVisible(false)}
+                        message="Save Successful"
+                    />
+                </Grid>
+                {(updateError || createWorkStationError) && (
+                    <Grid size={12}>
+                        <ErrorCard
+                            errorMessage={
+                                updateError ? updateError?.details : createWorkStationError
+                            }
+                        />
+                    </Grid>
+                )}
             </Grid>
         </Page>
     );
