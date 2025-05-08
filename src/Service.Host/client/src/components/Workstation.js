@@ -11,6 +11,7 @@ import {
     SnackbarMessage
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
+import moment from 'moment';
 import { DataGrid } from '@mui/x-data-grid';
 import config from '../config';
 import itemTypes from '../itemTypes';
@@ -54,7 +55,7 @@ function Workstation({ creating }) {
 
     if (!creating && !hasFetched) {
         setHasFetched(true);
-        getWorkstation(code);
+        getWorkstation(encodeURI(code));
     }
 
     const navigate = useNavigate();
@@ -88,7 +89,10 @@ function Workstation({ creating }) {
                     dateCreated: new Date(),
                     locationId: 0,
                     palletNumber: '',
-                    workStationElements: null
+                    workStationElements: null,
+                    isNewRow: true,
+                    edited: true,
+                    workstationElementId: 9999
                 }
             ]
         }));
@@ -118,23 +122,19 @@ function Workstation({ creating }) {
 
     const workStationElementColumns = [
         {
-            field: 'workstationElementId',
-            headerName: 'WSE Id',
-            width: 300
-        },
-        {
             field: 'dateCreated',
-            headerName: 'CIT Name',
-            width: 200
+            headerName: 'Date Created',
+            width: 200,
+            valueFormatter: params => moment(params?.value).format('DD/MM/YYYY')
         },
         {
             field: 'createdBy',
-            headerName: 'CIT Code',
+            headerName: 'Added By',
             width: 200
         },
         {
             field: 'createdByName',
-            headerName: 'createdByName',
+            headerName: 'Name ',
             width: 150
         }
     ];
@@ -198,7 +198,7 @@ function Workstation({ creating }) {
                         items={[
                             { id: 'AKU/DORIK', displayText: 'Dorik' },
                             { id: 'AKU/MAJIK FLEX ZONE', displayText: 'Aku/Majik Flex Zone' },
-                            { id: 'FLEXIBLE', displayText: 'FLEXIBLE' },
+                            { id: 'FLEXIBLE', displayText: 'Flexible' },
                             { id: 'MAJIK SPEAKERS', displayText: 'Majik Speakers' },
                             { id: 'PERMANENT', displayText: 'Permanent' },
                             { id: 'SPEAKERS', displayText: 'Speakers' }
@@ -211,7 +211,7 @@ function Workstation({ creating }) {
                 <Grid size={12}>
                     <DataGrid
                         getRowId={row => row.workstationElementId}
-                        rows={workStation?.workStationElements}
+                        rows={workStation?.workstationElements}
                         editMode="cell"
                         processRowUpdate={processRowUpdate}
                         columns={workStationElementColumns}
@@ -233,31 +233,35 @@ function Workstation({ creating }) {
                     />
                 </Grid>
                 <Grid size={4}>
-                    <Button onClick={addNewRow} variant="outlined" disabled={creating}>
+                    <Button onClick={addNewRow} variant="outlined">
                         Add new Workstation
                     </Button>
                 </Grid>
-                {/* <Grid size={4}>
-                    <Button
-                        onClick={() => {
-                            const updatedWorkStation = workStations.find(w => w.updated === true);
-                            if (updatedWorkStation.creating) {
-                                clearCreateWorkStation();
-                                createWorkStation(null, updatedWorkStation);
-                            } else {
-                                updateWorkStation(
-                                    updatedWorkStation.workStationCode,
-                                    updatedWorkStation
+                {/* {
+                    <Grid size={4}>
+                        <Button
+                            onClick={() => {
+                                const updatedWorkStation = workStations.find(
+                                    w => w.updated === true
                                 );
-                            }
-                            setRowUpdated(null);
-                        }}
-                        variant="outlined"
-                        disabled={getWorkStationResult === workStation}
-                    >
-                        Save
-                    </Button>
-                </Grid> */}
+                                if (updatedWorkStation.creating) {
+                                    clearCreateWorkStation();
+                                    createWorkStation(null, updatedWorkStation);
+                                } else {
+                                    updateWorkStation(
+                                        updatedWorkStation.workStationCode,
+                                        updatedWorkStation
+                                    );
+                                }
+                                setRowUpdated(null);
+                            }}
+                            variant="outlined"
+                            disabled={getWorkStationResult === workStation}
+                        >
+                            Save
+                        </Button>
+                    </Grid>
+                } */}
                 <Grid>
                     <SnackbarMessage
                         visible={snackbarVisible}
