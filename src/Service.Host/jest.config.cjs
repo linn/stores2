@@ -9,6 +9,9 @@ module.exports = {
     coverageDirectory: './coverage/',
     collectCoverageFrom: ['client/src/**/*.{js}'],
     collectCoverage: true,
+    moduleNameMapper: {
+        '\\.css$': '<rootDir>/styleMock.js'
+    },
     setupFiles: ['./setupJest.js'],
     testPathIgnorePatterns: ['./client/src/components/__tests__/fakeData/*'],
     transform: {
