@@ -1065,7 +1065,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private async Task CheckBookInOrderAndDetails(
             int? document1Number,
-            decimal? quantity,
+            decimal? reqQuantity,
             string isReverseTransaction,
             Part part,
             IList<BookInOrderDetail> bookInOrderDetails)
@@ -1085,14 +1085,25 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new CreateRequisitionException("No book in order details supplied for BOOKLD transaction");
             }
 
-            if (!quantity.HasValue || quantity.Value == 0)
+            if (!reqQuantity.HasValue || reqQuantity.Value == 0)
             {
                 throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
             }
 
-            if (isReverseTransaction == "Y" && quantity >= 0)
+            if (isReverseTransaction == "Y" && reqQuantity > 0)
             {
-                throw new CreateRequisitionException($"You must specify a negative quantity for reverse but {quantity} supplied.");
+                throw new CreateRequisitionException($"You must specify a negative quantity for reverse but {reqQuantity} supplied.");
+            }
+
+            if (isReverseTransaction == "N" && reqQuantity < 0)
+            {
+                throw new CreateRequisitionException($"You must specify a positive quantity for BOOKLD but {reqQuantity} supplied.");
+            }
+
+            var bookInDetailsQuantity = bookInOrderDetails.Sum(b => b.Quantity);
+            if (reqQuantity.Value != bookInDetailsQuantity)
+            {
+                throw new CreateRequisitionException($"Book in order detail quantity ({bookInDetailsQuantity}) does not match req quantity ({reqQuantity}).");
             }
 
             if (bookInOrderDetails.Any(p => p.PartNumber != part.PartNumber))

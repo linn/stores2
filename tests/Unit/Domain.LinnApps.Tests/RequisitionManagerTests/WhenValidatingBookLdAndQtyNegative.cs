@@ -14,7 +14,7 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingReverseBookLdAndQtyWrong : ContextBase
+    public class WhenValidatingBookLdAndQtyNegative : ContextBase
     {
         private Func<Task> action;
 
@@ -26,7 +26,8 @@
             this.EmployeeRepository.FindByIdAsync(123).Returns(new Employee { Id = 123 });
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.BookToLinnDepartment.FunctionCode)
                 .Returns(TestFunctionCodes.BookToLinnDepartment);
-            this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART", BomVerifyFreqWeeks = 12 });
+            this.PartRepository.FindByIdAsync("SUNDRY PART")
+                .Returns(new Part { PartNumber = "SUNDRY PART", BomVerifyFreqWeeks = 12 });
             this.bookInOrderDetails = new List<BookInOrderDetail>
                                           {
                                               new BookInOrderDetail
@@ -34,12 +35,12 @@
                                                       OrderNumber = 1234,
                                                       OrderLine = 1,
                                                       Sequence = 1,
-                                                      Quantity = 1,
-                                                      DepartmentCode = null,
-                                                      NominalCode = null,
-                                                      PartNumber = null,
+                                                      Quantity = -21,
+                                                      DepartmentCode = "0000011111",
+                                                      NominalCode = "0000022222",
+                                                      PartNumber = "SUNDRY PART",
                                                       ReqNumber = null,
-                                                      IsReverse = null
+                                                      IsReverse = "N"
                                                   }
                                           };
             this.DocumentProxy.GetPurchaseOrder(1234).Returns(
@@ -60,9 +61,9 @@
                 null,
                 null,
                 null,
-                isReverseTransaction: "Y",
-                partNumber: "PART",
-                quantity: 1,
+                isReverseTransaction: "N",
+                partNumber: "SUNDRY PART",
+                quantity: -21,
                 bookInOrderDetails: this.bookInOrderDetails);
         }
 
@@ -70,7 +71,7 @@
         public async Task ShouldThrowCorrectException()
         {
             await this.action.Should().ThrowAsync<CreateRequisitionException>()
-                .WithMessage($"You must specify a negative quantity for reverse but 1 supplied.");
+                .WithMessage("You must specify a positive quantity for BOOKLD but -21 supplied.");
         }
     }
 }
