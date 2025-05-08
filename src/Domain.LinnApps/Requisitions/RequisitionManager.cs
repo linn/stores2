@@ -310,7 +310,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckMoves(
                     toAdd.PartNumber,
                     movesToAdd,
-                    FieldIsNeededOrOptional(header.StoresFunction.ToLocationRequired));
+                    header.ReqType != "F" && FieldIsNeededOrOptional(header.StoresFunction.ToLocationRequired));
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
@@ -555,7 +555,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckMoves(
                         line.PartNumber,
                         movesToAdd,
-                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
+                        current.ReqType != "F" && FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
@@ -566,7 +566,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckMoves(
                         line.PartNumber,
                         line.Moves.ToList(),
-                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
+                        current.ReqType != "F" && FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -851,12 +851,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 candidate.Document1Line.GetValueOrDefault(),
                 candidate.Document1Type);
 
-            if (candidate.Moves != null && candidate.Moves.Any() && reqType != "F")
+            if (candidate.Moves != null && candidate.Moves.Any())
             {
                 await this.CheckMoves(
                     candidate.PartNumber,
                     candidate.Moves.ToList(),
-                    FieldIsNeededOrOptional(storesFunction?.ToLocationRequired));
+                    reqType != "F" && FieldIsNeededOrOptional(storesFunction?.ToLocationRequired));
             }
 
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
