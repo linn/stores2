@@ -69,7 +69,7 @@
         public async Task ShouldThrowCorrectException()
         {
             await this.action.Should().ThrowAsync<CreateRequisitionException>()
-                .WithMessage("You must specify a quantity to book for PO 1234.");
+                .WithMessage("You must specify a quantity on req and all lines to book 1234.");
         }
     }
 }

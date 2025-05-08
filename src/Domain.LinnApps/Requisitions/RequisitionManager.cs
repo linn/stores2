@@ -767,7 +767,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (req.IsReverseTrans() && req.Quantity != null)
             {
-                if (req.OriginalReqNumber == null)
+                if (req.OriginalReqNumber == null && req.StoresFunction.FunctionCode != "BOOKLD")
                 {
                     throw new CreateRequisitionException("An original req number must be supplied for a reverse");
                 }
@@ -1101,17 +1101,19 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new CreateRequisitionException("No book in order details supplied for BOOKLD transaction");
             }
 
-            if (!reqQuantity.HasValue || reqQuantity.Value == 0)
+            if (!reqQuantity.HasValue || reqQuantity.Value == 0
+                                      || bookInOrderDetails.Any(b => !b.Quantity.HasValue)
+                                      || bookInOrderDetails.Any(b => b.Quantity == 0))
             {
-                throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
+                throw new CreateRequisitionException($"You must specify a quantity on req and all lines to book {document1Number}.");
             }
 
-            if (isReverseTransaction == "Y" && reqQuantity > 0)
+            if (isReverseTransaction == "Y" && (reqQuantity > 0 || bookInOrderDetails.Any(a => a.Quantity > 0)))
             {
                 throw new CreateRequisitionException($"You must specify a negative quantity for reverse but {reqQuantity} supplied.");
             }
 
-            if (isReverseTransaction == "N" && reqQuantity < 0)
+            if (isReverseTransaction == "N" && (reqQuantity < 0 || bookInOrderDetails.Any(a => a.Quantity < 0)))
             {
                 throw new CreateRequisitionException($"You must specify a positive quantity for BOOKLD but {reqQuantity} supplied.");
             }
