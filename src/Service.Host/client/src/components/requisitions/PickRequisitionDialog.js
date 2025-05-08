@@ -14,7 +14,10 @@ import useGet from '../../hooks/useGet';
 function PickRequisitionDialog({ open, setOpen, handleSelect, documentType, documentNumber }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
-    const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = useState({
+        type: 'include',
+        ids: new Set([])
+    });
     const [requisitions, setRequisitions] = useState([]);
 
     const {

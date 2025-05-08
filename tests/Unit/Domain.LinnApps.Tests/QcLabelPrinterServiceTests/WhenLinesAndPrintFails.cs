@@ -122,7 +122,6 @@
         {
             this.result.Success.Should().BeFalse();
             this.result.Message.Should().Be("LINES ERROR");
-
         }
     }
 }

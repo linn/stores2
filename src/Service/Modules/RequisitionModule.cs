@@ -33,6 +33,7 @@
             app.MapGet("/requisitions/application-state", this.GetRequisitionApplicationState);
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
+            app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
         }
 
         private async Task Search(
@@ -190,6 +191,14 @@
         private async Task GetApp(HttpRequest req, HttpResponse res)
         {
             await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+        }
+
+        private async Task PrintQcLabels(
+            HttpResponse res, 
+            IRequisitionLabelsFacadeService service,
+            QcLabelPrintRequestResource resource)
+        {
+            await res.Negotiate(await service.PrintQcLables(resource));
         }
     }
 }

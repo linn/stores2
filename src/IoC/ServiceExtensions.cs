@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.IoC
+﻿using Linn.Stores2.Domain.LinnApps.Labels;
+
+namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
@@ -71,7 +73,8 @@
                 .AddScoped<ISalesProxy, SalesProxy>()
                 .AddScoped<IBomVerificationProxy, BomVerificationProxy>()
                 .AddScoped<GistPoCreationStrategy>()
-                .AddScoped<SuReqCreationStrategy>();
+                .AddScoped<SuReqCreationStrategy>()
+                .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -92,7 +95,8 @@
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
-                .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>();
+                .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>()
+                .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

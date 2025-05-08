@@ -118,7 +118,7 @@
                             printString += "\",\"";
                             printString += line.Qty;
                             printString += "\",\"";
-                            printString += line.LineNumber + 1;
+                            printString += line.LineNumber;
                             printString += "\",\"";
                             printString += request.QcState;
                             printString += "\",\"";

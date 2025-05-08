@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+﻿using Linn.Stores2.Domain.LinnApps.Labels;
+
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Net.Http;
 
@@ -35,7 +37,9 @@
         protected IAuthorisationService AuthorisationService { get; private set; }
 
         protected IRepository<RequisitionHistory, int> RequisitionHistoryRepository { get; private set; }
-
+        
+        protected IQcLabelPrinterService QcLabelPrinterService { get; private set; }
+        
         [SetUp]
         public void SetUpContext()
         {
@@ -62,11 +66,15 @@
                 transactionManager,
                 new StoresFunctionResourceBuilder(this.AuthorisationService));
 
+            this.QcLabelPrinterService = Substitute.For<IQcLabelPrinterService>();
+            IRequisitionLabelsFacadeService requisitionLabelsFacadeService = new RequisitionLabelsFacadeService(this.QcLabelPrinterService);
+
             this.Client = TestClient.With<RequisitionModule>(
                 services =>
                     {
                         services.AddSingleton(requisitionService);
                         services.AddSingleton(functionCodeService);
+                        services.AddSingleton(requisitionLabelsFacadeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });
