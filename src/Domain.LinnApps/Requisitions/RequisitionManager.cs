@@ -362,7 +362,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             else if (header.ManualPick == "N" && transactionDefinition.RequiresStockAllocations)
             {
                 // todo can we make automatic from picks see CREATE_REQ_MOVES in REQ_UT.fmb
-
                 var autopickResult = await this.requisitionStoredProcedures.PickStock(
                     toAdd.PartNumber,
                     header.ReqNumber,
@@ -601,7 +600,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string newPartNumber = null,
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
-            int? originalDocumentNumber = null)
+            int? originalDocumentNumber = null,
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
@@ -713,10 +713,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 if (function.FunctionCode == "BOOKLD")
                 {
-                    if (!quantity.HasValue || quantity.Value == 0)
-                    {
-                        throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
-                    }
+                    await this.CheckBookInOrderAndDetails(
+                        document1Number,
+                        quantity,
+                        isReverseTransaction,
+                        part,
+                        bookInOrderDetails?.ToList());
                 }
             }
             else if (function.PartSource == "RO")
@@ -783,7 +785,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A from location or pallet is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromStockPoolRequired) && string.IsNullOrEmpty(req.FromStockPool))
+                if (FieldIsNeededOrOptional(req.StoresFunction.FromStockPoolRequired) && string.IsNullOrEmpty(req.FromStockPool) && req.StoresFunction.FunctionCode != "SUKIT")
                 {
                     throw new RequisitionException("A from stock pool is required");
                 }
@@ -923,7 +925,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         throw new DocumentException("Line has never been booked");
                     }
-
                 }
             }
         }
@@ -1060,6 +1061,58 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             return code == "Y";
+        }
+
+        private async Task CheckBookInOrderAndDetails(
+            int? document1Number,
+            decimal? quantity,
+            string isReverseTransaction,
+            Part part,
+            IList<BookInOrderDetail> bookInOrderDetails)
+        {
+            if (part == null)
+            {
+                throw new CreateRequisitionException("A sundry part must be specified for BOOKLD");
+            }
+
+            if (part.StockControlled == "Y")
+            {
+                throw new CreateRequisitionException($"Part {part.PartNumber} is stock controlled and BOOKLD must be sundry.");
+            }
+            
+            if (bookInOrderDetails == null || bookInOrderDetails.Count == 0)
+            {
+                throw new CreateRequisitionException("No book in order details supplied for BOOKLD transaction");
+            }
+
+            if (!quantity.HasValue || quantity.Value == 0)
+            {
+                throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
+            }
+
+            if (isReverseTransaction == "Y" && quantity >= 0)
+            {
+                throw new CreateRequisitionException($"You must specify a negative quantity for reverse but {quantity} supplied.");
+            }
+
+            if (bookInOrderDetails.Any(p => p.PartNumber != part.PartNumber))
+            {
+                throw new CreateRequisitionException("Part number is missing or incorrect on book in order details.");
+            }
+
+            if (bookInOrderDetails.Any(p =>
+                    string.IsNullOrEmpty(p.DepartmentCode) || string.IsNullOrEmpty(p.NominalCode)))
+            {
+                throw new CreateRequisitionException("Department or Nominal missing on book in order details.");
+            }
+
+            foreach (var bookInOrderDetail in bookInOrderDetails)
+            {
+                DoProcessResultCheck(
+                    await this.storesService.ValidDepartmentNominal(
+                        bookInOrderDetail.DepartmentCode,
+                        bookInOrderDetail.NominalCode));
+            }
         }
 
         private async Task CheckValidWorksOrder(
@@ -1252,7 +1305,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
 
-            
             if (header.Part != null && !header.IsReverseTrans())
             {
                 if (header.FromLocation != null || header.FromPalletNumber.HasValue)

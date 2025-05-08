@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Linn.Stores2.Resources
+﻿namespace Linn.Stores2.Resources
 {
     public class StorageAreaResource
     {

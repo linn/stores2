@@ -69,6 +69,8 @@
                     r => new EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>(r.GetService<ServiceDbContext>()?.BookInOrderDetails))
                 .AddTransient<IRepository<Cit, string>, EntityFrameworkRepository<Cit, string>>(r =>
                     new EntityFrameworkRepository<Cit, string>(r.GetService<ServiceDbContext>()?.Cits))
+                .AddTransient<IRepository<NominalAccount, int>, EntityFrameworkRepository<NominalAccount, int>>(r =>
+                    new EntityFrameworkRepository<NominalAccount, int>(r.GetService<ServiceDbContext>()?.NominalAccounts))
                 .AddScoped<IRepository<Workstation, string>, WorkstationRepository>();
         }
     }

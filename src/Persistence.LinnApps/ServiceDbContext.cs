@@ -74,6 +74,8 @@
 
         public DbSet<Cit> Cits { get; set; }
 
+        public DbSet<NominalAccount> NominalAccounts { get; set; }
+
         public DbSet<BookInOrderDetail> BookInOrderDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -637,8 +639,10 @@
             e.HasKey(a => a.Id);
             e.Property(a => a.Id).HasColumnName("NOMACC_ID");
             e.Property(a => a.StoresPostsAllowed).HasColumnName("STORES_POSTS_ALLOWED");
-            e.HasOne(r => r.Department).WithMany().HasForeignKey("DEPARTMENT");
-            e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
+            e.Property(a => a.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
+            e.HasOne(r => r.Department).WithMany().HasForeignKey(k => k.DepartmentCode);
+            e.Property(a => a.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
+            e.HasOne(r => r.Nominal).WithMany().HasForeignKey(k => k.NominalCode);
         }
 
         private static void BuildStoresBudgets(ModelBuilder builder)

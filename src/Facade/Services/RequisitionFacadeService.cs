@@ -165,7 +165,8 @@
                     resource.NewPart?.PartNumber,
                     resource.Lines?.Select(BuildLineCandidateFromResource),
                     resource.IsReverseTransaction,
-                    resource.OriginalReqNumber);
+                    resource.OriginalReqNumber,
+                    resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource));
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }

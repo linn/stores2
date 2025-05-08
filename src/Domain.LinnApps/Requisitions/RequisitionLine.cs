@@ -108,19 +108,23 @@
                 throw new RequisitionException("Debit or credit for posting should be D or C");
             }
 
-            this.NominalAccountPostings.Add(new RequisitionLinePosting()
-            {
-                ReqNumber = this.ReqNumber,
-                LineNumber = this.LineNumber,
-                DebitOrCredit = debitOrCredit,
-                Qty = qty,
-                NominalAccount = nominalAccount
-            });
+            this.NominalAccountPostings.Add(new RequisitionLinePosting
+                                                {
+                                                    ReqNumber = this.ReqNumber,
+                                                    LineNumber = this.LineNumber,
+                                                    DebitOrCredit = debitOrCredit,
+                                                    Qty = qty,
+                                                    NominalAccount = nominalAccount
+                                                });
         }
 
         public decimal GetPostingQty(string debitOrCredit)
         {
-            return this.NominalAccountPostings == null ? 0 : this.NominalAccountPostings.Where(p => p.DebitOrCredit == debitOrCredit && p.Qty != null).Sum(p => p.Qty.Value);
+            return this.NominalAccountPostings == null
+                       ? 0
+                       : this.NominalAccountPostings
+                           .Where(p => p.DebitOrCredit == debitOrCredit && p.Qty != null)
+                           .Sum(p => p.Qty.Value);
         }
 
         public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";

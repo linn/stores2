@@ -67,6 +67,7 @@
                 null,
                 partNumber: "ADIKT",
                 quantity: 1,
+                fromStockPool:null,
                 fromState: "STORES",
                 toState: "STORES",
                 toLocationCode: "S-SU-1234",
