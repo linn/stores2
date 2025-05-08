@@ -221,6 +221,7 @@
                 Document1RequiredFlag = "N",
                 LinesRequired = "Y",
                 Document1LineRequiredFlag = "N",
+                ToLocationRequired = "O",
                 FromStateRequired = "N",
                 FunctionType = "M",
                 ManualPickRequired = "A",
