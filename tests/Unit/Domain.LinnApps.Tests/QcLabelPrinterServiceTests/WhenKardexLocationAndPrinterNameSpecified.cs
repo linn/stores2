@@ -22,8 +22,7 @@
         private LabelType kardexLabelType;
 
         private LabelType specifiedPrinterLabelType;
-
-
+        
         [SetUp]
         public async Task SetUp()
         {

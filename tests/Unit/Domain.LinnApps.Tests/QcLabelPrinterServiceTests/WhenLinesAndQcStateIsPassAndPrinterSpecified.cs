@@ -17,7 +17,7 @@
 
     using NUnit.Framework;
 
-    public class WhenLinesAndQcStateIsQuarantine : ContextBase
+    public class WhenLinesAndQcStateIsPassAndPrinterSpecified : ContextBase
     {
         private ProcessResult result;
 
@@ -56,7 +56,7 @@
                 UserNumber = 33087,
                 OrderNumber = 12345,
                 NumberOfLines = 0,
-                QcState = "QUARANTINE",
+                QcState = "PASS",
                 ReqNumber = 54321,
                 Lines = new List<LabelLine>
                 {
@@ -114,7 +114,7 @@
                 this.specifiedPrinterLabelType.DefaultPrinter,
                 this.request.Qty,
                 this.defaultQcLabelType.FileName,
-                "\"PO12345\",\"PART\",\"A PART\",\"REF\",\"MAY082025\",\"ONES\",\"ME\",\"MAY082025\",\"NO QC INFO\",\"666\",\"HELL INC.\",\"1\",\"0\",\"1\",\"2\",\"QUARANTINE\",\"DATE TESTED\",\"54321\"\n");
+                "\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"MAY082025\",\"**ROHS Compliant**\"\n");
         }
 
         [Test]

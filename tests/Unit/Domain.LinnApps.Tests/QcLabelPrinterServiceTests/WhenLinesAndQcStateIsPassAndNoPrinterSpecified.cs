@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
 {
     using System.Collections.Generic;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -17,7 +17,7 @@
 
     using NUnit.Framework;
 
-    public class WhenLinesAndQcStateIsQuarantine : ContextBase
+    public class WhenLinesAndQcStateIsPassAndNoPrinterSpecified : ContextBase
     {
         private ProcessResult result;
 
@@ -56,13 +56,12 @@
                 UserNumber = 33087,
                 OrderNumber = 12345,
                 NumberOfLines = 0,
-                QcState = "QUARANTINE",
+                QcState = "PASS",
                 ReqNumber = 54321,
                 Lines = new List<LabelLine>
                 {
                     new LabelLine(1, 1)
-                },
-                PrinterName = "SPEC PRINTER"
+                }
             };
 
             this.purchaseOrderResult = new PurchaseOrderResult
@@ -77,7 +76,6 @@
                         PartNumber = this.request.PartNumber,
                         RohsCompliant = "Y"
                     }
-
                 }
             };
             
@@ -88,7 +86,7 @@
 
             this.LabelPrinter.PrintLabelsAsync(
                     $"QC {request.OrderNumber}-1",
-                    this.specifiedPrinterLabelType.DefaultPrinter,
+                    this.defaultQcLabelType.DefaultPrinter,
                     this.request.Qty,
                     this.defaultQcLabelType.FileName,
                     Arg.Any<string>())
@@ -111,10 +109,10 @@
         {
             this.LabelPrinter.Received().PrintLabelsAsync(
                 $"QC {request.OrderNumber}-1",
-                this.specifiedPrinterLabelType.DefaultPrinter,
+                this.defaultQcLabelType.DefaultPrinter,
                 this.request.Qty,
                 this.defaultQcLabelType.FileName,
-                "\"PO12345\",\"PART\",\"A PART\",\"REF\",\"MAY082025\",\"ONES\",\"ME\",\"MAY082025\",\"NO QC INFO\",\"666\",\"HELL INC.\",\"1\",\"0\",\"1\",\"2\",\"QUARANTINE\",\"DATE TESTED\",\"54321\"\n");
+                "\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"MAY082025\",\"**ROHS Compliant**\"\n");
         }
 
         [Test]
