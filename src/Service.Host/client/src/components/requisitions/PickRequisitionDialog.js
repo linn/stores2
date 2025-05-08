@@ -54,8 +54,10 @@ function PickRequisitionDialog({ open, setOpen, handleSelect, documentType, docu
 
     const handleConfirmClick = () => {
         handleClose();
-        if (rowSelectionModel && rowSelectionModel.length) {
-            const selected = requisitions.find(a => a.id === rowSelectionModel[0]);
+        if (rowSelectionModel && rowSelectionModel.ids.size) {
+            const selected = requisitions.find(
+                a => a.reqNumber === rowSelectionModel.ids.values().next().value
+            );
             handleSelect(selected);
         } else {
             handleSelect({ reqNumber: null });
