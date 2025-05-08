@@ -1,9 +1,8 @@
-using System.Linq;
-using Linn.Common.Facade;
-
 namespace Linn.Stores2.Facade.Services
 {
+    using System.Linq;
     using System.Threading.Tasks;
+    using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Resources.Requisitions;

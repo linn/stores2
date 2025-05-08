@@ -1,9 +1,6 @@
-﻿using Linn.Stores2.Domain.LinnApps.Labels;
-
-namespace Linn.Stores2.IoC
+﻿namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
-
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Domain.LinnApps.Services;
@@ -17,6 +14,7 @@ namespace Linn.Stores2.IoC
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -32,9 +30,7 @@ namespace Linn.Stores2.IoC
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
-
     using Microsoft.Extensions.DependencyInjection;
-
     using RazorEngineCore;
 
     public static class ServiceExtensions

@@ -1,6 +1,4 @@
-﻿using Linn.Stores2.Domain.LinnApps.Labels;
-
-namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Net.Http;
 
@@ -8,6 +6,7 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;

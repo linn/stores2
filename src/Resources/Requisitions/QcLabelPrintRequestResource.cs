@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
 namespace Linn.Stores2.Resources.Requisitions
 {
+    using System.Collections.Generic;
+
     public class QcLabelPrintRequestResource
     {
         public string DocType { get; set; }
