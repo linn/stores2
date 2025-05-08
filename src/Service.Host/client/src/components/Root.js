@@ -82,6 +82,7 @@ function Root() {
                         path="/stores2/work-stations/create"
                         element={<Workstation creating />}
                     />
+                    <Route path="/stores2/work-stations/:code" element={<Workstation />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>
