@@ -3,7 +3,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
-import { InputField, Loading } from '@linn-it/linn-form-components-library';
+import { CreateButton, InputField, Loading } from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
@@ -11,7 +11,6 @@ import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
 import useGet from '../hooks/useGet';
-import usePost from '../hooks/usePost';
 import Page from './Page';
 
 function Workstations() {
@@ -26,14 +25,6 @@ function Workstations() {
             setCitCodeSearchTerm(newValue);
         }
     };
-
-    const {
-        send: createWorkStation,
-        createWorkStationLoading,
-        errorMessage: createWorkStationError,
-        postResult: createWorkStationResult,
-        clearPostResult: clearCreateWorkStation
-    } = usePost(itemTypes.workStations.url);
 
     const {
         send: getWorkStations,
@@ -90,6 +81,9 @@ function Workstations() {
             <Grid container spacing={3}>
                 <Grid size={12}>
                     <Typography variant="h4">Workstation Utility</Typography>
+                </Grid>
+                <Grid size={12}>
+                    <CreateButton createUrl="/stores2/work-stations/create" />
                 </Grid>
                 {isLoading && (
                     <Grid size={12}>
