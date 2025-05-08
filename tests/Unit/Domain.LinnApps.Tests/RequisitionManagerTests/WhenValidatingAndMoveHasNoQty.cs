@@ -37,7 +37,7 @@
             this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.LinnDeptReq.FunctionCode,
-                "F",
+                "O",
                 null,
                 null,
                 "1607",

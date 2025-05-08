@@ -73,7 +73,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             int? originalDocumentNumber = null,
             IEnumerable<BookInOrderDetail> bookInOrderDetails = null);
 
-        Task<RequisitionLine> ValidateLineCandidate(LineCandidate candidate, StoresFunction storesFunction = null);
+        Task<RequisitionLine> ValidateLineCandidate(
+            LineCandidate candidate, 
+            StoresFunction storesFunction = null,
+            string reqType = null);
 
         Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 

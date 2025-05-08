@@ -670,12 +670,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 foreach (var candidate in lines)
                 {
-                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction));
+                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction, req.ReqType));
                 }
             }
             else if (firstLine != null)
             {
-                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction));
+                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction, req.ReqType));
             }
 
             // move below to its own function?
@@ -831,7 +831,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task<RequisitionLine> ValidateLineCandidate(
             LineCandidate candidate,
-            StoresFunction storesFunction = null)
+            StoresFunction storesFunction = null,
+            string reqType = null)
         {
             var part = !string.IsNullOrEmpty(candidate?.PartNumber)
                 ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
@@ -850,7 +851,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 candidate.Document1Line.GetValueOrDefault(),
                 candidate.Document1Type);
 
-            if (candidate.Moves != null && candidate.Moves.Any())
+            if (candidate.Moves != null && candidate.Moves.Any() && reqType != "F")
             {
                 await this.CheckMoves(
                     candidate.PartNumber,
