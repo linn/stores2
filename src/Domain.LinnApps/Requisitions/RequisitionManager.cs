@@ -503,7 +503,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                     if (transaction.RequiresOntoTransactions)
                     {
-                        var pickedLine = pickedRequisition.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
+                        var pickedLine = pickedRequisition.Lines
+                            .SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
                         if (pickedLine != null)
                         {
                             foreach (var move in pickedLine.Moves)
@@ -605,17 +606,24 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
-            var function = !string.IsNullOrEmpty(functionCode) 
-                               ? await this.storesFunctionRepository.FindByIdAsync(functionCode) : null;
-            var dept = !string.IsNullOrEmpty(departmentCode) 
-                           ? await this.departmentRepository.FindByIdAsync(departmentCode) : null;
+            var function = !string.IsNullOrEmpty(functionCode)
+                               ? await this.storesFunctionRepository.FindByIdAsync(functionCode)
+                               : null;
+            var dept = !string.IsNullOrEmpty(departmentCode)
+                           ? await this.departmentRepository.FindByIdAsync(departmentCode)
+                           : null;
             var nom = !string.IsNullOrEmpty(nominalCode)
-                          ? await this.nominalRepository.FindByIdAsync(nominalCode) : null;
-            var fromLocation = !string.IsNullOrEmpty(fromLocationCode) 
-                                   ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == fromLocationCode) : null;
-            
+                          ? await this.nominalRepository.FindByIdAsync(nominalCode)
+                          : null;
+            var fromLocation = !string.IsNullOrEmpty(fromLocationCode)
+                                   ? await this.storageLocationRepository.FindByAsync(x =>
+                                         x.LocationCode == fromLocationCode)
+                                   : null;
+
             var toLocation = !string.IsNullOrEmpty(toLocationCode)
-                                 ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
+                                 ? await this.storageLocationRepository.FindByAsync(x =>
+                                       x.LocationCode == toLocationCode)
+                                 : null;
             var part = !string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
 
             var employee = await this.employeeRepository.FindByIdAsync(createdBy);
@@ -780,27 +788,32 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A quantity must be entered");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromLocationRequired) && req.FromLocation == null && req.FromPalletNumber == null)
+                if (FieldIsNeededOrOptional(req.StoresFunction.FromLocationRequired) && req.FromLocation == null
+                    && req.FromPalletNumber == null)
                 {
                     throw new RequisitionException("A from location or pallet is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromStockPoolRequired) && string.IsNullOrEmpty(req.FromStockPool) && req.StoresFunction.FunctionCode != "SUKIT")
+                if (FieldIsNeededOrOptional(req.StoresFunction.FromStockPoolRequired)
+                    && string.IsNullOrEmpty(req.FromStockPool) && req.StoresFunction.FunctionCode != "SUKIT")
                 {
                     throw new RequisitionException("A from stock pool is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState) && !req.IsReverseTrans())
+                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState)
+                    && !req.IsReverseTrans())
                 {
                     throw new RequisitionException("A from state is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.ToLocationRequired) && req.ToLocation == null && req.ToPalletNumber == null)
+                if (FieldIsNeededOrOptional(req.StoresFunction.ToLocationRequired) && req.ToLocation == null
+                    && req.ToPalletNumber == null)
                 {
                     throw new RequisitionException("A to location or pallet is required");
                 }
 
-                if (FieldIsNeededWithPart(req.StoresFunction.ToStockPoolRequired, req.Part) && string.IsNullOrEmpty(req.ToStockPool))
+                if (FieldIsNeededWithPart(req.StoresFunction.ToStockPoolRequired, req.Part)
+                    && string.IsNullOrEmpty(req.ToStockPool))
                 {
                     throw new RequisitionException("A to stock pool is required");
                 }
@@ -838,7 +851,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 : null;
 
             var transactionDefinition = !string.IsNullOrEmpty(candidate?.TransactionDefinition)
-                ? await this.transactionDefinitionRepository.FindByIdAsync(candidate.TransactionDefinition) : null;
+                                            ? await this.transactionDefinitionRepository.FindByIdAsync(
+                                                  candidate.TransactionDefinition)
+                                            : null;
 
             var line = new RequisitionLine(
                 0,
@@ -900,8 +915,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (header.HasDocument1WithLine() && document.Quantity.HasValue)
             {
                 var reqs = await this.repository.FilterByAsync(r =>
-                    r.Document1Name == header.Document1Name && r.Document1 == header.Document1.Value && r.Document1Line == header.Document1Line &&
-                    r.Cancelled == "N" && r.Quantity != null);
+                               r.Document1Name == header.Document1Name && r.Document1 == header.Document1.Value
+                                                                       && r.Document1Line == header.Document1Line
+                                                                       && r.Cancelled == "N" && r.Quantity != null);
 
                 if (reqs.Any())
                 {

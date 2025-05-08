@@ -36,6 +36,8 @@
 
         protected IRepository<RequisitionHistory, int> RequisitionHistoryRepository { get; private set; }
 
+        protected IQueryRepository<SundryBookInDetail> SundryBookInDetailRepository { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -47,26 +49,31 @@
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
             this.RequisitionFactory = Substitute.For<IRequisitionFactory>();
             this.RequisitionHistoryRepository = Substitute.For<IRepository<RequisitionHistory, int>>();
-            IRequisitionFacadeService
-                requisitionService = new RequisitionFacadeService(
-                    requisitionRepository,
-                    transactionManager,
-                    new RequisitionResourceBuilder(this.AuthorisationService),
-                    this.ReqManager,
-                    this.RequisitionFactory,
-                    this.RequisitionHistoryRepository);
+            this.SundryBookInDetailRepository = Substitute.For<IQueryRepository<SundryBookInDetail>>();
+            IRequisitionFacadeService requisitionFacadeService = new RequisitionFacadeService(
+                requisitionRepository,
+                transactionManager,
+                new RequisitionResourceBuilder(this.AuthorisationService),
+                this.ReqManager,
+                this.RequisitionFactory,
+                this.RequisitionHistoryRepository);
 
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
                 StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(
                 new EntityFrameworkRepository<StoresFunction, string>(this.DbContext.StoresFunctionCodes),
                 transactionManager,
                 new StoresFunctionResourceBuilder(this.AuthorisationService));
+            IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource>
+                sundryBookInDetailFacadeService = new SundryBookInDetailFacadeService(
+                this.SundryBookInDetailRepository,
+                new SundryBookInDetailResourceBuilder());
 
             this.Client = TestClient.With<RequisitionModule>(
                 services =>
                     {
-                        services.AddSingleton(requisitionService);
+                        services.AddSingleton(requisitionFacadeService);
                         services.AddSingleton(functionCodeService);
+                        services.AddSingleton(sundryBookInDetailFacadeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

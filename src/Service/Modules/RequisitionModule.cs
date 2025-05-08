@@ -28,6 +28,7 @@
             app.MapGet("/requisitions/stores-functions", this.GetFunctionCodes);
             app.MapGet("/requisitions/stores-functions/view", this.GetApp);
             app.MapGet("/requisitions/stores-functions/{code}", this.GetStoresFunction);
+            app.MapGet("/requisitions/sundry-book-ins", this.GetSundryBookIns);
             app.MapPost("/requisitions/validate", this.Validate);
             app.MapGet("/requisitions/{reqNumber:int}", this.GetById);
             app.MapGet("/requisitions/application-state", this.GetRequisitionApplicationState);
@@ -185,6 +186,19 @@
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
         {
             await res.Negotiate(await service.GetById(code, req.HttpContext.GetPrivileges()));
+        }
+
+        private async Task GetSundryBookIns(
+            HttpRequest req,
+            HttpResponse res,
+            int orderNumber,
+            int orderLine,
+            IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource> facadeService)
+        {
+            await res.Negotiate(
+                await facadeService.FilterBy(
+                    new SundryBookInDetailResource { OrderNumber = orderNumber, OrderLine = orderLine },
+                    req.HttpContext.GetPrivileges()));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
