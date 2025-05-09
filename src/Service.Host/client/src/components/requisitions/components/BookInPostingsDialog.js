@@ -603,7 +603,7 @@ function BookInPostingsDialog({
     ];
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
-            <DialogTitle>
+            <DialogTitle color={isReverse === 'Y' ? 'warning' : 'black'}>
                 Book In Details for {documentType} {documentNumber} / {documentLine}{' '}
                 {isReverse === 'Y' ? '[REVERSE]' : ''}
             </DialogTitle>
