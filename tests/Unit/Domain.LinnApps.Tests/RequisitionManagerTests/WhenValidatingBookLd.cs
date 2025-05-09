@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
     using FluentAssertions;
 
-    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -40,8 +39,6 @@
                                                       PartNumber = "SUNDRY PART"
                                                   }
                                           };
-            this.StoresService.ValidDepartmentNominal("0000011111", "0000022222")
-                .Returns(new ProcessResult(true, "ok"));
             this.DocumentProxy.GetPurchaseOrder(1234).Returns(
                 new PurchaseOrderResult
                     {

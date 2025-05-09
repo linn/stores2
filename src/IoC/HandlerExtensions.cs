@@ -32,6 +32,7 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageTypeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<PartsStorageTypeResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PartsStorageTypeResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<SundryBookInDetailResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StockPoolResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StockPoolResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageSiteResource>>>()

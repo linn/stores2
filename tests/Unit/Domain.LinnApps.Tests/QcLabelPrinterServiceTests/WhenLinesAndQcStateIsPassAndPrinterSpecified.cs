@@ -1,17 +1,16 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
 {
-    using System.Collections.Generic;
-    using Linn.Stores2.Domain.LinnApps.External;
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    
     using System;
+    using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Labels;
+    using Linn.Stores2.Domain.LinnApps.Parts;
 
     using NSubstitute;
 
@@ -81,7 +80,7 @@
                 }
             };
             
-            this.DocumentProxy.GetPurchaseOrder(request.OrderNumber).Returns(this.purchaseOrderResult);
+            this.DocumentProxy.GetPurchaseOrder(this.request.OrderNumber).Returns(this.purchaseOrderResult);
             
             this.EmployeeRepository.FindByIdAsync(this.request.UserNumber)
                 .Returns(new Employee { Name = "MR EMPLOYEE" });
@@ -116,7 +115,7 @@
                 this.specifiedPrinterLabelType.DefaultPrinter,
                 this.request.Qty,
                 this.defaultQcLabelType.FileName,
-                $"\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"{today}\",\"**ROHS Compliant**\"\n");
+                $"\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"{today}\",\"**ROHS Compliant**\"{Environment.NewLine}");
         }
 
         [Test]

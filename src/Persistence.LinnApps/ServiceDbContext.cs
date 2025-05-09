@@ -78,6 +78,8 @@
 
         public DbSet<BookInOrderDetail> BookInOrderDetails { get; set; }
 
+        public DbSet<SundryBookInDetail> SundryBookInDetails { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -125,6 +127,7 @@
             BuildWorkstationElements(builder);
             BuildCits(builder);
             BuildBookInOrderDetails(builder);
+            BuildSundryBookInDetails(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -874,6 +877,19 @@
             e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
             e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
             e.Property(s => s.IsReverse).HasColumnName("REVERSE").HasMaxLength(1);
+        }
+
+        private static void BuildSundryBookInDetails(ModelBuilder builder)
+        {
+            var e = builder.Entity<SundryBookInDetail>().ToTable("V_PO_BOOKED_IN").HasNoKey();
+            e.Property(s => s.OrderNumber).HasColumnName("ORDER_NUMBER");
+            e.Property(s => s.OrderLine).HasColumnName("ORDER_LINE");
+            e.Property(s => s.Quantity).HasColumnName("QTY");
+            e.Property(s => s.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(s => s.LineNumber).HasColumnName("LINE_NUMBER");
+            e.Property(s => s.TransactionReference).HasColumnName("TRANS_REFERENCE").HasMaxLength(2000);
+            e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
+            e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
         }
     }
 }

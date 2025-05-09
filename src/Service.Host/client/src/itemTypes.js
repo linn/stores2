@@ -14,6 +14,7 @@ const itemTypes = {
     goodsInLog: { url: `${config.appRoot}/stores2/goods-in-log/report` },
     createAuditReqs: { url: `${config.appRoot}/stores2/storage-places/create-checked-audit-reqs` },
     storesBudget: { url: `${config.appRoot}/stores2/budgets` },
+    sundryBookInDetails: { url: `${config.appRoot}/requisitions/sundry-book-ins` },
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
     storageTypes: { url: `${config.appRoot}/stores2/storage-types` },
     storageLocations: { url: `${config.appRoot}/stores2/storage/locations` },

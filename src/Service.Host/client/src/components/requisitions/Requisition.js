@@ -1233,6 +1233,7 @@ function Requisition({ creating }) {
                                     documentType={formState.req.document1Name}
                                     orderDetail={formState.document1Details.orderDetail}
                                     existingBookInOrderDetails={formState.req.bookInOrderDetails}
+                                    isReverse={formState.req.isReverseTransaction}
                                     handleSelect={bookInPostings => {
                                         dispatch({
                                             type: 'set_book_in_postings',
