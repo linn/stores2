@@ -190,6 +190,29 @@ function Workstation({ creating }) {
         }
     ];
 
+    const renderWorkStationElementSearchDialog = c => {
+        const handleClose = () => {
+            setSearchDialogOpen({ forRow: null, forColumn: null });
+        };
+
+        const handleSearchResultSelect = selected => {
+            const currentRow = workStation?.workStationElements.find(
+                r => r.workStationElementId === searchDialogOpen.forRow
+            );
+
+            let newRow = {
+                ...currentRow,
+                [c.field]: selected.id
+            };
+
+            c.searchUpdateFieldNames?.forEach(f => {
+                newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
+            });
+            processRowUpdate(newRow, currentRow);
+            setSearchDialogOpen({ forRow: null, forColumn: null });
+        };
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
@@ -260,6 +283,9 @@ function Workstation({ creating }) {
                     />
                 </Grid>
                 <Grid size={12}>
+                    {workStationElementColumns
+                        .filter(c => c.type === 'search')
+                        .map(c => renderWorkStationElementSearchDialog(c))}
                     <DataGrid
                         getRowId={row => row.workStationElementId}
                         rows={workStation?.workStationElements}
