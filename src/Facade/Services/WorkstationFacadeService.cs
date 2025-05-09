@@ -48,9 +48,9 @@
                 resource.Description,
                 cit,
                 resource.ZoneType,
-                resource.WorkstationElements
+                resource.WorkStationElements
                     .Select(e => new WorkstationElement(
-                        e.WorkstationElementId,
+                        e.WorkStationElementId,
                         e.WorkstationCode,
                         e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
                         DateTime.Parse(e.DateCreated),
@@ -66,9 +66,9 @@
         {
             var cit = await this.citRepository.FindByIdAsync(updateResource.CitCode);
 
-            var updateDetails = updateResource.WorkstationElements
+            var updateDetails = updateResource.WorkStationElements
                 .Select(e => new WorkstationElement(
-                    e.WorkstationElementId,
+                    e.WorkStationElementId,
                     e.WorkstationCode,
                     e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
                     DateTime.Parse(e.DateCreated),

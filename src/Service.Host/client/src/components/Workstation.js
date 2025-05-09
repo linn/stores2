@@ -26,6 +26,7 @@ function Workstation({ creating }) {
     const [workStation, setWorkStation] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [rowUpdated, setRowUpdated] = useState();
+    const [changesMade, setChangesMade] = useState(false);
 
     const { code } = useParams();
 
@@ -60,8 +61,6 @@ function Workstation({ creating }) {
 
     const navigate = useNavigate();
 
-    const [changesMade, setChangesMade] = useState(false);
-
     if (getWorkStationResult && !workStation) {
         setWorkStation(getWorkStationResult);
     }
@@ -77,46 +76,54 @@ function Workstation({ creating }) {
         }
     }, [updateResult]);
 
-    const addNewRow = () =>
-        setWorkStation(w => ({
-            ...w,
+    const addNewRow = () => {
+        setWorkStation(prev => ({
+            ...prev,
             workStationElements: [
-                ...w.workStationElements,
+                ...(prev.workStationElements || []),
                 {
-                    workStationCode: workStation.workStationCode,
+                    workStationElementId: workStation.workStationElements.length + 1,
+                    workStationCode: prev?.WorkStationCode || '',
                     createdBy: 0,
                     createdByName: '',
                     dateCreated: new Date(),
                     locationId: 0,
                     palletNumber: '',
-                    workStationElements: null,
-                    isNewRow: true,
-                    edited: true,
-                    workstationElementId: 9999
+                    creating: true
                 }
             ]
         }));
+        setChangesMade(true);
+    };
 
     const handleCancelSelect = () => {
-        const oldRow = getWorkStationResult.find(st => st.workStationCode === rowUpdated);
-
-        setWorkStation(prevRows =>
-            prevRows.map(row => (row.workStationCode === oldRow.workStationCode ? oldRow : row))
+        const oldRow = getWorkStationResult?.workStationElements?.find(
+            st => st.workStationElementId === rowUpdated
         );
+
+        setWorkStation(prev => ({
+            ...prev,
+            workStationElements: prev?.workStationElements.map(e =>
+                e.workStationElementId === oldRow.workStationElementId ? oldRow : e
+            )
+        }));
 
         setRowUpdated(null);
     };
 
     const processRowUpdate = newRow => {
         const updatedRow = { ...newRow, updated: true };
-        setWorkStation(prevRows =>
-            prevRows.map(row =>
-                row.workStationCode === newRow.workStationCode || row.workStationCode === ''
-                    ? updatedRow
-                    : row
+
+        setWorkStation(prev => ({
+            ...prev,
+            workStationElements: prev.workStationElements.map(row =>
+                row.workStationElementId === newRow.workStationElementId ? updatedRow : row
             )
-        );
-        setRowUpdated(newRow.workStationCode);
+        }));
+
+        setRowUpdated(newRow.workStationElementId);
+        setChangesMade(true);
+
         return newRow;
     };
 
@@ -125,12 +132,14 @@ function Workstation({ creating }) {
             field: 'dateCreated',
             headerName: 'Date Created',
             width: 200,
-            valueFormatter: params => moment(params?.value).format('DD/MM/YYYY')
+            valueFormatter: params => moment(params?.value).format('DD/MM/YYYY'),
+            editable: true
         },
         {
             field: 'createdBy',
             headerName: 'Added By',
-            width: 200
+            width: 200,
+            editable: true
         },
         {
             field: 'createdByName',
@@ -210,8 +219,8 @@ function Workstation({ creating }) {
                 </Grid>
                 <Grid size={12}>
                     <DataGrid
-                        getRowId={row => row.workstationElementId}
-                        rows={workStation?.workstationElements}
+                        getRowId={row => row.workStationElementId}
+                        rows={workStation?.workStationElements}
                         editMode="cell"
                         processRowUpdate={processRowUpdate}
                         columns={workStationElementColumns}

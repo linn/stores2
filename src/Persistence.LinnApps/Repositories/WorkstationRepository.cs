@@ -24,7 +24,7 @@
         {
             return this.serviceDbContext.Workstations.Where(filterExpression)
                 .Include(c => c.Cit)
-                .Include(we => we.WorkstationElements)
+                .Include(we => we.WorkStationElements)
                 .ThenInclude(e => e.CreatedBy);
         }
 
@@ -32,7 +32,7 @@
         {
             var result = await this.serviceDbContext.Workstations
                              .Include(c => c.Cit)
-                             .Include(we => we.WorkstationElements)
+                             .Include(we => we.WorkStationElements)
                              .ThenInclude(e => e.CreatedBy)
                              .FirstOrDefaultAsync(w => w.WorkstationCode == key);
             return result;

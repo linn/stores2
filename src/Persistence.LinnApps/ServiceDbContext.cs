@@ -817,15 +817,15 @@
             e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             e.HasOne(a => a.Cit).WithMany().HasForeignKey("CIT_CODE");
             e.Property(s => s.ZoneType).HasColumnName("ZONE_TYPE").HasMaxLength(20);
-            e.HasMany(w => w.WorkstationElements).WithOne().HasForeignKey(w => w.WorkstationCode);
+            e.HasMany(w => w.WorkStationElements).WithOne().HasForeignKey(w => w.WorkStationCode);
         }
 
         private static void BuildWorkstationElements(ModelBuilder builder)
         {
             var e = builder.Entity<WorkstationElement>().ToTable("WORK_STATION_ELEMENTS");
-            e.HasKey(l => l.WorkstationElementId);
-            e.Property(s => s.WorkstationElementId).HasColumnName("WSE_ID");
-            e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.HasKey(l => l.WorkStationElementId);
+            e.Property(s => s.WorkStationElementId).HasColumnName("WSE_ID");
+            e.Property(s => s.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.HasOne(s => s.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
             e.Property(s => s.DateCreated).HasColumnName("DATE_CREATED");
             e.Property(s => s.LocationId).HasColumnName("LOCATION_ID");

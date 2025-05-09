@@ -9,24 +9,24 @@
         }
 
         public WorkstationElement(
-            int workstationElementId,
-            string workstationCode,
+            int workStationElementId,
+            string workStationCode,
             Employee createdBy,
             DateTime dateCreated,
             int? locationId,
             int? palletNumber)
         {
-            this.WorkstationElementId = workstationElementId;
-            this.WorkstationCode = workstationCode;
+            this.WorkStationElementId = workStationElementId;
+            this.WorkStationCode = workStationCode;
             this.CreatedBy = createdBy;
             this.DateCreated = dateCreated;
             this.LocationId = locationId;
             this.PalletNumber = palletNumber;
         }
 
-        public int WorkstationElementId { get; protected set; }
+        public int WorkStationElementId { get; protected set; }
 
-        public string WorkstationCode { get; protected set; }
+        public string WorkStationCode { get; protected set; }
 
         public Employee CreatedBy { get; protected set; }
 

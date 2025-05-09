@@ -4,7 +4,7 @@
 
     public class WorkstationElementResource : HypermediaResource
     {
-        public int WorkstationElementId { get; set; }
+        public int WorkStationElementId { get; set; }
 
         public string WorkstationCode { get; set; }
 

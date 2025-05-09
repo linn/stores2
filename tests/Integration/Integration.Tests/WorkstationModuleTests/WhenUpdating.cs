@@ -41,7 +41,7 @@
                 CitName = "R CODE",
                 Description = "A TEST WORKSTATION",
                 ZoneType = "Z",
-                WorkstationElements = new List<WorkstationElementResource>
+                WorkStationElements = new List<WorkstationElementResource>
                                           {
                                               new WorkstationElementResource
                                                   {
@@ -95,7 +95,7 @@
         {
             var resource = this.Response.DeserializeBody<WorkstationResource>();
             resource.Description.Should().Be("A TEST WORKSTATION");
-            resource.WorkstationElements.Count().Should().Be(2);
+            resource.WorkStationElements.Count().Should().Be(2);
         }
     }
 }

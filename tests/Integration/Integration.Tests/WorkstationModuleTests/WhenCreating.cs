@@ -28,7 +28,7 @@
                                           CitName = "R CODE",
                                           Description = "A TEST WORKSTATION",
                                           ZoneType = "Z",
-                                          WorkstationElements = new List<WorkstationElementResource>
+                                          WorkStationElements = new List<WorkstationElementResource>
                                                                     {
                                                                         new WorkstationElementResource()
                                                                             {
@@ -38,7 +38,7 @@
                                                                                 DateCreated = DateTime.Today.ToString("o"),
                                                                                 LocationId = 123,
                                                                                 PalletNumber = 567,
-                                                                                WorkstationElementId = 1
+                                                                                WorkStationElementId = 1
                                                                             },
                                                                         new WorkstationElementResource()
                                                                             {
@@ -48,7 +48,7 @@
                                                                                 DateCreated = DateTime.Today.ToString("o"),
                                                                                 LocationId = 567,
                                                                                 PalletNumber = 890,
-                                                                                WorkstationElementId = 2
+                                                                                WorkStationElementId = 2
                                                                             }
                                                                     }
                                       };

@@ -29,7 +29,7 @@
                            CitName = model.Cit?.Name,
                            Description = model.Description,
                            ZoneType = model.ZoneType,
-                           WorkstationElements = model.WorkstationElements
+                           WorkStationElements = model.WorkStationElements
                                ?.Select(c => (WorkstationElementResource)this.workstationElementsBuilder
                                    .Build(c, claimsList)), 
                            Links = this.BuildLinks(model, claims).ToArray()

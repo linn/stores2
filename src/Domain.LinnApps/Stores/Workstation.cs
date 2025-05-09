@@ -19,7 +19,7 @@
             this.Description = description;
             this.Cit = cit;
             this.ZoneType = zoneType;
-            this.WorkstationElements = elements;
+            this.WorkStationElements = elements;
         }
 
         public string WorkstationCode { get; protected set; }
@@ -30,7 +30,7 @@
 
         public string ZoneType { get; protected set; }
 
-        public ICollection<WorkstationElement> WorkstationElements { get; protected set; }
+        public ICollection<WorkstationElement> WorkStationElements { get; protected set; }
 
         public void Update(
             string workstationCode,
@@ -43,7 +43,7 @@
             this.Description = description;
             this.Cit = cit;
             this.ZoneType = zoneType;
-            this.WorkstationElements = elements;
+            this.WorkStationElements = elements;
         }
     }
 }
