@@ -1,19 +1,20 @@
 ﻿namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
-
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
+    using Linn.Common.Domain.LinnApps.Services;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
     using Linn.Common.Proxy;
-    using Linn.Common.Proxy.LinnApps;
+    using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -29,9 +30,7 @@
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
-
     using Microsoft.Extensions.DependencyInjection;
-
     using RazorEngineCore;
 
     public static class ServiceExtensions
@@ -59,6 +58,7 @@
                 .AddScoped<IDocumentProxy, DocumentProxy>()
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()
+                .AddTransient<ILabelPrinter, BartenderLabelPack>()
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>()
                 .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
                 .AddScoped<LdreqCreationStrategy>()
@@ -69,7 +69,8 @@
                 .AddScoped<ISalesProxy, SalesProxy>()
                 .AddScoped<IBomVerificationProxy, BomVerificationProxy>()
                 .AddScoped<GistPoCreationStrategy>()
-                .AddScoped<SuReqCreationStrategy>();
+                .AddScoped<SuReqCreationStrategy>()
+                .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -90,7 +91,8 @@
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
-                .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>();
+                .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>()
+                .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

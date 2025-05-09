@@ -187,7 +187,9 @@ function LinesTab({
                     rows={lines}
                     columns={linesColumns}
                     processRowUpdate={processRowUpdate}
-                    rowSelectionModel={selected ? [selected] : []}
+                    rowSelectionModel={
+                        selected ? { type: 'include', ids: new Set([selected]) } : []
+                    }
                     onRowClick={row => {
                         setSelected(row.id);
                     }}

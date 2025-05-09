@@ -33,12 +33,12 @@
                 .Returns(TestFunctionCodes.Move);
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
-            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
-                .Returns(TestTransDefs.StockToLinnDept);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
+                .Returns(TestTransDefs.LinnDeptToStock);
             this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.Move.FunctionCode,
-                "F",
+                "O",
                 null,
                 null,
                 "1607",
@@ -47,7 +47,7 @@
                     {
                         PartNumber = part.PartNumber,
                         Qty = 1,
-                        TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
+                        TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
                         Moves = new List<MoveSpecification> { new MoveSpecification { Qty = 1, FromPallet = 2345 } }
                     });
         }

@@ -25,7 +25,10 @@ function PickStockDialog({
 }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
-    const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = useState({
+        type: 'include',
+        ids: new Set([])
+    });
 
     const { isLoading, result, send, clearData } = useGet(itemTypes.stockLocators.url, true);
 
@@ -195,10 +198,9 @@ function PickStockDialog({
 
     const handleRowSelection = rowSelectionModel => {
         setRowSelectionModel(rowSelectionModel);
-
         let quantityLeft = quantity ? quantity : 99999999999999;
         moves.forEach((m, i) => {
-            if (rowSelectionModel.includes(i)) {
+            if (rowSelectionModel?.ids.has(i)) {
                 let pickQty = m.quantity - m.quantityAllocated;
                 if (pickQty > quantityLeft) {
                     pickQty = quantityLeft;

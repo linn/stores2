@@ -13,6 +13,10 @@
         
         public string DocumentType { get; set; }
 
+        public int? SupplierId { get; set; }
+
+        public string SupplierName { get; set; }
+
         public IEnumerable<PurchaseOrderDetailResult> Details { get; set; }
 
         public decimal? OrderQty(int? lineNumber = null)

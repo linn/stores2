@@ -15,7 +15,7 @@
 
     using NUnit.Framework;
 
-    public class WhenValidatingLdreq : ContextBase
+    public class WhenValidatingLdreqFromStock : ContextBase
     {
         private RequisitionHeader result;
 
@@ -47,7 +47,7 @@
                         PartNumber = "PART",
                         Qty = 1,
                         TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
-                        Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
+                        Moves = new[] { new MoveSpecification { Qty = 1, FromPallet = 123 } }
                     });
         }
 

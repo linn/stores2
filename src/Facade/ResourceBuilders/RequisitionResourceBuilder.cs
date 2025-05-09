@@ -153,6 +153,21 @@
                 {
                     yield return new LinkResource { Rel = "authorise", Href = "/requisitions/auth" };
                 }
+
+                if (model.StoresFunction.FunctionCode == "GIST PO")
+                {
+                    var href = "/requisitions/print-qc-labels?";
+                    href += $"&reqNumber={model.ReqNumber}";
+                    href += $"&docType={model.Document1Name}";
+                    href += $"&orderNumber={model.Document1}";
+                    href += "&qcState=PASS";
+                    href += $"&partNumber={model.Lines?.First().Part?.PartNumber}";
+                    href += $"&partDescription={model.Lines?.First().Part?.Description}";
+                    href += $"&qtyReceived={model.Lines?.First().Qty}";
+                    href += $"&unitOfMeasure={model.Lines?.First().Part?.OurUnitOfMeasure}";
+                    href += $"&qcInfo={model.Lines?.First().Part?.QcInformation}";
+                    yield return new LinkResource { Rel = "print-qc-labels", Href = href};
+                }
             }
         }
     }

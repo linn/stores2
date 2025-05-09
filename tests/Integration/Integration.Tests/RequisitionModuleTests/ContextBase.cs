@@ -6,6 +6,7 @@
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -35,7 +36,9 @@
         protected IAuthorisationService AuthorisationService { get; private set; }
 
         protected IRepository<RequisitionHistory, int> RequisitionHistoryRepository { get; private set; }
-
+        
+        protected IQcLabelPrinterService QcLabelPrinterService { get; private set; }
+        
         [SetUp]
         public void SetUpContext()
         {
@@ -62,11 +65,15 @@
                 transactionManager,
                 new StoresFunctionResourceBuilder(this.AuthorisationService));
 
+            this.QcLabelPrinterService = Substitute.For<IQcLabelPrinterService>();
+            IRequisitionLabelsFacadeService requisitionLabelsFacadeService = new RequisitionLabelsFacadeService(this.QcLabelPrinterService);
+
             this.Client = TestClient.With<RequisitionModule>(
                 services =>
                     {
                         services.AddSingleton(requisitionService);
                         services.AddSingleton(functionCodeService);
+                        services.AddSingleton(requisitionLabelsFacadeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

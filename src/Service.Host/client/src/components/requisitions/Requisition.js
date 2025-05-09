@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import Typography from '@mui/material/Typography';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -157,6 +157,7 @@ function Requisition({ creating }) {
     const authoriseHref = utilities.getHref(formState.req, 'authorise');
     const reverseHref = utilities.getHref(formState.req, 'create-reverse');
     const createHref = utilities.getHref(formState.req, 'create');
+    const printQcLabelsHref = utilities.getHref(formState.req, 'print-qc-labels');
 
     useEffect(
         () => () => {
@@ -552,6 +553,7 @@ function Requisition({ creating }) {
                                     type: 'load_create',
                                     payload: defaults
                                 });
+                                setTab(0);
                                 navigate('/requisitions/create');
                             }}
                         >
@@ -641,7 +643,15 @@ function Requisition({ creating }) {
                                             book(null, { reqNumber });
                                         }}
                                     />
-                                    <Grid size={2} />
+                                    <Grid size={2}>
+                                        {printQcLabelsHref && (
+                                            <Link to={printQcLabelsHref}>
+                                                <Typography variant="subtitle2">
+                                                    Print Labels
+                                                </Typography>
+                                            </Link>
+                                        )}
+                                    </Grid>
                                 </>
                             )}
 

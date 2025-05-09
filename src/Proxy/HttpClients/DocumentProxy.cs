@@ -98,12 +98,15 @@
                            IsAuthorised = po.AuthorisedBy?.Id != null,
                            IsFilCancelled = !string.IsNullOrEmpty(po.DateFilCancelled),
                            DocumentType = po.DocumentType?.Name,
+                           SupplierName = po.Supplier?.Name,
+                           SupplierId = po.Supplier?.Id,
                            Details = po.Details.Select(d => new PurchaseOrderDetailResult
                            {
                                Line = d.Line,
                                OurQty = d.OurQty,
                                PartNumber = d.PartNumber,
-                               OriginalOrderNumber = d.OriginalOrderNumber
+                               OriginalOrderNumber = d.OriginalOrderNumber,
+                               RohsCompliant = d.RohsCompliant
                            })
                        };
         }

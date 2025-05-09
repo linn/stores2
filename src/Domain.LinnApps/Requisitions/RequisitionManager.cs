@@ -310,7 +310,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckMoves(
                     toAdd.PartNumber,
                     movesToAdd,
-                    FieldIsNeededOrOptional(header.StoresFunction.ToLocationRequired));
+                    header.ReqType != "F" && FieldIsNeededOrOptional(header.StoresFunction.ToLocationRequired));
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
@@ -555,7 +555,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckMoves(
                         line.PartNumber,
                         movesToAdd,
-                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
+                        current.ReqType != "F" && FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
@@ -566,7 +566,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckMoves(
                         line.PartNumber,
                         line.Moves.ToList(),
-                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
+                        current.ReqType != "F" && FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -670,12 +670,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 foreach (var candidate in lines)
                 {
-                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction));
+                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction, req.ReqType));
                 }
             }
             else if (firstLine != null)
             {
-                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction));
+                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction, req.ReqType));
             }
 
             // move below to its own function?
@@ -831,7 +831,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task<RequisitionLine> ValidateLineCandidate(
             LineCandidate candidate,
-            StoresFunction storesFunction = null)
+            StoresFunction storesFunction = null,
+            string reqType = null)
         {
             var part = !string.IsNullOrEmpty(candidate?.PartNumber)
                 ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
@@ -855,7 +856,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckMoves(
                     candidate.PartNumber,
                     candidate.Moves.ToList(),
-                    FieldIsNeededOrOptional(storesFunction?.ToLocationRequired));
+                    reqType != "F" && FieldIsNeededOrOptional(storesFunction?.ToLocationRequired));
             }
 
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
