@@ -42,7 +42,10 @@ function BookInPostingsDialog({
     const [departmentSearchTerm, setDepartmentSearchTerm] = useState('');
     const [nominalSearchTerm, setNominalSearchTerm] = useState('');
     const [existingBookIns, setExistingBookIns] = useState([]);
-    const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = useState({
+        type: 'include',
+        ids: new Set([])
+    });
 
     const apiRef = useGridApiRef();
 
@@ -162,8 +165,8 @@ function BookInPostingsDialog({
     };
 
     const reverseBookIn = () => {
-        if (rowSelectionModel?.length === 1) {
-            const selectedIndex = rowSelectionModel[0];
+        if (rowSelectionModel?.ids.size === 1) {
+            const selectedIndex = rowSelectionModel.ids.values().next().value;
             const id = (bookInOrderDetails.length ?? 0) + 1;
             const bookInToBeReversed = existingBookIns.find(a => a.id == selectedIndex);
             const newBookInOrderDetail = {
@@ -177,7 +180,8 @@ function BookInPostingsDialog({
                 departmentDescription: null,
                 nominalCode: bookInToBeReversed.nominalCode,
                 nominalDescription: null,
-                isReverse
+                isReverse,
+                originalReqNumber: bookInToBeReversed.reqNumber
             };
 
             const bookInOrderDetailsToUpdate = [...bookInOrderDetails, newBookInOrderDetail];
@@ -600,7 +604,8 @@ function BookInPostingsDialog({
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
             <DialogTitle>
-                Book In Details for {documentType} {documentNumber} / {documentLine}
+                Book In Details for {documentType} {documentNumber} / {documentLine}{' '}
+                {isReverse === 'Y' ? '[REVERSE]' : ''}
             </DialogTitle>
             <DialogContent>
                 {bookInOrderDetailsColumns
@@ -723,7 +728,7 @@ function BookInPostingsDialog({
                     <Grid size={2} />
                     <Grid size={2}>
                         <Button
-                            disabled={isReverse === 'N' || !rowSelectionModel?.length > 0}
+                            disabled={isReverse === 'N' || !rowSelectionModel?.ids.size > 0}
                             onClick={reverseBookIn}
                         >
                             Reverse Selected

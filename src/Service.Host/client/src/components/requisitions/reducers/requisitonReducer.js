@@ -207,11 +207,20 @@ function reducer(state, action) {
             }
         }
         case 'set_book_in_postings': {
+            let originalReqNumber = null;
+            if (
+                action.payload.bookInOrderDetails?.length === 1 &&
+                action.payload.bookInOrderDetails[0].isReverse === 'Y'
+            ) {
+                originalReqNumber = action.payload.bookInOrderDetails[0].originalReqNumber;
+            }
+
             return {
                 ...state,
                 req: {
                     ...state.req,
                     quantity: action.payload.quantityBooked,
+                    originalReqNumber,
                     bookInOrderDetails: action.payload.bookInOrderDetails
                 }
             };

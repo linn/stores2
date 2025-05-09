@@ -438,7 +438,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             catch (DomainException e)
             {
                 // cancel the req so it doesn't hang around unbooked and mess up validation
-                header.Cancel(e.Message, header.CreatedBy);
+                var savedReq = await this.repository.FindByIdAsync(header.ReqNumber);
+                savedReq.Cancel(e.Message, header.CreatedBy);
+                if (savedReq.Lines?.Count > 0)
+                {
+                    foreach (var requisitionLine in savedReq.Lines)
+                    {
+                        requisitionLine.Cancel(header.CreatedBy.Id, e.Message, DateTime.Now);
+                    }
+                }
+
                 await this.transactionManager.CommitAsync();
 
                 throw;
@@ -772,8 +781,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException("An original req number must be supplied for a reverse");
                 }
 
-                DoProcessResultCheck(
-                    await this.storesService.ValidReverseQuantity(req.OriginalReqNumber.Value, req.Quantity.Value));
+                if (req.OriginalReqNumber.HasValue)
+                {
+                    DoProcessResultCheck(
+                        await this.storesService.ValidReverseQuantity(req.OriginalReqNumber.Value, req.Quantity.Value));
+                }
             }
 
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C" && function.LinesRequired != "N")
