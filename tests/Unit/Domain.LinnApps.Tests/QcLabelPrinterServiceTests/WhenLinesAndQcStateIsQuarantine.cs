@@ -109,12 +109,14 @@
         [Test]
         public void ShouldPrintLabels()
         {
+            var today = DateTime.Today.ToString("MMMddyyyy").ToUpper();
+
             this.LabelPrinter.Received().PrintLabelsAsync(
                 $"QC {request.OrderNumber}-1",
                 this.specifiedPrinterLabelType.DefaultPrinter,
                 this.request.Qty,
                 this.defaultQcLabelType.FileName,
-                "\"PO12345\",\"PART\",\"A PART\",\"REF\",\"MAY082025\",\"ONES\",\"ME\",\"MAY082025\",\"NO QC INFO\",\"666\",\"HELL INC.\",\"1\",\"0\",\"1\",\"1\",\"QUARANTINE\",\"DATE TESTED\",\"54321\"\n");
+                $"\"PO12345\",\"PART\",\"A PART\",\"REF\",\"{today}\",\"ONES\",\"ME\",\"{today}\",\"NO QC INFO\",\"666\",\"HELL INC.\",\"1\",\"0\",\"1\",\"1\",\"QUARANTINE\",\"DATE TESTED\",\"54321\"\n");
         }
 
         [Test]

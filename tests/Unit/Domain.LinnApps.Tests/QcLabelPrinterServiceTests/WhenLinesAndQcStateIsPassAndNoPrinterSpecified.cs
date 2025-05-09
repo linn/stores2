@@ -107,12 +107,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
         [Test]
         public void ShouldPrintLabels()
         {
+            var today = DateTime.Today.ToString("MMMddyyyy").ToUpper();
+
             this.LabelPrinter.Received().PrintLabelsAsync(
                 $"QC {request.OrderNumber}-1",
                 this.defaultQcLabelType.DefaultPrinter,
                 this.request.Qty,
                 this.defaultQcLabelType.FileName,
-                "\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"MAY082025\",\"**ROHS Compliant**\"\n");
+                $"\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"{today}\",\"**ROHS Compliant**\"\n");
         }
 
         [Test]
