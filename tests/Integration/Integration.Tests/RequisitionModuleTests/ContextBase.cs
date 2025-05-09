@@ -6,6 +6,7 @@
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -35,7 +36,9 @@
         protected IAuthorisationService AuthorisationService { get; private set; }
 
         protected IRepository<RequisitionHistory, int> RequisitionHistoryRepository { get; private set; }
-
+        
+        protected IQcLabelPrinterService QcLabelPrinterService { get; private set; }
+        
         protected IQueryRepository<SundryBookInDetail> SundryBookInDetailRepository { get; private set; }
 
         [SetUp]
@@ -68,11 +71,15 @@
                 this.SundryBookInDetailRepository,
                 new SundryBookInDetailResourceBuilder());
 
+            this.QcLabelPrinterService = Substitute.For<IQcLabelPrinterService>();
+            IRequisitionLabelsFacadeService requisitionLabelsFacadeService = new RequisitionLabelsFacadeService(this.QcLabelPrinterService);
+
             this.Client = TestClient.With<RequisitionModule>(
                 services =>
                     {
                         services.AddSingleton(requisitionFacadeService);
                         services.AddSingleton(functionCodeService);
+                        services.AddSingleton(requisitionLabelsFacadeService);
                         services.AddSingleton(sundryBookInDetailFacadeService);
                         services.AddHandlers();
                         services.AddRouting();

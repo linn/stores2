@@ -5,12 +5,12 @@ import Grid from '@mui/material/Grid';
 import { DataGrid } from '@mui/x-data-grid';
 import { Loading, ErrorCard, SnackbarMessage } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
 import useGet from '../hooks/useGet';
+import Page from './Page';
 
 function StorageTypes() {
     const [creating, setCreating] = useState(false);
@@ -138,7 +138,11 @@ function StorageTypes() {
                         columns={StorageTypeColumns}
                         rowHeight={34}
                         loading={false}
-                        rowSelectionModel={[rowUpdated]}
+                        rowSelectionModel={
+                            rowUpdated
+                                ? { type: 'include', ids: new Set([rowUpdated]) }
+                                : { type: 'include', ids: new Set() }
+                        }
                         hideFooter
                         isCellEditable={params => {
                             if (params.field === 'storageTypeCode' && params.row.creating) {

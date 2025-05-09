@@ -31,7 +31,8 @@ const itemTypes = {
     purchaseOrder: { url: `${config.proxyRoot}/purchasing/purchase-orders` },
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
     worksOrder: { url: `${config.proxyRoot}/production/works-orders` },
-    debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` }
+    debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
+    printQcLabels: { url: `${config.appRoot}/requisitions/print-qc-labels` }
 };
 
 export default itemTypes;

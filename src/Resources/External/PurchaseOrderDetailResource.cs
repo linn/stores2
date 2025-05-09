@@ -9,5 +9,7 @@
         public decimal OurQty { get; set; }
 
         public int? OriginalOrderNumber { get; set; }
+
+        public string RohsCompliant { get; set; }
     }
 }
