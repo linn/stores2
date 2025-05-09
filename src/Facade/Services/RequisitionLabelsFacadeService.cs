@@ -28,7 +28,7 @@ namespace Linn.Stores2.Facade.Services
                 OrderNumber = request.OrderNumber,
                 NumberOfLines = request.NumberOfLines,
                 QcState = request.QcState,
-                ReqNumber = 0,
+                ReqNumber = request.ReqNumber,
                 KardexLocation = request.KardexLocation,
                 Lines = request.Lines?.Select((l, i) => new LabelLine(l, i)),
                 PrinterName = request.PrinterName

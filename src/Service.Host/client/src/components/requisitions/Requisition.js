@@ -643,7 +643,15 @@ function Requisition({ creating }) {
                                             book(null, { reqNumber });
                                         }}
                                     />
-                                    <Grid size={2} />
+                                    <Grid size={2}>
+                                        {printQcLabelsHref && (
+                                            <Link to={printQcLabelsHref}>
+                                                <Typography variant="subtitle2">
+                                                    Print Labels
+                                                </Typography>
+                                            </Link>
+                                        )}
+                                    </Grid>
                                 </>
                             )}
 
@@ -821,11 +829,7 @@ function Requisition({ creating }) {
                                     </Button>
                                 )}
                             </Grid>
-                            <Grid size={2}>
-                                {printQcLabelsHref && (
-                                    <Link to={printQcLabelsHref}>PrintLabels</Link>
-                                )}
-                            </Grid>
+                            <Grid size={2} />
                             <DepartmentNominal
                                 departmentCode={formState.req.department?.departmentCode}
                                 departmentDescription={formState.req.department?.description}

@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Labels
+﻿using System.Collections.Generic;
+
+namespace Linn.Stores2.Domain.LinnApps.Labels
 {
     using System;
     using System.Linq;

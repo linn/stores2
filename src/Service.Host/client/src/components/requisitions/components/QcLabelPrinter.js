@@ -3,10 +3,15 @@ import Grid from '@mui/material/Grid';
 import Expand from '@mui/icons-material/Expand';
 import Typography from '@mui/material/Typography';
 import Tooltip from '@mui/material/Tooltip';
-import { ErrorCard, InputField, Loading } from '@linn-it/linn-form-components-library';
+import {
+    ErrorCard,
+    InputField,
+    Loading,
+    SnackbarMessage
+} from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
-
+import { Link } from 'react-router';
 import { divide } from '../../../helpers/numberUtilities';
 import itemTypes from '../../../itemTypes';
 import usePost from '../../../hooks/usePost';
@@ -21,10 +26,11 @@ function QcLabelPrintScreen({
     unitOfMeasure,
     reqNumber,
     qcInfo,
-    kardexLocation,
     initialNumContainers
 }) {
     const [deliveryRef, setDeliveryRef] = useState('');
+    const [kardexLocation, setKardexLocation] = useState('');
+
     const [numContainers, setNumContainers] = useState(initialNumContainers);
     const [labelLines, setLabelLines] = useState([
         {
@@ -64,10 +70,10 @@ function QcLabelPrintScreen({
 
     const {
         send: printLabels,
-        loading: printLabelsLoading,
+        isLoading: printLabelsLoading,
         postResult: printLabelsResult,
         clearPostResult: clearResult
-    } = usePost(itemTypes.printQcLabels.url);
+    } = usePost(itemTypes.printQcLabels.url, true);
 
     const printButton = () => (
         <Button
@@ -76,20 +82,20 @@ function QcLabelPrintScreen({
             disabled={qtiesInvalid()}
             onClick={() => {
                 clearResult();
-                printLabels({
+                printLabels(null, {
                     docType,
                     kardexLocation,
                     partNumber,
                     partDescription,
                     deliveryRef,
                     qcInfo,
-                    qtyReceived,
+                    qty: qtyReceived,
                     orderNumber,
                     numContainers,
                     numberOfLines: numContainers,
                     qcState: qcState,
                     reqNumber,
-                    labelLines,
+                    lines: labelLines.map(x => x.qty),
                     printerName
                 });
             }}
@@ -100,10 +106,24 @@ function QcLabelPrintScreen({
 
     return (
         <Grid container spacing={3}>
-            <Grid size={12}>
+            <Grid size={10}>
                 <Typography variant="h5" gutterBottom>
                     Label Details
                 </Typography>
+            </Grid>
+            <Grid size={2}>
+                <Link to={`/requisitions/${reqNumber}`}>
+                    <Typography variant="subtitle2">Back to req {reqNumber}</Typography>
+                </Link>
+            </Grid>
+            <Grid size={12}>
+                <SnackbarMessage
+                    visible={printLabelsResult?.success}
+                    onClose={() => {
+                        clearResult();
+                    }}
+                    message="Printing..."
+                />
             </Grid>
             <Grid item size={3}>
                 <InputField
@@ -205,9 +225,10 @@ function QcLabelPrintScreen({
             <Grid item size={3}>
                 <InputField
                     fullWidth
-                    disabled
+                    onChange={(_, newValue) => setKardexLocation(newValue)}
                     value={kardexLocation}
                     label="Kardex Location"
+                    helperText="Optional - provide a value to print kardex labels"
                     propertyName="kardexLocation"
                 />
             </Grid>

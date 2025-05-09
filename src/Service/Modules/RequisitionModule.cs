@@ -195,9 +195,11 @@
 
         private async Task PrintQcLabels(
             HttpResponse res, 
+            HttpRequest req,
             IRequisitionLabelsFacadeService service,
             QcLabelPrintRequestResource resource)
         {
+            resource.UserNumber = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(await service.PrintQcLables(resource));
         }
     }
