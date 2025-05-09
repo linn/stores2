@@ -12,13 +12,14 @@ import {
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import moment from 'moment';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
 import useGet from '../hooks/useGet';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
+import useSearch from '../hooks/useSearch';
 import Page from './Page';
 
 function Workstation({ creating }) {
@@ -51,6 +52,13 @@ function Workstation({ creating }) {
         getWorkStationLoading,
         result: getWorkStationResult
     } = useGet(itemTypes.workStations.url);
+
+    const {
+        search: searchEmployees,
+        results: employeesSearchResults,
+        loading: employeesSearchLoading,
+        clear: clearEmployeesSearch
+    } = useSearch(itemTypes.historicEmployees.url, 'id', 'fullName', 'fullName', false, true);
 
     const [hasFetched, setHasFetched] = useState(false);
 
@@ -121,25 +129,59 @@ function Workstation({ creating }) {
             )
         }));
 
+        console.log(workStation);
+
         setRowUpdated(newRow.workStationElementId);
         setChangesMade(true);
 
         return newRow;
     };
 
+    const [searchDialogOpen, setSearchDialogOpen] = useState({
+        forRow: null,
+        forColumn: null
+    });
+    const searchRenderCell = params => (
+        <>
+            <GridSearchIcon
+                style={{ cursor: 'pointer' }}
+                onClick={() =>
+                    setSearchDialogOpen({
+                        forRow: params.id,
+                        forColumn: params.field
+                    })
+                }
+            />
+            {params.value}
+        </>
+    );
+
     const workStationElementColumns = [
         {
             field: 'dateCreated',
             headerName: 'Date Created',
+            type: 'date',
             width: 200,
-            valueFormatter: params => moment(params?.value).format('DD/MM/YYYY'),
-            editable: true
+            editable: true,
+            valueGetter: params =>
+                params.row?.dateCreated ? new Date(params.row?.dateCreated) : null,
+            valueFormatter: params => moment(params?.value).format('DD/MM/YYYY')
         },
         {
             field: 'createdBy',
             headerName: 'Added By',
             width: 200,
-            editable: true
+            editable: true,
+            type: 'search',
+            search: searchEmployees,
+            searchResults: employeesSearchResults,
+            searchLoading: employeesSearchLoading,
+            searchUpdateFieldNames: [
+                { fieldName: 'createdBy', searchResultFieldName: 'id' },
+                { fieldName: 'createdByName', searchResultFieldName: 'fullName' }
+            ],
+            clearSearch: clearEmployeesSearch,
+            renderCell: searchRenderCell
         },
         {
             field: 'createdByName',
