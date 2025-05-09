@@ -228,7 +228,7 @@ function QcLabelPrintScreen({
                     onChange={(_, newValue) => setKardexLocation(newValue)}
                     value={kardexLocation}
                     label="Kardex Location"
-                    helperText="Optional - provide a value to print kardex labels"
+                    helperText="Optional - you can provide a value to print kardex labels"
                     propertyName="kardexLocation"
                 />
             </Grid>
