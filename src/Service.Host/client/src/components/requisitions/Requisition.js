@@ -158,6 +158,7 @@ function Requisition({ creating }) {
     const reverseHref = utilities.getHref(formState.req, 'create-reverse');
     const createHref = utilities.getHref(formState.req, 'create');
     const printQcLabelsHref = utilities.getHref(formState.req, 'print-qc-labels');
+    const deliveryNoteHref = utilities.getHref(formState.req, 'delivery-note');
 
     useEffect(
         () => () => {
@@ -648,6 +649,13 @@ function Requisition({ creating }) {
                                             <Link to={printQcLabelsHref}>
                                                 <Typography variant="subtitle2">
                                                     Print Labels
+                                                </Typography>
+                                            </Link>
+                                        )}
+                                        {deliveryNoteHref && (
+                                            <Link to={deliveryNoteHref}>
+                                                <Typography variant="subtitle2">
+                                                    Print Delivery Note
                                                 </Typography>
                                             </Link>
                                         )}

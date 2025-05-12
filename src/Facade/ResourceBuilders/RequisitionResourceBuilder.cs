@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+﻿using System.Net.Mail;
+
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -167,6 +169,11 @@
                     href += $"&unitOfMeasure={model.Lines?.First().Part?.OurUnitOfMeasure}";
                     href += $"&qcInfo={model.Lines?.First().Part?.QcInformation}";
                     yield return new LinkResource { Rel = "print-qc-labels", Href = href};
+                }
+
+                if (model.HasDeliveryNote())
+                {
+                    yield return new LinkResource { Rel = "delivery-note", Href = $"{this.GetLocation(model)}/delivery-note" };
                 }
             }
         }
