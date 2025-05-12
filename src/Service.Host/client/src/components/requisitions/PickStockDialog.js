@@ -20,7 +20,7 @@ function PickStockDialog({
     quantity,
     state,
     stockPool,
-    getBatches = false,
+    selectSingleBatch = false,
     batchRef = null
 }) {
     const [snackbar, setSnackbar] = useState(null);
@@ -36,10 +36,10 @@ function PickStockDialog({
         if (open && partNumber) {
             send(
                 null,
-                `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${stockPool ? `&stockPoolCode=${stockPool}` : ''}${getBatches ? '&queryBatchView=true' : ''}`
+                `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${stockPool ? `&stockPoolCode=${stockPool}` : ''}${selectSingleBatch ? '&queryBatchView=true' : ''}`
             );
         }
-    }, [partNumber, send, getBatches, state, open, stockPool]);
+    }, [partNumber, send, selectSingleBatch, state, open, stockPool]);
 
     const [moves, setMoves] = useState([]);
 
@@ -198,20 +198,22 @@ function PickStockDialog({
 
     const handleRowSelection = rowSelectionModel => {
         setRowSelectionModel(rowSelectionModel);
-        let quantityLeft = quantity ? quantity : 99999999999999;
-        moves.forEach((m, i) => {
-            if (rowSelectionModel?.ids.has(i)) {
-                let pickQty = m.quantity - m.quantityAllocated;
-                if (pickQty > quantityLeft) {
-                    pickQty = quantityLeft;
-                }
+        if (selectSingleBatch) {
+            let quantityLeft = quantity ? quantity : 99999999999999;
+            moves.forEach((m, i) => {
+                if (rowSelectionModel?.ids.has(i)) {
+                    let pickQty = m.quantity - m.quantityAllocated;
+                    if (pickQty > quantityLeft) {
+                        pickQty = quantityLeft;
+                    }
 
-                quantityLeft = quantityLeft - pickQty;
-                m.quantityToPick = pickQty;
-            } else {
-                m.quantityToPick = 0;
-            }
-        });
+                    quantityLeft = quantityLeft - pickQty;
+                    m.quantityToPick = pickQty;
+                } else {
+                    m.quantityToPick = 0;
+                }
+            });
+        }
     };
 
     const checkRowSelect = params => {
@@ -265,13 +267,13 @@ function PickStockDialog({
                     }}
                     isRowSelectable={checkRowSelect}
                     loading={isLoading}
-                    checkboxSelection={getBatches}
+                    checkboxSelection={selectSingleBatch}
                     initialState={{
                         columns: {
                             columnVisibilityModel: {
                                 partUnitOfMeasure: false,
-                                batchRef: getBatches,
-                                stockRotationDate: getBatches
+                                batchRef: selectSingleBatch,
+                                stockRotationDate: selectSingleBatch
                             }
                         }
                     }}
