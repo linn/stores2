@@ -71,7 +71,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
             int? originalDocumentNumber = null,
-            IEnumerable<BookInOrderDetail> bookInOrderDetails = null);
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
+            DateTime? dateReceived = null);
 
         Task<RequisitionLine> ValidateLineCandidate(
             LineCandidate candidate, 

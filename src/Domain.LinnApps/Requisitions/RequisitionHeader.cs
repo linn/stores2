@@ -110,6 +110,8 @@
 
         public int? Document3 { get; set; }
 
+        public DateTime? DateReceived { get; set; }
+
         protected RequisitionHeader()
         {
         }
@@ -142,7 +144,8 @@
             int? document2Number = null,
             string document2Type = null,
             string isReverseTrans = "N",
-            int? originalReqNumber = null)
+            int? originalReqNumber = null,
+            DateTime? dateReceived = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -178,6 +181,7 @@
             this.OriginalReqNumber = originalReqNumber;
             this.IsReverseTransaction = isReverseTrans;
             this.IsReversed = "N";
+            this.DateReceived = dateReceived;
             this.Lines = new List<RequisitionLine>();
 
             var errors = this.Validate().ToList();

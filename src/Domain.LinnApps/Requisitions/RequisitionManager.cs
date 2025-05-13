@@ -611,7 +611,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
             int? originalDocumentNumber = null,
-            IEnumerable<BookInOrderDetail> bookInOrderDetails = null)
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
+            DateTime? dateReceived = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
@@ -665,7 +666,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 null,
                 null,
                 isReverseTransaction ?? "N",
-                originalDocumentNumber);
+                originalDocumentNumber,
+                dateReceived);
 
             if (functionCode == "LOAN OUT")
             {
@@ -786,6 +788,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     DoProcessResultCheck(
                         await this.storesService.ValidReverseQuantity(req.OriginalReqNumber.Value, req.Quantity.Value));
                 }
+            }
+
+            if (function.ReceiptDateRequired == "Y" && !req.DateReceived.HasValue)
+            {
+                throw new RequisitionException($"A receipt date is required for function {function.FunctionCode}.");
             }
 
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C" && function.LinesRequired != "N")

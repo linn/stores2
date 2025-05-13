@@ -141,6 +141,8 @@
                 ProcessStage = 2,
                 ToStateRequired = "O",
                 CanBeReversed = "Y",
+                ReceiptDateRequired = "Y",
+                DepartmentNominalRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
