@@ -46,6 +46,9 @@
             bool? pending,
             string documentName,
             int? documentNumber,
+            bool? excludeReversals,
+            bool? bookedOnly,
+            string functionCode,
             IRequisitionFacadeService service)
         {
             if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && string.IsNullOrWhiteSpace(documentName) && pending != true)
@@ -62,7 +65,10 @@
                         IncludeCancelled = includeCancelled.GetValueOrDefault(),
                         Pending = pending.GetValueOrDefault(),
                         DocumentName = documentName,
-                        DocumentNumber = documentNumber
+                        DocumentNumber = documentNumber,
+                        ExcludeReversals = excludeReversals,
+                        BookedOnly = bookedOnly,
+                        FunctionCode = functionCode
                     });
                 await res.Negotiate(requisitions);
             }

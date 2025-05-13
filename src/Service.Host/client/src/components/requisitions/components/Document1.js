@@ -57,7 +57,6 @@ function Document1({
     useEffect(() => {
         if (purchaseOrder) {
             const docType = purchaseOrder.documentType.name;
-
             if (storesFunction?.code === 'RETSU') {
                 const debitNote = toIntId(
                     utilities.getHref(purchaseOrder, 'ret-credit-debit-note')
@@ -91,7 +90,8 @@ function Document1({
                             ? `S-SU-${purchaseOrder.supplier.id}`
                             : null,
                     docType,
-                    orderDetail: purchaseOrder.details[0]
+                    orderDetail: purchaseOrder.details[0],
+                    canReverse: 'Y'
                 });
             }
 

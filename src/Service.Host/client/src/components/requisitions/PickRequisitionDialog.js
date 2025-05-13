@@ -31,7 +31,7 @@ function PickRequisitionDialog({ open, setOpen, handleSelect, documentType, docu
         if (open && documentType && documentNumber) {
             searchReqs(
                 null,
-                `?documentName=${documentType}&documentNumber=${documentNumber}&includeCancelled=false`
+                `?documentName=${documentType}&documentNumber=${documentNumber}&includeCancelled=False&bookedOnly=True&functionCode=GIST PO&excludeReversals=True`
             );
         }
     }, [documentNumber, documentType, open, searchReqs]);
