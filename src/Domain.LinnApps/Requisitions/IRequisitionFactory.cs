@@ -39,6 +39,7 @@
             string isReverseTransaction = "N",
             int? originalReqNumber = null,
             int? document3Number = null,
-            IEnumerable<BookInOrderDetail> bookInOrderDetails = null);
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
+            DateTime? dateReceived = null);
     }
 }

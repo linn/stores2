@@ -166,7 +166,8 @@
                     resource.Lines?.Select(BuildLineCandidateFromResource),
                     resource.IsReverseTransaction,
                     resource.OriginalReqNumber,
-                    resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource));
+                    resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
+                    string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived));
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }

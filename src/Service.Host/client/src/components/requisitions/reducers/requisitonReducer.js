@@ -23,6 +23,7 @@ function reducer(state, action) {
                 req: {
                     dateCreated: new Date(),
                     dateAuthorised: null,
+                    dateReceived: null,
                     dateBooked: null,
                     lines: [],
                     cancelled: 'N',
