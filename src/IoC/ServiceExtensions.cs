@@ -68,7 +68,6 @@
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
                 .AddScoped<ISalesProxy, SalesProxy>()
                 .AddScoped<IBomVerificationProxy, BomVerificationProxy>()
-                .AddScoped<GistPoCreationStrategy>()
                 .AddScoped<SuReqCreationStrategy>()
                 .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>();
         }

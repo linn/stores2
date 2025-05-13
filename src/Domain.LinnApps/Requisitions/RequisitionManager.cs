@@ -800,7 +800,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A quantity must be entered");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromLocationRequired) && req.FromLocation == null
+                if (isReverseTransaction != "Y" && FieldIsNeededOrOptional(req.StoresFunction.FromLocationRequired) && req.FromLocation == null
                     && req.FromPalletNumber == null)
                 {
                     throw new RequisitionException("A from location or pallet is required");
@@ -818,7 +818,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A from state is required");
                 }
 
-                if (FieldIsNeededOrOptional(req.StoresFunction.ToLocationRequired) && req.ToLocation == null
+                if (isReverseTransaction != "Y" 
+                    && FieldIsNeededOrOptional(req.StoresFunction.ToLocationRequired) && req.ToLocation == null
                     && req.ToPalletNumber == null)
                 {
                     throw new RequisitionException("A to location or pallet is required");

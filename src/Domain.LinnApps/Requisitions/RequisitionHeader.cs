@@ -281,7 +281,7 @@
                 yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
 
-            if (!string.IsNullOrEmpty(this.FromState))
+            if (!string.IsNullOrEmpty(this.FromState) && !this.IsReverseTrans())
             {
                 var validFromStates = this.StoresFunction.GetTransactionStates("F");
                 if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?

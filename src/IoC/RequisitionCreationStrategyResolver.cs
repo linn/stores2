@@ -35,7 +35,7 @@
 
             if (context.Function.FunctionCode == "GIST PO")
             {
-                return this.serviceProvider.GetRequiredService<GistPoCreationStrategy>();
+                return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }
 
             if (context.Function.FunctionCode == "SUREQ")
