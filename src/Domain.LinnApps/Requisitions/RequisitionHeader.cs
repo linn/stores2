@@ -192,6 +192,18 @@
                 throw new CreateRequisitionException(
                     $"Validation failed with the following errors: {string.Join(", ", errors)}");
             }
+
+            // not too sure about this, so just for now:
+            if (function.FunctionCode == "GIST PO")
+            {
+                this.FromCategory = function.FromCategory;
+                this.ToCategory = "FREE";
+
+                if (isReverseTrans == "Y")
+                {
+                    this.BatchRef = null; // todo - test
+                }
+            }
         }
 
         private IEnumerable<string> Validate()

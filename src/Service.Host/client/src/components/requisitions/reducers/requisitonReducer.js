@@ -198,7 +198,15 @@ function reducer(state, action) {
                             action.payload.storesFunction?.fromStockPoolRequired !== 'N'
                                 ? action.payload.fromStockPool
                                 : state.req.fromStockPool,
-                        toStockPool: action.payload.toStockPool
+                        toStockPool: action.payload.toStockPool,
+                        batchRef:
+                            action.payload.functionCode === 'LOAN BACK'
+                                ? `Q${action.payload.reqNumber}`
+                                : state.req.batchRef,
+                        batchDate:
+                            action.payload.functionCode === 'LOAN BACK'
+                                ? action.payload.dateBooked
+                                : state.req.batchDate
                     }
                 };
             } else {
