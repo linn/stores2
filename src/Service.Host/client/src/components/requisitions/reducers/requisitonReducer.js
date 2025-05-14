@@ -208,9 +208,9 @@ function reducer(state, action) {
                             action.payload.functionCode === 'LOAN BACK'
                                 ? action.payload.dateBooked
                                 : state.req.batchDate,
-                        fromLocationId: action.payload.locationId,
-                        fromLocationCode: action.payload.locationName,
-                        fromPalletNumber: action.payload.palletNumber
+                        fromLocationId: action.payload.fromLocationId,
+                        fromLocationCode: action.payload.fromLocationCode,
+                        fromPalletNumber: action.payload.fromPalletNumber
                     }
                 };
             } else {

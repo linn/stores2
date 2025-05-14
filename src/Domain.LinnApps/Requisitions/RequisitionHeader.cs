@@ -141,8 +141,8 @@
             string category = null,
             int? document2Number = null,
             string document2Type = null,
-            string isReverseTrans = "N", // should be redundant once we create a reversal specific factory method
-            int? originalReqNumber = null) // as above
+            string isReverseTrans = "N",
+            int? originalReqNumber = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -192,12 +192,16 @@
                 throw new CreateRequisitionException(
                     $"Validation failed with the following errors: {string.Join(", ", errors)}");
             }
-
-            // not too sure about this, so just for now:
+            
             if (function.FunctionCode == "GIST PO")
             {
                 this.FromCategory = function.FromCategory;
                 this.ToCategory = "FREE";
+
+                if (isReverseTrans == "Y")
+                {
+                    this.BatchRef = null; // todo - test
+                }
             }
         }
 
