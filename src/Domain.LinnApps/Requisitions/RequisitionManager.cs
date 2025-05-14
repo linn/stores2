@@ -16,6 +16,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
 
+    using Org.BouncyCastle.Asn1.X509.Qualified;
+
     public class RequisitionManager : IRequisitionManager
     {
         private readonly IAuthorisationService authService;
@@ -745,6 +747,21 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     if (part.StockControlled != "Y")
                     {
                         throw new CreateRequisitionException($"{function.FunctionCode} requires part to be stock controlled and {part.PartNumber} is not.");
+                    }
+
+                    if (!req.IsReverseTrans())
+                    {
+                        if (req.Quantity < 0)
+                        {
+                            throw new CreateRequisitionException($"Cannot book a negative quantity against order {document1Number}.");
+                        }
+
+                        var qtyLeft = po.Details.First(a => a.Line == req.Document1Line).Deliveries
+                            .Sum(a => a.QuantityOutstanding);
+                        if (qtyLeft < req.Quantity)
+                        {
+                            throw new CreateRequisitionException($"The qty remaining on order {document1Number}/{document1Line} is {qtyLeft}. Cannot book {req.Quantity}.");
+                        }
                     }
                 }
             }

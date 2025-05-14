@@ -39,7 +39,15 @@
                                       {
                                           new PurchaseOrderDetailResult
                                               {
-                                                  PartNumber = "PART"
+                                                  PartNumber = "PART",
+                                                  Line = 1,
+                                                  Deliveries = new List<PurchaseOrderDeliveryResult>
+                                                                   {
+                                                                       new PurchaseOrderDeliveryResult
+                                                                           {
+                                                                               QuantityOutstanding = 2
+                                                                           }
+                                                                   }
                                               }
                                       }
                     });
@@ -59,6 +67,7 @@
                                     null,
                                     null,
                                     partNumber: "PART",
+                                    document1Line: 1,
                                     quantity: 1,
                                     toState: "STORES",
                                     dateReceived: null);

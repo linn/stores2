@@ -106,7 +106,17 @@
                                OurQty = d.OurQty,
                                PartNumber = d.PartNumber,
                                OriginalOrderNumber = d.OriginalOrderNumber,
-                               RohsCompliant = d.RohsCompliant
+                               RohsCompliant = d.RohsCompliant,
+                               Deliveries = d.PurchaseDeliveries.Select(a => new PurchaseOrderDeliveryResult
+                                                                                 {
+                                                                                     OrderNumber = a.OrderNumber,
+                                                                                     OrderLine = a.OrderLine,
+                                                                                     DeliverySequence = a.DeliverySequence,
+                                                                                     OurQuantity = a.OurQty,
+                                                                                     QuantityOutstanding = a.QtyOutstanding,
+                                                                                     QuantityReceived = a.QtyReceived,
+                                                                                     QuantityPassedForPayment = a.QtyPassedForPayment
+                                                                                 })
                            })
                        };
         }

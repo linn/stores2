@@ -1,26 +1,26 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
-    using FluentAssertions.Extensions;
 
     using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
 
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingBookSu : ContextBase
+    public class WhenValidatingBookSuAndNotEnoughRemaining : ContextBase
     {
-        private RequisitionHeader result;
+        private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.EmployeeRepository.FindByIdAsync(123).Returns(new Employee { Id = 123 });
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.BookFromSupplier.FunctionCode)
@@ -57,32 +57,27 @@
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
 
-            this.result = await this.Sut.Validate(
-                123,
-                TestFunctionCodes.BookFromSupplier.FunctionCode,
-                null,
-                1234,
-                "PO",
-                null,
-                null,
-                null,
-                partNumber: "PART",
-                quantity: 1,
-                document1Line: 1,
-                toState: "STORES",
-                dateReceived: 1.May(2029));
+            this.action = () => this.Sut.Validate(
+                                    123,
+                                    TestFunctionCodes.BookFromSupplier.FunctionCode,
+                                    null,
+                                    1234,
+                                    "PO",
+                                    null,
+                                    null,
+                                    null,
+                                    partNumber: "PART",
+                                    document1Line: 1,
+                                    quantity: 3,
+                                    toState: "STORES",
+                                    dateReceived: null);
         }
 
         [Test]
-        public void ShouldGetOrder()
+        public async Task ShouldThrowCorrectException()
         {
-            this.DocumentProxy.Received().GetPurchaseOrder(1234);
-        }
-
-        [Test]
-        public void ShouldReturnValidated()
-        {
-            this.result.Should().NotBeNull();
+            await this.action.Should().ThrowAsync<CreateRequisitionException>()
+                .WithMessage("The qty remaining on order 1234/1 is 2. Cannot book 3.");
         }
     }
 }
