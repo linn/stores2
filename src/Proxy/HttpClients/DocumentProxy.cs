@@ -111,10 +111,10 @@
                                                                                  {
                                                                                      OrderNumber = a.OrderNumber,
                                                                                      OrderLine = a.OrderLine,
-                                                                                     DeliverySequence = a.DeliverySequence,
-                                                                                     OurQuantity = a.OurQty,
-                                                                                     QuantityOutstanding = a.QtyOutstanding,
-                                                                                     QuantityReceived = a.QtyReceived,
+                                                                                     DeliverySequence = a.DeliverySeq,
+                                                                                     OurQuantity = a.OurDeliveryQty,
+                                                                                     QuantityOutstanding = a.QuantityOutstanding,
+                                                                                     QuantityReceived = a.QtyNetReceived,
                                                                                      QuantityPassedForPayment = a.QtyPassedForPayment
                                                                                  })
                            })

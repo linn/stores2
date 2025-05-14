@@ -6,13 +6,13 @@
 
         public int OrderLine { get; set; }
 
-        public int DeliverySequence { get; set; }
+        public int DeliverySeq { get; set; }
 
-        public decimal OurQty { get; set; }
+        public decimal OurDeliveryQty { get; set; }
 
-        public decimal QtyOutstanding { get; set; }
+        public decimal QuantityOutstanding { get; set; }
         
-        public decimal QtyReceived { get; set; }
+        public decimal QtyNetReceived { get; set; }
         
         public decimal QtyPassedForPayment { get; set; }
     }
