@@ -182,32 +182,19 @@ function reducer(state, action) {
         }
         case 'set_reverse_details': {
             if (action.payload.reqNumber) {
-                // action.payload is the original req (i.e. the one being reversed)
-                // TODO replicate all GET_REQ_FOR_REVERSAL in REQ_UT.fmb functionality
-                // TODO ideally would want the code that generates the reversal to be in domain
+                // action.payload is the filled out reversal req that the server returns
                 return {
                     ...state,
                     req: {
                         ...state.req,
                         originalReqNumber: action.payload.reqNumber,
-                        quantity: action.payload.quantity * -1,
+                        quantity: action.payload.quantity ,
                         reference: action.payload.reference,
-                        fromState: action.payload.fromState
-                            ? action.payload.fromState
-                            : state.req.fromState,
-                        fromStockPool:
-                            action.payload.storesFunction?.fromStockPoolRequired !== 'N'
-                                ? action.payload.fromStockPool
-                                : state.req.fromStockPool,
+                        fromState: action.payload.fromState,
+                        fromStockPool: action.payload.fromStockPool,
                         toStockPool: action.payload.toStockPool,
-                        batchRef:
-                            action.payload.functionCode === 'LOAN BACK'
-                                ? `Q${action.payload.reqNumber}`
-                                : state.req.batchRef,
-                        batchDate:
-                            action.payload.functionCode === 'LOAN BACK'
-                                ? action.payload.dateBooked
-                                : state.req.batchDate,
+                        batchRef: action.payload.batchRef,
+                        batchDate: action.payload.batchDate,
                         fromLocationId: action.payload.fromLocationId,
                         fromLocationCode: action.payload.fromLocationCode,
                         fromPalletNumber: action.payload.fromPalletNumber

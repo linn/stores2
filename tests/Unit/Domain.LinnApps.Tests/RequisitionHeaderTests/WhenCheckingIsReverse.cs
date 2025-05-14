@@ -37,7 +37,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 new Employee(),
                 TestFunctionCodes.ReturnToSupplier,
                 null,
-                12345679,
+                12345678,
                 "RO",
                 null,
                 null,

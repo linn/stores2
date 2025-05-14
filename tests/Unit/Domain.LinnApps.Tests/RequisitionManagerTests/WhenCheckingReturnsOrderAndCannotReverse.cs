@@ -32,8 +32,8 @@
                 null,
                 null,
                 part: part,
-                quantity: 1,
                 toLocation: supplierLoc,
+                quantity: 1,
                 document1Line: 1,
                 fromState: "FAIL");
             var header = new RequisitionHeader(
@@ -45,7 +45,6 @@
                 null,
                 null,
                 part: part,
-                quantity: 1,
                 toLocation: supplierLoc,
                 document1Line: 1,
                 isReverseTrans: "Y",

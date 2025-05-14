@@ -65,7 +65,7 @@
                 new Employee(),
                 TestFunctionCodes.ReturnToSupplier,
                 null,
-                123,
+                894006,
                 "RO",
                 null,
                 null,

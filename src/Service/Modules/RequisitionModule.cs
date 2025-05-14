@@ -35,6 +35,7 @@
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
+            app.MapGet("/requisitions/{reqNumber:int}/preview-reversal", this.GetById);
         }
 
         private async Task Search(
@@ -81,6 +82,15 @@
             IRequisitionFacadeService service)
         {
             await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
+        }
+        
+        private async Task GetReversalPreview(
+            HttpRequest req,
+            HttpResponse res,
+            int reqNumber,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.GetReversalPreview(reqNumber));
         }
 
         private async Task Cancel(

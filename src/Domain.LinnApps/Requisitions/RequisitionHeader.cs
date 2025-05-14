@@ -175,7 +175,40 @@
             this.ReqType = reqType;
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
-            this.OriginalReqNumber = isReversalOf?.ReqNumber;
+            
+            // logic for creating a reversal req
+            // mostly taken from GET_REQ_FOR_REVERSAL in REQ_UT.fmb
+            if (isReversalOf != null)
+            {
+                if (this.Document1Name != isReversalOf.Document1Name)
+                {
+                    throw new RequisitionException("Cannot reverse req with a different document1 type");
+                }
+
+                if (this.Document1 != isReversalOf.Document1)
+                {
+                    throw new RequisitionException("Cannot reverse req with a different document1 number");
+                }
+
+                if (isReversalOf.IsReversed == "Y")
+                {
+                    throw new RequisitionException($"req {isReversalOf.ReqNumber} is already reversed!");
+                }
+                
+                this.OriginalReqNumber = isReversalOf.ReqNumber;
+                this.Quantity = isReversalOf.Quantity * -1;
+                this.Reference = isReversalOf.Reference;
+                this.FromState = isReversalOf.FromState;
+                this.FromStockPool = isReversalOf.FromStockPool;
+                this.ToStockPool = this.StoresFunction.FromStockPoolRequired == "Y" ? isReversalOf.FromStockPool : fromStockPool;
+                this.BatchRef = this.StoresFunction.FunctionCode == "LOAN BACK"
+                    ? $"Q{isReversalOf.ReqNumber}" : batchRef;
+                this.BatchDate = this.StoresFunction.FunctionCode == "LOAN BACK"
+                    ? isReversalOf.DateBooked : batchDate;
+                this.FromLocation = isReversalOf.FromLocation;
+                this.FromPalletNumber = isReversalOf.FromPalletNumber;
+            }
+
             this.IsReverseTransaction = isReverseTrans;
             this.IsReversed = "N";
             this.Lines = new List<RequisitionLine>();

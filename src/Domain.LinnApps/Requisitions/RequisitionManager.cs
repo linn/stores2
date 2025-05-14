@@ -1059,7 +1059,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 var qty = await this.requisitionStoredProcedures.GetQtyReturned(
                               header.Document1.Value,
                               header.Document1Line.Value);
-                if (header.IsReverseTrans() && header.Quantity.Value > qty)
+                
+                if (header.IsReverseTrans() && Math.Abs(header.Quantity.Value) > qty)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
                 }
