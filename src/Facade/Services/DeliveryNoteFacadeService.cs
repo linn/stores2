@@ -17,10 +17,10 @@
             this.deliveryNoteService = deliveryNoteService;
         }
 
-        public Task<string> GetDeliveryNoteAsHtml(int reqNumber)
+        public async Task<string> GetDeliveryNoteAsHtml(int reqNumber)
         {
-            var deliveryNote = this.deliveryNoteService.GetDeliveryNote(reqNumber).Result;
-            return htmlTemplateServiceForDeliveryNote.GetHtml(deliveryNote);
+            var deliveryNote = await this.deliveryNoteService.GetDeliveryNote(reqNumber);
+            return await htmlTemplateServiceForDeliveryNote.GetHtml(deliveryNote);
         }
     }
 }
