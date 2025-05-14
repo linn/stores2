@@ -151,7 +151,7 @@
                 }
             }
 
-            if (context.Function.FunctionCode == "SUKIT")
+            if (context.Function.FunctionCode == "SUKIT" || context.Function.FunctionCode == "GIST PO")
             {
                 req.FromCategory = "FREE";
                 req.ToCategory = "FREE";

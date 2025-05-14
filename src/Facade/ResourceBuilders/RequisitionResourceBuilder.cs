@@ -169,6 +169,11 @@
                     href += $"&qcInfo={model.Lines?.First().Part?.QcInformation}";
                     yield return new LinkResource { Rel = "print-qc-labels", Href = href};
                 }
+
+                if (model.HasDeliveryNote())
+                {
+                    yield return new LinkResource { Rel = "delivery-note", Href = $"/delivery-note/{model.ReqNumber}" };
+                }
             }
         }
     }

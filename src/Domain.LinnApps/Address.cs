@@ -2,7 +2,7 @@
 {
     public class Address
     {
-        public int AddressId { get; protected set; }
+        public int AddressId { get; set; }
 
         public string Addressee { get; protected set; }
 

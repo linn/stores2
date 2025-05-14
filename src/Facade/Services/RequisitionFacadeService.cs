@@ -267,7 +267,11 @@
             if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
             {
                 return x => x.Document1Name == searchResource.DocumentName &&
-                            x.Document1 == searchResource.DocumentNumber && (searchResource.IncludeCancelled || x.Cancelled != "Y");
+                            x.Document1 == searchResource.DocumentNumber
+                            && (!searchResource.BookedOnly.GetValueOrDefault() || x.DateBooked.HasValue)
+                            && (string.IsNullOrEmpty(searchResource.FunctionCode) || x.StoresFunction.FunctionCode == searchResource.FunctionCode)
+                            && (!searchResource.ExcludeReversals.GetValueOrDefault() || (x.IsReversed != "Y" && x.IsReverseTransaction != "Y"))
+                            && (searchResource.IncludeCancelled || x.Cancelled != "Y");
             }
 
             if (searchResource.Pending == true)

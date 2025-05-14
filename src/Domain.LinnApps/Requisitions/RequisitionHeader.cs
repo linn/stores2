@@ -196,6 +196,17 @@
                 throw new CreateRequisitionException(
                     $"Validation failed with the following errors: {string.Join(", ", errors)}");
             }
+            
+            if (function.FunctionCode == "GIST PO")
+            {
+                this.FromCategory = function.FromCategory;
+                this.ToCategory = "FREE";
+
+                if (isReverseTrans == "Y")
+                {
+                    this.BatchRef = null; // todo - test
+                }
+            }
         }
 
         private IEnumerable<string> Validate()
@@ -285,7 +296,7 @@
                 yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
 
-            if (!string.IsNullOrEmpty(this.FromState))
+            if (!string.IsNullOrEmpty(this.FromState) && !this.IsReverseTrans())
             {
                 var validFromStates = this.StoresFunction.GetTransactionStates("F");
                 if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
@@ -542,6 +553,18 @@
             this.ToState = toState;
             this.ToCategory = toCategory;
             this.FromCategory = fromCategory;
+        }
+
+        public bool HasDeliveryNote()
+        {
+            // code from REQ_UT.fmb/CHECK_DISTRIBUTOR
+            // used to check for DISTRIBUTORS but only relevant for sending stock to records distributors
+            // used to check for DEM STOCK but seems to want to send it to 257 Drakemyre Drive no longer owned
+            if (this.StoresFunction?.FunctionCode == "SUKIT" || this.StoresFunction?.FunctionCode == "SUREQ")
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

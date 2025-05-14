@@ -13,5 +13,11 @@
         public string DocumentName { get; set; }
 
         public int? DocumentNumber { get; set; }
+        
+        public bool? BookedOnly { get; set; }
+
+        public string FunctionCode { get; set; }
+
+        public bool? ExcludeReversals { get; set; }
     }
 }

@@ -176,6 +176,15 @@
             this.DateInvalid = dateInvalid;
         }
 
+        public int GetSupplierId()
+        {
+            if (this.LocationCode.StartsWith("S-SU-"))
+            {
+                return int.Parse(this.LocationCode.Substring(5));
+            }
+            return 0;
+        }
+
         private void CheckYesNoFlag(string field, string errorMessage, bool allowNull = false)
         {
             if (string.IsNullOrEmpty(field) && allowNull)
