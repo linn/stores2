@@ -182,7 +182,9 @@ function reducer(state, action) {
         }
         case 'set_reverse_details': {
             if (action.payload.reqNumber) {
+                // action.payload is the original req (i.e. the one being reversed)
                 // TODO replicate all GET_REQ_FOR_REVERSAL in REQ_UT.fmb functionality
+                // TODO ideally would want the code that generates the reversal to be in domain
                 return {
                     ...state,
                     req: {
@@ -190,13 +192,25 @@ function reducer(state, action) {
                         originalReqNumber: action.payload.reqNumber,
                         quantity: action.payload.quantity * -1,
                         reference: action.payload.reference,
-                        fromState: action.payload.toState
-                            ? action.payload.toState
+                        fromState: action.payload.fromState
+                            ? action.payload.fromState
                             : state.req.fromState,
                         fromStockPool:
                             action.payload.storesFunction?.fromStockPoolRequired !== 'N'
                                 ? action.payload.fromStockPool
-                                : state.req.fromStockPool
+                                : state.req.fromStockPool,
+                        toStockPool: action.payload.toStockPool,
+                        batchRef:
+                            action.payload.functionCode === 'LOAN BACK'
+                                ? `Q${action.payload.reqNumber}`
+                                : state.req.batchRef,
+                        batchDate:
+                            action.payload.functionCode === 'LOAN BACK'
+                                ? action.payload.dateBooked
+                                : state.req.batchDate,
+                        fromLocationId: action.payload.fromLocationId,
+                        fromLocationCode: action.payload.fromLocationCode,
+                        fromPalletNumber: action.payload.fromPalletNumber
                     }
                 };
             } else {

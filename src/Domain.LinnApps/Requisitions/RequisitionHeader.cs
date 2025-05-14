@@ -192,6 +192,17 @@
                 throw new CreateRequisitionException(
                     $"Validation failed with the following errors: {string.Join(", ", errors)}");
             }
+            
+            if (function.FunctionCode == "GIST PO")
+            {
+                this.FromCategory = function.FromCategory;
+                this.ToCategory = "FREE";
+
+                if (isReverseTrans == "Y")
+                {
+                    this.BatchRef = null; // todo - test
+                }
+            }
         }
 
         private IEnumerable<string> Validate()
@@ -281,7 +292,7 @@
                 yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
 
-            if (!string.IsNullOrEmpty(this.FromState))
+            if (!string.IsNullOrEmpty(this.FromState) && !this.IsReverseTrans())
             {
                 var validFromStates = this.StoresFunction.GetTransactionStates("F");
                 if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
