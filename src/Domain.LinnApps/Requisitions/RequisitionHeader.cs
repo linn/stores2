@@ -546,56 +546,5 @@
             this.ToCategory = toCategory;
             this.FromCategory = fromCategory;
         }
-
-        public static RequisitionHeader CreateReversalFrom(
-            RequisitionHeader original,
-            Employee createdBy,
-            string reqType,
-            Department department,
-            Nominal nominal)
-        {
-            var reversed = new RequisitionHeader(
-                createdBy: createdBy,
-                function: original.StoresFunction,
-                reqType: reqType,
-                document1Number: null, // New reversal, so no existing doc number yet
-                document1Type: original.Document1Name,
-                department: department,
-                nominal: nominal,
-                reference: original.Reference,
-                comments: null,
-                manualPick: null,
-                fromStockPool: original.StoresFunction.FromStockPoolRequired != "N" ? original.FromStockPool : null,
-                toStockPool: original.ToStockPool,
-                fromPalletNumber: original.FromPalletNumber,
-                toPalletNumber: original.ToPalletNumber,
-                fromLocation: original.FromLocation,
-                toLocation: null, // Intentionally left blank as per PL/SQL
-                part: original.Part,
-                quantity: original.Quantity.HasValue ? -original.Quantity : null,
-                document1Line: original.Document1Line,
-                toState: null, // Not used/set in reversal; leave empty
-                fromState: original.FromState,
-                batchRef: original.StoresFunction.FunctionCode == "LOAN BACK" ? $"Q{original.ReqNumber}" : null,
-                batchDate: original.StoresFunction.FunctionCode == "LOAN BACK" ? original.DateBooked : null,
-                category: original.ToCategory, // Include only if your domain logic depends on it,
-                document2Number: null,
-                document2Type: null,
-                isReverseTrans: "Y", // Always 'Y' for reversal
-                originalReqNumber: original.ReqNumber
-            );
-            
-            if (function.FunctionCode == "GIST PO")
-            {
-                this.FromCategory = function.FromCategory;
-                this.ToCategory = "FREE";
-
-                if (isReverseTrans == "Y")
-                {
-                    this.BatchRef = null; // todo - test
-                }
-            }
-            return reversed;
-        }
     }
 }
