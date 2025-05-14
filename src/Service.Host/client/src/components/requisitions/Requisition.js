@@ -158,6 +158,7 @@ function Requisition({ creating }) {
     const reverseHref = utilities.getHref(formState.req, 'create-reverse');
     const createHref = utilities.getHref(formState.req, 'create');
     const printQcLabelsHref = utilities.getHref(formState.req, 'print-qc-labels');
+    const deliveryNoteHref = utilities.getHref(formState.req, 'delivery-note');
 
     useEffect(
         () => () => {
@@ -480,6 +481,10 @@ function Requisition({ creating }) {
         }
     };
 
+    const viewDocument = () => {
+        window.open(`${config.appRoot}${deliveryNoteHref}`, '_blank');
+    };
+
     // for now...
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
@@ -650,6 +655,11 @@ function Requisition({ creating }) {
                                                     Print Labels
                                                 </Typography>
                                             </Link>
+                                        )}
+                                        {deliveryNoteHref && (
+                                            <Button variant="outlined" onClick={viewDocument}>
+                                                Print Delivery Note
+                                            </Button>
                                         )}
                                     </Grid>
                                 </>

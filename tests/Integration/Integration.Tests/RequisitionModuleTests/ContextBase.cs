@@ -41,6 +41,8 @@
         
         protected IQueryRepository<SundryBookInDetail> SundryBookInDetailRepository { get; private set; }
 
+        protected IDeliveryNoteFacadeService DeliveryNoteFacadeService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -74,6 +76,8 @@
             this.QcLabelPrinterService = Substitute.For<IQcLabelPrinterService>();
             IRequisitionLabelsFacadeService requisitionLabelsFacadeService = new RequisitionLabelsFacadeService(this.QcLabelPrinterService);
 
+            this.DeliveryNoteFacadeService = Substitute.For<IDeliveryNoteFacadeService>();
+
             this.Client = TestClient.With<RequisitionModule>(
                 services =>
                     {
@@ -81,6 +85,7 @@
                         services.AddSingleton(functionCodeService);
                         services.AddSingleton(requisitionLabelsFacadeService);
                         services.AddSingleton(sundryBookInDetailFacadeService);
+                        services.AddSingleton(this.DeliveryNoteFacadeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

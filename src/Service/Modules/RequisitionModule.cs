@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Service.Modules
+﻿using System.Net;
+
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
@@ -35,6 +37,7 @@
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
+            app.MapGet("/delivery-note/{reqNumber:int}", this.GetDeliveryNoteHtml);
         }
 
         private async Task Search(
@@ -221,6 +224,20 @@
         {
             resource.UserNumber = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(await service.PrintQcLables(resource));
+        }
+
+        private async Task GetDeliveryNoteHtml(
+            HttpRequest req,
+            HttpResponse res,
+            int reqNumber,
+            IDeliveryNoteFacadeService deliveryNoteFacadeService)
+        {
+            var result = await deliveryNoteFacadeService.GetDeliveryNoteAsHtml(reqNumber);
+
+            res.ContentType = "text/html";
+            res.StatusCode = (int)HttpStatusCode.OK;
+
+            await res.WriteAsync(result);
         }
     }
 }

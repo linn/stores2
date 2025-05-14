@@ -550,5 +550,17 @@
             this.ToCategory = toCategory;
             this.FromCategory = fromCategory;
         }
+
+        public bool HasDeliveryNote()
+        {
+            // code from REQ_UT.fmb/CHECK_DISTRIBUTOR
+            // used to check for DISTRIBUTORS but only relevant for sending stock to records distributors
+            // used to check for DEM STOCK but seems to want to send it to 257 Drakemyre Drive no longer owned
+            if (this.StoresFunction?.FunctionCode == "SUKIT" || this.StoresFunction?.FunctionCode == "SUREQ")
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }
