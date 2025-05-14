@@ -44,7 +44,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 reference: null,
                 comments: "Uno reverse",
                 quantity: 1,
-                toBeReversed: toBeReversed,
+                isReversalOf: toBeReversed,
                 isReverseTrans: "Y");
         }
 

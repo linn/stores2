@@ -50,7 +50,7 @@
                 document1Line: 1,
                 isReverseTrans: "Y",
                 fromState: "FAIL",
-                toBeReversed: toReverse);
+                isReversalOf: toReverse);
 
             var purchaseOrder = new PurchaseOrderResult
             {

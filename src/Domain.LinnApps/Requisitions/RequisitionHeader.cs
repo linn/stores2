@@ -142,7 +142,7 @@
             int? document2Number = null,
             string document2Type = null,
             string isReverseTrans = "N",
-            RequisitionHeader toBeReversed = null)
+            RequisitionHeader isReversalOf = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -175,7 +175,7 @@
             this.ReqType = reqType;
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
-            this.OriginalReqNumber = toBeReversed?.ReqNumber;
+            this.OriginalReqNumber = isReversalOf?.ReqNumber;
             this.IsReverseTransaction = isReverseTrans;
             this.IsReversed = "N";
             this.Lines = new List<RequisitionLine>();
