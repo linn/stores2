@@ -26,7 +26,7 @@
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.BookFromSupplier.FunctionCode)
                 .Returns(TestFunctionCodes.BookFromSupplier);
             this.PartRepository.FindByIdAsync("PART")
-                .Returns(new Part { PartNumber = "PART", BomVerifyFreqWeeks = 12 });
+                .Returns(new Part { PartNumber = "PART", StockControlled = "Y" });
 
             this.DocumentProxy.GetPurchaseOrder(1234).Returns(
                 new PurchaseOrderResult

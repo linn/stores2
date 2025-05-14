@@ -15,7 +15,7 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingBookSuAndNoDateReceived : ContextBase
+    public class WhenValidatingBookSuAndNotStockControlled : ContextBase
     {
         private Func<Task> action;
 
@@ -26,7 +26,7 @@
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.BookFromSupplier.FunctionCode)
                 .Returns(TestFunctionCodes.BookFromSupplier);
             this.PartRepository.FindByIdAsync("PART")
-                .Returns(new Part { PartNumber = "PART", StockControlled = "Y" });
+                .Returns(new Part { PartNumber = "PART", StockControlled = "N" });
 
             this.DocumentProxy.GetPurchaseOrder(1234).Returns(
                 new PurchaseOrderResult
@@ -67,8 +67,8 @@
         [Test]
         public async Task ShouldThrowCorrectException()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>()
-                .WithMessage("A receipt date is required for function BOOKSU.");
+            await this.action.Should().ThrowAsync<CreateRequisitionException>()
+                .WithMessage("BOOKSU requires part to be stock controlled and PART is not.");
         }
     }
 }
