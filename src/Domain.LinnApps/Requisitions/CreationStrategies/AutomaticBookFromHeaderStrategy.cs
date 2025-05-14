@@ -109,6 +109,12 @@
                                  .FindByAsync(x => x.LocationCode == context.ToLocationCode);
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
 
+            RequisitionHeader toBeReversed = null;
+            if (context.OriginalReqNumber.HasValue)
+            {
+                toBeReversed = await this.repository.FindByIdAsync(context.OriginalReqNumber.Value);
+            }
+
             var req = new RequisitionHeader(
                 employee,
                 context.Function,
@@ -137,7 +143,7 @@
                 context.Document2Number,
                 context.Document2Type,
                 context.IsReverseTransaction,
-                context.OriginalReqNumber);
+                toBeReversed);
 
             if (context.Function.NewPartNumberRequired())
             {

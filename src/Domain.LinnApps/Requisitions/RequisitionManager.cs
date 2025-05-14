@@ -637,6 +637,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var employee = await this.employeeRepository.FindByIdAsync(createdBy);
 
+            RequisitionHeader toBeReversed = null;
+            if (originalDocumentNumber.HasValue)
+            {
+                toBeReversed = await this.repository.FindByIdAsync(originalDocumentNumber.Value);
+            }
+
             var req = new RequisitionHeader(
                 employee,
                 function,
@@ -665,7 +671,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 null,
                 null,
                 isReverseTransaction ?? "N",
-                originalDocumentNumber);
+                toBeReversed);
 
             if (functionCode == "LOAN OUT")
             {

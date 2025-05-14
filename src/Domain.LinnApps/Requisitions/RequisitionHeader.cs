@@ -142,7 +142,7 @@
             int? document2Number = null,
             string document2Type = null,
             string isReverseTrans = "N",
-            int? originalReqNumber = null)
+            RequisitionHeader toBeReversed = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -175,7 +175,7 @@
             this.ReqType = reqType;
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
-            this.OriginalReqNumber = originalReqNumber;
+            this.OriginalReqNumber = toBeReversed?.ReqNumber;
             this.IsReverseTransaction = isReverseTrans;
             this.IsReversed = "N";
             this.Lines = new List<RequisitionLine>();
@@ -271,8 +271,7 @@
             {
                 yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
             }
-
-            if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
+            else if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
                                       && !this.OriginalReqNumber.HasValue)
             {
                 yield return "You must specify a req number to reverse";

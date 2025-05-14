@@ -31,8 +31,7 @@
                                     quantity: 10,
                                     toPalletNumber: 1233,
                                     fromPalletNumber: 123,
-                                    isReverseTrans: "Y",
-                                    originalReqNumber: 954387);
+                                    isReverseTrans: "Y");
         }
 
         [Test]

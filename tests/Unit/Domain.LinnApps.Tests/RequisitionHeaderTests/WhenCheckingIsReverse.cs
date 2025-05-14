@@ -20,7 +20,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
         [SetUp]
         public void SetUp()
         {
-            this.sut = new RequisitionHeader(
+            var toBeReversed = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.ReturnToSupplier,
                 null,
@@ -31,7 +31,20 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 reference: null,
                 comments: "Uno reverse",
                 quantity: 1,
-                originalReqNumber: 1234,
+                fromState: "QC");
+            ;
+            this.sut = new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.ReturnToSupplier,
+                null,
+                12345679,
+                "RO",
+                null,
+                null,
+                reference: null,
+                comments: "Uno reverse",
+                quantity: 1,
+                toBeReversed: toBeReversed,
                 isReverseTrans: "Y");
         }
 

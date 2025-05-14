@@ -32,7 +32,7 @@
                                     toPalletNumber: 1233,
                                     fromPalletNumber: 123,
                                     isReverseTrans: "Y",
-                                    originalReqNumber: null);
+                                    toBeReversed: null);
         }
 
         [Test]

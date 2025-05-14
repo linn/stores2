@@ -57,10 +57,23 @@
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
 
-            this.StoresService.ValidReverseQuantity(1234, -1).Returns(new ProcessResult(true, null));
+            this.StoresService.ValidReverseQuantity(Arg.Any<int>(), -1).Returns(new ProcessResult(true, null));
 
             this.StockService.ValidStockLocation(1, null, "ADIKT", -1, null).Returns(new ProcessResult(true, null));
-
+            
+            var toBeReversed = new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.ReturnToSupplier,
+                null,
+                123,
+                "RO",
+                null,
+                null,
+                reference: null,
+                comments: "Uno reverse",
+                quantity: 1,
+                fromState: "QC");
+            this.ReqRepository.FindByIdAsync(1234).Returns(toBeReversed);
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.ReturnToSupplier.FunctionCode,
