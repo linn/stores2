@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stock
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+
+namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -174,6 +176,15 @@
             this.StorageType = storageType;
 
             this.DateInvalid = dateInvalid;
+        }
+
+        public int GetSupplierId()
+        {
+            if (this.LocationCode.StartsWith("S-SU-"))
+            {
+                return int.Parse(this.LocationCode.Substring(5));
+            }
+            return 0;
         }
 
         private void CheckYesNoFlag(string field, string errorMessage, bool allowNull = false)

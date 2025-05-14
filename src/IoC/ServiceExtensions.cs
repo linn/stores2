@@ -70,7 +70,13 @@
                 .AddScoped<IBomVerificationProxy, BomVerificationProxy>()
                 .AddScoped<GistPoCreationStrategy>()
                 .AddScoped<SuReqCreationStrategy>()
-                .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>();
+                .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>()
+                .AddScoped<IDeliveryNoteService, DeliveryNoteService>()
+                .AddScoped<IHtmlTemplateService<DeliveryNoteDocument>>(
+                    x => new HtmlTemplateService<DeliveryNoteDocument>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<ISupplierProxy, SupplierProxy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -93,7 +99,8 @@
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>()
-                .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>();
+                .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>()
+                .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

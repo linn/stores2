@@ -1,0 +1,272 @@
+﻿@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Models.DeliveryNoteDocument>
+@{
+    <style>
+
+            @@media print {
+                @@page {
+                    size: A4 portrait;
+                    margin: 25px;
+                    margin-bottom: 60px;
+                }
+
+                thead {
+                    display: table-header-group;
+                }
+
+                tfoot {
+                    display: table-footer-group;
+                }
+            }
+
+            @@media screen {
+                @@page {
+                size: A4 portrait;
+                    margin: 50px;
+                }
+
+                thead {
+                    display: block;
+                    margin-left: 50px;
+                    margin-right: 600px;
+                    margin-top: 50px;
+                }
+
+                tbody {
+                    display: block;
+                    margin-top: 40px;
+                    margin-left: 50px;
+                    margin-right: 50px;
+                    margin-bottom: 60px;
+                }
+                tfoot {
+                    display: block;
+                    margin-left: 50px;
+                    margin-right: 50px;
+                }
+            }
+
+            thead {
+                font-size: 0.8em;
+                font-family: Arial, sans-serif;
+            }
+
+            
+            tbody {
+                font-size: 0.8em;
+                font-family: Arial, sans-serif;
+            }
+
+            tfoot {
+                font-size: 0.8em;
+                font-family: Arial, sans-serif;
+            }
+
+            pre {
+                font-family: Arial, sans-serif;
+            }
+
+            .auto {
+                grid-area: auto;
+            }
+
+            .logo {
+                grid-area: logo;
+            }
+
+            .item1 {
+                grid-area: item1;
+            }
+
+            .item2 {
+                font-weight: bold;
+                grid-area: item2;
+            }
+
+            .address {
+                white-space: pre-line;
+                font-size: 0.7em;
+                grid-area: address;
+            }
+
+            .documentNumber {
+                grid-area: documentNumber;
+            }
+
+            .deliveryAddress {
+                grid-area: deliveryAddress;
+            }
+
+            .account {
+                grid-area: account;
+            }
+
+            .reference {
+                grid-area: reference;
+            }
+
+            .table-item {
+                width: 110px
+            }
+
+            .short-table-item {
+                width: 60px
+            }
+            .terms {
+                grid-area: terms;
+            }
+
+            .documentDate {
+                grid-area: documentDate;
+            }
+
+            .centre-message {
+                page-break-inside: avoid;
+                text-align: center;
+                white-space: pre-wrap;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+
+            .centre-small-message {
+                font-size: 0.6em;
+                font-weight: bold;
+                page-break-inside: avoid;
+                text-align: center;
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+            .customs-message {
+                page-break-inside: avoid;
+                font-weight: bold;
+                padding-top: 20px;
+                padding-bottom: 10px;
+            }
+
+            .text-align-right {
+                text-align: right;
+            }
+
+            .text-align-left {
+                text-align: left;
+            }
+            .sup {
+                vertical-align: super;
+                font-size: x-small;
+            }
+
+            .header-grid-container {
+                row-gap: 10px;
+                column-gap: 10px;
+                display: grid;
+                grid-template-areas:
+                'logo item1 item2 address address address'
+                'logo deliveryAddress . address address address'
+                '. . . . . .'
+                '. documentNumber documentNumber account . .'
+                '. documentDate documentDate reference . .'
+            }
+
+            span {
+                page-break-inside: avoid;
+            }
+
+            .line-grid-container {
+                column-gap: 10px;
+                display: grid;
+                grid-template-columns: auto auto auto auto;
+                row-gap: 10px;
+            }
+
+            .footer-grid-container {
+                row-gap: 10px;
+                column-gap: 10px;
+                display: grid;
+                grid-template-areas:
+                    '. . . goodsTotal vatTotal total'
+            }
+
+            #tcb-extension-uk-wrapper {
+                display: none !important;
+            }
+        </style>
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            <div class="header-grid-container">
+	                            <div class="logo">
+		                            <img src="@("https://app.linn.co.uk/Content/images/linn-logo.png")" />
+	                            </div>
+	                            <div class="item1"> <b>Linn Products Ltd</b></div>
+	                            <div class="item2"> <b>DELIVERY NOTE</b></div>
+
+                                <div class="documentNumber">
+									<b>Document No:</b> @Model.DocumentNumber
+                                </div>
+
+                                <div class="deliveryAddress">
+                                <b>Goods to:</b> ID @Model.DeliveryAddressId<br />@Model.DeliveryAddress
+                                </div>
+
+                                <div class="address">
+                                    @Model.AddressOfIssuer
+                                    @Model.RegisteredOffice
+                                </div>
+                                <div class="account">
+                                    <b>Account:</b> @Model.AccountReference
+                                </div>
+	                            <div class="documentDate">
+		                            <b>Date:</b> @Model.DocumentDate.ToString("dd-MMM-yyyy")
+	                            </div>
+	                            <div class="reference">
+		                            <b>Your Ref:</b> @Model.TransReference
+	                            </div>
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <td>
+                        <div class="line-grid-container">
+                            <div>
+                                <b>Qty</b>
+                            </div>
+                            <div>
+                                <b>Part No</b>
+                            </div>
+                            <div>
+                                <b>Description</b>
+                            </div>
+                            <div>
+                                <b>Serial Nos</b>
+                            </div>
+                            @foreach (var line in Model.Lines)
+                            {
+                                <div>
+                                    <span>@line.Quantity</span>
+                                </div>
+                                <div>
+                                    <span>@line.PartNumber</span>
+                                </div>
+                                <div class="no-split">
+                                    <span>@line.Description</span>
+                                </div>
+                                <div>
+                                    <span>@line.SerialNumbers</span>
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+}

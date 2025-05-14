@@ -173,7 +173,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
 
                 if (model.HasDeliveryNote())
                 {
-                    yield return new LinkResource { Rel = "delivery-note", Href = $"{this.GetLocation(model)}/delivery-note" };
+                    yield return new LinkResource { Rel = "delivery-note", Href = $"/delivery-note/{model.ReqNumber}" };
                 }
             }
         }

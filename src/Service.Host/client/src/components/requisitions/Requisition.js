@@ -481,6 +481,10 @@ function Requisition({ creating }) {
         }
     };
 
+    const viewDocument = () => {
+        window.open(`${config.appRoot}${deliveryNoteHref}`, '_blank');
+    };
+
     // for now...
     // might be a better way to work out whether these things are valid operations
     const canAddMovesOnto =
@@ -653,11 +657,9 @@ function Requisition({ creating }) {
                                             </Link>
                                         )}
                                         {deliveryNoteHref && (
-                                            <Link to={deliveryNoteHref}>
-                                                <Typography variant="subtitle2">
-                                                    Print Delivery Note
-                                                </Typography>
-                                            </Link>
+                                            <Button variant="outlined" onClick={viewDocument}>
+                                                Print Delivery Note
+                                            </Button>
                                         )}
                                     </Grid>
                                 </>
