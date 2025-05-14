@@ -16,7 +16,8 @@ function Document1({
     partSource,
     onSelectPart = null,
     document1Details = null,
-    storesFunction = null
+    storesFunction = null,
+    qtyOutstanding = null
 }) {
     const displayDetails1 =
         document1Details && partSource === 'WO'
@@ -95,9 +96,10 @@ function Document1({
                 });
             }
 
+            fetchPart(null, `?searchTerm=${purchaseOrder.details[0].partNumber}&exactOnly=true`);
             clearPurchaseOrder();
         }
-    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction]);
+    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction, fetchPart]);
 
     useEffect(() => {
         if (creditNote && document1Line) {
@@ -222,7 +224,18 @@ function Document1({
                     />
                 )}
             </Grid>
-            <Grid size={6} />
+            <Grid size={2}>
+                {qtyOutstanding && (
+                    <InputField
+                        value={qtyOutstanding}
+                        disabled
+                        label="Qty Outstanding"
+                        onChange={() => {}}
+                        propertyName="qtyOutstanding"
+                    />
+                )}
+            </Grid>
+            <Grid size={4} />
         </>
     );
 }

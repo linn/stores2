@@ -397,23 +397,6 @@ function Requisition({ creating }) {
 
     const handleDocument1Select = selected => {
         dispatch({
-            type: 'set_header_value',
-            payload: {
-                fieldName: 'part',
-                newValue: {
-                    partNumber: selected.partNumber,
-                    description: selected.partDescription
-                }
-            }
-        });
-        dispatch({
-            type: 'set_header_value',
-            payload: {
-                fieldName: 'document1Line',
-                newValue: selected.document1Line
-            }
-        });
-        dispatch({
             type: 'set_document1_details',
             payload: selected
         });
@@ -474,7 +457,14 @@ function Requisition({ creating }) {
 
         if (formState.req?.storesFunction?.partSource === 'WO') {
             dispatch({
-                type: 'set_header_details_for_WO',
+                type: 'set_part_header_details_for_WO',
+                payload: part
+            });
+        }
+
+        if (formState.req?.storesFunction?.partSource === 'PO') {
+            dispatch({
+                type: 'set_part_header_details_for_PO',
                 payload: part
             });
         }
@@ -919,6 +909,7 @@ function Requisition({ creating }) {
                                 onSelectPart={handleDocument1PartSelect}
                                 document1Details={formState.document1Details}
                                 storesFunction={formState.req.storesFunction}
+                                qtyOutstanding={formState.document1Details?.qtyOutstanding}
                             />
                             <Document2
                                 document2={formState.req.document2}
