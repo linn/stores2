@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-
-namespace Linn.Stores2.Domain.LinnApps.Requisitions
+﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.External;

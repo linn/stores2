@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-
-namespace Linn.Stores2.Facade.Services
+﻿namespace Linn.Stores2.Facade.Services
 {
+    using System.Threading.Tasks;
+
     public interface IDeliveryNoteFacadeService
     {
         Task<string> GetDeliveryNoteAsHtml(
