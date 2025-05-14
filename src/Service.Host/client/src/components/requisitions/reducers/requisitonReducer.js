@@ -184,6 +184,7 @@ function reducer(state, action) {
             if (action.payload.reqNumber) {
                 // action.payload is the original req (i.e. the one being reversed)
                 // TODO replicate all GET_REQ_FOR_REVERSAL in REQ_UT.fmb functionality
+                // TODO ideally would want the code that generates the reversal to be in domain
                 return {
                     ...state,
                     req: {
@@ -206,7 +207,10 @@ function reducer(state, action) {
                         batchDate:
                             action.payload.functionCode === 'LOAN BACK'
                                 ? action.payload.dateBooked
-                                : state.req.batchDate
+                                : state.req.batchDate,
+                        fromLocationId: action.payload.locationId,
+                        fromLocationCode: action.payload.locationName,
+                        fromPalletNumber: action.payload.palletNumber
                     }
                 };
             } else {
