@@ -188,7 +188,7 @@ function reducer(state, action) {
                     req: {
                         ...state.req,
                         originalReqNumber: action.payload.reqNumber,
-                        quantity: action.payload.quantity ,
+                        quantity: action.payload.quantity,
                         reference: action.payload.reference,
                         fromState: action.payload.fromState,
                         fromStockPool: action.payload.fromStockPool,

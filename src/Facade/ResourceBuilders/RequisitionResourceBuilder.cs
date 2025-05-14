@@ -154,6 +154,11 @@
                     yield return new LinkResource { Rel = "authorise", Href = "/requisitions/auth" };
                 }
 
+                if (model.IsReversed != "Y" && model.StoresFunction?.CanBeReversed == "Y")
+                {
+                    yield return new LinkResource { Rel = "preview-reversal", Href = $"/requisitions/{model.ReqNumber}/preview-reversal" };
+                }
+
                 if (model.StoresFunction.FunctionCode == "GIST PO")
                 {
                     var href = "/requisitions/print-qc-labels?";
@@ -161,11 +166,11 @@
                     href += $"&docType={model.Document1Name}";
                     href += $"&orderNumber={model.Document1}";
                     href += "&qcState=PASS";
-                    href += $"&partNumber={model.Lines?.First().Part?.PartNumber}";
-                    href += $"&partDescription={model.Lines?.First().Part?.Description}";
-                    href += $"&qtyReceived={model.Lines?.First().Qty}";
-                    href += $"&unitOfMeasure={model.Lines?.First().Part?.OurUnitOfMeasure}";
-                    href += $"&qcInfo={model.Lines?.First().Part?.QcInformation}";
+                    href += $"&partNumber={model.Lines?.FirstOrDefault()?.Part?.PartNumber}";
+                    href += $"&partDescription={model.Lines?.FirstOrDefault()?.Part?.Description}";
+                    href += $"&qtyReceived={model.Lines?.FirstOrDefault()?.Qty}";
+                    href += $"&unitOfMeasure={model.Lines?.FirstOrDefault()?.Part?.OurUnitOfMeasure}";
+                    href += $"&qcInfo={model.Lines?.FirstOrDefault()?.Part?.QcInformation}";
                     yield return new LinkResource { Rel = "print-qc-labels", Href = href};
                 }
             }

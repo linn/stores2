@@ -59,6 +59,12 @@ function Requisition({ creating }) {
     const [functionCodeError, setFunctionCodeError] = useState(null);
     const [pickRequisitionDialogVisible, setPickRequisitionDialogVisible] = useState(false);
     const [bookInPostingsDialogVisible, setBookInPostingsDialogVisible] = useState(false);
+    console.log(config.appRoot);
+    const {
+        send: fetchReversalPreview,
+        result: fetchReversalPreviewResult,
+        clearData: clearReversalPreviewResult
+    } = useGet(config.appRoot, true);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -1217,10 +1223,16 @@ function Requisition({ creating }) {
                                     documentNumber={formState.req.document1}
                                     documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {
-                                        dispatch({
-                                            type: 'set_reverse_details',
-                                            payload: reqDetails
-                                        });
+                                        console.log(reqDetails);
+                                        fetchReversalPreview(
+                                            utilities
+                                                .getHref(reqDetails, 'preview-reversal')
+                                                ?.slice(1)
+                                        );
+                                        // dispatch({
+                                        //     type: 'set_reverse_details',
+                                        //     payload: reqDetails
+                                        // });
                                     }}
                                 />
                             )}

@@ -35,7 +35,7 @@
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
-            app.MapGet("/requisitions/{reqNumber:int}/preview-reversal", this.GetById);
+            app.MapGet("/requisitions/{reqNumber:int}/preview-reversal", this.GetReversalPreview);
         }
 
         private async Task Search(
