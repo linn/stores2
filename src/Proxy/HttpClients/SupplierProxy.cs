@@ -26,15 +26,20 @@
         {
             var supplier = await this.GetSupplier(supplierId);
 
-            if (supplier == null || supplier?.OrderAddress == null)
+            if (supplier == null || supplier.OrderAddress == null)
             {
                 return null;
             }
 
             var res = supplier?.OrderAddress;
-            var address = new Address(res.Addressee, res.Line1, res.Line2, res.Line3, res.Line4, res.PostCode,
-                new Country(res.CountryCode, res.CountryName));
-            address.AddressId = res.AddressId.Value;
+            var address = new Address(
+                res.Addressee,
+                res.Line1,
+                res.Line2,
+                res.Line3,
+                res.Line4,
+                res.PostCode,
+                new Country(res.CountryCode, res.CountryName)) { AddressId = res.AddressId.GetValueOrDefault() };
             return address;
         }
 

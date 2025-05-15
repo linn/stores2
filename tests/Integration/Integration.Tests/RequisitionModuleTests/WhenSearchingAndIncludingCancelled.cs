@@ -81,7 +81,7 @@
         {
             var resource = this.Response.DeserializeBody<IEnumerable<RequisitionHeaderResource>>().ToList();
             resource.Should().NotBeNull();
-            resource.Count().Should().Be(2);
+            resource.Count.Should().Be(2);
         }
     }
 }

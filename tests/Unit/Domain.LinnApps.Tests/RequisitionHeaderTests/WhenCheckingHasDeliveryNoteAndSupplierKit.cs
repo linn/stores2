@@ -14,16 +14,16 @@
         [SetUp]
         public void SetUp()
         {
-            var supplierLoc = new StorageLocation()
-            {
+            var supplierLoc = new StorageLocation
+                                  {
                 LocationId = 1,
                 Description = "PRO-JECT AUDIO SYSTEMS",
-                StorageArea = new StorageArea()
-                {
+                StorageArea = new StorageArea
+                                  {
                     StorageAreaCode = "SUPLOC",
                     SiteCode = "SUPSTORES",
-                    StorageSite = new StorageSite()
-                    {
+                    StorageSite = new StorageSite
+                                      {
                         SiteCode = "SUPSTORES",
                         Description = "SUPPLIER STORES"
                     }
@@ -45,7 +45,7 @@
         }
 
         [Test]
-        public void ShouldBeReverse()
+        public void ShouldHaveDeliveryNote()
         {
             this.sut.HasDeliveryNote().Should().BeTrue();
         }

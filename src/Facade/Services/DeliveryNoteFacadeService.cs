@@ -11,7 +11,9 @@
 
         private readonly IDeliveryNoteService deliveryNoteService;
 
-        public DeliveryNoteFacadeService(IHtmlTemplateService<DeliveryNoteDocument> htmlTemplateServiceForDeliveryNote, IDeliveryNoteService deliveryNoteService)
+        public DeliveryNoteFacadeService(
+            IHtmlTemplateService<DeliveryNoteDocument> htmlTemplateServiceForDeliveryNote,
+            IDeliveryNoteService deliveryNoteService)
         {
             this.htmlTemplateServiceForDeliveryNote = htmlTemplateServiceForDeliveryNote;
             this.deliveryNoteService = deliveryNoteService;
@@ -20,7 +22,7 @@
         public async Task<string> GetDeliveryNoteAsHtml(int reqNumber)
         {
             var deliveryNote = await this.deliveryNoteService.GetDeliveryNote(reqNumber);
-            return await htmlTemplateServiceForDeliveryNote.GetHtml(deliveryNote);
+            return await this.htmlTemplateServiceForDeliveryNote.GetHtml(deliveryNote);
         }
     }
 }

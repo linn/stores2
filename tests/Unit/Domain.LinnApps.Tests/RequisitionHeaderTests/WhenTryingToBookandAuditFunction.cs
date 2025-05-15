@@ -8,7 +8,7 @@
 
     using NUnit.Framework;
 
-    public class WhenTryingToBookandAuditFunction
+    public class WhenTryingToBookAndAuditFunction
     {
         private RequisitionHeader sut;
 

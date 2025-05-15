@@ -16,8 +16,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
 
-    using Org.BouncyCastle.Asn1.X509.Qualified;
-
     public class RequisitionManager : IRequisitionManager
     {
         private readonly IAuthorisationService authService;
