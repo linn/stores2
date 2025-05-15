@@ -9,6 +9,7 @@
     using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Requisitions;
@@ -25,6 +26,8 @@
 
         private readonly ITransactionManager transactionManager;
 
+        private readonly IRepository<RequisitionHeader, int> reqRepository;
+
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -38,6 +41,7 @@
             this.transactionManager = transactionManager;
             this.requisitionFactory = requisitionFactory;
             this.reqHistoryRepository = reqHistoryRepository;
+            this.reqRepository = repository;
         }
         
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -169,6 +173,34 @@
                     resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
                     string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived));
 
+                return new SuccessResult<RequisitionHeaderResource>(resource);
+            }
+            catch (DomainException ex)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(ex.Message);
+            }
+        }
+
+        public async Task<IResult<RequisitionHeaderResource>> GetReversalPreview(int toBeReversedId)
+        {
+            // Returns a preview of what a reversal would look like for a given requisition.
+            // Nothing is persisted — this just constructs a reversal using the same domain rules
+            // that will later be applied during actual creation, allowing UI to update accordingly
+            try
+            {
+                var toBeReversed = await this.reqRepository.FindByIdAsync(toBeReversedId);
+                var reversalPreview = new RequisitionHeader(
+                    new Employee(), // just a stub to pass validation
+                    toBeReversed.StoresFunction,
+                    null,
+                    toBeReversed.Document1,
+                    toBeReversed.Document1Name,
+                    toBeReversed.Department,
+                    toBeReversed.Nominal,
+                    isReverseTrans: "Y",
+                    isReversalOf: toBeReversed);
+
+                var resource = this.BuildResource(reversalPreview, null);
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }
             catch (DomainException ex)

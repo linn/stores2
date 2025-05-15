@@ -37,6 +37,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
+            app.MapGet("/requisitions/{reqNumber:int}/preview-reversal", this.GetReversalPreview);
             app.MapGet("/delivery-note/{reqNumber:int}", this.GetDeliveryNoteHtml);
         }
 
@@ -84,6 +85,15 @@ namespace Linn.Stores2.Service.Modules
             IRequisitionFacadeService service)
         {
             await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
+        }
+        
+        private async Task GetReversalPreview(
+            HttpRequest req,
+            HttpResponse res,
+            int reqNumber,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.GetReversalPreview(reqNumber));
         }
 
         private async Task Cancel(

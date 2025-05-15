@@ -638,6 +638,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             var employee = await this.employeeRepository.FindByIdAsync(createdBy);
 
+            RequisitionHeader toBeReversed = null;
+
+            if (originalDocumentNumber.HasValue)
+            {
+                toBeReversed = await this.repository.FindByIdAsync(originalDocumentNumber.Value);
+            }
+
             var req = new RequisitionHeader(
                 employee,
                 function,
@@ -666,7 +673,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 null,
                 null,
                 isReverseTransaction ?? "N",
-                originalDocumentNumber,
+                toBeReversed,
                 dateReceived);
 
             if (functionCode == "LOAN OUT")
@@ -718,7 +725,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
 
                 var orderRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
-                if (function.BatchRequired == "Y" && batchRef != orderRef)
+                if (isReverseTransaction != "Y" && function.BatchRequired == "Y" && batchRef != orderRef)
                 {
                     throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");
@@ -1088,7 +1095,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 var qty = await this.requisitionStoredProcedures.GetQtyReturned(
                               header.Document1.Value,
                               header.Document1Line.Value);
-                if (header.IsReverseTrans() && header.Quantity.Value > qty)
+                
+                if (header.IsReverseTrans() && Math.Abs(header.Quantity.Value) > qty)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
                 }

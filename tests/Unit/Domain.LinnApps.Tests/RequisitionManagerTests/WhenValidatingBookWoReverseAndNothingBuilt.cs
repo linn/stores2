@@ -2,16 +2,20 @@
 {
     using System;
     using System.Threading.Tasks;
+
     using FluentAssertions;
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
+
     using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenValidatingBookWoReverseAndNothingBuilt : ContextBase
@@ -31,6 +35,20 @@
             this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART" });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
             this.StockPoolRepository.FindByIdAsync("LINN").Returns(new StockPool());
+            
+            var toBeReversed = new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.BookWorksOrder,
+                null,
+                123,
+                "WO",
+                null,
+                null,
+                reference: null,
+                comments: "Uno reverse",
+                quantity: 12);
+            this.ReqRepository.FindByIdAsync(42345).Returns(toBeReversed);
+            
             this.StockService.ValidStockLocation(null, 502, "PART", Arg.Any<decimal>(), Arg.Any<string>())
                 .Returns(new ProcessResult(true, null));
             this.DocumentProxy.GetWorksOrder(123).Returns(

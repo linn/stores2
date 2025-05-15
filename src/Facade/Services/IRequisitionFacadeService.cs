@@ -26,5 +26,8 @@
 
         Task<IResult<RequisitionHeaderResource>> Validate(
             RequisitionHeaderResource resource);
+        
+        Task<IResult<RequisitionHeaderResource>> GetReversalPreview(
+            int toBeReversedId);
     }
 }

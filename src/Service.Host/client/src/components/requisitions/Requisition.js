@@ -60,6 +60,22 @@ function Requisition({ creating }) {
     const [pickRequisitionDialogVisible, setPickRequisitionDialogVisible] = useState(false);
     const [bookInPostingsDialogVisible, setBookInPostingsDialogVisible] = useState(false);
 
+    const {
+        send: fetchReversalPreview,
+        result: fetchReversalPreviewResult,
+        clearData: clearReversalPreviewResult
+    } = useGet(config.appRoot, true);
+
+    useEffect(() => {
+        if (fetchReversalPreviewResult) {
+            dispatch({
+                type: 'set_reverse_details',
+                payload: fetchReversalPreviewResult
+            });
+            clearReversalPreviewResult();
+        }
+    }, [fetchReversalPreviewResult, clearReversalPreviewResult]);
+
     const auth = useAuth();
     const token = auth.user?.access_token;
 
@@ -1237,10 +1253,23 @@ function Requisition({ creating }) {
                                     documentNumber={formState.req.document1}
                                     documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {
-                                        dispatch({
-                                            type: 'set_reverse_details',
-                                            payload: reqDetails
-                                        });
+                                        // BOOKLD doesn't necessary specify an original req
+                                        // maybe sometimes it does?
+                                        // but just keep it working as is for now
+                                        if (formState.req?.storesFunction?.code === 'BOOKLD') {
+                                            dispatch({
+                                                type: 'set_reverse_details',
+                                                payload: reqDetails
+                                            });
+                                        } else {
+                                            // otherwise we can ask the server to fill out some details
+                                            // that result from reversing the chosen req
+                                            fetchReversalPreview(
+                                                utilities
+                                                    .getHref(reqDetails, 'preview-reversal')
+                                                    ?.slice(1)
+                                            );
+                                        }
                                     }}
                                 />
                             )}

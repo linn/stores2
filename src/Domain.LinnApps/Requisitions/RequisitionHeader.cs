@@ -144,7 +144,7 @@
             int? document2Number = null,
             string document2Type = null,
             string isReverseTrans = "N",
-            int? originalReqNumber = null,
+            RequisitionHeader isReversalOf = null,
             DateTime? dateReceived = null)
         {
             this.ReqSource = "STORES2";
@@ -178,7 +178,40 @@
             this.ReqType = reqType;
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
-            this.OriginalReqNumber = originalReqNumber;
+            
+            // logic for creating a reversal req
+            // mostly taken from GET_REQ_FOR_REVERSAL in REQ_UT.fmb
+            if (isReversalOf != null)
+            {
+                if (this.Document1Name != isReversalOf.Document1Name)
+                {
+                    throw new CreateRequisitionException("Cannot reverse req with a different document1 type");
+                }
+
+                if (this.Document1 != isReversalOf.Document1)
+                {
+                    throw new CreateRequisitionException("Cannot reverse req with a different document1 number");
+                }
+
+                if (isReversalOf.IsReversed == "Y")
+                {
+                    throw new CreateRequisitionException($"req {isReversalOf.ReqNumber} is already reversed!");
+                }
+                
+                this.OriginalReqNumber = isReversalOf.ReqNumber;
+                this.Quantity = isReversalOf.Quantity * -1;
+                this.Reference = isReversalOf.Reference;
+                this.FromState = isReversalOf.FromState;
+                this.ToStockPool = isReversalOf.ToStockPool;
+                this.FromStockPool = this.StoresFunction.FromStockPoolRequired == "Y" ? isReversalOf.FromStockPool : fromStockPool;
+                this.BatchRef = this.StoresFunction.FunctionCode == "LOAN BACK"
+                    ? $"Q{isReversalOf.ReqNumber}" : batchRef;
+                this.BatchDate = this.StoresFunction.FunctionCode == "LOAN BACK"
+                    ? isReversalOf.DateBooked : batchDate;
+                this.FromLocation = isReversalOf.FromLocation;
+                this.FromPalletNumber = isReversalOf.FromPalletNumber;
+            }
+
             this.IsReverseTransaction = isReverseTrans;
             this.IsReversed = "N";
             this.DateReceived = dateReceived;
@@ -275,8 +308,7 @@
             {
                 yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
             }
-
-            if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
+            else if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
                                       && !this.OriginalReqNumber.HasValue)
             {
                 yield return "You must specify a req number to reverse";
