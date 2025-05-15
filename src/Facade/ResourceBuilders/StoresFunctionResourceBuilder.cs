@@ -65,6 +65,7 @@
                           CanBeCancelled = model.CanBeCancelled,
                           CanBeReversed = model.CanBeReversed,
                           ProcessStage = model.ProcessStage,
+                          ReceiptDateRequired = model.ReceiptDateRequired,
                           FromStates = model.GetTransactionStates("F"),
                           ToStates = model.GetTransactionStates("O"),
                           TransactionTypes = model.TransactionsTypes?.Select(

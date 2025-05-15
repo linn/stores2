@@ -41,7 +41,11 @@
                 new Nominal());
             req.Cancel("reasonable reason", new Employee());
             this.ReqManager.CancelLine(
-                    this.resource.ReqNumber, this.resource.LineNumber.Value, Arg.Any<int>(), Arg.Any<IEnumerable<string>>(), this.resource.Reason)
+                    this.resource.ReqNumber,
+                    this.resource.LineNumber.Value,
+                    Arg.Any<int>(),
+                    Arg.Any<IEnumerable<string>>(),
+                    this.resource.Reason)
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/cancel", this.resource).Result;
         }

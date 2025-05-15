@@ -110,6 +110,8 @@
 
         public int? Document3 { get; set; }
 
+        public DateTime? DateReceived { get; set; }
+
         protected RequisitionHeader()
         {
         }
@@ -142,7 +144,8 @@
             int? document2Number = null,
             string document2Type = null,
             string isReverseTrans = "N",
-            RequisitionHeader isReversalOf = null)
+            RequisitionHeader isReversalOf = null,
+            DateTime? dateReceived = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -211,6 +214,7 @@
 
             this.IsReverseTransaction = isReverseTrans;
             this.IsReversed = "N";
+            this.DateReceived = dateReceived;
             this.Lines = new List<RequisitionLine>();
 
             var errors = this.Validate().ToList();
@@ -581,6 +585,18 @@
             this.ToState = toState;
             this.ToCategory = toCategory;
             this.FromCategory = fromCategory;
+        }
+
+        public bool HasDeliveryNote()
+        {
+            // code from REQ_UT.fmb/CHECK_DISTRIBUTOR
+            // used to check for DISTRIBUTORS but only relevant for sending stock to records distributors
+            // used to check for DEM STOCK but seems to want to send it to 257 Drakemyre Drive no longer owned
+            if (this.StoresFunction?.FunctionCode == "SUKIT" || this.StoresFunction?.FunctionCode == "SUREQ")
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

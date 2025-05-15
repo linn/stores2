@@ -70,5 +70,7 @@
         public int? Document3Number { get; set; }
         
         public IEnumerable<BookInOrderDetail> BookInOrderDetails { get; set; }
+
+        public DateTime? DateReceived { get; set; }
     }
 }

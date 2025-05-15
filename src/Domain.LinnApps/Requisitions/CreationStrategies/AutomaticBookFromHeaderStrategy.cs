@@ -98,7 +98,8 @@
                 null,
                 context.IsReverseTransaction,
                 context.OriginalReqNumber,
-                context.BookInOrderDetails);
+                context.BookInOrderDetails,
+                context.DateReceived);
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
@@ -143,7 +144,9 @@
                 context.Document2Number,
                 context.Document2Type,
                 context.IsReverseTransaction,
-                toBeReversed);
+                toBeReversed,
+                context.DateReceived);
+
 
             if (context.Function.NewPartNumberRequired())
             {

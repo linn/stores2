@@ -108,6 +108,7 @@
                            IsReverseTransaction = header.IsReverseTransaction,
                            OriginalReqNumber = header.OriginalReqNumber,
                            Document3 = header.Document3,
+                           DateReceived = header.DateReceived?.ToString("o"),
                            Links = this.BuildLinks(header, claims?.ToList()).ToArray()
                        };
         }
@@ -172,6 +173,11 @@
                     href += $"&unitOfMeasure={model.Lines?.FirstOrDefault()?.Part?.OurUnitOfMeasure}";
                     href += $"&qcInfo={model.Lines?.FirstOrDefault()?.Part?.QcInformation}";
                     yield return new LinkResource { Rel = "print-qc-labels", Href = href};
+                }
+
+                if (model.HasDeliveryNote())
+                {
+                    yield return new LinkResource { Rel = "delivery-note", Href = $"/delivery-note/{model.ReqNumber}" };
                 }
             }
         }

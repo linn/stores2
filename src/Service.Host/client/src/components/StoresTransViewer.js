@@ -23,7 +23,7 @@ import ReportDataGrids from './ReportDataGrids';
 function StoresTransViewer() {
     const [partNumber, setPartNumber] = useState(null);
     const [transactionCode, setTransactionCode] = useState(null);
-    const [functionCodes, setFunctionCodes] = useState([]); 
+    const [functionCodes, setFunctionCodes] = useState([]);
     const defaultStartDate = moment().subtract(1, 'days');
     const [fromDate, setFromDate] = useState(defaultStartDate);
     const [toDate, setToDate] = useState(new Date());

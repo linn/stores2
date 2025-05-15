@@ -75,7 +75,7 @@
         public Nominal GetNominal()
         {
             // material variances transactions and SUNWI transactions mess this up so exclude them
-            if (this.StoresTransactionPostings != null 
+            if (this.StoresTransactionPostings != null
                 && !this.MaterialVarianceTransaction && !this.TransactionCode.Contains("NW"))
             {
                 return this.StoresTransactionPostings.FirstOrDefault(p => p.Nominal != null)?.Nominal;
@@ -96,5 +96,20 @@
 
             return new List<string>();
         }
+
+        public string DefaultFromState()
+        {
+            if (!string.IsNullOrEmpty(this.FromState))
+            {
+                return this.FromState;
+            }
+            if (!string.IsNullOrEmpty(this.InspectedState))
+            {
+                return this.InspectedState;
+            }
+            return string.Empty;
+        }
+
+        public bool HasDefaultFromState() => !string.IsNullOrEmpty(this.DefaultFromState());
     }
 }

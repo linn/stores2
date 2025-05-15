@@ -29,7 +29,6 @@
             this.PalletRepository.FindByIdAsync(502).Returns(new StoresPallet());
             this.PalletRepository.FindByIdAsync(503).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART", BomVerifyFreqWeeks = 12 });
-            this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
             this.StockPoolRepository.FindByIdAsync("LINN").Returns(new StockPool());
             this.StockService.ValidStockLocation(null, 502, "PART", Arg.Any<decimal>(), Arg.Any<string>())
                 .Returns(new ProcessResult(true, null));

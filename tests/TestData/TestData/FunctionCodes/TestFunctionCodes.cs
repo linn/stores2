@@ -141,6 +141,8 @@
                 ProcessStage = 2,
                 ToStateRequired = "O",
                 CanBeReversed = "Y",
+                ReceiptDateRequired = "Y",
+                DepartmentNominalRequired = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -610,6 +612,34 @@
                         TransactionDefinition = TestTransDefs.AdjustToStock,
                         TransactionCode = TestTransDefs.AdjustToStock.TransactionCode,
                         Seq = 4
+                    }
+                }
+            };
+
+        public static readonly StoresFunction StoresToInspection =
+            new StoresFunction("STGII")
+            {
+                Description = "ISSUE PARTS FROM STORES TO INSPECTION FOR CHECKING",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "N",
+                Document1RequiredFlag = "N",
+                Document1LineRequiredFlag = "N",
+                FromStockPoolRequired = "O",
+                FromStateRequired = "O",
+                FunctionType = "A",
+                ManualPickRequired = "M",
+                PartSource = "IP",
+                ProcessStage = 1,
+                ToLocationRequired = "O",
+                ToStateRequired = "O",
+                CanBeReversed = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "STGII",
+                        TransactionDefinition = TestTransDefs.StoresToInspection,
+                        TransactionCode = TestTransDefs.StoresToInspection.TransactionCode
                     }
                 }
             };

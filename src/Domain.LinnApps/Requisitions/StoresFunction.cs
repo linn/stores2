@@ -71,6 +71,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public int ProcessStage { get; set; }
 
+        public string ReceiptDateRequired { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public string LinesRequired { get; set;  }
@@ -140,8 +142,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if ((this.FromStateRequired == "Y" || this.FromStateRequired == "O") && this.TransactionsTypes != null)
             {
                 var states = this.TransactionsTypes
-                    .Where(t => !string.IsNullOrEmpty(t.TransactionDefinition?.InspectedState))
-                    .Select(t => t.TransactionDefinition?.InspectedState).ToList();
+                    .Where(t => t.TransactionDefinition.HasDefaultFromState())
+                    .Select(t => t.TransactionDefinition?.DefaultFromState()).ToList();
 
                 if (states.Contains("STORES"))
                 {

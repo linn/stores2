@@ -77,6 +77,8 @@
 
         public int ProcessStage { get; set; }
 
+        public string ReceiptDateRequired { get; set; }
+
         public IEnumerable<string> FromStates { get; set; }
 
         public IEnumerable<string> ToStates { get; set; }
