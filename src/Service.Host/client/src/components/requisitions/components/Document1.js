@@ -225,7 +225,7 @@ function Document1({
                 )}
             </Grid>
             <Grid size={2}>
-                {qtyOutstanding && (
+                {(qtyOutstanding || qtyOutstanding === 0) && (
                     <InputField
                         value={qtyOutstanding}
                         disabled

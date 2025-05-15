@@ -100,6 +100,8 @@
                            DocumentType = po.DocumentType?.Name,
                            SupplierName = po.Supplier?.Name,
                            SupplierId = po.Supplier?.Id,
+                           OverBookAllowed = po.Overbook,
+                           OverBookQty = po.OverbookQty,
                            Details = po.Details.Select(d => new PurchaseOrderDetailResult
                            {
                                Line = d.Line,

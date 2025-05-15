@@ -758,6 +758,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                         var qtyLeft = po.Details.First(a => a.Line == req.Document1Line).Deliveries
                             .Sum(a => a.QuantityOutstanding);
+                        if (po.OverBookAllowed == "Y" && po.OverBookQty.HasValue)
+                        {
+                            qtyLeft += po.OverBookQty.Value;
+                        }
+
                         if (qtyLeft < req.Quantity)
                         {
                             throw new CreateRequisitionException($"The qty remaining on order {document1Number}/{document1Line} is {qtyLeft}. Cannot book {req.Quantity}.");
