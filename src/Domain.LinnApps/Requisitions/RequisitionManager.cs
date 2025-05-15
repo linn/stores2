@@ -722,7 +722,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
 
                 var orderRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
-                if (function.BatchRequired == "Y" && batchRef != orderRef)
+                if (isReverseTransaction != "Y" && function.BatchRequired == "Y" && batchRef != orderRef)
                 {
                     throw new CreateRequisitionException(   
                             "You are trying to pass stock for payment from a different PO");

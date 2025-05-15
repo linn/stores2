@@ -181,13 +181,14 @@ function reducer(state, action) {
             return { ...state, req: { ...state.req, [action.payload.fieldName]: newValue } };
         }
         case 'set_reverse_details': {
-            if (action.payload.reqNumber) {
+            if (action.payload.reqNumber || action.payload.originalReqNumber) {
                 // action.payload is the filled out reversal req that the server returns
                 return {
                     ...state,
                     req: {
                         ...state.req,
-                        originalReqNumber: action.payload.reqNumber,
+                        originalReqNumber:
+                            action.payload.originalReqNumber ?? action.payload.reqNumber,
                         quantity: action.payload.quantity,
                         reference: action.payload.reference,
                         fromState: action.payload.fromState,
