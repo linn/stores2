@@ -23,6 +23,7 @@ function reducer(state, action) {
                 req: {
                     dateCreated: new Date(),
                     dateAuthorised: null,
+                    dateReceived: null,
                     dateBooked: null,
                     lines: [],
                     cancelled: 'N',
@@ -54,7 +55,9 @@ function reducer(state, action) {
                         ...state,
                         req: {
                             ...state.req,
-                            document1Name: state.req.storesFunction?.document1Name,
+                            document1Name: state.req.document1Name
+                                ? state.req.document1Name
+                                : state.req.storesFunction?.document1Name,
                             document1: action.payload.newValue
                         }
                     };
@@ -253,12 +256,38 @@ function reducer(state, action) {
                 }
             }
 
-            return { ...state, document1Details: action.payload, popUpMessage: message };
+            const newToStockPool = action.payload.orderDetail
+                ? action.payload.orderDetail?.stockPoolCode
+                : state.req.toStockPool;
+
+            const doc1Details = action.payload;
+            if (action.payload.orderDetail) {
+                doc1Details.qtyOutstanding = action.payload.orderDetail.purchaseDeliveries.reduce(
+                    (sum, item) => sum + item.quantityOutstanding,
+                    0
+                );
+            }
+
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    document1Name: action.payload.docType,
+                    part: {
+                        partNumber: action.payload.partNumber,
+                        description: action.payload.partDescription
+                    },
+                    document1Line: action.payload.document1Line,
+                    toStockPool: newToStockPool
+                },
+                document1Details: action.payload,
+                popUpMessage: message
+            };
         }
         case 'set_part_details': {
             return { ...state, partDetails: action.payload };
         }
-        case 'set_header_details_for_WO': {
+        case 'set_part_header_details_for_WO': {
             return {
                 ...state,
                 req: {
@@ -267,6 +296,22 @@ function reducer(state, action) {
                     fromStockPool: action.payload.accountingCompany,
                     fromState: 'STORES',
                     toState: action.payload.qcOnReceipt === 'Y' ? 'QC' : 'STORES'
+                }
+            };
+        }
+        case 'set_part_header_details_for_PO': {
+            const newState =
+                state.req.storesFunction?.code === 'BOOKSU'
+                    ? action.payload.qcOnReceipt === 'Y'
+                        ? 'QC'
+                        : 'STORES'
+                    : state.req.toState;
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    toState: newState,
+                    unitOfMeasure: action.payload.ourUnitOfMeasure
                 }
             };
         }

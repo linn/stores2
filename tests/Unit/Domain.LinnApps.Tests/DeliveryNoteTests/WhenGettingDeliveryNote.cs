@@ -13,15 +13,15 @@
 
     public class WhenGettingDeliveryNote : ContextBase
     {
-        private DeliveryNoteDocument Result;
+        private DeliveryNoteDocument result;
 
         [SetUp]
         public void SetUp()
         {
             var line = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.StockToLinnDept)
-            {
-                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) },
-            };
+                           {
+                               Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) }
+                           };
             line.AddPosting("D", 1, TestNominalAccounts.TestNomAcc);
             line.AddPosting("C", 1, TestNominalAccounts.AssetsRawMat);
 
@@ -40,18 +40,24 @@
             req.AddLine(line);
             this.RequisitionRepository.FindByIdAsync(1234).Returns(req);
 
-            var address = new Address("MAGGIES FARM", "1 Dylan Drive", "Fort Adams State Park", "Newport", string.Empty,
-                "RI 20840", new Country("US", "UNITED STATES OF MERICA"));
+            var address = new Address(
+                "MAGGIES FARM",
+                "1 Dylan Drive",
+                "Fort Adams State Park",
+                "Newport",
+                string.Empty,
+                "RI 20840",
+                new Country("US", "UNITED STATES OF MERICA"));
             this.SupplierProxy.GetSupplierAddress(1234).Returns(address);
 
-            this.Result = this.Sut.GetDeliveryNote(1234).Result;
+            this.result = this.Sut.GetDeliveryNote(1234).Result;
         }
 
         [Test]
         public void ShouldReturnBookedReq()
         {
-            this.Result.Should().NotBeNull();
-            this.Result.DocumentNumber.Should().Be(1234);
+            this.result.Should().NotBeNull();
+            this.result.DocumentNumber.Should().Be(1234);
         }
     }
 }

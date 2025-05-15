@@ -611,7 +611,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
             int? originalDocumentNumber = null,
-            IEnumerable<BookInOrderDetail> bookInOrderDetails = null)
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
+            DateTime? dateReceived = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
@@ -665,7 +666,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 null,
                 null,
                 isReverseTransaction ?? "N",
-                originalDocumentNumber);
+                originalDocumentNumber,
+                dateReceived);
 
             if (functionCode == "LOAN OUT")
             {
@@ -737,6 +739,34 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         part,
                         bookInOrderDetails?.ToList());
                 }
+
+                if (function.FunctionCode == "BOOKSU")
+                {
+                    if (part.StockControlled != "Y")
+                    {
+                        throw new CreateRequisitionException($"{function.FunctionCode} requires part to be stock controlled and {part.PartNumber} is not.");
+                    }
+
+                    if (!req.IsReverseTrans())
+                    {
+                        if (req.Quantity < 0)
+                        {
+                            throw new CreateRequisitionException($"Cannot book a negative quantity against order {document1Number}.");
+                        }
+
+                        var qtyLeft = po.Details.First(a => a.Line == req.Document1Line).Deliveries
+                            .Sum(a => a.QuantityOutstanding);
+                        if (po.OverBookAllowed == "Y" && po.OverBookQty.HasValue)
+                        {
+                            qtyLeft += po.OverBookQty.Value;
+                        }
+
+                        if (qtyLeft < req.Quantity)
+                        {
+                            throw new CreateRequisitionException($"The qty remaining on order {document1Number}/{document1Line} is {qtyLeft}. Cannot book {req.Quantity}.");
+                        }
+                    }
+                }
             }
             else if (function.PartSource == "RO")
             {
@@ -747,7 +777,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException($"RO {document1Number} does not exist!");
                 }
 
-                // not a seperate part source for credit orders get lumped in with RO
+                // not a separate part source for credit orders get lumped in with RO
                 if (ro.DocumentType != "RO" && ro.DocumentType != "CO")
                 {
                     throw new CreateRequisitionException($"Order {document1Number} is not a returns/credit order!");
@@ -786,6 +816,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     DoProcessResultCheck(
                         await this.storesService.ValidReverseQuantity(req.OriginalReqNumber.Value, req.Quantity.Value));
                 }
+            }
+
+            if (function.ReceiptDateRequired == "Y" && !req.DateReceived.HasValue)
+            {
+                throw new RequisitionException($"A receipt date is required for function {function.FunctionCode}.");
             }
 
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C" && function.LinesRequired != "N")

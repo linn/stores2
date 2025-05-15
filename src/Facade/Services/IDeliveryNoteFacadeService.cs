@@ -4,7 +4,6 @@
 
     public interface IDeliveryNoteFacadeService
     {
-        Task<string> GetDeliveryNoteAsHtml(
-            int reqNumber);
+        Task<string> GetDeliveryNoteAsHtml(int reqNumber);
     }
 }

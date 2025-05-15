@@ -398,23 +398,6 @@ function Requisition({ creating }) {
 
     const handleDocument1Select = selected => {
         dispatch({
-            type: 'set_header_value',
-            payload: {
-                fieldName: 'part',
-                newValue: {
-                    partNumber: selected.partNumber,
-                    description: selected.partDescription
-                }
-            }
-        });
-        dispatch({
-            type: 'set_header_value',
-            payload: {
-                fieldName: 'document1Line',
-                newValue: selected.document1Line
-            }
-        });
-        dispatch({
             type: 'set_document1_details',
             payload: selected
         });
@@ -475,7 +458,14 @@ function Requisition({ creating }) {
 
         if (formState.req?.storesFunction?.partSource === 'WO') {
             dispatch({
-                type: 'set_header_details_for_WO',
+                type: 'set_part_header_details_for_WO',
+                payload: part
+            });
+        }
+
+        if (formState.req?.storesFunction?.partSource === 'PO') {
+            dispatch({
+                type: 'set_part_header_details_for_PO',
                 payload: part
             });
         }
@@ -929,6 +919,7 @@ function Requisition({ creating }) {
                                 onSelectPart={handleDocument1PartSelect}
                                 document1Details={formState.document1Details}
                                 storesFunction={formState.req.storesFunction}
+                                qtyOutstanding={formState.document1Details?.qtyOutstanding}
                             />
                             <Document2
                                 document2={formState.req.document2}
@@ -1055,8 +1046,9 @@ function Requisition({ creating }) {
                                     const isMoveFunction =
                                         formState.req.storesFunction?.code === 'MOVE';
                                     const isLocationRequired =
-                                        formState.req.fromLocationRequired !== 'N' ||
-                                        formState.req.toLocationRequired !== 'N';
+                                        formState.req.storesFunction?.fromLocationRequired !==
+                                            'N' ||
+                                        formState.req.storesFunction?.toLocationRequired !== 'N';
                                     const isLoanOutWhileCreating =
                                         formState.req.storesFunction?.code === 'LOAN OUT' &&
                                         creating;
@@ -1089,6 +1081,24 @@ function Requisition({ creating }) {
                                     propertyName="comments"
                                 />
                             </Grid>
+                            {shouldRender(
+                                () => formState.req.storesFunction?.receiptDateRequired === 'Y'
+                            ) && (
+                                <>
+                                    <Grid size={2}>
+                                        <DatePicker
+                                            value={formState.req.dateReceived}
+                                            onChange={newDate =>
+                                                handleHeaderFieldChange('dateReceived', newDate)
+                                            }
+                                            disabled={!creating}
+                                            label="Date Received"
+                                            propertyName="dateReceived"
+                                        />
+                                    </Grid>
+                                    <Grid size={10} />
+                                </>
+                            )}
                             <Grid size={12}>
                                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                     <Tabs value={tab} onChange={handleChange}>

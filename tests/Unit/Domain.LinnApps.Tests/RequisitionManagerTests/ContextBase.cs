@@ -94,6 +94,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 .Returns(new ProcessResult(true, "State ok"));
             this.StoresService.ValidDepartmentNominal("0000011111", "0000022222")
                 .Returns(new ProcessResult(true, "ok"));
+            this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
 
             this.Sut = new RequisitionManager(
                 this.AuthService, 

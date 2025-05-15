@@ -15,5 +15,9 @@
         public IEnumerable<PurchaseOrderDetailResource> Details { get; set; }
 
         public SupplierResource Supplier { get; set; }
+
+        public string Overbook { get; set; }
+
+        public decimal? OverbookQty { get; set; }
     }
 }

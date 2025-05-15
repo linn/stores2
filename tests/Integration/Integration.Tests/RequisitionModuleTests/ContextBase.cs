@@ -5,8 +5,8 @@
     using Linn.Common.Authorisation;
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Labels;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
