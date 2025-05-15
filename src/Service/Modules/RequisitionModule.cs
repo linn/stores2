@@ -37,11 +37,8 @@ namespace Linn.Stores2.Service.Modules
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
-<<<<<<< HEAD
             app.MapGet("/requisitions/{reqNumber:int}/preview-reversal", this.GetReversalPreview);
-=======
             app.MapGet("/delivery-note/{reqNumber:int}", this.GetDeliveryNoteHtml);
->>>>>>> main
         }
 
         private async Task Search(
