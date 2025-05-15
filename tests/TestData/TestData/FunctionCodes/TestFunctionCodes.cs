@@ -396,6 +396,7 @@
                     PartSource = "PO",
                     ProcessStage = 2,
                     Document1RequiredFlag = "Y",
+
                     Document1LineRequiredFlag = "O",
                     FunctionType = "A",
                     ToStateRequired = "X",

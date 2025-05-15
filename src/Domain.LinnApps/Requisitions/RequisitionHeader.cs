@@ -182,25 +182,25 @@
             {
                 if (this.Document1Name != isReversalOf.Document1Name)
                 {
-                    throw new RequisitionException("Cannot reverse req with a different document1 type");
+                    throw new CreateRequisitionException("Cannot reverse req with a different document1 type");
                 }
 
                 if (this.Document1 != isReversalOf.Document1)
                 {
-                    throw new RequisitionException("Cannot reverse req with a different document1 number");
+                    throw new CreateRequisitionException("Cannot reverse req with a different document1 number");
                 }
 
                 if (isReversalOf.IsReversed == "Y")
                 {
-                    throw new RequisitionException($"req {isReversalOf.ReqNumber} is already reversed!");
+                    throw new CreateRequisitionException($"req {isReversalOf.ReqNumber} is already reversed!");
                 }
                 
                 this.OriginalReqNumber = isReversalOf.ReqNumber;
                 this.Quantity = isReversalOf.Quantity * -1;
                 this.Reference = isReversalOf.Reference;
                 this.FromState = isReversalOf.FromState;
-                this.FromStockPool = isReversalOf.FromStockPool;
-                this.ToStockPool = this.StoresFunction.FromStockPoolRequired == "Y" ? isReversalOf.FromStockPool : fromStockPool;
+                this.ToStockPool = isReversalOf.ToStockPool;
+                this.FromStockPool = this.StoresFunction.FromStockPoolRequired == "Y" ? isReversalOf.FromStockPool : fromStockPool;
                 this.BatchRef = this.StoresFunction.FunctionCode == "LOAN BACK"
                     ? $"Q{isReversalOf.ReqNumber}" : batchRef;
                 this.BatchDate = this.StoresFunction.FunctionCode == "LOAN BACK"

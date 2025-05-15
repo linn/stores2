@@ -1,10 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
     using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -16,12 +18,12 @@
 
     using NUnit.Framework;
 
-    public class WhenValidatingGistPo : ContextBase
+    public class WhenValidatingGistPoAndBatchRefNotMatchDocumentNumber : ContextBase
     {
-        private RequisitionHeader result;
+        private Func<Task> act;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.GistPo.FunctionCode)
@@ -34,9 +36,9 @@
             this.DocumentProxy.GetPurchaseOrder(1234567).Returns(
                 new PurchaseOrderResult
                 {
-                    IsAuthorised = true, 
-                    IsFilCancelled = false, 
-                    OrderNumber = 1234567, 
+                    IsAuthorised = true,
+                    IsFilCancelled = false,
+                    OrderNumber = 1234568,
                     DocumentType = "PO"
                 });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "Stores"));
@@ -48,7 +50,7 @@
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
             this.StockService.ValidStockLocation(null, 666, "PART", 10, "QC")
                 .Returns(new ProcessResult(true, null));
-            this.result = await this.Sut.Validate(
+            this.act = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.GistPo.FunctionCode,
                 null,
@@ -68,10 +70,12 @@
                 toPalletNumber: 666);
         }
 
+
         [Test]
-        public void ShouldReturnValidated()
+        public async Task ShouldThrow()
         {
-            this.result.Should().NotBeNull();
+            await this.act.Should().ThrowAsync<CreateRequisitionException>()
+                .WithMessage("You are trying to pass stock for payment from a different PO");
         }
     }
 }

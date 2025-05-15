@@ -198,8 +198,8 @@ namespace Linn.Stores2.Facade.Services
                     toBeReversed.Department,
                     toBeReversed.Nominal,
                     isReverseTrans: "Y",
-                    isReversalOf: toBeReversed
-                    );
+                    isReversalOf: toBeReversed);
+
                 var resource = this.BuildResource(reversalPreview, null);
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }
