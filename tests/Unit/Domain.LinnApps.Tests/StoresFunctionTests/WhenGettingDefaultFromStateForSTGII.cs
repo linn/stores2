@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using Linn.Stores2.Domain.LinnApps.Stores;
-using Linn.Stores2.TestData.Transactions;
-using NUnit.Framework;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
 {
+    using System.Collections.Generic;
+    using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stores;
+    using NUnit.Framework;
+
     public class WhenGettingDefaultFromStateForSTGII
     {
         private StoresFunction sut;
