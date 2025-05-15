@@ -614,5 +614,33 @@
                     }
                 }
             };
+
+        public static readonly StoresFunction StoresToInspection =
+            new StoresFunction("STGII")
+            {
+                Description = "ISSUE PARTS FROM STORES TO INSPECTION FOR CHECKING",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "N",
+                Document1RequiredFlag = "N",
+                Document1LineRequiredFlag = "N",
+                FromStockPoolRequired = "O",
+                FromStateRequired = "O",
+                FunctionType = "A",
+                ManualPickRequired = "M",
+                PartSource = "IP",
+                ProcessStage = 1,
+                ToLocationRequired = "O",
+                ToStateRequired = "O",
+                CanBeReversed = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "STGII",
+                        TransactionDefinition = TestTransDefs.StoresToInspection,
+                        TransactionCode = TestTransDefs.StoresToInspection.TransactionCode
+                    }
+                }
+            };
     }
 }
