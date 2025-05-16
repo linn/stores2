@@ -25,6 +25,10 @@
 
         private readonly IRepository<NominalAccount, int> nominalAccountRepository;
 
+        private readonly IRepository<PartsStorageType, int> partStorageTypeRepository;
+
+        private readonly IRepository<StorageLocation, int> storageLocationRepository;
+
         // This service is intended for stores_oo replacement methods that are not
         // suitable to be written in the requisition class itself
         public StoresService(
@@ -33,7 +37,9 @@
             IRepository<StoresBudget, int> storesBudgetRepository,
             IRepository<StockLocator, int> stockLocatorRepository,
             IRepository<RequisitionHeader, int> requisitionRepository,
-            IRepository<NominalAccount, int> nominalAccountRepository)
+            IRepository<NominalAccount, int> nominalAccountRepository,
+            IRepository<PartsStorageType, int> partStorageTypeRepository,
+            IRepository<StorageLocation, int> storageLocationRepository)
         {
             this.stockService = stockService;
             this.storesTransactionStateRepository = storesTransactionStateRepository;
@@ -41,6 +47,8 @@
             this.stockLocatorRepository = stockLocatorRepository;
             this.requisitionRepository = requisitionRepository;
             this.nominalAccountRepository = nominalAccountRepository;
+            this.partStorageTypeRepository = partStorageTypeRepository;
+            this.storageLocationRepository = storageLocationRepository;
         }
 
         public async Task<ProcessResult> ValidOntoLocation(
@@ -313,6 +321,29 @@
             }
 
             return new ProcessResult(true, $"Department / Nominal {departmentCode} / {nominalCode} are a valid combination for stores");
+        }
+
+        public async Task<StorageLocation> DefaultBookInLocation(string partNumber)
+        {
+            // stores_oo.default_bookin_location
+            var storageType = await this.partStorageTypeRepository.FindByAsync(a => a.PartNumber == partNumber);
+
+            if (storageType == null)
+            {
+                return null;
+            }
+
+            if (storageType.StorageTypeCode.StartsWith("K1"))
+            {
+                return await this.storageLocationRepository.FindByAsync(a => a.LocationCode == "E-GI-K1");
+            }
+
+            if (storageType.StorageTypeCode.StartsWith("K2"))
+            {
+                return await this.storageLocationRepository.FindByAsync(a => a.LocationCode == "E-GI-K2");
+            }
+
+            return null;
         }
     }
 }

@@ -217,11 +217,11 @@ function PickStockDialog({
     };
 
     const checkRowSelect = params => {
-        if (!rowSelectionModel.length) {
+        if (!rowSelectionModel?.ids.size) {
             return true;
         }
 
-        const exampleRow = moves[rowSelectionModel[0]];
+        const exampleRow = moves[rowSelectionModel.ids.values().next().value];
 
         if (
             params.row.locationId &&

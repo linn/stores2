@@ -754,6 +754,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         throw new CreateRequisitionException($"{function.FunctionCode} requires part to be stock controlled and {part.PartNumber} is not.");
                     }
 
+                    if (po.DocumentType == "CO")
+                    {
+                        throw new CreateRequisitionException("Cannot book in parts against a credit order (CO).");
+                    }
+
                     if (!req.IsReverseTrans())
                     {
                         if (req.Quantity < 0)
@@ -809,7 +814,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     document1Line);
 
                 await this.CheckDocumentLineForOverAndFullyBooked(req, document);
-            }
+            } 
 
             if (req.IsReverseTrans() && req.Quantity != null)
             {
