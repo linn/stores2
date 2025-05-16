@@ -20,25 +20,33 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
 
     const [isSelectingPart, setIsSelectingPart] = useState(false);
 
-    const handlePartSelect = () => {
-        if (searchTerm) {
+    const handlePartTab = () => {
+        if (searchTerm?.length) {
             setIsSelectingPart(true);
             search(searchTerm.trim().toUpperCase());
         }
     };
 
     useEffect(() => {
-        if (results?.length === 1 && isSelectingPart) {
-            handleSearchResultSelect(results[0]);
-            clear();
+        if (results?.length && isSelectingPart) {
+            const exactMatch = results.find(x => searchTerm?.toUpperCase() === x.partNumber);
+            if (exactMatch) {
+                handleSearchResultSelect(exactMatch);
+                clear();
+                setSearchDialogOpen(false);
+            } else if (results?.length === 1) {
+                handleSearchResultSelect(results[0]);
+                clear();
+                setSearchDialogOpen(false);
+            }
             setIsSelectingPart(false);
-            setSearchDialogOpen(false);
         }
     }, [
         results,
         handleSearchResultSelect,
         clear,
         isSelectingPart,
+        searchTerm,
         setIsSelectingPart,
         setSearchDialogOpen
     ]);
@@ -54,7 +62,7 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
                     // resultsInModal
                     resultLimit={100}
                     helperText="<Enter> to search or <Tab> to select if you have entered a known part number"
-                    onKeyPressFunctions={[{ keyCode: 9, action: handlePartSelect }]}
+                    onKeyPressFunctions={[{ keyCode: 9, action: handlePartTab }]}
                     value={searchTerm}
                     loading={loading}
                     handleValueChange={(_, newVal) => setSearchTerm(newVal)}

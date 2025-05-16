@@ -127,7 +127,11 @@ function reducer(state, action) {
                         storesFunction: action.payload.newValue
                     }
                 };
-
+                // set default reqType = F - From Stock for LDREQs
+                // todo - maybe this applies for more function codes?
+                if (action.payload.newValue.code === 'LDREQ') {
+                    newState.req.reqType = 'F';
+                }
                 if (action.payload.newValue.manualPickRequired) {
                     const mapping = { M: 'Y', A: 'N', X: null };
                     newState.req.manualPick = mapping[action.payload.newValue.manualPickRequired];
