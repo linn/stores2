@@ -814,7 +814,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     document1Line);
 
                 await this.CheckDocumentLineForOverAndFullyBooked(req, document);
-            } 
+            }
 
             if (req.IsReverseTrans() && req.Quantity != null)
             {
