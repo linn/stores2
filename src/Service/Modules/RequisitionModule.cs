@@ -1,7 +1,6 @@
-﻿using System.Net;
-
-namespace Linn.Stores2.Service.Modules
+﻿namespace Linn.Stores2.Service.Modules
 {
+    using System.Net;
     using System.Threading.Tasks;
 
     using Linn.Common.Service.Core;
@@ -38,6 +37,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapPost("/requisitions/{reqNumber}", this.Update);
             app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
             app.MapGet("/requisitions/{reqNumber:int}/preview-reversal", this.GetReversalPreview);
+            app.MapGet("/requisitions/default-book-in-location", this.GetDefaultBookInLocation);
             app.MapGet("/delivery-note/{reqNumber:int}", this.GetDeliveryNoteHtml);
         }
 
@@ -94,6 +94,15 @@ namespace Linn.Stores2.Service.Modules
             IRequisitionFacadeService service)
         {
             await res.Negotiate(await service.GetReversalPreview(reqNumber));
+        }
+
+        private async Task GetDefaultBookInLocation(
+            HttpRequest req,
+            HttpResponse res,
+            string partNumber,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.GetDefaultBookInLocation(partNumber));
         }
 
         private async Task Cancel(

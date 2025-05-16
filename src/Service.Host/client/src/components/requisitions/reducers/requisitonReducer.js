@@ -230,6 +230,20 @@ function reducer(state, action) {
                 }
             };
         }
+        case 'set_default_book_in_location': {
+            if (!state.req.toLocationId && action.payload.locationId) {
+                return {
+                    ...state,
+                    req: {
+                        ...state.req,
+                        toLocationId: action.payload.locationId,
+                        toLocationCode: action.payload.locationCode
+                    }
+                };
+            } else {
+                return state;
+            }
+        }
         case 'set_document1_details': {
             const message = { showMessage: false };
             if (action.payload && state.req.storesFunction?.code === 'BOOKLD') {

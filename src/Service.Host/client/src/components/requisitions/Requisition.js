@@ -66,6 +66,12 @@ function Requisition({ creating }) {
         clearData: clearReversalPreviewResult
     } = useGet(config.appRoot, true);
 
+    const {
+        send: getDefaultBookInLocation,
+        result: defaultBookInLocationResult,
+        clearData: clearDefaultBookInLocationResult
+    } = useGet(itemTypes.getDefaultBookInLocation.url, true);
+
     useEffect(() => {
         if (fetchReversalPreviewResult) {
             dispatch({
@@ -91,6 +97,17 @@ function Requisition({ creating }) {
         isLoading: codesLoading,
         result: functionCodes
     } = useGet(itemTypes.functionCodes.url, true);
+
+    useEffect(() => {
+        if (defaultBookInLocationResult) {
+            dispatch({
+                type: 'set_default_book_in_location',
+                payload: defaultBookInLocationResult
+            });
+
+            clearDefaultBookInLocationResult();
+        }
+    }, [clearDefaultBookInLocationResult, defaultBookInLocationResult]);
 
     if ((!hasFetched || (reqNumber && hasFetched !== reqNumber)) && token) {
         if (!creating && reqNumber) {
@@ -428,6 +445,10 @@ function Requisition({ creating }) {
             selected.document1Line
         ) {
             setBookInPostingsDialogVisible(true);
+        }
+
+        if (formState.req.storesFunction?.code === 'BOOKSU' && selected.partNumber) {
+            getDefaultBookInLocation(null, `?partNumber=${selected.partNumber}`);
         }
 
         if (selected.batchRef) {
