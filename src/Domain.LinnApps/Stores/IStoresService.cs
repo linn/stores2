@@ -33,5 +33,8 @@
 
         // stores_oo.valid_dept_nom
         Task<ProcessResult> ValidDepartmentNominal(string departmentCode, string nominalCode);
+
+        // stores_oo.default_bookin_location
+        Task<StorageLocation> DefaultBookInLocation(string partNumber);
     }
 }

@@ -11,7 +11,10 @@
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
+    using Linn.Stores2.Facade.ResourceBuilders;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionFacadeService
@@ -24,6 +27,8 @@
 
         private readonly IRepository<RequisitionHistory, int> reqHistoryRepository;
 
+        private readonly IStoresService storesService;
+
         private readonly ITransactionManager transactionManager;
 
         private readonly IRepository<RequisitionHeader, int> reqRepository;
@@ -34,13 +39,15 @@
             IBuilder<RequisitionHeader> resourceBuilder,
             IRequisitionManager requisitionManager,
             IRequisitionFactory requisitionFactory,
-            IRepository<RequisitionHistory, int> reqHistoryRepository)
+            IRepository<RequisitionHistory, int> reqHistoryRepository,
+            IStoresService storesService)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionManager = requisitionManager;
             this.transactionManager = transactionManager;
             this.requisitionFactory = requisitionFactory;
             this.reqHistoryRepository = reqHistoryRepository;
+            this.storesService = storesService;
             this.reqRepository = repository;
         }
         
@@ -209,6 +216,19 @@
             }
         }
 
+        public async Task<IResult<StorageLocationResource>> GetDefaultBookInLocation(string partNumber)
+        {
+            var result = await this.storesService.DefaultBookInLocation(partNumber);
+
+            if (result == null)
+            {
+                return new SuccessResult<StorageLocationResource>(null);
+            }
+
+            var builder = new StorageLocationResourceBuilder();
+            return new SuccessResult<StorageLocationResource>(builder.Build(result, new List<string>()));
+        }
+
         protected override async Task<RequisitionHeader> CreateFromResourceAsync(
             RequisitionHeaderResource resource,
             IEnumerable<string> privileges = null)
@@ -246,7 +266,8 @@
                              resource.IsReverseTransaction,
                              resource.OriginalReqNumber,
                              resource.Document3,
-                             resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource));
+                             resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
+                             dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived));
       
             return result;
         }

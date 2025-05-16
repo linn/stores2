@@ -38,6 +38,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
 
         protected IRepository<NominalAccount, int> NominalAccountRepository { get; private set; }
 
+        protected IRepository<PartsStorageType, int> PartStorageTypeRepository { get; private set; }
+
+        protected IRepository<StorageLocation, int> StorageLocationRepository { get; private set; }
+
         [SetUp]
         public void SetUpServiceContext()
         {
@@ -51,6 +55,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
             this.StockLocatorRepository = Substitute.For<IRepository<StockLocator, int>>();
             this.RequisitionRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
             this.NominalAccountRepository = Substitute.For<IRepository<NominalAccount, int>>();
+            this.PartStorageTypeRepository = Substitute.For<IRepository<PartsStorageType, int>>();
+            this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
 
             this.Sut = new StoresService(
                 this.StockService, 
@@ -58,7 +64,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
                 this.StoresBudgetRepository,
                 this.StockLocatorRepository,
                 this.RequisitionRepository,
-                this.NominalAccountRepository);
+                this.NominalAccountRepository,
+                this.PartStorageTypeRepository,
+                this.StorageLocationRepository);
         }
     }
 }

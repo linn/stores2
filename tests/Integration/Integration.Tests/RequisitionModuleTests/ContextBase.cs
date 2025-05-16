@@ -7,6 +7,7 @@
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -43,6 +44,8 @@
 
         protected IDeliveryNoteFacadeService DeliveryNoteFacadeService { get; private set; }
 
+        protected IStoresService StoresService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -55,13 +58,15 @@
             this.RequisitionFactory = Substitute.For<IRequisitionFactory>();
             this.RequisitionHistoryRepository = Substitute.For<IRepository<RequisitionHistory, int>>();
             this.SundryBookInDetailRepository = Substitute.For<IQueryRepository<SundryBookInDetail>>();
+            this.StoresService = Substitute.For<IStoresService>();
             IRequisitionFacadeService requisitionFacadeService = new RequisitionFacadeService(
                 requisitionRepository,
                 transactionManager,
                 new RequisitionResourceBuilder(this.AuthorisationService),
                 this.ReqManager,
                 this.RequisitionFactory,
-                this.RequisitionHistoryRepository);
+                this.RequisitionHistoryRepository,
+                this.StoresService);
 
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
                 StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(

@@ -32,7 +32,8 @@ const itemTypes = {
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
     worksOrder: { url: `${config.proxyRoot}/production/works-orders` },
     debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
-    printQcLabels: { url: `${config.appRoot}/requisitions/print-qc-labels` }
+    printQcLabels: { url: `${config.appRoot}/requisitions/print-qc-labels` },
+    getDefaultBookInLocation: { url: `${config.appRoot}/requisitions/default-book-in-location` }
 };
 
 export default itemTypes;
