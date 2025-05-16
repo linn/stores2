@@ -36,29 +36,29 @@
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "STGII",
-                        TransactionDefinition =             new StoresTransactionDefinition
-                        {
-                            TransactionCode = "STGII",
-                            Description = "ISSUE PARTS FROM STORES TO INSPECTION FOR CHECKING",
-                            StockAllocations = "N",
-                            OntoTransactions = "Y",
-                            DecrementTransaction = "N",
-                            TakePriceFrom = "P",
-                            RequiresAuth = "N",
-                            FromState = "STORES",
-                            InspectedState = "FAIL",
-                            StoresTransactionPostings = new List<StoresTransactionPosting>
-                            {
-                                new StoresTransactionPosting("STGII", "C", null),
-                                new StoresTransactionPosting("STGII", "D", null)
-                            },
-                            StoresTransactionStates = new List<StoresTransactionState>
-                            {
-                                new StoresTransactionState("O", "STGII", "FAIL"),
-                                new StoresTransactionState("O", "STGII", "QC"),
-                                new StoresTransactionState("F", "STGII", "STORES"),
-                            }
-                        },
+                        TransactionDefinition = new StoresTransactionDefinition
+                                                    {
+                                                        TransactionCode = "STGII",
+                                                        Description = "ISSUE PARTS FROM STORES TO INSPECTION FOR CHECKING",
+                                                        StockAllocations = "N",
+                                                        OntoTransactions = "Y",
+                                                        DecrementTransaction = "N",
+                                                        TakePriceFrom = "P",
+                                                        RequiresAuth = "N",
+                                                        FromState = "STORES",
+                                                        InspectedState = "FAIL",
+                                                        StoresTransactionPostings = new List<StoresTransactionPosting>
+                                                            {
+                                                                new StoresTransactionPosting("STGII", "C", null),
+                                                                new StoresTransactionPosting("STGII", "D", null)
+                                                            },
+                                                        StoresTransactionStates = new List<StoresTransactionState>
+                                                            {
+                                                                new StoresTransactionState("O", "STGII", "FAIL"),
+                                                                new StoresTransactionState("O", "STGII", "QC"),
+                                                                new StoresTransactionState("F", "STGII", "STORES"),
+                                                            }
+                                                    },
                         TransactionCode = "STGII"
                     }
                 }
