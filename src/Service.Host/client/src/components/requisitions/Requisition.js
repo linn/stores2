@@ -1271,6 +1271,7 @@ function Requisition({ creating }) {
                                 <PickRequisitionDialog
                                     open={pickRequisitionDialogVisible}
                                     setOpen={setPickRequisitionDialogVisible}
+                                    functionCode={formState.req.storesFunction?.code}
                                     documentNumber={formState.req.document1}
                                     documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {

@@ -830,7 +830,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
             }
 
-            if (function.ReceiptDateRequired == "Y" && !req.DateReceived.HasValue)
+            if (function.ReceiptDateRequired == "Y"  && !req.IsReverseTrans() && !req.DateReceived.HasValue)
             {
                 throw new RequisitionException($"A receipt date is required for function {function.FunctionCode}.");
             }
