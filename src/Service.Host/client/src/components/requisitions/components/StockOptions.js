@@ -181,7 +181,7 @@ function StockOptions({
                 </>
             )}
             <Grid size={2}>
-                {functionCode?.toStates && functionCode?.toStateRequired !== 'N' && (
+                {functionCode?.toStates && (functionCode?.toStateRequired !== 'N' || toState) && (
                     <Dropdown
                         value={toState}
                         disabled={disabled}
