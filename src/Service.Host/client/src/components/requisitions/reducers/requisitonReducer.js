@@ -562,6 +562,32 @@ function reducer(state, action) {
                     })
                 }
             };
+        case 'add_serial_number':
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line =>
+                        line.lineNumber === action.payload.lineNumbto
+                            ? {
+                                  ...line,
+                                  serialNumbers: [
+                                      ...(line.serialNumbers ? line.serialNumbers : []),
+                                      {
+                                          lineNumber: action.payload.lineNumber,
+                                          seq: line.moves ? line.moves.length + 1 : 1,
+                                          toStockPool: 'LINN',
+                                          toState: 'STORES',
+                                          part: line.part.partNumber,
+                                          isFrom: true,
+                                          isTo: true
+                                      }
+                                  ]
+                              }
+                            : line
+                    )
+                }
+            };
         case 'close_message':
             return {
                 ...state,

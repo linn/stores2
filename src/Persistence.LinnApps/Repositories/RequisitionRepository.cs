@@ -49,6 +49,7 @@
                 .Include(r => r.Lines).ThenInclude(r => r.Moves).ThenInclude(m => m.Location)
                 .Include(r => r.Lines).ThenInclude(r => r.Moves).ThenInclude(m => m.StockLocator)
                 .ThenInclude(l => l.StorageLocation)
+                .Include(r => r.Lines).ThenInclude(r => r.SerialNumbers)
                 .FirstOrDefaultAsync(r => r.ReqNumber == key);
         }
 

@@ -33,6 +33,7 @@ import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import MovesTab from './MovesTab';
 import TransactionsTab from './TransactionsTab';
+import SerialNumbersTab from './SerialNumbersTab';
 import BookedBy from './components/BookedBy';
 import AuthBy from './components/AuthBy';
 import DepartmentNominal from './components/DepartmentNominal';
@@ -520,6 +521,13 @@ function Requisition({ creating }) {
             (formState?.req?.manualPick && formState?.req?.reqreqType === 'O'));
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.req?.storesFunction?.code === 'MOVE';
+
+    const canAddSerialNumbers =
+        selectedLine && !formState?.req?.cancelled !== 'Y' && !formState?.req?.dateBooked;
+
+    const requiresSerialNumbers =
+        formState?.req?.storesFunction?.code === 'ON DEM' ||
+        formState?.req?.storesFunction?.code === 'OFF DEM';
 
     const debouncedFormState = useDebounceValue(formState);
 
@@ -1153,6 +1161,12 @@ function Requisition({ creating }) {
                                                 )?.moves?.length
                                             }
                                         />
+                                        {requiresSerialNumbers && (
+                                            <Tab
+                                                label={`Serial Numbers (L${selectedLine ?? ''})`}
+                                                disabled={!selectedLine}
+                                            />
+                                        )}
                                     </Tabs>
                                 </Box>
                             </Grid>
@@ -1245,6 +1259,27 @@ function Requisition({ creating }) {
                                             formState.req.lines?.find(
                                                 x => x.lineNumber === selectedLine
                                             )?.storesBudgets
+                                        }
+                                    />
+                                )}
+                                {tab === 3 && requiresSerialNumbers && (
+                                    <SerialNumbersTab
+                                        serialNumbers={
+                                            formState.req.lines?.find(
+                                                x => x.lineNumber === selectedLine
+                                            )?.serialNumbers
+                                        }
+                                        addSerialNumber={
+                                            canAddSerialNumbers
+                                                ? () => {
+                                                      dispatch({
+                                                          type: 'add_serial_number',
+                                                          payload: {
+                                                              lineNumber: selectedLine
+                                                          }
+                                                      });
+                                                  }
+                                                : null
                                         }
                                     />
                                 )}
