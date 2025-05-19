@@ -158,18 +158,22 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string DefaultToState()
         {
-            if ((this.ToStateRequired == "Y" || this.ToStateRequired == "O" || this.FunctionCode == "SUKIT") && this.TransactionsTypes != null)
+            if (this.TransactionsTypes != null)
             {
-                var states = this.TransactionsTypes
-                    .Where(t => !string.IsNullOrEmpty(t.TransactionDefinition?.InspectedState))
-                    .Select(t => t.TransactionDefinition?.InspectedState).ToList();
-              
-                if (states.Contains("STORES"))
+                if (this.ToStateRequired == "Y" || this.ToStateRequired == "O" || this.FunctionCode == "SUKIT" ||
+                     this.TransactionsTypes.All(t => t.TransactionDefinition.HasDefaultToState()))
                 {
-                    return "STORES";
-                }
+                    var states = this.TransactionsTypes
+                        .Where(t => t.TransactionDefinition.HasDefaultToState())
+                        .Select(t => t.TransactionDefinition.DefaultToState()).ToList();
 
-                return states.FirstOrDefault();
+                    if (states.Contains("STORES"))
+                    {
+                        return "STORES";
+                    }
+
+                    return states.FirstOrDefault();
+                }
             }
 
             return string.Empty;

@@ -357,8 +357,8 @@ function reducer(state, action) {
                     ? lineTransactionType.fromStates[0]
                     : null;
             headerToState =
-                lineTransactionType?.toStates?.length === 1
-                    ? lineTransactionType.fromStates[0]
+                lineTransactionType?.toStates?.length === 1 && !state.req.toState
+                    ? lineTransactionType.toStates[0]
                     : null;
 
             // use the next available line number

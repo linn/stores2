@@ -643,5 +643,63 @@
                     }
                 }
             };
+
+        public static readonly StoresFunction OnDem =
+            new StoresFunction("ON DEM")
+            {
+                Description = "MOVE STOCK FROM LINN STORE TO DEMONSTRATION",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "N",
+                Document1RequiredFlag = "N",
+                Document1LineRequiredFlag = "N",
+                FromStockPoolRequired = "O",
+                FromStateRequired = "O",
+                FunctionType = "M",
+                ManualPickRequired = "M",
+                PartSource = "N",
+                ProcessStage = 1,
+                ToStockPoolRequired = "O",
+                ToLocationRequired = "O",
+                ToStateRequired = "N",
+                CanBeReversed = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "ON DEM",
+                        TransactionDefinition = TestTransDefs.MoveToDem,
+                        TransactionCode = TestTransDefs.MoveToDem.TransactionCode
+                    }
+                }
+            };
+
+        public static readonly StoresFunction OffDem =
+            new StoresFunction("OFF DEM")
+            {
+                Description = "MOVE DEMONSTRATION STOCK BACK TO LINN",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "N",
+                Document1RequiredFlag = "N",
+                Document1LineRequiredFlag = "N",
+                FromStockPoolRequired = "O",
+                FromStateRequired = "O",
+                FunctionType = "M",
+                ManualPickRequired = "M",
+                PartSource = "N",
+                ProcessStage = 1,
+                ToStockPoolRequired = "O",
+                ToLocationRequired = "O",
+                ToStateRequired = "N",
+                CanBeReversed = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "OFF DEM",
+                        TransactionDefinition = TestTransDefs.MoveDemToStock,
+                        TransactionCode = TestTransDefs.MoveDemToStock.TransactionCode
+                    }
+                }
+            };
     }
 }

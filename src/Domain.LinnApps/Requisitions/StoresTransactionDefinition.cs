@@ -110,6 +110,19 @@
             return string.Empty;
         }
 
+        public string DefaultToState()
+        {
+            if (this.OntoTransactions == "Y" && !string.IsNullOrEmpty(this.InspectedState) &&
+                this.GetTransactionStates("O").Any())
+            {
+                return this.InspectedState;
+            }
+            return string.Empty;
+        }
+
         public bool HasDefaultFromState() => !string.IsNullOrEmpty(this.DefaultFromState());
+
+        public bool HasDefaultToState() => !string.IsNullOrEmpty(this.DefaultFromState());
+
     }
 }
