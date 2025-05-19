@@ -109,6 +109,7 @@ function Document1({
                     partNumber: line.articleNumber,
                     partDescription: line.description,
                     document1Line,
+                    docType: creditNote.documentType,
                     canReverse: 'Y'
                 });
                 clearCreditNote();

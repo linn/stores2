@@ -128,6 +128,7 @@
             BuildCits(builder);
             BuildBookInOrderDetails(builder);
             BuildSundryBookInDetails(builder);
+            BuildReqSerialNumbers(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -518,6 +519,7 @@
                 .HasForeignKey(p => new { p.RequisitionNumber, p.LineNumber });
             r.HasMany(l => l.NominalAccountPostings).WithOne()
                 .HasForeignKey(p => new { p.ReqNumber, p.LineNumber });
+            r.HasMany(t => t.SerialNumbers).WithOne().HasForeignKey(reqSernos => new { reqSernos.ReqNumber, reqSernos.LineNumber });
         }
         
         private static void BuildStoresFunctionCodes(ModelBuilder builder)
@@ -892,6 +894,16 @@
             e.Property(s => s.TransactionReference).HasColumnName("TRANS_REFERENCE").HasMaxLength(2000);
             e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
             e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
+        }
+
+        private static void BuildReqSerialNumbers(ModelBuilder builder)
+        {
+            var r = builder.Entity<RequisitionSerialNumber>().ToTable("REQ_SERNOS");
+            r.HasKey(l => new { l.ReqNumber, l.LineNumber, l.Sequence });
+            r.Property(l => l.ReqNumber).HasColumnName("REQ_NUMBER");
+            r.Property(l => l.LineNumber).HasColumnName("LINE_NUMBER");
+            r.Property(l => l.Sequence).HasColumnName("SEQ");
+            r.Property(l => l.SerialNumber).HasColumnName("SERNOS_NUMBER");
         }
     }
 }

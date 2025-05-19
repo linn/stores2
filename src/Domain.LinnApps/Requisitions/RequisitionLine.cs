@@ -49,6 +49,7 @@
             }
 
             this.Moves = new List<ReqMove>();
+            this.SerialNumbers = new List<RequisitionSerialNumber>();
 
             this.NominalAccountPostings = new List<RequisitionLinePosting>();
 
@@ -84,7 +85,9 @@
         public string Document2Type { get; protected set; }
 
         public ICollection<ReqMove> Moves { get; protected set; }
-        
+
+        public ICollection<RequisitionSerialNumber> SerialNumbers { get; protected set; }
+
         public decimal Qty { get; protected set; }
         
         public StoresTransactionDefinition TransactionDefinition { get; protected set; }
@@ -214,6 +217,18 @@
         public void Book(DateTime when)
         {
             this.DateBooked = when;
+        }
+
+        public void AddSerialNumber(int serialNumber)
+        {
+            var nextSeq = this.SerialNumbers.Any() ? this.SerialNumbers.Max(l => l.Sequence + 1)  : 1;
+            if (this.SerialNumbers.Any(s => s.SerialNumber == serialNumber))
+            {
+                throw new RequisitionException(
+                    $"Trying to add duplicate serial number {serialNumber} to line {this.LineNumber}");
+            }
+
+            this.SerialNumbers.Add(new RequisitionSerialNumber(this.ReqNumber, this.LineNumber, nextSeq, serialNumber));
         }
     }
 }
