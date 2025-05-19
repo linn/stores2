@@ -4,7 +4,6 @@
     {
         public RequisitionSerialNumber()
         {
-            
         }
 
         public RequisitionSerialNumber(
