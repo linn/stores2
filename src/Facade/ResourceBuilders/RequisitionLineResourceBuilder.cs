@@ -78,7 +78,7 @@
                                                                 IsFrom = m.StockLocator != null,
                                                                 IsTo = m.PalletNumber.HasValue || m.Location != null
                                                             }),
-                           SerialNumbers = l.SerialNumbers.Select(s => new RequisitionSerialNumberResource
+                           SerialNumbers = l.SerialNumbers == null ? new List<RequisitionSerialNumberResource>() : l.SerialNumbers.Select(s => new RequisitionSerialNumberResource
                                {
                                    Seq = s.Sequence,
                                    SerialNumber = s.SerialNumber
