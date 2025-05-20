@@ -111,6 +111,7 @@
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
 
             RequisitionHeader toBeReversed = null;
+
             if (context.OriginalReqNumber.HasValue)
             {
                 toBeReversed = await this.repository.FindByIdAsync(context.OriginalReqNumber.Value);

@@ -9,7 +9,10 @@ namespace Linn.Stores2.Domain.LinnApps
         public const string BookRequisition = "stores.requisitions.book";
 
         public const string ReverseRequisition = "stores.requisitions.reverse";
-        
+
+        private const string FunctionsPrefix = "stores.requisitions.functions";
+
+
         public static string GetRequisitionActionByFunction(string functionCode)
         {
             if (string.IsNullOrWhiteSpace(functionCode))
@@ -17,7 +20,7 @@ namespace Linn.Stores2.Domain.LinnApps
                 throw new InsufficientDataSuppliedException("No function code supplied");
             }
 
-            return $"stores.requisitions.functions.{functionCode.ToUpper()}";
+            return $"{FunctionsPrefix}.{functionCode.ToUpper()}";
         }
     }
 }

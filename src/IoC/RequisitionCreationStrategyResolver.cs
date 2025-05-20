@@ -38,6 +38,13 @@
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }
 
+            if (context.Function.FunctionCode == "GISTREQ")
+            {
+                // for now at least. it is technically possible to do a mutli-line GISTREQ
+                // but it hasn't been done since 2007
+                return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
+            }
+
             if (context.Function.FunctionCode == "SUREQ")
             {
                 return this.serviceProvider.GetRequiredService<SuReqCreationStrategy>();
