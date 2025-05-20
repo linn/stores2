@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    DataGrid,
-    gridExpandedSortedRowIdsSelector,
-    useGridApiRef,
-    GridSearchIcon
-} from '@mui/x-data-grid';
+import { DataGrid, useGridApiRef, GridSearchIcon } from '@mui/x-data-grid';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -547,7 +542,8 @@ function BookInPostingsDialog({
             return;
         }
 
-        const rowIds = gridExpandedSortedRowIdsSelector(apiRef.current.state);
+        const rowIds = apiRef.current.getAllRowIds();
+
         const visibleColumns = apiRef.current.getVisibleColumns();
         const nextCell = {
             rowIndex: rowIds.findIndex(id => id === params.id),
