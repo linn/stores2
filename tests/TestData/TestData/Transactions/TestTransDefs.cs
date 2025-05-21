@@ -454,7 +454,7 @@
                                                       new StoresTransactionState(
                                                           "F", "GISTI2", "FAIL"),
                                                       new StoresTransactionState(
-                                                          "QC", "GISTI2", "FAIL")
+                                                          "F", "GISTI2", "QC")
                                                   }
                 };
 

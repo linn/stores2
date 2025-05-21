@@ -146,7 +146,8 @@
                 context.Document2Type,
                 context.IsReverseTransaction,
                 toBeReversed,
-                context.DateReceived);
+                context.DateReceived,
+                context.FromCategory);
 
 
             if (context.Function.NewPartNumberRequired())
@@ -171,7 +172,7 @@
             {
                 var worksOrder = await this.documentProxy.GetWorksOrder(req.Document1.Value);
                 req.WorkStationCode = worksOrder.WorkStationCode;
-                req.FromCategory = req.StoresFunction.FromCategory;
+                req.FromCategory = req.StoresFunction.Category;
 
                 if (req.IsReverseTransaction != "Y")
                 {
