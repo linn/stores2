@@ -616,7 +616,5 @@
             
             return this.StoresFunction.ToLocationIsRequired();
         }
-        
-        
     }
 }

@@ -11,8 +11,7 @@ namespace Linn.Stores2.Domain.LinnApps
         public const string ReverseRequisition = "stores.requisitions.reverse";
 
         private const string FunctionsPrefix = "stores.requisitions.functions";
-
-
+        
         public static string GetRequisitionActionByFunction(string functionCode)
         {
             if (string.IsNullOrWhiteSpace(functionCode))
