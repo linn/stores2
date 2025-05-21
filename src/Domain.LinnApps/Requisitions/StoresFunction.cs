@@ -178,5 +178,26 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             return string.Empty;
         }
+        
+        public bool IsQuantityRequiredOrOptional() =>
+            this.QuantityRequired is "Y" or "O";
+        
+        public bool ToLocationRequiredOrOptional() =>
+            this.QuantityRequired is "Y" or "O";
+        
+        public bool ToLocationIsRequired() =>
+            this.QuantityRequired is "Y";
+        
+        public bool ToStateRequiredOrOptional() =>
+            this.QuantityRequired is "Y" or "O";
+        
+        public bool FromStateRequiredOrOptional() =>
+            this.QuantityRequired is "Y" or "O";
+        
+        public bool FromStockPoolRequiredOrOptional() =>
+            this.QuantityRequired is "Y" or "O";
+        
+        public bool FromLocationRequiredOrOptional() =>
+            this.QuantityRequired is "Y" or "O";
     }
 }

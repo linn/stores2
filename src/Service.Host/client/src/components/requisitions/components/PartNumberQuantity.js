@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Grid from '@mui/material/Grid';
 import { InputField, Search } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../../itemTypes';
@@ -23,6 +23,18 @@ function PartNumberQuantity({
         loading: partsSearchLoading,
         clear: clearPartsSearch
     } = useSearch(itemTypes.parts.url, 'id', 'partNumber', 'description');
+
+    useEffect(() => {
+        if (partsSearchResults?.length) {
+            const exactMatch = partsSearchResults.find(
+                part => part.partNumber.toUpperCase() === partNumber?.toUpperCase()
+            );
+            if (exactMatch) {
+                setPart(exactMatch);
+                clearPartsSearch();
+            }
+        }
+    }, [partsSearchResults, partNumber, clearPartsSearch, setPart]);
 
     if (!shouldRender) {
         return '';
@@ -51,7 +63,11 @@ function PartNumberQuantity({
                     onKeyPressFunctions={[
                         {
                             keyCode: 9,
-                            action: () => setPart({ partNumber: partNumber?.toUpperCase() })
+                            action: () => {
+                                if (partNumber) {
+                                    searchParts(partNumber?.toUpperCase());
+                                }
+                            }
                         }
                     ]}
                     onResultSelect={r => {

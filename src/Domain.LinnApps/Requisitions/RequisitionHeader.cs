@@ -249,7 +249,20 @@
                 yield return "Please choose a Function.";
                 yield break;  // don't even have a function, so no need to continue with function specific validation
             }
-
+            
+            if (this.IsReverseTrans() && this.Quantity != null)
+            {
+                if (this.OriginalReqNumber == null && this.StoresFunction.FunctionCode != "BOOKLD")
+                {
+                    throw new CreateRequisitionException("An original req number must be supplied for a reverse");
+                }
+            }
+            
+            if (this.StoresFunction.ReceiptDateRequired == "Y"  && !this.IsReverseTrans() && !this.DateReceived.HasValue)
+            {
+                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
+            }
+            
             if (this.CreatedBy == null)
             {
                 yield return "Invalid CreatedBy Employee";
@@ -361,6 +374,8 @@
             {
                 yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
             }
+            
+            // if (this.StoresFunction.PartNumberRequired())
         }
 
         public void Update(string comments)
@@ -598,5 +613,17 @@
             }
             return false;
         }
+
+        public bool ToStockPoolRequiredWithPart()
+        {
+            if (this.Part != null)
+            {
+                return this.StoresFunction.ToLocationRequiredOrOptional();
+            }
+            
+            return this.StoresFunction.ToLocationIsRequired();
+        }
+        
+        
     }
 }
