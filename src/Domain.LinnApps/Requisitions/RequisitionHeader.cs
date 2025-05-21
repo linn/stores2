@@ -250,19 +250,6 @@
                 yield break;  // don't even have a function, so no need to continue with function specific validation
             }
             
-            if (this.IsReverseTrans() && this.Quantity != null)
-            {
-                if (this.OriginalReqNumber == null && this.StoresFunction.FunctionCode != "BOOKLD")
-                {
-                    throw new CreateRequisitionException("An original req number must be supplied for a reverse");
-                }
-            }
-            
-            if (this.StoresFunction.ReceiptDateRequired == "Y"  && !this.IsReverseTrans() && !this.DateReceived.HasValue)
-            {
-                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
-            }
-            
             if (this.CreatedBy == null)
             {
                 yield return "Invalid CreatedBy Employee";
@@ -326,6 +313,11 @@
             {
                 yield return "You must specify a req number to reverse";
             }
+            
+            if (this.StoresFunction.ReceiptDateRequired == "Y"  && !this.IsReverseTrans() && !this.DateReceived.HasValue)
+            {
+                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
+            }
 
             // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
             if (this.StoresFunction.FromStateRequired == "Y"  && !this.IsReverseTrans())
@@ -374,8 +366,6 @@
             {
                 yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
             }
-            
-            // if (this.StoresFunction.PartNumberRequired())
         }
 
         public void Update(string comments)

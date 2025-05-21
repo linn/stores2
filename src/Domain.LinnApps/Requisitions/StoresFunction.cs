@@ -183,21 +183,21 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.QuantityRequired is "Y" or "O";
         
         public bool ToLocationRequiredOrOptional() =>
-            this.QuantityRequired is "Y" or "O";
+            this.ToLocationRequired is "Y" or "O";
         
         public bool ToLocationIsRequired() =>
-            this.QuantityRequired is "Y";
+            this.ToLocationRequired is "Y";
         
         public bool ToStateRequiredOrOptional() =>
-            this.QuantityRequired is "Y" or "O";
+            this.ToStateRequired is "Y" or "O";
         
         public bool FromStateRequiredOrOptional() =>
-            this.QuantityRequired is "Y" or "O";
+            this.FromStateRequired is "Y" or "O";
         
         public bool FromStockPoolRequiredOrOptional() =>
-            this.QuantityRequired is "Y" or "O";
+            this.FromStockPoolRequired is "Y" or "O";
         
         public bool FromLocationRequiredOrOptional() =>
-            this.QuantityRequired is "Y" or "O";
+            this.FromLocationRequired is "Y" or "O";
     }
 }

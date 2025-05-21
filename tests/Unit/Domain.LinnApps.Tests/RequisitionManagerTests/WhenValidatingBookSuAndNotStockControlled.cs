@@ -61,7 +61,7 @@
                                     partNumber: "PART",
                                     quantity: 1,
                                     toState: "STORES",
-                                    dateReceived: null);
+                                    dateReceived: DateTime.Today);
         }
 
         [Test]
