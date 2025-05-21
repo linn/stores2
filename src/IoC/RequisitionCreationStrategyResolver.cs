@@ -1,11 +1,10 @@
-﻿using Linn.Stores2.Domain.LinnApps.Exceptions;
-
-namespace Linn.Stores2.IoC
+﻿namespace Linn.Stores2.IoC
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
     using Microsoft.Extensions.DependencyInjection;
