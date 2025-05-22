@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Dialog from '@mui/material/Dialog';
+import Button from '@mui/material/Button';
+
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import SnackbarContent from '@mui/material/SnackbarContent';
 import Snackbar from '@mui/material/Snackbar';
 import moment from 'moment';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
+import CustomLoadingOverlay from '../CustomLoadingOverlay';
 
 function PickStockDialog({
     open,
@@ -255,7 +257,7 @@ function PickStockDialog({
             <DialogTitle>Stock Locations</DialogTitle>
             <DialogContent>
                 <DataGrid
-                    rows={moves ?? []}
+                    rows={moves ?? null}
                     processRowUpdate={processRowUpdate}
                     columns={columns}
                     hideFooter
@@ -265,18 +267,21 @@ function PickStockDialog({
                     onRowSelectionModelChange={newRowSelectionModel => {
                         handleRowSelection(newRowSelectionModel);
                     }}
+                    slots={{
+                        loadingOverlay: CustomLoadingOverlay
+                    }}
                     isRowSelectable={checkRowSelect}
                     loading={isLoading}
                     checkboxSelection={selectSingleBatch}
-                    initialState={{
-                        columns: {
-                            columnVisibilityModel: {
-                                partUnitOfMeasure: false,
-                                batchRef: selectSingleBatch,
-                                stockRotationDate: selectSingleBatch
-                            }
-                        }
-                    }}
+                    // initialState={{
+                    //     columns: {
+                    //         columnVisibilityModel: {
+                    //             partUnitOfMeasure: false,
+                    //             batchRef: selectSingleBatch,
+                    //             stockRotationDate: selectSingleBatch
+                    //         }
+                    //     }
+                    // }}
                 />
                 <Typography>
                     Note: your stock will not be allocated until you click save on the main form

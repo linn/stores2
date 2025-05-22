@@ -7,6 +7,7 @@ function reducer(state, action) {
             // this action type is for updating the entire state of the form,
             // e.g. to reflect an API result from an update or similar
             const newState = action.payload;
+            console.log(action.payload);
             if (newState.workStationCode) {
                 newState.document1Details = { workStationCode: action.payload.workStationCode };
             }
