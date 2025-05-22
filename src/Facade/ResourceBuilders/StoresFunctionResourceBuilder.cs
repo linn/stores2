@@ -50,7 +50,7 @@
                           Document2Entered = model.Document2Entered(),
                           Document2Text = model.Document2Text,
                           Document2Name = model.Document2Name(),
-                          FromCategory = model.FromCategory,
+                          FromCategory = model.Category,
                           PartSource = model.PartSource,
                           PartNumberRequired = model.PartNumberRequired(),
                           BatchDateRequired = model.BatchDateRequired,

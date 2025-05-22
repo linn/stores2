@@ -35,7 +35,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string QuantityRequired { get; set; }
 
-        public string FromCategory { get; set; }
+        public string Category { get; set; }
 
         public string ToStateRequired { get; set; }
         
@@ -178,5 +178,26 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             return string.Empty;
         }
+        
+        public bool IsQuantityRequiredOrOptional() =>
+            this.QuantityRequired is "Y" or "O";
+        
+        public bool ToLocationRequiredOrOptional() =>
+            this.ToLocationRequired is "Y" or "O";
+        
+        public bool ToLocationIsRequired() =>
+            this.ToLocationRequired is "Y";
+        
+        public bool ToStateRequiredOrOptional() =>
+            this.ToStateRequired is "Y" or "O";
+        
+        public bool FromStateRequiredOrOptional() =>
+            this.FromStateRequired is "Y" or "O";
+        
+        public bool FromStockPoolRequiredOrOptional() =>
+            this.FromStockPoolRequired is "Y" or "O";
+        
+        public bool FromLocationRequiredOrOptional() =>
+            this.FromLocationRequired is "Y" or "O";
     }
 }

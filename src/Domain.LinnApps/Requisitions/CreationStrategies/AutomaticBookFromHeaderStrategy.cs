@@ -111,6 +111,7 @@
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
 
             RequisitionHeader toBeReversed = null;
+
             if (context.OriginalReqNumber.HasValue)
             {
                 toBeReversed = await this.repository.FindByIdAsync(context.OriginalReqNumber.Value);
@@ -145,7 +146,8 @@
                 context.Document2Type,
                 context.IsReverseTransaction,
                 toBeReversed,
-                context.DateReceived);
+                context.DateReceived,
+                context.FromCategory);
 
 
             if (context.Function.NewPartNumberRequired())
@@ -170,7 +172,7 @@
             {
                 var worksOrder = await this.documentProxy.GetWorksOrder(req.Document1.Value);
                 req.WorkStationCode = worksOrder.WorkStationCode;
-                req.FromCategory = req.StoresFunction.FromCategory;
+                req.FromCategory = req.StoresFunction.Category;
 
                 if (req.IsReverseTransaction != "Y")
                 {

@@ -5,10 +5,7 @@ module.exports = {
     mode: 'development',
     entry: {
         app: [
-            'babel-polyfill',
-            //'react-hot-loader/patch', // activate HMR for React
             'webpack-dev-server/client?http://localhost:3000', // bundle the client for webpack-dev-server and connect to the provided endpoint
-            //'webpack/hot/only-dev-server', // bundle the client for hot reloading (only- means to only hot reload for successful updates)
             './client/src/index.js' // the entry point of our app
         ]
     },
@@ -61,9 +58,10 @@ module.exports = {
     },
     resolve: {
         alias: {
-            '@material-ui/pickers': path.resolve('./node_modules/@material-ui/pickers'),
-            'react-redux': path.resolve('./node_modules/react-redux'),
+            '@mui/x-date-pickers': path.resolve('./node_modules/@mui/x-date-pickers'),
             react: path.resolve('./node_modules/react'),
+            'react-dom': path.resolve(__dirname, '../node_modules/react-dom'),
+            'react-router-dom': path.resolve(__dirname, '../node_modules/react-router-dom'),
             notistack: path.resolve('./node_modules/notistack'),
             '@material-ui/styles': path.resolve('./node_modules/@material-ui/styles')
         },

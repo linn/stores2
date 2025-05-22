@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+﻿using System;
+
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using FluentAssertions;
 
@@ -49,7 +51,8 @@
                 fromLocation: null, 
                 toLocation: null,
                 part: TestParts.Cap003,
-                quantity: 1);
+                quantity: 1,
+                dateReceived: DateTime.Today);
             this.sut.AddLine(line1);
             this.sut.AddLine(line2);
         }

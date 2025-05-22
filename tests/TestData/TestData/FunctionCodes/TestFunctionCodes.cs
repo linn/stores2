@@ -414,6 +414,34 @@
                                             }
             };
 
+        public static readonly StoresFunction GistReq =
+            new StoresFunction("GISTREQ")
+                {
+                    QuantityRequired = "O",
+                    Description = "BOOK UNINSPECTED/FAILED STOCK INTO STORES ON A REQ",
+                    BatchRequired = "O",
+                    FromStockPoolRequired = "O",
+                    ToStockPoolRequired = "O",
+                    ManualPickRequired = "M",
+                    PartSource = "IP",
+                    ProcessStage = 2,
+                    Document1RequiredFlag = "N",
+
+                    Document1LineRequiredFlag = "N",
+                    FunctionType = "A",
+                    ToStateRequired = "X",
+                    CanBeReversed = "N",
+                    TransactionsTypes = new List<StoresFunctionTransaction>
+                                            {
+                                                new StoresFunctionTransaction
+                                                    {
+                                                        Seq = 1,
+                                                        TransactionDefinition = TestTransDefs.InspectionToStores2,
+                                                        TransactionCode = TestTransDefs.InspectionToStores2.TransactionCode
+                                                    }
+                                            }
+                };
+
         public static readonly StoresFunction AdjustLoc =
             new StoresFunction("ADJUST LOC")
                 {

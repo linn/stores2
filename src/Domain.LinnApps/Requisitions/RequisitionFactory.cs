@@ -57,7 +57,8 @@
             int? originalReqNumber = null,
             int? document3Number = null,
             IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
-            DateTime? dateReceived = null)
+            DateTime? dateReceived = null,
+            string fromCategory = null)
         {
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
            
@@ -96,7 +97,8 @@
                                   OriginalReqNumber = originalReqNumber,
                                   Document3Number = document3Number,
                                   BookInOrderDetails = bookInOrderDetails,
-                                  DateReceived = dateReceived
+                                  DateReceived = dateReceived,
+                                  FromCategory = fromCategory
                               };
 
             var strategy = this.creationStrategyResolver.Resolve(context);

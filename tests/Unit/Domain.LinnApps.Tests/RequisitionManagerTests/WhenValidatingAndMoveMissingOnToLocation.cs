@@ -29,15 +29,15 @@
             this.NominalRepository.FindByIdAsync("2963")
                 .Returns(new Nominal("2963", "DESC"));
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
-            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.Move.FunctionCode)
-                .Returns(TestFunctionCodes.Move);
+            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.LinnDeptReq.FunctionCode)
+                .Returns(TestFunctionCodes.LinnDeptReq);
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
                 .Returns(TestTransDefs.LinnDeptToStock);
             this.action = () => this.Sut.Validate(
                 33087,
-                TestFunctionCodes.Move.FunctionCode,
+                TestFunctionCodes.LinnDeptReq.FunctionCode,
                 "O",
                 null,
                 null,

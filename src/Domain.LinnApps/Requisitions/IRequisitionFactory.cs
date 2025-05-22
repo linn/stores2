@@ -40,6 +40,7 @@
             int? originalReqNumber = null,
             int? document3Number = null,
             IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
-            DateTime? dateReceived = null);
+            DateTime? dateReceived = null,
+            string fromCategory = null);
     }
 }

@@ -70,7 +70,7 @@
                                     document1Line: 1,
                                     quantity: -1,
                                     toState: "STORES",
-                                    dateReceived: null);
+                                    dateReceived: DateTime.Today);
         }
 
         [Test]

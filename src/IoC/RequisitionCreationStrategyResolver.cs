@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -38,6 +39,23 @@
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }
 
+            if (context.Function.FunctionCode == "GISTREQ")
+            {
+                if (context.Lines != null && context.Lines.Any())
+                {
+                    // for now at least. it is technically possible to do a mutli-line GISTREQ
+                    // but it hasn't been done since 2007
+                    if (context.Lines.Count() > 1)
+                    {
+                        throw new CreateRequisitionException("Cannot currently GISTREQ more than one line - Speak to IT if you need to do so.");
+                    }
+                    
+                    return this.serviceProvider.GetRequiredService<LinesProvidedStrategy>();
+                }
+                
+                return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
+            }
+
             if (context.Function.FunctionCode == "SUREQ")
             {
                 return this.serviceProvider.GetRequiredService<SuReqCreationStrategy>();
@@ -53,7 +71,7 @@
                 return this.serviceProvider.GetRequiredService<LinesProvidedStrategy>();
             }
 
-            throw new InvalidOperationException("No strategy found for given scenario");
+            throw new CreateRequisitionException("No strategy found for given scenario");
         }
     }
 }

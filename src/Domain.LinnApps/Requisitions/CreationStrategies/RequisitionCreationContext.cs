@@ -72,5 +72,7 @@
         public IEnumerable<BookInOrderDetail> BookInOrderDetails { get; set; }
 
         public DateTime? DateReceived { get; set; }
+        
+        public string FromCategory { get; set; }
     }
 }

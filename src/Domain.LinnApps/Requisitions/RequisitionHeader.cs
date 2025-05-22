@@ -145,7 +145,8 @@
             string document2Type = null,
             string isReverseTrans = "N",
             RequisitionHeader isReversalOf = null,
-            DateTime? dateReceived = null)
+            DateTime? dateReceived = null,
+            string fromCategory = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -170,7 +171,7 @@
             this.Cancelled = "N";
             this.BatchRef = batchRef;
             this.BatchDate = batchDate;
-            this.ToCategory = category;
+            this.ToCategory = category ?? function?.Category;
             this.Document1 = document1Number;
             this.Department = department;
             this.Nominal = nominal;
@@ -217,6 +218,11 @@
             this.DateReceived = dateReceived;
             this.Lines = new List<RequisitionLine>();
 
+            if (!string.IsNullOrEmpty(fromCategory))
+            {
+                this.FromCategory = fromCategory;
+            }
+            
             var errors = this.Validate().ToList();
 
             if (errors.Any())
@@ -232,9 +238,6 @@
             
             if (function.FunctionCode == "GIST PO")
             {
-                this.FromCategory = function.FromCategory;
-                this.ToCategory = "FREE";
-
                 if (isReverseTrans == "Y")
                 {
                     this.BatchRef = null; // todo - test
@@ -249,7 +252,7 @@
                 yield return "Please choose a Function.";
                 yield break;  // don't even have a function, so no need to continue with function specific validation
             }
-
+            
             if (this.CreatedBy == null)
             {
                 yield return "Invalid CreatedBy Employee";
@@ -312,6 +315,11 @@
                                       && !this.OriginalReqNumber.HasValue)
             {
                 yield return "You must specify a req number to reverse";
+            }
+            
+            if (this.StoresFunction.ReceiptDateRequired == "Y"  && !this.IsReverseTrans() && !this.DateReceived.HasValue)
+            {
+                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
             }
 
             // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
@@ -597,6 +605,16 @@
                 return true;
             }
             return false;
+        }
+
+        public bool ToStockPoolRequiredWithPart()
+        {
+            if (this.Part != null)
+            {
+                return this.StoresFunction.ToLocationRequiredOrOptional();
+            }
+            
+            return this.StoresFunction.ToLocationIsRequired();
         }
     }
 }
