@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -86,23 +87,23 @@
                 context.Document1Type,
                 context.DepartmentCode,
                 context.NominalCode,
-                context.FirstLineCandidate,
-                context.Reference,
-                context.Comments,
-                context.ManualPick,
-                context.FromStockPool,
-                context.ToStockPool,
-                context.FromPallet,
-                context.ToPallet,
-                context.FromLocationCode,
-                context.ToLocationCode,
-                context.PartNumber,
-                context.Quantity,
-                context.FromState,
-                context.ToState,
-                context.BatchRef,
-                context.BatchDate,
-                context.Document1Line);
+                reference: context.Reference,
+                comments: context.Comments,
+                manualPick: context.ManualPick,
+                fromStockPool: context.FromStockPool,
+                toStockPool: context.ToStockPool,
+                fromPalletNumber: context.FromPallet,
+                toPalletNumber: context.ToPallet,
+                fromLocationCode: context.FromLocationCode,
+                toLocationCode: context.ToLocationCode,
+                partNumber: context.PartNumber,
+                quantity: context.Quantity,
+                fromState: context.FromState,
+                toState: context.ToState,
+                batchRef: context.BatchRef,
+                batchDate: context.BatchDate,
+                document1Line: context.Document1Line,
+                lines: context.Lines);
 
             // header
             var req = new RequisitionHeader(
@@ -133,10 +134,11 @@
             // lines
             try
             {
-                await this.requisitionManager.AddRequisitionLine(req, context.FirstLineCandidate);
+                // todo: for each line
+                await this.requisitionManager.AddRequisitionLine(req, context.Lines.First());
 
                 var transactionDefinition = await this.transactionDefinitionRepository
-                                                .FindByIdAsync(context.FirstLineCandidate.TransactionDefinition);
+                                                .FindByIdAsync(context.Lines.First().TransactionDefinition);
                 req.SetStateAndCategory(
                     transactionDefinition.FromState, 
                     transactionDefinition.InspectedState, 

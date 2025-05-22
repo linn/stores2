@@ -62,11 +62,11 @@
                 "WO",
                 null,
                 null,
-                partNumber: "PART",
-                quantity: 1,
+                toStockPool: "LINN",
                 fromPalletNumber: 502,
                 toPalletNumber: 503,
-                toStockPool: "LINN",
+                partNumber: "PART",
+                quantity: 1,
                 toState: "STORES");
         }
 

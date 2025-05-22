@@ -82,11 +82,10 @@
                 "RO",
                 null,
                 null,
-                null,
-                partNumber: "ADIKT",
-                quantity: -1,
                 fromLocationCode: "E-PUR-RET",
-                document1Line: 1, 
+                partNumber: "ADIKT", 
+                quantity: -1,
+                document1Line: 1,
                 isReverseTransaction: "Y",
                 originalDocumentNumber: 1234);
         }

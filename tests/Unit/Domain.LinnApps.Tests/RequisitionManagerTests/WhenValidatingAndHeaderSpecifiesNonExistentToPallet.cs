@@ -42,10 +42,9 @@
                 null,
                 "1607",
                 "2963",
-                null,
-                partNumber: "PART",
-                toPalletNumber: 666,
                 toStockPool: "LINN",
+                toPalletNumber: 666,
+                partNumber: "PART",
                 toState: "STORES");
         }
 

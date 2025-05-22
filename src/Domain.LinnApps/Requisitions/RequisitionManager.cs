@@ -598,7 +598,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string document1Type,
             string departmentCode,
             string nominalCode,
-            LineCandidate firstLine = null,
             string reference = null,
             string comments = null,
             string manualPick = null,
@@ -695,34 +694,31 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 return req;
             }
-            
-            if (function.LinesRequired == "Y" && firstLine == null)
+
+            var lineCandidates = lines?.ToList();
+            if (function.LinesRequired == "Y" && (lines == null || !lineCandidates.Any()))
             {
                 throw new CreateRequisitionException($"Lines are required for {functionCode}");
             }
 
             if (lines != null)
             {
-                foreach (var candidate in lines)
+                foreach (var candidate in lineCandidates)
                 {
                     req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction, req.ReqType));
                 }
             }
-            else if (firstLine != null)
-            {
-                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction, req.ReqType));
-            }
-
+            
             switch (function.PartSource)
             {
                 case "PO":
-                    await CheckPurchaseOrder(
+                    await this.CheckPurchaseOrder(
                         req,
                         bookInOrderDetails);
                     break;
 
                 case "RO":
-                    await CheckReturnsOrder(req);
+                    await this.CheckReturnsOrder(req);
                     break;
 
                 case "WO":
@@ -734,7 +730,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     break;
 
                 case "C" when function.Document1Required():
-                    await CheckCreditNote(req);
+                    await this.CheckCreditNote(req);
                     break;
             }
 
@@ -863,13 +859,19 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var po = await this.documentProxy.GetPurchaseOrder(req.Document1.GetValueOrDefault());
 
             if (po == null)
+            {
                 throw new CreateRequisitionException($"PO {req.Document1} does not exist!");
+            }
 
             if (!po.IsAuthorised)
+            {
                 throw new CreateRequisitionException($"PO {req.Document1} is not authorised!");
+            }
 
             if (po.IsFilCancelled)
+            {
                 throw new CreateRequisitionException($"PO {req.Document1} is FIL Cancelled!");
+            }
 
             var orderRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
 
@@ -938,10 +940,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var ro = await this.documentProxy.GetPurchaseOrder(req.Document1.GetValueOrDefault());
 
             if (ro == null)
-                throw new CreateRequisitionException($"RO {req.Document1} does not exist!");
+            {
+                throw new CreateRequisitionException(message: $"RO {req.Document1} does not exist!");
+            }
 
             if (ro.DocumentType != "RO" && ro.DocumentType != "CO")
+            {
                 throw new CreateRequisitionException($"Order {req.Document1} is not a returns/credit order!");
+            }
 
             await this.CheckReturnOrderForFullyBooked(req, ro);
         }

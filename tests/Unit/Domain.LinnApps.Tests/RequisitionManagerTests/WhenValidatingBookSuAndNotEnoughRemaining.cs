@@ -65,11 +65,10 @@
                                     "PO",
                                     null,
                                     null,
-                                    null,
                                     partNumber: "PART",
-                                    document1Line: 1,
                                     quantity: 3,
                                     toState: "STORES",
+                                    document1Line: 1,
                                     dateReceived: DateTime.Today);
         }
 

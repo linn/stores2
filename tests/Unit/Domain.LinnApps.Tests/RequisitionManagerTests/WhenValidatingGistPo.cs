@@ -56,16 +56,15 @@
                 "PO",
                 null,
                 null,
-                null,
-                partNumber: "PART",
                 fromStockPool: "QC",
-                batchRef: "P1234567",
                 toStockPool: "STORES",
-                quantity: 10,
                 fromPalletNumber: 666,
+                toPalletNumber: 666,
+                partNumber: "PART",
+                quantity: 10,
                 fromState: "QC",
                 toState: "STORES",
-                toPalletNumber: 666);
+                batchRef: "P1234567");
         }
 
         [Test]

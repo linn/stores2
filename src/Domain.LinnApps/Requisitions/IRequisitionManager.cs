@@ -50,7 +50,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string document1Type,
             string departmentCode,
             string nominalCode,
-            LineCandidate firstLine = null,
             string reference = null,
             string comments = null,
             string manualPick = null,

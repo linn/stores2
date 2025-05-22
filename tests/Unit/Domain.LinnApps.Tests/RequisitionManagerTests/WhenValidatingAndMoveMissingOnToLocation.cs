@@ -42,14 +42,17 @@
                 null,
                 null,
                 "1607",
-                "2963",
-                new LineCandidate
-                    {
-                        PartNumber = part.PartNumber,
-                        Qty = 1,
-                        TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
-                        Moves = new List<MoveSpecification> { new MoveSpecification { Qty = 1, FromPallet = 2345 } }
-                    });
+                "2963", 
+                lines: new List<LineCandidate>
+                           {
+                               new LineCandidate
+                                   {
+                                       PartNumber = part.PartNumber,
+                                       Qty = 1,
+                                       TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
+                                       Moves = new List<MoveSpecification> { new MoveSpecification { Qty = 1, FromPallet = 2345 } }
+                                   }
+                           });
         }
 
         [Test]
