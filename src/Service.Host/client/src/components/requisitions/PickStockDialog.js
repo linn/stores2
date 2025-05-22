@@ -273,15 +273,15 @@ function PickStockDialog({
                     isRowSelectable={checkRowSelect}
                     loading={isLoading}
                     checkboxSelection={selectSingleBatch}
-                    // initialState={{
-                    //     columns: {
-                    //         columnVisibilityModel: {
-                    //             partUnitOfMeasure: false,
-                    //             batchRef: selectSingleBatch,
-                    //             stockRotationDate: selectSingleBatch
-                    //         }
-                    //     }
-                    // }}
+                    initialState={{
+                        columns: {
+                            columnVisibilityModel: {
+                                partUnitOfMeasure: false,
+                                batchRef: selectSingleBatch,
+                                stockRotationDate: selectSingleBatch
+                            }
+                        }
+                    }}
                 />
                 <Typography>
                     Note: your stock will not be allocated until you click save on the main form
