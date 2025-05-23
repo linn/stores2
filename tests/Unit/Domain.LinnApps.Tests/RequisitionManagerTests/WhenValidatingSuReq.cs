@@ -34,7 +34,7 @@
                 null,
                 null,
                 null,
-                toPalletNumber: 665,
+                toPalletNumber: 123,
                 partNumber: "PART",
                 lines: new List<LineCandidate> 
                            { 
