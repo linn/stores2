@@ -37,7 +37,7 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: To location or pallet required for: SUKIT");
+                .WithMessage("To location or pallet required for: SUKIT");
         }
     }
 }

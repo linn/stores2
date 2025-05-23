@@ -705,7 +705,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 foreach (var candidate in lineCandidates)
                 {
-                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction, req.ReqType));
+                    var headerSpecifiesOnto = req.ToPalletNumber.HasValue || req.ToLocation != null;
+                    req.AddLine(await this.ValidateLineCandidate(
+                        candidate, 
+                        req.StoresFunction, 
+                        req.ReqType, 
+                        headerSpecifiesOnto));
                 }
             }
             
@@ -813,7 +818,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public async Task<RequisitionLine> ValidateLineCandidate(
             LineCandidate candidate,
             StoresFunction storesFunction = null,
-            string reqType = null)
+            string reqType = null,
+            bool headerSpecifiesOntoLocation = false)
         {
             var part = !string.IsNullOrEmpty(candidate?.PartNumber)
                 ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
@@ -842,6 +848,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     reqType != "F" && storesFunction.ToLocationRequiredOrOptional());
             }
 
+            if (headerSpecifiesOntoLocation)
+            {
+                return line;
+            }
+            
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
                 line.TransactionDefinition.RequiresOntoTransactions)
             {

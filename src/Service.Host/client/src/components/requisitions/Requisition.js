@@ -592,6 +592,15 @@ function Requisition({ creating }) {
                         </Button>
                     )}
                 </Grid>
+                <Grid size={12}>
+                    <Typography variant="subtitle1">
+                        {formState?.req?.cancelledReason && (
+                            <span style={{ color: 'red' }}>
+                                [{formState?.req?.cancelledReason}]
+                            </span>
+                        )}
+                    </Typography>
+                </Grid>
                 {functionCodeError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={functionCodeError} />

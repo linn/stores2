@@ -38,7 +38,7 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: You cannot reverse a MOVE transaction");
+                .WithMessage("You cannot reverse a MOVE transaction");
         }
     }
 }
