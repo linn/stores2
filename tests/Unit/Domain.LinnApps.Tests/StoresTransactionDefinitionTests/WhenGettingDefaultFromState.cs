@@ -35,7 +35,7 @@
                 {
                     new StoresTransactionState("O", "STGII", "FAIL"),
                     new StoresTransactionState("O", "STGII", "QC"),
-                    new StoresTransactionState("F", "STGII", "STORES"),
+                    new StoresTransactionState("F", "STGII", "STORES")
                 }
             };
 

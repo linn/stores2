@@ -78,11 +78,13 @@
                                                                 IsFrom = m.StockLocator != null,
                                                                 IsTo = m.PalletNumber.HasValue || m.Location != null
                                                             }),
-                           SerialNumbers = l.SerialNumbers == null ? new List<RequisitionSerialNumberResource>() : l.SerialNumbers.Select(s => new RequisitionSerialNumberResource
-                               {
-                                   Seq = s.Sequence,
-                                   SerialNumber = s.SerialNumber
-                               }),
+                           SerialNumbers = l.SerialNumbers == null
+                                               ? new List<RequisitionSerialNumberResource>()
+                                               : l.SerialNumbers.Select(s => new RequisitionSerialNumberResource
+                                                                                 {
+                                                                                     Seq = s.Sequence,
+                                                                                     SerialNumber = s.SerialNumber
+                                                                                 }),
                            Links = this.BuildLinks(l).ToArray()
                        };
         }

@@ -103,10 +103,12 @@
             {
                 return this.FromState;
             }
+
             if (!string.IsNullOrEmpty(this.InspectedState))
             {
                 return this.InspectedState;
             }
+
             return string.Empty;
         }
 
@@ -117,12 +119,12 @@
             {
                 return this.InspectedState;
             }
+
             return string.Empty;
         }
 
         public bool HasDefaultFromState() => !string.IsNullOrEmpty(this.DefaultFromState());
 
         public bool HasDefaultToState() => !string.IsNullOrEmpty(this.DefaultFromState());
-
     }
 }
