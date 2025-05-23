@@ -1,12 +1,14 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
 {
-    using System.Threading.Tasks;
     using System;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    using NUnit.Framework;
+
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+
+    using NUnit.Framework;
 
     public class WhenAddingDuplicateRequisitionSerialNumber
     {

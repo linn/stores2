@@ -151,6 +151,10 @@ function Document1({
     }
 
     const href = () => {
+        if (document1Text === 'Loan Number') {
+            return itemTypes.loan.url;
+        }
+
         switch (partSource) {
             case 'C':
                 return itemTypes.creditNotes.url;

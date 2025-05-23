@@ -3,9 +3,10 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Linn.Common.Persistence;
-    using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class DeliveryNoteService : IDeliveryNoteService
@@ -52,8 +53,9 @@
         {
             if (location != null && location.GetSupplierId() > 0)
             {
-                return await supplierProxy.GetSupplierAddress(location.GetSupplierId());
+                return await this.supplierProxy.GetSupplierAddress(location.GetSupplierId());
             }
+
             return null;
         }
 
@@ -69,26 +71,32 @@
             {
                 addr += $"{Environment.NewLine}{address.Line1}";
             }
+
             if (!string.IsNullOrEmpty(address.Line2))
             {
                 addr += $"{Environment.NewLine}{address.Line2}";
             }
+
             if (!string.IsNullOrEmpty(address.Line3))
             {
                 addr += $"{Environment.NewLine}{address.Line3}";
             }
+
             if (!string.IsNullOrEmpty(address.Line4))
             {
                 addr += $"{Environment.NewLine}{address.Line4}";
             }
+
             if (!string.IsNullOrEmpty(address.PostCode))
             {
                 addr += $"{Environment.NewLine}{address.PostCode}";
             }
+
             if (address.Country != null)
             {
                 addr += $"{Environment.NewLine}{address.Country.Name}";
             }
+
             return addr;
         }
     }
