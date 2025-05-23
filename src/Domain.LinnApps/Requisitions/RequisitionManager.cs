@@ -702,15 +702,37 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             if (lines != null)
-            {
+            {                    
+                var headerSpecifiesOnto = req.ToPalletNumber.HasValue || req.ToLocation != null;
                 foreach (var candidate in lineCandidates)
                 {
-                    var headerSpecifiesOnto = req.ToPalletNumber.HasValue || req.ToLocation != null;
                     req.AddLine(await this.ValidateLineCandidate(
                         candidate, 
                         req.StoresFunction, 
                         req.ReqType, 
                         headerSpecifiesOnto));
+                    
+                    // need to run the moves validation separately if the header specifies the onto info
+                    if (headerSpecifiesOnto)
+                    {
+                        var moves = new List<MoveSpecification>
+                        {
+                            new MoveSpecification
+                            {
+                                Qty = candidate.Qty,
+                                FromPallet = req.FromPalletNumber,
+                                ToLocation = req.ToLocation?.LocationCode,
+                                ToLocationId = req.ToLocation?.LocationId,
+                                ToPallet = req.ToPalletNumber,
+                                ToStockPool = req.ToStockPool,
+                                ToState = req.ToState,
+                                FromStockPool = req.FromStockPool,
+                                FromLocation = req.FromLocation?.LocationCode
+                            }
+                        };
+                        await this.CheckMoves(
+                            candidate.PartNumber, moves, reqType != "F" && req.StoresFunction.ToLocationRequiredOrOptional());
+                    }
                 }
             }
             
