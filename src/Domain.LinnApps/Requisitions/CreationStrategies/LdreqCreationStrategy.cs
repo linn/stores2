@@ -135,8 +135,13 @@
             try
             {
                 // todo: for each line
-                await this.requisitionManager.AddRequisitionLine(req, context.Lines.First());
-
+                foreach (var lineCandidate in context.Lines)
+                {
+                    await this.requisitionManager.AddRequisitionLine(req, lineCandidate);
+                }
+                
+                // all the lines have the same TransactionDefinition
+                // so just take from the first one
                 var transactionDefinition = await this.transactionDefinitionRepository
                                                 .FindByIdAsync(context.Lines.First().TransactionDefinition);
                 req.SetStateAndCategory(

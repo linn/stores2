@@ -294,15 +294,6 @@ function Requisition({ creating }) {
     };
 
     const canAddLines = () => {
-        // can only add one line when creating
-        if (
-            creating &&
-            formState.req?.lines?.length &&
-            formState.req?.storesFunction?.code != 'SUREQ'
-        ) {
-            return false;
-        }
-
         if (!formState.req?.storesFunction) {
             return false;
         }
