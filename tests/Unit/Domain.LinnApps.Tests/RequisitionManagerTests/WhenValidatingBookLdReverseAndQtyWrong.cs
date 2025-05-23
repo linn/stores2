@@ -60,10 +60,9 @@
                 "PO",
                 null,
                 null,
-                null,
-                isReverseTransaction: "Y",
                 partNumber: "PART",
                 quantity: 1,
+                isReverseTransaction: "Y",
                 bookInOrderDetails: this.bookInOrderDetails);
         }
 

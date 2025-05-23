@@ -11,8 +11,6 @@
 
         public IEnumerable<string> UserPrivileges { get; set; }
 
-        public LineCandidate FirstLineCandidate { get; set; }
-
         public string ReqType { get; set; }
 
         public int? Document1Number { get; set; }

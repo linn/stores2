@@ -31,10 +31,9 @@
                 "C",
                 null,
                 null,
-                null,
                 toStockPool: "STORES",
-                toState: "STORES",
-                toPalletNumber: 666);
+                toPalletNumber: 666,
+                toState: "STORES");
         }
 
         [Test]

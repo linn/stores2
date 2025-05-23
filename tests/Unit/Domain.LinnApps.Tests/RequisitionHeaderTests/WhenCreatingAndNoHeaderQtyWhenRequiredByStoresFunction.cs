@@ -36,7 +36,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
         {
             this.action.Should().Throw<CreateRequisitionException>()
                 .WithMessage(
-                    "Validation failed with the following errors: Quantity required for: GIST PO");
+                    "Quantity required for: GIST PO");
         }
     }
 }

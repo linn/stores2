@@ -41,11 +41,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 null,
                 null,
                 null,
-                partNumber: "PART",
-                toPalletNumber: 123,
-                fromState: "QC",
                 fromStockPool: "LINN",
+                toPalletNumber: 123,
+                partNumber: "PART",
                 quantity: 1,
+                fromState: "QC",
                 toState: "STORES");
         }
 

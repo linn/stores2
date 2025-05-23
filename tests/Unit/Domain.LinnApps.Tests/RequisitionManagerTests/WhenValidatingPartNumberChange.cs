@@ -49,17 +49,16 @@
                 null,
                 "0000042808",
                 "0000000480",
-                null,
-                partNumber: "ADIKT",
-                newPartNumber: "ADIKT/X",
-                fromState: "STORES",
                 fromStockPool: "LOAN POOL",
+                toStockPool: "LOAN POOL",
                 fromPalletNumber: 365,
+                toPalletNumber: 1000,
+                partNumber: "ADIKT",
+                fromState: "STORES",
+                toState: "STORES",
                 batchRef: "Q3347702",
                 batchDate: new DateTime(2024, 7, 22),
-                toState: "STORES",
-                toStockPool: "LOAN POOL",
-                toPalletNumber: 1000);
+                newPartNumber: "ADIKT/X");
         }
 
         [Test]

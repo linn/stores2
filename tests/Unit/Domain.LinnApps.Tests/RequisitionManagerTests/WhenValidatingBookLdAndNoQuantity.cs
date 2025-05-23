@@ -59,7 +59,6 @@
                 "PO",
                 null,
                 null,
-                null,
                 partNumber: "PART",
                 quantity: 0,
                 bookInOrderDetails: this.bookinOrderDetails);

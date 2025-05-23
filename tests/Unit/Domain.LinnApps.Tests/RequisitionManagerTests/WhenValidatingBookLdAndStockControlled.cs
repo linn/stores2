@@ -65,7 +65,6 @@
                 "PO",
                 null,
                 null,
-                null,
                 partNumber: "SC PART",
                 quantity: 1,
                 bookInOrderDetails: this.bookInOrderDetails);

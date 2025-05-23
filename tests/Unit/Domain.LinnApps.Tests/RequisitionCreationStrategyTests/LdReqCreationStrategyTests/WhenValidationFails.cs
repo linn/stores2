@@ -27,7 +27,7 @@
                                   UserPrivileges = new List<string>(),
                                   PartNumber = null,
                                   Function = new StoresFunction { FunctionCode = "LDREQ" },
-                                  FirstLineCandidate = null
+                                  Lines = null
                               };
             this.AuthService.HasPermissionFor(
                     AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),

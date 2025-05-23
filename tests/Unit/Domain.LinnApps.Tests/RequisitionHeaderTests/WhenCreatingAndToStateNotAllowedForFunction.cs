@@ -40,7 +40,7 @@
         {
             this.action.Should().Throw<CreateRequisitionException>()
                 .WithMessage(
-                    "Validation failed with the following errors: To state must be one of STORES");
+                    "To state must be one of STORES");
         }
     }
 }

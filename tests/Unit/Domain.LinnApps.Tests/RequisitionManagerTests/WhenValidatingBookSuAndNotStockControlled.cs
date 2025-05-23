@@ -57,7 +57,6 @@
                                     "PO",
                                     null,
                                     null,
-                                    null,
                                     partNumber: "PART",
                                     quantity: 1,
                                     toState: "STORES",

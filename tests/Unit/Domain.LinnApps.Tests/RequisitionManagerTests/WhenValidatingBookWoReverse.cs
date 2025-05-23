@@ -70,15 +70,14 @@
                 "WO",
                 null,
                 null,
-                null,
-                partNumber: "PART",
+                toStockPool: "LINN",
                 fromPalletNumber: 502,
                 toPalletNumber: 503,
-                toStockPool: "LINN",
-                toState: "STORES",
-                originalDocumentNumber: 456,
+                partNumber: "PART",
                 quantity: -4,
-                isReverseTransaction: "Y");
+                toState: "STORES",
+                isReverseTransaction: "Y",
+                originalDocumentNumber: 456);
         }
 
         [Test]

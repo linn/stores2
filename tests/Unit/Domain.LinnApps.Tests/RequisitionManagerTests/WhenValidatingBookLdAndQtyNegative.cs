@@ -60,10 +60,9 @@
                 "PO",
                 null,
                 null,
-                null,
-                isReverseTransaction: "N",
                 partNumber: "SUNDRY PART",
                 quantity: -21,
+                isReverseTransaction: "N",
                 bookInOrderDetails: this.bookInOrderDetails);
         }
 

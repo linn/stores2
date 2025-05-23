@@ -34,7 +34,6 @@
                 null,
                 null,
                 null,
-                null,
                 fromPalletNumber: 502,
                 toPalletNumber: 503);
         }

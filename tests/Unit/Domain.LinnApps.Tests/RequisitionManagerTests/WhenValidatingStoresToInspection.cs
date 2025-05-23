@@ -44,15 +44,14 @@
                 null,
                 null,
                 null,
-                null,
+                fromStockPool: "LINN",
+                toStockPool: "LINN",
+                fromPalletNumber: 500,
+                toPalletNumber: 503,
                 partNumber: TestParts.Cap003.PartNumber,
                 quantity: 1,
                 fromState: "STORES",
-                toState: "FAIL",
-                fromPalletNumber: 500,
-                toPalletNumber: 503,
-                fromStockPool: "LINN",
-                toStockPool: "LINN");
+                toState: "FAIL");
         }
 
         [Test]

@@ -36,7 +36,7 @@
         {
             this.action.Should().Throw<CreateRequisitionException>()
                 .WithMessage(
-                    "Validation failed with the following errors: To State must be specified for SURETURN");
+                    "To State must be specified for SURETURN");
         }
     }
 }

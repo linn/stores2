@@ -39,7 +39,7 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: You must specify a req number to reverse");
+                .WithMessage("You must specify a req number to reverse");
         }
     }
 }

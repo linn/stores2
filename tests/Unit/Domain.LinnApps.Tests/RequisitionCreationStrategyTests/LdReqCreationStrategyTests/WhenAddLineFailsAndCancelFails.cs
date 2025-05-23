@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -31,13 +32,16 @@
                 DepartmentCode = "0001234",
                 NominalCode = "0004321",
                 CreatedByUserNumber = 12345,
-                FirstLineCandidate = new LineCandidate
-                {
-                    Qty = 1,
-                    LineNumber = 1,
-                    TransactionDefinition = "DEF",
-                    PartNumber = "PART",
-                },
+                Lines = new List<LineCandidate>
+                            {
+                                new LineCandidate
+                                    {
+                                        Qty = 1,
+                                        LineNumber = 1,
+                                        TransactionDefinition = "DEF",
+                                        PartNumber = "PART",
+                                    }
+                            },
                 Function = new StoresFunction("LDREQ")
                 {
                     DepartmentNominalRequired = "Y"
@@ -68,7 +72,7 @@
                     AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
                     Arg.Any<IEnumerable<string>>())
                 .Returns(true);
-            this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), context.FirstLineCandidate)
+            this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), context.Lines.First())
                 .Throws(new PickStockException("Can't pick"));
 
             this.RequisitionManager.CancelHeader(

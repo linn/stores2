@@ -32,7 +32,7 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: Nominal and Department must be specified for a LDREQ req");
+                .WithMessage("Nominal and Department must be specified for a LDREQ req");
         }
     }
 }

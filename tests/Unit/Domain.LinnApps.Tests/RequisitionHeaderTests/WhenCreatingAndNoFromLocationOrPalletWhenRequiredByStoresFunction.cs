@@ -36,7 +36,7 @@
         {
             this.action.Should().Throw<CreateRequisitionException>()
                 .WithMessage(
-                    "Validation failed with the following errors: From location or pallet required for: ADJUST LOC");
+                    "From location or pallet required for: ADJUST LOC");
         }
     }
 }

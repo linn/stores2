@@ -38,13 +38,7 @@
                 null,
                 "0000042808",
                 "0000004729",
-                new LineCandidate
-                {
-                    PartNumber = "PART",
-                    Qty = 1,
-                    TransactionDefinition = TestTransDefs.WriteOff.TransactionCode,
-                    Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
-                });
+                partNumber: "PART");
         }
 
         [Test]

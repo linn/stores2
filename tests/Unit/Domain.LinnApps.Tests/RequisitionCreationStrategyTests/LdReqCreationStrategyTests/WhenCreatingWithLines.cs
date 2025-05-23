@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LdReqCreationStrategyTests
 {
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -31,13 +32,16 @@
                 DepartmentCode = "0001234",
                 NominalCode = "0004321",
                 CreatedByUserNumber = 12345,
-                FirstLineCandidate = new LineCandidate
-                {
-                    Qty = 1,
-                    LineNumber = 1,
-                    TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
-                    PartNumber = "PART",
-                },
+                Lines = new List<LineCandidate>
+                            {
+                                new LineCandidate
+                                    {
+                                        Qty = 1,
+                                        LineNumber = 1,
+                                        TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
+                                        PartNumber = "PART",
+                                    }
+                            },
                 Function = TestFunctionCodes.LinnDeptReq
             };
 
@@ -101,7 +105,7 @@
         {
             this.RequisitionManager.Received(1).AddRequisitionLine(
                 Arg.Any<RequisitionHeader>(),
-                this.context.FirstLineCandidate);
+                this.context.Lines.First());
         }
     }
 }

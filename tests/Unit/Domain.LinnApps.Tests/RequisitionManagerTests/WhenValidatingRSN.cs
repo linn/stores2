@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -37,13 +38,16 @@
                 "R",
                 null,
                 null,
-                new LineCandidate
-                {
-                    PartNumber = "PART",
-                    Qty = 1,
-                    TransactionDefinition = TestTransDefs.StockToRSN.TransactionCode,
-                    Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
-                });
+                lines: new List<LineCandidate>
+                           {
+                               new LineCandidate
+                                   {
+                                       PartNumber = "PART",
+                                       Qty = 1,
+                                       TransactionDefinition = TestTransDefs.StockToRSN.TransactionCode,
+                                       Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
+                                   }
+                           });
         }
 
         [Test]

@@ -75,13 +75,13 @@
                 "WO",
                 null,
                 null,
-                partNumber: "PART",
+                toStockPool: "LINN",
                 fromPalletNumber: 502,
                 toPalletNumber: 503,
-                toStockPool: "LINN",
+                partNumber: "PART",
                 toState: "STORES",
-                originalDocumentNumber: 42345,
-                isReverseTransaction: "Y");
+                isReverseTransaction: "Y",
+                originalDocumentNumber: 42345);
         }
 
         [Test]

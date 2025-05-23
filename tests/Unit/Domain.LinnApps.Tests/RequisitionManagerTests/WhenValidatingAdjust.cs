@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -38,13 +39,16 @@
                 null,
                 "0000042808",
                 "0000004710",
-                new LineCandidate
-                {
-                    PartNumber = "PART",
-                    Qty = 1,
-                    TransactionDefinition = TestTransDefs.StockToAdjust.TransactionCode,
-                    Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
-                });
+                lines: new List<LineCandidate>
+                           {
+                               new LineCandidate
+                                   {
+                                       PartNumber = "PART",
+                                       Qty = 1,
+                                       TransactionDefinition = TestTransDefs.StockToAdjust.TransactionCode,
+                                       Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
+                                   }
+                           });
         }
 
         [Test]
