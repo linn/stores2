@@ -22,6 +22,7 @@ import PartStorageType from './PartStorageType';
 import StoresTransViewer from './StoresTransViewer';
 import StoresFunctions from './StoresFunctions';
 import StoresFunction from './StoresFunction';
+import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
 
 function Root() {
     useSignIn();
@@ -50,6 +51,8 @@ function Root() {
                         element={<StoresFunction />}
                     />
                     <Route path="/requisitions" element={<SearchRequisitions />} />
+                    <Route path="/requisitions/print-qc-labels" element={<QcLabelPrintScreen />} />
+
                     <Route path="/requisitions/pending" element={<PendingRequisitions />} />
                     <Route path="/requisitions/create" element={<Requisition creating />} />
 

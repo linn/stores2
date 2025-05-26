@@ -181,7 +181,7 @@ function StockOptions({
                 </>
             )}
             <Grid size={2}>
-                {functionCode?.toStates && functionCode?.toStateRequired !== 'N' && (
+                {functionCode?.toStates && (functionCode?.toStateRequired !== 'N' || toState) && (
                     <Dropdown
                         value={toState}
                         disabled={disabled}
@@ -277,7 +277,7 @@ function StockOptions({
                     open={pickStockDialogVisible}
                     setOpen={setPickStockDialogVisible}
                     partNumber={partNumber}
-                    getBatches={true}
+                    selectSingleBatch={true}
                     batchRef={batchRef}
                     quantity={quantity}
                     state={fromState}

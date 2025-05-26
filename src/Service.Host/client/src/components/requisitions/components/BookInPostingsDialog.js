@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-    DataGrid,
-    gridExpandedSortedRowIdsSelector,
-    useGridApiRef,
-    GridSearchIcon
-} from '@mui/x-data-grid';
+import { DataGrid, useGridApiRef, GridSearchIcon } from '@mui/x-data-grid';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -32,14 +27,20 @@ function BookInPostingsDialog({
     documentNumber,
     documentLine,
     orderDetail,
-    bookInOrderDetails
+    existingBookInOrderDetails,
+    isReverse = 'N'
 }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
-    const [bookInPostings, setBookInPostings] = useState(bookInOrderDetails ?? []);
+    const [bookInOrderDetails, setBookInOrderDetails] = useState(existingBookInOrderDetails ?? []);
     const [searchDialogOpen, setSearchDialogOpen] = useState({ forRow: null, forColumn: null });
     const [departmentSearchTerm, setDepartmentSearchTerm] = useState('');
     const [nominalSearchTerm, setNominalSearchTerm] = useState('');
+    const [existingBookIns, setExistingBookIns] = useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = useState({
+        type: 'include',
+        ids: new Set([])
+    });
 
     const apiRef = useGridApiRef();
 
@@ -71,6 +72,25 @@ function BookInPostingsDialog({
         }
     }));
     const classes = useStyles();
+
+    const {
+        send: searchBookIns,
+        isLoading: searchBookInsLoading,
+        result: searchBookInsResult,
+        clearData: clearBookInsSearch
+    } = useGet(itemTypes.sundryBookInDetails.url);
+
+    useEffect(() => {
+        if (open && documentNumber && documentLine) {
+            searchBookIns(null, `?orderNumber=${documentNumber}&orderLine=${documentLine}`);
+        }
+    }, [documentLine, documentNumber, documentType, open, searchBookIns]);
+
+    useEffect(() => {
+        if (searchBookInsResult) {
+            setExistingBookIns(searchBookInsResult.map((a, i) => ({ ...a, id: i })));
+        }
+    }, [searchBookInsResult]);
 
     const setCode = code => {
         if (code?.length && code.length < 10) {
@@ -112,64 +132,90 @@ function BookInPostingsDialog({
         </>
     );
 
-    const addPosting = () => {
-        const id = (bookInPostings.length ?? 0) + 1;
-        const newBookInPosting = {
+    const addBookIn = () => {
+        const qtyLeft = orderDetail.ourQty - bookedInQuantity;
+        const selectedQty = bookInOrderDetails.reduce((a, b) => a + Number(b.quantity), 0);
+        const id = (bookInOrderDetails.length ?? 0) + 1;
+        const newBookInOrderDetail = {
             id,
             sequence: id,
             orderNumber: orderDetail.orderNumber,
             orderLine: orderDetail.line,
             partNumber: orderDetail.partNumber,
-            isReverse: 'N'
-        };
-        const bookInPostingsToUpdate = [...bookInPostings, newBookInPosting];
-        setBookInPostings(bookInPostingsToUpdate);
-    };
-
-    const addFullPosting = () => {
-        const id = (bookInPostings.length ?? 0) + 1;
-        const newBookInPosting = {
-            id,
-            sequence: id,
-            orderNumber: orderDetail.orderNumber,
-            orderLine: orderDetail.line,
-            partNumber: orderDetail.partNumber,
-            quantity: orderDetail.ourQty - bookedInQuantity,
+            quantity: Math.max(qtyLeft - selectedQty, 0),
             departmentCode: orderDetail.orderPosting.nominalAccount.department.departmentCode,
             departmentDescription:
                 orderDetail.orderPosting.nominalAccount.department.departmentDescription,
             nominalCode: orderDetail.orderPosting.nominalAccount.nominal.nominalCode,
             nominalDescription: orderDetail.orderPosting.nominalAccount.nominal.description,
-            isReverse: 'N'
+            isReverse
         };
 
-        const bookInPostingsToUpdate = [...bookInPostings, newBookInPosting];
-        setBookInPostings(bookInPostingsToUpdate);
+        const bookInOrderDetailsToUpdate = [...bookInOrderDetails, newBookInOrderDetail];
+        setBookInOrderDetails(bookInOrderDetailsToUpdate);
         searchNominalAccounts(
             null,
-            `?departmentCode=${newBookInPosting.departmentCode}&nominalCode=${newBookInPosting.nominalCode}&exactMatch=true`
+            `?departmentCode=${newBookInOrderDetail.departmentCode}&nominalCode=${newBookInOrderDetail.nominalCode}&exactMatch=true`
         );
     };
 
+    const reverseBookIn = () => {
+        if (rowSelectionModel?.ids.size === 1) {
+            const selectedIndex = rowSelectionModel.ids.values().next().value;
+            const id = (bookInOrderDetails.length ?? 0) + 1;
+            const bookInToBeReversed = existingBookIns.find(a => a.id == selectedIndex);
+            const newBookInOrderDetail = {
+                id,
+                sequence: id,
+                orderNumber: orderDetail.orderNumber,
+                orderLine: orderDetail.line,
+                partNumber: orderDetail.partNumber,
+                quantity: bookInToBeReversed.quantity * -1,
+                departmentCode: bookInToBeReversed.departmentCode,
+                departmentDescription: null,
+                nominalCode: bookInToBeReversed.nominalCode,
+                nominalDescription: null,
+                isReverse,
+                originalReqNumber: bookInToBeReversed.reqNumber
+            };
+
+            const bookInOrderDetailsToUpdate = [...bookInOrderDetails, newBookInOrderDetail];
+            setBookInOrderDetails(bookInOrderDetailsToUpdate);
+            getDepartment(bookInToBeReversed.departmentCode);
+            getNominal(bookInToBeReversed.nominalCode);
+
+            searchNominalAccounts(
+                null,
+                `?departmentCode=${newBookInOrderDetail.departmentCode}&nominalCode=${newBookInOrderDetail.nominalCode}&exactMatch=true`
+            );
+        }
+    };
+
     const handleClose = () => {
+        clearBookInsSearch();
         setOpen(false);
     };
 
     const handleDeleteRow = () => {
-        const bookInPostingsToUpdate = [...bookInPostings];
-        setBookInPostings(bookInPostingsToUpdate.slice(0, -1));
+        const bookInOrderDetailsToUpdate = [...bookInOrderDetails];
+        setBookInOrderDetails(bookInOrderDetailsToUpdate.slice(0, -1));
     };
 
     const handleConfirmClick = () => {
         const qtyLeft = orderDetail.ourQty - bookedInQuantity;
-        const selectedQty = bookInPostings.reduce((a, b) => a + Number(b.quantity), 0);
-        if (Number(qtyLeft) < selectedQty) {
+        const selectedQty = bookInOrderDetails.reduce((a, b) => a + Number(b.quantity), 0);
+        if (Number(qtyLeft) < selectedQty && isReverse !== 'Y') {
             setSnackbar({
                 message: `Quantity left on order line is ${qtyLeft} but quantity picked is ${selectedQty}`,
                 backgroundColour: 'red'
             });
+        } else if (bookedInQuantity < selectedQty * -1 && isReverse === 'Y') {
+            setSnackbar({
+                message: `Quantity booked on order line is ${bookedInQuantity} but trying to reverse ${selectedQty * -1}`,
+                backgroundColour: 'red'
+            });
         } else if (
-            !bookInPostings.every(
+            !bookInOrderDetails.every(
                 a => a.departmentCode && a.nominalCode && a.nominalPostsAllowed === 'Y'
             )
         ) {
@@ -179,58 +225,60 @@ function BookInPostingsDialog({
             });
         } else {
             handleClose();
-            handleSelect({ bookInPostings, quantityBooked: selectedQty });
+            handleSelect({ bookInOrderDetails, quantityBooked: selectedQty });
         }
     };
 
     useEffect(() => {
-        if (departmentValue && bookInPostings?.length) {
-            const newBookInPostings = [...bookInPostings];
-            const items = newBookInPostings.filter(
+        if (departmentValue && bookInOrderDetails?.length) {
+            const newBookInOrderDetails = [...bookInOrderDetails];
+            const items = newBookInOrderDetails.filter(
                 a => a.departmentCode === departmentValue.departmentCode
             );
             items.forEach(item => {
-                const current = newBookInPostings.find(a => a.id === item.id);
+                const current = newBookInOrderDetails.find(a => a.id === item.id);
                 current.departmentDescription = departmentValue.description;
             });
 
             clearDepartment();
-            setBookInPostings(newBookInPostings);
+            setBookInOrderDetails(newBookInOrderDetails);
         }
-    }, [clearDepartment, departmentValue, bookInPostings]);
+    }, [clearDepartment, departmentValue, bookInOrderDetails]);
 
     useEffect(() => {
-        if (nominalValue && bookInPostings?.length) {
-            const newBookInPostings = [...bookInPostings];
-            const items = newBookInPostings.filter(a => a.nominalCode === nominalValue.nominalCode);
+        if (nominalValue && bookInOrderDetails?.length) {
+            const newBookInOrderDetail = [...bookInOrderDetails];
+            const items = newBookInOrderDetail.filter(
+                a => a.nominalCode === nominalValue.nominalCode
+            );
             items.forEach(item => {
-                const current = newBookInPostings.find(a => a.id === item.id);
+                const current = newBookInOrderDetail.find(a => a.id === item.id);
                 current.nominalDescription = nominalValue.description;
             });
 
             clearNominal();
-            setBookInPostings(newBookInPostings);
+            setBookInOrderDetails(newBookInOrderDetail);
         }
-    }, [clearNominal, nominalValue, bookInPostings]);
+    }, [clearNominal, nominalValue, bookInOrderDetails]);
 
     useEffect(() => {
-        if (searchNominalAccountsResult?.length && bookInPostings?.length) {
+        if (searchNominalAccountsResult?.length && bookInOrderDetails?.length) {
             const currentResult = searchNominalAccountsResult[0];
-            const newBookInPostings = [...bookInPostings];
-            const items = newBookInPostings.filter(
+            const newBookInOrderDetail = [...bookInOrderDetails];
+            const items = newBookInOrderDetail.filter(
                 a =>
                     a.nominalCode === currentResult?.nominal?.nominalCode &&
                     a.departmentCode === currentResult?.department?.departmentCode
             );
             items.forEach(item => {
-                const current = newBookInPostings.find(a => a.id === item.id);
+                const current = newBookInOrderDetail.find(a => a.id === item.id);
                 current.nominalPostsAllowed = currentResult.nominalPostsAllowed;
             });
 
             clearNominalAccountsSearch();
-            setBookInPostings(newBookInPostings);
+            setBookInOrderDetails(newBookInOrderDetail);
         }
-    }, [clearNominalAccountsSearch, searchNominalAccountsResult, bookInPostings]);
+    }, [clearNominalAccountsSearch, searchNominalAccountsResult, bookInOrderDetails]);
 
     const renderSearchDialog = c => {
         const handleClose = () => {
@@ -238,7 +286,7 @@ function BookInPostingsDialog({
         };
 
         const handleSearchResultSelect = selected => {
-            const currentRow = bookInPostings.find(r => r.id === searchDialogOpen.forRow);
+            const currentRow = bookInOrderDetails.find(r => r.id === searchDialogOpen.forRow);
             let newRow = {
                 ...currentRow,
                 [c.field]: selected.id
@@ -324,12 +372,12 @@ function BookInPostingsDialog({
             updatedNewRow.comments = newRow.comments.toUpperCase();
         }
 
-        setBookInPostings(r => r.map(s => (s.id === newRow.id ? updatedNewRow : s)));
+        setBookInOrderDetails(r => r.map(s => (s.id === newRow.id ? updatedNewRow : s)));
 
         return { ...newRow };
     };
 
-    const detailPostingColumns = [
+    const orderDetailPostingColumns = [
         {
             field: 'qty',
             headerName: 'Qty',
@@ -357,6 +405,43 @@ function BookInPostingsDialog({
         }
     ];
 
+    const existingBookInColumns = [
+        {
+            field: 'orderNumber',
+            headerName: 'Order',
+            width: 110
+        },
+        {
+            field: 'orderLine',
+            headerName: 'Line',
+            width: 100
+        },
+        {
+            field: 'quantity',
+            headerName: 'Qty',
+            width: 110
+        },
+        {
+            field: 'departmentCode',
+            headerName: 'Dept',
+            width: 110
+        },
+        {
+            field: 'nominalCode',
+            headerName: 'Nominal',
+            width: 110
+        },
+        {
+            field: 'transactionReference',
+            headerName: 'Reference',
+            width: 190
+        }
+    ];
+
+    const handleRowSelection = rowSelectionModel => {
+        setRowSelectionModel(rowSelectionModel);
+    };
+
     const getCodeClass = (field, row) => {
         if (
             field === 'departmentCode' &&
@@ -381,7 +466,7 @@ function BookInPostingsDialog({
         return null;
     };
 
-    const bookInPostingsColumns = [
+    const bookInOrderDetailsColumns = [
         { field: 'quantity', headerName: 'Qty', editable: true, width: 160 },
         {
             field: 'departmentCode',
@@ -426,7 +511,7 @@ function BookInPostingsDialog({
             headerName: '',
             width: 120,
             renderCell: params =>
-                Number(params.row.id) === bookInPostings.length ? (
+                Number(params.row.id) === bookInOrderDetails.length ? (
                     <Tooltip title="Delete">
                         <div>
                             <IconButton aria-label="delete" size="small" onClick={handleDeleteRow}>
@@ -457,7 +542,8 @@ function BookInPostingsDialog({
             return;
         }
 
-        const rowIds = gridExpandedSortedRowIdsSelector(apiRef.current.state);
+        const rowIds = apiRef.current.getAllRowIds();
+
         const visibleColumns = apiRef.current.getVisibleColumns();
         const nextCell = {
             rowIndex: rowIds.findIndex(id => id === params.id),
@@ -500,7 +586,7 @@ function BookInPostingsDialog({
         apiRef.current.setCellFocus(id, field);
     };
 
-    const postingRows = [
+    const orderDetailPostingRows = [
         {
             ...orderDetail.orderPosting,
             id: orderDetail.orderPosting.lineNumber,
@@ -513,29 +599,15 @@ function BookInPostingsDialog({
     ];
     return (
         <Dialog open={open} onClose={handleClose} fullWidth maxWidth="xl">
-            <DialogTitle>
-                Book In Postings for {documentType} {documentNumber} / {documentLine}
+            <DialogTitle color={isReverse === 'Y' ? 'warning' : 'black'}>
+                Book In Details for {documentType} {documentNumber} / {documentLine}{' '}
+                {isReverse === 'Y' ? '[REVERSE]' : ''}
             </DialogTitle>
             <DialogContent>
-                {bookInPostingsColumns
+                {bookInOrderDetailsColumns
                     .filter(c => c.type === 'search')
                     .map(c => renderSearchDialog(c))}
                 <Grid container spacing={3}>
-                    <Grid size={9}>
-                        <Typography variant="h6">Order Line</Typography>
-                    </Grid>
-                    <Grid size={3}>
-                        <Link
-                            target={'_blank'}
-                            rel={'noopener noreferrer'}
-                            variant="body1"
-                            underline="hover"
-                            href={`/ledgers/purchase/inv-post?orderNumber=${orderDetail.orderNumber}`}
-                            color="secondary"
-                        >
-                            View Receipts/Invoices
-                        </Link>
-                    </Grid>
                     <Grid size={2}>
                         <InputField
                             fullWidth
@@ -596,28 +668,73 @@ function BookInPostingsDialog({
                             propertyName="partDescription"
                         />
                     </Grid>
-                    <Grid size={12}>
+                    <Grid size={9}>
                         <DataGrid
-                            rows={postingRows ?? []}
-                            columns={detailPostingColumns}
+                            rows={orderDetailPostingRows ?? []}
+                            columns={orderDetailPostingColumns}
                             hideFooter
                             density="compact"
                         />
                     </Grid>
+                    <Grid size={3}>
+                        <Link
+                            target={'_blank'}
+                            rel={'noopener noreferrer'}
+                            variant="body1"
+                            underline="hover"
+                            href={`/ledgers/purchase/inv-post?orderNumber=${orderDetail.orderNumber}`}
+                            color="secondary"
+                        >
+                            View Receipts/Invoices
+                        </Link>
+                    </Grid>
                     <Grid size={12}>
-                        <Typography variant="h6">Book In Postings</Typography>
+                        <Typography variant="h6">Existing Book Ins</Typography>
                     </Grid>
+                    <Grid size={6}>
+                        <DataGrid
+                            rows={existingBookIns ?? []}
+                            columns={existingBookInColumns}
+                            hideFooter
+                            density="compact"
+                            disableMultipleRowSelection
+                            rowSelectionModel={rowSelectionModel}
+                            onRowSelectionModelChange={newRowSelectionModel => {
+                                handleRowSelection(newRowSelectionModel);
+                            }}
+                            isRowSelectable={params => params.row.quantity > 0}
+                            loading={searchBookInsLoading}
+                            checkboxSelection
+                            initialState={{
+                                columns: {
+                                    columnVisibilityModel: {
+                                        orderNumber: false,
+                                        orderLine: false
+                                    }
+                                }
+                            }}
+                        />
+                    </Grid>
+                    <Grid size={6} />
                     <Grid size={2}>
-                        <Button onClick={addPosting}>Add New Posting</Button>
+                        <Button disabled={isReverse === 'Y'} onClick={addBookIn}>
+                            Add Book In
+                        </Button>
                     </Grid>
+                    <Grid size={2} />
                     <Grid size={2}>
-                        <Button onClick={addFullPosting}>Add Full Posting</Button>
+                        <Button
+                            disabled={isReverse === 'N' || !rowSelectionModel?.ids.size > 0}
+                            onClick={reverseBookIn}
+                        >
+                            Reverse Selected
+                        </Button>
                     </Grid>
-                    <Grid size={8} />
+                    <Grid size={6} />
                     <Grid size={12}>
                         <DataGrid
-                            rows={bookInPostings ?? []}
-                            columns={bookInPostingsColumns}
+                            rows={bookInOrderDetails ?? []}
+                            columns={bookInOrderDetailsColumns}
                             density="compact"
                             onCellKeyDown={handleCellKeyDown}
                             apiRef={apiRef}

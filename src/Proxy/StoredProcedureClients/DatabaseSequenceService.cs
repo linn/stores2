@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Proxy.StoredProcedureClients
 {
-    using Linn.Common.Proxy.LinnApps;
+    using System.Threading.Tasks;
+
+    using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Stores2.Domain.LinnApps.External;
 
     public class DatabaseSequenceService : IDatabaseSequenceService
@@ -12,9 +14,9 @@
             this.databaseService = databaseService;
         }
 
-        public int NextStorageLocationId()
+        public async Task<int> NextStorageLocationId()
         {
-            return this.databaseService.GetNextVal("STOLO_SEQ");
+            return await this.databaseService.GetNextValAsync("STOLO_SEQ");
         }
     }
 }

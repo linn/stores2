@@ -24,7 +24,6 @@
         [SetUp]
         public void SetUp()
         {
-
             this.req123 = new ReqWithReqNumber(
                 123,
                 new Employee(),

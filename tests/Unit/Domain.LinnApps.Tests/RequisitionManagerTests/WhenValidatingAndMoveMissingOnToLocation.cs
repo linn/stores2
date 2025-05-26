@@ -29,27 +29,30 @@
             this.NominalRepository.FindByIdAsync("2963")
                 .Returns(new Nominal("2963", "DESC"));
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
-            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.Move.FunctionCode)
-                .Returns(TestFunctionCodes.Move);
+            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.LinnDeptReq.FunctionCode)
+                .Returns(TestFunctionCodes.LinnDeptReq);
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
-            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
-                .Returns(TestTransDefs.StockToLinnDept);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
+                .Returns(TestTransDefs.LinnDeptToStock);
             this.action = () => this.Sut.Validate(
                 33087,
-                TestFunctionCodes.Move.FunctionCode,
-                "F",
+                TestFunctionCodes.LinnDeptReq.FunctionCode,
+                "O",
                 null,
                 null,
                 "1607",
-                "2963",
-                new LineCandidate
-                    {
-                        PartNumber = part.PartNumber,
-                        Qty = 1,
-                        TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
-                        Moves = new List<MoveSpecification> { new MoveSpecification { Qty = 1, FromPallet = 2345 } }
-                    });
+                "2963", 
+                lines: new List<LineCandidate>
+                           {
+                               new LineCandidate
+                                   {
+                                       PartNumber = part.PartNumber,
+                                       Qty = 1,
+                                       TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
+                                       Moves = new List<MoveSpecification> { new MoveSpecification { Qty = 1, FromPallet = 2345 } }
+                                   }
+                           });
         }
 
         [Test]

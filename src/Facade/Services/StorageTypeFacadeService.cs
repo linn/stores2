@@ -35,9 +35,7 @@
                 throw new StorageTypeException("Storage Type Code already exists!");
             }
 
-            return new StorageType(
-                            resource.StorageTypeCode,
-                            resource.Description);
+            return new StorageType(resource.StorageTypeCode, resource.Description);
         }
 
         protected override void UpdateFromResource(
@@ -82,4 +80,3 @@
         }
     }
 }
-

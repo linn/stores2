@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import Dialog from '@mui/material/Dialog';
+import Button from '@mui/material/Button';
+
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import SnackbarContent from '@mui/material/SnackbarContent';
 import Snackbar from '@mui/material/Snackbar';
 import moment from 'moment';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
+import CustomLoadingOverlay from '../CustomLoadingOverlay';
 
 function PickStockDialog({
     open,
@@ -20,12 +22,15 @@ function PickStockDialog({
     quantity,
     state,
     stockPool,
-    getBatches = false,
+    selectSingleBatch = false,
     batchRef = null
 }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
-    const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = useState({
+        type: 'include',
+        ids: new Set([])
+    });
 
     const { isLoading, result, send, clearData } = useGet(itemTypes.stockLocators.url, true);
 
@@ -33,10 +38,10 @@ function PickStockDialog({
         if (open && partNumber) {
             send(
                 null,
-                `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${stockPool ? `&stockPoolCode=${stockPool}` : ''}${getBatches ? '&queryBatchView=true' : ''}`
+                `?partNumber=${partNumber}${state ? `&state=${state}` : ''}${stockPool ? `&stockPoolCode=${stockPool}` : ''}${selectSingleBatch ? '&queryBatchView=true' : ''}`
             );
         }
-    }, [partNumber, send, getBatches, state, open, stockPool]);
+    }, [partNumber, send, selectSingleBatch, state, open, stockPool]);
 
     const [moves, setMoves] = useState([]);
 
@@ -195,29 +200,30 @@ function PickStockDialog({
 
     const handleRowSelection = rowSelectionModel => {
         setRowSelectionModel(rowSelectionModel);
+        if (selectSingleBatch) {
+            let quantityLeft = quantity ? quantity : 99999999999999;
+            moves.forEach((m, i) => {
+                if (rowSelectionModel?.ids.has(i)) {
+                    let pickQty = m.quantity - m.quantityAllocated;
+                    if (pickQty > quantityLeft) {
+                        pickQty = quantityLeft;
+                    }
 
-        let quantityLeft = quantity ? quantity : 99999999999999;
-        moves.forEach((m, i) => {
-            if (rowSelectionModel.includes(i)) {
-                let pickQty = m.quantity - m.quantityAllocated;
-                if (pickQty > quantityLeft) {
-                    pickQty = quantityLeft;
+                    quantityLeft = quantityLeft - pickQty;
+                    m.quantityToPick = pickQty;
+                } else {
+                    m.quantityToPick = 0;
                 }
-
-                quantityLeft = quantityLeft - pickQty;
-                m.quantityToPick = pickQty;
-            } else {
-                m.quantityToPick = 0;
-            }
-        });
+            });
+        }
     };
 
     const checkRowSelect = params => {
-        if (!rowSelectionModel.length) {
+        if (!rowSelectionModel?.ids.size) {
             return true;
         }
 
-        const exampleRow = moves[rowSelectionModel[0]];
+        const exampleRow = moves[rowSelectionModel.ids.values().next().value];
 
         if (
             params.row.locationId &&
@@ -251,7 +257,7 @@ function PickStockDialog({
             <DialogTitle>Stock Locations</DialogTitle>
             <DialogContent>
                 <DataGrid
-                    rows={moves ?? []}
+                    rows={moves ?? null}
                     processRowUpdate={processRowUpdate}
                     columns={columns}
                     hideFooter
@@ -261,15 +267,18 @@ function PickStockDialog({
                     onRowSelectionModelChange={newRowSelectionModel => {
                         handleRowSelection(newRowSelectionModel);
                     }}
+                    slots={{
+                        loadingOverlay: CustomLoadingOverlay
+                    }}
                     isRowSelectable={checkRowSelect}
                     loading={isLoading}
-                    checkboxSelection={getBatches}
+                    checkboxSelection={selectSingleBatch}
                     initialState={{
                         columns: {
                             columnVisibilityModel: {
                                 partUnitOfMeasure: false,
-                                batchRef: getBatches,
-                                stockRotationDate: getBatches
+                                batchRef: selectSingleBatch,
+                                stockRotationDate: selectSingleBatch
                             }
                         }
                     }}

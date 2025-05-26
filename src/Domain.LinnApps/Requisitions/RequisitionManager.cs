@@ -310,7 +310,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckMoves(
                     toAdd.PartNumber,
                     movesToAdd,
-                    FieldIsNeededOrOptional(header.StoresFunction.ToLocationRequired));
+                    header.ReqType != "F" && header.StoresFunction.ToLocationRequiredOrOptional());
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
@@ -362,7 +362,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             else if (header.ManualPick == "N" && transactionDefinition.RequiresStockAllocations)
             {
                 // todo can we make automatic from picks see CREATE_REQ_MOVES in REQ_UT.fmb
-
                 var autopickResult = await this.requisitionStoredProcedures.PickStock(
                     toAdd.PartNumber,
                     header.ReqNumber,
@@ -439,7 +438,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             catch (DomainException e)
             {
                 // cancel the req so it doesn't hang around unbooked and mess up validation
-                header.Cancel(e.Message, header.CreatedBy);
+                var savedReq = await this.repository.FindByIdAsync(header.ReqNumber);
+                savedReq.Cancel(e.Message, header.CreatedBy);
+                if (savedReq.Lines?.Count > 0)
+                {
+                    foreach (var requisitionLine in savedReq.Lines)
+                    {
+                        requisitionLine.Cancel(header.CreatedBy.Id, e.Message, DateTime.Now);
+                    }
+                }
+
                 await this.transactionManager.CommitAsync();
 
                 throw;
@@ -504,7 +512,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                     if (transaction.RequiresOntoTransactions)
                     {
-                        var pickedLine = pickedRequisition.Lines.SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
+                        var pickedLine = pickedRequisition.Lines
+                            .SingleOrDefault(l => l.LineNumber == lineWithPicks.LineNumber);
                         if (pickedLine != null)
                         {
                             foreach (var move in pickedLine.Moves)
@@ -556,7 +565,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckMoves(
                         line.PartNumber,
                         movesToAdd,
-                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
+                        current.ReqType != "F" && current.StoresFunction.ToLocationRequiredOrOptional());
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
@@ -567,12 +576,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckMoves(
                         line.PartNumber,
                         line.Moves.ToList(),
-                        FieldIsNeededOrOptional(current.StoresFunction?.ToLocationRequired));
+                        current.ReqType != "F" && current.StoresFunction.ToLocationRequiredOrOptional());
                     await this.AddRequisitionLine(current, line);
                 }
             }
         }
-
+        
+        // This Validation method ensures reqs are created in valid states. It is called in two scenarios:
+        // 1. Client-side previewing of req validation during creation to provide feedback for the UI.
+        // 2. Final server-side validation before persisting the req.
+        //
+        // While the RequisitionHeader class encapsulates much of its own validation logic (see RequisitionHeader.Validate()),
+        // this manager method performs required additional checks, e.g:
+        // - Calls stored procedures and accesses repositories as needed.
+        // - Performs validations that must run only after lines are added (lines may be added by stored procedures for example).
         public async Task<RequisitionHeader> Validate(
             int createdBy,
             string functionCode,
@@ -581,7 +598,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string document1Type,
             string departmentCode,
             string nominalCode,
-            LineCandidate firstLine = null,
             string reference = null,
             string comments = null,
             string manualPick = null,
@@ -601,24 +617,40 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string newPartNumber = null,
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
-            int? originalDocumentNumber = null)
+            int? originalDocumentNumber = null,
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
+            DateTime? dateReceived = null)
         {
             // just try and construct a req with a single line
             // exceptions will be thrown if any of the validation fails
-            var function = !string.IsNullOrEmpty(functionCode) 
-                               ? await this.storesFunctionRepository.FindByIdAsync(functionCode) : null;
-            var dept = !string.IsNullOrEmpty(departmentCode) 
-                           ? await this.departmentRepository.FindByIdAsync(departmentCode) : null;
+            var function = !string.IsNullOrEmpty(functionCode)
+                               ? await this.storesFunctionRepository.FindByIdAsync(functionCode)
+                               : null;
+            var dept = !string.IsNullOrEmpty(departmentCode)
+                           ? await this.departmentRepository.FindByIdAsync(departmentCode)
+                           : null;
             var nom = !string.IsNullOrEmpty(nominalCode)
-                          ? await this.nominalRepository.FindByIdAsync(nominalCode) : null;
-            var fromLocation = !string.IsNullOrEmpty(fromLocationCode) 
-                                   ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == fromLocationCode) : null;
-            
+                          ? await this.nominalRepository.FindByIdAsync(nominalCode)
+                          : null;
+            var fromLocation = !string.IsNullOrEmpty(fromLocationCode)
+                                   ? await this.storageLocationRepository.FindByAsync(x =>
+                                         x.LocationCode == fromLocationCode)
+                                   : null;
+
             var toLocation = !string.IsNullOrEmpty(toLocationCode)
-                                 ? await this.storageLocationRepository.FindByAsync(x => x.LocationCode == toLocationCode) : null;
+                                 ? await this.storageLocationRepository.FindByAsync(x =>
+                                       x.LocationCode == toLocationCode)
+                                 : null;
             var part = !string.IsNullOrEmpty(partNumber) ? await this.partRepository.FindByIdAsync(partNumber) : null;
 
             var employee = await this.employeeRepository.FindByIdAsync(createdBy);
+
+            RequisitionHeader toBeReversed = null;
+
+            if (originalDocumentNumber.HasValue)
+            {
+                toBeReversed = await this.repository.FindByIdAsync(originalDocumentNumber.Value);
+            }
 
             var req = new RequisitionHeader(
                 employee,
@@ -648,8 +680,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 null,
                 null,
                 isReverseTransaction ?? "N",
-                originalDocumentNumber);
-
+                toBeReversed,
+                dateReceived);
+            
+            // loan out reqs are simple, just need to specify a valid Loan
             if (functionCode == "LOAN OUT")
             {
                 var loan = await this.documentProxy.GetLoan(document1Number.GetValueOrDefault());
@@ -661,111 +695,81 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 return req;
             }
 
-            if (function.LinesRequired == "Y" && firstLine == null)
+            var lineCandidates = lines?.ToList();
+            if (function.LinesRequired == "Y" && (lines == null || !lineCandidates.Any()))
             {
                 throw new CreateRequisitionException($"Lines are required for {functionCode}");
             }
 
             if (lines != null)
-            {
-                foreach (var candidate in lines)
+            {                    
+                var headerSpecifiesOnto = req.ToPalletNumber.HasValue || req.ToLocation != null;
+                foreach (var candidate in lineCandidates)
                 {
-                    req.AddLine(await this.ValidateLineCandidate(candidate, req.StoresFunction));
-                }
-            }
-            else if (firstLine != null)
-            {
-                req.AddLine(await this.ValidateLineCandidate(firstLine, req.StoresFunction));
-            }
-
-            // move below to its own function?
-            if (function.PartSource == "PO")
-            {
-                var po = await this.documentProxy.GetPurchaseOrder(document1Number.GetValueOrDefault());
-
-                if (po == null)
-                {
-                    throw new CreateRequisitionException($"PO {document1Number} does not exist!");
-                }
-
-                if (!po.IsAuthorised)
-                {
-                    throw new CreateRequisitionException($"PO {document1Number} is not authorised!");
-                }
-
-                if (po.IsFilCancelled)
-                {
-                    throw new CreateRequisitionException($"PO {document1Number} is FIL Cancelled!");
-                }
-
-                var orderRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
-                if (function.BatchRequired == "Y" && batchRef != orderRef)
-                {
-                    throw new CreateRequisitionException(   
-                            "You are trying to pass stock for payment from a different PO");
-                }
-                
-                // SUKIT validation to replace STORES_OO.CAN_BE_KITTED
-                if (function.FunctionCode == "SUKIT")
-                {
-                    await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
-                }
-
-                if (function.FunctionCode == "BOOKLD")
-                {
-                    if (!quantity.HasValue || quantity.Value == 0)
+                    req.AddLine(await this.ValidateLineCandidate(
+                        candidate, 
+                        req.StoresFunction, 
+                        req.ReqType, 
+                        headerSpecifiesOnto));
+                    
+                    // need to run the moves validation separately if the header specifies the onto info
+                    if (headerSpecifiesOnto)
                     {
-                        throw new CreateRequisitionException($"You must specify a quantity to book for PO {document1Number}.");
+                        var moves = new List<MoveSpecification>
+                        {
+                            new MoveSpecification
+                            {
+                                Qty = candidate.Qty,
+                                FromPallet = req.FromPalletNumber,
+                                ToLocation = req.ToLocation?.LocationCode,
+                                ToLocationId = req.ToLocation?.LocationId,
+                                ToPallet = req.ToPalletNumber,
+                                ToStockPool = req.ToStockPool,
+                                ToState = req.ToState,
+                                FromStockPool = req.FromStockPool,
+                                FromLocation = req.FromLocation?.LocationCode
+                            }
+                        };
+                        await this.CheckMoves(
+                            candidate.PartNumber, moves, reqType != "F" && req.StoresFunction.ToLocationRequiredOrOptional());
                     }
                 }
             }
-            else if (function.PartSource == "RO")
+            
+            switch (function.PartSource)
             {
-                var ro = await this.documentProxy.GetPurchaseOrder(document1Number.GetValueOrDefault());
+                case "PO":
+                    await this.CheckPurchaseOrder(
+                        req,
+                        bookInOrderDetails);
+                    break;
 
-                if (ro == null)
-                {
-                    throw new CreateRequisitionException($"RO {document1Number} does not exist!");
-                }
+                case "RO":
+                    await this.CheckReturnsOrder(req);
+                    break;
 
-                // not a seperate part source for credit orders get lumped in with RO
-                if (ro.DocumentType != "RO" && ro.DocumentType != "CO")
-                {
-                    throw new CreateRequisitionException($"Order {document1Number} is not a returns/credit order!");
-                }
+                case "WO":
+                    await this.CheckValidWorksOrder(
+                        document1Number,
+                        part,
+                        isReverseTransaction,
+                        quantity);
+                    break;
 
-                await this.CheckReturnOrderForFullyBooked(req, ro);
-            }
-            else if (function.PartSource == "WO")
-            {
-                await this.CheckValidWorksOrder(document1Number, part, isReverseTransaction, quantity);
-            }
-            else if (function.PartSource == "C" && function.Document1Required())
-            {
-                if (document1Type != "C")
-                {
-                    throw new CreateRequisitionException("Function requires a credit note");
-                }
-
-                var document = await this.GetDocument(
-                    document1Type,
-                    document1Number.Value,
-                    document1Line);
-
-                await this.CheckDocumentLineForOverAndFullyBooked(req, document);
+                case "C" when function.Document1Required():
+                    await this.CheckCreditNote(req);
+                    break;
             }
 
             if (req.IsReverseTrans() && req.Quantity != null)
             {
-                if (req.OriginalReqNumber == null)
+                if (req.OriginalReqNumber.HasValue)
                 {
-                    throw new CreateRequisitionException("An original req number must be supplied for a reverse");
+                    DoProcessResultCheck(
+                        await this.storesService.ValidReverseQuantity(req.OriginalReqNumber.Value, req.Quantity.Value));
                 }
-
-                DoProcessResultCheck(
-                    await this.storesService.ValidReverseQuantity(req.OriginalReqNumber.Value, req.Quantity.Value));
             }
-
+            
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C" && function.LinesRequired != "N")
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
@@ -773,46 +777,52 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (function.AutomaticFunctionType() && req.Lines.Count == 0)
             {
-                if (FieldIsNeededOrOptional(req.StoresFunction.QuantityRequired) && req.Quantity == null)
-                {
-                    throw new RequisitionException("A quantity must be entered");
-                }
-
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromLocationRequired) && req.FromLocation == null && req.FromPalletNumber == null)
-                {
-                    throw new RequisitionException("A from location or pallet is required");
-                }
-
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromStockPoolRequired) && string.IsNullOrEmpty(req.FromStockPool))
-                {
-                    throw new RequisitionException("A from stock pool is required");
-                }
-
-                if (FieldIsNeededOrOptional(req.StoresFunction.FromStateRequired) && string.IsNullOrEmpty(req.FromState) && !req.IsReverseTrans())
-                {
-                    throw new RequisitionException("A from state is required");
-                }
-
-                if (FieldIsNeededOrOptional(req.StoresFunction.ToLocationRequired) && req.ToLocation == null && req.ToPalletNumber == null)
-                {
-                    throw new RequisitionException("A to location or pallet is required");
-                }
-
-                if (FieldIsNeededWithPart(req.StoresFunction.ToStockPoolRequired, req.Part) && string.IsNullOrEmpty(req.ToStockPool))
-                {
-                    throw new RequisitionException("A to stock pool is required");
-                }
-
-                if (FieldIsNeededOrOptional(req.StoresFunction.ToStateRequired) && string.IsNullOrEmpty(req.ToState))
-                {
-                    throw new RequisitionException("A to state is required");
-                }
-
                 if (req.StoresFunction.PartNumberRequired() && req.Part == null)
                 {
                     throw new RequisitionException("Part number is required");
                 }
 
+                if (req.StoresFunction.IsQuantityRequiredOrOptional() && req.Quantity == null)
+                {
+                    throw new RequisitionException("A quantity must be entered");
+                }
+
+                if (isReverseTransaction != "Y" && req.StoresFunction.FromLocationRequiredOrOptional() && req.FromLocation == null
+                    && req.FromPalletNumber == null)
+                {
+                    throw new RequisitionException("A from location or pallet is required");
+                }
+
+                if (req.StoresFunction.FromStockPoolRequiredOrOptional()
+                    && string.IsNullOrEmpty(req.FromStockPool) && req.StoresFunction.FunctionCode != "SUKIT")
+                {
+                    throw new RequisitionException("A from stock pool is required");
+                }
+
+                if (req.StoresFunction.FromStateRequiredOrOptional() && string.IsNullOrEmpty(req.FromState)
+                    && !req.IsReverseTrans())
+                {
+                    throw new RequisitionException("A from state is required");
+                }
+
+                if (isReverseTransaction != "Y" 
+                    && req.StoresFunction.ToLocationRequiredOrOptional() && req.ToLocation == null
+                    && req.ToPalletNumber == null)
+                {
+                    throw new RequisitionException("A to location or pallet is required");
+                }
+
+                if (req.ToStockPoolRequiredWithPart()
+                    && string.IsNullOrEmpty(req.ToStockPool))
+                {
+                    throw new RequisitionException("A to stock pool is required");
+                }
+
+                if (req.StoresFunction.ToStateRequiredOrOptional() && string.IsNullOrEmpty(req.ToState))
+                {
+                    throw new RequisitionException("A to state is required");
+                }
+                
                 if (req.StoresFunction.NewPartNumberRequired())
                 {
                     var newPart = !string.IsNullOrEmpty(newPartNumber)
@@ -829,14 +839,18 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task<RequisitionLine> ValidateLineCandidate(
             LineCandidate candidate,
-            StoresFunction storesFunction = null)
+            StoresFunction storesFunction = null,
+            string reqType = null,
+            bool headerSpecifiesOntoLocation = false)
         {
             var part = !string.IsNullOrEmpty(candidate?.PartNumber)
                 ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
                 : null;
 
             var transactionDefinition = !string.IsNullOrEmpty(candidate?.TransactionDefinition)
-                ? await this.transactionDefinitionRepository.FindByIdAsync(candidate.TransactionDefinition) : null;
+                                            ? await this.transactionDefinitionRepository.FindByIdAsync(
+                                                  candidate.TransactionDefinition)
+                                            : null;
 
             var line = new RequisitionLine(
                 0,
@@ -853,9 +867,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckMoves(
                     candidate.PartNumber,
                     candidate.Moves.ToList(),
-                    FieldIsNeededOrOptional(storesFunction?.ToLocationRequired));
+                    reqType != "F" && storesFunction.ToLocationRequiredOrOptional());
             }
 
+            if (headerSpecifiesOntoLocation)
+            {
+                return line;
+            }
+            
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
                 line.TransactionDefinition.RequiresOntoTransactions)
             {
@@ -865,6 +884,123 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             return line;
         }
+
+        private async Task CheckPurchaseOrder(
+            RequisitionHeader req,
+            IEnumerable<BookInOrderDetail> bookInOrderDetails)
+        {
+            var po = await this.documentProxy.GetPurchaseOrder(req.Document1.GetValueOrDefault());
+
+            if (po == null)
+            {
+                throw new CreateRequisitionException($"PO {req.Document1} does not exist!");
+            }
+
+            if (!po.IsAuthorised)
+            {
+                throw new CreateRequisitionException($"PO {req.Document1} is not authorised!");
+            }
+
+            if (po.IsFilCancelled)
+            {
+                throw new CreateRequisitionException($"PO {req.Document1} is FIL Cancelled!");
+            }
+
+            var orderRef = $"{po.DocumentType.Substring(0, 1)}{po.OrderNumber}";
+
+            if (req.IsReverseTransaction != "Y" && req.StoresFunction.BatchRequired == "Y" && req.BatchRef != orderRef)
+            {
+                throw new CreateRequisitionException(
+                    "You are trying to pass stock for payment from a different PO");
+            }
+
+            if (req.StoresFunction.FunctionCode == "SUKIT")
+            {
+                await this.CheckPurchaseOrderForOverAndFullyKitted(req, po);
+            }
+
+            if (req.StoresFunction.FunctionCode == "BOOKLD")
+            {
+                await this.CheckBookInOrderAndDetails(
+                    req.Document1,
+                    req.Quantity,
+                    req.IsReverseTransaction,
+                    req.Part,
+                    bookInOrderDetails?.ToList());
+            }
+
+            if (req.StoresFunction.FunctionCode == "BOOKSU")
+            {
+                if (req.Part.StockControlled != "Y")
+                {
+                    throw new CreateRequisitionException(
+                        $"{req.StoresFunction.FunctionCode} requires part to be stock controlled and {req.Part.PartNumber} is not.");
+                }
+
+                if (po.DocumentType == "CO")
+                {
+                    throw new CreateRequisitionException("Cannot book in parts against a credit order (CO).");
+                }
+
+                if (!req.IsReverseTrans())
+                {
+                    if (req.Quantity < 0)
+                    {
+                        throw new CreateRequisitionException(
+                            $"Cannot book a negative quantity against order {req.Document1}.");
+                    }
+
+                    var qtyLeft = po.Details.First(a => a.Line == req.Document1Line).Deliveries
+                        .Sum(a => a.QuantityOutstanding);
+
+                    if (po.OverBookAllowed == "Y" && po.OverBookQty.HasValue)
+                    {
+                        qtyLeft += po.OverBookQty.Value;
+                    }
+
+                    if (qtyLeft < req.Quantity)
+                    {
+                        throw new CreateRequisitionException(
+                            $"The qty remaining on order {req.Document1}/{req.Document1Line} is {qtyLeft}. Cannot book {req.Quantity}.");
+                    }
+                }
+            }
+        }
+
+        private async Task CheckReturnsOrder(
+            RequisitionHeader req)
+        {
+            var ro = await this.documentProxy.GetPurchaseOrder(req.Document1.GetValueOrDefault());
+
+            if (ro == null)
+            {
+                throw new CreateRequisitionException(message: $"RO {req.Document1} does not exist!");
+            }
+
+            if (ro.DocumentType != "RO" && ro.DocumentType != "CO")
+            {
+                throw new CreateRequisitionException($"Order {req.Document1} is not a returns/credit order!");
+            }
+
+            await this.CheckReturnOrderForFullyBooked(req, ro);
+        }
+        
+        private async Task CheckCreditNote(
+            RequisitionHeader req)
+        {
+            if (req.Document1Name != "C")
+            {
+                throw new CreateRequisitionException("Function requires a credit note");
+            }
+
+            var document = await this.GetDocument(
+                req.Document1Name,
+                req.Document1.GetValueOrDefault(),
+                req.Document1Line);
+
+            await this.CheckDocumentLineForOverAndFullyBooked(req, document);
+        }
+
 
         public async Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber)
         {
@@ -898,8 +1034,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (header.HasDocument1WithLine() && document.Quantity.HasValue)
             {
                 var reqs = await this.repository.FilterByAsync(r =>
-                    r.Document1Name == header.Document1Name && r.Document1 == header.Document1.Value && r.Document1Line == header.Document1Line &&
-                    r.Cancelled == "N" && r.Quantity != null);
+                               r.Document1Name == header.Document1Name && r.Document1 == header.Document1.Value
+                                                                       && r.Document1Line == header.Document1Line
+                                                                       && r.Cancelled == "N" && r.Quantity != null);
 
                 if (reqs.Any())
                 {
@@ -923,7 +1060,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         throw new DocumentException("Line has never been booked");
                     }
-
                 }
             }
         }
@@ -1022,7 +1158,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 var qty = await this.requisitionStoredProcedures.GetQtyReturned(
                               header.Document1.Value,
                               header.Document1Line.Value);
-                if (header.IsReverseTrans() && header.Quantity.Value > qty)
+                
+                if (header.IsReverseTrans() && Math.Abs(header.Quantity.Value) > qty)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
                 }
@@ -1041,25 +1178,70 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException(result.Message);
             }
         }
-
-        private static bool FieldIsNeededOrOptional(string code)
+        
+        private async Task CheckBookInOrderAndDetails(
+            int? document1Number,
+            decimal? reqQuantity,
+            string isReverseTransaction,
+            Part part,
+            IList<BookInOrderDetail> bookInOrderDetails)
         {
-            if (code == "Y" || code == "O")
+            if (part == null)
             {
-                return true;
+                throw new CreateRequisitionException("A sundry part must be specified for BOOKLD");
             }
 
-            return false;
-        }
-
-        private static bool FieldIsNeededWithPart(string code, Part part)
-        {
-            if (part != null)
+            if (part.StockControlled == "Y")
             {
-                return FieldIsNeededOrOptional(code);
+                throw new CreateRequisitionException($"Part {part.PartNumber} is stock controlled and BOOKLD must be sundry.");
+            }
+            
+            if (bookInOrderDetails == null || bookInOrderDetails.Count == 0)
+            {
+                throw new CreateRequisitionException("No book in order details supplied for BOOKLD transaction");
             }
 
-            return code == "Y";
+            if (!reqQuantity.HasValue || reqQuantity.Value == 0
+                                      || bookInOrderDetails.Any(b => !b.Quantity.HasValue)
+                                      || bookInOrderDetails.Any(b => b.Quantity == 0))
+            {
+                throw new CreateRequisitionException($"You must specify a quantity on req and all lines to book {document1Number}.");
+            }
+
+            if (isReverseTransaction == "Y" && (reqQuantity > 0 || bookInOrderDetails.Any(a => a.Quantity > 0)))
+            {
+                throw new CreateRequisitionException($"You must specify a negative quantity for reverse but {reqQuantity} supplied.");
+            }
+
+            if (isReverseTransaction == "N" && (reqQuantity < 0 || bookInOrderDetails.Any(a => a.Quantity < 0)))
+            {
+                throw new CreateRequisitionException($"You must specify a positive quantity for BOOKLD but {reqQuantity} supplied.");
+            }
+
+            var bookInDetailsQuantity = bookInOrderDetails.Sum(b => b.Quantity);
+            if (reqQuantity.Value != bookInDetailsQuantity)
+            {
+                throw new CreateRequisitionException($"Book in order detail quantity ({bookInDetailsQuantity}) does not match req quantity ({reqQuantity}).");
+            }
+
+            if (bookInOrderDetails.Any(p => p.PartNumber != part.PartNumber))
+            {
+                throw new CreateRequisitionException("Part number is missing or incorrect on book in order details.");
+            }
+
+            if (bookInOrderDetails.Any(p =>
+                    string.IsNullOrEmpty(p.DepartmentCode) || string.IsNullOrEmpty(p.NominalCode)))
+            {
+                throw new CreateRequisitionException("Department or Nominal missing on book in order details.");
+            }
+
+            foreach (var bookInOrderDetail in bookInOrderDetails)
+            {
+                DoProcessResultCheck(
+                    await this.storesService.ValidDepartmentNominal(
+                        bookInOrderDetail.DepartmentCode,
+                        bookInOrderDetail.NominalCode));
+            }
         }
 
         private async Task CheckValidWorksOrder(
@@ -1252,7 +1434,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
 
-            
             if (header.Part != null && !header.IsReverseTrans())
             {
                 if (header.FromLocation != null || header.FromPalletNumber.HasValue)

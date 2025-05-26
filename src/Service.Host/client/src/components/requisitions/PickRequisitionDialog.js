@@ -11,10 +11,20 @@ import moment from 'moment';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 
-function PickRequisitionDialog({ open, setOpen, handleSelect, documentType, documentNumber }) {
+function PickRequisitionDialog({
+    open,
+    setOpen,
+    handleSelect,
+    documentType,
+    documentNumber,
+    functionCode
+}) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
-    const [rowSelectionModel, setRowSelectionModel] = useState([]);
+    const [rowSelectionModel, setRowSelectionModel] = useState({
+        type: 'include',
+        ids: new Set([])
+    });
     const [requisitions, setRequisitions] = useState([]);
 
     const {
@@ -25,13 +35,13 @@ function PickRequisitionDialog({ open, setOpen, handleSelect, documentType, docu
     } = useGet(itemTypes.requisitions.url);
 
     useEffect(() => {
-        if (open && documentType && documentNumber) {
+        if (open && documentType && documentNumber && functionCode) {
             searchReqs(
                 null,
-                `?documentName=${documentType}&documentNumber=${documentNumber}&includeCancelled=false`
+                `?documentName=${documentType}&documentNumber=${documentNumber}&includeCancelled=False&bookedOnly=True&functionCode=${functionCode}&excludeReversals=True`
             );
         }
-    }, [documentNumber, documentType, open, searchReqs]);
+    }, [documentNumber, documentType, functionCode, open, searchReqs]);
 
     useEffect(() => {
         if (searchResult) {
@@ -51,8 +61,10 @@ function PickRequisitionDialog({ open, setOpen, handleSelect, documentType, docu
 
     const handleConfirmClick = () => {
         handleClose();
-        if (rowSelectionModel && rowSelectionModel.length) {
-            const selected = requisitions.find(a => a.id === rowSelectionModel[0]);
+        if (rowSelectionModel && rowSelectionModel.ids.size) {
+            const selected = requisitions.find(
+                a => a.reqNumber === rowSelectionModel.ids.values().next().value
+            );
             handleSelect(selected);
         } else {
             handleSelect({ reqNumber: null });

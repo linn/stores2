@@ -98,12 +98,27 @@
                            IsAuthorised = po.AuthorisedBy?.Id != null,
                            IsFilCancelled = !string.IsNullOrEmpty(po.DateFilCancelled),
                            DocumentType = po.DocumentType?.Name,
+                           SupplierName = po.Supplier?.Name,
+                           SupplierId = po.Supplier?.Id,
+                           OverBookAllowed = po.Overbook,
+                           OverBookQty = po.OverbookQty,
                            Details = po.Details.Select(d => new PurchaseOrderDetailResult
                            {
                                Line = d.Line,
                                OurQty = d.OurQty,
                                PartNumber = d.PartNumber,
-                               OriginalOrderNumber = d.OriginalOrderNumber
+                               OriginalOrderNumber = d.OriginalOrderNumber,
+                               RohsCompliant = d.RohsCompliant,
+                               Deliveries = d.PurchaseDeliveries.Select(a => new PurchaseOrderDeliveryResult
+                                                                                 {
+                                                                                     OrderNumber = a.OrderNumber,
+                                                                                     OrderLine = a.OrderLine,
+                                                                                     DeliverySequence = a.DeliverySeq,
+                                                                                     OurQuantity = a.OurDeliveryQty,
+                                                                                     QuantityOutstanding = a.QuantityOutstanding,
+                                                                                     QuantityReceived = a.QtyNetReceived,
+                                                                                     QuantityPassedForPayment = a.QtyPassedForPayment
+                                                                                 })
                            })
                        };
         }

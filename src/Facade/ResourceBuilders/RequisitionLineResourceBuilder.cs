@@ -67,7 +67,7 @@
                                                                 FromLocationDescription = m.StockLocator?.StorageLocation?.Description,
                                                                 QtyAllocated = m.StockLocator?.QuantityAllocated,
                                                                 FromStockPool = m.StockLocator?.StockPoolCode,
-                                                                QtyAtLocation = m.Quantity,
+                                                                QtyAtLocation = m.StockLocator?.Quantity,
                                                                 ToLocationCode = m.Location?.LocationCode,
                                                                 ToLocationDescription = m.Location?.Description,
                                                                 ToPalletNumber = m.PalletNumber,
@@ -78,6 +78,13 @@
                                                                 IsFrom = m.StockLocator != null,
                                                                 IsTo = m.PalletNumber.HasValue || m.Location != null
                                                             }),
+                           SerialNumbers = l.SerialNumbers == null
+                                               ? new List<RequisitionSerialNumberResource>()
+                                               : l.SerialNumbers.Select(s => new RequisitionSerialNumberResource
+                                                                                 {
+                                                                                     Seq = s.Sequence,
+                                                                                     SerialNumber = s.SerialNumber
+                                                                                 }),
                            Links = this.BuildLinks(l).ToArray()
                        };
         }

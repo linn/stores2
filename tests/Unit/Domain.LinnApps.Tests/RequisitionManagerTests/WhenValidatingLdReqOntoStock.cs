@@ -1,5 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -15,7 +16,7 @@
 
     using NUnit.Framework;
 
-    public class WhenValidatingLdreq : ContextBase
+    public class WhenValidatingLdreqOntoStock : ContextBase
     {
         private RequisitionHeader result;
 
@@ -29,26 +30,29 @@
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.LinnDeptReq.FunctionCode)
                 .Returns(TestFunctionCodes.LinnDeptReq);
-            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
-                .Returns(TestTransDefs.StockToLinnDept);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
+                .Returns(TestTransDefs.LinnDeptToStock);
             this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.LinnDeptReq.FunctionCode,
-                "F",
+                "O",
                 null,
                 null,
                 "1607",
                 "2963",
-                new LineCandidate
-                    {
-                        PartNumber = "PART",
-                        Qty = 1,
-                        TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
-                        Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
-                    });
+                lines: new List<LineCandidate>
+                           {
+                               new LineCandidate
+                                   {
+                                       PartNumber = "PART",
+                                       Qty = 1,
+                                       TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
+                                       Moves = new[] { new MoveSpecification { Qty = 1, ToPallet = 123 } }
+                                   }
+                           });
         }
 
         [Test]

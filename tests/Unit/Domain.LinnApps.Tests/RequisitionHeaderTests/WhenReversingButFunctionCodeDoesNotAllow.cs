@@ -31,15 +31,14 @@
                                     quantity: 10,
                                     toPalletNumber: 1233,
                                     fromPalletNumber: 123,
-                                    isReverseTrans: "Y",
-                                    originalReqNumber: 954387);
+                                    isReverseTrans: "Y");
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: You cannot reverse a MOVE transaction");
+                .WithMessage("You cannot reverse a MOVE transaction");
         }
     }
 }

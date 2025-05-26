@@ -294,7 +294,11 @@ function StockPools() {
                         processRowUpdate={processRowUpdate}
                         columns={stockPoolColumns}
                         rowHeight={34}
-                        rowSelectionModel={[rowUpdated]}
+                        rowSelectionModel={
+                            rowUpdated
+                                ? { type: 'include', ids: new Set([rowUpdated]) }
+                                : { type: 'include', ids: new Set() }
+                        }
                         loading={false}
                         hideFooter
                         isCellEditable={params => {

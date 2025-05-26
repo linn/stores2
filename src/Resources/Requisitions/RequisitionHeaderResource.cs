@@ -114,6 +114,8 @@
 
         public int? Document3 { get; set; }
 
+        public string DateReceived { get; set; }
+
         public IEnumerable<BookInOrderDetailResource> BookInOrderDetails { get; set; }
     }
 }

@@ -92,13 +92,12 @@
                                     "PO",
                                     null,
                                     null,
-                                    null,
+                                    toStockPool: "SUPPLIER",
+                                    toLocationCode: "S-SU-1234",
                                     partNumber: "ADIKT",
                                     quantity: 1,
                                     fromState: "STORES",
-                                    toState: "STORES",
-                                    toLocationCode: "S-SU-1234",
-                                    toStockPool: "SUPPLIER");
+                                    toState: "STORES");
         }
 
         [Test]

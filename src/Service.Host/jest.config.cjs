@@ -6,13 +6,14 @@
 const esModules = ['query-string', 'decode-uri-component', 'split-on-first', 'filter-obj'];
 
 module.exports = {
-    coverageDirectory: './coverage/',
-    collectCoverageFrom: ['client/src/**/*.{js}'],
-    collectCoverage: true,
+    moduleNameMapper: {
+        '\\.css$': '<rootDir>/styleMock.js'
+    },
     setupFiles: ['./setupJest.js'],
     testPathIgnorePatterns: ['./client/src/components/__tests__/fakeData/*'],
+    testEnvironment: 'jsdom',
     transform: {
-        '^.+\\.js$': 'babel-jest',
+        '^.+\\.[jt]sx?$': 'babel-jest',
         '.+\\.(css|scss|png|jpg|svg)$': 'jest-transform-stub'
     },
     transformIgnorePatterns: esModules.length ? [`/node_modules/(?!${esModules.join('|')})`] : []

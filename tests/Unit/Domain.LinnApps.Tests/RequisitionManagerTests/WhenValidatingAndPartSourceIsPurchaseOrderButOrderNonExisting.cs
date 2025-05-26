@@ -38,12 +38,11 @@
                 null,
                 null,
                 null,
-                null,
-                partNumber: "PART",
                 fromStockPool: "QC",
                 toStockPool: "STORES",
-                quantity: 10,
-                toPalletNumber: 666);
+                toPalletNumber: 666,
+                partNumber: "PART",
+                quantity: 10);
         }
 
         [Test]

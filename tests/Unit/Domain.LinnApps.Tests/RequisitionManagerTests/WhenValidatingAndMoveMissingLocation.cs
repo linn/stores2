@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -32,23 +33,26 @@
                 .Returns(TestFunctionCodes.LinnDeptReq);
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
-            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
-                .Returns(TestTransDefs.StockToLinnDept);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
+                .Returns(TestTransDefs.LinnDeptToStock);
             this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.LinnDeptReq.FunctionCode,
-                "F",
+                "O",
                 null,
                 null,
                 "1607",
-                "2963",
-                new LineCandidate
-                    {
-                        PartNumber = part.PartNumber,
-                        Qty = 1,
-                        TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
-                        Moves = new[] { new MoveSpecification { Qty = 1 } }
-                    });
+                "2963", 
+                lines: new List<LineCandidate>
+                           {
+                               new LineCandidate
+                                   {
+                                       PartNumber = part.PartNumber,
+                                       Qty = 1,
+                                       TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
+                                       Moves = new[] { new MoveSpecification { Qty = 1 } }
+                                   }
+                           });
         }
 
         [Test]

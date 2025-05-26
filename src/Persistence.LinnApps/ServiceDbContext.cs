@@ -4,6 +4,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -68,15 +69,21 @@
 
         public DbSet<StockTransaction> StockTransactions { get; set; }
 
+        public DbSet<LabelType> LabelTypes { get; set; }
+        
         public DbSet<Workstation> Workstations { get; set; }
 
         public DbSet<Cit> Cits { get; set; }
+
+        public DbSet<NominalAccount> NominalAccounts { get; set; }
 
         public DbSet<BookInOrderDetail> BookInOrderDetails { get; set; }
 
         public DbSet<PcasStorageType> PcasStorageTypes { get; set; }
 
         public DbSet<PcasBoard> PcasBoards { get; set; }
+
+        public DbSet<SundryBookInDetail> SundryBookInDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -120,12 +127,15 @@
             BuildStockTransactions(builder);
             BuildStockTransactionPostings(builder);
             BuildPotentialMoveDetails(builder);
+            BuildLabelTypes(builder);
             BuildWorkstations(builder);
             BuildWorkstationElements(builder);
             BuildCits(builder);
             BuildBookInOrderDetails(builder);
             BuildPcasStorageTypes(builder);
             BuildPcasBoard(builder);
+            BuildSundryBookInDetails(builder);
+            BuildReqSerialNumbers(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -473,6 +483,7 @@
             e.Property(r => r.OriginalReqNumber).HasColumnName("ORIG_REQ_NUMBER");
             e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.Property(r => r.Document3).HasColumnName("DOCUMENT_3");
+            e.Property(r => r.DateReceived).HasColumnName("DATE_RECEIVED");
             e.HasOne(r => r.NewPart).WithMany().HasForeignKey("NEW_PART_NUMBER");
         }
 
@@ -515,6 +526,7 @@
                 .HasForeignKey(p => new { p.RequisitionNumber, p.LineNumber });
             r.HasMany(l => l.NominalAccountPostings).WithOne()
                 .HasForeignKey(p => new { p.ReqNumber, p.LineNumber });
+            r.HasMany(t => t.SerialNumbers).WithOne().HasForeignKey(reqSernos => new { reqSernos.ReqNumber, reqSernos.LineNumber });
         }
         
         private static void BuildStoresFunctionCodes(ModelBuilder builder)
@@ -529,7 +541,7 @@
             r.Property(c => c.ManualPickRequired).HasColumnName("MANUAL_PICK_REQUIRED").HasMaxLength(1);
             r.Property(c => c.FromLocationRequired).HasColumnName("FROM_LOC_REQUIRED").HasMaxLength(1);
             r.Property(c => c.FromStateRequired).HasColumnName("FROM_STATE_REQUIRED").HasMaxLength(1);
-            r.Property(c => c.FromCategory).HasColumnName("CATEGORY").HasMaxLength(6);
+            r.Property(c => c.Category).HasColumnName("CATEGORY").HasMaxLength(6);
             r.Property(c => c.FromStockPoolRequired).HasColumnName("FROM_STOCK_POOL_REQUIRED").HasMaxLength(1);
             r.Property(c => c.QuantityRequired).HasColumnName("QTY_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ToLocationRequired).HasColumnName("ONTO_LOC_REQUIRED").HasMaxLength(1);
@@ -548,6 +560,7 @@
             r.Property(c => c.ToStockPool).HasColumnName("TO_STOCK_POOL").HasMaxLength(10);
             r.Property(c => c.CanBeReversed).HasColumnName("CAN_BE_REVERSED").HasMaxLength(1);
             r.Property(c => c.CanBeCancelled).HasColumnName("CAN_BE_CANCELLED").HasMaxLength(1);
+            r.Property(c => c.ReceiptDateRequired).HasColumnName("RECEIPT_DATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ProcessStage).HasColumnName("PROCESS_STAGE");
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
@@ -640,8 +653,10 @@
             e.HasKey(a => a.Id);
             e.Property(a => a.Id).HasColumnName("NOMACC_ID");
             e.Property(a => a.StoresPostsAllowed).HasColumnName("STORES_POSTS_ALLOWED");
-            e.HasOne(r => r.Department).WithMany().HasForeignKey("DEPARTMENT");
-            e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
+            e.Property(a => a.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
+            e.HasOne(r => r.Department).WithMany().HasForeignKey(k => k.DepartmentCode);
+            e.Property(a => a.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
+            e.HasOne(r => r.Nominal).WithMany().HasForeignKey(k => k.NominalCode);
         }
 
         private static void BuildStoresBudgets(ModelBuilder builder)
@@ -819,6 +834,15 @@
             e.Property(s => s.SernosNumber).HasColumnName("SERNOS_NUMBER");
         }
 
+        private static void BuildLabelTypes(ModelBuilder builder)
+        {
+            var e = builder.Entity<LabelType>().ToTable("STORES_LABEL_TYPES");
+            e.HasNoKey();
+            e.Property(t => t.Code).HasColumnName("LABEL_TYPE_CODE");
+            e.Property(t => t.DefaultPrinter).HasColumnName("DEFAULT_PRINTER");
+            e.Property(t => t.FileName).HasColumnName("FILENAME");
+        }
+
         private static void BuildWorkstations(ModelBuilder builder)
         {
             var e = builder.Entity<Workstation>().ToTable("WORK_STATION");
@@ -888,6 +912,29 @@
             v.HasKey(l => l.BoardCode);
             v.Property(s => s.BoardCode).HasColumnName("BOARD_CODE");
             v.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(200);
+        }
+
+        private static void BuildSundryBookInDetails(ModelBuilder builder)
+        {
+            var e = builder.Entity<SundryBookInDetail>().ToTable("V_PO_BOOKED_IN").HasNoKey();
+            e.Property(s => s.OrderNumber).HasColumnName("ORDER_NUMBER");
+            e.Property(s => s.OrderLine).HasColumnName("ORDER_LINE");
+            e.Property(s => s.Quantity).HasColumnName("QTY");
+            e.Property(s => s.ReqNumber).HasColumnName("REQ_NUMBER");
+            e.Property(s => s.LineNumber).HasColumnName("LINE_NUMBER");
+            e.Property(s => s.TransactionReference).HasColumnName("TRANS_REFERENCE").HasMaxLength(2000);
+            e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
+            e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
+        }
+
+        private static void BuildReqSerialNumbers(ModelBuilder builder)
+        {
+            var r = builder.Entity<RequisitionSerialNumber>().ToTable("REQ_SERNOS");
+            r.HasKey(l => new { l.ReqNumber, l.LineNumber, l.Sequence });
+            r.Property(l => l.ReqNumber).HasColumnName("REQ_NUMBER");
+            r.Property(l => l.LineNumber).HasColumnName("LINE_NUMBER");
+            r.Property(l => l.Sequence).HasColumnName("SEQ");
+            r.Property(l => l.SerialNumber).HasColumnName("SERNOS_NUMBER");
         }
     }
 }

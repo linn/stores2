@@ -1,19 +1,20 @@
 ﻿namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
-
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
+    using Linn.Common.Domain.LinnApps.Services;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
     using Linn.Common.Proxy;
-    using Linn.Common.Proxy.LinnApps;
+    using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Reports;
@@ -31,9 +32,7 @@
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
-
     using Microsoft.Extensions.DependencyInjection;
-
     using RazorEngineCore;
 
     public static class ServiceExtensions
@@ -61,6 +60,7 @@
                 .AddScoped<IDocumentProxy, DocumentProxy>()
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()
+                .AddTransient<ILabelPrinter, BartenderLabelPack>()
                 .AddScoped<IGoodsInLogReportService, GoodsInLogReportService>()
                 .AddScoped<ICreationStrategyResolver, RequisitionCreationStrategyResolver>()
                 .AddScoped<LdreqCreationStrategy>()
@@ -70,8 +70,14 @@
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
                 .AddScoped<ISalesProxy, SalesProxy>()
                 .AddScoped<IBomVerificationProxy, BomVerificationProxy>()
-                .AddScoped<GistPoCreationStrategy>()
-                .AddScoped<SuReqCreationStrategy>();
+                .AddScoped<SuReqCreationStrategy>()
+                .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>()
+                .AddScoped<IDeliveryNoteService, DeliveryNoteService>()
+                .AddScoped<IHtmlTemplateService<DeliveryNoteDocument>>(
+                    x => new HtmlTemplateService<DeliveryNoteDocument>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<ISupplierProxy, SupplierProxy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -89,11 +95,14 @@
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteService>()
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
                 .AddScoped<IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>, StockStateFacadeService>()
+                .AddScoped<IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource>, SundryBookInDetailFacadeService>()
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>()
-                .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>();
+                .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>()
+                .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
+                .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
@@ -109,6 +118,7 @@
                 .AddScoped<IBuilder<StorageSite>, StorageSiteResourceBuilder>()
                 .AddScoped<IBuilder<StorageType>, StorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<PartsStorageType>, PartsStorageTypeResourceBuilder>()
+                .AddScoped<IBuilder<SundryBookInDetail>, SundryBookInDetailResourceBuilder>()
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()

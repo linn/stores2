@@ -9,8 +9,12 @@
     using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
+    using Linn.Stores2.Facade.ResourceBuilders;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Requisitions;
 
     public class RequisitionFacadeService
@@ -23,7 +27,11 @@
 
         private readonly IRepository<RequisitionHistory, int> reqHistoryRepository;
 
+        private readonly IStoresService storesService;
+
         private readonly ITransactionManager transactionManager;
+
+        private readonly IRepository<RequisitionHeader, int> reqRepository;
 
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
@@ -31,13 +39,16 @@
             IBuilder<RequisitionHeader> resourceBuilder,
             IRequisitionManager requisitionManager,
             IRequisitionFactory requisitionFactory,
-            IRepository<RequisitionHistory, int> reqHistoryRepository)
+            IRepository<RequisitionHistory, int> reqHistoryRepository,
+            IStoresService storesService)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionManager = requisitionManager;
             this.transactionManager = transactionManager;
             this.requisitionFactory = requisitionFactory;
             this.reqHistoryRepository = reqHistoryRepository;
+            this.storesService = storesService;
+            this.reqRepository = repository;
         }
         
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -145,27 +156,28 @@
                     resource.Document1Name,
                     resource.Department?.DepartmentCode,
                     resource.Nominal?.NominalCode,
-                    BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()),
-                    resource.Reference,
-                    resource.Comments,
-                    resource.ManualPick,
-                    resource.FromStockPool,
-                    resource.ToStockPool,
-                    resource.FromPalletNumber,
-                    resource.ToPalletNumber,
-                    resource.FromLocationCode,
-                    resource.ToLocationCode,
-                    resource.Part?.PartNumber,
-                    resource.Quantity,
-                    resource.FromState,
-                    resource.ToState,
-                    resource.BatchRef,
-                    string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
-                    resource.Document1Line,
-                    resource.NewPart?.PartNumber,
-                    resource.Lines?.Select(BuildLineCandidateFromResource),
-                    resource.IsReverseTransaction,
-                    resource.OriginalReqNumber);
+                    reference: resource.Reference,
+                    comments: resource.Comments,
+                    manualPick: resource.ManualPick,
+                    fromStockPool: resource.FromStockPool,
+                    toStockPool: resource.ToStockPool,
+                    fromPalletNumber: resource.FromPalletNumber,
+                    toPalletNumber: resource.ToPalletNumber,
+                    fromLocationCode: resource.FromLocationCode,
+                    toLocationCode: resource.ToLocationCode,
+                    partNumber: resource.Part?.PartNumber,
+                    quantity: resource.Quantity,
+                    fromState: resource.FromState,
+                    toState: resource.ToState,
+                    batchRef: resource.BatchRef,
+                    batchDate: string.IsNullOrEmpty(resource.BatchDate) ? null : DateTime.Parse(resource.BatchDate),
+                    document1Line: resource.Document1Line,
+                    newPartNumber: resource.NewPart?.PartNumber,
+                    lines: resource.Lines?.Select(BuildLineCandidateFromResource),
+                    isReverseTransaction: resource.IsReverseTransaction,
+                    originalDocumentNumber: resource.OriginalReqNumber,
+                    bookInOrderDetails: resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
+                    dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived));
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }
@@ -173,6 +185,47 @@
             {
                 return new BadRequestResult<RequisitionHeaderResource>(ex.Message);
             }
+        }
+
+        public async Task<IResult<RequisitionHeaderResource>> GetReversalPreview(int toBeReversedId)
+        {
+            // Returns a preview of what a reversal would look like for a given requisition.
+            // Nothing is persisted — this just constructs a reversal using the same domain rules
+            // that will later be applied during actual creation, allowing UI to update accordingly
+            try
+            {
+                var toBeReversed = await this.reqRepository.FindByIdAsync(toBeReversedId);
+                var reversalPreview = new RequisitionHeader(
+                    new Employee(), // just a stub to pass validation
+                    toBeReversed.StoresFunction,
+                    null,
+                    toBeReversed.Document1,
+                    toBeReversed.Document1Name,
+                    toBeReversed.Department,
+                    toBeReversed.Nominal,
+                    isReverseTrans: "Y",
+                    isReversalOf: toBeReversed);
+
+                var resource = this.BuildResource(reversalPreview, null);
+                return new SuccessResult<RequisitionHeaderResource>(resource);
+            }
+            catch (DomainException ex)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(ex.Message);
+            }
+        }
+
+        public async Task<IResult<StorageLocationResource>> GetDefaultBookInLocation(string partNumber)
+        {
+            var result = await this.storesService.DefaultBookInLocation(partNumber);
+
+            if (result == null)
+            {
+                return new SuccessResult<StorageLocationResource>(null);
+            }
+
+            var builder = new StorageLocationResourceBuilder();
+            return new SuccessResult<StorageLocationResource>(builder.Build(result, new List<string>()));
         }
 
         protected override async Task<RequisitionHeader> CreateFromResourceAsync(
@@ -212,8 +265,9 @@
                              resource.IsReverseTransaction,
                              resource.OriginalReqNumber,
                              resource.Document3,
-                             resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource));
-      
+                             resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
+                             dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived),
+                             fromCategory: resource.FromCategory);
             return result;
         }
 
@@ -265,7 +319,11 @@
             if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
             {
                 return x => x.Document1Name == searchResource.DocumentName &&
-                            x.Document1 == searchResource.DocumentNumber && (searchResource.IncludeCancelled || x.Cancelled != "Y");
+                            x.Document1 == searchResource.DocumentNumber
+                            && (!searchResource.BookedOnly.GetValueOrDefault() || x.DateBooked.HasValue)
+                            && (string.IsNullOrEmpty(searchResource.FunctionCode) || x.StoresFunction.FunctionCode == searchResource.FunctionCode)
+                            && (!searchResource.ExcludeReversals.GetValueOrDefault() || (x.IsReversed != "Y" && x.IsReverseTransaction != "Y"))
+                            && (searchResource.IncludeCancelled || x.Cancelled != "Y");
             }
 
             if (searchResource.Pending == true)

@@ -5,6 +5,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
+    using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -71,14 +72,20 @@
                 .AddScoped<IRepository<PotentialMoveDetail, PotentialMoveDetailKey>, EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>>(
                     r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(
                         r.GetService<ServiceDbContext>()?.PotentialMoveDetails))
+                .AddScoped<IQueryRepository<LabelType>, EntityFrameworkQueryRepository<LabelType>>(
+                    r => new EntityFrameworkQueryRepository<LabelType>(r.GetService<ServiceDbContext>()?.LabelTypes))
                 .AddScoped<IRepository<BookInOrderDetail, BookInOrderDetailKey>, EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>>(
                     r => new EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>(r.GetService<ServiceDbContext>()?.BookInOrderDetails))
-                .AddTransient<IRepository<Cit, string>, EntityFrameworkRepository<Cit, string>>(
-                    r => new EntityFrameworkRepository<Cit, string>(r.GetService<ServiceDbContext>()?.Cits))
-                .AddScoped<IRepository<Workstation, string>, WorkstationRepository>()
-                .AddScoped<IRepository<PcasStorageType, PcasStorageTypeKey>, PcasStorageTypeRepository>()
+                .AddTransient<IRepository<Cit, string>, EntityFrameworkRepository<Cit, string>>(r =>
+                    new EntityFrameworkRepository<Cit, string>(r.GetService<ServiceDbContext>()?.Cits))
+                    .AddScoped<IRepository<PcasStorageType, PcasStorageTypeKey>, PcasStorageTypeRepository>()
                 .AddTransient<IRepository<PcasBoard, string>, EntityFrameworkRepository<PcasBoard, string>>(
-                r => new EntityFrameworkRepository<PcasBoard, string>(r.GetService<ServiceDbContext>()?.PcasBoards));
+                r => new EntityFrameworkRepository<PcasBoard, string>(r.GetService<ServiceDbContext>()?.PcasBoards))
+                .AddTransient<IRepository<NominalAccount, int>, EntityFrameworkRepository<NominalAccount, int>>(r =>
+                    new EntityFrameworkRepository<NominalAccount, int>(r.GetService<ServiceDbContext>()?.NominalAccounts))
+                .AddScoped<IRepository<Workstation, string>, WorkstationRepository>()
+                .AddScoped<IQueryRepository<SundryBookInDetail>, EntityFrameworkQueryRepository<SundryBookInDetail>>(
+                    r => new EntityFrameworkQueryRepository<SundryBookInDetail>(r.GetService<ServiceDbContext>()?.SundryBookInDetails));
         }
     }
 }

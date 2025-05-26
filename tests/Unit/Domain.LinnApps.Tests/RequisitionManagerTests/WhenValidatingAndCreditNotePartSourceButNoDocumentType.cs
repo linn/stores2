@@ -34,10 +34,9 @@
                 null,
                 null,
                 null,
-                null,
                 toStockPool: "LINN",
-                toState: "STORES",
-                toPalletNumber: 666);
+                toPalletNumber: 666,
+                toState: "STORES");
         }
 
         [Test]

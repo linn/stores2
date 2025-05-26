@@ -1,18 +1,19 @@
 module.exports = {
     presets: [
-        ['@babel/preset-env', { modules: 'commonjs' }],
-        [
-            '@babel/preset-react'
-            // React 17+ automatic JSX transform - removes necessity to import React in jsx files
-            // {
-            //     runtime: 'automatic' - this doesn't work properly for some reason, so omitting
-            // }
-        ]
+        ['@babel/preset-env', { modules: false, useBuiltIns: 'usage', corejs: 3 }],
+        ['@babel/preset-react']
     ],
-    plugins: ['@babel/plugin-proposal-class-properties'],
+    plugins: [
+        '@babel/plugin-proposal-class-properties',
+        ['@babel/plugin-transform-runtime', { corejs: 3 }]
+    ],
     env: {
         test: {
-            plugins: ['@babel/plugin-transform-runtime'] // For test environment
+            presets: [
+                ['@babel/preset-env', { modules: 'auto', useBuiltIns: 'usage', corejs: 3 }],
+                ['@babel/preset-react']
+            ],
+            plugins: ['@babel/plugin-transform-runtime']
         }
     }
 };

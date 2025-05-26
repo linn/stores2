@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -33,13 +34,16 @@
                                   NominalCode = "0004321",
                                   ReqType = "F",
                                   CreatedByUserNumber = 12345,
-                                  FirstLineCandidate = new LineCandidate
-                                                           {
-                                                               Qty = 1,
-                                                               LineNumber = 1,
-                                                               TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
-                                                               PartNumber = "PART",
-                                                           },
+                                  Lines = new List<LineCandidate>
+                                              {
+                                                  new LineCandidate
+                                                      {
+                                                          Qty = 1,
+                                                          LineNumber = 1,
+                                                          TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
+                                                          PartNumber = "PART",
+                                                      }
+                                              },
                                   Function = TestFunctionCodes.LinnDeptReq
                               };
             this.EmployeeRepository.FindByIdAsync(context.CreatedByUserNumber).Returns(new Employee());
@@ -65,7 +69,7 @@
                     AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
                     Arg.Any<IEnumerable<string>>())
                 .Returns(true);
-            this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), context.FirstLineCandidate)
+            this.RequisitionManager.AddRequisitionLine(Arg.Any<RequisitionHeader>(), context.Lines.First())
                 .Throws(new PickStockException("Can't pick"));
             this.action = () => this.Sut.Create(context);
         }

@@ -7,6 +7,7 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
 
     public class RequisitionLine
@@ -48,6 +49,7 @@
             }
 
             this.Moves = new List<ReqMove>();
+            this.SerialNumbers = new List<RequisitionSerialNumber>();
 
             this.NominalAccountPostings = new List<RequisitionLinePosting>();
 
@@ -83,7 +85,9 @@
         public string Document2Type { get; protected set; }
 
         public ICollection<ReqMove> Moves { get; protected set; }
-        
+
+        public ICollection<RequisitionSerialNumber> SerialNumbers { get; protected set; }
+
         public decimal Qty { get; protected set; }
         
         public StoresTransactionDefinition TransactionDefinition { get; protected set; }
@@ -107,19 +111,23 @@
                 throw new RequisitionException("Debit or credit for posting should be D or C");
             }
 
-            this.NominalAccountPostings.Add(new RequisitionLinePosting()
-            {
-                ReqNumber = this.ReqNumber,
-                LineNumber = this.LineNumber,
-                DebitOrCredit = debitOrCredit,
-                Qty = qty,
-                NominalAccount = nominalAccount
-            });
+            this.NominalAccountPostings.Add(new RequisitionLinePosting
+                                                {
+                                                    ReqNumber = this.ReqNumber,
+                                                    LineNumber = this.LineNumber,
+                                                    DebitOrCredit = debitOrCredit,
+                                                    Qty = qty,
+                                                    NominalAccount = nominalAccount
+                                                });
         }
 
         public decimal GetPostingQty(string debitOrCredit)
         {
-            return this.NominalAccountPostings == null ? 0 : this.NominalAccountPostings.Where(p => p.DebitOrCredit == debitOrCredit && p.Qty != null).Sum(p => p.Qty.Value);
+            return this.NominalAccountPostings == null
+                       ? 0
+                       : this.NominalAccountPostings
+                           .Where(p => p.DebitOrCredit == debitOrCredit && p.Qty != null)
+                           .Sum(p => p.Qty.Value);
         }
 
         public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
@@ -209,6 +217,18 @@
         public void Book(DateTime when)
         {
             this.DateBooked = when;
+        }
+
+        public void AddSerialNumber(int serialNumber)
+        {
+            var nextSeq = this.SerialNumbers.Any() ? this.SerialNumbers.Max(l => l.Sequence + 1)  : 1;
+            if (this.SerialNumbers.Any(s => s.SerialNumber == serialNumber))
+            {
+                throw new RequisitionException(
+                    $"Trying to add duplicate serial number {serialNumber} to line {this.LineNumber}");
+            }
+
+            this.SerialNumbers.Add(new RequisitionSerialNumber(this.ReqNumber, this.LineNumber, nextSeq, serialNumber));
         }
     }
 }
