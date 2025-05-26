@@ -5,11 +5,8 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
-    using Amazon.SimpleEmail.Model;
-
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;

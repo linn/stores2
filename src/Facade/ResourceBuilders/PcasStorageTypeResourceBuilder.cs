@@ -6,7 +6,6 @@
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Pcas;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Pcas;
 
