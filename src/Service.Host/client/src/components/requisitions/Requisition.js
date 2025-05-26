@@ -294,15 +294,6 @@ function Requisition({ creating }) {
     };
 
     const canAddLines = () => {
-        // can only add one line when creating
-        if (
-            creating &&
-            formState.req?.lines?.length &&
-            formState.req?.storesFunction?.code != 'SUREQ'
-        ) {
-            return false;
-        }
-
         if (!formState.req?.storesFunction) {
             return false;
         }
@@ -600,6 +591,15 @@ function Requisition({ creating }) {
                             Create New
                         </Button>
                     )}
+                </Grid>
+                <Grid size={12}>
+                    <Typography variant="subtitle1">
+                        {formState?.req?.cancelledReason && (
+                            <span style={{ color: 'red' }}>
+                                [{formState?.req?.cancelledReason}]
+                            </span>
+                        )}
+                    </Typography>
                 </Grid>
                 {functionCodeError && (
                     <Grid size={12}>

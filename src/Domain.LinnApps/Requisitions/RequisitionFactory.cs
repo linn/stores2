@@ -67,7 +67,6 @@
                                   Function = function,
                                   CreatedByUserNumber = createdBy,
                                   UserPrivileges = privileges,
-                                  FirstLineCandidate = firstLine,
                                   ReqType = reqType,
                                   Document1Number = document1Number,
                                   Document1Type = document1Type,

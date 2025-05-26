@@ -50,7 +50,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string document1Type,
             string departmentCode,
             string nominalCode,
-            LineCandidate firstLine = null,
             string reference = null,
             string comments = null,
             string manualPick = null,
@@ -77,7 +76,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task<RequisitionLine> ValidateLineCandidate(
             LineCandidate candidate, 
             StoresFunction storesFunction = null,
-            string reqType = null);
+            string reqType = null,
+            bool headerSpecifiesOntoLocation = false);
 
         Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 

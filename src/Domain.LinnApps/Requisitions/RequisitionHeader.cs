@@ -233,7 +233,7 @@
                 }
 
                 throw new CreateRequisitionException(
-                    $"Validation failed with the following errors: {string.Join(", ", errors)}");
+                    $"{string.Join(", ", errors)}");
             }
             
             if (function.FunctionCode == "GIST PO")

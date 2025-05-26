@@ -66,10 +66,10 @@
                                     "CO",
                                     null,
                                     null,
-                                    document1Line: 1,
                                     partNumber: "PART",
                                     quantity: 1,
                                     toState: "STORES",
+                                    document1Line: 1,
                                     dateReceived: 1.January(2024));
         }
 

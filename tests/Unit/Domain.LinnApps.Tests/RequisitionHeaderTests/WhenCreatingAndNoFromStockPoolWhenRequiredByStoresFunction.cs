@@ -35,7 +35,7 @@
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: From stock pool must be specified for GIST PO");
+                .WithMessage("From stock pool must be specified for GIST PO");
         }
     }
 }

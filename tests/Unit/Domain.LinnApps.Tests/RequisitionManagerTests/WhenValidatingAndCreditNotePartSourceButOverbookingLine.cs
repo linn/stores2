@@ -70,12 +70,11 @@
                 "C",
                 null, 
                 null,
-                null,
-                quantity: 1,
-                document1Line: 1,
                 toStockPool: "LINN",
+                toPalletNumber: 666,
+                quantity: 1,
                 toState: "STORES",
-                toPalletNumber: 666);
+                document1Line: 1);
         }
 
         [Test]

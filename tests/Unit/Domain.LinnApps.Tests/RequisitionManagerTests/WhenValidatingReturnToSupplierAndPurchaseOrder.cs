@@ -71,11 +71,10 @@
                 "PO",
                 null,
                 null,
-                null,
+                fromLocationCode: "E-PUR-RET",
                 partNumber: "ADIKT",
                 quantity: 1,
                 fromState: "STORES",
-                fromLocationCode: "E-PUR-RET",
                 document1Line: 1);
         }
 
