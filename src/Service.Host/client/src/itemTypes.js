@@ -17,6 +17,7 @@ const itemTypes = {
     sundryBookInDetails: { url: `${config.appRoot}/requisitions/sundry-book-ins` },
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
     storageTypes: { url: `${config.appRoot}/stores2/storage-types` },
+    pcasStorageTypes: { url: `${config.appRoot}/stores2/pcas-storage-types` },
     storageLocations: { url: `${config.appRoot}/stores2/storage/locations` },
     nominals: { url: `${config.proxyRoot}/ledgers/nominals` },
     departments: { url: `${config.proxyRoot}/ledgers/departments` },

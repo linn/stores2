@@ -23,6 +23,7 @@ import StoresTransViewer from './StoresTransViewer';
 import StoresFunctions from './StoresFunctions';
 import StoresFunction from './StoresFunction';
 import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
+import PcasStorageTypes from './PcasStorageTypes';
 
 function Root() {
     useSignIn();
@@ -71,6 +72,7 @@ function Root() {
                         path="/stores2/parts-storage-types/create"
                         element={<PartStorageType creating />}
                     />
+                    <Route path="/stores2/pcas-storage-types" element={<PcasStorageTypes />} />
                     <Route
                         path="/stores2/storage/locations/create"
                         element={<StorageLocation creating />}
