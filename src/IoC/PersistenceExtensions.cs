@@ -7,6 +7,7 @@
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -20,9 +21,7 @@
     {
         public static void AddPersistence(this IServiceCollection services)
         {
-            services
-                .AddScoped<ServiceDbContext>()
-                .AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
+            services.AddScoped<ServiceDbContext>().AddScoped<DbContext>(a => a.GetService<ServiceDbContext>())
                 .AddScoped<ITransactionManager, TransactionManager>()
                 .AddScoped<IRepository<Country, string>, EntityFrameworkRepository<Country, string>>(
                     r => new EntityFrameworkRepository<Country, string>(r.GetService<ServiceDbContext>()?.Countries))
@@ -30,45 +29,58 @@
                 .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
                 .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>()
                 .AddScoped<IRepository<StorageType, string>, EntityFrameworkRepository<StorageType, string>>(
-                    r => new EntityFrameworkRepository<StorageType, string>(r.GetService<ServiceDbContext>()?.StorageTypes))
+                    r => new EntityFrameworkRepository<StorageType, string>(
+                        r.GetService<ServiceDbContext>()?.StorageTypes))
                 .AddScoped<IRepository<StockPool, string>, StockPoolRepository>()
                 .AddScoped<IRepository<PartsStorageType, int>, PartsStorageTypeRepository>()
                 .AddScoped<IRepository<StoresBudget, int>, StoresBudgetRepository>()
                 .AddScoped<IQueryRepository<StoragePlace>, EntityFrameworkQueryRepository<StoragePlace>>(
-                    r => new EntityFrameworkQueryRepository<StoragePlace>(r.GetService<ServiceDbContext>()?.StoragePlaces))
+                    r => new EntityFrameworkQueryRepository<StoragePlace>(
+                        r.GetService<ServiceDbContext>()?.StoragePlaces))
                 .AddScoped<IRepository<AccountingCompany, string>, EntityFrameworkRepository<AccountingCompany, string>>(
-                    r => new EntityFrameworkRepository<AccountingCompany, string>(r.GetService<ServiceDbContext>()?.AccountingCompanies))
+                    r => new EntityFrameworkRepository<AccountingCompany, string>(
+                        r.GetService<ServiceDbContext>()?.AccountingCompanies))
                 .AddScoped<IRepository<StockState, string>, EntityFrameworkRepository<StockState, string>>(
-                    r => new EntityFrameworkRepository<StockState, string>(r.GetService<ServiceDbContext>()?.StockStates))
+                    r => new EntityFrameworkRepository<StockState, string>(
+                        r.GetService<ServiceDbContext>()?.StockStates))
                 .AddScoped<IRepository<StorageLocation, int>, StorageLocationRepository>()
                 .AddScoped<IRepository<Employee, int>, EntityFrameworkRepository<Employee, int>>(
                     r => new EntityFrameworkRepository<Employee, int>(r.GetService<ServiceDbContext>()?.Employees))
                 .AddScoped<IRepository<StorageSite, string>, StorageSiteRepository>()
                 .AddScoped<IRepository<StoresFunction, string>, StoresFunctionRepository>()
                 .AddScoped<IRepository<StoresPallet, int>, EntityFrameworkRepository<StoresPallet, int>>(
-                    r => new EntityFrameworkRepository<StoresPallet, int>(r.GetService<ServiceDbContext>()?.StoresPallets))
+                    r => new EntityFrameworkRepository<StoresPallet, int>(
+                        r.GetService<ServiceDbContext>()?.StoresPallets))
                 .AddScoped<IRepository<Part, string>, EntityFrameworkRepository<Part, string>>(
                     r => new EntityFrameworkRepository<Part, string>(r.GetService<ServiceDbContext>()?.Parts))
                 .AddScoped<IRepository<StoresTransactionDefinition, string>, EntityFrameworkRepository<StoresTransactionDefinition, string>>(
-                    r => new EntityFrameworkRepository<StoresTransactionDefinition, string>(r.GetService<ServiceDbContext>()?.StoresTransactionDefinition))
+                    r => new EntityFrameworkRepository<StoresTransactionDefinition, string>(
+                        r.GetService<ServiceDbContext>()?.StoresTransactionDefinition))
                 .AddScoped<IRepository<Department, string>, EntityFrameworkRepository<Department, string>>(
-                r => new EntityFrameworkRepository<Department, string>(r.GetService<ServiceDbContext>()?.Departments))
+                    r => new EntityFrameworkRepository<Department, string>(
+                        r.GetService<ServiceDbContext>()?.Departments))
                 .AddScoped<IRepository<Nominal, string>, EntityFrameworkRepository<Nominal, string>>(
-                r => new EntityFrameworkRepository<Nominal, string>(r.GetService<ServiceDbContext>()?.Nominals))
+                    r => new EntityFrameworkRepository<Nominal, string>(r.GetService<ServiceDbContext>()?.Nominals))
                 .AddScoped<IRepository<GoodsInLogEntry, int>, GoodsInLogRepository>()
                 .AddScoped<IRepository<StockTransaction, int>, StockTransactionRepository>()
                 .AddScoped<IRepository<RequisitionHistory, int>, EntityFrameworkRepository<RequisitionHistory, int>>(
-                    r => new EntityFrameworkRepository<RequisitionHistory, int>(r.GetService<ServiceDbContext>()?.RequisitionHistory))
+                    r => new EntityFrameworkRepository<RequisitionHistory, int>(
+                        r.GetService<ServiceDbContext>()?.RequisitionHistory))
                 .AddScoped<IRepository<StoresTransactionState, StoresTransactionStateKey>, EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>>(
-                    r => new EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>(r.GetService<ServiceDbContext>()?.StoresTransactionStates))
+                    r => new EntityFrameworkRepository<StoresTransactionState, StoresTransactionStateKey>(
+                        r.GetService<ServiceDbContext>()?.StoresTransactionStates))
                 .AddScoped<IRepository<PotentialMoveDetail, PotentialMoveDetailKey>, EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>>(
-                    r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(r.GetService<ServiceDbContext>()?.PotentialMoveDetails))
+                    r => new EntityFrameworkRepository<PotentialMoveDetail, PotentialMoveDetailKey>(
+                        r.GetService<ServiceDbContext>()?.PotentialMoveDetails))
                 .AddScoped<IQueryRepository<LabelType>, EntityFrameworkQueryRepository<LabelType>>(
                     r => new EntityFrameworkQueryRepository<LabelType>(r.GetService<ServiceDbContext>()?.LabelTypes))
                 .AddScoped<IRepository<BookInOrderDetail, BookInOrderDetailKey>, EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>>(
                     r => new EntityFrameworkRepository<BookInOrderDetail, BookInOrderDetailKey>(r.GetService<ServiceDbContext>()?.BookInOrderDetails))
                 .AddTransient<IRepository<Cit, string>, EntityFrameworkRepository<Cit, string>>(r =>
                     new EntityFrameworkRepository<Cit, string>(r.GetService<ServiceDbContext>()?.Cits))
+                    .AddScoped<IRepository<PcasStorageType, PcasStorageTypeKey>, PcasStorageTypeRepository>()
+                .AddTransient<IRepository<PcasBoard, string>, EntityFrameworkRepository<PcasBoard, string>>(
+                r => new EntityFrameworkRepository<PcasBoard, string>(r.GetService<ServiceDbContext>()?.PcasBoards))
                 .AddTransient<IRepository<NominalAccount, int>, EntityFrameworkRepository<NominalAccount, int>>(r =>
                     new EntityFrameworkRepository<NominalAccount, int>(r.GetService<ServiceDbContext>()?.NominalAccounts))
                 .AddScoped<IRepository<Workstation, string>, WorkstationRepository>()
