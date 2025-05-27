@@ -482,6 +482,7 @@
             e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
             e.Property(r => r.OriginalReqNumber).HasColumnName("ORIG_REQ_NUMBER");
             e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.Property(r => r.AuditLocation).HasColumnName("AUDIT_LOCATION").HasMaxLength(16);
             e.Property(r => r.Document3).HasColumnName("DOCUMENT_3");
             e.Property(r => r.DateReceived).HasColumnName("DATE_RECEIVED");
             e.HasOne(r => r.NewPart).WithMany().HasForeignKey("NEW_PART_NUMBER");
@@ -561,6 +562,7 @@
             r.Property(c => c.CanBeReversed).HasColumnName("CAN_BE_REVERSED").HasMaxLength(1);
             r.Property(c => c.CanBeCancelled).HasColumnName("CAN_BE_CANCELLED").HasMaxLength(1);
             r.Property(c => c.ReceiptDateRequired).HasColumnName("RECEIPT_DATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.AuditLocationRequired).HasColumnName("AUDIT_LOC_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ProcessStage).HasColumnName("PROCESS_STAGE");
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }

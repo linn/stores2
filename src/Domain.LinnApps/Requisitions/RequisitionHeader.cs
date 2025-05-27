@@ -112,6 +112,8 @@
 
         public DateTime? DateReceived { get; set; }
 
+        public string AuditLocation { get; set; }
+
         protected RequisitionHeader()
         {
         }
