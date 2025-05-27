@@ -46,7 +46,6 @@
                 throw new PcasStorageTypeException("This PCAS Storage Type already exists");
             }
 
-
             var pcasBoard = await this.pcasBoardRepository.FindByIdAsync(resource.BoardCode);
 
             if (pcasBoard == null)
@@ -55,7 +54,6 @@
             }
 
             var storageType = await this.storageTypeRepository.FindByIdAsync(resource.StorageTypeCode);
-
 
             if (storageType == null)
             {
