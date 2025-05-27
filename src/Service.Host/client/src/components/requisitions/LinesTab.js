@@ -28,7 +28,8 @@ function LinesTab({
     bookLine,
     canBook,
     fromState,
-    fromStockPool
+    fromStockPool,
+    transactionOptions = null
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -65,7 +66,12 @@ function LinesTab({
             renderCell: params => params.row.part?.description
         },
         { field: 'qty', headerName: 'Qty', width: 80, editable: true },
-        { field: 'transactionCode', headerName: 'Trans Code', width: 100 },
+        {
+            field: 'transactionCode',
+            headerName: 'Trans Code',
+            width: 100,
+            editable: !!transactionOptions
+        },
         { field: 'transactionCodeDescription', headerName: 'Trans Desc', width: 200 },
         { field: 'document1Type', headerName: 'Doc1', width: 80 },
         { field: 'document1Number', headerName: 'Number', width: 80 },
@@ -138,8 +144,37 @@ function LinesTab({
         }
     ];
 
-    const processRowUpdate = updatedLine => {
-        updateLine(updatedLine.lineNumber, 'qty', updatedLine.qty);
+    const processRowUpdate = (updatedLine, oldLine) => {
+        if (updatedLine.qty !== oldLine.qty){
+            updateLine(updatedLine.lineNumber, 'qty', updatedLine.qty);
+        }
+
+        if (
+            updatedLine.transactionCode &&
+            updatedLine.transactionCode !== oldLine.transactionCode
+        ) {
+            const newCode = updatedLine.transactionCode.toUpperCase();
+            const selectedOption = transactionOptions.find(
+                a => a.transactionDefinition === newCode
+            );
+            if (selectedOption) {
+                updatedLine.transactionCode = selectedOption.transactionDefinition;
+                updatedLine.transactionCodeDescription = selectedOption.transactionDescription;
+                updateLine(
+                    updatedLine.lineNumber,
+                    'transactionCode',
+                    selectedOption.transactionDefinition
+                );
+                updateLine(
+                    updatedLine.lineNumber,
+                    'transactionCodeDescription',
+                    selectedOption.transactionDescription
+                );
+            } else {
+                updatedLine.transactionCode = oldLine.transactionCode;
+            }
+        }
+
         return updatedLine;
     };
 

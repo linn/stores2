@@ -1207,6 +1207,11 @@ function Requisition({ creating }) {
                                         }}
                                         fromState={formState.req.fromState}
                                         fromStockPool={formState.req.fromStockPool}
+                                        transactionOptions={
+                                            formState.req.storesFunction?.code === 'AUDIT'
+                                                ? formState.req.storesFunction.transactionTypes
+                                                : null
+                                        }
                                     />
                                 )}
                                 {tab === 1 && (

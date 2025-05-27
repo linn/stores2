@@ -384,20 +384,48 @@ function reducer(state, action) {
             };
         }
         case 'set_line_value':
-            return {
-                ...state,
-                req: {
-                    ...state.req,
-                    lines: state.req.lines.map(x =>
-                        x.lineNumber === action.payload.lineNumber
-                            ? {
-                                  ...x,
-                                  [action.payload.fieldName]: action.payload.newValue
-                              }
-                            : x
-                    )
+            if (action.payload.fieldName === 'transactionCode') {
+                const options = state.req.storesFunction.transactionTypes;
+                const selected = options.find(
+                    a => a.transactionDefinition === action.payload.newValue
+                );
+
+                if (selected) {
+                    return {
+                        ...state,
+                        req: {
+                            ...state.req,
+                            lines: state.req.lines.map(x =>
+                                x.lineNumber === action.payload.lineNumber
+                                    ? {
+                                          ...x,
+                                          transactionCode: action.payload.newValue,
+                                          transactionCodeDescription:
+                                              selected.transactionDescription
+                                      }
+                                    : x
+                            )
+                        }
+                    };
                 }
-            };
+
+                return state;
+            } else {
+                return {
+                    ...state,
+                    req: {
+                        ...state.req,
+                        lines: state.req.lines.map(x =>
+                            x.lineNumber === action.payload.lineNumber
+                                ? {
+                                      ...x,
+                                      [action.payload.fieldName]: action.payload.newValue
+                                  }
+                                : x
+                        )
+                    }
+                };
+            }
         case 'pick_stock':
             return {
                 ...state,
