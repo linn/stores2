@@ -6,6 +6,7 @@
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -78,6 +79,10 @@
 
         public DbSet<BookInOrderDetail> BookInOrderDetails { get; set; }
 
+        public DbSet<PcasStorageType> PcasStorageTypes { get; set; }
+
+        public DbSet<PcasBoard> PcasBoards { get; set; }
+
         public DbSet<SundryBookInDetail> SundryBookInDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -127,6 +132,8 @@
             BuildWorkstationElements(builder);
             BuildCits(builder);
             BuildBookInOrderDetails(builder);
+            BuildPcasStorageTypes(builder);
+            BuildPcasBoard(builder);
             BuildSundryBookInDetails(builder);
             BuildReqSerialNumbers(builder);
         }
@@ -881,6 +888,30 @@
             e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
             e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
             e.Property(s => s.IsReverse).HasColumnName("REVERSE").HasMaxLength(1);
+        }
+
+        private static void BuildPcasStorageTypes(ModelBuilder builder)
+        {
+            var v = builder.Entity<PcasStorageType>().ToTable("PCAS_STORAGE_TYPES");
+            v.HasKey(p => new { p.BoardCode, p.StorageTypeCode });
+            v.Property(e => e.BoardCode).HasColumnName("BOARD_CODE");
+            v.Property(e => e.StorageTypeCode).HasColumnName("STORAGE_TYPE");
+            v.Property(e => e.Maximum).HasColumnName("MAXIMUM");
+            v.Property(e => e.Increment).HasColumnName("INCR");
+            v.Property(e => e.Remarks).HasColumnName("REMARKS");
+            v.Property(e => e.Preference).HasColumnName("PREFERENCE");
+            v.HasOne(e => e.PcasBoard).WithMany().HasForeignKey(e => e.BoardCode);
+            v.HasOne(e => e.StorageType).WithMany().HasForeignKey(e => e.StorageTypeCode);
+            v.Ignore(p => p.Key);
+        }
+
+
+        private static void BuildPcasBoard(ModelBuilder builder)
+        {
+            var v = builder.Entity<PcasBoard>().ToTable("PCAS_BOARDS");
+            v.HasKey(l => l.BoardCode);
+            v.Property(s => s.BoardCode).HasColumnName("BOARD_CODE");
+            v.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(200);
         }
 
         private static void BuildSundryBookInDetails(ModelBuilder builder)

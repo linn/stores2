@@ -16,6 +16,7 @@
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Models;
+    using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
@@ -28,6 +29,7 @@
     using Linn.Stores2.Proxy.StoredProcedureClients;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
+    using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
     using Microsoft.Extensions.DependencyInjection;
@@ -99,6 +101,7 @@
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>()
                 .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>()
+                .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
         }
 
@@ -121,7 +124,8 @@
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<Workstation>, WorkstationResourceBuilder>()
-                .AddScoped<IBuilder<WorkstationElement>, WorkstationElementsResourceBuilder>();
+                .AddScoped<IBuilder<WorkstationElement>, WorkstationElementsResourceBuilder>()
+                .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>();
         }
     }
 }
