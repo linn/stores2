@@ -24,6 +24,7 @@ import StoresFunctions from './StoresFunctions';
 import StoresFunction from './StoresFunction';
 import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
 import PcasStorageTypes from './PcasStorageTypes';
+import PcasStorageType from './PcasStorageType';
 
 function Root() {
     useSignIn();
@@ -73,6 +74,14 @@ function Root() {
                         element={<PartStorageType creating />}
                     />
                     <Route path="/stores2/pcas-storage-types" element={<PcasStorageTypes />} />
+                    <Route
+                        path="/stores2/pcas-storage-types/create"
+                        element={<PcasStorageType creating />}
+                    />
+                    <Route
+                        path="/stores2/pcas-storage-types/:boardCode/:storageTypeCode"
+                        element={<PcasStorageType />}
+                    />
                     <Route
                         path="/stores2/storage/locations/create"
                         element={<StorageLocation creating />}

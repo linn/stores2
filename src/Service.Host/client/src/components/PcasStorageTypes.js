@@ -52,7 +52,7 @@ function PcasStorageTypes() {
                     <Typography variant="h4">PCAS Storage Types</Typography>
                 </Grid>
                 <Grid size={1}>
-                    <CreateButton createUrl="/stores2/parts-storage-types/create" />
+                    <CreateButton createUrl="/stores2/pcas-storage-types/create" />
                 </Grid>
                 {isPcasStorageTypesLoading && (
                     <Grid size={12}>
