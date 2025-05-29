@@ -41,7 +41,7 @@ function PcasStorageType({ creating }) {
         results: boardSearchResults,
         loading: boardSearchLoading,
         clear: clearBoard
-    } = useSearch(itemTypes.parts.url, 'partNumber', 'partNumber', 'description');
+    } = useSearch(itemTypes.pcasBoards.url, 'boardCode', 'boardCode', 'description');
 
     const {
         search: searchStorageTypes,
@@ -56,7 +56,7 @@ function PcasStorageType({ creating }) {
         errorMessage: updateError,
         putResult: updateResult,
         clearPutResult: clearUpdateResult
-    } = usePut(itemTypes.partsStorageTypes.url, true);
+    } = usePut(itemTypes.pcasStorageTypes.url, true);
 
     const {
         send: createPartStorageType,
@@ -64,7 +64,7 @@ function PcasStorageType({ creating }) {
         errorMessage: createError,
         postResult: createResult,
         clearPostResult: clearCreateResult
-    } = usePost(itemTypes.partsStorageTypes.url);
+    } = usePost(itemTypes.pcasStorageTypes.url);
 
     useEffect(() => {
         if (updateResult || createResult) {
@@ -88,8 +88,6 @@ function PcasStorageType({ creating }) {
         setPcasStorageType(c => ({ ...c, [propertyName]: newValue }));
     };
 
-    console.log(pcasStorageType);
-
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={4}>
@@ -104,48 +102,48 @@ function PcasStorageType({ creating }) {
                         <Loading />
                     </Grid>
                 )}
-                {creating && (
-                    <Grid size={3}>
-                        <Search
-                            autoFocus
-                            propertyName="board"
-                            label="Board"
-                            resultsInModal
-                            resultLimit={100}
-                            value={boardSearchTerm}
-                            loading={boardSearchLoading}
-                            handleValueChange={(_, newVal) => setBoardSearchTerm(newVal)}
-                            search={searchBoard}
-                            searchResults={boardSearchResults}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handleBoardTypeSearchResultSelect}
-                            clearSearch={clearBoard}
+                <Grid container spacing={2} alignItems="center">
+                    {creating ? (
+                        <Grid item xs={5}>
+                            <Search
+                                autoFocus
+                                propertyName="board"
+                                label="Board"
+                                resultsInModal
+                                resultLimit={100}
+                                value={boardSearchTerm}
+                                loading={boardSearchLoading}
+                                handleValueChange={(_, newVal) => setBoardSearchTerm(newVal)}
+                                search={searchBoard}
+                                searchResults={boardSearchResults}
+                                priorityFunction="closestMatchesFirst"
+                                onResultSelect={handleBoardTypeSearchResultSelect}
+                                clearSearch={clearBoard}
+                            />
+                        </Grid>
+                    ) : (
+                        <Grid item xs={5}>
+                            <InputField
+                                propertyName="boardDescription"
+                                label="Board Description"
+                                value={pcasStorageType?.pcasBoard?.description}
+                                fullWidth
+                                disabled
+                            />
+                        </Grid>
+                    )}
+                    <Grid item xs={2}>
+                        <InputField
+                            propertyName="boardCode"
+                            label="Board Code"
+                            value={pcasStorageType?.boardCode}
+                            fullWidth
+                            disabled
                         />
                     </Grid>
-                )}
-                <Grid size={2}>
-                    <InputField
-                        propertyName="boardCode"
-                        label="Board Code"
-                        value={pcasStorageType?.boardCode}
-                        fullWidth
-                        disabled
-                    />
-                </Grid>
-                <Grid size={5}>
-                    <InputField
-                        propertyName="boardDescription"
-                        label="Board Description"
-                        value={pcasStorageType?.pcasBoard?.description}
-                        fullWidth
-                        disabled
-                    />
-                </Grid>
-                {/* Storage Type Info on a New Line, Full Width */}
-                <Grid item xs={12}>
                     <Grid container spacing={2}>
-                        {creating && (
-                            <Grid item xs={3}>
+                        {creating ? (
+                            <Grid item xs={5}>
                                 <Search
                                     autoFocus
                                     propertyName="storageType"
@@ -164,23 +162,24 @@ function PcasStorageType({ creating }) {
                                     clearSearch={clearStorageTypes}
                                 />
                             </Grid>
+                        ) : (
+                            <Grid item xs={5}>
+                                <InputField
+                                    propertyName="storageTypeDescription"
+                                    label="Storage Type Description"
+                                    value={pcasStorageType?.storageType?.description}
+                                    fullWidth
+                                    disabled
+                                />
+                            </Grid>
                         )}
-                        <Grid item xs={3}>
+                        <Grid item xs={4}>
                             <InputField
                                 propertyName="storageTypeCode"
                                 label="Storage Type Code"
                                 value={pcasStorageType?.storageTypeCode}
                                 fullWidth
                                 onChange={handleFieldChange}
-                                disabled
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <InputField
-                                propertyName="storageTypeDescription"
-                                label="Storage Type Description"
-                                value={pcasStorageType?.storageType?.description}
-                                fullWidth
                                 disabled
                             />
                         </Grid>
@@ -192,6 +191,7 @@ function PcasStorageType({ creating }) {
                     <InputField
                         propertyName="maximum"
                         label="Maximum"
+                        type="number"
                         value={pcasStorageType?.maximum}
                         fullWidth
                         onChange={handleFieldChange}
@@ -199,8 +199,9 @@ function PcasStorageType({ creating }) {
                 </Grid>
                 <Grid size={3}>
                     <InputField
-                        propertyName="incr"
+                        propertyName="increment"
                         label="Incr"
+                        type="number"
                         value={pcasStorageType?.increment}
                         fullWidth
                         onChange={handleFieldChange}
@@ -210,6 +211,7 @@ function PcasStorageType({ creating }) {
                     <InputField
                         propertyName="preference"
                         label="Preference"
+                        // type="number"
                         value={pcasStorageType?.preference}
                         fullWidth
                         onChange={handleFieldChange}
@@ -230,13 +232,14 @@ function PcasStorageType({ creating }) {
                     <Button
                         variant="contained"
                         fullWidth
-                        // disabled={
-                        //     partStorageType === partStorageTypeResult ||
-                        //     !partStorageType?.partNumber ||
-                        //     !partStorageType?.storageTypeCode
-                        // }
+                        disabled={
+                            pcasStorageType === pcasStorageTypeResult ||
+                            !pcasStorageType?.boardCode ||
+                            !pcasStorageType?.storageTypeCode
+                        }
                         onClick={() => {
                             if (creating) {
+                                console.log(pcasStorageType);
                                 createPartStorageType(null, pcasStorageType);
                             } else {
                                 updatePartStorageType(
