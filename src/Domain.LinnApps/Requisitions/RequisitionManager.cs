@@ -302,8 +302,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             var part = await this.partRepository.FindByIdAsync(toAdd.PartNumber);
             var transactionDefinition = await this.transactionDefinitionRepository.FindByIdAsync(toAdd.TransactionDefinition);
+            var line = new RequisitionLine(header.ReqNumber, toAdd.LineNumber, part, toAdd.Qty, transactionDefinition);
 
-            header.AddLine(new RequisitionLine(header.ReqNumber, toAdd.LineNumber, part, toAdd.Qty, transactionDefinition));
+            if (toAdd.SerialNumbers != null)
+            {
+                foreach (var serialNumber in toAdd.SerialNumbers)
+                {
+                    line.AddSerialNumber(serialNumber);
+                }
+            }
+
+            header.AddLine(line);
 
             // we need this so the line exists for the stored procedure calls coming next
             await this.transactionManager.CommitAsync();
