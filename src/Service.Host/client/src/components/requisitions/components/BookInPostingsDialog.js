@@ -18,6 +18,7 @@ import { InputField, Search } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../../itemTypes';
 import useGet from '../../../hooks/useGet';
 import useSearch from '../../../hooks/useSearch';
+import { subtract, multiply, add } from '../../../helpers/numberUtilities';
 
 function BookInPostingsDialog({
     open,
@@ -113,7 +114,7 @@ function BookInPostingsDialog({
     } = useSearch(itemTypes.nominals.url, 'nominalCode', 'nominalCode', 'description');
 
     const bookedInQuantity = orderDetail.purchaseDeliveries.reduce(
-        (a, b) => a + b.qtyNetReceived,
+        (a, b) => add(a, b.qtyNetReceived),
         0
     );
 
@@ -133,8 +134,8 @@ function BookInPostingsDialog({
     );
 
     const addBookIn = () => {
-        const qtyLeft = orderDetail.ourQty - bookedInQuantity;
-        const selectedQty = bookInOrderDetails.reduce((a, b) => a + Number(b.quantity), 0);
+        const qtyLeft = subtract(orderDetail.ourQty, bookedInQuantity);
+        const selectedQty = bookInOrderDetails.reduce((a, b) => add(a, b.quantity), 0);
         const id = (bookInOrderDetails.length ?? 0) + 1;
         const newBookInOrderDetail = {
             id,
@@ -142,7 +143,7 @@ function BookInPostingsDialog({
             orderNumber: orderDetail.orderNumber,
             orderLine: orderDetail.line,
             partNumber: orderDetail.partNumber,
-            quantity: Math.max(qtyLeft - selectedQty, 0),
+            quantity: Math.max(subtract(qtyLeft, selectedQty), 0),
             departmentCode: orderDetail.orderPosting.nominalAccount.department.departmentCode,
             departmentDescription:
                 orderDetail.orderPosting.nominalAccount.department.departmentDescription,
@@ -170,7 +171,7 @@ function BookInPostingsDialog({
                 orderNumber: orderDetail.orderNumber,
                 orderLine: orderDetail.line,
                 partNumber: orderDetail.partNumber,
-                quantity: bookInToBeReversed.quantity * -1,
+                quantity: multiply(bookInToBeReversed.quantity, -1),
                 departmentCode: bookInToBeReversed.departmentCode,
                 departmentDescription: null,
                 nominalCode: bookInToBeReversed.nominalCode,
@@ -202,14 +203,14 @@ function BookInPostingsDialog({
     };
 
     const handleConfirmClick = () => {
-        const qtyLeft = orderDetail.ourQty - bookedInQuantity;
-        const selectedQty = bookInOrderDetails.reduce((a, b) => a + Number(b.quantity), 0);
-        if (Number(qtyLeft) < selectedQty && isReverse !== 'Y') {
+        const qtyLeft = subtract(orderDetail.ourQty, bookedInQuantity);
+        const selectedQty = bookInOrderDetails.reduce((a, b) => add(a, b.quantity), 0);
+        if (qtyLeft < selectedQty && isReverse !== 'Y') {
             setSnackbar({
                 message: `Quantity left on order line is ${qtyLeft} but quantity picked is ${selectedQty}`,
                 backgroundColour: 'red'
             });
-        } else if (bookedInQuantity < selectedQty * -1 && isReverse === 'Y') {
+        } else if (bookedInQuantity < multiply(selectedQty, -1) && isReverse === 'Y') {
             setSnackbar({
                 message: `Quantity booked on order line is ${bookedInQuantity} but trying to reverse ${selectedQty * -1}`,
                 backgroundColour: 'red'
