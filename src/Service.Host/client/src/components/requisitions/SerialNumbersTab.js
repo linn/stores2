@@ -4,8 +4,14 @@ import { DataGrid } from '@mui/x-data-grid';
 import Tooltip from '@mui/material/Tooltip';
 import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-function SerialNumbersTab({ serialNumbers = [], addSerialNumber, updateSerialNumber }) {
+function SerialNumbersTab({
+    serialNumbers = [],
+    addSerialNumber,
+    updateSerialNumber,
+    deleteSerialNumber
+}) {
     const columns = [
         {
             field: 'seq',
@@ -22,6 +28,26 @@ function SerialNumbersTab({ serialNumbers = [], addSerialNumber, updateSerialNum
                 return params != null ? params.toString() : '';
             },
             editable: true
+        },
+        {
+            field: 'delete',
+            headerName: '',
+            width: 120,
+            renderCell: params => (
+                <Tooltip title="Delete">
+                    <div>
+                        {addSerialNumber && (
+                            <IconButton
+                                aria-label="delete"
+                                size="small"
+                                onClick={() => deleteSerialNumber(params.row.seq)}
+                            >
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
+                        )}
+                    </div>
+                </Tooltip>
+            )
         }
     ];
 

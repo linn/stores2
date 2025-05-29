@@ -1165,7 +1165,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         throw new SerialNumberException($"Serial numbers required for {line.Part.PartNumber}");
                     }
                     
-                    // TODO check serial numbers on line
+                    // check serial numbers on line
                     foreach (var serialNumber in line.SerialNumbers)
                     {
                         var check = await this.serialNumberService.CheckSerialNumber(
@@ -1177,7 +1177,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         }
                     }
 
-                    // TODO check if enough serial numbers for part
+                    // check if enough serial numbers for part
+                    if (line.SerialNumbers.Count != line.Qty)
+                    {
+                        throw new SerialNumberException($"Line {line.LineNumber} requires {line.Qty} serial numbers {line.SerialNumbers.Count} supplied");
+                    }
                 }
             }
         }

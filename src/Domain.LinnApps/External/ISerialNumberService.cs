@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-namespace Linn.Stores2.Domain.LinnApps.External
+﻿namespace Linn.Stores2.Domain.LinnApps.External
 {
     using System.Threading.Tasks;
     using Linn.Common.Domain;

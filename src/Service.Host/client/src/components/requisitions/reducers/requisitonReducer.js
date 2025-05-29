@@ -607,6 +607,24 @@ function reducer(state, action) {
                     })
                 }
             };
+        case 'delete_serial_number':
+            console.log(action.payload);
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line => {
+                        return line.lineNumber === action.payload.lineNumber
+                            ? {
+                                  ...line,
+                                  serialNumbers: line.serialNumbers.filter(
+                                      s => s.seq !== action.payload.sernosSeq
+                                  )
+                              }
+                            : line;
+                    })
+                }
+            };
         case 'close_message':
             return {
                 ...state,

@@ -1,5 +1,8 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using FluentAssertions;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -8,9 +11,6 @@
     using Linn.Stores2.TestData.Transactions;
     using NSubstitute;
     using NUnit.Framework;
-    using System.Collections.Generic;
-    using System.Linq;
-    using FluentAssertions;
 
     public class WhenAddingLinesAndSerialNumbers : ContextBase
     {

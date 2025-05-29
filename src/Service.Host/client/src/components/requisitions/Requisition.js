@@ -1292,6 +1292,15 @@ function Requisition({ creating }) {
                                                 }
                                             })
                                         }
+                                        deleteSerialNumber={seq =>
+                                            dispatch({
+                                                type: 'delete_serial_number',
+                                                payload: {
+                                                    lineNumber: selectedLine,
+                                                    sernosSeq: seq
+                                                }
+                                            })
+                                        }
                                     />
                                 )}
                             </Grid>
