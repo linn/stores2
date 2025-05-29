@@ -3,6 +3,7 @@
     using System;
     using System.Data;
     using System.Threading.Tasks;
+    using System.Transactions;
     using Linn.Common.Domain;
     using Linn.Common.Proxy.LinnApps;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -10,9 +11,38 @@
 
     public class SerialNumberService : ISerialNumberService
     {
-        public Task<int?> GetSerialNumbersRequired(string partNumber)
+        public async Task<bool> GetSerialNumbersRequired(string partNumber)
         {
-            throw new NotImplementedException();
+            using var connection = new OracleConnection(ConnectionStrings.ManagedConnectionString());
+            {
+                await connection.OpenAsync();
+                var cmd = new OracleCommand("sernos_pack_v2.serial_nos_reqd_wrapper", connection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+
+                var resultParameter = new OracleParameter("v_result", OracleDbType.Varchar2)
+                {
+                    Direction = ParameterDirection.ReturnValue,
+                    Size = 1000
+                };
+                cmd.Parameters.Add(resultParameter);
+
+                cmd.Parameters.Add(new OracleParameter("p_part_number", OracleDbType.Varchar2)
+                {
+                    Direction = ParameterDirection.Input,
+                    Value = partNumber
+                });
+
+                await cmd.ExecuteNonQueryAsync();
+                await connection.CloseAsync();
+
+                if (resultParameter.Value.ToString() == "SUCCESS")
+                {
+                    return true;
+                }
+                return false;
+            }
         }
 
         public async Task<ProcessResult> CheckSerialNumber(string transactionCode, string partNumber, int serialNumber)
@@ -50,11 +80,10 @@
                     Value = serialNumber
                 });
 
-                cmd.ExecuteNonQuery();
                 await cmd.ExecuteNonQueryAsync();
                 await connection.CloseAsync();
 
-                if (resultParameter.Value.ToString() == "OK")
+                if (resultParameter.Value.ToString().ToUpper() == "OK")
                 {
                     return new ProcessResult(true, "Sernos check successful");
                 }

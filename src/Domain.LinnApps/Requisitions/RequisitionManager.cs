@@ -1,3 +1,5 @@
+using Amazon.Runtime.Internal;
+
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
@@ -60,6 +62,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IDocumentProxy documentProxy;
 
+        private readonly ISerialNumberService serialNumberService;
+
         public RequisitionManager(
             IAuthorisationService authService,
             IRepository<RequisitionHeader, int> repository,
@@ -81,7 +85,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             ISalesProxy salesProxy,
             IRepository<PotentialMoveDetail, PotentialMoveDetailKey> potentialMoveRepository,
             IBomVerificationProxy bomVerificationProxy,
-            IRepository<BookInOrderDetail, BookInOrderDetailKey> bookInOrderDetailRepository)
+            IRepository<BookInOrderDetail, BookInOrderDetailKey> bookInOrderDetailRepository,
+            ISerialNumberService serialNumberService)
         {
             this.authService = authService;
             this.repository = repository;
@@ -104,6 +109,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.potentialMoveRepository = potentialMoveRepository;
             this.bomVerificationProxy = bomVerificationProxy;
             this.bookInOrderDetailRepository = bookInOrderDetailRepository;
+            this.serialNumberService = serialNumberService;
         }
         
         public async Task<RequisitionHeader> CancelHeader(
@@ -941,6 +947,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     $"Must specify moves onto for {line.TransactionDefinition.TransactionCode}");
             }
 
+            if (candidate.SerialNumbers != null && candidate.SerialNumbers.Any())
+            {
+                foreach (var serialNumber in candidate.SerialNumbers)
+                {
+                    line.AddSerialNumber(serialNumber);
+                }
+            }
+
+            await this.ValidateLineSerialNumbers(line);
+
             return line;
         }
 
@@ -1109,6 +1125,50 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (header.IsReverseTransaction != "Y" && header.Quantity.Value - qty <= 0)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} is fully booked");
+                }
+            }
+        }
+
+        public async Task ValidateLineSerialNumbers(RequisitionLine line)
+        {
+            var sernosOnLine = line.SerialNumbers != null && line.SerialNumbers.Any();
+
+            if (string.IsNullOrEmpty(line.TransactionDefinition?.SernosTransCode))
+            {
+                // should not have serial numbers
+                if (sernosOnLine)
+                {
+                    throw new SerialNumberException($"Serial numbers not required for line {line.LineNumber}");
+                }
+            }
+            else if (line.Part != null)
+            {
+                var sernosRequired = await this.serialNumberService.GetSerialNumbersRequired(line.Part.PartNumber);
+
+                if (sernosOnLine && !sernosRequired)
+                {
+                    throw new SerialNumberException($"Serial numbers not required for {line.Part.PartNumber}");
+                }
+                else if (sernosRequired && !line.IsCancelled() && !line.IsBooked())
+                {
+                    if (!sernosOnLine)
+                    {
+                        throw new SerialNumberException($"Serial numbers required for {line.Part.PartNumber}");
+                    }
+                    
+                    // TODO check serial numbers on line
+                    foreach (var serialNumber in line.SerialNumbers)
+                    {
+                        var check = await this.serialNumberService.CheckSerialNumber(
+                            line.TransactionDefinition.SernosTransCode, line.Part.PartNumber,
+                            serialNumber.SerialNumber);
+                        if (!check.Success)
+                        {
+                            throw new SerialNumberException(check.Message);
+                        }
+                    }
+
+                    // TODO check if enough serial numbers for part
                 }
             }
         }

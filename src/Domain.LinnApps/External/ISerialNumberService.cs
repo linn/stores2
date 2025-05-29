@@ -8,7 +8,7 @@ namespace Linn.Stores2.Domain.LinnApps.External
 
     public interface ISerialNumberService
     {
-        Task<int?> GetSerialNumbersRequired(string partNumber);
+        Task<bool> GetSerialNumbersRequired(string partNumber);
 
         Task<ProcessResult> CheckSerialNumber(string transactionCode, string partNumber, int serialNumber);
     }
