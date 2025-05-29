@@ -211,7 +211,6 @@ function PcasStorageType({ creating }) {
                     <InputField
                         propertyName="preference"
                         label="Preference"
-                        // type="number"
                         value={pcasStorageType?.preference}
                         fullWidth
                         onChange={handleFieldChange}
@@ -239,7 +238,6 @@ function PcasStorageType({ creating }) {
                         }
                         onClick={() => {
                             if (creating) {
-                                console.log(pcasStorageType);
                                 createPartStorageType(null, pcasStorageType);
                             } else {
                                 updatePartStorageType(
