@@ -145,7 +145,7 @@ function LinesTab({
     ];
 
     const processRowUpdate = (updatedLine, oldLine) => {
-        if (updatedLine.qty !== oldLine.qty){
+        if (updatedLine.qty !== oldLine.qty) {
             updateLine(updatedLine.lineNumber, 'qty', updatedLine.qty);
         }
 
