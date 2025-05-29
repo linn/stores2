@@ -17,11 +17,11 @@ function PcasStorageTypes() {
     const navigate = useNavigate();
 
     const PcasStorageTypeColumns = [
-        { field: 'boardCode', headerName: 'Board Code', width: 150 },
+        { field: 'boardCode', headerName: 'Board Code', width: 100 },
         {
-            field: 'storageType',
-            headerName: 'Storage Type Description',
-            width: 300,
+            field: 'pcasBoard',
+            headerName: 'PCAS Board Description',
+            width: 350,
             valueGetter: value => {
                 return value.description || '';
             }
@@ -34,7 +34,7 @@ function PcasStorageTypes() {
         {
             field: 'storageType',
             headerName: 'Storage Type Description',
-            width: 300,
+            width: 200,
             valueGetter: value => {
                 return value?.description || '';
             }

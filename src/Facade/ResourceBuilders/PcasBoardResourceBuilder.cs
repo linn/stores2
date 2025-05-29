@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
+    using System.Linq;
+
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Pcas;
@@ -15,13 +17,14 @@
             return new PcasBoardResource
             {
                 BoardCode = pcasBoard.BoardCode,
-                Description = pcasBoard.Description
+                Description = pcasBoard.Description,
+                Links = this.BuildLinks(pcasBoard, claims).ToArray(),
             };
         }
 
         public string GetLocation(PcasBoard model)
         {
-            return $"/stores2/stock-pool/{model.BoardCode}";
+            return $"/stores2/pcas-boards/{model.BoardCode}";
         }
 
         object IBuilder<PcasBoard>.Build(PcasBoard entity, IEnumerable<string> claims) =>
