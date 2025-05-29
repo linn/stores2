@@ -514,6 +514,42 @@ function reducer(state, action) {
             }
 
             return state;
+        case 'set_audit_location_details':
+            if (action.payload?.storagePlace) {
+                let location = null;
+                let palletNumber = null;
+                if (action.payload.palletLocationOrArea === 'P') {
+                    palletNumber = action.payload.storagePlace.substring(1);
+                } else if (action.payload.palletLocationOrArea === 'L') {
+                    location = action.payload.storagePlace;
+                }
+
+                return {
+                    ...state,
+                    req: {
+                        ...state.req,
+                        auditLocation: action.payload.storagePlace,
+                        fromPalletNumber: palletNumber,
+                        toPalletNumber: palletNumber,
+                        fromLocationCode: location,
+                        toLocationCode: location
+                    },
+                    auditLocationDetails: action.payload
+                };
+            } else {
+                return {
+                    ...state,
+                    req: {
+                        ...state.req,
+                        auditLocation: null,
+                        fromPalletNumber: null,
+                        toPalletNumber: null,
+                        fromLocationCode: null,
+                        toLocationCode: null
+                    },
+                    auditLocationDetails: null
+                };
+            }
         case 'add_move_onto':
             return {
                 ...state,

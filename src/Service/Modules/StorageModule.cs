@@ -70,7 +70,8 @@
         {
             if (!string.IsNullOrEmpty(searchTerm))
             {
-                await res.Negotiate(await facadeService.FilterBy(new AuditLocationResource { StoragePlace = searchTerm }));
+                await res.Negotiate(
+                    await facadeService.FilterBy(new AuditLocationResource { StoragePlace = searchTerm.ToUpper() }));
             }
             else
             {
