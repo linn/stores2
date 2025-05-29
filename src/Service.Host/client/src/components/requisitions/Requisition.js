@@ -427,7 +427,11 @@ function Requisition({ creating }) {
             payload: selected
         });
 
-        if (formState.req?.isReverseTransaction === 'Y' && selected.canReverse) {
+        if (
+            formState.req?.isReverseTransaction === 'Y' &&
+            selected.canReverse &&
+            formState.req.storesFunction?.code !== 'BOOKLD'
+        ) {
             setPickRequisitionDialogVisible(true);
         }
 
