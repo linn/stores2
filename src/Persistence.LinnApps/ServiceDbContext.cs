@@ -85,6 +85,8 @@
 
         public DbSet<SundryBookInDetail> SundryBookInDetails { get; set; }
 
+        public DbSet<AuditLocation> AuditLocations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -135,6 +137,7 @@
             BuildPcasStorageTypes(builder);
             BuildPcasBoard(builder);
             BuildSundryBookInDetails(builder);
+            BuildAuditLocations(builder);
             BuildReqSerialNumbers(builder);
         }
 
@@ -927,6 +930,13 @@
             e.Property(s => s.TransactionReference).HasColumnName("TRANS_REFERENCE").HasMaxLength(2000);
             e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
             e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
+        }
+
+        private static void BuildAuditLocations(ModelBuilder builder)
+        {
+            var e = builder.Entity<AuditLocation>().ToTable("V_AUDIT_LOCATIONS").HasNoKey();
+            e.Property(s => s.StoragePlace).HasColumnName("STORAGE_PLACE").HasMaxLength(41);
+            e.Property(s => s.PalletLocationOrArea).HasColumnName("PALLET_OR_LOCATION").HasMaxLength(1);
         }
 
         private static void BuildReqSerialNumbers(ModelBuilder builder)
