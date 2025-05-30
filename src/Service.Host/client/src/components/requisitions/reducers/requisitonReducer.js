@@ -608,7 +608,6 @@ function reducer(state, action) {
                 }
             };
         case 'delete_serial_number':
-            console.log(action.payload);
             return {
                 ...state,
                 req: {
