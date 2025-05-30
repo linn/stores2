@@ -77,7 +77,8 @@
                     x => new HtmlTemplateService<DeliveryNoteDocument>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
                         x.GetService<ITemplateEngine>()))
-                .AddScoped<ISupplierProxy, SupplierProxy>();
+                .AddScoped<ISupplierProxy, SupplierProxy>()
+                .AddScoped<ISerialNumberService, SerialNumberService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

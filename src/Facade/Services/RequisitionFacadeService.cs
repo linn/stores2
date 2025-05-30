@@ -387,7 +387,11 @@
                            Document1Type = resource.Document1Type,
                            StockPicked = resource.StockPicked,
                            Qty = resource.Qty,
-                           TransactionDefinition = resource.TransactionCode
+                           TransactionDefinition = resource.TransactionCode,
+                           SerialNumbers = resource.SerialNumbers == null ? new List<int>() : resource.SerialNumbers
+                               .Where(s => s.SerialNumber.HasValue)
+                               .OrderBy(s => s.Seq)
+                               .Select(s => s.SerialNumber.Value).ToList()
                        };
         }
     }

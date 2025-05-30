@@ -568,24 +568,60 @@ function reducer(state, action) {
                 req: {
                     ...state.req,
                     lines: state.req.lines.map(line =>
-                        line.lineNumber === action.payload.lineNumbto
+                        line.lineNumber === action.payload.lineNumber
                             ? {
                                   ...line,
                                   serialNumbers: [
                                       ...(line.serialNumbers ? line.serialNumbers : []),
                                       {
-                                          lineNumber: action.payload.lineNumber,
-                                          seq: line.moves ? line.moves.length + 1 : 1,
-                                          toStockPool: 'LINN',
-                                          toState: 'STORES',
-                                          part: line.part.partNumber,
-                                          isFrom: true,
-                                          isTo: true
+                                          seq: line.serialNumbers
+                                              ? line.serialNumbers.length + 1
+                                              : 1,
+                                          serialNumber: null
                                       }
                                   ]
                               }
                             : line
                     )
+                }
+            };
+        case 'update_serial_number':
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line => {
+                        const updatedSernos = line.serialNumbers.map(m =>
+                            m.seq === action.payload.seq
+                                ? {
+                                      ...action.payload
+                                  }
+                                : m
+                        );
+                        return line.lineNumber === action.payload.lineNumber
+                            ? {
+                                  ...line,
+                                  serialNumbers: updatedSernos
+                              }
+                            : line;
+                    })
+                }
+            };
+        case 'delete_serial_number':
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line => {
+                        return line.lineNumber === action.payload.lineNumber
+                            ? {
+                                  ...line,
+                                  serialNumbers: line.serialNumbers.filter(
+                                      s => s.seq !== action.payload.sernosSeq
+                                  )
+                              }
+                            : line;
+                    })
                 }
             };
         case 'close_message':

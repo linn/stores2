@@ -409,6 +409,7 @@
             
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
+
             this.Lines.Add(toAdd);
         }
         
