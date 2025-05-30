@@ -1,5 +1,3 @@
-using Amazon.Runtime.Internal;
-
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;

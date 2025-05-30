@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using Linn.Common.Authorisation;
