@@ -588,7 +588,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
                     await this.CheckMoves(
                         line.PartNumber,
-                        line.Moves.ToList(),
+                        line.Moves == null ? new List<MoveSpecification>() : line.Moves.ToList(),
                         current.ReqType != "F" && current.StoresFunction.ToLocationRequiredOrOptional());
                     await this.AddRequisitionLine(current, line);
                 }
