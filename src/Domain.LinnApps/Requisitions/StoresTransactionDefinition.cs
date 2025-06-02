@@ -62,6 +62,8 @@
 
         public string OntoCategory { get; set; }
 
+        public string SernosTransCode { get; set; }
+
         public string AuthorisePrivilege()
         {
             if (this.RequiresAuthorisation && !string.IsNullOrEmpty(this.AuthOpCode))

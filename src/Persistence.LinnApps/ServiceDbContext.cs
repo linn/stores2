@@ -406,6 +406,7 @@
             q.Property(d => d.FromState).HasColumnName("FROM_STATE").HasMaxLength(10);
             q.Property(d => d.OntoCategory).HasColumnName("ONTO_CATEGORY").HasMaxLength(10);
             q.Property(d => d.FromCategory).HasColumnName("FROM_CATEGORY").HasMaxLength(10);
+            q.Property(d => d.SernosTransCode).HasColumnName("SERNOS_TRANS_CODE").HasMaxLength(10);
             q.HasMany(t => t.StoresTransactionPostings).WithOne().HasForeignKey(p => p.TransactionCode);
             q.HasMany(t => t.StoresTransactionStates).WithOne().HasForeignKey(p => p.TransactionCode);
         }

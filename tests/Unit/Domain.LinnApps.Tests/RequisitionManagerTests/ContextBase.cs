@@ -62,6 +62,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
         protected IBomVerificationProxy BomVerificationProxy { get; private set; }
 
+        protected ISerialNumberService SerialNumberService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -87,6 +89,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.BomVerificationProxy = Substitute.For<IBomVerificationProxy>();
             this.AuditLocationRepository = Substitute.For<IQueryRepository<AuditLocation>>();
             this.BookInOrderDetailRepository = Substitute.For<IRepository<BookInOrderDetail, BookInOrderDetailKey>>();
+            this.SerialNumberService = Substitute.For<ISerialNumberService>();
             this.StoresService.ValidStockPool(Arg.Any<Part>(), Arg.Any<StockPool>())
                 .Returns(new ProcessResult(true, "Stock Pool Ok"));
             this.StoresService.ValidState(
@@ -121,6 +124,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.PotentialMoveDetailRepository,
                 this.BomVerificationProxy,
                 this.BookInOrderDetailRepository,
+                this.SerialNumberService,
                 this.AuditLocationRepository);
         }
     }

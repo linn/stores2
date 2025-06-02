@@ -77,7 +77,8 @@
                     x => new HtmlTemplateService<DeliveryNoteDocument>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
                         x.GetService<ITemplateEngine>()))
-                .AddScoped<ISupplierProxy, SupplierProxy>();
+                .AddScoped<ISupplierProxy, SupplierProxy>()
+                .AddScoped<ISerialNumberService, SerialNumberService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -103,6 +104,7 @@
                 .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>()
                 .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
+                .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
         }
 
@@ -127,7 +129,8 @@
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<Workstation>, WorkstationResourceBuilder>()
                 .AddScoped<IBuilder<WorkstationElement>, WorkstationElementsResourceBuilder>()
-                .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>();
+                .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>()
+                .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>();
         }
     }
 }

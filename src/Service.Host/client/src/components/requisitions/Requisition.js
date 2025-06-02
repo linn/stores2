@@ -518,12 +518,23 @@ function Requisition({ creating }) {
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.req?.storesFunction?.code === 'MOVE';
 
-    const canAddSerialNumbers =
-        selectedLine && !formState?.req?.cancelled !== 'Y' && !formState?.req?.dateBooked;
-
     const requiresSerialNumbers =
         formState?.req?.storesFunction?.code === 'ON DEM' ||
         formState?.req?.storesFunction?.code === 'OFF DEM';
+
+    const canAddSerialNumber =
+        selectedLine && !formState?.req?.cancelled !== 'Y' && !formState?.req?.dateBooked;
+
+    const addSerialNumber = () => {
+        if (canAddSerialNumber) {
+            dispatch({
+                type: 'add_serial_number',
+                payload: {
+                    lineNumber: selectedLine
+                }
+            });
+        }
+    };
 
     const debouncedFormState = useDebounceValue(formState);
 
@@ -1303,17 +1314,26 @@ function Requisition({ creating }) {
                                                 x => x.lineNumber === selectedLine
                                             )?.serialNumbers
                                         }
-                                        addSerialNumber={
-                                            canAddSerialNumbers
-                                                ? () => {
-                                                      dispatch({
-                                                          type: 'add_serial_number',
-                                                          payload: {
-                                                              lineNumber: selectedLine
-                                                          }
-                                                      });
-                                                  }
-                                                : null
+                                        addSerialNumber={() =>
+                                            canAddSerialNumber ? addSerialNumber() : null
+                                        }
+                                        updateSerialNumber={updated =>
+                                            dispatch({
+                                                type: 'update_serial_number',
+                                                payload: {
+                                                    lineNumber: selectedLine,
+                                                    ...updated
+                                                }
+                                            })
+                                        }
+                                        deleteSerialNumber={seq =>
+                                            dispatch({
+                                                type: 'delete_serial_number',
+                                                payload: {
+                                                    lineNumber: selectedLine,
+                                                    sernosSeq: seq
+                                                }
+                                            })
                                         }
                                     />
                                 )}

@@ -19,6 +19,7 @@ const itemTypes = {
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
     storageTypes: { url: `${config.appRoot}/stores2/storage-types` },
     pcasStorageTypes: { url: `${config.appRoot}/stores2/pcas-storage-types` },
+    pcasBoards: { url: `${config.appRoot}/stores2/pcas-boards` },
     storageLocations: { url: `${config.appRoot}/stores2/storage/locations` },
     nominals: { url: `${config.proxyRoot}/ledgers/nominals` },
     departments: { url: `${config.proxyRoot}/ledgers/departments` },
