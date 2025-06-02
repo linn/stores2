@@ -95,6 +95,8 @@
                 this.nominal.NominalCode,
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
+            this.StockService.ValidStockLocation(null, 512, this.part.PartNumber, 1, null)
+                .Returns(new ProcessResult(true, "Ok"));
 
             this.action = () => this.Sut.AddRequisitionLine(this.header, this.line);
         }

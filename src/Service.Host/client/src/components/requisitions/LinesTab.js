@@ -29,7 +29,8 @@ function LinesTab({
     canBook,
     fromState,
     fromStockPool,
-    transactionOptions = null
+    transactionOptions = null,
+    reqHeader
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -153,7 +154,18 @@ function LinesTab({
             updatedLine.transactionCode &&
             updatedLine.transactionCode !== oldLine.transactionCode
         ) {
-            const newCode = updatedLine.transactionCode.toUpperCase();
+            let newCode = updatedLine.transactionCode.toUpperCase();
+
+            if (newCode.length === 1) {
+                if (newCode === 'a' || newCode === 'A') {
+                    newCode = 'ADSTI';
+                }
+
+                if (newCode === 's' || newCode === 'S') {
+                    newCode = 'STADI';
+                }
+            }
+
             const selectedOption = transactionOptions.find(
                 a => a.transactionDefinition === newCode
             );
@@ -170,6 +182,34 @@ function LinesTab({
                     'transactionCodeDescription',
                     selectedOption.transactionDescription
                 );
+
+                if (selectedOption.stockAllocations) {
+                    pickStock(updatedLine.lineNumber, [
+                        {
+                            partNumber: updatedLine.part?.partNumber,
+                            isFrom: true,
+                            isTo: false,
+                            quantityToPick: updatedLine.qty,
+                            palletNumber: reqHeader.fromPalletNumber,
+                            locationName: reqHeader.fromLocationCode,
+                            stockPoolCode: reqHeader.fromStockPool ?? 'LINN',
+                            state: reqHeader.fromState ?? selectedOption.fromStates[0]
+                        }
+                    ]);
+                } else {
+                    pickStock(updatedLine.lineNumber, [
+                        {
+                            partNumber: updatedLine.part?.partNumber,
+                            isFrom: false,
+                            isTo: true,
+                            quantityToPick: updatedLine.qty,
+                            palletNumber: reqHeader.fromPalletNumber,
+                            locationName: reqHeader.fromLocationCode,
+                            stockPoolCode: reqHeader.fromStockPool ?? 'LINN',
+                            state: reqHeader.fromState ?? selectedOption.fromStates[0]
+                        }
+                    ]);
+                }
             } else {
                 updatedLine.transactionCode = oldLine.transactionCode;
             }
@@ -284,7 +324,6 @@ function LinesTab({
                     onRowClick={row => {
                         setSelected(row.id);
                     }}
-                    // editMode="cell"
                     loading={false}
                     apiRef={apiRef}
                     hideFooter

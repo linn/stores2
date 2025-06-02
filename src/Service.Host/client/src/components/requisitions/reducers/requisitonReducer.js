@@ -447,41 +447,60 @@ function reducer(state, action) {
                                           seq: index + 1,
                                           part: move.partNumber,
                                           qty: move.quantityToPick,
-                                          fromLocationCode: move.palletNumber
-                                              ? null
-                                              : move.locationName,
-                                          fromLocationDescription: move.palletNumber
-                                              ? null
-                                              : move.locationDescription,
-                                          fromPalletNumber: move.palletNumber,
-                                          fromState: move.state,
-                                          fromStockPool: move.stockPoolCode,
+                                          fromLocationCode:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.palletNumber
+                                                    ? null
+                                                    : move.locationName,
+                                          fromLocationDescription:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.palletNumber
+                                                    ? null
+                                                    : move.locationDescription,
+                                          fromPalletNumber:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.palletNumber,
+                                          fromState:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.state,
+                                          fromStockPool:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.stockPoolCode,
                                           fromBatchRef: move.batchRef,
-                                          isFrom: state.req.reqType === 'O' ? false : true,
-                                          isTo: state.req.reqType === 'F' ? false : true,
+                                          isFrom:
+                                              move.isFrom ??
+                                              (state.req.reqType === 'O' ? false : true),
+                                          isTo:
+                                              move.isTo ??
+                                              (state.req.reqType === 'F' ? false : true),
                                           fromBatchDate: move.stockRotationDate,
                                           qtyAtLocation: move.quantity,
                                           qtyAllocated: move.qtyAllocated,
                                           toStockPool:
-                                              state.req.reqType === 'F'
+                                              move.isTo === false || state.req.reqType === 'F'
                                                   ? null
                                                   : state.req.toStockPool
                                                     ? state.req.toStockPool
                                                     : move.stockPoolCode,
                                           toState:
-                                              state.req.reqType === 'F'
+                                              move.isTo === false || state.req.reqType === 'F'
                                                   ? null
                                                   : state.req.toState
                                                     ? state.req.toState
                                                     : move.state,
                                           toLocationCode:
-                                              state.req.reqType === 'F'
+                                              move.isTo === false || state.req.reqType === 'F'
                                                   ? null
                                                   : state.req.toLocationCode
                                                     ? state.req.toLocationCode
                                                     : null,
                                           toPalletNumber:
-                                              state.req.reqType === 'F'
+                                              move.isTo === false || state.req.reqType === 'F'
                                                   ? null
                                                   : state.req.toPalletNumber
                                                     ? state.req.toPalletNumber

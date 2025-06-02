@@ -58,7 +58,8 @@
                                                                 {
                                                                     FromPallet = 123,
                                                                     Qty = 10,
-                                                                    FromStockPool = "LINN"
+                                                                    FromStockPool = "LINN",
+                                                                    FromState = "STORES"
                                                                 }
                                                         },
                                             TransactionDefinition = "DEF"
@@ -87,6 +88,8 @@
                 this.newLineCandidate.LineNumber,
                 nom.NominalCode,
                 dept.DepartmentCode).Returns(new ProcessResult(true, string.Empty));
+            this.StockService.ValidStockLocation(null, 123, "PART", 10, "STORES")
+                .Returns(new ProcessResult(true, "Ok"));
 
             await this.Sut.UpdateRequisition(
                 this.req,

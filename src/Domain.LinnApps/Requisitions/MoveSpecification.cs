@@ -8,6 +8,8 @@
 
         public int? FromPallet { get; set; }
 
+        public string FromState { get; set; }
+
         public string ToLocation { get; set; }
         
         public int? ToLocationId { get; set; }

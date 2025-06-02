@@ -15,6 +15,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
+    using MimeKit;
 
     public class RequisitionManager : IRequisitionManager
     {
@@ -713,13 +714,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         headerSpecifiesOnto));
                     
                     // need to run the moves validation separately if the header specifies the onto info
-                    if (headerSpecifiesOnto)
+                    if (headerSpecifiesOnto && !(candidate.Moves?.Count() >= 1))
                     {
                         var moves = new List<MoveSpecification>
                         {
                             new MoveSpecification
                             {
                                 Qty = candidate.Qty,
+                                FromState = req.FromState,
                                 FromPallet = req.FromPalletNumber,
                                 ToLocation = req.ToLocation?.LocationCode,
                                 ToLocationId = req.ToLocation?.LocationId,
@@ -862,12 +864,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 candidate.Document1Line.GetValueOrDefault(),
                 candidate.Document1Type);
 
-            if (candidate.Moves != null && candidate.Moves.Any())
+            if (candidate.Moves != null && candidate.Moves.Any() && storesFunction != null)
             {
+                var toLocationRequired = reqType != "F" && storesFunction.ToLocationRequiredOrOptional()
+                                                        && storesFunction.FunctionCode != "AUDIT";
                 await this.CheckMoves(
                     candidate.PartNumber,
                     candidate.Moves.ToList(),
-                    reqType != "F" && storesFunction.ToLocationRequiredOrOptional());
+                    toLocationRequired);
             }
 
             if (headerSpecifiesOntoLocation)
@@ -1328,6 +1332,30 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && toLocationRequired)
                 {
                     throw new RequisitionException("You must provide a to location or pallet");
+                }
+
+                if (!string.IsNullOrEmpty(m.FromLocation) || m.FromPallet.HasValue)
+                {
+                    int? locationId = null;
+                    if (!string.IsNullOrEmpty(m.FromLocation))
+                    {
+                        var location =
+                            await this.storageLocationRepository.FindByAsync(a => a.LocationCode == m.FromLocation);
+                        if (location == null)
+                        {
+                            throw new RequisitionException($"From location {m.FromLocation} does not exist.");
+                        }
+
+                        locationId = location.LocationId;
+                    }
+
+                    DoProcessResultCheck(
+                        await this.stockService.ValidStockLocation(
+                            locationId,
+                            m.FromPallet,
+                            partNumber, 
+                            m.Qty,
+                            m.FromState));
                 }
 
                 // just checking moves onto for now, but could extend if required

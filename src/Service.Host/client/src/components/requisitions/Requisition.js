@@ -956,7 +956,7 @@ function Requisition({ creating }) {
                             <AuditLocationSearch
                                 auditLocation={formState.req.auditLocation}
                                 disabled={!creating}
-                                shouldRender={() =>
+                                shouldRender={
                                     formState.req.storesFunction?.auditLocationRequired === 'Y'
                                 }
                                 setAuditLocation={location =>
@@ -1240,6 +1240,7 @@ function Requisition({ creating }) {
                                                 ? formState.req.storesFunction.transactionTypes
                                                 : null
                                         }
+                                        reqHeader={formState.req}
                                     />
                                 )}
                                 {tab === 1 && (
