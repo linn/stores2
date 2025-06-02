@@ -88,7 +88,7 @@
                 this.newLineCandidate.LineNumber,
                 nom.NominalCode,
                 dept.DepartmentCode).Returns(new ProcessResult(true, string.Empty));
-            this.StockService.ValidStockLocation(null, 123, "PART", 10, "STORES")
+            this.StockService.ValidStockLocation(null, 123, "PART", 10, "STORES", "LINN")
                 .Returns(new ProcessResult(true, "Ok"));
 
             await this.Sut.UpdateRequisition(

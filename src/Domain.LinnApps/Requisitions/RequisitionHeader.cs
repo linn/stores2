@@ -148,7 +148,8 @@
             string isReverseTrans = "N",
             RequisitionHeader isReversalOf = null,
             DateTime? dateReceived = null,
-            string fromCategory = null)
+            string fromCategory = null,
+            string auditLocation = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -181,6 +182,7 @@
             this.ReqType = reqType;
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
+            this.AuditLocation = auditLocation;
             
             // logic for creating a reversal req
             // mostly taken from GET_REQ_FOR_REVERSAL in REQ_UT.fmb
@@ -274,6 +276,11 @@
                 {
                     yield return $"Quantity required for: {this.StoresFunction.FunctionCode}";
                 }
+            }
+
+            if (this.StoresFunction.AuditLocationRequired == "Y" && string.IsNullOrEmpty(this.AuditLocation))
+            {
+                yield return $"You must specify an audit location for {this.StoresFunction.FunctionCode}.";
             }
 
             if (this.StoresFunction.DepartmentNominalRequired == "Y")

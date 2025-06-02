@@ -89,7 +89,7 @@
                     true, string.Empty));
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
                 .Returns(TestTransDefs.StockToLinnDept);
-            this.StockService.ValidStockLocation(null, 512, this.part.PartNumber, 1, "STORES")
+            this.StockService.ValidStockLocation(null, 512, this.part.PartNumber, 1, "STORES", "LINN")
                 .Returns(new ProcessResult(true, "Ok"));
             this.ReqStoredProcedures.CreateNominals(
                 Arg.Any<int>(),
