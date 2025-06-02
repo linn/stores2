@@ -67,6 +67,7 @@
                            CreatedBy = header.CreatedBy?.Id,
                            CreatedByName = header.CreatedBy?.Name,
                            IsReversed = header.IsReversed,
+                           AuditLocation = header.AuditLocation,
                            Lines = header.Lines?.Select(l => reqLineBuilder.Build(l, null)),
                            Nominal = new NominalResource
                                          {

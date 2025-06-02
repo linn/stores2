@@ -29,7 +29,9 @@ function LinesTab({
     canBook,
     fromState,
     fromStockPool,
-    removeLine
+    removeLine,
+    transactionOptions = null,
+    reqHeader
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -66,7 +68,12 @@ function LinesTab({
             renderCell: params => params.row.part?.description
         },
         { field: 'qty', headerName: 'Qty', width: 80, editable: true },
-        { field: 'transactionCode', headerName: 'Trans Code', width: 100 },
+        {
+            field: 'transactionCode',
+            headerName: 'Trans Code',
+            width: 100,
+            editable: !!transactionOptions
+        },
         { field: 'transactionCodeDescription', headerName: 'Trans Desc', width: 200 },
         { field: 'document1Type', headerName: 'Doc1', width: 80 },
         { field: 'document1Number', headerName: 'Number', width: 80 },
@@ -150,8 +157,77 @@ function LinesTab({
         }
     ];
 
-    const processRowUpdate = updatedLine => {
-        updateLine(updatedLine.lineNumber, 'qty', updatedLine.qty);
+    const processRowUpdate = (updatedLine, oldLine) => {
+        if (updatedLine.qty !== oldLine.qty) {
+            updateLine(updatedLine.lineNumber, 'qty', updatedLine.qty);
+        }
+
+        if (
+            (updatedLine.transactionCode &&
+                updatedLine.transactionCode !== oldLine.transactionCode) ||
+            updatedLine.qty !== oldLine.qty
+        ) {
+            let newCode = updatedLine.transactionCode.toUpperCase();
+
+            if (newCode.length === 1) {
+                if (newCode === 'a' || newCode === 'A') {
+                    newCode = 'ADSTI';
+                }
+
+                if (newCode === 's' || newCode === 'S') {
+                    newCode = 'STADI';
+                }
+            }
+
+            const selectedOption = transactionOptions.find(
+                a => a.transactionDefinition === newCode
+            );
+            if (selectedOption) {
+                updatedLine.transactionCode = selectedOption.transactionDefinition;
+                updatedLine.transactionCodeDescription = selectedOption.transactionDescription;
+                updateLine(
+                    updatedLine.lineNumber,
+                    'transactionCode',
+                    selectedOption.transactionDefinition
+                );
+                updateLine(
+                    updatedLine.lineNumber,
+                    'transactionCodeDescription',
+                    selectedOption.transactionDescription
+                );
+
+                if (selectedOption.stockAllocations) {
+                    pickStock(updatedLine.lineNumber, [
+                        {
+                            partNumber: updatedLine.part?.partNumber,
+                            isFrom: true,
+                            isTo: false,
+                            quantityToPick: updatedLine.qty,
+                            palletNumber: reqHeader.fromPalletNumber,
+                            locationName: reqHeader.fromLocationCode,
+                            stockPoolCode: reqHeader.fromStockPool ?? 'LINN',
+                            state: reqHeader.fromState ?? selectedOption.fromStates[0]
+                        }
+                    ]);
+                } else {
+                    pickStock(updatedLine.lineNumber, [
+                        {
+                            partNumber: updatedLine.part?.partNumber,
+                            isFrom: false,
+                            isTo: true,
+                            quantityToPick: updatedLine.qty,
+                            palletNumber: reqHeader.fromPalletNumber,
+                            locationName: reqHeader.fromLocationCode,
+                            stockPoolCode: reqHeader.fromStockPool ?? 'LINN',
+                            state: reqHeader.fromState ?? selectedOption.fromStates[0]
+                        }
+                    ]);
+                }
+            } else {
+                updatedLine.transactionCode = oldLine.transactionCode;
+            }
+        }
+
         return updatedLine;
     };
 
@@ -234,6 +310,7 @@ function LinesTab({
                 setSearchDialogOpen={setPartsSearchDialogOpen}
                 handleSearchResultSelect={r => {
                     updateLine(partsSearchDialogOpen, 'part', r);
+                    updateLine(partsSearchDialogOpen, 'qty', 0);
                 }}
             />
 
@@ -261,7 +338,6 @@ function LinesTab({
                     onRowClick={row => {
                         setSelected(row.id);
                     }}
-                    // editMode="cell"
                     loading={false}
                     apiRef={apiRef}
                     hideFooter

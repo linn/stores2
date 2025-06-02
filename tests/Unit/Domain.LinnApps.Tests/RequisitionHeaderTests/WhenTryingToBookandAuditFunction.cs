@@ -24,7 +24,8 @@
                 new Department(),
                 new Nominal(),
                 reference: null,
-                comments: "A Good Book");
+                comments: "A Good Book",
+                auditLocation: "P123");
         }
 
         [Test]

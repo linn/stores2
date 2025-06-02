@@ -85,7 +85,9 @@
                     new EntityFrameworkRepository<NominalAccount, int>(r.GetService<ServiceDbContext>()?.NominalAccounts))
                 .AddScoped<IRepository<Workstation, string>, WorkstationRepository>()
                 .AddScoped<IQueryRepository<SundryBookInDetail>, EntityFrameworkQueryRepository<SundryBookInDetail>>(
-                    r => new EntityFrameworkQueryRepository<SundryBookInDetail>(r.GetService<ServiceDbContext>()?.SundryBookInDetails));
+                    r => new EntityFrameworkQueryRepository<SundryBookInDetail>(r.GetService<ServiceDbContext>()?.SundryBookInDetails))
+                .AddScoped<IQueryRepository<AuditLocation>, EntityFrameworkQueryRepository<AuditLocation>>(
+                    r => new EntityFrameworkQueryRepository<AuditLocation>(r.GetService<ServiceDbContext>()?.AuditLocations));
         }
     }
 }

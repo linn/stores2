@@ -98,7 +98,8 @@
                 isReverseTransaction: context.IsReverseTransaction,
                 originalDocumentNumber: context.OriginalReqNumber,
                 bookInOrderDetails: context.BookInOrderDetails,
-                dateReceived: context.DateReceived);
+                dateReceived: context.DateReceived,
+                auditLocation: context.AuditLocation);
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
@@ -146,8 +147,8 @@
                 context.IsReverseTransaction,
                 toBeReversed,
                 context.DateReceived,
-                context.FromCategory);
-
+                context.FromCategory,
+                context.AuditLocation);
 
             if (context.Function.NewPartNumberRequired())
             {

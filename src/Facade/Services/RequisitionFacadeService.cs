@@ -177,7 +177,8 @@
                     isReverseTransaction: resource.IsReverseTransaction,
                     originalDocumentNumber: resource.OriginalReqNumber,
                     bookInOrderDetails: resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
-                    dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived));
+                    dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived),
+                    auditLocation: resource.AuditLocation);
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }
@@ -267,7 +268,8 @@
                              resource.Document3,
                              resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
                              dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived),
-                             fromCategory: resource.FromCategory);
+                             fromCategory: resource.FromCategory,
+                             auditLocation: resource.AuditLocation);
             return result;
         }
 
