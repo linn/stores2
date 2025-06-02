@@ -1,19 +1,23 @@
 import { useEffect, useState } from 'react';
 
-// This hook returns debounced updates to a passed input value
-// The returned value is only updated when the input value has been changed and the specified delay time has elapsed#
+// Enhanced hook: returns both the debounced value and an isDebouncing flag
 function useDebounceValue(value, delay = 1000) {
     const [debouncedValue, setDebouncedValue] = useState(value);
+    const [isDebouncing, setIsDebouncing] = useState(false);
 
     useEffect(() => {
+        setIsDebouncing(true);
         const handler = setTimeout(() => {
             setDebouncedValue(value);
+            setIsDebouncing(false);
         }, delay);
 
-        return () => clearTimeout(handler);
+        return () => {
+            clearTimeout(handler);
+        };
     }, [value, delay]);
 
-    return debouncedValue;
+    return [debouncedValue, isDebouncing];
 }
 
 export default useDebounceValue;

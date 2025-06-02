@@ -495,7 +495,7 @@ function Requisition({ creating }) {
         }
     };
 
-    const debouncedFormState = useDebounceValue(formState);
+    const [debouncedFormState, isDebouncing] = useDebounceValue(formState);
 
     useEffect(() => {
         if (!debouncedFormState.req) return;
@@ -507,6 +507,10 @@ function Requisition({ creating }) {
     }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
 
     const validToSaveMessage = () => {
+        if (!creating && !changesMade) {
+            return 'No changes to save';
+        }
+
         if (codesLoading) {
             return 'Loading...';
         }
@@ -765,7 +769,7 @@ function Requisition({ creating }) {
                                     label="Valid to Save?"
                                     fullWidth
                                     rows={2}
-                                    error={!validated}
+                                    error={changesMade && !validated}
                                     propertyName="validToSaveMessage"
                                     value={validToSaveMessage()}
                                 />
@@ -1286,7 +1290,12 @@ function Requisition({ creating }) {
                             </Grid>
                             <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!validated || !changesMade}
+                                    saveDisabled={
+                                        isDebouncing ||
+                                        !validated ||
+                                        validateLoading ||
+                                        !changesMade
+                                    }
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
                                         cancelValidation();
