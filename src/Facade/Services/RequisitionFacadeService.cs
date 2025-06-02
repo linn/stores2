@@ -268,7 +268,8 @@
                              resource.Document3,
                              resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
                              dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived),
-                             fromCategory: resource.FromCategory);
+                             fromCategory: resource.FromCategory,
+                             auditLocation: resource.AuditLocation);
             return result;
         }
 

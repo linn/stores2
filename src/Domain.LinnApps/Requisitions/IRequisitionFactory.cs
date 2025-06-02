@@ -41,6 +41,7 @@
             int? document3Number = null,
             IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
             DateTime? dateReceived = null,
-            string fromCategory = null);
+            string fromCategory = null,
+            string auditLocation = null);
     }
 }

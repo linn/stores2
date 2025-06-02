@@ -151,8 +151,9 @@ function LinesTab({
         }
 
         if (
-            updatedLine.transactionCode &&
-            updatedLine.transactionCode !== oldLine.transactionCode
+            (updatedLine.transactionCode &&
+                updatedLine.transactionCode !== oldLine.transactionCode) ||
+            updatedLine.qty !== oldLine.qty
         ) {
             let newCode = updatedLine.transactionCode.toUpperCase();
 
@@ -297,6 +298,7 @@ function LinesTab({
                 setSearchDialogOpen={setPartsSearchDialogOpen}
                 handleSearchResultSelect={r => {
                     updateLine(partsSearchDialogOpen, 'part', r);
+                    updateLine(partsSearchDialogOpen, 'qty', 0);
                 }}
             />
 

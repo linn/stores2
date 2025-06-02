@@ -1,3 +1,5 @@
+import { add } from '../../../helpers/numberUtilities';
+
 function reducer(state, action) {
     switch (action.type) {
         case 'clear': {
@@ -269,7 +271,7 @@ function reducer(state, action) {
             const doc1Details = action.payload;
             if (action.payload.orderDetail) {
                 doc1Details.qtyOutstanding = action.payload.orderDetail.purchaseDeliveries.reduce(
-                    (sum, item) => sum + item.quantityOutstanding,
+                    (sum, item) => add(sum, item.quantityOutstanding),
                     0
                 );
             }
@@ -436,7 +438,7 @@ function reducer(state, action) {
                             ? {
                                   ...line,
                                   qty: action.payload.stockMoves.reduce(
-                                      (sum, move) => sum + move.quantityToPick,
+                                      (sum, move) => add(sum, move.quantityToPick),
                                       0
                                   ),
                                   stockPicked: true,
@@ -640,7 +642,7 @@ function reducer(state, action) {
                         return line.lineNumber === action.payload.lineNumber
                             ? {
                                   ...line,
-                                  qty: updatedMoves.reduce((sum, item) => sum + item.qty, 0),
+                                  qty: updatedMoves.reduce((sum, item) => add(sum, item.qty), 0),
                                   moves: updatedMoves
                               }
                             : line;

@@ -311,10 +311,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (movesToAdd != null && movesToAdd.Any())
             {
-                await this.CheckMoves(
-                    toAdd.PartNumber,
-                    movesToAdd,
-                    header.ReqType != "F" && header.StoresFunction.ToLocationRequiredOrOptional());
+                var toLocationRequired = header.ReqType != "F" && header.StoresFunction.ToLocationRequiredOrOptional()
+                                                               && header.StoresFunction.FunctionCode != "AUDIT";
+                await this.CheckMoves(toAdd.PartNumber, movesToAdd, toLocationRequired);
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
