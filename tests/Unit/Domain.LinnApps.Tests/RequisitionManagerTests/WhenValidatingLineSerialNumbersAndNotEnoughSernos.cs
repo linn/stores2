@@ -18,7 +18,12 @@
         [SetUp]
         public void SetUp()
         {
-            var requisitionLine = new RequisitionLine(123, 1, new Part() { PartNumber = "SERNOS PART" }, 2, TestTransDefs.MoveToDem);
+            var requisitionLine = new RequisitionLine(
+                123,
+                1,
+                new Part { PartNumber = "SERNOS PART" },
+                2,
+                TestTransDefs.MoveToDem);
             this.SerialNumberService.GetSerialNumbersRequired("SERNOS PART").Returns(true);
             requisitionLine.AddSerialNumber(1234);
             this.SerialNumberService.CheckSerialNumber("ON DEM", "SERNOS PART", 1234)
