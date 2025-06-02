@@ -34,8 +34,9 @@ const itemTypes = {
     loan: { url: `${config.proxyRoot}/sales/loans` },
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
     worksOrder: { url: `${config.proxyRoot}/production/works-orders` },
+    debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
     printQcLabels: { url: `${config.appRoot}/requisitions/print-qc-labels` },
-    getDefaultBookInLocation: { url: `${config.appRoot}/requisitions/default-book-in-location` }
+    getDefaultBookInLocation: { url: `${config.appRoot}/requisitions/default-book-in-location` },
     workStations: { url: `${config.appRoot}/stores2/work-stations` }
 };
 
