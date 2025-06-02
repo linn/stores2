@@ -38,6 +38,9 @@
             IEnumerable<LineCandidate> lines = null,
             string isReverseTransaction = "N",
             int? originalReqNumber = null,
-            int? document3Number = null);
+            int? document3Number = null,
+            IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
+            DateTime? dateReceived = null,
+            string fromCategory = null);
     }
 }

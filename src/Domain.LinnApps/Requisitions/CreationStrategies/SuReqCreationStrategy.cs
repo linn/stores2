@@ -25,8 +25,7 @@
             IRepository<RequisitionHeader, int> repository,
             IRequisitionManager requisitionManager,
             IRepository<Employee, int> employeeRepository,
-            IRepository<StorageLocation, int> storageLocationRepository
-        )
+            IRepository<StorageLocation, int> storageLocationRepository)
         {
             this.authService = authService;
             this.repository = repository;
@@ -38,7 +37,8 @@
         public async Task<RequisitionHeader> Create(RequisitionCreationContext context)
         {
             var privilegesList = context.UserPrivileges.ToList();
-            if (!this.authService.HasPermissionFor(AuthorisedActions.GetRequisitionActionByFunction("SUREQ"),
+            if (!this.authService.HasPermissionFor(
+                    AuthorisedActions.GetRequisitionActionByFunction("SUREQ"),
                     privilegesList))
             {
                 throw new UnauthorisedActionException("You are not authorised to raise SUREQ");
@@ -62,23 +62,22 @@
                 context.Document1Type,
                 context.DepartmentCode,
                 context.NominalCode,
-                context.FirstLineCandidate,
-                context.Reference,
-                context.Comments,
-                context.ManualPick,
-                context.FromStockPool,
-                context.ToStockPool,
-                context.FromPallet,
-                context.ToPallet,
-                context.FromLocationCode,
-                context.ToLocationCode,
-                context.PartNumber,
-                context.Quantity,
-                context.FromState,
-                context.ToState,
-                context.BatchRef,
-                context.BatchDate,
-                context.Document1Line);
+                reference: context.Reference,
+                comments: context.Comments,
+                manualPick: context.ManualPick,
+                fromStockPool: context.FromStockPool,
+                toStockPool: context.ToStockPool,
+                fromPalletNumber: context.FromPallet,
+                toPalletNumber: context.ToPallet,
+                fromLocationCode: context.FromLocationCode,
+                toLocationCode: context.ToLocationCode,
+                partNumber: context.PartNumber,
+                quantity: context.Quantity,
+                fromState: context.FromState,
+                toState: context.ToState,
+                batchRef: context.BatchRef,
+                batchDate: context.BatchDate,
+                document1Line: context.Document1Line);
 
             // header
             var req = new RequisitionHeader(
@@ -105,7 +104,6 @@
                 context.ToState);
 
             await this.repository.AddAsync(req);
-
 
             // lines
             try

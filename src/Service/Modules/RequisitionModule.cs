@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Service.Modules
 {
+    using System.Net;
     using System.Threading.Tasks;
 
     using Linn.Common.Service.Core;
@@ -28,11 +29,16 @@
             app.MapGet("/requisitions/stores-functions", this.GetFunctionCodes);
             app.MapGet("/requisitions/stores-functions/view", this.GetApp);
             app.MapGet("/requisitions/stores-functions/{code}", this.GetStoresFunction);
+            app.MapGet("/requisitions/sundry-book-ins", this.GetSundryBookIns);
             app.MapPost("/requisitions/validate", this.Validate);
             app.MapGet("/requisitions/{reqNumber:int}", this.GetById);
             app.MapGet("/requisitions/application-state", this.GetRequisitionApplicationState);
             app.MapPost("/requisitions", this.Create);
             app.MapPost("/requisitions/{reqNumber}", this.Update);
+            app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
+            app.MapGet("/requisitions/{reqNumber:int}/preview-reversal", this.GetReversalPreview);
+            app.MapGet("/requisitions/default-book-in-location", this.GetDefaultBookInLocation);
+            app.MapGet("/delivery-note/{reqNumber:int}", this.GetDeliveryNoteHtml);
         }
 
         private async Task Search(
@@ -44,6 +50,9 @@
             bool? pending,
             string documentName,
             int? documentNumber,
+            bool? excludeReversals,
+            bool? bookedOnly,
+            string functionCode,
             IRequisitionFacadeService service)
         {
             if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && string.IsNullOrWhiteSpace(documentName) && pending != true)
@@ -60,7 +69,10 @@
                         IncludeCancelled = includeCancelled.GetValueOrDefault(),
                         Pending = pending.GetValueOrDefault(),
                         DocumentName = documentName,
-                        DocumentNumber = documentNumber
+                        DocumentNumber = documentNumber,
+                        ExcludeReversals = excludeReversals,
+                        BookedOnly = bookedOnly,
+                        FunctionCode = functionCode
                     });
                 await res.Negotiate(requisitions);
             }
@@ -73,6 +85,24 @@
             IRequisitionFacadeService service)
         {
             await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
+        }
+        
+        private async Task GetReversalPreview(
+            HttpRequest req,
+            HttpResponse res,
+            int reqNumber,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.GetReversalPreview(reqNumber));
+        }
+
+        private async Task GetDefaultBookInLocation(
+            HttpRequest req,
+            HttpResponse res,
+            string partNumber,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.GetDefaultBookInLocation(partNumber));
         }
 
         private async Task Cancel(
@@ -187,9 +217,46 @@
             await res.Negotiate(await service.GetById(code, req.HttpContext.GetPrivileges()));
         }
 
+        private async Task GetSundryBookIns(
+            HttpRequest req,
+            HttpResponse res,
+            int orderNumber,
+            int orderLine,
+            IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource> facadeService)
+        {
+            await res.Negotiate(
+                await facadeService.FilterBy(
+                    new SundryBookInDetailResource { OrderNumber = orderNumber, OrderLine = orderLine },
+                    req.HttpContext.GetPrivileges()));
+        }
+
         private async Task GetApp(HttpRequest req, HttpResponse res)
         {
             await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+        }
+
+        private async Task PrintQcLabels(
+            HttpResponse res, 
+            HttpRequest req,
+            IRequisitionLabelsFacadeService service,
+            QcLabelPrintRequestResource resource)
+        {
+            resource.UserNumber = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
+            await res.Negotiate(await service.PrintQcLables(resource));
+        }
+
+        private async Task GetDeliveryNoteHtml(
+            HttpRequest req,
+            HttpResponse res,
+            int reqNumber,
+            IDeliveryNoteFacadeService deliveryNoteFacadeService)
+        {
+            var result = await deliveryNoteFacadeService.GetDeliveryNoteAsHtml(reqNumber);
+
+            res.ContentType = "text/html";
+            res.StatusCode = (int)HttpStatusCode.OK;
+
+            await res.WriteAsync(result);
         }
     }
 }

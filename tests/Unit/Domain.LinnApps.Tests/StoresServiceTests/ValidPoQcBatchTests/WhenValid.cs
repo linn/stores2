@@ -33,7 +33,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
                 null,
                 quantity: 100,
                 toState: "QC",
-                toStockPool: "STOCK");
+                toStockPool: "STOCK",
+                dateReceived: DateTime.Today);
             
             this.StoresBudgetRepository.FilterByAsync(Arg.Any<Expression<Func<StoresBudget, bool>>>())
                 .Returns(new List<StoresBudget>

@@ -11,8 +11,6 @@
 
         public IEnumerable<string> UserPrivileges { get; set; }
 
-        public LineCandidate FirstLineCandidate { get; set; }
-
         public string ReqType { get; set; }
 
         public int? Document1Number { get; set; }
@@ -68,5 +66,11 @@
         public string IsReverseTransaction { get; set; }
 
         public int? Document3Number { get; set; }
+        
+        public IEnumerable<BookInOrderDetail> BookInOrderDetails { get; set; }
+
+        public DateTime? DateReceived { get; set; }
+        
+        public string FromCategory { get; set; }
     }
 }

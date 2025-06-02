@@ -14,11 +14,15 @@ const itemTypes = {
     goodsInLog: { url: `${config.appRoot}/stores2/goods-in-log/report` },
     createAuditReqs: { url: `${config.appRoot}/stores2/storage-places/create-checked-audit-reqs` },
     storesBudget: { url: `${config.appRoot}/stores2/budgets` },
+    sundryBookInDetails: { url: `${config.appRoot}/requisitions/sundry-book-ins` },
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
     storageTypes: { url: `${config.appRoot}/stores2/storage-types` },
+    pcasStorageTypes: { url: `${config.appRoot}/stores2/pcas-storage-types` },
+    pcasBoards: { url: `${config.appRoot}/stores2/pcas-boards` },
     storageLocations: { url: `${config.appRoot}/stores2/storage/locations` },
     nominals: { url: `${config.proxyRoot}/ledgers/nominals` },
     departments: { url: `${config.proxyRoot}/ledgers/departments` },
+    nominalAccounts: { url: `${config.proxyRoot}/ledgers/nominal-accounts` },
     parts: { url: `${config.proxyRoot}/parts` },
     stockLocators: { url: `${config.proxyRoot}/inventory/stock-locators-by-location` },
     stockPools: { url: `${config.appRoot}/stores2/stock-pools` },
@@ -27,9 +31,11 @@ const itemTypes = {
     partsStorageTypes: { url: `${config.appRoot}/stores2/parts-storage-types` },
     storesTransViewer: { url: `${config.appRoot}/stores2/stores-trans-viewer/report` },
     purchaseOrder: { url: `${config.proxyRoot}/purchasing/purchase-orders` },
+    loan: { url: `${config.proxyRoot}/sales/loans` },
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
     worksOrder: { url: `${config.proxyRoot}/production/works-orders` },
-    debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
+    printQcLabels: { url: `${config.appRoot}/requisitions/print-qc-labels` },
+    getDefaultBookInLocation: { url: `${config.appRoot}/requisitions/default-book-in-location` }
     workStations: { url: `${config.appRoot}/stores2/work-stations` }
 };
 

@@ -6,6 +6,7 @@
 
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -22,6 +23,12 @@
 
         private readonly IRepository<RequisitionHeader, int> requisitionRepository;
 
+        private readonly IRepository<NominalAccount, int> nominalAccountRepository;
+
+        private readonly IRepository<PartsStorageType, int> partStorageTypeRepository;
+
+        private readonly IRepository<StorageLocation, int> storageLocationRepository;
+
         // This service is intended for stores_oo replacement methods that are not
         // suitable to be written in the requisition class itself
         public StoresService(
@@ -29,13 +36,19 @@
             IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository,
             IRepository<StoresBudget, int> storesBudgetRepository,
             IRepository<StockLocator, int> stockLocatorRepository,
-            IRepository<RequisitionHeader, int> requisitionRepository)
+            IRepository<RequisitionHeader, int> requisitionRepository,
+            IRepository<NominalAccount, int> nominalAccountRepository,
+            IRepository<PartsStorageType, int> partStorageTypeRepository,
+            IRepository<StorageLocation, int> storageLocationRepository)
         {
             this.stockService = stockService;
             this.storesTransactionStateRepository = storesTransactionStateRepository;
             this.storesBudgetRepository = storesBudgetRepository;
             this.stockLocatorRepository = stockLocatorRepository;
             this.requisitionRepository = requisitionRepository;
+            this.nominalAccountRepository = nominalAccountRepository;
+            this.partStorageTypeRepository = partStorageTypeRepository;
+            this.storageLocationRepository = storageLocationRepository;
         }
 
         public async Task<ProcessResult> ValidOntoLocation(
@@ -289,6 +302,48 @@
             }
 
             return new ProcessResult(true, $"Reverse quantity of {quantity} for req {originalReqNumber} is valid");
+        }
+
+        public async Task<ProcessResult> ValidDepartmentNominal(string departmentCode, string nominalCode)
+        {
+            // stores_oo.valid_dept_nom
+            var nominalAccount = await this.nominalAccountRepository.FindByAsync(a =>
+                a.DepartmentCode == departmentCode && a.NominalCode == nominalCode);
+
+            if (nominalAccount == null)
+            {
+                return new ProcessResult(false, $"Department / Nominal {departmentCode} / { nominalCode} are not a valid combination");
+            }
+
+            if (nominalAccount.StoresPostsAllowed != "Y")
+            {
+                return new ProcessResult(false, $"Department / Nominal {departmentCode} / {nominalCode} are not a valid for stores posting");
+            }
+
+            return new ProcessResult(true, $"Department / Nominal {departmentCode} / {nominalCode} are a valid combination for stores");
+        }
+
+        public async Task<StorageLocation> DefaultBookInLocation(string partNumber)
+        {
+            // stores_oo.default_bookin_location
+            var storageType = await this.partStorageTypeRepository.FindByAsync(a => a.PartNumber == partNumber);
+
+            if (storageType == null)
+            {
+                return null;
+            }
+
+            if (storageType.StorageTypeCode.StartsWith("K1"))
+            {
+                return await this.storageLocationRepository.FindByAsync(a => a.LocationCode == "E-GI-K1");
+            }
+
+            if (storageType.StorageTypeCode.StartsWith("K2"))
+            {
+                return await this.storageLocationRepository.FindByAsync(a => a.LocationCode == "E-GI-K2");
+            }
+
+            return null;
         }
     }
 }

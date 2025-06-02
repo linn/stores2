@@ -224,7 +224,7 @@
                 Value = reqNumber
             };
             cmd.Parameters.Add(reqNumberParameter);
-            var qtyParameter = new OracleParameter("p_qty", OracleDbType.Int32)
+            var qtyParameter = new OracleParameter("p_qty", OracleDbType.Decimal)
             {
                 Direction = ParameterDirection.Input,
                 Value = qty
@@ -441,7 +441,7 @@
                                        Value = reqLine
                                    });
 
-            cmd.Parameters.Add(new OracleParameter("p_rh_qty", OracleDbType.Int32)
+            cmd.Parameters.Add(new OracleParameter("p_rh_qty", OracleDbType.Decimal)
                                    {
                                        Direction = ParameterDirection.Input,
                                        Value = quantity

@@ -1,6 +1,7 @@
-namespace Linn.Stores2.Resources.External;
-
-public class PurchaseOrderTypeResource
+namespace Linn.Stores2.Resources.External
 {
-    public string Name { get; set; }
+    public class PurchaseOrderTypeResource
+    {
+        public string Name { get; set; }
+    }
 }

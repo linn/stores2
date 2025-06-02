@@ -34,11 +34,10 @@
                 "C",
                 null,
                 null,
-                null,
-                document1Line: 1,
                 toStockPool: "LINN",
+                toPalletNumber: 666,
                 toState: "STORES",
-                toPalletNumber: 666);
+                document1Line: 1);
         }
 
         [Test]

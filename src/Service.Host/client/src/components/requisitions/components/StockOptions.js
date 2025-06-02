@@ -181,7 +181,7 @@ function StockOptions({
                 </>
             )}
             <Grid size={2}>
-                {functionCode?.toStates && functionCode?.toStateRequired !== 'N' && (
+                {functionCode?.toStates && (functionCode?.toStateRequired !== 'N' || toState) && (
                     <Dropdown
                         value={toState}
                         disabled={disabled}
@@ -198,77 +198,86 @@ function StockOptions({
                 )}
             </Grid>
             <Grid size={2}>
-                <Dropdown
-                    value={toStockPool}
-                    disabled={disabled}
-                    fullWidth
-                    label="To Stock Pool"
-                    propertyName="toStockPool"
-                    allowNoValue
-                    items={stockPoolItems?.map(s => ({
-                        id: s.stockPoolCode,
-                        displayText: s.stockPoolCode
-                    }))}
-                    onChange={setItemValue}
-                />
+                {functionCode?.toStockPoolRequired !== 'N' && (
+                    <Dropdown
+                        value={toStockPool}
+                        disabled={disabled}
+                        fullWidth
+                        label="To Stock Pool"
+                        propertyName="toStockPool"
+                        allowNoValue
+                        items={stockPoolItems?.map(s => ({
+                            id: s.stockPoolCode,
+                            displayText: s.stockPoolCode
+                        }))}
+                        onChange={setItemValue}
+                    />
+                )}
             </Grid>
             <Grid size={8} />
-            <Grid size={2}>
-                <Search
-                    propertyName="toLocationCode"
-                    label="To Loc"
-                    resultsInModal
-                    resultLimit={100}
-                    helperText={disabled ? '' : '<Enter> to search or <Tab> to select'}
-                    value={toLocationCode}
-                    handleValueChange={setItemValue}
-                    search={searchLocations}
-                    loading={locationsSearchLoading}
-                    searchResults={locationsSearchResults}
-                    priorityFunction="closestMatchesFirst"
-                    onResultSelect={r => {
-                        setItemValue('toLocationId', r.locationId);
-                        setItemValue('toLocationCode', r.locationCode);
-                        setItemValue('toPalletNumber', null);
-                    }}
-                    onKeyPressFunctions={[
-                        {
-                            keyCode: 9,
-                            action: () => {
-                                setItemValue('toLocationCode', toLocationCode?.toUpperCase());
-                                if (toLocationCode && toLocationCode !== 'E-BB-PALLETS') {
-                                    setItemValue('toPalletNumber', null);
+            {functionCode?.toLocationRequired !== 'N' && (
+                <>
+                    <Grid size={2}>
+                        <Search
+                            propertyName="toLocationCode"
+                            label="To Loc"
+                            resultsInModal
+                            resultLimit={100}
+                            helperText={disabled ? '' : '<Enter> to search or <Tab> to select'}
+                            value={toLocationCode}
+                            handleValueChange={setItemValue}
+                            search={searchLocations}
+                            loading={locationsSearchLoading}
+                            searchResults={locationsSearchResults}
+                            priorityFunction="closestMatchesFirst"
+                            onResultSelect={r => {
+                                setItemValue('toLocationId', r.locationId);
+                                setItemValue('toLocationCode', r.locationCode);
+                                setItemValue('toPalletNumber', null);
+                            }}
+                            onKeyPressFunctions={[
+                                {
+                                    keyCode: 9,
+                                    action: () => {
+                                        setItemValue(
+                                            'toLocationCode',
+                                            toLocationCode?.toUpperCase()
+                                        );
+                                        if (toLocationCode && toLocationCode !== 'E-BB-PALLETS') {
+                                            setItemValue('toPalletNumber', null);
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                    ]}
-                    clearSearch={clearLocationsSearch}
-                    disabled={disabled}
-                    autoFocus={false}
-                />
-            </Grid>
-            <Grid size={2}>
-                <InputField
-                    value={toPalletNumber}
-                    onChange={(field, newVal) => {
-                        setItemValue(field, newVal);
-                        if (newVal) {
-                            setItemValue('toLocationId', null);
-                            setItemValue('toLocationCode', null);
-                        }
-                    }}
-                    disabled={disabled}
-                    label="To Pallet"
-                    propertyName="toPalletNumber"
-                />
-            </Grid>
-            <Grid size={8} />
+                            ]}
+                            clearSearch={clearLocationsSearch}
+                            disabled={disabled}
+                            autoFocus={false}
+                        />
+                    </Grid>
+                    <Grid size={2}>
+                        <InputField
+                            value={toPalletNumber}
+                            onChange={(field, newVal) => {
+                                setItemValue(field, newVal);
+                                if (newVal) {
+                                    setItemValue('toLocationId', null);
+                                    setItemValue('toLocationCode', null);
+                                }
+                            }}
+                            disabled={disabled}
+                            label="To Pallet"
+                            propertyName="toPalletNumber"
+                        />
+                    </Grid>
+                    <Grid size={8} />
+                </>
+            )}
             {pickStockDialogVisible && (
                 <PickStockDialog
                     open={pickStockDialogVisible}
                     setOpen={setPickStockDialogVisible}
                     partNumber={partNumber}
-                    getBatches={true}
+                    selectSingleBatch={true}
                     batchRef={batchRef}
                     quantity={quantity}
                     state={fromState}

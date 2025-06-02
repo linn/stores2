@@ -23,6 +23,19 @@
             var emp = new Employee { Id = 1, Name = "Joseph Smith" };
             var part = new Part { PartNumber = "ADIKT", Description = "Cartridge" };
             var supplierLoc = new StorageLocation { LocationCode = "S-SU-1234", Description = "Supplier Heaven" };
+            var toReverse = new RequisitionHeader(
+                emp,
+                TestFunctionCodes.ReturnToSupplier,
+                null,
+                1,
+                "RO",
+                null,
+                null,
+                part: part,
+                toLocation: supplierLoc,
+                quantity: 1,
+                document1Line: 1,
+                fromState: "FAIL");
             var header = new RequisitionHeader(
                 emp,
                 TestFunctionCodes.ReturnToSupplier,
@@ -32,12 +45,11 @@
                 null,
                 null,
                 part: part,
-                quantity: 1,
                 toLocation: supplierLoc,
                 document1Line: 1,
                 isReverseTrans: "Y",
                 fromState: "FAIL",
-                originalReqNumber: 12);
+                isReversalOf: toReverse);
 
             var purchaseOrder = new PurchaseOrderResult
             {
@@ -52,7 +64,7 @@
             };
 
             this.ReqStoredProcedures.GetQtyReturned(1, 1)
-                .Returns(1);
+                .Returns(0);
 
             this.action = async () => await this.Sut.CheckReturnOrderForFullyBooked(header, purchaseOrder);
         }

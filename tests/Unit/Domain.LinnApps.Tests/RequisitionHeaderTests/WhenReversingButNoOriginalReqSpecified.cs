@@ -32,14 +32,14 @@
                                     toPalletNumber: 1233,
                                     fromPalletNumber: 123,
                                     isReverseTrans: "Y",
-                                    originalReqNumber: null);
+                                    isReversalOf: null);
         }
 
         [Test]
         public void ShouldThrow()
         {
             this.action.Should().Throw<CreateRequisitionException>()
-                .WithMessage("Validation failed with the following errors: You must specify a req number to reverse");
+                .WithMessage("You must specify a req number to reverse");
         }
     }
 }

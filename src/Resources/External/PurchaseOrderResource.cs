@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Linn.Stores2.Resources.External
+﻿namespace Linn.Stores2.Resources.External
 {
+    using System.Collections.Generic;
+
     public class PurchaseOrderResource
     {
         public int OrderNumber { get; set; }
@@ -13,5 +13,11 @@ namespace Linn.Stores2.Resources.External
         public PurchaseOrderTypeResource DocumentType { get; set; }
 
         public IEnumerable<PurchaseOrderDetailResource> Details { get; set; }
+
+        public SupplierResource Supplier { get; set; }
+
+        public string Overbook { get; set; }
+
+        public decimal? OverbookQty { get; set; }
     }
 }

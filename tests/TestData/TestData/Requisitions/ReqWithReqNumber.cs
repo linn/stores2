@@ -30,7 +30,10 @@
             Part part = null,
             decimal? quantity = null,
             string fromState = null,
-            string toState = null) 
+            string toState = null,
+            string batchRef = null,
+            DateTime? batchDate = null,
+            bool hasBeenReversed = false) 
             : base(
                 createdBy,
                 function,
@@ -51,9 +54,12 @@
                 part: part,
                 quantity: quantity,
                 fromState: fromState,
-                toState: toState)
+                toState: toState,
+                batchRef: batchRef,
+                batchDate: batchDate)
         {
             this.ReqNumber = reqNumber;
+            this.IsReversed = hasBeenReversed ? "Y" : "N";
         }
     }
 }

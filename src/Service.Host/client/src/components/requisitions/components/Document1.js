@@ -16,7 +16,8 @@ function Document1({
     partSource,
     onSelectPart = null,
     document1Details = null,
-    storesFunction = null
+    storesFunction = null,
+    qtyOutstanding = null
 }) {
     const displayDetails1 =
         document1Details && partSource === 'WO'
@@ -57,7 +58,6 @@ function Document1({
     useEffect(() => {
         if (purchaseOrder) {
             const docType = purchaseOrder.documentType.name;
-
             if (storesFunction?.code === 'RETSU') {
                 const debitNote = toIntId(
                     utilities.getHref(purchaseOrder, 'ret-credit-debit-note')
@@ -73,7 +73,8 @@ function Document1({
                     document2: debitNote,
                     document3: purchaseOrder.details[0].originalOrderNumber,
                     docType,
-                    quantity: purchaseOrder.details[0].ourQty
+                    quantity: purchaseOrder.details[0].ourQty,
+                    canReverse: 'Y'
                 });
             } else {
                 onSelect({
@@ -83,18 +84,22 @@ function Document1({
                         storesFunction?.batchRequired === 'Y'
                             ? `${docType.charAt(0)}${purchaseOrder.orderNumber}`
                             : null,
+                    document1: purchaseOrder.orderNumber,
                     document1Line: 1,
                     toLocationCode:
                         storesFunction?.toLocationRequired === 'Y'
                             ? `S-SU-${purchaseOrder.supplier.id}`
                             : null,
-                    docType
+                    docType,
+                    orderDetail: purchaseOrder.details[0],
+                    canReverse: 'Y'
                 });
             }
 
+            fetchPart(null, `?searchTerm=${purchaseOrder.details[0].partNumber}&exactOnly=true`);
             clearPurchaseOrder();
         }
-    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction]);
+    }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction, fetchPart]);
 
     useEffect(() => {
         if (creditNote && document1Line) {
@@ -103,7 +108,9 @@ function Document1({
                 onSelect({
                     partNumber: line.articleNumber,
                     partDescription: line.description,
-                    document1Line
+                    document1Line,
+                    docType: creditNote.documentType,
+                    canReverse: 'Y'
                 });
                 clearCreditNote();
             }
@@ -122,7 +129,8 @@ function Document1({
                 outstanding: worksOrder.outstanding,
                 quantity: worksOrder.quantity,
                 quantityBuilt: worksOrder.quantityBuilt,
-                dateCancelled: worksOrder.dateCancelled
+                dateCancelled: worksOrder.dateCancelled,
+                canReverse: 'Y'
             });
 
             fetchPart(null, `?searchTerm=${worksOrder.partNumber}&exactOnly=true`);
@@ -143,6 +151,10 @@ function Document1({
     }
 
     const href = () => {
+        if (document1Text === 'Loan Number') {
+            return itemTypes.loan.url;
+        }
+
         switch (partSource) {
             case 'C':
                 return itemTypes.creditNotes.url;
@@ -161,7 +173,7 @@ function Document1({
 
     return (
         <>
-            <Grid size={4}>
+            <Grid size={2}>
                 {!shouldEnter ? (
                     <LinkField
                         value={document1}
@@ -214,6 +226,17 @@ function Document1({
                         label={displayDetails1.label}
                         onChange={() => {}}
                         propertyName="displayDetails1"
+                    />
+                )}
+            </Grid>
+            <Grid size={2}>
+                {(qtyOutstanding || qtyOutstanding === 0) && (
+                    <InputField
+                        value={qtyOutstanding}
+                        disabled
+                        label="Qty Outstanding"
+                        onChange={() => {}}
+                        propertyName="qtyOutstanding"
                     />
                 )}
             </Grid>

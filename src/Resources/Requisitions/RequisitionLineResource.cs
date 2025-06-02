@@ -53,5 +53,7 @@
         public RequisitionHeaderResource RequisitionHeader { get; set; }
         
         public IEnumerable<MoveResource> Moves { get; set; }
+
+        public IEnumerable<RequisitionSerialNumberResource> SerialNumbers { get; set; }
     }
 }

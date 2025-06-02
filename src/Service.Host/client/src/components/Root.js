@@ -22,9 +22,10 @@ import PartStorageType from './PartStorageType';
 import StoresTransViewer from './StoresTransViewer';
 import StoresFunctions from './StoresFunctions';
 import StoresFunction from './StoresFunction';
-import Workstations from './Workstations';
+import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
+import PcasStorageTypes from './PcasStorageTypes';
+import PcasStorageType from './PcasStorageType';import Workstations from './Workstations';
 import Workstation from './Workstation';
-
 function Root() {
     useSignIn();
 
@@ -52,6 +53,8 @@ function Root() {
                         element={<StoresFunction />}
                     />
                     <Route path="/requisitions" element={<SearchRequisitions />} />
+                    <Route path="/requisitions/print-qc-labels" element={<QcLabelPrintScreen />} />
+
                     <Route path="/requisitions/pending" element={<PendingRequisitions />} />
                     <Route path="/requisitions/create" element={<Requisition creating />} />
 
@@ -69,6 +72,15 @@ function Root() {
                     <Route
                         path="/stores2/parts-storage-types/create"
                         element={<PartStorageType creating />}
+                    />
+                    <Route path="/stores2/pcas-storage-types" element={<PcasStorageTypes />} />
+                    <Route
+                        path="/stores2/pcas-storage-types/create"
+                        element={<PcasStorageType creating />}
+                    />
+                    <Route
+                        path="/stores2/pcas-storage-types/:boardCode/:storageTypeCode"
+                        element={<PcasStorageType />}
                     />
                     <Route
                         path="/stores2/storage/locations/create"

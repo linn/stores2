@@ -1,27 +1,30 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using Linn.Common.Domain;
-    using Linn.Stores2.Domain.LinnApps.External;
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.TestData.FunctionCodes;
-    using Linn.Stores2.TestData.Transactions;
-    using NSubstitute;
-    using NUnit.Framework;
+    using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using System;
+
     using FluentAssertions;
+
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
+
+    using NSubstitute;
+
+    using NUnit.Framework;
 
     public class WhenValidatingReturnToSupplierAndPurchaseOrder : ContextBase
     {
         private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.ReturnToSupplier.FunctionCode)
@@ -68,11 +71,10 @@
                 "PO",
                 null,
                 null,
-                null,
+                fromLocationCode: "E-PUR-RET",
                 partNumber: "ADIKT",
                 quantity: 1,
                 fromState: "STORES",
-                fromLocationCode: "E-PUR-RET",
                 document1Line: 1);
         }
 

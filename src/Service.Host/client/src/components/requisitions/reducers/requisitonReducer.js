@@ -23,6 +23,7 @@ function reducer(state, action) {
                 req: {
                     dateCreated: new Date(),
                     dateAuthorised: null,
+                    dateReceived: null,
                     dateBooked: null,
                     lines: [],
                     cancelled: 'N',
@@ -54,7 +55,9 @@ function reducer(state, action) {
                         ...state,
                         req: {
                             ...state.req,
-                            document1Name: state.req.storesFunction?.document1Name,
+                            document1Name: state.req.document1Name
+                                ? state.req.document1Name
+                                : state.req.storesFunction?.document1Name,
                             document1: action.payload.newValue
                         }
                     };
@@ -124,7 +127,11 @@ function reducer(state, action) {
                         storesFunction: action.payload.newValue
                     }
                 };
-
+                // set default reqType = F - From Stock for LDREQs
+                // todo - maybe this applies for more function codes?
+                if (action.payload.newValue.code === 'LDREQ') {
+                    newState.req.reqType = 'F';
+                }
                 if (action.payload.newValue.manualPickRequired) {
                     const mapping = { M: 'Y', A: 'N', X: null };
                     newState.req.manualPick = mapping[action.payload.newValue.manualPickRequired];
@@ -181,14 +188,24 @@ function reducer(state, action) {
             return { ...state, req: { ...state.req, [action.payload.fieldName]: newValue } };
         }
         case 'set_reverse_details': {
-            if (action.payload.reqNumber) {
+            if (action.payload.reqNumber || action.payload.originalReqNumber) {
+                // action.payload is the filled out reversal req that the server returns
                 return {
                     ...state,
                     req: {
                         ...state.req,
-                        originalReqNumber: action.payload.reqNumber,
-                        quantity: action.payload.quantity * -1,
-                        reference: action.payload.reference
+                        originalReqNumber:
+                            action.payload.originalReqNumber ?? action.payload.reqNumber,
+                        quantity: action.payload.quantity,
+                        reference: action.payload.reference,
+                        fromState: action.payload.fromState,
+                        fromStockPool: action.payload.fromStockPool,
+                        toStockPool: action.payload.toStockPool,
+                        batchRef: action.payload.batchRef,
+                        batchDate: action.payload.batchDate,
+                        fromLocationId: action.payload.fromLocationId,
+                        fromLocationCode: action.payload.fromLocationCode,
+                        fromPalletNumber: action.payload.fromPalletNumber
                     }
                 };
             } else {
@@ -198,13 +215,85 @@ function reducer(state, action) {
                 };
             }
         }
+        case 'set_book_in_postings': {
+            let originalReqNumber = null;
+            if (
+                action.payload.bookInOrderDetails?.length === 1 &&
+                action.payload.bookInOrderDetails[0].isReverse === 'Y'
+            ) {
+                originalReqNumber = action.payload.bookInOrderDetails[0].originalReqNumber;
+            }
+
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    quantity: action.payload.quantityBooked,
+                    originalReqNumber,
+                    bookInOrderDetails: action.payload.bookInOrderDetails
+                }
+            };
+        }
+        case 'set_default_book_in_location': {
+            if (!state.req.toLocationId && action.payload.locationId) {
+                return {
+                    ...state,
+                    req: {
+                        ...state.req,
+                        toLocationId: action.payload.locationId,
+                        toLocationCode: action.payload.locationCode
+                    }
+                };
+            } else {
+                return state;
+            }
+        }
         case 'set_document1_details': {
-            return { ...state, document1Details: action.payload };
+            const message = { showMessage: false };
+            if (action.payload && state.req.storesFunction?.code === 'BOOKLD') {
+                if (
+                    action.payload.orderDetail?.orderPosting?.nominalAccount?.department
+                        ?.projectDepartment === 'Y'
+                ) {
+                    message.showMessage = true;
+                    message.severity = 'info';
+                    message.text =
+                        'This is a project department. Make a copy of the invoice if you have it';
+                }
+            }
+
+            const newToStockPool = action.payload.orderDetail
+                ? action.payload.orderDetail?.stockPoolCode
+                : state.req.toStockPool;
+
+            const doc1Details = action.payload;
+            if (action.payload.orderDetail) {
+                doc1Details.qtyOutstanding = action.payload.orderDetail.purchaseDeliveries.reduce(
+                    (sum, item) => sum + item.quantityOutstanding,
+                    0
+                );
+            }
+
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    document1Name: action.payload.docType,
+                    part: {
+                        partNumber: action.payload.partNumber,
+                        description: action.payload.partDescription
+                    },
+                    document1Line: action.payload.document1Line,
+                    toStockPool: newToStockPool
+                },
+                document1Details: action.payload,
+                popUpMessage: message
+            };
         }
         case 'set_part_details': {
             return { ...state, partDetails: action.payload };
         }
-        case 'set_header_details_for_WO': {
+        case 'set_part_header_details_for_WO': {
             return {
                 ...state,
                 req: {
@@ -213,6 +302,22 @@ function reducer(state, action) {
                     fromStockPool: action.payload.accountingCompany,
                     fromState: 'STORES',
                     toState: action.payload.qcOnReceipt === 'Y' ? 'QC' : 'STORES'
+                }
+            };
+        }
+        case 'set_part_header_details_for_PO': {
+            const newState =
+                state.req.storesFunction?.code === 'BOOKSU'
+                    ? action.payload.qcOnReceipt === 'Y'
+                        ? 'QC'
+                        : 'STORES'
+                    : state.req.toState;
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    toState: newState,
+                    unitOfMeasure: action.payload.ourUnitOfMeasure
                 }
             };
         }
@@ -252,8 +357,8 @@ function reducer(state, action) {
                     ? lineTransactionType.fromStates[0]
                     : null;
             headerToState =
-                lineTransactionType?.toStates?.length === 1
-                    ? lineTransactionType.fromStates[0]
+                lineTransactionType?.toStates?.length === 1 && !state.req.toState
+                    ? lineTransactionType.toStates[0]
                     : null;
 
             // use the next available line number
@@ -373,7 +478,7 @@ function reducer(state, action) {
                         fromPalletNumber: action.payload.palletNumber,
                         batchRef: action.payload.batchRef,
                         batchDate: action.payload.stockRotationDate,
-                        // toState: action.payload.state,
+                        fromCategory: action.payload.category,
                         toStockPool: action.payload.stockPoolCode,
                         quantity: action.payload.quantityToPick
                     }
@@ -452,6 +557,68 @@ function reducer(state, action) {
                                   ...line,
                                   qty: updatedMoves.reduce((sum, item) => sum + item.qty, 0),
                                   moves: updatedMoves
+                              }
+                            : line;
+                    })
+                }
+            };
+        case 'add_serial_number':
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line =>
+                        line.lineNumber === action.payload.lineNumber
+                            ? {
+                                  ...line,
+                                  serialNumbers: [
+                                      ...(line.serialNumbers ? line.serialNumbers : []),
+                                      {
+                                          seq: line.serialNumbers
+                                              ? line.serialNumbers.length + 1
+                                              : 1,
+                                          serialNumber: null
+                                      }
+                                  ]
+                              }
+                            : line
+                    )
+                }
+            };
+        case 'update_serial_number':
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line => {
+                        const updatedSernos = line.serialNumbers.map(m =>
+                            m.seq === action.payload.seq
+                                ? {
+                                      ...action.payload
+                                  }
+                                : m
+                        );
+                        return line.lineNumber === action.payload.lineNumber
+                            ? {
+                                  ...line,
+                                  serialNumbers: updatedSernos
+                              }
+                            : line;
+                    })
+                }
+            };
+        case 'delete_serial_number':
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line => {
+                        return line.lineNumber === action.payload.lineNumber
+                            ? {
+                                  ...line,
+                                  serialNumbers: line.serialNumbers.filter(
+                                      s => s.seq !== action.payload.sernosSeq
+                                  )
                               }
                             : line;
                     })

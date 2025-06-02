@@ -13,6 +13,14 @@
         
         public string DocumentType { get; set; }
 
+        public int? SupplierId { get; set; }
+
+        public string SupplierName { get; set; }
+        
+        public string OverBookAllowed { get; set; }
+
+        public decimal? OverBookQty { get; set; }
+
         public IEnumerable<PurchaseOrderDetailResult> Details { get; set; }
 
         public decimal? OrderQty(int? lineNumber = null)
@@ -23,7 +31,7 @@
 
         public int? OriginalOrderNumber(int? lineNumber = null)
         {
-            return this.Details.SingleOrDefault(d => d.Line == (lineNumber ?? 1))?.OriginalOrderNumber; ;
+            return this.Details.SingleOrDefault(d => d.Line == (lineNumber ?? 1))?.OriginalOrderNumber;
         }
     }
 }

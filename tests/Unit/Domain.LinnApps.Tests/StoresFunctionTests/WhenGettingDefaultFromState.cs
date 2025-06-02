@@ -41,6 +41,7 @@
                             RequiresAuth = "N",
                             DocType = "C",
                             Doc2Type = "R",
+                            FromState = null,
                             InspectedState = "FAIL",
                             StoresTransactionPostings = new List<StoresTransactionPosting>
                             {

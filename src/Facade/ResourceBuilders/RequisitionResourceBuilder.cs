@@ -108,6 +108,7 @@
                            IsReverseTransaction = header.IsReverseTransaction,
                            OriginalReqNumber = header.OriginalReqNumber,
                            Document3 = header.Document3,
+                           DateReceived = header.DateReceived?.ToString("o"),
                            Links = this.BuildLinks(header, claims?.ToList()).ToArray()
                        };
         }
@@ -152,6 +153,31 @@
                     this.authService.HasPermissionFor(model.AuthorisePrivilege(), claims))
                 {
                     yield return new LinkResource { Rel = "authorise", Href = "/requisitions/auth" };
+                }
+
+                if (model.IsReversed != "Y" && model.StoresFunction?.CanBeReversed == "Y")
+                {
+                    yield return new LinkResource { Rel = "preview-reversal", Href = $"/requisitions/{model.ReqNumber}/preview-reversal" };
+                }
+
+                if (model.StoresFunction.FunctionCode == "GIST PO")
+                {
+                    var href = "/requisitions/print-qc-labels?";
+                    href += $"&reqNumber={model.ReqNumber}";
+                    href += $"&docType={model.Document1Name}";
+                    href += $"&orderNumber={model.Document1}";
+                    href += "&qcState=PASS";
+                    href += $"&partNumber={model.Lines?.FirstOrDefault()?.Part?.PartNumber}";
+                    href += $"&partDescription={model.Lines?.FirstOrDefault()?.Part?.Description}";
+                    href += $"&qtyReceived={model.Lines?.FirstOrDefault()?.Qty}";
+                    href += $"&unitOfMeasure={model.Lines?.FirstOrDefault()?.Part?.OurUnitOfMeasure}";
+                    href += $"&qcInfo={model.Lines?.FirstOrDefault()?.Part?.QcInformation}";
+                    yield return new LinkResource { Rel = "print-qc-labels", Href = href};
+                }
+
+                if (model.HasDeliveryNote())
+                {
+                    yield return new LinkResource { Rel = "delivery-note", Href = $"/delivery-note/{model.ReqNumber}" };
                 }
             }
         }

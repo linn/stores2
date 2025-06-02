@@ -33,7 +33,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
                 null,
                 quantity: 100,
                 toState: "QC",
-                toStockPool: "STOCK");
+                toStockPool: "STOCK",
+                dateReceived: DateTime.Today);
             
             var gisti1ReqLine = new RequisitionLine(123, 1, new Part(), 100, TestTransDefs.InspectionToStores);
 
@@ -49,7 +50,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
                 fromState: "QC",
                 toState: "STORES",
                 fromStockPool: "STOCK",
-                toStockPool: "STOCK");
+                toStockPool: "STOCK",
+                dateReceived: DateTime.Today);
             
             this.StoresBudgetRepository.FilterByAsync(Arg.Any<Expression<Func<StoresBudget, bool>>>())
                 .Returns(new List<StoresBudget>

@@ -21,8 +21,23 @@
         public async Task SetUp()
         {
             this.worksOrderNumber = 132;
+            
+            var toBeReversed = new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.BookWorksOrder,
+                null,
+                this.worksOrderNumber,
+                "WO",
+                null,
+                null,
+                reference: null,
+                comments: "Uno reverse",
+                quantity: 1);
+            
             this.DocumentProxy.GetWorksOrder(this.worksOrderNumber)
                 .Returns(new WorksOrderResult { WorkStationCode = "WSC" });
+            this.RequisitionRepository.FindByIdAsync(234324).Returns(toBeReversed);
+
             this.RequisitionCreationContext = new RequisitionCreationContext
                                                   {
                                                       Function = TestFunctionCodes.BookWorksOrder,

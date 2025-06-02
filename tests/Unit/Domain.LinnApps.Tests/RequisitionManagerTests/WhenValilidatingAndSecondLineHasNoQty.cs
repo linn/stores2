@@ -84,7 +84,6 @@
                 null,
                 "1607",
                 "2963",
-                lines.First(),
                 lines: lines);
         }
 

@@ -48,9 +48,20 @@
                 Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
-            this.StoresService.ValidReverseQuantity(456, -4)
+            this.StoresService.ValidReverseQuantity(Arg.Any<int>(), -4)
                 .Returns(new ProcessResult(true, "ok"));
-
+            var toBeReversed = new RequisitionHeader(
+                new Employee(),
+                TestFunctionCodes.BookWorksOrder,
+                null,
+                123,
+                "WO",
+                null,
+                null,
+                reference: null,
+                comments: "Uno reverse",
+                quantity: 4);
+            this.ReqRepository.FindByIdAsync(456).Returns(toBeReversed);
             this.result = await this.Sut.Validate(
                 123,
                 TestFunctionCodes.BookWorksOrder.FunctionCode,
@@ -59,15 +70,14 @@
                 "WO",
                 null,
                 null,
-                null,
-                partNumber: "PART",
+                toStockPool: "LINN",
                 fromPalletNumber: 502,
                 toPalletNumber: 503,
-                toStockPool: "LINN",
-                toState: "STORES",
-                originalDocumentNumber: 456,
+                partNumber: "PART",
                 quantity: -4,
-                isReverseTransaction: "Y");
+                toState: "STORES",
+                isReverseTransaction: "Y",
+                originalDocumentNumber: 456);
         }
 
         [Test]
@@ -85,7 +95,7 @@
         [Test]
         public void ShouldCheckReverseQuantity()
         {
-            this.StoresService.Received().ValidReverseQuantity(456, -4);
+            this.StoresService.Received().ValidReverseQuantity(Arg.Any<int>(), -4);
         }
 
         [Test]

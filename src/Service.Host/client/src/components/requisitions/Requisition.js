@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import Typography from '@mui/material/Typography';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -33,6 +33,7 @@ import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import MovesTab from './MovesTab';
 import TransactionsTab from './TransactionsTab';
+import SerialNumbersTab from './SerialNumbersTab';
 import BookedBy from './components/BookedBy';
 import AuthBy from './components/AuthBy';
 import DepartmentNominal from './components/DepartmentNominal';
@@ -42,6 +43,7 @@ import Document1 from './components/Document1';
 import Document2 from './components/Document2';
 import Document3 from './components/Document3';
 import PickRequisitionDialog from './PickRequisitionDialog';
+import BookInPostingsDialog from './components/BookInPostingsDialog';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -57,6 +59,29 @@ function Requisition({ creating }) {
     const [hasFetched, setHasFetched] = useState(0);
     const [functionCodeError, setFunctionCodeError] = useState(null);
     const [pickRequisitionDialogVisible, setPickRequisitionDialogVisible] = useState(false);
+    const [bookInPostingsDialogVisible, setBookInPostingsDialogVisible] = useState(false);
+
+    const {
+        send: fetchReversalPreview,
+        result: fetchReversalPreviewResult,
+        clearData: clearReversalPreviewResult
+    } = useGet(config.appRoot, true);
+
+    const {
+        send: getDefaultBookInLocation,
+        result: defaultBookInLocationResult,
+        clearData: clearDefaultBookInLocationResult
+    } = useGet(itemTypes.getDefaultBookInLocation.url, true);
+
+    useEffect(() => {
+        if (fetchReversalPreviewResult) {
+            dispatch({
+                type: 'set_reverse_details',
+                payload: fetchReversalPreviewResult
+            });
+            clearReversalPreviewResult();
+        }
+    }, [fetchReversalPreviewResult, clearReversalPreviewResult]);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
@@ -73,6 +98,17 @@ function Requisition({ creating }) {
         isLoading: codesLoading,
         result: functionCodes
     } = useGet(itemTypes.functionCodes.url, true);
+
+    useEffect(() => {
+        if (defaultBookInLocationResult) {
+            dispatch({
+                type: 'set_default_book_in_location',
+                payload: defaultBookInLocationResult
+            });
+
+            clearDefaultBookInLocationResult();
+        }
+    }, [clearDefaultBookInLocationResult, defaultBookInLocationResult]);
 
     if ((!hasFetched || (reqNumber && hasFetched !== reqNumber)) && token) {
         if (!creating && reqNumber) {
@@ -155,6 +191,8 @@ function Requisition({ creating }) {
     const authoriseHref = utilities.getHref(formState.req, 'authorise');
     const reverseHref = utilities.getHref(formState.req, 'create-reverse');
     const createHref = utilities.getHref(formState.req, 'create');
+    const printQcLabelsHref = utilities.getHref(formState.req, 'print-qc-labels');
+    const deliveryNoteHref = utilities.getHref(formState.req, 'delivery-note');
 
     useEffect(
         () => () => {
@@ -256,15 +294,6 @@ function Requisition({ creating }) {
     };
 
     const canAddLines = () => {
-        // can only add one line when creating
-        if (
-            creating &&
-            formState.req?.lines?.length &&
-            formState.req?.storesFunction?.code != 'SUREQ'
-        ) {
-            return false;
-        }
-
         if (!formState.req?.storesFunction) {
             return false;
         }
@@ -394,29 +423,28 @@ function Requisition({ creating }) {
 
     const handleDocument1Select = selected => {
         dispatch({
-            type: 'set_header_value',
-            payload: {
-                fieldName: 'part',
-                newValue: {
-                    partNumber: selected.partNumber,
-                    description: selected.partDescription
-                }
-            }
-        });
-        dispatch({
-            type: 'set_header_value',
-            payload: {
-                fieldName: 'document1Line',
-                newValue: selected.document1Line
-            }
-        });
-        dispatch({
             type: 'set_document1_details',
             payload: selected
         });
 
-        if (formState.req?.isReverseTransaction === 'Y' && selected.orderNumber) {
+        if (
+            formState.req?.isReverseTransaction === 'Y' &&
+            selected.canReverse &&
+            formState.req.storesFunction?.code !== 'BOOKLD'
+        ) {
             setPickRequisitionDialogVisible(true);
+        }
+
+        if (
+            formState.req.storesFunction?.code === 'BOOKLD' &&
+            selected.document1 &&
+            selected.document1Line
+        ) {
+            setBookInPostingsDialogVisible(true);
+        }
+
+        if (formState.req.storesFunction?.code === 'BOOKSU' && selected.partNumber) {
+            getDefaultBookInLocation(null, `?partNumber=${selected.partNumber}`);
         }
 
         if (selected.batchRef) {
@@ -463,10 +491,21 @@ function Requisition({ creating }) {
 
         if (formState.req?.storesFunction?.partSource === 'WO') {
             dispatch({
-                type: 'set_header_details_for_WO',
+                type: 'set_part_header_details_for_WO',
                 payload: part
             });
         }
+
+        if (formState.req?.storesFunction?.partSource === 'PO') {
+            dispatch({
+                type: 'set_part_header_details_for_PO',
+                payload: part
+            });
+        }
+    };
+
+    const viewDocument = () => {
+        window.open(`${config.appRoot}${deliveryNoteHref}`, '_blank');
     };
 
     // for now...
@@ -477,6 +516,24 @@ function Requisition({ creating }) {
             (formState?.req?.manualPick && formState?.req?.reqreqType === 'O'));
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.req?.storesFunction?.code === 'MOVE';
+
+    const requiresSerialNumbers =
+        formState?.req?.storesFunction?.code === 'ON DEM' ||
+        formState?.req?.storesFunction?.code === 'OFF DEM';
+
+    const canAddSerialNumber =
+        selectedLine && !formState?.req?.cancelled !== 'Y' && !formState?.req?.dateBooked;
+
+    const addSerialNumber = () => {
+        if (canAddSerialNumber) {
+            dispatch({
+                type: 'add_serial_number',
+                payload: {
+                    lineNumber: selectedLine
+                }
+            });
+        }
+    };
 
     const debouncedFormState = useDebounceValue(formState);
 
@@ -542,12 +599,22 @@ function Requisition({ creating }) {
                                     type: 'load_create',
                                     payload: defaults
                                 });
+                                setTab(0);
                                 navigate('/requisitions/create');
                             }}
                         >
                             Create New
                         </Button>
                     )}
+                </Grid>
+                <Grid size={12}>
+                    <Typography variant="subtitle1">
+                        {formState?.req?.cancelledReason && (
+                            <span style={{ color: 'red' }}>
+                                [{formState?.req?.cancelledReason}]
+                            </span>
+                        )}
+                    </Typography>
                 </Grid>
                 {functionCodeError && (
                     <Grid size={12}>
@@ -631,7 +698,20 @@ function Requisition({ creating }) {
                                             book(null, { reqNumber });
                                         }}
                                     />
-                                    <Grid size={2} />
+                                    <Grid size={2}>
+                                        {printQcLabelsHref && (
+                                            <Link to={printQcLabelsHref}>
+                                                <Typography variant="subtitle2">
+                                                    Print Labels
+                                                </Typography>
+                                            </Link>
+                                        )}
+                                        {deliveryNoteHref && (
+                                            <Button variant="outlined" onClick={viewDocument}>
+                                                Print Delivery Note
+                                            </Button>
+                                        )}
+                                    </Grid>
                                 </>
                             )}
 
@@ -899,6 +979,7 @@ function Requisition({ creating }) {
                                 onSelectPart={handleDocument1PartSelect}
                                 document1Details={formState.document1Details}
                                 storesFunction={formState.req.storesFunction}
+                                qtyOutstanding={formState.document1Details?.qtyOutstanding}
                             />
                             <Document2
                                 document2={formState.req.document2}
@@ -942,11 +1023,19 @@ function Requisition({ creating }) {
                                           }
                                         : null
                                 }
-                                setQuantity={newQty =>
-                                    dispatch({
-                                        type: 'set_header_value',
-                                        payload: { fieldName: 'quantity', newValue: newQty }
-                                    })
+                                setQuantity={
+                                    formState.req.storesFunction?.quantityRequired !== 'X' ||
+                                    formState.req.storesFunction?.code === 'BOOKWO'
+                                        ? newQty => {
+                                              dispatch({
+                                                  type: 'set_header_value',
+                                                  payload: {
+                                                      fieldName: 'quantity',
+                                                      newValue: newQty
+                                                  }
+                                              });
+                                          }
+                                        : null
                                 }
                                 disabled={!creating || formState.req.isReverseTransaction == 'Y'}
                                 shouldRender={
@@ -1017,8 +1106,9 @@ function Requisition({ creating }) {
                                     const isMoveFunction =
                                         formState.req.storesFunction?.code === 'MOVE';
                                     const isLocationRequired =
-                                        formState.req.fromLocationRequired !== 'N' ||
-                                        formState.req.toLocationRequired !== 'N';
+                                        formState.req.storesFunction?.fromLocationRequired !==
+                                            'N' ||
+                                        formState.req.storesFunction?.toLocationRequired !== 'N';
                                     const isLoanOutWhileCreating =
                                         formState.req.storesFunction?.code === 'LOAN OUT' &&
                                         creating;
@@ -1032,6 +1122,16 @@ function Requisition({ creating }) {
                             <Grid size={6}>
                                 <InputField
                                     fullWidth
+                                    value={formState.req.reference}
+                                    onChange={handleHeaderFieldChange}
+                                    disabled={!creating}
+                                    label="Reference"
+                                    propertyName="reference"
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    fullWidth
                                     value={formState.req.comments}
                                     onChange={(propertyName, newValue) => {
                                         handleHeaderFieldChange(propertyName, newValue);
@@ -1041,16 +1141,24 @@ function Requisition({ creating }) {
                                     propertyName="comments"
                                 />
                             </Grid>
-                            <Grid size={6}>
-                                <InputField
-                                    fullWidth
-                                    value={formState.req.reference}
-                                    onChange={handleHeaderFieldChange}
-                                    disabled={!creating}
-                                    label="Reference"
-                                    propertyName="reference"
-                                />
-                            </Grid>
+                            {shouldRender(
+                                () => formState.req.storesFunction?.receiptDateRequired === 'Y'
+                            ) && (
+                                <>
+                                    <Grid size={2}>
+                                        <DatePicker
+                                            value={formState.req.dateReceived}
+                                            onChange={newDate =>
+                                                handleHeaderFieldChange('dateReceived', newDate)
+                                            }
+                                            disabled={!creating}
+                                            label="Date Received"
+                                            propertyName="dateReceived"
+                                        />
+                                    </Grid>
+                                    <Grid size={10} />
+                                </>
+                            )}
                             <Grid size={12}>
                                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                     <Tabs value={tab} onChange={handleChange}>
@@ -1068,6 +1176,12 @@ function Requisition({ creating }) {
                                                 )?.moves?.length
                                             }
                                         />
+                                        {requiresSerialNumbers && (
+                                            <Tab
+                                                label={`Serial Numbers (L${selectedLine ?? ''})`}
+                                                disabled={!selectedLine}
+                                            />
+                                        )}
                                     </Tabs>
                                 </Box>
                             </Grid>
@@ -1163,6 +1277,36 @@ function Requisition({ creating }) {
                                         }
                                     />
                                 )}
+                                {tab === 3 && requiresSerialNumbers && (
+                                    <SerialNumbersTab
+                                        serialNumbers={
+                                            formState.req.lines?.find(
+                                                x => x.lineNumber === selectedLine
+                                            )?.serialNumbers
+                                        }
+                                        addSerialNumber={() =>
+                                            canAddSerialNumber ? addSerialNumber() : null
+                                        }
+                                        updateSerialNumber={updated =>
+                                            dispatch({
+                                                type: 'update_serial_number',
+                                                payload: {
+                                                    lineNumber: selectedLine,
+                                                    ...updated
+                                                }
+                                            })
+                                        }
+                                        deleteSerialNumber={seq =>
+                                            dispatch({
+                                                type: 'delete_serial_number',
+                                                payload: {
+                                                    lineNumber: selectedLine,
+                                                    sernosSeq: seq
+                                                }
+                                            })
+                                        }
+                                    />
+                                )}
                             </Grid>
                             <Grid size={12}>
                                 <SaveBackCancelButtons
@@ -1186,12 +1330,44 @@ function Requisition({ creating }) {
                                 <PickRequisitionDialog
                                     open={pickRequisitionDialogVisible}
                                     setOpen={setPickRequisitionDialogVisible}
+                                    functionCode={formState.req.storesFunction?.code}
                                     documentNumber={formState.req.document1}
                                     documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {
+                                        // BOOKLD doesn't necessary specify an original req
+                                        // maybe sometimes it does?
+                                        // but just keep it working as is for now
+                                        if (formState.req?.storesFunction?.code === 'BOOKLD') {
+                                            dispatch({
+                                                type: 'set_reverse_details',
+                                                payload: reqDetails
+                                            });
+                                        } else {
+                                            // otherwise we can ask the server to fill out some details
+                                            // that result from reversing the chosen req
+                                            fetchReversalPreview(
+                                                utilities
+                                                    .getHref(reqDetails, 'preview-reversal')
+                                                    ?.slice(1)
+                                            );
+                                        }
+                                    }}
+                                />
+                            )}
+                            {bookInPostingsDialogVisible && (
+                                <BookInPostingsDialog
+                                    open={bookInPostingsDialogVisible}
+                                    setOpen={setBookInPostingsDialogVisible}
+                                    documentNumber={formState.req.document1}
+                                    documentLine={formState.req.document1Line}
+                                    documentType={formState.req.document1Name}
+                                    orderDetail={formState.document1Details.orderDetail}
+                                    existingBookInOrderDetails={formState.req.bookInOrderDetails}
+                                    isReverse={formState.req.isReverseTransaction}
+                                    handleSelect={bookInPostings => {
                                         dispatch({
-                                            type: 'set_reverse_details',
-                                            payload: reqDetails
+                                            type: 'set_book_in_postings',
+                                            payload: bookInPostings
                                         });
                                     }}
                                 />

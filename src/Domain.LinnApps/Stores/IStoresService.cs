@@ -30,5 +30,11 @@
 
         // stores_oo.validate_reverse_qty
         Task<ProcessResult> ValidReverseQuantity(int originalReqNumber, decimal quantity);
+
+        // stores_oo.valid_dept_nom
+        Task<ProcessResult> ValidDepartmentNominal(string departmentCode, string nominalCode);
+
+        // stores_oo.default_bookin_location
+        Task<StorageLocation> DefaultBookInLocation(string partNumber);
     }
 }

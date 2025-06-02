@@ -62,6 +62,8 @@
 
         public string OntoCategory { get; set; }
 
+        public string SernosTransCode { get; set; }
+
         public string AuthorisePrivilege()
         {
             if (this.RequiresAuthorisation && !string.IsNullOrEmpty(this.AuthOpCode))
@@ -75,7 +77,7 @@
         public Nominal GetNominal()
         {
             // material variances transactions and SUNWI transactions mess this up so exclude them
-            if (this.StoresTransactionPostings != null 
+            if (this.StoresTransactionPostings != null
                 && !this.MaterialVarianceTransaction && !this.TransactionCode.Contains("NW"))
             {
                 return this.StoresTransactionPostings.FirstOrDefault(p => p.Nominal != null)?.Nominal;
@@ -96,5 +98,35 @@
 
             return new List<string>();
         }
+
+        public string DefaultFromState()
+        {
+            if (!string.IsNullOrEmpty(this.FromState))
+            {
+                return this.FromState;
+            }
+
+            if (!string.IsNullOrEmpty(this.InspectedState))
+            {
+                return this.InspectedState;
+            }
+
+            return string.Empty;
+        }
+
+        public string DefaultToState()
+        {
+            if (this.OntoTransactions == "Y" && !string.IsNullOrEmpty(this.InspectedState) &&
+                this.GetTransactionStates("O").Any())
+            {
+                return this.InspectedState;
+            }
+
+            return string.Empty;
+        }
+
+        public bool HasDefaultFromState() => !string.IsNullOrEmpty(this.DefaultFromState());
+
+        public bool HasDefaultToState() => !string.IsNullOrEmpty(this.DefaultFromState());
     }
 }

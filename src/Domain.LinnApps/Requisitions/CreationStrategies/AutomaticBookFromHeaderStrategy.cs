@@ -77,27 +77,28 @@
                 context.Document1Type,
                 context.DepartmentCode,
                 context.NominalCode,
-                context.FirstLineCandidate,
-                context.Reference,
-                context.Comments,
-                context.ManualPick,
-                context.FromStockPool,
-                context.ToStockPool,
-                context.FromPallet,
-                context.ToPallet,
-                context.FromLocationCode,
-                context.ToLocationCode,
-                context.PartNumber,
-                context.Quantity,
-                context.FromState,
-                context.ToState,
-                context.BatchRef,
-                context.BatchDate,
-                context.Document1Line,
-                context.NewPartNumber,
-                null,
-                context.IsReverseTransaction,
-                context.OriginalReqNumber);
+                reference: context.Reference,
+                comments: context.Comments,
+                manualPick: context.ManualPick,
+                fromStockPool: context.FromStockPool,
+                toStockPool: context.ToStockPool,
+                fromPalletNumber: context.FromPallet,
+                toPalletNumber: context.ToPallet,
+                fromLocationCode: context.FromLocationCode,
+                toLocationCode: context.ToLocationCode,
+                partNumber: context.PartNumber,
+                quantity: context.Quantity,
+                fromState: context.FromState,
+                toState: context.ToState,
+                batchRef: context.BatchRef,
+                batchDate: context.BatchDate,
+                document1Line: context.Document1Line,
+                newPartNumber: context.NewPartNumber,
+                lines: null,
+                isReverseTransaction: context.IsReverseTransaction,
+                originalDocumentNumber: context.OriginalReqNumber,
+                bookInOrderDetails: context.BookInOrderDetails,
+                dateReceived: context.DateReceived);
 
             var employee = await this.employeeRepository.FindByIdAsync(context.CreatedByUserNumber);
             var department = await this.departmentRepository.FindByIdAsync(context.DepartmentCode);
@@ -107,6 +108,13 @@
             var toLocation = await this.storageLocationRepository
                                  .FindByAsync(x => x.LocationCode == context.ToLocationCode);
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
+
+            RequisitionHeader toBeReversed = null;
+
+            if (context.OriginalReqNumber.HasValue)
+            {
+                toBeReversed = await this.repository.FindByIdAsync(context.OriginalReqNumber.Value);
+            }
 
             var req = new RequisitionHeader(
                 employee,
@@ -136,7 +144,10 @@
                 context.Document2Number,
                 context.Document2Type,
                 context.IsReverseTransaction,
-                context.OriginalReqNumber);
+                toBeReversed,
+                context.DateReceived,
+                context.FromCategory);
+
 
             if (context.Function.NewPartNumberRequired())
             {
@@ -148,7 +159,7 @@
                 }
             }
 
-            if (context.Function.FunctionCode == "SUKIT")
+            if (context.Function.FunctionCode == "SUKIT" || context.Function.FunctionCode == "GIST PO")
             {
                 req.FromCategory = "FREE";
                 req.ToCategory = "FREE";
@@ -160,7 +171,7 @@
             {
                 var worksOrder = await this.documentProxy.GetWorksOrder(req.Document1.Value);
                 req.WorkStationCode = worksOrder.WorkStationCode;
-                req.FromCategory = req.StoresFunction.FromCategory;
+                req.FromCategory = req.StoresFunction.Category;
 
                 if (req.IsReverseTransaction != "Y")
                 {
@@ -173,6 +184,11 @@
                         req.ToLocation?.LocationId,
                         req.ToPalletNumber);
                 }
+            }
+
+            if (req.StoresFunction.FunctionCode == "BOOKLD")
+            {
+                await this.requisitionManager.AddBookInOrderDetails(context.BookInOrderDetails.ToList());
             }
 
             await this.repository.AddAsync(req);

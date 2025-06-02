@@ -110,6 +110,8 @@
 
         public int? Document3 { get; set; }
 
+        public DateTime? DateReceived { get; set; }
+
         protected RequisitionHeader()
         {
         }
@@ -142,7 +144,9 @@
             int? document2Number = null,
             string document2Type = null,
             string isReverseTrans = "N",
-            int? originalReqNumber = null)
+            RequisitionHeader isReversalOf = null,
+            DateTime? dateReceived = null,
+            string fromCategory = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -167,7 +171,7 @@
             this.Cancelled = "N";
             this.BatchRef = batchRef;
             this.BatchDate = batchDate;
-            this.ToCategory = category;
+            this.ToCategory = category ?? function?.Category;
             this.Document1 = document1Number;
             this.Department = department;
             this.Nominal = nominal;
@@ -175,11 +179,50 @@
             this.ReqType = reqType;
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
-            this.OriginalReqNumber = originalReqNumber;
+            
+            // logic for creating a reversal req
+            // mostly taken from GET_REQ_FOR_REVERSAL in REQ_UT.fmb
+            if (isReversalOf != null)
+            {
+                if (this.Document1Name != isReversalOf.Document1Name)
+                {
+                    throw new CreateRequisitionException("Cannot reverse req with a different document1 type");
+                }
+
+                if (this.Document1 != isReversalOf.Document1)
+                {
+                    throw new CreateRequisitionException("Cannot reverse req with a different document1 number");
+                }
+
+                if (isReversalOf.IsReversed == "Y")
+                {
+                    throw new CreateRequisitionException($"req {isReversalOf.ReqNumber} is already reversed!");
+                }
+                
+                this.OriginalReqNumber = isReversalOf.ReqNumber;
+                this.Quantity = isReversalOf.Quantity * -1;
+                this.Reference = isReversalOf.Reference;
+                this.FromState = isReversalOf.FromState;
+                this.ToStockPool = isReversalOf.ToStockPool;
+                this.FromStockPool = this.StoresFunction.FromStockPoolRequired == "Y" ? isReversalOf.FromStockPool : fromStockPool;
+                this.BatchRef = this.StoresFunction.FunctionCode == "LOAN BACK"
+                    ? $"Q{isReversalOf.ReqNumber}" : batchRef;
+                this.BatchDate = this.StoresFunction.FunctionCode == "LOAN BACK"
+                    ? isReversalOf.DateBooked : batchDate;
+                this.FromLocation = isReversalOf.FromLocation;
+                this.FromPalletNumber = isReversalOf.FromPalletNumber;
+            }
+
             this.IsReverseTransaction = isReverseTrans;
             this.IsReversed = "N";
+            this.DateReceived = dateReceived;
             this.Lines = new List<RequisitionLine>();
 
+            if (!string.IsNullOrEmpty(fromCategory))
+            {
+                this.FromCategory = fromCategory;
+            }
+            
             var errors = this.Validate().ToList();
 
             if (errors.Any())
@@ -190,7 +233,15 @@
                 }
 
                 throw new CreateRequisitionException(
-                    $"Validation failed with the following errors: {string.Join(", ", errors)}");
+                    $"{string.Join(", ", errors)}");
+            }
+            
+            if (function.FunctionCode == "GIST PO")
+            {
+                if (isReverseTrans == "Y")
+                {
+                    this.BatchRef = null; // todo - test
+                }
             }
         }
 
@@ -201,7 +252,7 @@
                 yield return "Please choose a Function.";
                 yield break;  // don't even have a function, so no need to continue with function specific validation
             }
-
+            
             if (this.CreatedBy == null)
             {
                 yield return "Invalid CreatedBy Employee";
@@ -248,7 +299,7 @@
                 }
             }
 
-            if (this.StoresFunction.ToLocationRequired == "Y" && this.IsReverseTransaction != "Y")
+            if (this.StoresFunction.ToLocationRequired == "Y" && !this.IsReverseTrans())
             {
                 if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
                 {
@@ -256,18 +307,23 @@
                 }
             }
 
-            if (this.IsReverseTransaction == "Y" && this.StoresFunction.CanBeReversed != "Y")
+            if (this.IsReverseTrans() && this.StoresFunction.CanBeReversed != "Y")
             {
                 yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
             }
-
-            if (this.IsReverseTransaction == "Y" && !this.OriginalReqNumber.HasValue)
+            else if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
+                                      && !this.OriginalReqNumber.HasValue)
             {
                 yield return "You must specify a req number to reverse";
             }
+            
+            if (this.StoresFunction.ReceiptDateRequired == "Y"  && !this.IsReverseTrans() && !this.DateReceived.HasValue)
+            {
+                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
+            }
 
             // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
-            if (this.StoresFunction.FromStateRequired == "Y")
+            if (this.StoresFunction.FromStateRequired == "Y"  && !this.IsReverseTrans())
             {
                 if (string.IsNullOrEmpty(this.FromState))
                 {
@@ -280,7 +336,7 @@
                 yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
             }
 
-            if (!string.IsNullOrEmpty(this.FromState))
+            if (!string.IsNullOrEmpty(this.FromState) && !this.IsReverseTrans())
             {
                 var validFromStates = this.StoresFunction.GetTransactionStates("F");
                 if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
@@ -353,12 +409,15 @@
             
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
+
             this.Lines.Add(toAdd);
         }
         
         public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
 
         public bool IsBooked() => this.DateBooked != null;
+
+        public bool IsReverseTrans() => this.IsReverseTransaction == "Y";
 
         public bool IsAuthorised() => this.DateAuthorised != null || this.AuthorisedBy != null;
 
@@ -535,6 +594,28 @@
             this.ToState = toState;
             this.ToCategory = toCategory;
             this.FromCategory = fromCategory;
+        }
+
+        public bool HasDeliveryNote()
+        {
+            // code from REQ_UT.fmb/CHECK_DISTRIBUTOR
+            // used to check for DISTRIBUTORS but only relevant for sending stock to records distributors
+            // used to check for DEM STOCK but seems to want to send it to 257 Drakemyre Drive no longer owned
+            if (this.StoresFunction?.FunctionCode == "SUKIT" || this.StoresFunction?.FunctionCode == "SUREQ")
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool ToStockPoolRequiredWithPart()
+        {
+            if (this.Part != null)
+            {
+                return this.StoresFunction.ToLocationRequiredOrOptional();
+            }
+            
+            return this.StoresFunction.ToLocationIsRequired();
         }
     }
 }

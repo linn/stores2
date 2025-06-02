@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
+import { DataGrid, GridSearchIcon, useGridApiRef } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import Link from '@mui/material/Link';
 import { utilities } from '@linn-it/linn-form-components-library';
 import CancelIcon from '@mui/icons-material/Cancel';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -33,6 +32,7 @@ function LinesTab({
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
+    const apiRef = useGridApiRef();
 
     const [partsSearchDialogOpen, setPartsSearchDialogOpen] = useState();
 
@@ -53,9 +53,7 @@ function LinesTab({
                             {params.row.part?.partNumber}
                         </>
                     ) : (
-                        <Link href={utilities.getHref(params.row, 'part')}>
-                            {params.row.part?.partNumber}
-                        </Link>
+                        <span>{params.row.part?.partNumber}</span>
                     )}
                 </>
             )
@@ -145,6 +143,63 @@ function LinesTab({
         return updatedLine;
     };
 
+    const handleCellKeyDown = (params, event) => {
+        if (event.keyCode === 13) {
+            if (params.colDef.field === 'partNumber') {
+                setPartsSearchDialogOpen(true);
+                apiRef.current.stopCellEditMode({ id: params.id, field: params.field });
+            } else {
+                return;
+            }
+        }
+        if (event.key !== 'Tab') {
+            return;
+        }
+
+        const rowIds = apiRef.current.getAllRowIds();
+
+        const visibleColumns = apiRef.current.getVisibleColumns();
+        const nextCell = {
+            rowIndex: rowIds.findIndex(id => id === params.id),
+            colIndex: apiRef.current.getColumnIndex(params.field)
+        };
+
+        if (
+            nextCell.colIndex === visibleColumns.length - 1 &&
+            nextCell.rowIndex === rowIds.length - 1 &&
+            !event.shiftKey
+        ) {
+            // Do nothing if we are at the last cell of the last row
+            return;
+        }
+
+        if (nextCell.colIndex === 0 && nextCell.rowIndex === 0 && event.shiftKey) {
+            // Do nothing if we are at the first cell of the first row
+            return;
+        }
+
+        event.preventDefault();
+
+        if (!event.shiftKey) {
+            if (nextCell.colIndex < visibleColumns.length - 1) {
+                nextCell.colIndex += 1;
+            } else {
+                nextCell.rowIndex += 1;
+                nextCell.colIndex = 0;
+            }
+        } else if (nextCell.colIndex > 0) {
+            nextCell.colIndex -= 1;
+        } else {
+            nextCell.rowIndex -= 1;
+            nextCell.colIndex = visibleColumns.length - 1;
+        }
+        apiRef.current.scrollToIndexes(nextCell);
+
+        const { field } = visibleColumns[nextCell.colIndex];
+        const id = rowIds[nextCell.rowIndex];
+        apiRef.current.setCellFocus(id, field);
+    };
+
     return (
         <Grid container spacing={3}>
             {cancelDialogVisible && (
@@ -187,12 +242,16 @@ function LinesTab({
                     rows={lines}
                     columns={linesColumns}
                     processRowUpdate={processRowUpdate}
-                    rowSelectionModel={selected ? [selected] : []}
+                    onCellKeyDown={handleCellKeyDown}
+                    rowSelectionModel={
+                        selected ? { type: 'include', ids: new Set([selected]) } : []
+                    }
                     onRowClick={row => {
                         setSelected(row.id);
                     }}
-                    editMode="cell"
+                    // editMode="cell"
                     loading={false}
+                    apiRef={apiRef}
                     hideFooter
                 />
             </Grid>
