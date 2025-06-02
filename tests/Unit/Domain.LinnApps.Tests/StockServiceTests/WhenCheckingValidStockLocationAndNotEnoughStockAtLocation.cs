@@ -19,7 +19,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
         public void ShouldReturnError()
         {
             this.result.Success.Should().BeFalse();
-            this.result.Message.Should().Be("Not enough stock at this location, unallocated qty: 100" );
+            this.result.Message.Should().Be("Not enough stock at this location, unallocated qty: 100");
         }
     }
 }
