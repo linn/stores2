@@ -551,7 +551,9 @@ function reducer(state, action) {
                         fromPalletNumber: palletNumber,
                         toPalletNumber: palletNumber,
                         fromLocationCode: location,
-                        toLocationCode: location
+                        toLocationCode: location,
+                        toStockPool: 'LINN',
+                        fromStockPool: 'LINN'
                     },
                     auditLocationDetails: action.payload
                 };

@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -9,6 +9,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -19,12 +20,12 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
     using NUnit.Framework;
 
-    public class WhenValidatingAudit : ContextBase
+    public class WhenValidatingAuditNotEnoughStock : ContextBase
     {
-        private RequisitionHeader result;
+        private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.DepartmentRepository.FindByIdAsync("1607")
                 .Returns(new Department("1607", "DESC"));
@@ -42,11 +43,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 456).Returns(true);
             this.StockService.ValidStockLocation(null, 123, "PART", 1, null, "LINN")
-                .Returns(new ProcessResult(true, "ok"));
+                .Returns(new ProcessResult(false, "only got a wee bit left"));
             this.AuditLocationRepository.FindByAsync(Arg.Any<Expression<Func<AuditLocation, bool>>>())
                 .Returns(new AuditLocation());
 
-            this.result = await this.Sut.Validate(
+            this.action = () => this.Sut.Validate(
                 100,
                 TestFunctionCodes.Audit.FunctionCode,
                 null,
@@ -81,9 +82,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
         }
 
         [Test]
-        public void ShouldReturnValidated()
+        public async Task ShouldThrowException()
         {
-            this.result.Should().NotBeNull();
+            await this.action.Should().ThrowAsync<RequisitionException>().WithMessage("only got a wee bit left");
         }
     }
 }
