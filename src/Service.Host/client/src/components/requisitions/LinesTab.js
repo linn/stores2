@@ -28,7 +28,8 @@ function LinesTab({
     bookLine,
     canBook,
     fromState,
-    fromStockPool
+    fromStockPool,
+    removeLine
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -87,7 +88,7 @@ function LinesTab({
                     !params.row.dateBooked &&
                     params.row.cancelled === 'N' &&
                     !params.row.isAddition;
-
+                const canRemove = params.row.isAddition;
                 // just for now, only allowing stock pick for new rows onces
                 // todo - consider other scenarions e.g. changing pick after picked initially
                 const canPickStock =
@@ -114,6 +115,17 @@ function LinesTab({
                                     onClick={() => {
                                         setSelected(params.row.lineNumber);
                                         setCancelDialogVisible(true);
+                                    }}
+                                >
+                                    <CancelIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                        {canRemove && (
+                            <Tooltip title="Remove Line">
+                                <IconButton
+                                    onClick={() => {
+                                        removeLine(params.row.lineNumber);
                                     }}
                                 >
                                     <CancelIcon />

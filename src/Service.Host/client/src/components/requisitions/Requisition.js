@@ -1192,6 +1192,9 @@ function Requisition({ creating }) {
                                         selected={selectedLine}
                                         setSelected={setSelectedLine}
                                         cancelLine={cancel}
+                                        removeLine={lineNumber => {
+                                            dispatch({ type: 'remove_line', payload: lineNumber });
+                                        }}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
                                         isFromStock={
