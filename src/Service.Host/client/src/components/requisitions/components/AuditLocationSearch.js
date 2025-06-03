@@ -26,6 +26,14 @@ function AuditLocationSearch({
             if (exactMatch) {
                 setAuditLocationDetails(exactMatch);
                 clearAuditLocationsSearch();
+            } else {
+                const lookForPalletExactMatch = auditLocationsSearchResults.find(
+                    loc => loc.storagePlace === `P${auditLocation}`
+                );
+                if (lookForPalletExactMatch) {
+                    setAuditLocationDetails(lookForPalletExactMatch);
+                    clearAuditLocationsSearch();
+                }
             }
         }
     }, [
