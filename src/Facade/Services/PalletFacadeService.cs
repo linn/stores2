@@ -5,7 +5,6 @@
     using System.Data;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-
     using Amazon.SimpleEmail.Model;
 
     using Linn.Common.Facade;
@@ -19,16 +18,24 @@
     {
         private readonly IRepository<StockPool, string> stockPoolRepository;
 
+        private readonly IRepository<LocationType, string> locationTypeRepository;
+
+        private readonly IRepository<StorageLocation, int> storageLocationTypeRepository;
+
         private readonly IRepository<Pallet, int> palletRepository;
         public PalletFacadeService(
             IRepository<Pallet, int> repository,
             ITransactionManager transactionManager,
             IBuilder<Pallet> resourceBuilder,
-            IRepository<StockPool, string> stockPoolRepository)
+            IRepository<StockPool, string> stockPoolRepository,
+            IRepository<LocationType, string> locationTypeRepository,
+            IRepository<StorageLocation, int> storageLocationTypeRepository)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.stockPoolRepository = stockPoolRepository;
             this.palletRepository = repository;
+            this.locationTypeRepository = locationTypeRepository;
+            this.storageLocationTypeRepository = storageLocationTypeRepository;
         }
 
         protected override async Task<Pallet> CreateFromResourceAsync(
@@ -44,10 +51,29 @@
 
             var stockPool = this.stockPoolRepository.FindById(resource.DefaultStockPool.StockPoolCode);
 
+            if (stockPool == null)
+            {
+                throw new NullReferenceException($"Stock pool {resource.DefaultStockPool.StockPoolCode} not found.");
+            }
+
+            var locationType = this.locationTypeRepository.FindById(resource.LocationTypeId);
+
+            if (locationType == null)
+            {
+                throw new NullReferenceException($"Location type {resource.LocationTypeId} not found.");
+            }
+
+            var storageLocation = this.storageLocationTypeRepository.FindById(resource.LocationIdCode);
+
+            if (storageLocation == null)
+            {
+                throw new NullReferenceException($"Storage location {resource.LocationIdCode} not found.");
+            }
+
             return new Pallet(
                 resource.PalletNumber,
                 resource.Description,
-                resource.LocationId,
+                storageLocation,
                 DateTime.Parse(resource.DateInvalid),
                 DateTime.Parse(resource.DateLastAudited),
                 resource.Accessible,
@@ -56,7 +82,7 @@
                 resource.SalesKittable,
                 resource.SalesKittablePriority,
                 DateTime.Parse(resource.AllocQueueTime),
-                resource.Queue,
+                locationType,
                 resource.AuditedBy,
                 stockPool,
                 resource.StockType,
@@ -74,9 +100,26 @@
         {
             var stockPool = this.stockPoolRepository.FindById(updateResource.DefaultStockPool.StockPoolCode);
 
+            if (stockPool == null)
+            {
+                throw new NullReferenceException($"Stock pool {updateResource.DefaultStockPool.StockPoolCode} not found.");
+            }
+            var locationType = this.locationTypeRepository.FindById(updateResource.LocationTypeId);
+
+            if (locationType == null)
+            {
+                throw new NullReferenceException($"Location type {updateResource.LocationTypeId} not found.");
+            }
+            var storageLocation = this.storageLocationTypeRepository.FindById(updateResource.LocationIdCode);
+
+            if (storageLocation == null)
+            {
+                throw new NullReferenceException($"Storage location {updateResource.LocationIdCode} not found.");
+            }
+
             entity.Update(
                 updateResource.Description,
-                updateResource.LocationId,
+                storageLocation, 
                 DateTime.Parse(updateResource.DateInvalid),
                 DateTime.Parse(updateResource.DateLastAudited),
                 updateResource.Accessible,
@@ -85,7 +128,7 @@
                 updateResource.SalesKittable,
                 updateResource.SalesKittablePriority,
                 DateTime.Parse(updateResource.AllocQueueTime),
-                updateResource.Queue,
+                locationType,
                 updateResource.AuditedBy,
                 stockPool,
                 updateResource.StockType,

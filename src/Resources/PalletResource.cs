@@ -11,9 +11,9 @@
 
         public string Description { get; set; }
 
-        public string LocationId { get; set; }
+        public int LocationIdCode { get; set; }
 
-        public ResourceLocation Location { get; set; }
+        public StorageLocationResource LocationId { get; set; }
 
         public string DateInvalid { get; set; }
 
@@ -33,7 +33,7 @@
 
         public string Queue { get; set; }
 
-        public ResourceLocation LocationType { get; set; }
+        public LocationTypeResource LocationType { get; set; }
 
         public string LocationTypeId { get; set; }
 

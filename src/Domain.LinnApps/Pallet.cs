@@ -15,7 +15,7 @@
         public Pallet(
             int palletNumber,
             string description,
-            string locationId,
+            StorageLocation locationId,
             DateTime? dateInvalid,
             DateTime? dateLastAudited,
             string accessible,
@@ -24,8 +24,7 @@
             string salesKittable,
             int? salesKittablePriority,
             DateTime? allocQueueTime,
-            string queue,
-            //string locationType,
+            LocationType locationType,
             int? auditedBy,
             StockPool defaultStockPool,
             string stockType,
@@ -37,7 +36,7 @@
         {
             this.PalletNumber = palletNumber;
             this.Description = description;
-            this.LocationId = locationId;
+            this.LocationIdCode = locationId.LocationId;
             this.DateInvalid = dateInvalid;
             this.DateLastAudited = dateLastAudited;
             this.Accessible = accessible;
@@ -46,8 +45,7 @@
             this.SalesKittable = salesKittable;
             this.SalesKittablePriority = salesKittablePriority;
             this.AllocQueueTime = allocQueueTime;
-            this.Queue = queue;
-            //this.LocationType = locationType;
+            this.LocationTypeId = locationType.Code;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
             this.StockType = stockType;
@@ -62,9 +60,9 @@
 
         public string Description { get; set; }
 
-        public string LocationId { get; set; }
+        public int LocationIdCode { get; set; }
 
-        public Location Location { get; set; }
+        public StorageLocation LocationId { get; set; }
 
         public DateTime? DateInvalid { get; set; }
 
@@ -82,9 +80,7 @@
 
         public DateTime? AllocQueueTime { get; set; }
 
-        public string Queue { get; set; }
-
-        public Location LocationType { get; set; }
+        public LocationType LocationType { get; set; }
 
         public string LocationTypeId { get; set; }
 
@@ -110,7 +106,7 @@
 
         public void Update(
             string description,
-            string locationId,
+            StorageLocation locationId,
             DateTime? dateInvalid,
             DateTime? dateLastAudited,
             string accessible,
@@ -119,8 +115,7 @@
             string salesKittable,
             int? salesKittablePriority,
             DateTime? allocQueueTime,
-            string queue,
-            //string locationType,
+            LocationType locationType,
             int? auditedBy,
             StockPool defaultStockPool,
             string stockType,
@@ -131,7 +126,7 @@
             string mixStates)
         {
             this.Description = description;
-            this.LocationId = locationId;
+            this.LocationIdCode = locationId.LocationId;
             this.DateInvalid = dateInvalid;
             this.DateLastAudited = dateLastAudited;
             this.Accessible = accessible;
@@ -140,8 +135,7 @@
             this.SalesKittable = salesKittable;
             this.SalesKittablePriority = salesKittablePriority;
             this.AllocQueueTime = allocQueueTime;
-            this.Queue = queue;
-            //this.LocationType = locationType;
+            this.LocationTypeId = locationType.Code;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
             this.StockType = stockType;

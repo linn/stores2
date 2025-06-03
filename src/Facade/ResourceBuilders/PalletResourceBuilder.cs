@@ -6,21 +6,18 @@
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
 
     public class PalletResourceBuilder : IBuilder<Pallet>
     {
         public PalletResource Build(Pallet pallet, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
-
             return new PalletResource
             {
                 PalletNumber = pallet.PalletNumber,
                 Description = pallet.Description,
-                LocationId = pallet.LocationId,
-                Location = storageLocationResourceBuilder.Build(pallet.Location, claims),
+                LocationIdCode = pallet.LocationIdCode,
+                LocationId = new StorageLocationResourceBuilder().Build(pallet.LocationId, claims),
                 DateInvalid = pallet.DateInvalid?.ToString("o"),
                 DateLastAudited = pallet.DateLastAudited?.ToString("o"),
                 Accessible = pallet.Accessible,
@@ -29,8 +26,7 @@
                 SalesKittable = pallet.SalesKittable,
                 SalesKittablePriority = pallet.SalesKittablePriority,
                 AllocQueueTime = pallet.AllocQueueTime?.ToString("o"),
-                Queue = pallet.Queue,
-                LocationType = storageLocationResourceBuilder.Build(pallet.LocationType, claims),
+                LocationType = new LocationTypeResourceBuilder().Build(pallet.LocationType, claims),
                 LocationTypeId = pallet.LocationTypeId,
                 AuditedBy = pallet.AuditedBy,
                 DefaultStockPoolId = pallet.DefaultStockPoolId,

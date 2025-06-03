@@ -1,0 +1,96 @@
+﻿namespace Linn.Stores2.Integration.Tests.PalletModuleTests
+{
+    using System;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http.Json;
+    using System.Reflection;
+
+    using FluentAssertions;
+
+    using Linn.Stores2.Integration.Tests.Extensions;
+    using Linn.Stores2.Resources;
+
+    using NUnit.Framework;
+
+    public class WhenCreating : ContextBase
+    {
+        private PalletResource createResource;
+
+        [SetUp]
+        public void SetUp()
+        {
+            this.createResource = new PalletResource 
+                                      {
+                                         PalletNumber = 1,
+                                         Description = "Test-Description",
+                                         LocationIdCode = 3,
+                                         LocationId = new StorageLocationResource
+                                                          {
+                                                              LocationId = 3,
+                                             Description = "Test Location",
+                                         },
+                                         DateInvalid = DateTime.Today.ToString("o"),
+                                         DateLastAudited = DateTime.Today.ToString("o"),
+                                         Accessible = "Y",
+                                         StoresKittable = "Y",
+                                         StoresKittablePriority = 1,
+                                         SalesKittable = "Y",
+                                         SalesKittablePriority = 1,
+                                         AllocQueueTime = DateTime.Now.ToString("o"),
+                                         Queue = "Q1",
+                                         LocationType = new LocationTypeResource 
+                                                            {
+                                                                Code = "LOC_TYPE",
+                                                                Description = "Location Type Description",
+                                                            },
+                                         LocationTypeId = "LOC_TYPE",
+                                         AuditedBy = 123,
+                                         DefaultStockPoolId = "DEFAULT_POOL",
+                                         DefaultStockPool = new StockPoolResource
+                                                            {
+                                                                StockPoolCode = "DEFAULT_POOL",
+                                                                StockPoolDescription = "Default Pool Description",
+                                                            },
+                                         StockType = "TypeA",
+                                         StockState = "StateA",
+                                         AuditOwnerId = 456,
+                                         AuditFrequencyWeeks = 4,
+                                         AuditedByDepartmentCode = "DeptA",
+                                         MixStates = "State1,State2",
+                                         Cage = 789
+                                      };
+
+            this.Response = this.Client.PostAsJsonAsync("/stores2/pallets", this.createResource).Result;
+        }
+
+        [Test]
+        public void ShouldReturnCreated()
+        {
+            this.Response.StatusCode.Should().Be(HttpStatusCode.Created);
+        }
+
+        [Test]
+        public void ShouldReturnJsonContentType()
+        {
+            this.Response.Content.Headers.ContentType.Should().NotBeNull();
+            this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
+        }
+
+        [Test]
+        public void ShouldAdd()
+        {
+            this.DbContext.Pallets
+                .FirstOrDefault(x => x.PalletNumber == this.createResource.PalletNumber)
+                .Description.Should().Be(this.createResource.Description);
+        }
+
+        [Test]
+        public void ShouldReturnUpdatedJsonBody()
+        {
+            var resource = this.Response.DeserializeBody<PalletResource>();
+            resource.PalletNumber.Should().Be(1);
+            resource.Description.Should().Be("Test-Description");
+        }
+    }
+}

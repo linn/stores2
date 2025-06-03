@@ -21,7 +21,7 @@
             app.MapGet("/stores2/pallets", this.GetAll);
             app.MapPost("/stores2/pallets", this.Create);
             app.MapGet("/stores2/pallets/{id}", this.GetById);
-            app.MapPut("/stores2/pcas-storage-types/{id}", this.Update);
+            app.MapPut("/stores2/pallets/{id}", this.Update);
         }
 
         private async Task GetAll(
