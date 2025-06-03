@@ -9,20 +9,20 @@
         }
 
         public Workstation(
-            string workstationCode,
+            string workStationCode,
             string description,
             Cit cit,
             string zoneType,
             ICollection<WorkstationElement> elements)
         {
-            this.WorkstationCode = workstationCode;
+            this.WorkStationCode = workStationCode;
             this.Description = description;
             this.Cit = cit;
             this.ZoneType = zoneType;
             this.WorkStationElements = elements;
         }
 
-        public string WorkstationCode { get; protected set; }
+        public string WorkStationCode { get; protected set; }
 
         public string Description { get; protected set; }
 
@@ -33,13 +33,13 @@
         public ICollection<WorkstationElement> WorkStationElements { get; protected set; }
 
         public void Update(
-            string workstationCode,
+            string workStationCode,
             string description,
             Cit cit,
             string zoneType,
             ICollection<WorkstationElement> elements)
         {
-            this.WorkstationCode = workstationCode;
+            this.WorkStationCode = workStationCode;
             this.Description = description;
             this.Cit = cit;
             this.ZoneType = zoneType;

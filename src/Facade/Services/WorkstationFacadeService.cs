@@ -102,7 +102,7 @@
         protected override Expression<Func<Workstation, bool>> FilterExpression(WorkstationSearchResource searchResource)
         {
             return w =>
-                (string.IsNullOrEmpty(searchResource.WorkstationCode) || w.WorkstationCode == searchResource.WorkstationCode)
+                (string.IsNullOrEmpty(searchResource.WorkStationCode) || w.WorkStationCode == searchResource.WorkStationCode)
                 && (string.IsNullOrEmpty(searchResource.CitCode) || w.Cit.Code == searchResource.CitCode);
         }
 

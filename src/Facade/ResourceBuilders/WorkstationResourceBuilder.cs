@@ -24,7 +24,7 @@
 
             return new WorkstationResource
                        {
-                           WorkStationCode = model.WorkstationCode,
+                           WorkStationCode = model.WorkStationCode,
                            CitCode = model.Cit?.Code,
                            CitName = model.Cit?.Name,
                            Description = model.Description,
@@ -38,7 +38,7 @@
 
         public string GetLocation(Workstation model)
         {
-            return $"/stores2/work-stations/{model.WorkstationCode}";
+            return $"/stores2/work-stations/{model.WorkStationCode}";
         }
 
         object IBuilder<Workstation>.Build(Workstation entity, IEnumerable<string> claims) =>

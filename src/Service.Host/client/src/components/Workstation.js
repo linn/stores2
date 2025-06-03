@@ -91,7 +91,7 @@ function Workstation({ creating }) {
                 ...(prev.workStationElements || []),
                 {
                     workStationElementId: workStation.workStationElements.length + 1,
-                    workStationCode: prev?.WorkStationCode || '',
+                    workStationCode: prev?.workStationCode || '',
                     createdBy: 0,
                     createdByName: '',
                     dateCreated: new Date(),
@@ -287,26 +287,18 @@ function Workstation({ creating }) {
                         .filter(c => c.type === 'search')
                         .map(c => renderWorkStationElementSearchDialog(c))}
                     <DataGrid
-                        getRowId={row => row.workStationElementId}
+                        getRowId={row => row?.workStationElementId}
                         rows={workStation?.workStationElements}
+                        columns={workStationElementColumns}
+                        density="compact"
                         editMode="cell"
                         processRowUpdate={processRowUpdate}
-                        columns={workStationElementColumns}
-                        rowHeight={34}
-                        rowSelectionModel={[rowUpdated]}
+                        rowSelectionModel={
+                            rowUpdated
+                                ? { type: 'include', ids: new Set([rowUpdated]) }
+                                : { type: 'include', ids: new Set() }
+                        }
                         loading={false}
-                        isCellEditable={params => {
-                            if (params.field === 'workStationCode' && params.row.creating) {
-                                return true;
-                            }
-                            if (
-                                (!rowUpdated || params.id === rowUpdated) &&
-                                params.field !== 'workStationCode'
-                            ) {
-                                return true;
-                            }
-                            return false;
-                        }}
                     />
                 </Grid>
                 <Grid size={4}>
@@ -314,31 +306,31 @@ function Workstation({ creating }) {
                         Add new Workstation
                     </Button>
                 </Grid>
-                {/* {
-                    <Grid size={4}>
-                        <Button
-                            onClick={() => {
-                                const updatedWorkStation = workStations.find(
-                                    w => w.updated === true
+
+                <Grid size={4}>
+                    <Button
+                        onClick={() => {
+                            const updatedWorkStationElement = workStation?.workStationElements.find(
+                                sp => sp.updated === true
+                            );
+                            if (updatedWorkStationElement?.creating) {
+                                clearCreateWorkStation();
+                                createWorkStation(null, updatedWorkStationElement);
+                            } else {
+                                console.log(updatedWorkStationElement);
+                                updateWorkStation(
+                                    updatedWorkStationElement.workStationCode,
+                                    updatedWorkStationElement
                                 );
-                                if (updatedWorkStation.creating) {
-                                    clearCreateWorkStation();
-                                    createWorkStation(null, updatedWorkStation);
-                                } else {
-                                    updateWorkStation(
-                                        updatedWorkStation.workStationCode,
-                                        updatedWorkStation
-                                    );
-                                }
-                                setRowUpdated(null);
-                            }}
-                            variant="outlined"
-                            disabled={getWorkStationResult === workStation}
-                        >
-                            Save
-                        </Button>
-                    </Grid>
-                } */}
+                            }
+                            setRowUpdated(null);
+                        }}
+                        variant="outlined"
+                        disabled={getWorkStationResult === workStation}
+                    >
+                        Save
+                    </Button>
+                </Grid>
                 <Grid>
                     <SnackbarMessage
                         visible={snackbarVisible}

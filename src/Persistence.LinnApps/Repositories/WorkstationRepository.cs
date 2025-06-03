@@ -34,7 +34,7 @@
                              .Include(c => c.Cit)
                              .Include(we => we.WorkStationElements)
                              .ThenInclude(e => e.CreatedBy)
-                             .FirstOrDefaultAsync(w => w.WorkstationCode == key);
+                             .FirstOrDefaultAsync(w => w.WorkStationCode == key);
             return result;
         }
     }

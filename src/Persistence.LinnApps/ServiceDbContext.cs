@@ -847,8 +847,8 @@
         private static void BuildWorkstations(ModelBuilder builder)
         {
             var e = builder.Entity<Workstation>().ToTable("WORK_STATIONS");
-            e.HasKey(l => l.WorkstationCode);
-            e.Property(s => s.WorkstationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.HasKey(l => l.WorkStationCode);
+            e.Property(s => s.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             e.HasOne(a => a.Cit).WithMany().HasForeignKey("CIT_CODE");
             e.Property(s => s.ZoneType).HasColumnName("ZONE_TYPE").HasMaxLength(20);
