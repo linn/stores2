@@ -72,5 +72,7 @@
         public DateTime? DateReceived { get; set; }
         
         public string FromCategory { get; set; }
+
+        public string AuditLocation { get; set; }
     }
 }

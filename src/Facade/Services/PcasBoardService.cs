@@ -21,21 +21,6 @@
         {
         }
 
-        protected override async Task<PcasBoard> CreateFromResourceAsync(
-            PcasBoardResource resource,
-            IEnumerable<string> privileges = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override async Task UpdateFromResourceAsync(
-            PcasBoard entity,
-            PcasBoardResource updateResource,
-            IEnumerable<string> privileges = null)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override Expression<Func<PcasBoard, bool>> SearchExpression(string searchTerm)
         {
             return b => b.BoardCode.ToUpper().Contains(searchTerm.ToUpper())

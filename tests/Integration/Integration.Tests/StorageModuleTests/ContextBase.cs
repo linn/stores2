@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 {
     using System.Net.Http;
+
+    using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -13,6 +15,9 @@
     using Linn.Stores2.Resources;
     using Linn.Stores2.Service.Modules;
     using Microsoft.Extensions.DependencyInjection;
+
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -22,6 +27,8 @@
         protected HttpResponseMessage Response { get; set; }
 
         protected TestServiceDbContext DbContext { get; private set; }
+
+        protected IQueryRepository<AuditLocation> AuditLocationRepository { get; private set; }
 
         [SetUp]
         public void SetUpContext()
@@ -61,12 +68,19 @@
                     new TransactionManager(this.DbContext),
                     new StockStateResourceBuilder());
 
+            this.AuditLocationRepository = Substitute.For<IQueryRepository<AuditLocation>>();
+            IAsyncQueryFacadeService<AuditLocation, AuditLocationResource, AuditLocationResource>
+                auditLocationFacadeService = new AuditLocationFacadeService(
+                    this.AuditLocationRepository,
+                    new AuditLocationResourceBuilder());
+
             this.Client = TestClient.With<StorageModule>(
                 services =>
                 {
                     services.AddSingleton(storageSiteService);
                     services.AddSingleton(storageLocationService);
                     services.AddSingleton(stockStateFacadeService);
+                    services.AddSingleton(auditLocationFacadeService);
                     services.AddHandlers();
                     services.AddRouting();
                 });

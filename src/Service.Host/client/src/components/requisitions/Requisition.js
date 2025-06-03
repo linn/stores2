@@ -44,6 +44,7 @@ import Document2 from './components/Document2';
 import Document3 from './components/Document3';
 import PickRequisitionDialog from './PickRequisitionDialog';
 import BookInPostingsDialog from './components/BookInPostingsDialog';
+import AuditLocationSearch from './components/AuditLocationSearch';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -920,7 +921,11 @@ function Requisition({ creating }) {
                                     authorise(null, { reqNumber });
                                 }}
                             />
-                            {shouldRender(() => formState.req.storesFunction?.code !== 'MOVE') && (
+                            {shouldRender(
+                                () =>
+                                    formState.req.storesFunction?.code !== 'MOVE' &&
+                                    formState.req.storesFunction?.code !== 'AUDIT'
+                            ) && (
                                 <>
                                     <Grid size={2}>
                                         {formState.req.storesFunction?.manualPickRequired !==
@@ -959,6 +964,25 @@ function Requisition({ creating }) {
                                     <Grid size={8} />
                                 </>
                             )}
+                            <AuditLocationSearch
+                                auditLocation={formState.req.auditLocation}
+                                disabled={!creating}
+                                shouldRender={
+                                    formState.req.storesFunction?.auditLocationRequired === 'Y'
+                                }
+                                setAuditLocation={location =>
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'auditLocation', newValue: location }
+                                    })
+                                }
+                                setAuditLocationDetails={selectedLocation =>
+                                    dispatch({
+                                        type: 'set_audit_location_details',
+                                        payload: selectedLocation
+                                    })
+                                }
+                            />
                             <Document1
                                 document1={formState.req.document1}
                                 document1Text={formState.req.storesFunction?.document1Text}
@@ -1222,6 +1246,12 @@ function Requisition({ creating }) {
                                         }}
                                         fromState={formState.req.fromState}
                                         fromStockPool={formState.req.fromStockPool}
+                                        transactionOptions={
+                                            formState.req.storesFunction?.code === 'AUDIT'
+                                                ? formState.req.storesFunction.transactionTypes
+                                                : null
+                                        }
+                                        reqHeader={formState.req}
                                     />
                                 )}
                                 {tab === 1 && (
