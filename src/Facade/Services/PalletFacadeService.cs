@@ -14,7 +14,7 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
-    public class PalletFacadeService : AsyncFacadeService<Pallet, int, PalletResource, PalletResource, PalletResource>
+    public class StoresPalletFacadeService : AsyncFacadeService<Pallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>
     {
         private readonly IRepository<StockPool, string> stockPoolRepository;
 
