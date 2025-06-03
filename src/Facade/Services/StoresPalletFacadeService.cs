@@ -14,7 +14,7 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
-    public class StoresPalletFacadeService : AsyncFacadeService<Pallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>
+    public class StoresPalletFacadeService : AsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>
     {
         private readonly IRepository<StockPool, string> stockPoolRepository;
 
@@ -22,11 +22,11 @@
 
         private readonly IRepository<StorageLocation, int> storageLocationTypeRepository;
 
-        private readonly IRepository<Pallet, int> palletRepository;
-        public PalletFacadeService(
-            IRepository<Pallet, int> repository,
+        private readonly IRepository<StoresPallet, int> palletRepository;
+        public StoresPalletFacadeService(
+            IRepository<StoresPallet, int> repository,
             ITransactionManager transactionManager,
-            IBuilder<Pallet> resourceBuilder,
+            IBuilder<StoresPallet> resourceBuilder,
             IRepository<StockPool, string> stockPoolRepository,
             IRepository<LocationType, string> locationTypeRepository,
             IRepository<StorageLocation, int> storageLocationTypeRepository)
@@ -38,8 +38,8 @@
             this.storageLocationTypeRepository = storageLocationTypeRepository;
         }
 
-        protected override async Task<Pallet> CreateFromResourceAsync(
-            PalletResource resource,
+        protected override async Task<StoresPallet> CreateFromResourceAsync(
+            StoresPalletResource resource,
             IEnumerable<string> privileges = null)
         {
             var alreadyExist = this.palletRepository.FindById(resource.PalletNumber);
@@ -49,16 +49,16 @@
                 throw new AlreadyExistsException($"Pallet {resource.PalletNumber} already exists.");
             }
 
-            var stockPool = this.stockPoolRepository.FindById(resource.DefaultStockPool.StockPoolCode);
+            var stockPool = this.stockPoolRepository.FindById(resource.DefaultStockPoolId);
 
-            if (stockPool == null)
+            if (stockPool == null && resource.DefaultStockPoolId != null)
             {
                 throw new NullReferenceException($"Stock pool {resource.DefaultStockPool.StockPoolCode} not found.");
             }
 
             var locationType = this.locationTypeRepository.FindById(resource.LocationTypeId);
 
-            if (locationType == null)
+            if (locationType == null && !string.IsNullOrEmpty(resource.LocationTypeId))
             {
                 throw new NullReferenceException($"Location type {resource.LocationTypeId} not found.");
             }
@@ -70,7 +70,7 @@
                 throw new NullReferenceException($"Storage location {resource.LocationIdCode} not found.");
             }
 
-            return new Pallet(
+            return new StoresPallet(
                 resource.PalletNumber,
                 resource.Description,
                 storageLocation,
@@ -94,8 +94,8 @@
         }
 
         protected override async Task UpdateFromResourceAsync(
-            Pallet entity,
-            PalletResource updateResource,
+            StoresPallet entity,
+            StoresPalletResource updateResource,
             IEnumerable<string> privileges = null)
         {
             var stockPool = this.stockPoolRepository.FindById(updateResource.DefaultStockPool.StockPoolCode);
@@ -104,12 +104,14 @@
             {
                 throw new NullReferenceException($"Stock pool {updateResource.DefaultStockPool.StockPoolCode} not found.");
             }
+
             var locationType = this.locationTypeRepository.FindById(updateResource.LocationTypeId);
 
             if (locationType == null)
             {
                 throw new NullReferenceException($"Location type {updateResource.LocationTypeId} not found.");
             }
+
             var storageLocation = this.storageLocationTypeRepository.FindById(updateResource.LocationIdCode);
 
             if (storageLocation == null)
@@ -139,7 +141,7 @@
                 updateResource.MixStates);
         }
 
-        protected override Expression<Func<Pallet, bool>> SearchExpression(string searchTerm)
+        protected override Expression<Func<StoresPallet, bool>> SearchExpression(string searchTerm)
         {
             throw new NotImplementedException();
         }
@@ -147,27 +149,27 @@
         protected override async Task SaveToLogTable(
             string actionType,
             int userNumber,
-            Pallet entity,
-            PalletResource resource,
-            PalletResource updateResource)
+            StoresPallet entity,
+            StoresPalletResource resource,
+            StoresPalletResource updateResource)
         {
             await Task.CompletedTask;
             throw new NotImplementedException();
         }
 
         protected override void DeleteOrObsoleteResource(
-            Pallet entity,
+            StoresPallet entity,
             IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<Pallet, bool>> FilterExpression(PalletResource searchResource)
+        protected override Expression<Func<StoresPallet, bool>> FilterExpression(StoresPalletResource searchResource)
         {
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<Pallet, bool>> FindExpression(PalletResource searchResource)
+        protected override Expression<Func<StoresPallet, bool>> FindExpression(StoresPalletResource searchResource)
         {
             throw new NotImplementedException();
         }

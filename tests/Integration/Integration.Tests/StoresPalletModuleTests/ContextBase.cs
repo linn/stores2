@@ -27,21 +27,25 @@
         {
             this.DbContext = new TestServiceDbContext();
 
-            var palletRepository = new EntityFrameworkRepository<Pallet, int>(this.DbContext.Pallets);
+            var palletRepository = new EntityFrameworkRepository<StoresPallet, int>(this.DbContext.StoresPallets);
             var stockPoolRepository = new EntityFrameworkRepository<StockPool, string>(this.DbContext.StockPools);
+            var locationTypeRepository = new EntityFrameworkRepository<LocationType, string>(this.DbContext.LocationTypes);
+            var storageLocationRepository = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
             var transactionManager = new TransactionManager(this.DbContext);
 
-            IAsyncFacadeService<Pallet, int, PalletResource, PalletResource, PalletResource> stockPoolFacadeService
-                = new PalletFacadeService(
+            IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> storesPalletFacadeService
+                = new StoresPalletFacadeService(
                     palletRepository,
                     transactionManager,
-                    new PalletResourceBuilder(),
-                    stockPoolRepository);
+                    new StoresPalletResourceBuilder(),
+                    stockPoolRepository,
+                    locationTypeRepository,
+                    storageLocationRepository);
 
-            this.Client = TestClient.With<PalletModule>(
+            this.Client = TestClient.With<StoresPalletModule>(
                 services =>
                 {
-                    services.AddSingleton(stockPoolFacadeService);
+                    services.AddSingleton(storesPalletFacadeService);
                     services.AddHandlers();
                     services.AddRouting();
                 });
@@ -57,6 +61,8 @@
         public void Teardown()
         {
             this.DbContext.StockPools.RemoveAllAndSave(this.DbContext);
+            this.DbContext.LocationTypes.RemoveAllAndSave(this.DbContext);
+            this.DbContext.StorageLocations.RemoveAllAndSave(this.DbContext);
         }
     }
 }

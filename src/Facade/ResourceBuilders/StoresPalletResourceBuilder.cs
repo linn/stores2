@@ -6,18 +6,25 @@
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
 
-    public class PalletResourceBuilder : IBuilder<Pallet>
+    public class StoresPalletResourceBuilder : IBuilder<StoresPallet>
     {
-        public PalletResource Build(Pallet pallet, IEnumerable<string> claims)
+        public StoresPalletResource Build(StoresPallet pallet, IEnumerable<string> claims)
         {
-            return new PalletResource
+            var locationid = new StorageLocationResourceBuilder().Build(pallet.LocationId, claims);
+
+            var locationType = new LocationTypeResourceBuilder().Build(pallet.LocationType, claims);
+
+            var stockPool = new StockPoolResourceBuilder().Build(pallet.DefaultStockPool, claims);
+
+            return new StoresPalletResource
             {
                 PalletNumber = pallet.PalletNumber,
                 Description = pallet.Description,
                 LocationIdCode = pallet.LocationIdCode,
-                LocationId = new StorageLocationResourceBuilder().Build(pallet.LocationId, claims),
+                LocationId = locationid,
                 DateInvalid = pallet.DateInvalid?.ToString("o"),
                 DateLastAudited = pallet.DateLastAudited?.ToString("o"),
                 Accessible = pallet.Accessible,
@@ -26,11 +33,11 @@
                 SalesKittable = pallet.SalesKittable,
                 SalesKittablePriority = pallet.SalesKittablePriority,
                 AllocQueueTime = pallet.AllocQueueTime?.ToString("o"),
-                LocationType = new LocationTypeResourceBuilder().Build(pallet.LocationType, claims),
+                LocationType = locationType,
                 LocationTypeId = pallet.LocationTypeId,
                 AuditedBy = pallet.AuditedBy,
                 DefaultStockPoolId = pallet.DefaultStockPoolId,
-                DefaultStockPool = new StockPoolResourceBuilder().Build(pallet.DefaultStockPool, claims),
+                DefaultStockPool = stockPool,
                 StockType = pallet.StockType,
                 StockState = pallet.StockState,
                 AuditOwnerId = pallet.AuditOwnerId,
@@ -39,19 +46,18 @@
                 MixStates = pallet.MixStates,
                 Cage = pallet.Cage,
                 Links = this.BuildLinks(pallet, claims).ToArray()
-
             };
         }
 
-        public string GetLocation(Pallet model)
+        public string GetLocation(StoresPallet model)
         {
-            return $"/stores2/stock-pool/{model.PalletNumber}";
+            return $"/stores2/pallets/{model.PalletNumber}";
         }
 
-        object IBuilder<Pallet>.Build(Pallet entity, IEnumerable<string> claims) =>
+        object IBuilder<StoresPallet>.Build(StoresPallet entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
 
-        private IEnumerable<LinkResource> BuildLinks(Pallet model, IEnumerable<string> claims)
+        private IEnumerable<LinkResource> BuildLinks(StoresPallet model, IEnumerable<string> claims)
         {
             if (model != null)
             {

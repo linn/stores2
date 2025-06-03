@@ -6,6 +6,7 @@
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Pcas;
@@ -14,7 +15,7 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
 
-    public class PalletModule : IModule
+    public class StoresPalletModule : IModule
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
@@ -27,7 +28,7 @@
         private async Task GetAll(
             HttpRequest _,
             HttpResponse res,
-            IAsyncFacadeService<Pallet, int, PalletResource, PalletResource, PalletResource> service)
+            IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> service)
         {
             await res.Negotiate(await service.GetAll());
         }
@@ -36,7 +37,7 @@
             HttpRequest _,
             HttpResponse res,
             int id,
-            IAsyncFacadeService<Pallet, int, PalletResource, PalletResource, PalletResource> service)
+            IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> service)
         {
             await res.Negotiate(await service.GetById(id));
         }
@@ -44,8 +45,8 @@
         private async Task Create(
             HttpRequest _,
             HttpResponse res,
-            PalletResource resource,
-            IAsyncFacadeService<Pallet, int, PalletResource, PalletResource, PalletResource> service)
+            StoresPalletResource resource,
+            IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> service)
         {
             await res.Negotiate(await service.Add(resource));
         }
@@ -54,8 +55,8 @@
             HttpRequest _,
             HttpResponse res,
             int id,
-            PalletResource resource,
-            IAsyncFacadeService<Pallet, int, PalletResource, PalletResource, PalletResource> service)
+            StoresPalletResource resource,
+            IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> service)
         {
             await res.Negotiate(await service.Update(id, resource));
         }

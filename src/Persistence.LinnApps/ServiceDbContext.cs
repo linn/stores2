@@ -85,8 +85,6 @@
 
         public DbSet<SundryBookInDetail> SundryBookInDetails { get; set; }
 
-        public DbSet<Pallet> Pallets { get; set; }
-
         public DbSet<LocationType> LocationTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -140,7 +138,6 @@
             BuildPcasBoard(builder);
             BuildSundryBookInDetails(builder);
             BuildReqSerialNumbers(builder);
-            BuildPallets(builder);
             BuildLocationTypes(builder);
         }
 
@@ -591,19 +588,6 @@
             entity.Property(x => x.QCRequired).HasColumnName("QC_REQUIRED").HasMaxLength(1);
         }
 
-        private static void BuildStoresPallets(ModelBuilder builder)
-        {
-            var entity = builder.Entity<StoresPallet>().ToTable("STORES_PALLETS");
-            entity.HasKey(c => c.PalletNumber);
-            entity.Property(c => c.PalletNumber).HasColumnName("PALLET_NUMBER");
-            entity.Property(c => c.LocationId).HasColumnName("LOCATION_ID");
-            entity.Property(x => x.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
-            entity.Property(x => x.DateInvalid).HasColumnName("DATE_INVALID");
-            entity.Property(x => x.TypeOfStock).HasColumnName("TYPE_OF_STOCK").HasMaxLength(1);
-            entity.Property(x => x.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
-            entity.Property(x => x.MixStates).HasColumnName("MIX_STATES").HasMaxLength(1);
-        }
-
         private static void BuildStoresTransactionStates(ModelBuilder builder)
         {
             var entity = builder.Entity<StoresTransactionState>().ToTable("STORES_TRANS_STATES");
@@ -943,9 +927,9 @@
             r.Property(l => l.SerialNumber).HasColumnName("SERNOS_NUMBER");
         }
 
-        private static void BuildPallets(ModelBuilder builder)
+        private static void BuildStoresPallets(ModelBuilder builder)
         {
-            var r = builder.Entity<Pallet>().ToTable("STORES_PALLETS");
+            var r = builder.Entity<StoresPallet>().ToTable("STORES_PALLETS");
             r.HasKey(l => l.PalletNumber);
             r.Property(l => l.PalletNumber).HasColumnName("PALLET_NUMBER");
             r.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);

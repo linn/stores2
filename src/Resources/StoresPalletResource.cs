@@ -1,11 +1,8 @@
 ﻿namespace Linn.Stores2.Resources
 {
-    using System;
-    using System.Reflection;
-
     using Linn.Common.Resources;
 
-    public class PalletResource : HypermediaResource
+    public class StoresPalletResource : HypermediaResource
     {
         public int PalletNumber { get; set; }
 

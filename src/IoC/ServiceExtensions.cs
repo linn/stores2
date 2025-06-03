@@ -32,6 +32,8 @@
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
+
+    using Microsoft.CodeAnalysis;
     using Microsoft.Extensions.DependencyInjection;
     using RazorEngineCore;
 
@@ -127,7 +129,10 @@
                 .AddScoped<IBuilder<Workstation>, WorkstationResourceBuilder>()
                 .AddScoped<IBuilder<WorkstationElement>, WorkstationElementsResourceBuilder>()
                 .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>()
-                .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>();
+                .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>()
+                .AddScoped<IBuilder<StoresPallet>, StoresPalletResourceBuilder>()
+                .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
+                .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>();
         }
     }
 }
