@@ -245,7 +245,6 @@
                              resource.Document2Name,
                              resource.Department?.DepartmentCode, 
                              resource.Nominal?.NominalCode, 
-                             BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()), 
                              reference: resource.Reference, 
                              comments: resource.Comments, 
                              manualPick: resource.ManualPick, 

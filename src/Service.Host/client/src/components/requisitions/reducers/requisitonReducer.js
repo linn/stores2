@@ -387,6 +387,16 @@ function reducer(state, action) {
                 }
             };
         }
+        case 'remove_line': {
+            const newState = { ...state };
+            const toRemove = state.req.lines.find(
+                x => x.lineNumber === action.payload && x.isAddition
+            );
+            if (toRemove) {
+                newState.req.lines = state.req.lines.filter(x => x.lineNumber !== action.payload);
+            }
+            return newState;
+        }
         case 'set_line_value':
             if (action.payload.fieldName === 'transactionCode') {
                 const options = state.req.storesFunction.transactionTypes;
