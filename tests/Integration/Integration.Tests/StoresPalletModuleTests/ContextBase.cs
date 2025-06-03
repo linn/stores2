@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PalletModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
 {
     using System.Net.Http;
     using Linn.Common.Persistence.EntityFramework;

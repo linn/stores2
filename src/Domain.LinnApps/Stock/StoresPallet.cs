@@ -41,9 +41,9 @@
             this.SalesKittable = salesKittable;
             this.SalesKittablePriority = salesKittablePriority;
             this.AllocQueueTime = allocQueueTime;
-            this.LocationTypeId = locationType.Code;
+            this.LocationTypeId = locationType?.Code;
             this.AuditedBy = auditedBy;
-            this.DefaultStockPool = defaultStockPool;
+            this.DefaultStockPoolId = defaultStockPool?.StockPoolCode;
             this.StockType = stockType;
             this.StockState = stockState;
             this.AuditOwnerId = auditOwnerId;
@@ -131,7 +131,7 @@
             this.SalesKittable = salesKittable;
             this.SalesKittablePriority = salesKittablePriority;
             this.AllocQueueTime = allocQueueTime;
-            this.LocationTypeId = locationType.Code;
+            this.LocationTypeId = locationType != null ? locationType.Code : null; // Fixed the error here
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
             this.StockType = stockType;

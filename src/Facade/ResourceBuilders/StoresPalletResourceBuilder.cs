@@ -15,9 +15,13 @@
         {
             var locationid = new StorageLocationResourceBuilder().Build(pallet.LocationId, claims);
 
-            var locationType = new LocationTypeResourceBuilder().Build(pallet.LocationType, claims);
+            var locationType = pallet.LocationType != null
+                ? new LocationTypeResourceBuilder().Build(pallet.LocationType, claims)
+                : null;
 
-            var stockPool = new StockPoolResourceBuilder().Build(pallet.DefaultStockPool, claims);
+            var stockPool = pallet.DefaultStockPool != null
+                                ? new StockPoolResourceBuilder().Build(pallet.DefaultStockPool, claims)
+                                : null;
 
             return new StoresPalletResource
             {

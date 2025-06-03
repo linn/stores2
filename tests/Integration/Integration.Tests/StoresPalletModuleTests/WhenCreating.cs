@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PalletModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
 {
     using System;
     using System.Linq;
@@ -65,7 +65,6 @@
                                          SalesKittable = "Y",
                                          SalesKittablePriority = 1,
                                          AllocQueueTime = DateTime.Now.ToString("o"),
-                                         Queue = "Q1",
                                          LocationType = new LocationTypeResource 
                                                             {
                                                                 Code = this.locationType.Code,

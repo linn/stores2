@@ -28,8 +28,6 @@
 
         public string AllocQueueTime { get; set; }
 
-        public string Queue { get; set; }
-
         public LocationTypeResource LocationType { get; set; }
 
         public string LocationTypeId { get; set; }

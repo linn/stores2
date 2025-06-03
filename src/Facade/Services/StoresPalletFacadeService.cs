@@ -5,6 +5,7 @@
     using System.Data;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using Amazon.Auth.AccessControlPolicy;
     using Amazon.SimpleEmail.Model;
 
     using Linn.Common.Facade;
@@ -98,16 +99,16 @@
             StoresPalletResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            var stockPool = this.stockPoolRepository.FindById(updateResource.DefaultStockPool.StockPoolCode);
+            var stockPool = this.stockPoolRepository.FindById(updateResource?.DefaultStockPoolId);
 
-            if (stockPool == null)
+            if (stockPool == null && updateResource.DefaultStockPoolId != null)
             {
-                throw new NullReferenceException($"Stock pool {updateResource.DefaultStockPool.StockPoolCode} not found.");
+                throw new NullReferenceException($"Stock pool {updateResource?.DefaultStockPoolId} not found.");
             }
 
             var locationType = this.locationTypeRepository.FindById(updateResource.LocationTypeId);
 
-            if (locationType == null)
+            if (locationType == null && !string.IsNullOrEmpty(updateResource.LocationTypeId))
             {
                 throw new NullReferenceException($"Location type {updateResource.LocationTypeId} not found.");
             }
