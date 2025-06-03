@@ -37,6 +37,12 @@ function Workstation({ creating }) {
     const { code } = useParams();
 
     const {
+        send: getStorageLocation,
+        isStorageLocationLoading,
+        result: storageLocationGetResult
+    } = useGet(itemTypes.storageLocations.url);
+
+    const {
         send: updateWorkStation,
         isLoading: updateLoading,
         errorMessage: updateError,
