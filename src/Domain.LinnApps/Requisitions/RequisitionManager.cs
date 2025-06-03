@@ -375,24 +375,30 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     }
                 }
             }
-            else if (header.ManualPick == "N" && transactionDefinition.RequiresStockAllocations)
+            else
             {
-                // todo can we make automatic from picks see CREATE_REQ_MOVES in REQ_UT.fmb
-                var autopickResult = await this.requisitionStoredProcedures.PickStock(
-                    toAdd.PartNumber,
-                    header.ReqNumber,
-                    toAdd.LineNumber,
-                    toAdd.Qty,
-                    header.FromLocation?.LocationId,
-                    header.FromPalletNumber,
-                    header.FromStockPool,
-                    toAdd.TransactionDefinition);
-
-                if (!autopickResult.Success)
+                var insertOrUpdateMoves = "I";
+                if (header.ManualPick == "N" && transactionDefinition.RequiresStockAllocations)
                 {
-                    throw new PickStockException("failed in pick_stock: " + autopickResult.Message);
-                }
+                    // todo can we make automatic from picks see CREATE_REQ_MOVES in REQ_UT.fmb
+                    var autopickResult = await this.requisitionStoredProcedures.PickStock(
+                        toAdd.PartNumber,
+                        header.ReqNumber,
+                        toAdd.LineNumber,
+                        toAdd.Qty,
+                        header.FromLocation?.LocationId,
+                        header.FromPalletNumber,
+                        header.FromStockPool,
+                        toAdd.TransactionDefinition);
+                    
+                    insertOrUpdateMoves = "U";
 
+                    if (!autopickResult.Success)
+                    {
+                        throw new PickStockException("failed in pick_stock: " + autopickResult.Message);
+                    }
+                }
+                
                 // todo what about the ontos
                 if (transactionDefinition.RequiresOntoTransactions)
                 {
@@ -405,7 +411,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         header.ToStockPool,
                         header.ToState,
                         "FREE",
-                        "U");
+                        insertOrUpdateMoves);
 
                     if (!ontoResult.Success)
                     {
@@ -591,7 +597,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
                     await this.CheckMoves(
                         line.PartNumber,
-                        line.Moves.ToList(),
+                        line.Moves == null ? new List<MoveSpecification>() : line.Moves.ToList(),
                         current.ReqType != "F" && current.StoresFunction.ToLocationRequiredOrOptional());
                     await this.AddRequisitionLine(current, line);
                 }

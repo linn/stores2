@@ -418,7 +418,8 @@
             
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
-
+            var headerSpecifiesOntLocation = this.ToLocation != null || this.ToPalletNumber.HasValue;
+            
             this.Lines.Add(toAdd);
         }
         

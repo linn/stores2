@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -18,7 +18,7 @@
 
     using NUnit.Framework;
 
-    public class WhenAddingLineAndMovesOntoLocation : ContextBase
+    public class WhenAddingLinesAndTransactionRequiresOntosAndHeaderSpecifiesToLocation : ContextBase
     {
         private RequisitionHeader header;
 
@@ -39,16 +39,6 @@
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
                 .Returns(this.department);
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
-            this.header = new RequisitionHeader(
-                new Employee { Id = 33087 },
-                TestFunctionCodes.LinnDeptReq,
-                "O",
-                null,
-                null,
-                this.department,
-                this.nominal);
-            this.part = new Part { PartNumber = "PART" };
-            this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
             var loc = new StorageLocation(
                 111,
                 "E-L-1",
@@ -63,6 +53,20 @@
                 "A",
                 null,
                 null);
+            this.header = new RequisitionHeader(
+                new Employee { Id = 33087 },
+                TestFunctionCodes.LinnDeptReq,
+                "O",
+                null,
+                null,
+                this.department,
+                this.nominal,
+                toLocation: loc,
+                toState: "STORES",
+                toStockPool: "LINN");
+            this.part = new Part { PartNumber = "PART" };
+            this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
+            
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(loc);
             this.line = new LineCandidate
@@ -71,16 +75,7 @@
                 Document1 = 123,
                 Document1Line = 1,
                 Document1Type = "REQ",
-                Moves = new List<MoveSpecification>
-                                {
-                                    new MoveSpecification
-                                        {
-                                            ToLocation = "E-L-1",
-                                            Qty = 10,
-                                            ToState = "STORES",
-                                            ToStockPool = "LINN"
-                                        }
-                                },
+                Moves = null, // header specifies onto location
                 PartNumber = this.part.PartNumber,
                 Qty = 10,
                 TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode
