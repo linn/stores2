@@ -5,7 +5,6 @@
 
     using Linn.Common.Facade;
     using Linn.Common.Resources;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
 
@@ -13,7 +12,7 @@
     {
         public StoresPalletResource Build(StoresPallet pallet, IEnumerable<string> claims)
         {
-            var locationid = new StorageLocationResourceBuilder().Build(pallet.LocationId, claims);
+            var locationId = new StorageLocationResourceBuilder().Build(pallet.LocationId, claims);
 
             var locationType = pallet.LocationType != null
                 ? new LocationTypeResourceBuilder().Build(pallet.LocationType, claims)
@@ -28,7 +27,7 @@
                 PalletNumber = pallet.PalletNumber,
                 Description = pallet.Description,
                 LocationIdCode = pallet.LocationIdCode,
-                LocationId = locationid,
+                LocationId = locationId,
                 DateInvalid = pallet.DateInvalid?.ToString("o"),
                 DateLastAudited = pallet.DateLastAudited?.ToString("o"),
                 Accessible = pallet.Accessible,

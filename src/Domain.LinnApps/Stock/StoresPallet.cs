@@ -28,7 +28,8 @@
             int? auditOwnerId,
             int? auditFrequencyWeeks,
             string auditedByDepartmentCode,
-            string mixStates)
+            string mixStates,
+            int? cage)
         {
             this.PalletNumber = palletNumber;
             this.Description = description;
@@ -50,6 +51,7 @@
             this.AuditFrequencyWeeks = auditFrequencyWeeks;
             this.AuditedByDepartmentCode = auditedByDepartmentCode;
             this.MixStates = mixStates;
+            this.Cage = cage;
         }
 
         public int PalletNumber { get; set; }
@@ -119,7 +121,8 @@
             int? auditOwnerId,
             int? auditFrequencyWeeks,
             string auditedByDepartmentCode,
-            string mixStates)
+            string mixStates,
+            int? cage)
         {
             this.Description = description;
             this.LocationIdCode = locationId.LocationId;
@@ -131,15 +134,16 @@
             this.SalesKittable = salesKittable;
             this.SalesKittablePriority = salesKittablePriority;
             this.AllocQueueTime = allocQueueTime;
-            this.LocationTypeId = locationType != null ? locationType.Code : null; // Fixed the error here
+            this.LocationTypeId = locationType?.Code;
             this.AuditedBy = auditedBy;
-            this.DefaultStockPool = defaultStockPool;
+            this.DefaultStockPoolId = defaultStockPool?.StockPoolCode;
             this.StockType = stockType;
             this.StockState = stockState;
             this.AuditOwnerId = auditOwnerId;
             this.AuditFrequencyWeeks = auditFrequencyWeeks;
             this.AuditedByDepartmentCode = auditedByDepartmentCode;
             this.MixStates = mixStates;
+            this.Cage = cage;
         }
     }
 }

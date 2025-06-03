@@ -6,15 +6,12 @@
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
 
     public class LocationTypeResourceBuilder : IBuilder<LocationType>
     {
         public LocationTypeResource Build(LocationType locationType, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
-
             return new LocationTypeResource
             {
                  Code   = locationType.Code,

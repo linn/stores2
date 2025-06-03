@@ -80,7 +80,7 @@
                     new EntityFrameworkRepository<Cit, string>(r.GetService<ServiceDbContext>()?.Cits))
                     .AddScoped<IRepository<PcasStorageType, PcasStorageTypeKey>, PcasStorageTypeRepository>()
                 .AddTransient<IRepository<PcasBoard, string>, EntityFrameworkRepository<PcasBoard, string>>(
-                r => new EntityFrameworkRepository<PcasBoard, string>(r.GetService<ServiceDbContext>()?.PcasBoards))
+                    r => new EntityFrameworkRepository<PcasBoard, string>(r.GetService<ServiceDbContext>()?.PcasBoards))
                 .AddTransient<IRepository<NominalAccount, int>, EntityFrameworkRepository<NominalAccount, int>>(r =>
                     new EntityFrameworkRepository<NominalAccount, int>(r.GetService<ServiceDbContext>()?.NominalAccounts))
                 .AddScoped<IRepository<Workstation, string>, WorkstationRepository>()

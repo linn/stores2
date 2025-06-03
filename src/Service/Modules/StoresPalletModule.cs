@@ -4,12 +4,9 @@
 
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
-    using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
-    using Linn.Stores2.Resources.Pcas;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;

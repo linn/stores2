@@ -2,10 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using Amazon.Auth.AccessControlPolicy;
     using Amazon.SimpleEmail.Model;
 
     using Linn.Common.Facade;
@@ -91,7 +89,8 @@
                 resource.AuditOwnerId,
                 resource.AuditFrequencyWeeks,
                 resource.AuditedByDepartmentCode,
-                resource.MixStates);
+                resource.MixStates,
+                resource.Cage);
         }
 
         protected override async Task UpdateFromResourceAsync(
@@ -139,7 +138,8 @@
                 updateResource.AuditOwnerId,
                 updateResource.AuditFrequencyWeeks,
                 updateResource.AuditedByDepartmentCode,
-                updateResource.MixStates);
+                updateResource.MixStates,
+                updateResource.Cage);
         }
 
         protected override Expression<Func<StoresPallet, bool>> SearchExpression(string searchTerm)

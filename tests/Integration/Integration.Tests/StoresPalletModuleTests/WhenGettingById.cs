@@ -4,7 +4,6 @@
     using System.Net;
 
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
@@ -46,7 +45,8 @@
                 456,
                 4,
                 "DeptA",
-                "State1,State2");
+                "State1,State2",
+                89);
 
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.storageLocation);
 

@@ -66,7 +66,8 @@
                 456,
                 4,
                 "DeptA",
-                "State1,State2");
+                "State1,State2", 
+                89);
 
             this.updateResource = new StoresPalletResource
             {
