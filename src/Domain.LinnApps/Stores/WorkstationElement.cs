@@ -2,6 +2,8 @@
 {
     using System;
 
+    using Linn.Stores2.Domain.LinnApps.Stock;
+
     public class WorkstationElement
     {
         public WorkstationElement()
@@ -13,14 +15,14 @@
             string workStationCode,
             Employee createdBy,
             DateTime dateCreated,
-            int? locationId,
+            StorageLocation? storageLocation,
             int? palletNumber)
         {
             this.WorkStationElementId = workStationElementId;
             this.WorkStationCode = workStationCode;
             this.CreatedBy = createdBy;
             this.DateCreated = dateCreated;
-            this.LocationId = locationId;
+            this.StorageLocation = storageLocation;
             this.PalletNumber = palletNumber;
         }
 
@@ -32,7 +34,7 @@
 
         public DateTime DateCreated { get; protected set; }
 
-        public int? LocationId { get; protected set; }
+        public StorageLocation? StorageLocation { get; protected set; }
 
         public int? PalletNumber { get; protected set; }
     }

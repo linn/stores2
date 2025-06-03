@@ -863,8 +863,8 @@
             e.Property(s => s.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.HasOne(s => s.CreatedBy).WithMany().HasForeignKey("CREATED_BY");
             e.Property(s => s.DateCreated).HasColumnName("DATE_CREATED");
-            e.Property(s => s.LocationId).HasColumnName("LOCATION_ID");
             e.Property(s => s.PalletNumber).HasColumnName("PALLET_NUMBER");
+            e.HasOne(s => s.StorageLocation).WithMany().HasForeignKey("LOCATION_ID");
         }
 
         private static void BuildCits(ModelBuilder builder)

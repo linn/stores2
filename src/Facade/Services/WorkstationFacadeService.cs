@@ -10,6 +10,7 @@
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Stores;
@@ -22,10 +23,13 @@
 
         private readonly IRepository<Cit, string> citRepository;
 
+        private readonly IRepository<StorageLocation, int> storageLocationRepository;
+
         public WorkstationFacadeService(
             IRepository<Workstation, string> repository,
             IRepository<Employee, int> employeeRepository,
             IRepository<Cit, string> citRepository,
+            IRepository<StorageLocation, int> storageLocationRepository,
             ITransactionManager transactionManager,
             IBuilder<Workstation> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
@@ -33,6 +37,7 @@
             this.repository = repository;
             this.employeeRepository = employeeRepository;
             this.citRepository = citRepository;
+            this.storageLocationRepository = storageLocationRepository;
         }
 
         protected override async Task<Workstation> CreateFromResourceAsync(
@@ -54,7 +59,7 @@
                         e.WorkstationCode,
                         e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
                         DateTime.Parse(e.DateCreated),
-                        e.LocationId,
+                        e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
                         e.PalletNumber))
                     .ToList());
         }
@@ -72,7 +77,7 @@
                     e.WorkstationCode,
                     e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
                     DateTime.Parse(e.DateCreated),
-                    e.LocationId,
+                    e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
                     e.PalletNumber))
                 .ToList();
 

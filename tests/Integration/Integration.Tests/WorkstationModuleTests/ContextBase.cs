@@ -4,6 +4,7 @@
 
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
@@ -41,11 +42,16 @@
             var citRepository
                 = new EntityFrameworkRepository<Cit, string>(this.DbContext.Cits);
 
+
+            var storageLocationRepository
+                = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
+
             IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> workstationFacadeService
                 = new WorkstationFacadeService(
                     workstationRepository,
                     employeeRepository,
                     citRepository,
+                    storageLocationRepository,
                     transactionManager,
                     new WorkstationResourceBuilder(new WorkstationElementsResourceBuilder()));
 

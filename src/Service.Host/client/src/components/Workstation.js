@@ -112,6 +112,12 @@ function Workstation({ creating }) {
         }
     }, [workStation, newWorkStationsGetResult]);
 
+    useEffect(() => {
+        if (workStation) {
+            console.log(workStation);
+        }
+    }, [workStation]);
+
     const addNewRow = () => {
         setWorkStation(prev => ({
             ...prev,
@@ -192,6 +198,22 @@ function Workstation({ creating }) {
             valueGetter: value => {
                 return new Date(value);
             }
+        },
+        {
+            field: 'Storage Place',
+            headerName: 'Added By',
+            width: 200,
+            editable: true,
+            type: 'search',
+            search: searchEmployees,
+            searchResults: employeesSearchResults,
+            searchLoading: employeesSearchLoading,
+            searchUpdateFieldNames: [
+                { fieldName: 'createdBy', searchResultFieldName: 'id' },
+                { fieldName: 'createdByName', searchResultFieldName: 'fullName' }
+            ],
+            clearSearch: clearEmployeesSearch,
+            renderCell: searchRenderCell
         },
         {
             field: 'createdBy',

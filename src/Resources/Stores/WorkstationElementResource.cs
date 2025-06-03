@@ -16,6 +16,8 @@
 
         public int? LocationId { get; set; }
 
+        public string LocationIdName { get; set; }
+
         public int? PalletNumber { get; set; }
     }
 }
