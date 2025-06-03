@@ -101,5 +101,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task CheckReturnOrderForFullyBooked(RequisitionHeader header, PurchaseOrderResult purchaseOrder);
 
         Task ValidateLineSerialNumbers(RequisitionLine line);
+
+        Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves);
     }
 }
