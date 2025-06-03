@@ -84,6 +84,12 @@ function Workstation({ creating }) {
         }
     }, [updateResult]);
 
+    useEffect(() => {
+        if (workStation) {
+            console.log(workStation);
+        }
+    }, [workStation]);
+
     const addNewRow = () => {
         setWorkStation(prev => ({
             ...prev,
@@ -91,7 +97,7 @@ function Workstation({ creating }) {
                 ...(prev.workStationElements || []),
                 {
                     workStationElementId: workStation.workStationElements.length + 1,
-                    workStationCode: prev?.workStationCode || '',
+                    workStationCode: workStation?.workStationCode || '',
                     createdBy: 0,
                     createdByName: '',
                     dateCreated: new Date(),
@@ -161,10 +167,10 @@ function Workstation({ creating }) {
             field: 'dateCreated',
             headerName: 'Date Created',
             type: 'date',
-            width: 200,
             editable: true,
+            width: 150,
             valueGetter: params =>
-                params.row?.dateCreated ? new Date(params.row?.dateCreated) : null,
+                params?.row?.dateCreated ? new Date(params?.row?.dateCreated) : null,
             valueFormatter: params => moment(params?.value).format('DD/MM/YYYY')
         },
         {
@@ -311,17 +317,15 @@ function Workstation({ creating }) {
                     <Button
                         onClick={() => {
                             const updatedWorkStationElement = workStation?.workStationElements.find(
-                                sp => sp.updated === true
+                                ws => ws.updated === true
                             );
-                            if (updatedWorkStationElement?.creating) {
-                                clearCreateWorkStation();
-                                createWorkStation(null, updatedWorkStationElement);
-                            } else {
-                                console.log(updatedWorkStationElement);
+                            if (updatedWorkStationElement?.updated) {
                                 updateWorkStation(
                                     updatedWorkStationElement.workStationCode,
                                     updatedWorkStationElement
                                 );
+                            } else {
+                                createWorkStation(null, workStation);
                             }
                             setRowUpdated(null);
                         }}
