@@ -112,7 +112,7 @@ function Workstation({ creating }) {
 
     const handleCancelSelect = () => {
         const oldRow = getWorkStationResult?.workStationElements?.find(
-            st => st.workStationElementId === rowUpdated
+            ws => ws.workStationElementId === rowUpdated
         );
 
         setWorkStation(prev => ({
@@ -169,9 +169,9 @@ function Workstation({ creating }) {
             type: 'date',
             editable: true,
             width: 150,
-            valueGetter: params =>
-                params?.row?.dateCreated ? new Date(params?.row?.dateCreated) : null,
-            valueFormatter: params => moment(params?.value).format('DD/MM/YYYY')
+            valueGetter: value => {
+                return new Date(value);
+            }
         },
         {
             field: 'createdBy',
@@ -284,7 +284,7 @@ function Workstation({ creating }) {
                             { id: 'SPEAKERS', displayText: 'Speakers' }
                         ]}
                         value={workStation?.zoneType}
-                        onChange={() => {}}
+                        onChange={handleFieldChange}
                         propertyName="zoneType"
                     />
                 </Grid>
@@ -316,16 +316,10 @@ function Workstation({ creating }) {
                 <Grid size={4}>
                     <Button
                         onClick={() => {
-                            const updatedWorkStationElement = workStation?.workStationElements.find(
-                                ws => ws.updated === true
-                            );
-                            if (updatedWorkStationElement?.updated) {
-                                updateWorkStation(
-                                    updatedWorkStationElement.workStationCode,
-                                    updatedWorkStationElement
-                                );
-                            } else {
+                            if (creating) {
                                 createWorkStation(null, workStation);
+                            } else {
+                                updateWorkStation(workStation.workStationCode, workStation);
                             }
                             setRowUpdated(null);
                         }}
