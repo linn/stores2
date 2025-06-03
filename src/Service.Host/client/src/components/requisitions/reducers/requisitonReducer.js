@@ -224,6 +224,8 @@ function reducer(state, action) {
                 action.payload.bookInOrderDetails[0].isReverse === 'Y'
             ) {
                 originalReqNumber = action.payload.bookInOrderDetails[0].originalReqNumber;
+            } else {
+                originalReqNumber = null;
             }
 
             return {
