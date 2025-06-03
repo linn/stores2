@@ -690,7 +690,9 @@ function Requisition({ creating }) {
                                         resultLimit={100}
                                         disabled={!creating || !!formState.req.lines?.length}
                                         helperText={
-                                            creating ? '<Enter> to search or <Tab> to select' : ''
+                                            creating
+                                                ? 'Enter a value and press <Enter> to search or <Tab> to select. Alternatively press <Enter> with no input to list all functions'
+                                                : ''
                                         }
                                         value={formState.req.storesFunction?.code}
                                         handleValueChange={(_, newVal) => {
@@ -709,12 +711,13 @@ function Requisition({ creating }) {
                                         searchResults={functionCodes
                                             .filter(
                                                 f =>
-                                                    f.functionAvailable &&
-                                                    f.code.includes(
-                                                        formState.req.storesFunction?.code
-                                                            ?.trim()
-                                                            .toUpperCase()
-                                                    )
+                                                    !formState.req.storesFunction?.code ||
+                                                    (f.functionAvailable &&
+                                                        f.code.includes(
+                                                            formState.req.storesFunction?.code
+                                                                ?.trim()
+                                                                .toUpperCase()
+                                                        ))
                                             )
                                             .map(f => ({
                                                 ...f,
