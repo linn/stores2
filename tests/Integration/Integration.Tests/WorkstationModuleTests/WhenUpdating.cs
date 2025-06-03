@@ -86,7 +86,7 @@
         [Test]
         public void ShouldUpdateEntity()
         {
-            this.DbContext.Workstations.First(x => x.WorkstationCode == this.workstation.WorkstationCode).Description
+            this.DbContext.Workstations.First(x => x.WorkStationCode == this.workstation.WorkStationCode).Description
                 .Should().Be(this.updateResource.Description);
         }
 

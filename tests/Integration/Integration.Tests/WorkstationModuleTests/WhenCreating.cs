@@ -73,7 +73,7 @@
         public void ShouldAdd()
         {
             this.DbContext.Workstations
-                .First(x => x.WorkstationCode == this.createResource.WorkStationCode).Description
+                .First(x => x.WorkStationCode == this.createResource.WorkStationCode).Description
                 .Should().Be(this.createResource.Description);
         }
 
