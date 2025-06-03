@@ -85,6 +85,8 @@
 
         public DbSet<SundryBookInDetail> SundryBookInDetails { get; set; }
 
+        public DbSet<Pallet> Pallets { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -136,6 +138,7 @@
             BuildPcasBoard(builder);
             BuildSundryBookInDetails(builder);
             BuildReqSerialNumbers(builder);
+            BuildPallets(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -936,5 +939,41 @@
             r.Property(l => l.Sequence).HasColumnName("SEQ");
             r.Property(l => l.SerialNumber).HasColumnName("SERNOS_NUMBER");
         }
+
+        private static void BuildPallets(ModelBuilder builder)
+        {
+            var r = builder.Entity<Pallet>().ToTable("STORES_PALLETS");
+            r.HasKey(l => l.PalletNumber);
+            r.Property(l => l.PalletNumber).HasColumnName("PALLET_NUMBER");
+            r.Property(l => l.Description).HasColumnName("DESCRIPTION");
+            r.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
+            r.Property(l => l.LocationId).HasColumnName("LOCATION_ID");
+            r.Property(l => l.Queue).HasColumnName("QUEUE").HasMaxLength(1);
+            r.Property(l => l.DateLastAudited).HasColumnName("DATE_LAST_AUDITED");
+            r.Property(l => l.Accessible).HasColumnName("ACCESSIBLE");
+            r.Property(l => l.StoresKittable).HasColumnName("STORES_KITTABLE");
+            r.Property(l => l.StoresKittablePriority).HasColumnName("STORES_KITTABLE_PRIORITY");
+            r.Property(l => l.SalesKittable).HasColumnName("SALES_KITTABLE");
+            r.Property(l => l.SalesKittablePriority).HasColumnName("SALES_KITTABLE_PRIORITY");
+            r.Property(l => l.AllocQueueTime).HasColumnName("ALLOC_QUEUE_TIME");
+            r.Property(l => l.AuditedBy).HasColumnName("AUDITED_BY");
+            r.Property(l => l.LocationTypeId).HasColumnName("LOCATION_TYPE");
+            r.Property(l => l.DefaultStockPool).HasColumnName("DEFAULT_STOCK_POOL");
+            r.Property(l => l.StockType).HasColumnName("TYPE_OF_STOCK");
+            r.Property(l => l.StockState).HasColumnName("STOCK_STATE");
+            r.Property(l => l.AuditOwnerId).HasColumnName("AUDIT_OWNER_ID");
+            r.Property(l => l.AuditFrequencyWeeks).HasColumnName("AUDIT_FREQUENCY_WEEKS");
+            r.Property(l => l.AuditedByDepartmentCode).HasColumnName("AUDITED_BY_DEPARTMENT_CODE");
+            r.Property(l => l.MixStates).HasColumnName("MIX_STATES");
+            r.Property(l => l.Cage).HasColumnName("CAGE");
+            r.HasOne(l => l.Location).WithMany().HasForeignKey(p => p.LocationId);
+            //r.HasOne(l => l.Queue).WithMany().HasForeignKey(p => p.Queue);
+            //r.HasOne(l => l.Location).WithMany().HasForeignKey(p => p.LocationTypeId);
+            r.HasOne(l => l.DefaultStockPool).WithMany().HasForeignKey(p => p.DefaultStockPool);
+        }
+        //TODO : The Nullable values and Max length of values
+
+        // TODO : DPQ Locations table
+        // TODO : Location Types table
     }
 }
