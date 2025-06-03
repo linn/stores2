@@ -62,7 +62,7 @@ function Workstation({ creating }) {
         send: getNewWorkStations,
         isNewWorkStationsLoading,
         result: newWorkStationsGetResult
-    } = useGet(itemTypes.stockPools.url);
+    } = useGet(itemTypes.workStations.url);
 
     const {
         search: searchEmployees,
@@ -72,17 +72,6 @@ function Workstation({ creating }) {
     } = useSearch(itemTypes.historicEmployees.url, 'id', 'fullName', 'fullName', false, true);
 
     const [hasFetched, setHasFetched] = useState(false);
-
-    if (!creating && !hasFetched) {
-        setHasFetched(true);
-        newWorkStationsGetResult(encodeURI(code));
-    }
-
-    const navigate = useNavigate();
-
-    if (getNewWorkStations && !workStation) {
-        setWorkStation(newWorkStationsGetResult);
-    }
 
     const handleFieldChange = (propertyName, newValue) => {
         setWorkStation(current => ({ ...current, [propertyName]: newValue }));
@@ -109,6 +98,19 @@ function Workstation({ creating }) {
         getNewWorkStations,
         updateResult
     ]);
+
+    useEffect(() => {
+        if (!creating && !hasFetched) {
+            setHasFetched(true);
+            getNewWorkStations(encodeURI(code));
+        }
+    }, [creating, hasFetched, getNewWorkStations, code]);
+
+    useEffect(() => {
+        if (!workStation && newWorkStationsGetResult) {
+            setWorkStation(newWorkStationsGetResult);
+        }
+    }, [workStation, newWorkStationsGetResult]);
 
     const addNewRow = () => {
         setWorkStation(prev => ({
@@ -176,7 +178,7 @@ function Workstation({ creating }) {
                     })
                 }
             />
-            {params.value}
+            {params.row?.createdByName}
         </>
     );
 
