@@ -53,10 +53,10 @@ function Workstation({ creating }) {
     } = usePost(itemTypes.workStations.url);
 
     const {
-        send: getWorkstation,
-        getWorkStationLoading,
-        result: getWorkStationResult
-    } = useGet(itemTypes.workStations.url);
+        send: getNewWorkStations,
+        isNewWorkStationsLoading,
+        result: newWorkStationsGetResult
+    } = useGet(itemTypes.stockPools.url);
 
     const {
         search: searchEmployees,
@@ -69,13 +69,13 @@ function Workstation({ creating }) {
 
     if (!creating && !hasFetched) {
         setHasFetched(true);
-        getWorkstation(encodeURI(code));
+        newWorkStationsGetResult(encodeURI(code));
     }
 
     const navigate = useNavigate();
 
-    if (getWorkStationResult && !workStation) {
-        setWorkStation(getWorkStationResult);
+    if (getNewWorkStations && !workStation) {
+        setWorkStation(newWorkStationsGetResult);
     }
 
     const handleFieldChange = (propertyName, newValue) => {
@@ -90,10 +90,19 @@ function Workstation({ creating }) {
     }, [updateResult]);
 
     useEffect(() => {
-        if (workStation) {
-            console.log(workStation);
+        if (updateResult || createWorkStationResult) {
+            getNewWorkStations();
+            setSnackbarVisible(true);
+            clearCreateWorkStation();
+            clearUpdateResult();
         }
-    }, [workStation]);
+    }, [
+        clearCreateWorkStation,
+        clearUpdateResult,
+        createWorkStationResult,
+        getNewWorkStations,
+        updateResult
+    ]);
 
     const addNewRow = () => {
         setWorkStation(prev => ({
@@ -116,7 +125,7 @@ function Workstation({ creating }) {
     };
 
     const handleCancelSelect = () => {
-        const oldRow = getWorkStationResult?.workStationElements?.find(
+        const oldRow = newWorkStationsGetResult?.workStationElements?.find(
             ws => ws.workStationElementId === rowUpdated
         );
 
@@ -259,15 +268,16 @@ function Workstation({ creating }) {
                 <Grid size={12}>
                     <Typography variant="h4">Workstation Utility</Typography>
                 </Grid>
-                {isLoading ||
-                    createWorkStationLoading ||
-                    (updateLoading && (
-                        <Grid size={12}>
-                            <List>
-                                <Loading />
-                            </List>
-                        </Grid>
-                    ))}
+                {(isLoading ||
+                    isNewWorkStationsLoading ||
+                    updateLoading ||
+                    createWorkStationLoading) && (
+                    <Grid size={12}>
+                        <List>
+                            <Loading />
+                        </List>
+                    </Grid>
+                )}
                 <Grid size={4}>
                     <InputField
                         value={workStation?.workStationCode}
@@ -358,7 +368,7 @@ function Workstation({ creating }) {
                             setRowUpdated(null);
                         }}
                         variant="outlined"
-                        disabled={getWorkStationResult === workStation}
+                        disabled={newWorkStationsGetResult === workStation}
                     >
                         Save
                     </Button>
