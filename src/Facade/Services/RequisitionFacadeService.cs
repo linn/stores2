@@ -375,6 +375,8 @@
                                             Qty = m.Qty.GetValueOrDefault(), 
                                             FromLocation  = m.FromLocationCode,
                                             FromPallet = m.FromPalletNumber,
+                                            FromState = m.FromState,
+                                            FromStockPool = m.FromStockPool,
                                             ToLocation = m.ToLocationCode,
                                             ToPallet = m.ToPalletNumber,
                                             ToStockPool = m.ToStockPool,

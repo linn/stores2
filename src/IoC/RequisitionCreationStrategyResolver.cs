@@ -66,7 +66,7 @@
                 return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }
 
-            if (context.PartNumber == null && context.Lines?.Count() > 0)
+            if ((context.PartNumber == null && context.Lines?.Count() > 0) || context.Function.FunctionCode == "AUDIT")
             {
                 return this.serviceProvider.GetRequiredService<LinesProvidedStrategy>();
             }
