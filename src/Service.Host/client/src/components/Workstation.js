@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
+import Dialog from '@mui/material/Dialog';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 import {
     Dropdown,
+    ErrorCard,
     InputField,
     Loading,
-    ErrorCard,
+    Search,
     SnackbarMessage
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
-import moment from 'moment';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import config from '../config';
 import itemTypes from '../itemTypes';
@@ -28,6 +32,7 @@ function Workstation({ creating }) {
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [rowUpdated, setRowUpdated] = useState();
     const [changesMade, setChangesMade] = useState(false);
+    const [employeeSearchTerm, setEmployeeSearchTerm] = useState('');
 
     const { code } = useParams();
 
@@ -135,8 +140,6 @@ function Workstation({ creating }) {
             )
         }));
 
-        console.log(workStation);
-
         setRowUpdated(newRow.workStationElementId);
         setChangesMade(true);
 
@@ -196,7 +199,7 @@ function Workstation({ creating }) {
         }
     ];
 
-    const renderWorkStationElementSearchDialog = c => {
+    const renderEmployeeSearchDialog = c => {
         const handleClose = () => {
             setSearchDialogOpen({ forRow: null, forColumn: null });
         };
@@ -217,6 +220,37 @@ function Workstation({ creating }) {
             processRowUpdate(newRow, currentRow);
             setSearchDialogOpen({ forRow: null, forColumn: null });
         };
+
+        return (
+            <div id={c.field}>
+                <Dialog open={searchDialogOpen.forColumn === c.field} onClose={handleClose}>
+                    <DialogTitle>Search</DialogTitle>
+                    <DialogContent>
+                        <Search
+                            autoFocus
+                            propertyName={`${c.field}-searchTerm`}
+                            label=""
+                            resultsInModal
+                            resultLimit={100}
+                            value={employeeSearchTerm}
+                            handleValueChange={(_, newVal) => setEmployeeSearchTerm(newVal)}
+                            search={c.search}
+                            searchResults={c.searchResults?.map(r => ({
+                                ...r,
+                                id: r[c.field]
+                            }))}
+                            searchLoading={c.loading}
+                            priorityFunction="closestMatchesFirst"
+                            onResultSelect={handleSearchResultSelect}
+                            clearSearch={() => {}}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
     };
 
     return (
@@ -291,7 +325,7 @@ function Workstation({ creating }) {
                 <Grid size={12}>
                     {workStationElementColumns
                         .filter(c => c.type === 'search')
-                        .map(c => renderWorkStationElementSearchDialog(c))}
+                        .map(c => renderEmployeeSearchDialog(c))}
                     <DataGrid
                         getRowId={row => row?.workStationElementId}
                         rows={workStation?.workStationElements}
