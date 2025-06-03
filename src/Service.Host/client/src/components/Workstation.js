@@ -315,6 +315,7 @@ function Workstation({ creating }) {
                         label="Workstation Code"
                         propertyName="workStationCode"
                         onChange={handleFieldChange}
+                        disabled={!creating}
                     />
                 </Grid>
                 <Grid size={8}>
