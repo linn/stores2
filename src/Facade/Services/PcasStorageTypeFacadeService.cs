@@ -69,7 +69,7 @@
                 resource.Preference);
         }
 
-        protected override async Task UpdateFromResourceAsync(
+        protected override void UpdateFromResource(
             PcasStorageType entity,
             PcasStorageTypeResource updateResource,
             IEnumerable<string> privileges = null)

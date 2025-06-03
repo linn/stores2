@@ -4,6 +4,6 @@
     {
         public int Seq { get; set; }
 
-        public int SerialNumber { get; set; }
+        public int? SerialNumber { get; set; }
     }
 }

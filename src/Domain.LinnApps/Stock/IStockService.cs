@@ -14,6 +14,7 @@
             int? palletNumber, 
             string partNumber, 
             decimal qty,
-            string state);
+            string state,
+            string stockPoolCode = null);
     }
 }

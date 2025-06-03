@@ -44,6 +44,7 @@ import Document2 from './components/Document2';
 import Document3 from './components/Document3';
 import PickRequisitionDialog from './PickRequisitionDialog';
 import BookInPostingsDialog from './components/BookInPostingsDialog';
+import AuditLocationSearch from './components/AuditLocationSearch';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -517,12 +518,23 @@ function Requisition({ creating }) {
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.req?.storesFunction?.code === 'MOVE';
 
-    const canAddSerialNumbers =
-        selectedLine && !formState?.req?.cancelled !== 'Y' && !formState?.req?.dateBooked;
-
     const requiresSerialNumbers =
         formState?.req?.storesFunction?.code === 'ON DEM' ||
         formState?.req?.storesFunction?.code === 'OFF DEM';
+
+    const canAddSerialNumber =
+        selectedLine && !formState?.req?.cancelled !== 'Y' && !formState?.req?.dateBooked;
+
+    const addSerialNumber = () => {
+        if (canAddSerialNumber) {
+            dispatch({
+                type: 'add_serial_number',
+                payload: {
+                    lineNumber: selectedLine
+                }
+            });
+        }
+    };
 
     const debouncedFormState = useDebounceValue(formState);
 
@@ -909,7 +921,11 @@ function Requisition({ creating }) {
                                     authorise(null, { reqNumber });
                                 }}
                             />
-                            {shouldRender(() => formState.req.storesFunction?.code !== 'MOVE') && (
+                            {shouldRender(
+                                () =>
+                                    formState.req.storesFunction?.code !== 'MOVE' &&
+                                    formState.req.storesFunction?.code !== 'AUDIT'
+                            ) && (
                                 <>
                                     <Grid size={2}>
                                         {formState.req.storesFunction?.manualPickRequired !==
@@ -948,6 +964,25 @@ function Requisition({ creating }) {
                                     <Grid size={8} />
                                 </>
                             )}
+                            <AuditLocationSearch
+                                auditLocation={formState.req.auditLocation}
+                                disabled={!creating}
+                                shouldRender={
+                                    formState.req.storesFunction?.auditLocationRequired === 'Y'
+                                }
+                                setAuditLocation={location =>
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'auditLocation', newValue: location }
+                                    })
+                                }
+                                setAuditLocationDetails={selectedLocation =>
+                                    dispatch({
+                                        type: 'set_audit_location_details',
+                                        payload: selectedLocation
+                                    })
+                                }
+                            />
                             <Document1
                                 document1={formState.req.document1}
                                 document1Text={formState.req.storesFunction?.document1Text}
@@ -1211,6 +1246,12 @@ function Requisition({ creating }) {
                                         }}
                                         fromState={formState.req.fromState}
                                         fromStockPool={formState.req.fromStockPool}
+                                        transactionOptions={
+                                            formState.req.storesFunction?.code === 'AUDIT'
+                                                ? formState.req.storesFunction.transactionTypes
+                                                : null
+                                        }
+                                        reqHeader={formState.req}
                                     />
                                 )}
                                 {tab === 1 && (
@@ -1273,17 +1314,26 @@ function Requisition({ creating }) {
                                                 x => x.lineNumber === selectedLine
                                             )?.serialNumbers
                                         }
-                                        addSerialNumber={
-                                            canAddSerialNumbers
-                                                ? () => {
-                                                      dispatch({
-                                                          type: 'add_serial_number',
-                                                          payload: {
-                                                              lineNumber: selectedLine
-                                                          }
-                                                      });
-                                                  }
-                                                : null
+                                        addSerialNumber={() =>
+                                            canAddSerialNumber ? addSerialNumber() : null
+                                        }
+                                        updateSerialNumber={updated =>
+                                            dispatch({
+                                                type: 'update_serial_number',
+                                                payload: {
+                                                    lineNumber: selectedLine,
+                                                    ...updated
+                                                }
+                                            })
+                                        }
+                                        deleteSerialNumber={seq =>
+                                            dispatch({
+                                                type: 'delete_serial_number',
+                                                payload: {
+                                                    lineNumber: selectedLine,
+                                                    sernosSeq: seq
+                                                }
+                                            })
                                         }
                                     />
                                 )}

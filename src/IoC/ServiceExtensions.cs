@@ -79,7 +79,8 @@
                     x => new HtmlTemplateService<DeliveryNoteDocument>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
                         x.GetService<ITemplateEngine>()))
-                .AddScoped<ISupplierProxy, SupplierProxy>();
+                .AddScoped<ISupplierProxy, SupplierProxy>()
+                .AddScoped<ISerialNumberService, SerialNumberService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -98,6 +99,7 @@
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
                 .AddScoped<IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>, StockStateFacadeService>()
                 .AddScoped<IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource>, SundryBookInDetailFacadeService>()
+                .AddScoped<IAsyncQueryFacadeService<AuditLocation, AuditLocationResource, AuditLocationResource>, AuditLocationFacadeService>()
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
@@ -122,6 +124,7 @@
                 .AddScoped<IBuilder<StorageType>, StorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<PartsStorageType>, PartsStorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<SundryBookInDetail>, SundryBookInDetailResourceBuilder>()
+                .AddScoped<IBuilder<AuditLocation>, AuditLocationResourceBuilder>()
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()

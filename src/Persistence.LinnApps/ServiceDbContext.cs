@@ -87,6 +87,8 @@
 
         public DbSet<LocationType> LocationTypes { get; set; }
 
+        public DbSet<AuditLocation> AuditLocations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -137,6 +139,7 @@
             BuildPcasStorageTypes(builder);
             BuildPcasBoard(builder);
             BuildSundryBookInDetails(builder);
+            BuildAuditLocations(builder);
             BuildReqSerialNumbers(builder);
             BuildLocationTypes(builder);
         }
@@ -406,6 +409,7 @@
             q.Property(d => d.FromState).HasColumnName("FROM_STATE").HasMaxLength(10);
             q.Property(d => d.OntoCategory).HasColumnName("ONTO_CATEGORY").HasMaxLength(10);
             q.Property(d => d.FromCategory).HasColumnName("FROM_CATEGORY").HasMaxLength(10);
+            q.Property(d => d.SernosTransCode).HasColumnName("SERNOS_TRANS_CODE").HasMaxLength(10);
             q.HasMany(t => t.StoresTransactionPostings).WithOne().HasForeignKey(p => p.TransactionCode);
             q.HasMany(t => t.StoresTransactionStates).WithOne().HasForeignKey(p => p.TransactionCode);
         }
@@ -485,6 +489,7 @@
             e.Property(r => r.Document2Name).HasColumnName("DOC2_NAME");
             e.Property(r => r.OriginalReqNumber).HasColumnName("ORIG_REQ_NUMBER");
             e.Property(r => r.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
+            e.Property(r => r.AuditLocation).HasColumnName("AUDIT_LOCATION").HasMaxLength(16);
             e.Property(r => r.Document3).HasColumnName("DOCUMENT_3");
             e.Property(r => r.DateReceived).HasColumnName("DATE_RECEIVED");
             e.HasOne(r => r.NewPart).WithMany().HasForeignKey("NEW_PART_NUMBER");
@@ -564,6 +569,7 @@
             r.Property(c => c.CanBeReversed).HasColumnName("CAN_BE_REVERSED").HasMaxLength(1);
             r.Property(c => c.CanBeCancelled).HasColumnName("CAN_BE_CANCELLED").HasMaxLength(1);
             r.Property(c => c.ReceiptDateRequired).HasColumnName("RECEIPT_DATE_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.AuditLocationRequired).HasColumnName("AUDIT_LOC_REQUIRED").HasMaxLength(1);
             r.Property(c => c.ProcessStage).HasColumnName("PROCESS_STAGE");
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
@@ -915,6 +921,13 @@
             e.Property(s => s.TransactionReference).HasColumnName("TRANS_REFERENCE").HasMaxLength(2000);
             e.Property(s => s.DepartmentCode).HasColumnName("DEPARTMENT").HasMaxLength(10);
             e.Property(s => s.NominalCode).HasColumnName("NOMINAL").HasMaxLength(10);
+        }
+
+        private static void BuildAuditLocations(ModelBuilder builder)
+        {
+            var e = builder.Entity<AuditLocation>().ToTable("V_AUDIT_LOCATIONS").HasNoKey();
+            e.Property(s => s.StoragePlace).HasColumnName("STORAGE_PLACE").HasMaxLength(41);
+            e.Property(s => s.PalletLocationOrArea).HasColumnName("PALLET_OR_LOCATION").HasMaxLength(1);
         }
 
         private static void BuildReqSerialNumbers(ModelBuilder builder)

@@ -1,3 +1,5 @@
+import { add } from '../../../helpers/numberUtilities';
+
 function reducer(state, action) {
     switch (action.type) {
         case 'clear': {
@@ -269,7 +271,7 @@ function reducer(state, action) {
             const doc1Details = action.payload;
             if (action.payload.orderDetail) {
                 doc1Details.qtyOutstanding = action.payload.orderDetail.purchaseDeliveries.reduce(
-                    (sum, item) => sum + item.quantityOutstanding,
+                    (sum, item) => add(sum, item.quantityOutstanding),
                     0
                 );
             }
@@ -384,20 +386,48 @@ function reducer(state, action) {
             };
         }
         case 'set_line_value':
-            return {
-                ...state,
-                req: {
-                    ...state.req,
-                    lines: state.req.lines.map(x =>
-                        x.lineNumber === action.payload.lineNumber
-                            ? {
-                                  ...x,
-                                  [action.payload.fieldName]: action.payload.newValue
-                              }
-                            : x
-                    )
+            if (action.payload.fieldName === 'transactionCode') {
+                const options = state.req.storesFunction.transactionTypes;
+                const selected = options.find(
+                    a => a.transactionDefinition === action.payload.newValue
+                );
+
+                if (selected) {
+                    return {
+                        ...state,
+                        req: {
+                            ...state.req,
+                            lines: state.req.lines.map(x =>
+                                x.lineNumber === action.payload.lineNumber
+                                    ? {
+                                          ...x,
+                                          transactionCode: action.payload.newValue,
+                                          transactionCodeDescription:
+                                              selected.transactionDescription
+                                      }
+                                    : x
+                            )
+                        }
+                    };
                 }
-            };
+
+                return state;
+            } else {
+                return {
+                    ...state,
+                    req: {
+                        ...state.req,
+                        lines: state.req.lines.map(x =>
+                            x.lineNumber === action.payload.lineNumber
+                                ? {
+                                      ...x,
+                                      [action.payload.fieldName]: action.payload.newValue
+                                  }
+                                : x
+                        )
+                    }
+                };
+            }
         case 'pick_stock':
             return {
                 ...state,
@@ -408,7 +438,7 @@ function reducer(state, action) {
                             ? {
                                   ...line,
                                   qty: action.payload.stockMoves.reduce(
-                                      (sum, move) => sum + move.quantityToPick,
+                                      (sum, move) => add(sum, move.quantityToPick),
                                       0
                                   ),
                                   stockPicked: true,
@@ -419,41 +449,60 @@ function reducer(state, action) {
                                           seq: index + 1,
                                           part: move.partNumber,
                                           qty: move.quantityToPick,
-                                          fromLocationCode: move.palletNumber
-                                              ? null
-                                              : move.locationName,
-                                          fromLocationDescription: move.palletNumber
-                                              ? null
-                                              : move.locationDescription,
-                                          fromPalletNumber: move.palletNumber,
-                                          fromState: move.state,
-                                          fromStockPool: move.stockPoolCode,
+                                          fromLocationCode:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.palletNumber
+                                                    ? null
+                                                    : move.locationName,
+                                          fromLocationDescription:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.palletNumber
+                                                    ? null
+                                                    : move.locationDescription,
+                                          fromPalletNumber:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.palletNumber,
+                                          fromState:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.state,
+                                          fromStockPool:
+                                              move.isFrom === false || state.req.reqType === 'O'
+                                                  ? null
+                                                  : move.stockPoolCode,
                                           fromBatchRef: move.batchRef,
-                                          isFrom: state.req.reqType === 'O' ? false : true,
-                                          isTo: state.req.reqType === 'F' ? false : true,
+                                          isFrom:
+                                              move.isFrom ??
+                                              (state.req.reqType === 'O' ? false : true),
+                                          isTo:
+                                              move.isTo ??
+                                              (state.req.reqType === 'F' ? false : true),
                                           fromBatchDate: move.stockRotationDate,
                                           qtyAtLocation: move.quantity,
                                           qtyAllocated: move.qtyAllocated,
                                           toStockPool:
-                                              state.req.reqType === 'F'
+                                              move.isTo === false || state.req.reqType === 'F'
                                                   ? null
                                                   : state.req.toStockPool
                                                     ? state.req.toStockPool
                                                     : move.stockPoolCode,
                                           toState:
-                                              state.req.reqType === 'F'
+                                              move.isTo === false || state.req.reqType === 'F'
                                                   ? null
                                                   : state.req.toState
                                                     ? state.req.toState
                                                     : move.state,
                                           toLocationCode:
-                                              state.req.reqType === 'F'
+                                              move.isTo === false || state.req.reqType === 'F'
                                                   ? null
                                                   : state.req.toLocationCode
                                                     ? state.req.toLocationCode
                                                     : null,
                                           toPalletNumber:
-                                              state.req.reqType === 'F'
+                                              move.isTo === false || state.req.reqType === 'F'
                                                   ? null
                                                   : state.req.toPalletNumber
                                                     ? state.req.toPalletNumber
@@ -486,6 +535,44 @@ function reducer(state, action) {
             }
 
             return state;
+        case 'set_audit_location_details':
+            if (action.payload?.storagePlace) {
+                let location = null;
+                let palletNumber = null;
+                if (action.payload.palletLocationOrArea === 'P') {
+                    palletNumber = action.payload.storagePlace.substring(1);
+                } else if (action.payload.palletLocationOrArea === 'L') {
+                    location = action.payload.storagePlace;
+                }
+
+                return {
+                    ...state,
+                    req: {
+                        ...state.req,
+                        auditLocation: action.payload.storagePlace,
+                        fromPalletNumber: palletNumber,
+                        toPalletNumber: palletNumber,
+                        fromLocationCode: location,
+                        toLocationCode: location,
+                        toStockPool: 'LINN',
+                        fromStockPool: 'LINN'
+                    },
+                    auditLocationDetails: action.payload
+                };
+            } else {
+                return {
+                    ...state,
+                    req: {
+                        ...state.req,
+                        auditLocation: null,
+                        fromPalletNumber: null,
+                        toPalletNumber: null,
+                        fromLocationCode: null,
+                        toLocationCode: null
+                    },
+                    auditLocationDetails: null
+                };
+            }
         case 'add_move_onto':
             return {
                 ...state,
@@ -555,7 +642,7 @@ function reducer(state, action) {
                         return line.lineNumber === action.payload.lineNumber
                             ? {
                                   ...line,
-                                  qty: updatedMoves.reduce((sum, item) => sum + item.qty, 0),
+                                  qty: updatedMoves.reduce((sum, item) => add(sum, item.qty), 0),
                                   moves: updatedMoves
                               }
                             : line;
@@ -568,24 +655,60 @@ function reducer(state, action) {
                 req: {
                     ...state.req,
                     lines: state.req.lines.map(line =>
-                        line.lineNumber === action.payload.lineNumbto
+                        line.lineNumber === action.payload.lineNumber
                             ? {
                                   ...line,
                                   serialNumbers: [
                                       ...(line.serialNumbers ? line.serialNumbers : []),
                                       {
-                                          lineNumber: action.payload.lineNumber,
-                                          seq: line.moves ? line.moves.length + 1 : 1,
-                                          toStockPool: 'LINN',
-                                          toState: 'STORES',
-                                          part: line.part.partNumber,
-                                          isFrom: true,
-                                          isTo: true
+                                          seq: line.serialNumbers
+                                              ? line.serialNumbers.length + 1
+                                              : 1,
+                                          serialNumber: null
                                       }
                                   ]
                               }
                             : line
                     )
+                }
+            };
+        case 'update_serial_number':
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line => {
+                        const updatedSernos = line.serialNumbers.map(m =>
+                            m.seq === action.payload.seq
+                                ? {
+                                      ...action.payload
+                                  }
+                                : m
+                        );
+                        return line.lineNumber === action.payload.lineNumber
+                            ? {
+                                  ...line,
+                                  serialNumbers: updatedSernos
+                              }
+                            : line;
+                    })
+                }
+            };
+        case 'delete_serial_number':
+            return {
+                ...state,
+                req: {
+                    ...state.req,
+                    lines: state.req.lines.map(line => {
+                        return line.lineNumber === action.payload.lineNumber
+                            ? {
+                                  ...line,
+                                  serialNumbers: line.serialNumbers.filter(
+                                      s => s.seq !== action.payload.sernosSeq
+                                  )
+                              }
+                            : line;
+                    })
                 }
             };
         case 'close_message':

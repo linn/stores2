@@ -23,5 +23,7 @@
         public string TransactionDefinition { get; set; }
         
         public bool? StockPicked { get; set; }
+
+        public IEnumerable<int> SerialNumbers { get; set; }
     }
 }

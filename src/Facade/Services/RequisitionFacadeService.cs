@@ -177,7 +177,8 @@
                     isReverseTransaction: resource.IsReverseTransaction,
                     originalDocumentNumber: resource.OriginalReqNumber,
                     bookInOrderDetails: resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
-                    dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived));
+                    dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived),
+                    auditLocation: resource.AuditLocation);
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }
@@ -267,7 +268,8 @@
                              resource.Document3,
                              resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
                              dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived),
-                             fromCategory: resource.FromCategory);
+                             fromCategory: resource.FromCategory,
+                             auditLocation: resource.AuditLocation);
             return result;
         }
 
@@ -387,7 +389,11 @@
                            Document1Type = resource.Document1Type,
                            StockPicked = resource.StockPicked,
                            Qty = resource.Qty,
-                           TransactionDefinition = resource.TransactionCode
+                           TransactionDefinition = resource.TransactionCode,
+                           SerialNumbers = resource.SerialNumbers == null ? new List<int>() : resource.SerialNumbers
+                               .Where(s => s.SerialNumber.HasValue)
+                               .OrderBy(s => s.Seq)
+                               .Select(s => s.SerialNumber.Value).ToList()
                        };
         }
     }
