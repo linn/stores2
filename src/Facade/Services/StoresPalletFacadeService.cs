@@ -50,24 +50,9 @@
 
             var stockPool = await this.stockPoolRepository.FindByIdAsync(resource.DefaultStockPoolId);
 
-            if (stockPool == null && resource.DefaultStockPoolId != null)
-            {
-                throw new NullReferenceException($"Stock pool {resource.DefaultStockPool.StockPoolCode} not found.");
-            }
-
             var locationType = await this.locationTypeRepository.FindByIdAsync(resource.LocationTypeId);
 
-            if (locationType == null && !string.IsNullOrEmpty(resource.LocationTypeId))
-            {
-                throw new NullReferenceException($"Location type {resource.LocationTypeId} not found.");
-            }
-
             var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(resource.StorageLocationId);
-
-            if (storageLocation == null)
-            {
-                throw new NullReferenceException($"Storage location {resource.StorageLocationId} not found.");
-            }
 
             return new StoresPallet(
                 resource.PalletNumber,
@@ -101,24 +86,9 @@
         {
             var stockPool = await this.stockPoolRepository.FindByIdAsync(updateResource?.DefaultStockPoolId);
 
-            if (stockPool == null && updateResource.DefaultStockPoolId != null)
-            {
-                throw new NullReferenceException($"Stock pool {updateResource?.DefaultStockPoolId} not found.");
-            }
-
             var locationType = await this.locationTypeRepository.FindByIdAsync(updateResource.LocationTypeId);
 
-            if (locationType == null && !string.IsNullOrEmpty(updateResource.LocationTypeId))
-            {
-                throw new NullReferenceException($"Location type {updateResource.LocationTypeId} not found.");
-            }
-
             var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(updateResource.StorageLocationId);
-
-            if (storageLocation == null)
-            {
-                throw new NullReferenceException($"Storage location {updateResource.StorageLocationId} not found.");
-            }
 
             entity.Update(
                 updateResource.Description,
