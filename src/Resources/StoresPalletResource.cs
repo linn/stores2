@@ -20,11 +20,11 @@
 
         public string StoresKittable { get; set; }
 
-        public int? StoresKittablePriority { get; set; }
+        public int? StoresKittingPriority { get; set; }
 
         public string SalesKittable { get; set; }
 
-        public int? SalesKittablePriority { get; set; }
+        public int? SalesKittingPriority { get; set; }
 
         public string AllocQueueTime { get; set; }
 
