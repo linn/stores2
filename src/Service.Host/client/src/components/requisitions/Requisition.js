@@ -1233,6 +1233,7 @@ function Requisition({ creating }) {
                                                 : null
                                         }
                                         reqHeader={formState.req}
+                                        locationCodeRoot={formState.req.auditLocation}
                                     />
                                 )}
                                 {tab === 1 && (
@@ -1270,6 +1271,7 @@ function Requisition({ creating }) {
                                                   }
                                                 : null
                                         }
+                                        locationCodeRoot={formState.req.auditLocation}
                                         updateMoveOnto={updated => {
                                             setChangesMade(true);
                                             dispatch({
