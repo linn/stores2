@@ -118,7 +118,9 @@
 
         protected override Expression<Func<StoresPallet, bool>> SearchExpression(string searchTerm)
         {
-            throw new NotImplementedException();
+            bool isInt = int.TryParse(searchTerm, out int palletNumber);
+
+            return x => (isInt && x.PalletNumber == palletNumber) || x.Description.ToUpper().Contains(searchTerm.Trim().ToUpper());
         }
 
         protected override async Task SaveToLogTable(
