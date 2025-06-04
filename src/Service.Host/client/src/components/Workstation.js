@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Dialog from '@mui/material/Dialog';
 import List from '@mui/material/List';
@@ -39,7 +39,10 @@ function Workstation({ creating }) {
     const [employeeSearchTerm, setEmployeeSearchTerm] = useState('');
     const [storageLocationSearchTerm, setStorageLocationSearchTerm] = useState('');
 
-    const { code } = useParams();
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const code = queryParams.get('code');
+
     const navigate = useNavigate();
 
     const {
@@ -70,6 +73,12 @@ function Workstation({ creating }) {
         isNewWorkStationsLoading,
         result: newWorkStationsGetResult
     } = useGet(itemTypes.workStations.url);
+
+    const {
+        send: getCitCodes,
+        isCitCodesLoading,
+        result: citCodesGetResult
+    } = useGet(itemTypes.citCodes.url);
 
     const {
         search: searchEmployees,
@@ -107,23 +116,22 @@ function Workstation({ creating }) {
     ]);
 
     useEffect(() => {
-        if (!creating && !hasFetched) {
+        if (!hasFetched) {
             setHasFetched(true);
-            getNewWorkStations(encodeURI(code));
+
+            if (!creating) {
+                getNewWorkStations(encodeURI(code));
+            }
+
+            getCitCodes();
         }
-    }, [creating, hasFetched, getNewWorkStations, code]);
+    }, [creating, hasFetched, getNewWorkStations, code, getCitCodes]);
 
     useEffect(() => {
         if (!workStation && newWorkStationsGetResult) {
             setWorkStation(newWorkStationsGetResult);
         }
     }, [workStation, newWorkStationsGetResult]);
-
-    useEffect(() => {
-        if (workStation) {
-            console.log(workStation);
-        }
-    }, [workStation]);
 
     const addNewRow = () => {
         setWorkStation(prev => ({
@@ -163,7 +171,7 @@ function Workstation({ creating }) {
         setWorkStation(prev => ({
             ...prev,
             workStationElements: prev?.workStationElements.map(e =>
-                e.workStationElementId === oldRow.workStationElementId ? oldRow : e
+                e.workStationElementId === oldRow?.workStationElementId ? oldRow : e
             )
         }));
 
@@ -443,22 +451,19 @@ function Workstation({ creating }) {
                     />
                 </Grid>
                 <Grid size={3}>
-                    <InputField
+                    <Dropdown
+                        fullWidth
+                        label="CIT Code"
+                        items={
+                            citCodesGetResult?.map(c => ({
+                                id: c.code,
+                                displayText: `${c.code} - ${c.name}`
+                            })) || []
+                        }
                         value={workStation?.citCode}
-                        fullWidth
-                        label="Code"
+                        onChange={handleFieldChange}
                         propertyName="citCode"
-                        onChange={handleFieldChange}
-                    />
-                </Grid>
-                <Grid size={3}>
-                    <InputField
-                        value={workStation?.citName}
-                        fullWidth
-                        label="Name"
-                        propertyName="citName"
-                        onChange={handleFieldChange}
-                        disabled
+                        loading={isCitCodesLoading}
                     />
                 </Grid>
                 <Grid size={6}>

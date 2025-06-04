@@ -48,7 +48,7 @@ function Workstations() {
                 <Link
                     component={RouterLink}
                     variant="body2"
-                    to={`/stores2/work-stations/${encodeURIComponent(params.row.workStationCode)}`}
+                    to={`/stores2/work-stations/detail?code=${encodeURIComponent(params.row.workStationCode)}`}
                 >
                     {params.row.workStationCode}
                 </Link>

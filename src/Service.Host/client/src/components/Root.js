@@ -24,7 +24,8 @@ import StoresFunctions from './StoresFunctions';
 import StoresFunction from './StoresFunction';
 import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
 import PcasStorageTypes from './PcasStorageTypes';
-import PcasStorageType from './PcasStorageType';import Workstations from './Workstations';
+import PcasStorageType from './PcasStorageType';
+import Workstations from './Workstations';
 import Workstation from './Workstation';
 function Root() {
     useSignIn();
@@ -90,11 +91,11 @@ function Root() {
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
                     <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />
                     <Route path="/stores2/work-stations" element={<Workstations />} />
+                    <Route path="/stores2/work-stations/detail" element={<Workstation />} />
                     <Route
                         path="/stores2/work-stations/create"
                         element={<Workstation creating />}
                     />
-                    <Route path="/stores2/work-stations/:code" element={<Workstation />} />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>
