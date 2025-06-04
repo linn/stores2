@@ -1,9 +1,9 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using System;
-    using System.Data;
 
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    
     public class StoresPallet
     {
         public StoresPallet()
