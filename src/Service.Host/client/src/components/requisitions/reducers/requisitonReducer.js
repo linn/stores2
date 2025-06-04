@@ -453,7 +453,9 @@ function reducer(state, action) {
                                       (sum, move) => add(sum, move.quantityToPick),
                                       0
                                   ),
-                                  stockPicked: true,
+                                  stockPicked: action.payload.stockMoves.some(
+                                      a => a.palletNumber || a.locationName
+                                  ),
                                   // todo - simplification: following line assumes stock can only be picked once for each line
                                   // so will need to make this able to cope with subsequent changes at some point
                                   moves: [
