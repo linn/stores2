@@ -49,7 +49,10 @@
                 .AddSingleton<IHandler, JsonResultHandler<PcasStorageTypeResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasStorageTypeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<PcasBoardResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasBoardResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasBoardResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<StoresPalletResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresPalletResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<LocationTypeResource>>>();
         }
     }
 }
