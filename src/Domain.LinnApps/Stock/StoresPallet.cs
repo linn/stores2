@@ -48,13 +48,14 @@
             {
                 throw new StoresPalletException($"Stock pool {defaultStockPoolId} not found.");
             }
+
             this.PalletNumber = palletNumber;
             this.Description = description;
             this.StorageLocation = storageLocation;
             this.Accessible = accessible;
             this.StoresKittable = storesKittable;
             this.StoresKittingPriority = storesKittingPriority;
-            this.StoresKittable = storesKittable;
+            this.SalesKittable = salesKittable;
             this.SalesKittingPriority = salesKittingPriority;
             this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
