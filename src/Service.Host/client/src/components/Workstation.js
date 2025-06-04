@@ -143,6 +143,16 @@ function Workstation({ creating }) {
         setChangesMade(true);
     };
 
+    const handleDeleteRow = params => {
+        setWorkStation(prev => ({
+            ...prev,
+            workStationElements: prev.workStationElements.filter(
+                element => element.workStationElementId !== params.workStationElementId
+            )
+        }));
+        setChangesMade(true);
+    };
+
     const handleCancelSelect = () => {
         const oldRow = newWorkStationsGetResult?.workStationElements?.find(
             ws => ws.workStationElementId === rowUpdated
@@ -261,22 +271,22 @@ function Workstation({ creating }) {
         {
             field: 'delete',
             headerName: '',
-            width: 120
-            // renderCell: params => (
-            //     <Tooltip title="Delete">
-            //         <div>
-            //             {
-            //                 <IconButton
-            //                     aria-label="delete"
-            //                     size="small"
-            //                     onClick={() => deleteWorkStationElement(params.row.seq)}
-            //                 >
-            //                     <DeleteIcon fontSize="inherit" />
-            //                 </IconButton>
-            //             }
-            //         </div>
-            //     </Tooltip>
-            // )
+            width: 120,
+            renderCell: params => (
+                <Tooltip title="Delete">
+                    <div>
+                        {
+                            <IconButton
+                                aria-label="delete"
+                                size="small"
+                                onClick={() => handleDeleteRow(params.row)}
+                            >
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                    </div>
+                </Tooltip>
+            )
         }
     ];
 
