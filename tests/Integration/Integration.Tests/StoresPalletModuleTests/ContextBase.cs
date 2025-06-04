@@ -5,7 +5,6 @@
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
@@ -16,8 +15,6 @@
     using Linn.Stores2.Resources;
     using Linn.Stores2.Service.Modules;
     using Microsoft.Extensions.DependencyInjection;
-
-    using NSubstitute;
 
     using NUnit.Framework;
 
