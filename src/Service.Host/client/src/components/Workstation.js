@@ -498,23 +498,6 @@ function Workstation({ creating }) {
                         Add new Workstation
                     </Button>
                 </Grid>
-
-                <Grid size={4}>
-                    <Button
-                        onClick={() => {
-                            if (creating) {
-                                createWorkStation(null, workStation);
-                            } else {
-                                updateWorkStation(workStation.workStationCode, workStation);
-                            }
-                            setRowUpdated(null);
-                        }}
-                        variant="outlined"
-                        disabled={newWorkStationsGetResult === workStation}
-                    >
-                        Save
-                    </Button>
-                </Grid>
                 <Grid size={12}>
                     <SaveBackCancelButtons
                         backClick={() => navigate('/stores2/work-stations')}
@@ -536,11 +519,6 @@ function Workstation({ creating }) {
                         onClose={() => setSnackbarVisible(false)}
                         message="Save Successful"
                     />
-                </Grid>
-                <Grid size={4}>
-                    <Button onClick={handleCancelSelect} variant="outlined" disabled={!rowUpdated}>
-                        Cancel
-                    </Button>
                 </Grid>
                 {(updateError || createWorkStationError) && (
                     <Grid size={12}>
