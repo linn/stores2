@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Stock
 {
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using System;
+    using System.Data;
 
     public class StoresPallet
     {
@@ -11,9 +13,8 @@
         public StoresPallet(
             int palletNumber,
             string description,
-            StorageLocation locationId,
-            DateTime? dateInvalid,
-            DateTime? dateLastAudited,
+            StorageLocation storageLocation,
+            int storageLocationId,
             string accessible,
             string storesKittable,
             int? storesKittablePriority,
@@ -21,8 +22,10 @@
             int? salesKittablePriority,
             DateTime? allocQueueTime,
             LocationType locationType,
+            string locationTypeId,
             int? auditedBy,
             StockPool defaultStockPool,
+            string defaultStockPoolId,
             string stockType,
             string stockState,
             int? auditOwnerId,
@@ -31,20 +34,32 @@
             string mixStates,
             int? cage)
         {
+            if (storageLocation == null)
+            {
+                throw new StoresPalletException($"Storage location {storageLocationId} not found.");
+            }
+
+            if (locationType == null && !string.IsNullOrEmpty(locationTypeId))
+            {
+                throw new StoresPalletException($"Location type {locationTypeId} not found.");
+            }
+
+            if (defaultStockPool == null && defaultStockPoolId != null)
+            {
+                throw new StoresPalletException($"Stock pool {defaultStockPoolId} not found.");
+            }
             this.PalletNumber = palletNumber;
             this.Description = description;
-            this.LocationIdCode = locationId.LocationId;
-            this.DateInvalid = dateInvalid;
-            this.DateLastAudited = dateLastAudited;
+            this.StorageLocation = storageLocation;
             this.Accessible = accessible;
             this.StoresKittable = storesKittable;
             this.StoresKittablePriority = storesKittablePriority;
             this.SalesKittable = salesKittable;
             this.SalesKittablePriority = salesKittablePriority;
             this.AllocQueueTime = allocQueueTime;
-            this.LocationTypeId = locationType?.Code;
+            this.LocationType = locationType;
             this.AuditedBy = auditedBy;
-            this.DefaultStockPoolId = defaultStockPool?.StockPoolCode;
+            this.DefaultStockPool = defaultStockPool;
             this.StockType = stockType;
             this.StockState = stockState;
             this.AuditOwnerId = auditOwnerId;
@@ -58,9 +73,7 @@
 
         public string Description { get; set; }
 
-        public int LocationIdCode { get; set; }
-
-        public StorageLocation LocationId { get; set; }
+        public StorageLocation StorageLocation { get; set; }
 
         public DateTime? DateInvalid { get; set; }
 
@@ -80,11 +93,7 @@
 
         public LocationType LocationType { get; set; }
 
-        public string LocationTypeId { get; set; }
-
         public int? AuditedBy { get; set; }
-
-        public string DefaultStockPoolId { get; set; }
 
         public StockPool DefaultStockPool { get; set; }
 
@@ -104,7 +113,8 @@
 
         public void Update(
             string description,
-            StorageLocation locationId,
+            StorageLocation storageLocation,
+            int storageLocationId,
             DateTime? dateInvalid,
             DateTime? dateLastAudited,
             string accessible,
@@ -114,8 +124,10 @@
             int? salesKittablePriority,
             DateTime? allocQueueTime,
             LocationType locationType,
+            string locationTypeId,
             int? auditedBy,
             StockPool defaultStockPool,
+            string defaultStockPoolId,
             string stockType,
             string stockState,
             int? auditOwnerId,
@@ -124,8 +136,23 @@
             string mixStates,
             int? cage)
         {
+            if (storageLocation == null)
+            {
+                throw new StoresPalletException($"Storage location {storageLocationId} not found.");
+            }
+
+            if (locationType == null && !string.IsNullOrEmpty(locationTypeId))
+            {
+                throw new StoresPalletException($"Location type {locationTypeId} not found.");
+            }
+
+            if (defaultStockPool == null && defaultStockPoolId != null)
+            {
+                throw new StoresPalletException($"Stock pool {defaultStockPoolId} not found.");
+            }
+
             this.Description = description;
-            this.LocationIdCode = locationId.LocationId;
+            this.StorageLocation = storageLocation;
             this.DateInvalid = dateInvalid;
             this.DateLastAudited = dateLastAudited;
             this.Accessible = accessible;
@@ -134,9 +161,9 @@
             this.SalesKittable = salesKittable;
             this.SalesKittablePriority = salesKittablePriority;
             this.AllocQueueTime = allocQueueTime;
-            this.LocationTypeId = locationType?.Code;
+            this.LocationType = locationType;
             this.AuditedBy = auditedBy;
-            this.DefaultStockPoolId = defaultStockPool?.StockPoolCode;
+            this.DefaultStockPool = defaultStockPool;
             this.StockType = stockType;
             this.StockState = stockState;
             this.AuditOwnerId = auditOwnerId;

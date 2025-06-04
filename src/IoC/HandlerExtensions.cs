@@ -52,7 +52,6 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasBoardResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StoresPalletResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresPalletResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<LocationTypeResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<LocationTypeResource>>>();
         }
     }

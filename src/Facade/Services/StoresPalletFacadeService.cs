@@ -41,40 +41,39 @@
             StoresPalletResource resource,
             IEnumerable<string> privileges = null)
         {
-            var alreadyExist = this.palletRepository.FindById(resource.PalletNumber);
+            var alreadyExist = await this.palletRepository.FindByIdAsync(resource.PalletNumber);
 
             if (alreadyExist != null)
             {
                 throw new AlreadyExistsException($"Pallet {resource.PalletNumber} already exists.");
             }
 
-            var stockPool = this.stockPoolRepository.FindById(resource.DefaultStockPoolId);
+            var stockPool = await this.stockPoolRepository.FindByIdAsync(resource.DefaultStockPoolId);
 
             if (stockPool == null && resource.DefaultStockPoolId != null)
             {
                 throw new NullReferenceException($"Stock pool {resource.DefaultStockPool.StockPoolCode} not found.");
             }
 
-            var locationType = this.locationTypeRepository.FindById(resource.LocationTypeId);
+            var locationType = await this.locationTypeRepository.FindByIdAsync(resource.LocationTypeId);
 
             if (locationType == null && !string.IsNullOrEmpty(resource.LocationTypeId))
             {
                 throw new NullReferenceException($"Location type {resource.LocationTypeId} not found.");
             }
 
-            var storageLocation = this.storageLocationTypeRepository.FindById(resource.LocationIdCode);
+            var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(resource.StorageLocationId);
 
             if (storageLocation == null)
             {
-                throw new NullReferenceException($"Storage location {resource.LocationIdCode} not found.");
+                throw new NullReferenceException($"Storage location {resource.StorageLocationId} not found.");
             }
 
             return new StoresPallet(
                 resource.PalletNumber,
                 resource.Description,
                 storageLocation,
-                DateTime.Parse(resource.DateInvalid),
-                DateTime.Parse(resource.DateLastAudited),
+                resource.StorageLocationId,
                 resource.Accessible,
                 resource.StoresKittable,
                 resource.StoresKittablePriority,
@@ -82,8 +81,10 @@
                 resource.SalesKittablePriority,
                 DateTime.Parse(resource.AllocQueueTime),
                 locationType,
+                resource.LocationTypeId,
                 resource.AuditedBy,
                 stockPool,
+                resource.DefaultStockPoolId,
                 resource.StockType,
                 resource.StockState,
                 resource.AuditOwnerId,
@@ -98,30 +99,31 @@
             StoresPalletResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            var stockPool = this.stockPoolRepository.FindById(updateResource?.DefaultStockPoolId);
+            var stockPool = await this.stockPoolRepository.FindByIdAsync(updateResource?.DefaultStockPoolId);
 
             if (stockPool == null && updateResource.DefaultStockPoolId != null)
             {
                 throw new NullReferenceException($"Stock pool {updateResource?.DefaultStockPoolId} not found.");
             }
 
-            var locationType = this.locationTypeRepository.FindById(updateResource.LocationTypeId);
+            var locationType = await this.locationTypeRepository.FindByIdAsync(updateResource.LocationTypeId);
 
             if (locationType == null && !string.IsNullOrEmpty(updateResource.LocationTypeId))
             {
                 throw new NullReferenceException($"Location type {updateResource.LocationTypeId} not found.");
             }
 
-            var storageLocation = this.storageLocationTypeRepository.FindById(updateResource.LocationIdCode);
+            var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(updateResource.StorageLocationId);
 
             if (storageLocation == null)
             {
-                throw new NullReferenceException($"Storage location {updateResource.LocationIdCode} not found.");
+                throw new NullReferenceException($"Storage location {updateResource.StorageLocationId} not found.");
             }
 
             entity.Update(
                 updateResource.Description,
                 storageLocation, 
+                updateResource.StorageLocationId,
                 DateTime.Parse(updateResource.DateInvalid),
                 DateTime.Parse(updateResource.DateLastAudited),
                 updateResource.Accessible,
@@ -131,8 +133,10 @@
                 updateResource.SalesKittablePriority,
                 DateTime.Parse(updateResource.AllocQueueTime),
                 locationType,
+                updateResource.LocationTypeId,
                 updateResource.AuditedBy,
                 stockPool,
+                updateResource.DefaultStockPoolId,
                 updateResource.StockType,
                 updateResource.StockState,
                 updateResource.AuditOwnerId,

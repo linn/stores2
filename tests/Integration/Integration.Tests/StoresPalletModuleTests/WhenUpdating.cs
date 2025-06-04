@@ -50,8 +50,7 @@
                 1,
                 "Test-Description",
                 this.storageLocation,
-                DateTime.Today,
-                DateTime.Today,
+                3,
                 "Y",
                 "Y",
                 1,
@@ -59,22 +58,24 @@
                 1,
                 DateTime.Today,
                 null,
+                null,
                 123,
+                null,
                 null,
                 "TypeA",
                 "StateA",
                 456,
                 4,
                 "DeptA",
-                "State1,State2", 
+                "State1,State2",
                 89);
 
             this.updateResource = new StoresPalletResource
             {
                 PalletNumber = 1,
                 Description = "A NEW DESCRIPTION",
-                LocationIdCode = 3,
-                LocationId = new StorageLocationResource
+                StorageLocationId = 3,
+                StorageLocation = new StorageLocationResource
                 {
                     LocationId = this.storageLocation.LocationId,
                     Description = this.storageLocation.Description

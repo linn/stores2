@@ -31,13 +31,18 @@
             var stockPoolRepository = new EntityFrameworkRepository<StockPool, string>(this.DbContext.StockPools);
             var locationTypeRepository = new EntityFrameworkRepository<LocationType, string>(this.DbContext.LocationTypes);
             var storageLocationRepository = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
+
+            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
+            var stockPoolResourceBuilder = new StockPoolResourceBuilder();
+            var locationTypeResourceBuilder = new LocationTypeResourceBuilder();
+
             var transactionManager = new TransactionManager(this.DbContext);
 
             IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> storesPalletFacadeService
                 = new StoresPalletFacadeService(
                     palletRepository,
                     transactionManager,
-                    new StoresPalletResourceBuilder(),
+                    new StoresPalletResourceBuilder(storageLocationResourceBuilder, locationTypeResourceBuilder, stockPoolResourceBuilder),
                     stockPoolRepository,
                     locationTypeRepository,
                     storageLocationRepository);
@@ -66,4 +71,3 @@
         }
     }
 }
-

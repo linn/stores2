@@ -10,24 +10,38 @@
 
     public class StoresPalletResourceBuilder : IBuilder<StoresPallet>
     {
+        private readonly StorageLocationResourceBuilder storageLocationResourceBuilder;
+        private readonly LocationTypeResourceBuilder locationTypeResourceBuilder;
+        private readonly StockPoolResourceBuilder stockPoolResourceBuilder;
+
+        public StoresPalletResourceBuilder(
+            StorageLocationResourceBuilder storageLocationResourceBuilder,
+            LocationTypeResourceBuilder locationTypeResourceBuilder,
+            StockPoolResourceBuilder stockPoolResourceBuilder)
+        {
+            this.storageLocationResourceBuilder = storageLocationResourceBuilder;
+            this.locationTypeResourceBuilder = locationTypeResourceBuilder;
+            this.stockPoolResourceBuilder = stockPoolResourceBuilder;
+        }
+
         public StoresPalletResource Build(StoresPallet pallet, IEnumerable<string> claims)
         {
-            var locationId = new StorageLocationResourceBuilder().Build(pallet.LocationId, claims);
+            var storageLocation = this.storageLocationResourceBuilder.Build(pallet.StorageLocation, claims);
 
             var locationType = pallet.LocationType != null
-                ? new LocationTypeResourceBuilder().Build(pallet.LocationType, claims)
-                : null;
+                                   ? this.locationTypeResourceBuilder.Build(pallet.LocationType, claims)
+                                   : null;
 
             var stockPool = pallet.DefaultStockPool != null
-                                ? new StockPoolResourceBuilder().Build(pallet.DefaultStockPool, claims)
+                                ? this.stockPoolResourceBuilder.Build(pallet.DefaultStockPool, claims)
                                 : null;
 
             return new StoresPalletResource
             {
                 PalletNumber = pallet.PalletNumber,
                 Description = pallet.Description,
-                LocationIdCode = pallet.LocationIdCode,
-                LocationId = locationId,
+                StorageLocationId = pallet.StorageLocation.LocationId,
+                StorageLocation = storageLocation,
                 DateInvalid = pallet.DateInvalid?.ToString("o"),
                 DateLastAudited = pallet.DateLastAudited?.ToString("o"),
                 Accessible = pallet.Accessible,
@@ -37,9 +51,9 @@
                 SalesKittablePriority = pallet.SalesKittablePriority,
                 AllocQueueTime = pallet.AllocQueueTime?.ToString("o"),
                 LocationType = locationType,
-                LocationTypeId = pallet.LocationTypeId,
+                LocationTypeId = pallet.LocationType?.Code,
                 AuditedBy = pallet.AuditedBy,
-                DefaultStockPoolId = pallet.DefaultStockPoolId,
+                DefaultStockPoolId = pallet.DefaultStockPool?.StockPoolCode,
                 DefaultStockPool = stockPool,
                 StockType = pallet.StockType,
                 StockState = pallet.StockState,

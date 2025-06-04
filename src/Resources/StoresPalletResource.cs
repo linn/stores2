@@ -8,9 +8,9 @@
 
         public string Description { get; set; }
 
-        public int LocationIdCode { get; set; }
+        public int StorageLocationId { get; set; }
 
-        public StorageLocationResource LocationId { get; set; }
+        public StorageLocationResource StorageLocation { get; set; }
 
         public string DateInvalid { get; set; }
 

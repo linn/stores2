@@ -947,7 +947,6 @@
             r.Property(l => l.PalletNumber).HasColumnName("PALLET_NUMBER");
             r.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             r.Property(l => l.DateInvalid).HasColumnName("DATE_INVALID");
-            r.Property(l => l.LocationIdCode).HasColumnName("LOCATION_ID");
             r.Property(l => l.DateLastAudited).HasColumnName("DATE_LAST_AUDITED");
             r.Property(l => l.Accessible).HasColumnName("ACCESSIBLE").HasMaxLength(1);
             r.Property(l => l.StoresKittable).HasColumnName("STORES_KITTABLE").HasMaxLength(1);
@@ -956,8 +955,6 @@
             r.Property(l => l.SalesKittablePriority).HasColumnName("SALES_KITTABLE_PRIORITY");
             r.Property(l => l.AllocQueueTime).HasColumnName("ALLOC_QUEUE_TIME");
             r.Property(l => l.AuditedBy).HasColumnName("AUDITED_BY");
-            r.Property(l => l.LocationTypeId).HasColumnName("LOCATION_TYPE").HasMaxLength(1);
-            r.Property(l => l.DefaultStockPoolId).HasColumnName("DEFAULT_STOCK_POOL").HasMaxLength(10);
             r.Property(l => l.StockType).HasColumnName("TYPE_OF_STOCK").HasMaxLength(1);
             r.Property(l => l.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
             r.Property(l => l.AuditOwnerId).HasColumnName("AUDIT_OWNER_ID");
@@ -965,9 +962,9 @@
             r.Property(l => l.AuditedByDepartmentCode).HasColumnName("AUDITED_BY_DEPARTMENT_CODE").HasMaxLength(10);
             r.Property(l => l.MixStates).HasColumnName("MIX_STATES").HasMaxLength(1);
             r.Property(l => l.Cage).HasColumnName("CAGE").HasMaxLength(1);
-            r.HasOne(l => l.LocationId).WithMany().HasForeignKey(p => p.LocationIdCode);
-            r.HasOne(l => l.LocationType).WithMany().HasForeignKey(p => p.LocationTypeId);
-            r.HasOne(l => l.DefaultStockPool).WithMany().HasForeignKey(p => p.DefaultStockPoolId);
+            r.HasOne(l => l.StorageLocation).WithMany().HasForeignKey("LOCATION_ID");
+            r.HasOne(l => l.LocationType).WithMany().HasForeignKey("LOCATION_TYPE");
+            r.HasOne(l => l.DefaultStockPool).WithMany().HasForeignKey("DEFAULT_STOCK_POOL");
         }
 
         private static void BuildLocationTypes(ModelBuilder builder)

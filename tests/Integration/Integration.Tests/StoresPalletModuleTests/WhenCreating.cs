@@ -50,8 +50,8 @@
             {
                                          PalletNumber = 1,
                                          Description = "Test-Description",
-                                         LocationIdCode = 3,
-                                         LocationId = new StorageLocationResource
+                                         StorageLocationId = 3,
+                                         StorageLocation = new StorageLocationResource
                                                           {
                                                               LocationId = this.storageLocation.LocationId, 
                                                               Description = this.storageLocation.Description
