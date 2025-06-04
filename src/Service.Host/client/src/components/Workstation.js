@@ -175,22 +175,43 @@ function Workstation({ creating }) {
         forRow: null,
         forColumn: null
     });
-    const searchRenderCell = params => (
-        <>
-            <GridSearchIcon
-                style={{ cursor: 'pointer' }}
-                onClick={() =>
-                    setSearchDialogOpen({
-                        forRow: params.id,
-                        forColumn: params.field
-                    })
-                }
-            />
-            {params.row?.createdByName}
-        </>
-    );
 
     const workStationElementColumns = [
+        {
+            field: 'locationId',
+            headerName: 'Storage Location',
+            width: 150,
+            editable: true,
+            type: 'search',
+            search: searchStorageLocations,
+            searchResults: storageLocationsSearchResults,
+            searchLoading: storageLocationsSearchLoading,
+            searchUpdateFieldNames: [
+                { fieldName: 'locationId', searchResultFieldName: 'locationId' },
+                { fieldName: 'locationCode', searchResultFieldName: 'locationCode' },
+                { fieldName: 'locationDescription', searchResultFieldName: 'description' }
+            ],
+            clearSearch: clearStorageLocation,
+            renderCell: params => (
+                <>
+                    <GridSearchIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={() =>
+                            setSearchDialogOpen({
+                                forRow: params.id,
+                                forColumn: params.field
+                            })
+                        }
+                    />
+                    {params.row?.locationCode}
+                </>
+            )
+        },
+        {
+            field: 'locationDescription',
+            headerName: 'Location Description ',
+            width: 200
+        },
         {
             field: 'dateCreated',
             headerName: 'Date Created',
@@ -200,22 +221,6 @@ function Workstation({ creating }) {
             valueGetter: value => {
                 return new Date(value);
             }
-        },
-        {
-            field: 'locationId',
-            headerName: 'Storage Location',
-            width: 200,
-            editable: true,
-            type: 'search',
-            search: searchStorageLocations,
-            searchResults: storageLocationsSearchResults,
-            searchLoading: storageLocationsSearchLoading,
-            searchUpdateFieldNames: [
-                { fieldName: 'locationId', searchResultFieldName: 'locationId' },
-                { fieldName: 'locationDescription', searchResultFieldName: 'description' }
-            ],
-            clearSearch: clearStorageLocation,
-            renderCell: searchRenderCell
         },
         {
             field: 'createdBy',
@@ -231,11 +236,23 @@ function Workstation({ creating }) {
                 { fieldName: 'createdByName', searchResultFieldName: 'fullName' }
             ],
             clearSearch: clearEmployeesSearch,
-            renderCell: searchRenderCell
+            renderCell: params => (
+                <>
+                    <GridSearchIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={() =>
+                            setSearchDialogOpen({
+                                forRow: params.id,
+                                forColumn: params.field
+                            })
+                        }
+                    />
+                    {params.row?.createdBy}
+                </>
+            )
         },
         {
             field: 'createdByName',
-            headerName: 'Name ',
             width: 150
         }
     ];
