@@ -847,7 +847,11 @@
             e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
             e.HasOne(a => a.Cit).WithMany().HasForeignKey("CIT_CODE");
             e.Property(s => s.ZoneType).HasColumnName("ZONE_TYPE").HasMaxLength(20);
-            e.HasMany(w => w.WorkStationElements).WithOne().HasForeignKey(w => w.WorkStationCode);
+            e.HasMany(w => w.WorkStationElements)
+                .WithOne()
+                .HasForeignKey(e => e.WorkStationCode)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
         private static void BuildWorkstationElements(ModelBuilder builder)
