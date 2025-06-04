@@ -17,6 +17,7 @@ import {
     ErrorCard,
     InputField,
     Loading,
+    SaveBackCancelButtons,
     Search,
     SnackbarMessage
 } from '@linn-it/linn-form-components-library';
@@ -39,6 +40,7 @@ function Workstation({ creating }) {
     const [storageLocationSearchTerm, setStorageLocationSearchTerm] = useState('');
 
     const { code } = useParams();
+    const navigate = useNavigate();
 
     const {
         search: searchStorageLocations,
@@ -512,6 +514,21 @@ function Workstation({ creating }) {
                     >
                         Save
                     </Button>
+                </Grid>
+                <Grid size={12}>
+                    <SaveBackCancelButtons
+                        backClick={() => navigate('/stores2/work-stations')}
+                        saveClick={() => {
+                            if (creating) {
+                                createWorkStation(null, workStation);
+                            } else {
+                                updateWorkStation(workStation.workStationCode, workStation);
+                            }
+                            setRowUpdated(null);
+                        }}
+                        saveDisabled={!changesMade}
+                        cancelClick={handleCancelSelect}
+                    />
                 </Grid>
                 <Grid>
                     <SnackbarMessage
