@@ -224,7 +224,13 @@ function Workstation({ creating }) {
         },
         {
             field: 'locationDescription',
-            headerName: 'Location Description ',
+            headerName: 'Location Description',
+            width: 200
+        },
+        {
+            field: 'palletNumber',
+            headerName: 'Pallet Number',
+            editable: true,
             width: 200
         },
         {
@@ -268,6 +274,7 @@ function Workstation({ creating }) {
         },
         {
             field: 'createdByName',
+            headerName: 'Name',
             width: 150
         },
         {
