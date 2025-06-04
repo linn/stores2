@@ -7,6 +7,11 @@ import Grid from '@mui/material/Grid';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import Tooltip from '@mui/material/Tooltip';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import Button from '@mui/material/Button';
+import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import {
     Dropdown,
     ErrorCard,
@@ -15,8 +20,6 @@ import {
     Search,
     SnackbarMessage
 } from '@linn-it/linn-form-components-library';
-import Button from '@mui/material/Button';
-import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
@@ -254,6 +257,26 @@ function Workstation({ creating }) {
         {
             field: 'createdByName',
             width: 150
+        },
+        {
+            field: 'delete',
+            headerName: '',
+            width: 120
+            // renderCell: params => (
+            //     <Tooltip title="Delete">
+            //         <div>
+            //             {
+            //                 <IconButton
+            //                     aria-label="delete"
+            //                     size="small"
+            //                     onClick={() => deleteWorkStationElement(params.row.seq)}
+            //                 >
+            //                     <DeleteIcon fontSize="inherit" />
+            //                 </IconButton>
+            //             }
+            //         </div>
+            //     </Tooltip>
+            // )
         }
     ];
 
