@@ -81,6 +81,8 @@
                     TestTransDefs.StockToLinnDept.TransactionCode)
                 .Returns(new ProcessResult(
                     true, string.Empty));
+            this.StockService.ValidStockLocation(null, 512, this.part.PartNumber, 1, null, "LINN")
+                .Returns(new ProcessResult(true, "Ok"));
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
                 .Returns(new StoresTransactionDefinition(TestTransDefs.StockToLinnDept.TransactionCode));
             this.ReqStoredProcedures.CreateNominals(

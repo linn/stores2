@@ -8,6 +8,7 @@
 
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
@@ -37,7 +38,8 @@
                 123,
                 "REQ",
                 new Department(),
-                new Nominal());
+                new Nominal(),
+                auditLocation: "P123");
             req.Cancel("just cos", new Employee());
             this.ReqManager.BookRequisition(
                     this.resource.ReqNumber,

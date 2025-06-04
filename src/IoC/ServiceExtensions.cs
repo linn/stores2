@@ -32,6 +32,7 @@
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
+
     using Microsoft.Extensions.DependencyInjection;
     using RazorEngineCore;
 
@@ -97,6 +98,7 @@
                 .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
                 .AddScoped<IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>, StockStateFacadeService>()
                 .AddScoped<IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource>, SundryBookInDetailFacadeService>()
+                .AddScoped<IAsyncQueryFacadeService<AuditLocation, AuditLocationResource, AuditLocationResource>, AuditLocationFacadeService>()
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
@@ -104,6 +106,7 @@
                 .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
+                .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
         }
 
@@ -121,6 +124,7 @@
                 .AddScoped<IBuilder<StorageType>, StorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<PartsStorageType>, PartsStorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<SundryBookInDetail>, SundryBookInDetailResourceBuilder>()
+                .AddScoped<IBuilder<AuditLocation>, AuditLocationResourceBuilder>()
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
@@ -128,7 +132,10 @@
                 .AddScoped<IBuilder<Workstation>, WorkstationResourceBuilder>()
                 .AddScoped<IBuilder<WorkstationElement>, WorkstationElementsResourceBuilder>()
                 .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>()
-                .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>();
+                .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>()
+                .AddScoped<IBuilder<StoresPallet>, StoresPalletResourceBuilder>()
+                .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
+                .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>();
         }
     }
 }

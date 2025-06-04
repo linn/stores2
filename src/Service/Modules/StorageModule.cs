@@ -26,6 +26,7 @@
             app.MapPut("/stores2/storage/locations/{id:int}", this.UpdateLocation);
             app.MapGet("/stores2/stock/states", this.GetStockStates);
             app.MapGet("/stores2/stock/states/{id}", this.GetStockState);
+            app.MapGet("/stores2/storage/audit-locations", this.GetAuditLocations);
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -58,6 +59,23 @@
                     SiteCode = siteCode
                 };
                 await res.Negotiate(await service.FilterBy(searchResource));
+            }
+        }
+
+        private async Task GetAuditLocations(
+            HttpRequest req,
+            HttpResponse res,
+            string searchTerm,
+            IAsyncQueryFacadeService<AuditLocation, AuditLocationResource, AuditLocationResource> facadeService)
+        {
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                await res.Negotiate(
+                    await facadeService.FilterBy(new AuditLocationResource { StoragePlace = searchTerm.ToUpper() }));
+            }
+            else
+            {
+                await res.Negotiate(await facadeService.GetAll());
             }
         }
 

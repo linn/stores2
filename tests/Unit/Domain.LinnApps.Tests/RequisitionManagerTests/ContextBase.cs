@@ -50,6 +50,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
         protected IRepository<BookInOrderDetail, BookInOrderDetailKey> BookInOrderDetailRepository { get; set; }
 
+        protected IQueryRepository<AuditLocation> AuditLocationRepository { get; set; }
+
         protected IStoresService StoresService { get; private set; }
 
         protected IDocumentProxy DocumentProxy { get; private set; }
@@ -85,6 +87,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.SalesProxy = Substitute.For<ISalesProxy>();
             this.StockService = Substitute.For<IStockService>();
             this.BomVerificationProxy = Substitute.For<IBomVerificationProxy>();
+            this.AuditLocationRepository = Substitute.For<IQueryRepository<AuditLocation>>();
             this.BookInOrderDetailRepository = Substitute.For<IRepository<BookInOrderDetail, BookInOrderDetailKey>>();
             this.SerialNumberService = Substitute.For<ISerialNumberService>();
             this.StoresService.ValidStockPool(Arg.Any<Part>(), Arg.Any<StockPool>())
@@ -121,7 +124,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 this.PotentialMoveDetailRepository,
                 this.BomVerificationProxy,
                 this.BookInOrderDetailRepository,
-                this.SerialNumberService);
+                this.SerialNumberService,
+                this.AuditLocationRepository);
         }
     }
 }

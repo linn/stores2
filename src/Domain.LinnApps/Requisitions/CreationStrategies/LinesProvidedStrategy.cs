@@ -70,6 +70,38 @@
             var toLocation = await this.storageLocationRepository.FindByAsync(x => x.LocationCode == context.ToLocationCode);
             var part = await this.partRepository.FindByIdAsync(context.PartNumber);
 
+            await this.requisitionManager.Validate(
+                context.CreatedByUserNumber,
+                context.Function.FunctionCode,
+                context.ReqType,
+                context.Document1Number,
+                context.Document1Type,
+                context.DepartmentCode,
+                context.NominalCode,
+                reference: context.Reference,
+                comments: context.Comments,
+                manualPick: context.ManualPick,
+                fromStockPool: context.FromStockPool,
+                toStockPool: context.ToStockPool,
+                fromPalletNumber: context.FromPallet,
+                toPalletNumber: context.ToPallet,
+                fromLocationCode: context.FromLocationCode,
+                toLocationCode: context.ToLocationCode,
+                partNumber: context.PartNumber,
+                quantity: context.Quantity,
+                fromState: context.FromState,
+                toState: context.ToState,
+                batchRef: context.BatchRef,
+                batchDate: context.BatchDate,
+                document1Line: context.Document1Line,
+                newPartNumber: context.NewPartNumber,
+                lines: context.Lines,
+                isReverseTransaction: context.IsReverseTransaction,
+                originalDocumentNumber: context.OriginalReqNumber,
+                bookInOrderDetails: context.BookInOrderDetails,
+                dateReceived: context.DateReceived,
+                auditLocation: context.AuditLocation);
+
             var req = new RequisitionHeader(
                 employee,
                 context.Function,
@@ -93,7 +125,8 @@
                 context.ToState,
                 context.FromState,
                 context.BatchRef,
-                context.BatchDate);
+                context.BatchDate,
+                auditLocation: context.AuditLocation);
 
             await this.repository.AddAsync(req);
 

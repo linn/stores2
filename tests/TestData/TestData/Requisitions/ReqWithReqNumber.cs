@@ -33,7 +33,8 @@
             string toState = null,
             string batchRef = null,
             DateTime? batchDate = null,
-            bool hasBeenReversed = false) 
+            bool hasBeenReversed = false,
+            string auditLocation = null) 
             : base(
                 createdBy,
                 function,
@@ -56,7 +57,8 @@
                 fromState: fromState,
                 toState: toState,
                 batchRef: batchRef,
-                batchDate: batchDate)
+                batchDate: batchDate,
+                auditLocation: auditLocation)
         {
             this.ReqNumber = reqNumber;
             this.IsReversed = hasBeenReversed ? "Y" : "N";

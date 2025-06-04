@@ -56,7 +56,7 @@ function StockOptions({
                 functionCode?.code === 'MOVE') && (
                 <>
                     <Grid size={2}>
-                        {functionCode?.fromStates && (
+                        {functionCode?.fromStates && functionCode?.fromStateRequired !== 'N' && (
                             <Dropdown
                                 value={fromState}
                                 disabled={disabled}
@@ -88,13 +88,15 @@ function StockOptions({
                         />
                     </Grid>
                     <Grid size={2}>
-                        <DatePicker
-                            value={batchDate}
-                            disabled={disabled}
-                            onChange={newVal => setItemValue('batchDate', newVal)}
-                            label="Batch Date"
-                            propertyName="batchDate"
-                        />
+                        {functionCode?.batchDateRequired !== 'N' && (
+                            <DatePicker
+                                value={batchDate}
+                                disabled={disabled}
+                                onChange={newVal => setItemValue('batchDate', newVal)}
+                                label="Batch Date"
+                                propertyName="batchDate"
+                            />
+                        )}
                     </Grid>
                     <Grid size={2}>
                         <Button

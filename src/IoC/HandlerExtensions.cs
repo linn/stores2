@@ -5,7 +5,6 @@
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Resources;
     using Linn.Common.Service.Core.Handlers;
-    using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
@@ -35,6 +34,7 @@
                 .AddSingleton<IHandler, JsonResultHandler<PartsStorageTypeResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PartsStorageTypeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<SundryBookInDetailResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<AuditLocationResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StockPoolResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StockPoolResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageSiteResource>>>()
@@ -49,7 +49,10 @@
                 .AddSingleton<IHandler, JsonResultHandler<PcasStorageTypeResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasStorageTypeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<PcasBoardResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasBoardResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasBoardResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<StoresPalletResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresPalletResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<LocationTypeResource>>>();
         }
     }
 }

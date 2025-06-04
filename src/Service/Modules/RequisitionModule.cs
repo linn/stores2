@@ -186,8 +186,7 @@
             resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(await service.Validate(resource));
         }
-
-
+        
         private async Task Update(
             HttpResponse res,
             HttpRequest req,

@@ -177,7 +177,8 @@
                     isReverseTransaction: resource.IsReverseTransaction,
                     originalDocumentNumber: resource.OriginalReqNumber,
                     bookInOrderDetails: resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
-                    dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived));
+                    dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived),
+                    auditLocation: resource.AuditLocation);
 
                 return new SuccessResult<RequisitionHeaderResource>(resource);
             }
@@ -244,7 +245,6 @@
                              resource.Document2Name,
                              resource.Department?.DepartmentCode, 
                              resource.Nominal?.NominalCode, 
-                             BuildLineCandidateFromResource(resource.Lines?.FirstOrDefault()), 
                              reference: resource.Reference, 
                              comments: resource.Comments, 
                              manualPick: resource.ManualPick, 
@@ -267,7 +267,8 @@
                              resource.Document3,
                              resource.BookInOrderDetails?.Select(BuildBookInOrderDetailFromResource),
                              dateReceived: string.IsNullOrEmpty(resource.DateReceived) ? null : DateTime.Parse(resource.DateReceived),
-                             fromCategory: resource.FromCategory);
+                             fromCategory: resource.FromCategory,
+                             auditLocation: resource.AuditLocation);
             return result;
         }
 
@@ -374,6 +375,8 @@
                                             Qty = m.Qty.GetValueOrDefault(), 
                                             FromLocation  = m.FromLocationCode,
                                             FromPallet = m.FromPalletNumber,
+                                            FromState = m.FromState,
+                                            FromStockPool = m.FromStockPool,
                                             ToLocation = m.ToLocationCode,
                                             ToPallet = m.ToPalletNumber,
                                             ToStockPool = m.ToStockPool,
