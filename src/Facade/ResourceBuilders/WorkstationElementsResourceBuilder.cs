@@ -20,7 +20,7 @@
                 WorkstationCode = model.WorkStationCode,
                 PalletNumber = model.PalletNumber,
                 LocationId = model.StorageLocation?.LocationId,
-                LocationIdName = model.StorageLocation?.Description,
+                LocationDescription = model.StorageLocation?.Description,
                 DateCreated = model.DateCreated.ToString("o"),
                 CreatedBy = model.CreatedBy?.Id,
                 CreatedByName = model.CreatedBy?.Name,

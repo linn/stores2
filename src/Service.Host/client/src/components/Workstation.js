@@ -33,14 +33,16 @@ function Workstation({ creating }) {
     const [rowUpdated, setRowUpdated] = useState();
     const [changesMade, setChangesMade] = useState(false);
     const [employeeSearchTerm, setEmployeeSearchTerm] = useState('');
+    const [storageLocationSearchTerm, setStorageLocationSearchTerm] = useState('');
 
     const { code } = useParams();
 
     const {
-        send: getStorageLocation,
-        isStorageLocationLoading,
-        result: storageLocationGetResult
-    } = useGet(itemTypes.storageLocations.url);
+        search: searchStorageLocations,
+        results: storageLocationsSearchResults,
+        loading: storageLocationsSearchLoading,
+        clear: clearStorageLocation
+    } = useSearch(itemTypes.storageLocations.url, 'locationId', 'locationCode', 'description');
 
     const {
         send: updateWorkStation,
@@ -200,19 +202,19 @@ function Workstation({ creating }) {
             }
         },
         {
-            field: 'Storage Place',
-            headerName: 'Added By',
+            field: 'locationId',
+            headerName: 'Storage Location',
             width: 200,
             editable: true,
             type: 'search',
-            search: searchEmployees,
-            searchResults: employeesSearchResults,
-            searchLoading: employeesSearchLoading,
+            search: searchStorageLocations,
+            searchResults: storageLocationsSearchResults,
+            searchLoading: storageLocationsSearchLoading,
             searchUpdateFieldNames: [
-                { fieldName: 'createdBy', searchResultFieldName: 'id' },
-                { fieldName: 'createdByName', searchResultFieldName: 'fullName' }
+                { fieldName: 'locationId', searchResultFieldName: 'locationId' },
+                { fieldName: 'locationDescription', searchResultFieldName: 'description' }
             ],
-            clearSearch: clearEmployeesSearch,
+            clearSearch: clearStorageLocation,
             renderCell: searchRenderCell
         },
         {
@@ -238,7 +240,7 @@ function Workstation({ creating }) {
         }
     ];
 
-    const renderEmployeeSearchDialog = c => {
+    const renderStorageLocationSearchDialog = s => {
         const handleClose = () => {
             setSearchDialogOpen({ forRow: null, forColumn: null });
         };
@@ -250,10 +252,10 @@ function Workstation({ creating }) {
 
             let newRow = {
                 ...currentRow,
-                [c.field]: selected.id
+                [s.field]: selected.id
             };
 
-            c.searchUpdateFieldNames?.forEach(f => {
+            s.searchUpdateFieldNames?.forEach(f => {
                 newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
             });
             processRowUpdate(newRow, currentRow);
@@ -261,24 +263,78 @@ function Workstation({ creating }) {
         };
 
         return (
-            <div id={c.field}>
-                <Dialog open={searchDialogOpen.forColumn === c.field} onClose={handleClose}>
+            <div id={s.field}>
+                <Dialog open={searchDialogOpen.forColumn === s.field} onClose={handleClose}>
                     <DialogTitle>Search</DialogTitle>
                     <DialogContent>
                         <Search
                             autoFocus
-                            propertyName={`${c.field}-searchTerm`}
+                            propertyName={`${s.field}-searchTerm`}
+                            label=""
+                            resultsInModal
+                            resultLimit={100}
+                            value={storageLocationSearchTerm}
+                            handleValueChange={(_, newVal) => setStorageLocationSearchTerm(newVal)}
+                            search={s.search}
+                            searchResults={s.searchResults?.map(r => ({
+                                ...r,
+                                id: r[s.field]
+                            }))}
+                            searchLoading={s.loading}
+                            priorityFunction="closestMatchesFirst"
+                            onResultSelect={handleSearchResultSelect}
+                            clearSearch={() => {}}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose}>Close</Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        );
+    };
+
+    const renderEmployeeSearchDialog = e => {
+        const handleClose = () => {
+            setSearchDialogOpen({ forRow: null, forColumn: null });
+        };
+
+        const handleSearchResultSelect = selected => {
+            const currentRow = workStation?.workStationElements.find(
+                r => r.workStationElementId === searchDialogOpen.forRow
+            );
+
+            let newRow = {
+                ...currentRow,
+                [e.field]: selected.id
+            };
+
+            e.searchUpdateFieldNames?.forEach(f => {
+                newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
+            });
+            processRowUpdate(newRow, currentRow);
+            setSearchDialogOpen({ forRow: null, forColumn: null });
+        };
+
+        return (
+            <div id={e.field}>
+                <Dialog open={searchDialogOpen.forColumn === e.field} onClose={handleClose}>
+                    <DialogTitle>Search</DialogTitle>
+                    <DialogContent>
+                        <Search
+                            autoFocus
+                            propertyName={`${e.field}-searchTerm`}
                             label=""
                             resultsInModal
                             resultLimit={100}
                             value={employeeSearchTerm}
                             handleValueChange={(_, newVal) => setEmployeeSearchTerm(newVal)}
-                            search={c.search}
-                            searchResults={c.searchResults?.map(r => ({
+                            search={e.search}
+                            searchResults={e.searchResults?.map(r => ({
                                 ...r,
-                                id: r[c.field]
+                                id: r[e.field]
                             }))}
-                            searchLoading={c.loading}
+                            searchLoading={e.loading}
                             priorityFunction="closestMatchesFirst"
                             onResultSelect={handleSearchResultSelect}
                             clearSearch={() => {}}
@@ -365,8 +421,11 @@ function Workstation({ creating }) {
                 </Grid>
                 <Grid size={12}>
                     {workStationElementColumns
-                        .filter(c => c.type === 'search')
-                        .map(c => renderEmployeeSearchDialog(c))}
+                        .filter(e => e.type === 'search' && e.headerName === 'Added By')
+                        .map(e => renderEmployeeSearchDialog(e))}
+                    {workStationElementColumns
+                        .filter(s => s.type === 'search' && s.headerName === 'Storage Location')
+                        .map(s => renderStorageLocationSearchDialog(s))}
                     <DataGrid
                         getRowId={row => row?.workStationElementId}
                         rows={workStation?.workStationElements}
