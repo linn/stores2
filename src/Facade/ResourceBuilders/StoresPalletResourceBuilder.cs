@@ -10,19 +10,9 @@
 
     public class StoresPalletResourceBuilder : IBuilder<StoresPallet>
     {
-        private readonly StorageLocationResourceBuilder storageLocationResourceBuilder;
-        private readonly LocationTypeResourceBuilder locationTypeResourceBuilder;
-        private readonly StockPoolResourceBuilder stockPoolResourceBuilder;
-
-        public StoresPalletResourceBuilder(
-            StorageLocationResourceBuilder storageLocationResourceBuilder,
-            LocationTypeResourceBuilder locationTypeResourceBuilder,
-            StockPoolResourceBuilder stockPoolResourceBuilder)
-        {
-            this.storageLocationResourceBuilder = storageLocationResourceBuilder;
-            this.locationTypeResourceBuilder = locationTypeResourceBuilder;
-            this.stockPoolResourceBuilder = stockPoolResourceBuilder;
-        }
+        private readonly StorageLocationResourceBuilder storageLocationResourceBuilder = new ();
+        private readonly LocationTypeResourceBuilder locationTypeResourceBuilder = new ();
+        private readonly StockPoolResourceBuilder stockPoolResourceBuilder = new ();
 
         public StoresPalletResource Build(StoresPallet pallet, IEnumerable<string> claims)
         {
@@ -45,10 +35,10 @@
                 DateInvalid = pallet.DateInvalid?.ToString("o"),
                 DateLastAudited = pallet.DateLastAudited?.ToString("o"),
                 Accessible = pallet.Accessible,
-                StoresKittable = pallet.StoresKittable,
-                StoresKittablePriority = pallet.StoresKittablePriority,
-                SalesKittable = pallet.SalesKittable,
-                SalesKittablePriority = pallet.SalesKittablePriority,
+                StoresKittable = pallet.StoresKitting,
+                StoresKittablePriority = pallet.StoresKittingPriority,
+                SalesKittable = pallet.SalesKitting,
+                SalesKittablePriority = pallet.SalesKittingPriority,
                 AllocQueueTime = pallet.AllocQueueTime?.ToString("o"),
                 LocationType = locationType,
                 LocationTypeId = pallet.LocationType?.Code,

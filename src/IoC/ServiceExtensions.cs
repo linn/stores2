@@ -106,6 +106,7 @@
                 .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
+                .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
         }
 
@@ -133,7 +134,6 @@
                 .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>()
                 .AddScoped<IBuilder<StoresPallet>, StoresPalletResourceBuilder>()
-                .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>();
         }
     }

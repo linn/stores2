@@ -16,10 +16,10 @@
             StorageLocation storageLocation,
             int storageLocationId,
             string accessible,
-            string storesKittable,
-            int? storesKittablePriority,
-            string salesKittable,
-            int? salesKittablePriority,
+            string storesKitting,
+            int? storesKittingPriority,
+            string salesKitting,
+            int? salesKittingPriority,
             DateTime? allocQueueTime,
             LocationType locationType,
             string locationTypeId,
@@ -52,10 +52,10 @@
             this.Description = description;
             this.StorageLocation = storageLocation;
             this.Accessible = accessible;
-            this.StoresKittable = storesKittable;
-            this.StoresKittablePriority = storesKittablePriority;
-            this.SalesKittable = salesKittable;
-            this.SalesKittablePriority = salesKittablePriority;
+            this.StoresKitting = storesKitting;
+            this.StoresKittingPriority = storesKittingPriority;
+            this.SalesKitting = salesKitting;
+            this.SalesKittingPriority = salesKittingPriority;
             this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
@@ -81,13 +81,13 @@
 
         public string Accessible { get; set; }
 
-        public string StoresKittable { get; set; }
+        public string StoresKitting { get; set; }
 
-        public int? StoresKittablePriority { get; set; }
+        public int? StoresKittingPriority { get; set; }
 
-        public string SalesKittable { get; set; }
+        public string SalesKitting { get; set; }
 
-        public int? SalesKittablePriority { get; set; }
+        public int? SalesKittingPriority { get; set; }
 
         public DateTime? AllocQueueTime { get; set; }
 
@@ -118,10 +118,10 @@
             DateTime? dateInvalid,
             DateTime? dateLastAudited,
             string accessible,
-            string storesKittable,
-            int? storesKittablePriority,
-            string salesKittable,
-            int? salesKittablePriority,
+            string storesKitting,
+            int? storesKittingPriority,
+            string salesKitting,
+            int? salesKittingPriority,
             DateTime? allocQueueTime,
             LocationType locationType,
             string locationTypeId,
@@ -156,10 +156,10 @@
             this.DateInvalid = dateInvalid;
             this.DateLastAudited = dateLastAudited;
             this.Accessible = accessible;
-            this.StoresKittable = storesKittable;
-            this.StoresKittablePriority = storesKittablePriority;
-            this.SalesKittable = salesKittable;
-            this.SalesKittablePriority = salesKittablePriority;
+            this.StoresKitting = storesKitting;
+            this.StoresKittingPriority = storesKittingPriority;
+            this.SalesKitting = salesKitting;
+            this.SalesKittingPriority = salesKittingPriority;
             this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
