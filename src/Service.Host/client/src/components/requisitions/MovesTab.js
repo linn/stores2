@@ -21,7 +21,8 @@ function MovesTab({
     addMove = null,
     updateMoveOnto = null,
     stockPools = [],
-    stockStates = []
+    stockStates = [],
+    locationCodeRoot = null
 }) {
     const [searchDialogOpen, setSearchDialogOpen] = useState({
         forRow: null
@@ -38,7 +39,7 @@ function MovesTab({
         clear: clearLocationsSearch
     } = useSearch(itemTypes.storageLocations.url, 'locationId', 'locationCode', 'description');
 
-    const [searchTerm, setSearchTerm] = useState();
+    const [searchTerm, setSearchTerm] = useState(locationCodeRoot);
 
     const [isSelectingLocation, setIsSelectingLocation] = useState(false);
 
@@ -155,7 +156,7 @@ function MovesTab({
         {
             field: 'fromLocationCode',
             headerName: 'Loc Code',
-            width: 120
+            width: 150
         },
         {
             field: 'fromLocationDescription',
@@ -227,7 +228,7 @@ function MovesTab({
         {
             field: 'toLocationCode',
             headerName: 'Loc Code',
-            width: 120,
+            width: 150,
             renderCell: params => (
                 <>
                     <GridSearchIcon

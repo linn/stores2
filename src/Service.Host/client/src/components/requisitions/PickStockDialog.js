@@ -23,7 +23,8 @@ function PickStockDialog({
     state,
     stockPool,
     selectSingleBatch = false,
-    batchRef = null
+    batchRef = null,
+    locationCodeRoot = null
 }) {
     const [snackbar, setSnackbar] = useState(null);
     const handleCloseSnackbar = () => setSnackbar(null);
@@ -92,13 +93,14 @@ function PickStockDialog({
                     .filter(
                         x =>
                             (!batchRef || x.batchRef === batchRef) &&
-                            x.quantity > x.quantityAllocated
+                            x.quantity > x.quantityAllocated &&
+                            (!locationCodeRoot || x.locationName?.startsWith(locationCodeRoot))
                     )
                     .sort(sortIt)
                     .map((x, i) => ({ ...x, id: i }))
             );
         }
-    }, [result, moves, batchRef]);
+    }, [result, moves, batchRef, locationCodeRoot]);
 
     const handleConfirmClick = picks => {
         if (quantity) {
