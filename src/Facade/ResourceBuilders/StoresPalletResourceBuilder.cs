@@ -37,7 +37,7 @@
                        {
                            PalletNumber = pallet.PalletNumber,
                            Description = pallet.Description,
-                           StorageLocationId = pallet.StorageLocation.LocationId,
+                           StorageLocationId = pallet.StorageLocation != null ? pallet.StorageLocation.LocationId : 0,
                            StorageLocation = storageLocation,
                            DateInvalid = pallet.DateInvalid?.ToString("o"),
                            DateLastAudited = pallet.DateLastAudited?.ToString("o"),
