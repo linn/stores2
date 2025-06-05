@@ -2,8 +2,10 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+    using Amazon.Auth.AccessControlPolicy;
     using Amazon.SimpleEmail.Model;
 
     using Linn.Common.Facade;
@@ -17,17 +19,18 @@
     {
         private readonly IRepository<StockPool, string> stockPoolRepository;
 
-        private readonly IRepository<LocationType, string> locationTypeRepository;
+        private readonly IQueryRepository<LocationType> locationTypeRepository;
 
         private readonly IRepository<StorageLocation, int> storageLocationTypeRepository;
 
         private readonly IRepository<StoresPallet, int> palletRepository;
+
         public StoresPalletFacadeService(
             IRepository<StoresPallet, int> repository,
             ITransactionManager transactionManager,
             IBuilder<StoresPallet> resourceBuilder,
             IRepository<StockPool, string> stockPoolRepository,
-            IRepository<LocationType, string> locationTypeRepository,
+            IQueryRepository<LocationType> locationTypeRepository,
             IRepository<StorageLocation, int> storageLocationTypeRepository)
             : base(repository, transactionManager, resourceBuilder)
         {
@@ -50,7 +53,7 @@
 
             var stockPool = await this.stockPoolRepository.FindByIdAsync(resource.DefaultStockPoolId);
 
-            var locationType = await this.locationTypeRepository.FindByIdAsync(resource.LocationTypeId);
+            var locationType = await this.locationTypeRepository.FilterByAsync(x => x.Code == resource.LocationTypeId);
 
             var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(resource.StorageLocationId);
 
@@ -65,7 +68,7 @@
                 resource.SalesKittable,
                 resource.SalesKittablePriority,
                 DateTime.Parse(resource.AllocQueueTime),
-                locationType,
+                locationType.FirstOrDefault(),
                 resource.LocationTypeId,
                 resource.AuditedBy,
                 stockPool,
@@ -86,7 +89,7 @@
         {
             var stockPool = await this.stockPoolRepository.FindByIdAsync(updateResource?.DefaultStockPoolId);
 
-            var locationType = await this.locationTypeRepository.FindByIdAsync(updateResource.LocationTypeId);
+            var locationType = await this.locationTypeRepository.FilterByAsync(x => x.Code == updateResource.LocationTypeId);
 
             var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(updateResource.StorageLocationId);
 
@@ -102,7 +105,7 @@
                 updateResource.SalesKittable,
                 updateResource.SalesKittablePriority,
                 DateTime.Parse(updateResource.AllocQueueTime),
-                locationType,
+                locationType.FirstOrDefault(),
                 updateResource.LocationTypeId,
                 updateResource.AuditedBy,
                 stockPool,
