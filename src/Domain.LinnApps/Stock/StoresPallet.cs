@@ -32,7 +32,7 @@
             int? auditFrequencyWeeks,
             string auditedByDepartmentCode,
             string mixStates,
-            int? cage)
+            string cage)
         {
             if (storageLocation == null)
             {
@@ -48,6 +48,7 @@
             {
                 throw new StoresPalletException($"Stock pool {defaultStockPoolId} not found.");
             }
+
             this.PalletNumber = palletNumber;
             this.Description = description;
             this.StorageLocation = storageLocation;
@@ -109,7 +110,7 @@
 
         public string MixStates { get; set; }
 
-        public int? Cage { get; set; }
+        public string Cage { get; set; }
 
         public void Update(
             string description,
@@ -134,7 +135,7 @@
             int? auditFrequencyWeeks,
             string auditedByDepartmentCode,
             string mixStates,
-            int? cage)
+            string cage)
         {
             if (storageLocation == null)
             {

@@ -47,7 +47,7 @@
                 4,
                 "DeptA",
                 "State1,State2",
-                89);
+                "A");
 
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.storageLocation);
 
