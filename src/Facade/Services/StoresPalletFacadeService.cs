@@ -122,7 +122,7 @@
         {
             bool isInt = int.TryParse(searchTerm, out int palletNumber);
 
-            return x => (isInt && x.PalletNumber == palletNumber) || x.Description.ToUpper().Contains(searchTerm.Trim().ToUpper());
+            return x => isInt && x.PalletNumber == palletNumber;
         }
 
         protected override async Task SaveToLogTable(

@@ -86,8 +86,8 @@
                     r => new EntityFrameworkQueryRepository<SundryBookInDetail>(r.GetService<ServiceDbContext>()?.SundryBookInDetails))
                 .AddScoped<IQueryRepository<AuditLocation>, EntityFrameworkQueryRepository<AuditLocation>>(
                     r => new EntityFrameworkQueryRepository<AuditLocation>(r.GetService<ServiceDbContext>()?.AuditLocations))
-                .AddScoped<IRepository<LocationType,string>, EntityFrameworkRepository<LocationType, string>>(r =>
-                    new EntityFrameworkRepository<LocationType, string>(r.GetService<ServiceDbContext>()?.LocationTypes));
+                .AddScoped<IQueryRepository<LocationType>, EntityFrameworkQueryRepository<LocationType>>(r =>
+                    new EntityFrameworkQueryRepository<LocationType>(r.GetService<ServiceDbContext>()?.LocationTypes));
         }
     }
 }
