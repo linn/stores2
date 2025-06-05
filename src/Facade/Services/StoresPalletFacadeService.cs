@@ -5,12 +5,11 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using Amazon.Auth.AccessControlPolicy;
-    using Amazon.SimpleEmail.Model;
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
@@ -48,7 +47,7 @@
 
             if (alreadyExist != null)
             {
-                throw new AlreadyExistsException($"Pallet {resource.PalletNumber} already exists.");
+                throw new StoresPalletException($"Pallet {resource.PalletNumber} already exists.");
             }
 
             var stockPool = await this.stockPoolRepository.FindByIdAsync(resource.DefaultStockPoolId);
