@@ -146,7 +146,7 @@ function Workstation({ creating }) {
                     dateCreated: new Date(),
                     locationId: 0,
                     palletNumber: '',
-                    creating: true
+                    isAddition: true
                 }
             ]
         }));

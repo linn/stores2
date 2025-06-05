@@ -18,7 +18,7 @@
             {
                 WorkStationElementId = model.WorkStationElementId,
                 WorkstationCode = model.WorkStationCode,
-                PalletNumber = model.PalletNumber,
+                PalletNumber = model.Pallet?.PalletNumber,
                 LocationId = model.StorageLocation?.LocationId,
                 LocationCode = model.StorageLocation?.LocationCode,
                 LocationDescription = model.StorageLocation?.Description,

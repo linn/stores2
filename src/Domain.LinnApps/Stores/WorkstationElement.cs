@@ -15,15 +15,15 @@
             string workStationCode,
             Employee createdBy,
             DateTime dateCreated,
-            StorageLocation? storageLocation,
-            int? palletNumber)
+            StorageLocation storageLocation,
+            StoresPallet storesPallet)
         {
             this.WorkStationElementId = workStationElementId;
             this.WorkStationCode = workStationCode;
             this.CreatedBy = createdBy;
             this.DateCreated = dateCreated;
             this.StorageLocation = storageLocation;
-            this.PalletNumber = palletNumber;
+            this.Pallet = storesPallet;
         }
 
         public int WorkStationElementId { get; protected set; }
@@ -34,8 +34,8 @@
 
         public DateTime DateCreated { get; protected set; }
 
-        public StorageLocation? StorageLocation { get; protected set; }
+        public StorageLocation StorageLocation { get; protected set; }
 
-        public int? PalletNumber { get; protected set; }
+        public StoresPallet Pallet { get; protected set; }
     }
 }

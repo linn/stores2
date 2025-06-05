@@ -42,9 +42,11 @@
             var citRepository
                 = new EntityFrameworkRepository<Cit, string>(this.DbContext.Cits);
 
-
             var storageLocationRepository
                 = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
+
+            var palletRepository
+                = new EntityFrameworkRepository<StoresPallet, int>(this.DbContext.StoresPallets);
 
             IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> workstationFacadeService
                 = new WorkstationFacadeService(
@@ -52,6 +54,7 @@
                     employeeRepository,
                     citRepository,
                     storageLocationRepository,
+                    palletRepository,
                     transactionManager,
                     new WorkstationResourceBuilder(new WorkstationElementsResourceBuilder()));
 

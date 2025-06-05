@@ -25,11 +25,14 @@
 
         private readonly IRepository<StorageLocation, int> storageLocationRepository;
 
+        private readonly IRepository<StoresPallet, int> palletRepository;
+
         public WorkstationFacadeService(
             IRepository<Workstation, string> repository,
             IRepository<Employee, int> employeeRepository,
             IRepository<Cit, string> citRepository,
             IRepository<StorageLocation, int> storageLocationRepository,
+            IRepository<StoresPallet, int> palletRepository,
             ITransactionManager transactionManager,
             IBuilder<Workstation> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
@@ -38,6 +41,7 @@
             this.employeeRepository = employeeRepository;
             this.citRepository = citRepository;
             this.storageLocationRepository = storageLocationRepository;
+            this.palletRepository = palletRepository;
         }
 
         protected override async Task<Workstation> CreateFromResourceAsync(
@@ -55,12 +59,12 @@
                 resource.ZoneType,
                 resource.WorkStationElements
                     .Select(e => new WorkstationElement(
-                        e.WorkStationElementId,
+                        e.WorkStationElementId.GetValueOrDefault(),
                         e.WorkstationCode,
                         e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
                         DateTime.Parse(e.DateCreated),
                         e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
-                        e.PalletNumber))
+                        e.PalletNumber.HasValue ? this.palletRepository.FindById(e.PalletNumber.GetValueOrDefault()) : null))
                     .ToList());
         }
 
@@ -73,12 +77,12 @@
 
             var updateDetails = updateResource.WorkStationElements
                 .Select(e => new WorkstationElement(
-                    e.WorkStationElementId,
+                    e.WorkStationElementId.GetValueOrDefault(),
                     e.WorkstationCode,
                     e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
                     DateTime.Parse(e.DateCreated),
                     e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
-                    e.PalletNumber))
+                    e.PalletNumber.HasValue ? this.palletRepository.FindById(e.PalletNumber.GetValueOrDefault()) : null))
                 .ToList();
 
             entity.Update(
