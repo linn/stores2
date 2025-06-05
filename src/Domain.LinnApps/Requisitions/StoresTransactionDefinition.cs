@@ -40,6 +40,12 @@
 
         public string InspectedState { get; set; }
 
+        public string UpdateStockBalance { get; set; }
+        
+        public string UpdateQcBalance { get; set; }
+        
+        public string UpdateSupplierBalance { get; set; }
+
         public ICollection<StoresTransactionPosting> StoresTransactionPostings { get; set; }
 
         public ICollection<StoresTransactionState> StoresTransactionStates { get; set; }

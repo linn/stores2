@@ -404,6 +404,9 @@
             q.Property(d => d.DecrementTransaction).HasColumnName("DECREMENT_TRANSACTION").HasMaxLength(1);
             q.Property(d => d.TakePriceFrom).HasColumnName("TAKE_PRICE_FROM").HasMaxLength(1);
             q.Property(d => d.RequiresAuth).HasColumnName("REQUIRES_AUTH").HasMaxLength(1);
+            q.Property(d => d.UpdateStockBalance).HasColumnName("UPD_STOCK_BALANCE").HasMaxLength(1);
+            q.Property(d => d.UpdateQcBalance).HasColumnName("UPD_QC_BALANCE").HasMaxLength(1);
+            q.Property(d => d.UpdateSupplierBalance).HasColumnName("UPD_SUPP_BALANCE").HasMaxLength(1);
             q.Property(d => d.AuthOpCode).HasColumnName("AUTH_OP_CODE").HasMaxLength(10);
             q.Property(d => d.InspectedState).HasColumnName("INSPECTED_STATE").HasMaxLength(10);
             q.Property(d => d.FromState).HasColumnName("FROM_STATE").HasMaxLength(10);
