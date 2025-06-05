@@ -17,7 +17,6 @@ namespace Linn.Stores2.Service.Modules
         {
             app.MapGet("/requisitions/reports/requisition-cost/report", this.RequisitionCostReport);
             app.MapGet("/requisitions/reports/requisition-cost", this.GetApp);
-            app.MapGet("/requisitions/reports/requisition-cost/pdf", this.RequisitionCostReportAsPdf);
         }
 
         private async Task RequisitionCostReport(
