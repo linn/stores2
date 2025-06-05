@@ -2,6 +2,7 @@
 {
     using System;
 
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class WorkstationElement
@@ -18,6 +19,11 @@
             StorageLocation storageLocation,
             StoresPallet storesPallet)
         {
+            if (storageLocation == null && storesPallet == null)
+            {
+                throw new WorkstationException("A workstation element must have either a storage location, a pallet, or both.");
+            }
+
             this.WorkStationElementId = workStationElementId;
             this.WorkStationCode = workStationCode;
             this.CreatedBy = createdBy;

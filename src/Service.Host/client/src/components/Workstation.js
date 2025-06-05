@@ -418,6 +418,15 @@ function Workstation({ creating }) {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
+                {(updateError || createWorkStationError) && (
+                    <Grid size={12}>
+                        <ErrorCard
+                            errorMessage={
+                                updateError ? updateError?.details : createWorkStationError
+                            }
+                        />
+                    </Grid>
+                )}
                 <Grid size={12}>
                     <Typography variant="h4">Workstation Utility</Typography>
                 </Grid>
@@ -532,15 +541,6 @@ function Workstation({ creating }) {
                         message="Save Successful"
                     />
                 </Grid>
-                {(updateError || createWorkStationError) && (
-                    <Grid size={12}>
-                        <ErrorCard
-                            errorMessage={
-                                updateError ? updateError?.details : createWorkStationError
-                            }
-                        />
-                    </Grid>
-                )}
             </Grid>
         </Page>
     );
