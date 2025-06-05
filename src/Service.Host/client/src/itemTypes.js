@@ -21,6 +21,7 @@ const itemTypes = {
     pcasStorageTypes: { url: `${config.appRoot}/stores2/pcas-storage-types` },
     pcasBoards: { url: `${config.appRoot}/stores2/pcas-boards` },
     storageLocations: { url: `${config.appRoot}/stores2/storage/locations` },
+    pallets: { url: `${config.appRoot}/stores2/pallets` },
     nominals: { url: `${config.proxyRoot}/ledgers/nominals` },
     departments: { url: `${config.proxyRoot}/ledgers/departments` },
     nominalAccounts: { url: `${config.proxyRoot}/ledgers/nominal-accounts` },

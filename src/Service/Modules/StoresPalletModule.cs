@@ -16,18 +16,26 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/pallets", this.GetAll);
+            app.MapGet("/stores2/pallets", this.Search);
             app.MapPost("/stores2/pallets", this.Create);
             app.MapGet("/stores2/pallets/{id}", this.GetById);
             app.MapPut("/stores2/pallets/{id}", this.Update);
         }
 
-        private async Task GetAll(
+        private async Task Search(
             HttpRequest _,
             HttpResponse res,
+            string searchTerm,
             IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> service)
         {
-            await res.Negotiate(await service.GetAll());
+            if (string.IsNullOrEmpty(searchTerm))
+            {
+                await res.Negotiate(await service.GetAll());
+            }
+            else
+            {
+                await res.Negotiate(await service.Search(searchTerm));
+            }
         }
 
         private async Task GetById(
