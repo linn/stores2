@@ -33,17 +33,5 @@ namespace Linn.Stores2.Service.Modules
         {
             await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
         }
-
-        private async Task RequisitionCostReportAsPdf(
-            HttpRequest req,
-            HttpResponse res,
-            int reqNumber,
-            IRequisitionReportFacadeService facadeService)
-        {
-            var result = await facadeService.GetRequisitionCostReportAsPdf(reqNumber);
-
-            res.ContentType = "application/pdf";
-            await res.FromStream(result, res.ContentType, new System.Net.Mime.ContentDisposition("attachment"));
-        }
     }
 }

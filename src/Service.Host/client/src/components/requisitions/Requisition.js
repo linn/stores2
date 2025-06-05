@@ -543,7 +543,7 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={8}>
+                <Grid size={9}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.req?.cancelled === 'Y' && (
@@ -551,13 +551,12 @@ function Requisition({ creating }) {
                         )}
                     </Typography>
                 </Grid>
-                <Grid size={2}>
+                <Grid size={1}>
                     <LinkField
                         to={`/requisitions/reports/requisition-cost/${reqNumber}`}
                         disabled={!reqNumber}
                         external={false}
                         value="Cost Of Req"
-                        label=""
                     />
                 </Grid>
                 <Grid size={2}>

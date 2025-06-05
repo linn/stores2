@@ -39,10 +39,5 @@
 
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
         }
-
-        public Task<Stream> GetRequisitionCostReportAsPdf(int reqNumber)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
