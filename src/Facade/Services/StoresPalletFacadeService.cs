@@ -9,6 +9,7 @@
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
@@ -42,6 +43,13 @@
             StoresPalletResource resource,
             IEnumerable<string> privileges = null)
         {
+            var alreadyExist = await this.palletRepository.FindByIdAsync(resource.PalletNumber);
+
+            if (alreadyExist != null)
+            {
+                throw new StoresPalletException($"Pallet {resource.PalletNumber} already exists.");
+            }
+
             var stockPool = await this.stockPoolRepository.FindByIdAsync(resource.DefaultStockPoolId);
 
             var locationType = await this.locationTypeRepository.FilterByAsync(x => x.Code == resource.LocationTypeId);
