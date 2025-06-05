@@ -83,7 +83,7 @@
                                          AuditFrequencyWeeks = 4,
                                          AuditedByDepartmentCode = "DeptA",
                                          MixStates = "State1,State2",
-                                         Cage = 789
+                                         Cage = "A"
                                       };
 
             this.DbContext.LocationTypes.AddAndSave(this.DbContext, this.locationType);

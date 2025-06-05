@@ -32,7 +32,7 @@
             int? auditFrequencyWeeks,
             string auditedByDepartmentCode,
             string mixStates,
-            int? cage)
+            string cage)
         {
             if (storageLocation == null)
             {
@@ -110,7 +110,7 @@
 
         public string MixStates { get; set; }
 
-        public int? Cage { get; set; }
+        public string Cage { get; set; }
 
         public void Update(
             string description,
@@ -135,7 +135,7 @@
             int? auditFrequencyWeeks,
             string auditedByDepartmentCode,
             string mixStates,
-            int? cage)
+            string cage)
         {
             if (storageLocation == null)
             {

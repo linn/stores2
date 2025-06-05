@@ -50,6 +50,6 @@
 
         public string MixStates { get; set; }
 
-        public int? Cage { get; set; }
+        public string Cage { get; set; }
     }
 }
