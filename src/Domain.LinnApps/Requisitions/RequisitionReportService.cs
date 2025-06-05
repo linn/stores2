@@ -32,6 +32,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new NotFoundException($"No req with number {reqNumber} was found.");
             }
 
+            if (requisition.IsCancelled())
+            {
+                throw new RequisitionException($"Requisition {reqNumber} is cancelled.");
+            }
+
             var model = new ResultsModel { ReportTitle = new NameModel($"Cost Of Requisition {reqNumber}") };
 
             var columns = this.ModelColumns();
@@ -52,21 +57,22 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             foreach (var line in lines.OrderBy(a => a.LineNumber))
             {
+                if (line.IsCancelled())
+                {
+                    continue;
+                }
+
                 var rowId = line.LineNumber.ToString();
 
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId,
-                            ColumnId = "Part Number",
-                            TextDisplay = line.Part.PartNumber
+                            RowId = rowId, ColumnId = "Part Number", TextDisplay = line.Part.PartNumber
                         });
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId,
-                            ColumnId = "Description",
-                            TextDisplay = line.Part.Description
+                            RowId = rowId, ColumnId = "Description", TextDisplay = line.Part.Description
                         });
                 values.Add(
                     new CalculationValueModel
@@ -75,21 +81,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                             ColumnId = "Unit Price",
                             Value = line.StoresBudgets?.FirstOrDefault()?.PartPrice
                                     ?? line.Part.BaseUnitPrice.GetValueOrDefault()
-                    });
-                values.Add(
-                    new CalculationValueModel
-                        {
-                            RowId = rowId,
-                            ColumnId = "Quantity",
-                            Value = line.Qty
                         });
+                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "Quantity", Value = line.Qty });
                 values.Add(
                     new CalculationValueModel
                         {
                             RowId = rowId,
                             ColumnId = "Cost",
                             Value = this.WorkOutCost(line.StoresBudgets, line.Qty, line.Part)
-                    });
+                        });
                 values.Add(
                     new CalculationValueModel
                         {

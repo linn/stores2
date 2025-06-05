@@ -3,7 +3,9 @@
     using System.IO;
     using System.Threading.Tasks;
 
+    using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
+    using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -24,7 +26,16 @@
 
         public async Task<IResult<ReportReturnResource>> GetRequisitionCostReport(int reqNumber)
         {
-            var result = await this.requisitionReportService.GetRequisitionCostReport(reqNumber);
+            ResultsModel result;
+
+            try
+            {
+                result = await this.requisitionReportService.GetRequisitionCostReport(reqNumber);
+            }
+            catch (DomainException exception)
+            {
+                return new BadRequestResult<ReportReturnResource>(exception.Message);
+            }
 
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
         }

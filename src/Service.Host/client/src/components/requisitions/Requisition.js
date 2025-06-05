@@ -17,7 +17,8 @@ import {
     Search,
     SaveBackCancelButtons,
     utilities,
-    LinkField
+    LinkField,
+    LinkButton
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -543,13 +544,22 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={10}>
+                <Grid size={8}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.req?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={2}>
+                    <LinkField
+                        to={`/requisitions/reports/requisition-cost/${reqNumber}`}
+                        disabled={!reqNumber}
+                        external={false}
+                        value="Cost Of Req"
+                        label=""
+                    />
                 </Grid>
                 <Grid size={2}>
                     {!creating && (
