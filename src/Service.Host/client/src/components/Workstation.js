@@ -523,11 +523,19 @@ function Workstation({ creating }) {
                     <SaveBackCancelButtons
                         backClick={() => navigate('/stores2/work-stations')}
                         saveClick={() => {
+                            const submitBody = {
+                                ...workStation,
+                                workStationElements: (workStation.workStationElements || []).map(
+                                    e => (e.isAddition ? { ...e, workStationElementId: null } : e)
+                                )
+                            };
+
                             if (creating) {
-                                createWorkStation(null, workStation);
+                                createWorkStation(null, submitBody);
                             } else {
-                                updateWorkStation(workStation.workStationCode, workStation);
+                                updateWorkStation(submitBody.workStationCode, submitBody);
                             }
+
                             setRowUpdated(null);
                         }}
                         saveDisabled={!changesMade}
