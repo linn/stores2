@@ -12,6 +12,11 @@
     {
         public StorageLocationResource Build(StorageLocation model, IEnumerable<string> claims)
         {
+            if (model == null)
+            {
+                return null;
+            }
+
             return new StorageLocationResource
             {
                 LocationCode = model.LocationCode,

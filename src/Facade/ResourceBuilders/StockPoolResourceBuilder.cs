@@ -12,6 +12,11 @@
         {
             var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
 
+            if (stockPool == null)
+            {
+                return null;
+            }
+
             return new StockPoolResource
             {
                          StockPoolCode  = stockPool.StockPoolCode,
