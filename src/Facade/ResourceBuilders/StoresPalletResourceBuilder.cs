@@ -10,9 +10,19 @@
 
     public class StoresPalletResourceBuilder : IBuilder<StoresPallet>
     {
-        private readonly StorageLocationResourceBuilder storageLocationResourceBuilder = new ();
-        private readonly LocationTypeResourceBuilder locationTypeResourceBuilder = new ();
-        private readonly StockPoolResourceBuilder stockPoolResourceBuilder = new ();
+        private readonly StorageLocationResourceBuilder storageLocationResourceBuilder;
+        private readonly LocationTypeResourceBuilder locationTypeResourceBuilder;
+        private readonly StockPoolResourceBuilder stockPoolResourceBuilder;
+
+        public StoresPalletResourceBuilder(
+            StorageLocationResourceBuilder storageLocationResourceBuilder,
+            LocationTypeResourceBuilder locationTypeResourceBuilder,
+            StockPoolResourceBuilder stockPoolResourceBuilder)
+        {
+            this.storageLocationResourceBuilder = storageLocationResourceBuilder;
+            this.locationTypeResourceBuilder = locationTypeResourceBuilder;
+            this.stockPoolResourceBuilder = stockPoolResourceBuilder;
+        }
 
         public StoresPalletResource Build(StoresPallet pallet, IEnumerable<string> claims)
         {

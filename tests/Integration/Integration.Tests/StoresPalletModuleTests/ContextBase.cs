@@ -40,11 +40,15 @@
 
             var transactionManager = new TransactionManager(this.DbContext);
 
+            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
+            var stockPoolResourceBuilder = new StockPoolResourceBuilder();
+            var locationTypeResourceBuilder = new LocationTypeResourceBuilder();
+
             IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> storesPalletFacadeService
                 = new StoresPalletFacadeService(
                     storesPalletRepository,
                     transactionManager,
-                    new StoresPalletResourceBuilder(),
+                    new StoresPalletResourceBuilder(storageLocationResourceBuilder, locationTypeResourceBuilder, stockPoolResourceBuilder),
                     stockPoolRepository,
                     locationTypeRepository,
                     storageLocationRepository);
