@@ -35,7 +35,7 @@
 
             var storesPalletRepository = new StoresPalletRepository(this.DbContext);
             var stockPoolRepository = new EntityFrameworkRepository<StockPool, string>(this.DbContext.StockPools);
-            var locationTypeRepository = new EntityFrameworkRepository<LocationType, string>(this.DbContext.LocationTypes);
+            var locationTypeRepository = new EntityFrameworkQueryRepository<LocationType>(this.DbContext.LocationTypes);
             var storageLocationRepository = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
 
             var transactionManager = new TransactionManager(this.DbContext);

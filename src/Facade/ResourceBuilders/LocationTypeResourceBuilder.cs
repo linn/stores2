@@ -12,12 +12,17 @@
     {
         public LocationTypeResource Build(LocationType locationType, IEnumerable<string> claims)
         {
-            return new LocationTypeResource
+            if (locationType == null)
             {
-                 Code   = locationType.Code,
-                 Description = locationType.Description,
-                 Links = this.BuildLinks(locationType, claims).ToArray()
-            };
+                return null;
+            }
+
+            return new LocationTypeResource
+                {
+                    Code = locationType.Code,
+                    Description = locationType.Description,
+                    Links = this.BuildLinks(locationType, claims).ToArray()
+                };
         }
 
         public string GetLocation(LocationType model)

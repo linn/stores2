@@ -950,9 +950,9 @@
             r.Property(l => l.DateLastAudited).HasColumnName("DATE_LAST_AUDITED");
             r.Property(l => l.Accessible).HasColumnName("ACCESSIBLE").HasMaxLength(1);
             r.Property(l => l.StoresKittable).HasColumnName("STORES_KITTABLE").HasMaxLength(1);
-            r.Property(l => l.StoresKittingPriority).HasColumnName("STORES_KITTING_PRIORITY");
+            r.Property(l => l.StoresKittablePriority).HasColumnName("STORES_KITTING_PRIORITY");
             r.Property(l => l.SalesKittable).HasColumnName("SALES_KITTABLE").HasMaxLength(1);
-            r.Property(l => l.SalesKittingPriority).HasColumnName("SALES_KITTING_PRIORITY");
+            r.Property(l => l.SalesKittablePriority).HasColumnName("SALES_KITTING_PRIORITY");
             r.Property(l => l.AllocQueueTime).HasColumnName("ALLOC_QUEUE_TIME");
             r.Property(l => l.AuditedBy).HasColumnName("AUDITED_BY");
             r.Property(l => l.StockType).HasColumnName("TYPE_OF_STOCK").HasMaxLength(1);

@@ -30,8 +30,9 @@ function LinesTab({
     fromState,
     fromStockPool,
     removeLine,
+    reqHeader,
     transactionOptions = null,
-    reqHeader
+    locationCodeRoot = null
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -197,6 +198,8 @@ function LinesTab({
                 );
 
                 if (selectedOption.stockAllocations) {
+                    updateLine(updatedLine.lineNumber, 'stockAllocations', true);
+                    updatedLine.stockAllocations = true;
                     pickStock(updatedLine.lineNumber, [
                         {
                             partNumber: updatedLine.part?.partNumber,
@@ -210,6 +213,8 @@ function LinesTab({
                         }
                     ]);
                 } else {
+                    updateLine(updatedLine.lineNumber, 'stockAllocations', false);
+                    updatedLine.stockAllocations = false;
                     pickStock(updatedLine.lineNumber, [
                         {
                             partNumber: updatedLine.part?.partNumber,
@@ -324,6 +329,7 @@ function LinesTab({
                 }}
                 state={fromState}
                 stockPool={fromStockPool}
+                locationCodeRoot={locationCodeRoot}
             />
             <Grid size={12}>
                 <DataGrid
