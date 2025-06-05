@@ -25,6 +25,7 @@ import StoresFunction from './StoresFunction';
 import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
 import PcasStorageTypes from './PcasStorageTypes';
 import PcasStorageType from './PcasStorageType';
+import Pallets from './Pallets';
 
 function Root() {
     useSignIn();
@@ -86,6 +87,7 @@ function Root() {
                         path="/stores2/storage/locations/create"
                         element={<StorageLocation creating />}
                     />
+                    <Route path="/stores2/pallets" element={<Pallets />} />
                     <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
                     <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />

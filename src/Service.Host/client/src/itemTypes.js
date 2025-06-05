@@ -30,6 +30,7 @@ const itemTypes = {
     stockStates: { url: `${config.appRoot}/stores2/stock/states` },
     accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` },
     partsStorageTypes: { url: `${config.appRoot}/stores2/parts-storage-types` },
+    pallets: { url: `${config.appRoot}/stores2/pallets` },
     storesTransViewer: { url: `${config.appRoot}/stores2/stores-trans-viewer/report` },
     purchaseOrder: { url: `${config.proxyRoot}/purchasing/purchase-orders` },
     loan: { url: `${config.proxyRoot}/sales/loans` },
