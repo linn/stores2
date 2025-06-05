@@ -153,25 +153,28 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                    SortOrder = 2,
                                    GridDisplayType = GridDisplayType.Value,
                                    DecimalPlaces = 5,
-                                   Align = "right"
+                                   Align = "right",
+                                   ColumnWidth = 110
                                },
                            new AxisDetailsModel("Quantity", "Qty")
                                {
-                                   SortOrder = 3, GridDisplayType = GridDisplayType.Value, ColumnWidth = 100, Align = "right"
+                                   SortOrder = 3, GridDisplayType = GridDisplayType.Value, ColumnWidth = 110, Align = "right"
                                },
                            new AxisDetailsModel("Cost")
                                {
                                    SortOrder = 4,
                                    GridDisplayType = GridDisplayType.Value,
                                    DecimalPlaces = 2,
-                                   Align = "right"
+                                   Align = "right",
+                                   ColumnWidth = 110
                                },
                            new AxisDetailsModel("Net Cost")
                                {
                                    SortOrder = 5,
                                    GridDisplayType = GridDisplayType.Value,
                                    DecimalPlaces = 2,
-                                   Align = "right"
+                                   Align = "right",
+                                   ColumnWidth = 110
                                }
                        };
         }

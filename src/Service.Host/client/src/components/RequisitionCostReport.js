@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Loading, InputField, LinkField } from '@linn-it/linn-form-components-library';
+import { Loading, InputField, LinkField, ErrorCard } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -19,7 +19,8 @@ function RequisitionCostReport() {
     const {
         send: getReport,
         isLoading,
-        result: reportResult
+        result: reportResult,
+        errorMessage: reportError
     } = useGet(itemTypes.requisitionCostReport.url);
 
     if (reqNumber && !hasFetched) {
@@ -74,13 +75,18 @@ function RequisitionCostReport() {
                 <Grid size={6} />
                 <Grid size={2}>
                     <LinkField
-                        to={`/requisitions/${reqNumber}`}
-                        disabled={!reqNumber}
+                        to={`/requisitions/${reqNo}`}
+                        disabled={!reqNo}
                         external={false}
-                        value={`Back To Requisition ${reqNumber}`}
+                        value={`Back To Requisition ${reqNo}`}
                         label=""
                     />
                 </Grid>
+                {reportError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={reportError} />
+                    </Grid>
+                )}
                 {isLoading ? (
                     <Grid size={12}>
                         <Loading />
