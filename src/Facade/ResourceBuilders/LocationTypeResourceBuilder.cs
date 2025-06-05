@@ -19,7 +19,7 @@
 
             return new LocationTypeResource
                 {
-                    Code   = locationType.Code,
+                    Code = locationType.Code,
                     Description = locationType.Description,
                     Links = this.BuildLinks(locationType, claims).ToArray()
                 };

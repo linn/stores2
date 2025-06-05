@@ -5,8 +5,6 @@
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
-    using Amazon.Auth.AccessControlPolicy;
-    using Amazon.SimpleEmail.Model;
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
@@ -44,13 +42,6 @@
             StoresPalletResource resource,
             IEnumerable<string> privileges = null)
         {
-            var alreadyExist = await this.palletRepository.FindByIdAsync(resource.PalletNumber);
-
-            if (alreadyExist != null)
-            {
-                throw new AlreadyExistsException($"Pallet {resource.PalletNumber} already exists.");
-            }
-
             var stockPool = await this.stockPoolRepository.FindByIdAsync(resource.DefaultStockPoolId);
 
             var locationType = await this.locationTypeRepository.FilterByAsync(x => x.Code == resource.LocationTypeId);
