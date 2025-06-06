@@ -49,23 +49,41 @@
             IEnumerable<string> privileges = null)
         {
             var workstation = await this.repository.FindByIdAsync(resource.WorkStationCode);
-
             var cit = await this.citRepository.FindByIdAsync(resource.CitCode);
+
+            var workStationElements = new List<WorkstationElement>();
+
+            foreach (var e in resource.WorkStationElements)
+            {
+                var createdBy = e.CreatedById.HasValue
+                                    ? await this.employeeRepository.FindByIdAsync(e.CreatedById.Value)
+                                    : null;
+
+                var location = e.LocationId.HasValue
+                                   ? await this.storageLocationRepository.FindByIdAsync(e.LocationId.Value)
+                                   : null;
+
+                var pallet = e.PalletNumber.HasValue
+                                 ? await this.palletRepository.FindByIdAsync(e.PalletNumber.Value)
+                                 : null;
+
+                var element = new WorkstationElement(
+                    e.WorkStationElementId.GetValueOrDefault(),
+                    e.WorkstationCode,
+                    createdBy,
+                    DateTime.Parse(e.DateCreated),
+                    location,
+                    pallet);
+
+                workStationElements.Add(element);
+            }
 
             return new Workstation(
                 resource.WorkStationCode,
                 resource.Description,
                 cit,
                 resource.ZoneType,
-                resource.WorkStationElements
-                    .Select(e => new WorkstationElement(
-                        e.WorkStationElementId.GetValueOrDefault(),
-                        e.WorkstationCode,
-                        e.CreatedById.HasValue ? this.employeeRepository.FindById(e.CreatedById.GetValueOrDefault()) : null,
-                        DateTime.Parse(e.DateCreated),
-                        e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
-                        e.PalletNumber.HasValue ? this.palletRepository.FindById(e.PalletNumber.GetValueOrDefault()) : null))
-                    .ToList());
+                workStationElements);
         }
 
         protected override async Task UpdateFromResourceAsync(
@@ -75,22 +93,39 @@
         {
             var cit = await this.citRepository.FindByIdAsync(updateResource.CitCode);
 
-            var updateDetails = updateResource.WorkStationElements
-                .Select(e => new WorkstationElement(
+            var workStationElements = new List<WorkstationElement>();
+
+            foreach (var e in updateResource.WorkStationElements)
+            {
+                var createdBy = e.CreatedById.HasValue
+                                    ? await this.employeeRepository.FindByIdAsync(e.CreatedById.Value)
+                                    : null;
+
+                var location = e.LocationId.HasValue
+                                   ? await this.storageLocationRepository.FindByIdAsync(e.LocationId.Value)
+                                   : null;
+
+                var pallet = e.PalletNumber.HasValue
+                                 ? await this.palletRepository.FindByIdAsync(e.PalletNumber.Value)
+                                 : null;
+
+                var element = new WorkstationElement(
                     e.WorkStationElementId.GetValueOrDefault(),
                     e.WorkstationCode,
-                    e.CreatedById.HasValue ? this.employeeRepository.FindById(e.CreatedById.GetValueOrDefault()) : null,
+                    createdBy,
                     DateTime.Parse(e.DateCreated),
-                    e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
-                    e.PalletNumber.HasValue ? this.palletRepository.FindById(e.PalletNumber.GetValueOrDefault()) : null))
-                .ToList();
+                    location,
+                    pallet);
+
+                workStationElements.Add(element);
+            }
 
             entity.Update(
                 updateResource.WorkStationCode,
                 updateResource.Description,
                 cit,
                 updateResource.ZoneType,
-                updateDetails);
+                workStationElements);
         }
 
         protected override Expression<Func<Workstation, bool>> SearchExpression(string searchTerm)
