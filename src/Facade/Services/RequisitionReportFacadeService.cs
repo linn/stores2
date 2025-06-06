@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
-    using System.IO;
     using System.Threading.Tasks;
 
     using Linn.Common.Domain.Exceptions;
@@ -38,6 +37,13 @@
             }
 
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
+        }
+
+        public async Task<string> GetRequisitionAsHtml(int reqNumber)
+        {
+            var htmlResult = await this.requisitionReportService.GetRequisitionAsHtml(reqNumber);
+
+            return htmlResult;
         }
     }
 }

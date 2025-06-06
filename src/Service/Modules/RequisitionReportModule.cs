@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Service.Modules
 {
+    using System.Net;
     using System.Threading.Tasks;
 
     using Linn.Common.Service.Core;
@@ -17,6 +18,7 @@ namespace Linn.Stores2.Service.Modules
         {
             app.MapGet("/requisitions/reports/requisition-cost/report", this.RequisitionCostReport);
             app.MapGet("/requisitions/reports/requisition-cost", this.GetApp);
+            app.MapGet("/requisitions/{reqNumber}/view", this.GetReqAsHtml);
         }
 
         private async Task RequisitionCostReport(
@@ -31,6 +33,20 @@ namespace Linn.Stores2.Service.Modules
         private async Task GetApp(HttpRequest req, HttpResponse res)
         {
             await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+        }
+
+        private async Task GetReqAsHtml(
+            HttpRequest req,
+            HttpResponse res,
+            int reqNumber,
+            IRequisitionReportFacadeService facadeService)
+        {
+            var result = await facadeService.GetRequisitionAsHtml(reqNumber);
+
+            res.ContentType = "text/html";
+            res.StatusCode = (int)HttpStatusCode.OK;
+
+            await res.WriteAsync(result);
         }
     }
 }

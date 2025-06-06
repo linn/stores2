@@ -5,6 +5,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
+    using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -16,12 +17,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IReportingHelper reportingHelper;
 
+        private readonly IHtmlTemplateService<RequisitionHeader> htmlTemplateService;
+
         public RequisitionReportService(
             IRepository<RequisitionHeader, int> requisitionRepository,
-            IReportingHelper reportingHelper)
+            IReportingHelper reportingHelper,
+            IHtmlTemplateService<RequisitionHeader> htmlTemplateService)
         {
             this.requisitionRepository = requisitionRepository;
             this.reportingHelper = reportingHelper;
+            this.htmlTemplateService = htmlTemplateService;
         }
 
         public async Task<ResultsModel> GetRequisitionCostReport(int reqNumber)
@@ -49,6 +54,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             model.SetTotalValue(model.ColumnIndex("Quantity"), null);
           
             return model;
+        }
+
+        public async Task<string> GetRequisitionAsHtml(int reqNumber)
+        {
+            var requisition = await this.requisitionRepository.FindByIdAsync(reqNumber);
+            if (requisition == null)
+            {
+                throw new NotFoundException($"No req with number {reqNumber} was found.");
+            }
+
+            return await this.htmlTemplateService.GetHtml(requisition);
         }
 
         private List<CalculationValueModel> SetModelRows(IEnumerable<RequisitionLine> lines)

@@ -10,7 +10,6 @@
     using Linn.Common.Serialization.Json;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.External;
-    using Linn.Stores2.Proxy.External;
     using Linn.Stores2.Resources.External;
 
     public class SupplierProxy : ISupplierProxy
