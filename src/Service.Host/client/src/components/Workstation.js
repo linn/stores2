@@ -100,7 +100,6 @@ function Workstation({ creating }) {
 
     useEffect(() => {
         if (updateResult || createWorkStationResult) {
-            getNewWorkStations();
             setSnackbarVisible(true);
             clearCreateWorkStation();
             clearUpdateResult();
