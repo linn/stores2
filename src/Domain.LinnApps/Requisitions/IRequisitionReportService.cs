@@ -7,5 +7,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     public interface IRequisitionReportService
     {
         Task<ResultsModel> GetRequisitionCostReport(int reqNumber);
+
+        Task<string> GetRequisitionAsHtml(int reqNumber);
     }
 }

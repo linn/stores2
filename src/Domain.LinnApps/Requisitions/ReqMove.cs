@@ -142,5 +142,31 @@
                 }
             }
         }
+
+        public string TextSummary()
+        {
+            var textSummary = $"{this.Quantity} ";
+            if (this.StockLocator != null)
+            {
+                if (this.StockLocator.StorageLocation != null)
+                {
+                    textSummary += $"From {this.StockLocator.StorageLocation.LocationCode} ";
+                } else if (this.StockLocator.PalletNumber.HasValue)
+                {
+                    textSummary += $"From Pallet {this.StockLocator.PalletNumber.Value} ";
+                }
+            }
+
+            if (this.Location != null)
+            {
+                textSummary += $"To {this.Location.LocationCode}";
+            }
+            else if (this.PalletNumber.HasValue)
+            {
+                textSummary += $"To Pallet {this.PalletNumber.Value}";
+            }
+
+            return textSummary;
+        }
     }
 }

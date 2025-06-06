@@ -79,6 +79,10 @@
                     x => new HtmlTemplateService<DeliveryNoteDocument>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
                         x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<RequisitionHeader>>(
+                    x => new HtmlTemplateService<RequisitionHeader>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}Requisition.cshtml",
+                        x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()
                 .AddScoped<ISerialNumberService, SerialNumberService>();
         }
