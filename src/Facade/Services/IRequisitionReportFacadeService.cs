@@ -8,5 +8,7 @@
     public interface IRequisitionReportFacadeService
     {
         Task<IResult<ReportReturnResource>> GetRequisitionCostReport(int reqNumber);
+
+        Task<string> GetRequisitionAsHtml(int reqNumber);
     }
 }

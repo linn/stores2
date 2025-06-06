@@ -640,5 +640,5 @@
                     new StoresTransactionState("F", "STSTM2", "STORES"),
                 }
             };
-    };
+    }
 }

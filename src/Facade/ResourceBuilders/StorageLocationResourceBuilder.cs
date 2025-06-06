@@ -52,6 +52,8 @@
             return $"/stores2/storage/locations/{model.LocationId}";
         }
 
+        object IBuilder<StorageLocation>.Build(StorageLocation model, IEnumerable<string> claims) => this.Build(model, claims);
+
         private IEnumerable<LinkResource> BuildLinks(StorageLocation model, IEnumerable<string> claims)
         {
             if (model != null)
@@ -59,7 +61,5 @@
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
             }
         }
-
-        object IBuilder<StorageLocation>.Build(StorageLocation model, IEnumerable<string> claims) => this.Build(model, claims);
     }
 }
