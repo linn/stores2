@@ -87,7 +87,9 @@ function Workstations() {
                 </Grid>
                 {isLoading && (
                     <Grid size={12}>
-                        <Loading />
+                        <List>
+                            <Loading />
+                        </List>
                     </Grid>
                 )}
                 <Grid size={4}>
