@@ -532,7 +532,7 @@ function Requisition({ creating }) {
     };
 
     return (
-        <Page homeUrl={config.appRoot} showAuthUi={false} title="Req Ut">
+        <Page homeUrl={config.appRoot} showAuthUi={true} title="Req Ut">
             <Grid container spacing={3}>
                 {cancelDialogVisible && (
                     <CancelWithReasonDialog
