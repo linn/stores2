@@ -138,10 +138,10 @@ function Workstation({ creating }) {
         setWorkStation(prev => ({
             ...prev,
             workStationElements: [
-                ...(prev.workStationElements || []),
+                ...(prev.workStationElements ?? []),
                 {
-                    workStationElementId: workStation.workStationElements.length + 1,
-                    workStationCode: workStation?.workStationCode || '',
+                    workStationElementId: (prev.workStationElements?.length ?? 0) + 1,
+                    workStationCode: prev.workStationCode || '',
                     createdById: null,
                     createdByName: '',
                     dateCreated: new Date(),
