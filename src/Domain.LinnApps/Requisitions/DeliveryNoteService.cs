@@ -42,10 +42,15 @@
                 DocumentDate = req.DateBooked ?? DateTime.Now,
                 RegisteredOffice = $"Registered Office: Glasgow Road, Waterfoot, Eaglesham, Glasgow G76 0EQ.{Environment.NewLine}"
                                    + $"Company Registration Number SCO52366. VAT Registration Number: {registrationNumber}{Environment.NewLine}www.linn.co.uk",
-                DeliveryAddressId = address.AddressId,
+                DeliveryAddressId = address?.AddressId ?? 0,
                 DeliveryAddress = this.GetAddressString(address),
                 TransReference = req.Reference ?? "PO12323,213",
-                Lines = req.Lines.Select(l => new DeliveryNoteLine { Quantity = l.Qty, PartNumber = l.Part.PartNumber, Description = l.Part.Description }).ToList()
+                Lines = req.Lines.Select(l => new DeliveryNoteLine
+                                                  {
+                                                      Quantity = l.Qty,
+                                                      PartNumber = l.Part.PartNumber,
+                                                      Description = l.Part.Description
+                                                  }).ToList()
             };
         }
 
