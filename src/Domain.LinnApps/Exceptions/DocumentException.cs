@@ -1,7 +1,8 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Exceptions
 {
-    using Linn.Common.Domain.Exceptions;
     using System;
+
+    using Linn.Common.Domain.Exceptions;
 
     public class DocumentException : DomainException
     {

@@ -37,6 +37,9 @@ function App() {
                         <ListItem component={Link} to="/stores2/storage">
                             <Typography color="primary">Storage Locations</Typography>
                         </ListItem>
+                        <ListItem component={Link} to="/requisitions/reports/requisition-cost">
+                            <Typography color="primary">Cost Of Req Report</Typography>
+                        </ListItem>
                     </List>
                 </Grid>
             </Grid>

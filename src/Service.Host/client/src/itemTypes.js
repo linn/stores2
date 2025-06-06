@@ -8,7 +8,6 @@ const itemTypes = {
     historicEmployees: { url: `${config.proxyRoot}/employees` },
     storagePlaceAudit: { url: `${config.appRoot}/stores2/reports/storage-place-audit/report` },
     storagePlaces: { url: `${config.proxyRoot}/inventory/storage-places` },
-    // auditLocations: { url: `${config.proxyRoot}/inventory/audit-locations` },
     requisitions: { url: `${config.appRoot}/requisitions` },
     functionCodes: { url: `${config.appRoot}/requisitions/stores-functions` },
     goodsInLog: { url: `${config.appRoot}/stores2/goods-in-log/report` },
@@ -36,6 +35,9 @@ const itemTypes = {
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
     worksOrder: { url: `${config.proxyRoot}/production/works-orders` },
     debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
+    requisitionCostReport: {
+        url: `${config.appRoot}/requisitions/reports/requisition-cost/report`
+    },
     printQcLabels: { url: `${config.appRoot}/requisitions/print-qc-labels` },
     getDefaultBookInLocation: { url: `${config.appRoot}/requisitions/default-book-in-location` },
     workStations: { url: `${config.appRoot}/stores2/work-stations` },
