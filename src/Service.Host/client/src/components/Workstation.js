@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import Dialog from '@mui/material/Dialog';
-import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -24,7 +23,6 @@ import {
 } from '@linn-it/linn-form-components-library';
 import config from '../config';
 import itemTypes from '../itemTypes';
-import useInitialise from '../hooks/useInitialise';
 import useGet from '../hooks/useGet';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
@@ -32,7 +30,6 @@ import useSearch from '../hooks/useSearch';
 import Page from './Page';
 
 function Workstation({ creating }) {
-    const { isLoading } = useInitialise(itemTypes.workStations.url);
     const [workStation, setWorkStation] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
     const [rowUpdated, setRowUpdated] = useState();
@@ -143,9 +140,9 @@ function Workstation({ creating }) {
                     workStationElementId: (prev.workStationElements?.length ?? 0) + 1,
                     workStationCode: prev.workStationCode || '',
                     createdById: null,
-                    createdByName: '',
+                    createdByName: null,
                     dateCreated: new Date(),
-                    locationId: 0,
+                    locationId: null,
                     palletNumber: null,
                     isAddition: true
                 }
@@ -432,14 +429,9 @@ function Workstation({ creating }) {
                 <Grid size={12}>
                     <Typography variant="h4">Workstation Utility</Typography>
                 </Grid>
-                {(isLoading ||
-                    isNewWorkStationsLoading ||
-                    updateLoading ||
-                    createWorkStationLoading) && (
+                {(isNewWorkStationsLoading || updateLoading || createWorkStationLoading) && (
                     <Grid size={12}>
-                        <List>
-                            <Loading />
-                        </List>
+                        <Loading />
                     </Grid>
                 )}
                 <Grid size={4}>

@@ -8,12 +8,10 @@ import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
 import config from '../config';
 import itemTypes from '../itemTypes';
-import useInitialise from '../hooks/useInitialise';
 import useGet from '../hooks/useGet';
 import Page from './Page';
 
 function Workstations() {
-    const { isLoading } = useInitialise(itemTypes.workStations.url);
     const [workStationCodeSearch, setWorkstationSearchTerm] = useState('');
     const [citCodeSearch, setCitCodeSearchTerm] = useState('');
 
@@ -84,11 +82,6 @@ function Workstations() {
                 <Grid size={12}>
                     <CreateButton createUrl="/stores2/work-stations/create" />
                 </Grid>
-                {isLoading && (
-                    <Grid size={12}>
-                        <Loading />
-                    </Grid>
-                )}
                 <Grid size={4}>
                     <InputField
                         value={workStationCodeSearch}
@@ -109,7 +102,6 @@ function Workstations() {
                 </Grid>
                 <Grid size={6}>
                     <Button
-                        disabled={isLoading}
                         variant="outlined"
                         onClick={() =>
                             getWorkStations(
