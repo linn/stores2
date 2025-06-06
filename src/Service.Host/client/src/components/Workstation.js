@@ -207,11 +207,6 @@ function Workstation({ creating }) {
             search: searchStorageLocations,
             searchResults: storageLocationsSearchResults,
             searchLoading: storageLocationsSearchLoading,
-            searchUpdateFieldNames: [
-                { fieldName: 'locationId', searchResultFieldName: 'locationId' },
-                { fieldName: 'locationCode', searchResultFieldName: 'locationCode' },
-                { fieldName: 'locationDescription', searchResultFieldName: 'description' }
-            ],
             clearSearch: clearStorageLocation,
             renderCell: params => (
                 <>
@@ -259,10 +254,6 @@ function Workstation({ creating }) {
             search: searchEmployees,
             searchResults: employeesSearchResults,
             searchLoading: employeesSearchLoading,
-            searchUpdateFieldNames: [
-                { fieldName: 'createdByName', searchResultFieldName: 'fullName' },
-                { fieldName: 'createdById', searchResultFieldName: 'id' }
-            ],
             clearSearch: clearEmployeesSearch,
             renderCell: params => (
                 <>
@@ -318,12 +309,12 @@ function Workstation({ creating }) {
 
             let newRow = {
                 ...currentRow,
-                [s.field]: selected.id
+                [s.field]: selected.id,
+                locationId: selected.locationId,
+                locationCode: selected.locationCode,
+                locationDescription: selected.description
             };
 
-            s.searchUpdateFieldNames?.forEach(f => {
-                newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
-            });
             processRowUpdate(newRow, currentRow);
             setSearchDialogOpen({ forRow: null, forColumn: null });
         };
@@ -372,7 +363,9 @@ function Workstation({ creating }) {
 
             let newRow = {
                 ...currentRow,
-                [e.field]: selected.id
+                [e.field]: selected.id,
+                createdByName: selected.fullName,
+                createdById: selected.id
             };
 
             e.searchUpdateFieldNames?.forEach(f => {
