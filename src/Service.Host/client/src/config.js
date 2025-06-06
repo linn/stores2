@@ -1,4 +1,4 @@
 ﻿const config = window.APPLICATION_SETTINGS;
-const defaultConfig = { appRoot: 'localhost:5053', proxyRoot: 'localhost:5053' };
+const defaultConfig = { appRoot: 'localhost:5050', proxyRoot: 'localhost:5050' };
 
 export default { ...defaultConfig, ...config };
