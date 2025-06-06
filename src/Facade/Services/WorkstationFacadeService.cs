@@ -52,20 +52,38 @@
 
             var cit = await this.citRepository.FindByIdAsync(resource.CitCode);
 
+            var workStationElementsTasks = resource.WorkStationElements
+                .Select(async e =>
+                    {
+                        var createdBy = e.CreatedById.HasValue
+                                            ? await this.employeeRepository.FindByIdAsync(e.CreatedById.GetValueOrDefault())
+                                            : null;
+
+                        var location = e.LocationId.HasValue
+                                           ? await this.storageLocationRepository.FindByIdAsync(e.LocationId.GetValueOrDefault())
+                                           : null;
+
+                        var pallet = e.PalletNumber.HasValue
+                                         ? await this.palletRepository.FindByIdAsync(e.PalletNumber.GetValueOrDefault())
+                                         : null;
+
+                        return new WorkstationElement(
+                            e.WorkStationElementId.GetValueOrDefault(),
+                            e.WorkstationCode,
+                            createdBy,
+                            DateTime.Parse(e.DateCreated),
+                            location,
+                            pallet);
+                    });
+
+            var workStationElements = (await Task.WhenAll(workStationElementsTasks)).ToList();
+
             return new Workstation(
                 resource.WorkStationCode,
                 resource.Description,
                 cit,
                 resource.ZoneType,
-                resource.WorkStationElements
-                    .Select(e => new WorkstationElement(
-                        e.WorkStationElementId.GetValueOrDefault(),
-                        e.WorkstationCode,
-                        e.CreatedById.HasValue ? this.employeeRepository.FindById(e.CreatedById.GetValueOrDefault()) : null,
-                        DateTime.Parse(e.DateCreated),
-                        e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
-                        e.PalletNumber.HasValue ? this.palletRepository.FindById(e.PalletNumber.GetValueOrDefault()) : null))
-                    .ToList());
+                workStationElements);
         }
 
         protected override async Task UpdateFromResourceAsync(
@@ -75,15 +93,31 @@
         {
             var cit = await this.citRepository.FindByIdAsync(updateResource.CitCode);
 
-            var updateDetails = updateResource.WorkStationElements
-                .Select(e => new WorkstationElement(
-                    e.WorkStationElementId.GetValueOrDefault(),
-                    e.WorkstationCode,
-                    e.CreatedById.HasValue ? this.employeeRepository.FindById(e.CreatedById.GetValueOrDefault()) : null,
-                    DateTime.Parse(e.DateCreated),
-                    e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
-                    e.PalletNumber.HasValue ? this.palletRepository.FindById(e.PalletNumber.GetValueOrDefault()) : null))
-                .ToList();
+            var updateDetailsTasks = updateResource.WorkStationElements
+                .Select(async e =>
+                    {
+                        var createdBy = e.CreatedById.HasValue
+                                            ? await this.employeeRepository.FindByIdAsync(e.CreatedById.GetValueOrDefault())
+                                            : null;
+
+                        var location = e.LocationId.HasValue
+                                           ? await this.storageLocationRepository.FindByIdAsync(e.LocationId.GetValueOrDefault())
+                                           : null;
+
+                        var pallet = e.PalletNumber.HasValue
+                                         ? await this.palletRepository.FindByIdAsync(e.PalletNumber.GetValueOrDefault())
+                                         : null;
+
+                        return new WorkstationElement(
+                            e.WorkStationElementId.GetValueOrDefault(),
+                            e.WorkstationCode,
+                            createdBy,
+                            DateTime.Parse(e.DateCreated),
+                            location,
+                            pallet);
+                    });
+
+            var updateDetails = (await Task.WhenAll(updateDetailsTasks)).ToList();
 
             entity.Update(
                 updateResource.WorkStationCode,
