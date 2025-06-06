@@ -202,11 +202,12 @@
                 TakePriceFrom = "M",
                 RequiresAuth = "N",
                 InspectedState = "STORES",
+                UpdateStockBalance = "+",
                 StoresTransactionPostings = new List<StoresTransactionPosting>
-                {
-                    new StoresTransactionPosting("ADSTI", "C", new Nominal("0000004710", "STOCK ADJUSTMENTS")),
-                    new StoresTransactionPosting("ADSTI", "D", null)
-                },
+                                                {
+                                                    new StoresTransactionPosting("ADSTI", "C", new Nominal("0000004710", "STOCK ADJUSTMENTS")),
+                                                    new StoresTransactionPosting("ADSTI", "D", null)
+                                                },
                 StoresTransactionStates = new List<StoresTransactionState>
                 {
                     new StoresTransactionState("O", "ADSTI", "STORES")
@@ -224,6 +225,7 @@
                 TakePriceFrom = "P",
                 RequiresAuth = "Y",
                 AuthOpCode = "STORESAUTH",
+                UpdateStockBalance = "-",
                 StoresTransactionPostings = new List<StoresTransactionPosting>
                 {
                     new StoresTransactionPosting("STADI", "D", new Nominal("0000004710", "STOCK ADJUSTMENTS")),
@@ -638,5 +640,5 @@
                     new StoresTransactionState("F", "STSTM2", "STORES"),
                 }
             };
-    };
+    }
 }

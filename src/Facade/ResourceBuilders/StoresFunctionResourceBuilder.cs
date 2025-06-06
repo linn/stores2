@@ -98,9 +98,11 @@
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
 
                 // annoyingly not every function needs a permission
-                var unAuthFunctions = new List<string>() { "LOAN OUT" };
+                var unAuthFunctions = new List<string> { "LOAN OUT" };
 
-                if (this.authService.HasPermissionFor(AuthorisedActions.GetRequisitionActionByFunction(model.FunctionCode), claims) || unAuthFunctions.Contains(model.FunctionCode))
+                if (this.authService.HasPermissionFor(
+                        AuthorisedActions.GetRequisitionActionByFunction(model.FunctionCode), claims) 
+                    || unAuthFunctions.Contains(model.FunctionCode))
                 {
                     yield return new LinkResource { Rel = "create-req", Href = "/requisitions/create" };
                 }

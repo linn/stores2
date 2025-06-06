@@ -4,7 +4,6 @@
     using System.Threading.Tasks;
 
     using Linn.Common.Reporting.Models;
-    using Linn.Stores2.Domain.LinnApps.Reports;
 
     public interface IStoresTransViewerReportService
     {

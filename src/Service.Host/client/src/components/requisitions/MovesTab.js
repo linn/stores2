@@ -91,8 +91,7 @@ function MovesTab({
                     <Search
                         autoFocus
                         propertyName="defaultLocation"
-                        label="defaultLocation"
-                        // resultsInModal
+                        label="Search Location"
                         resultLimit={100}
                         value={searchTerm}
                         onKeyPressFunctions={[{ keyCode: 9, action: handleLocationSelect }]}

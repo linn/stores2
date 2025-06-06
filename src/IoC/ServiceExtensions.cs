@@ -69,6 +69,7 @@
                 .AddScoped<LinesProvidedStrategy>()
                 .AddScoped<LoanOutCreationStrategy>()
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
+                .AddScoped<IRequisitionReportService, RequisitionReportService>()
                 .AddScoped<ISalesProxy, SalesProxy>()
                 .AddScoped<IBomVerificationProxy, BomVerificationProxy>()
                 .AddScoped<SuReqCreationStrategy>()
@@ -77,6 +78,10 @@
                 .AddScoped<IHtmlTemplateService<DeliveryNoteDocument>>(
                     x => new HtmlTemplateService<DeliveryNoteDocument>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<RequisitionHeader>>(
+                    x => new HtmlTemplateService<RequisitionHeader>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}Requisition.cshtml",
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()
                 .AddScoped<ISerialNumberService, SerialNumberService>();
@@ -91,6 +96,7 @@
                 .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>, StoresBudgetFacadeService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
+                .AddScoped<IRequisitionReportFacadeService, RequisitionReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>, StorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>, PartsStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
