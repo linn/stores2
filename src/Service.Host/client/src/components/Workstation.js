@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
+import moment from 'moment';
 import Dialog from '@mui/material/Dialog';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
@@ -101,6 +102,12 @@ function Workstation({ creating }) {
     }, [updateResult]);
 
     useEffect(() => {
+        if (workStation) {
+            console.log(workStation);
+        }
+    }, [workStation]);
+
+    useEffect(() => {
         if (updateResult || createWorkStationResult) {
             getNewWorkStations();
             setSnackbarVisible(true);
@@ -141,7 +148,7 @@ function Workstation({ creating }) {
                 {
                     workStationElementId: workStation.workStationElements.length + 1,
                     workStationCode: workStation?.workStationCode || '',
-                    createdBy: null,
+                    createdById: null,
                     createdByName: '',
                     dateCreated: new Date(),
                     locationId: 0,
@@ -249,7 +256,8 @@ function Workstation({ creating }) {
             width: 150,
             valueGetter: value => {
                 return new Date(value);
-            }
+            },
+            valueFormatter: value => value && moment(value).format('DD-MMM-YYYY')
         },
         {
             field: 'createdById',
@@ -494,7 +502,7 @@ function Workstation({ creating }) {
                 </Grid>
                 <Grid size={12}>
                     {workStationElementColumns
-                        .filter(e => e.type === 'search' && e.headerName === 'Added By')
+                        .filter(e => e.type === 'search' && e.headerName === 'Created By')
                         .map(e => renderEmployeeSearchDialog(e))}
                     {workStationElementColumns
                         .filter(s => s.type === 'search' && s.headerName === 'Storage Location')

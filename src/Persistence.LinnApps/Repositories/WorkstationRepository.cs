@@ -25,7 +25,9 @@
             return this.serviceDbContext.Workstations.Where(filterExpression)
                 .Include(c => c.Cit)
                 .Include(we => we.WorkStationElements)
-                .ThenInclude(e => e.CreatedBy);
+                .ThenInclude(e => e.CreatedBy)
+                .Include(we => we.WorkStationElements)
+                .ThenInclude(s => s.StorageLocation);
         }
 
         public override async Task<Workstation> FindByIdAsync(string key)
@@ -34,6 +36,8 @@
                              .Include(c => c.Cit)
                              .Include(we => we.WorkStationElements)
                              .ThenInclude(e => e.CreatedBy)
+                             .Include(we => we.WorkStationElements)
+                             .ThenInclude(s => s.StorageLocation)
                              .FirstOrDefaultAsync(w => w.WorkStationCode == key);
             return result;
         }
