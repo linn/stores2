@@ -543,13 +543,30 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={10}>
+                <Grid size={8}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.req?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={1}>
+                    <LinkField
+                        to={`${itemTypes.requisitions.url}/${reqNumber}/view`}
+                        disabled={!reqNumber}
+                        external={false}
+                        openLinksInNewTabs={true}
+                        value="Printable View"
+                    />
+                </Grid>
+                <Grid size={1}>
+                    <LinkField
+                        to={`/requisitions/reports/requisition-cost/${reqNumber}`}
+                        disabled={!reqNumber}
+                        external={false}
+                        value="Cost Of Req"
+                    />
                 </Grid>
                 <Grid size={2}>
                     {!creating && (

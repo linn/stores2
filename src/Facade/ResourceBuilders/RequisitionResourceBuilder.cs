@@ -161,7 +161,7 @@
                     yield return new LinkResource { Rel = "preview-reversal", Href = $"/requisitions/{model.ReqNumber}/preview-reversal" };
                 }
 
-                if (model.StoresFunction.FunctionCode == "GIST PO")
+                if (model.StoresFunction?.FunctionCode == "GIST PO")
                 {
                     var href = "/requisitions/print-qc-labels?";
                     href += $"&reqNumber={model.ReqNumber}";
@@ -173,12 +173,12 @@
                     href += $"&qtyReceived={model.Lines?.FirstOrDefault()?.Qty}";
                     href += $"&unitOfMeasure={model.Lines?.FirstOrDefault()?.Part?.OurUnitOfMeasure}";
                     href += $"&qcInfo={model.Lines?.FirstOrDefault()?.Part?.QcInformation}";
-                    yield return new LinkResource { Rel = "print-qc-labels", Href = href};
+                    yield return new LinkResource { Rel = "print-qc-labels", Href = href };
                 }
 
                 if (model.HasDeliveryNote())
                 {
-                    yield return new LinkResource { Rel = "delivery-note", Href = $"/delivery-note/{model.ReqNumber}" };
+                    yield return new LinkResource { Rel = "delivery-note", Href = $"/requisitions/delivery-note/{model.ReqNumber}" };
                 }
             }
         }
