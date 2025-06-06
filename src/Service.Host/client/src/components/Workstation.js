@@ -407,7 +407,7 @@ function Workstation({ creating }) {
                             search={e.search}
                             searchResults={e.searchResults?.map(r => ({
                                 ...r,
-                                id: r[e.field]
+                                id: r.id
                             }))}
                             searchLoading={e.loading}
                             priorityFunction="closestMatchesFirst"
