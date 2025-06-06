@@ -15,7 +15,7 @@ function useSignIn() {
             !auth.isLoading &&
             !hasTriedSignin
         ) {
-            auth.signinRedirect();
+            auth.signinRedirect({ extraQueryParams: { prompt: 'login' } });
             sessionStorage.setItem('auth:redirect', window.location.pathname);
             setHasTriedSignin(true);
         }

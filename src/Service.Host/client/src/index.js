@@ -20,9 +20,11 @@ const oidcConfig = {
     authority: config.authorityUri,
     client_id: 'app2',
     response_type: 'code',
+    auotmaticSilentRenew: false,
     scope: 'openid profile email associations',
     redirect_uri: `${host}/stores2`,
-    post_logout_redirect_uri: `${config.proxyRoot}/authentication/Account/Logout`,
+    // todo - approot, probz
+    post_logout_redirect_uri: 'https://jwt.ms/',
     onSigninCallback: () => {
         const redirect = sessionStorage.getItem('auth:redirect');
         if (redirect) {

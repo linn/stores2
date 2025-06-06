@@ -25,6 +25,7 @@ import StoresFunction from './StoresFunction';
 import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
 import PcasStorageTypes from './PcasStorageTypes';
 import PcasStorageType from './PcasStorageType';
+import SignoutCallback from './SignoutCallback';
 
 function Root() {
     useSignIn();
@@ -62,6 +63,7 @@ function Root() {
                         path="/requisitions/:reqNumber"
                         element={<Requisition creating={false} />}
                     />
+                    <Route path="/stores2/signout-callback" element={<SignoutCallback />} />
 
                     <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />

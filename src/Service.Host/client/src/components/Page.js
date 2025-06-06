@@ -9,6 +9,7 @@ import { Breadcrumbs, Loading } from '@linn-it/linn-form-components-library';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Button } from '@mui/material';
 
 const pageWidth = {
     xs: 4,
@@ -87,9 +88,12 @@ function Page({
             .reduce((response, word) => response + word.slice(0, 1), '');
 
         return (
-            <Tooltip title={`you are logged in as ${auth?.user?.profile?.preferred_username}`}>
-                <Avatar sx={{ bgcolor: green[500] }}>{initials}</Avatar>
-            </Tooltip>
+            <>
+                <Tooltip title={`you are logged in as ${auth?.user?.profile?.preferred_username}`}>
+                    <Avatar sx={{ bgcolor: green[500] }}>{initials}</Avatar>
+                </Tooltip>
+                <Button onClick={() => auth.signoutRedirect()}>Logout</Button>
+            </>
         );
     };
 
