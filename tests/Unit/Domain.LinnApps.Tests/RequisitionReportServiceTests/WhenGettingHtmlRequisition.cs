@@ -26,7 +26,7 @@
             this.reqNumber = 945695;
 
             this.req = new ReqWithReqNumber(
-                1,
+                this.reqNumber,
                 new Employee(),
                 TestData.FunctionCodes.TestFunctionCodes.Adjust,
                 null,
@@ -36,7 +36,7 @@
                 new Nominal("0000004710", "N"));
             this.RequisitionRepository.FindByIdAsync(this.reqNumber)
                 .Returns(this.req);
-            this.HtmlTemplateService.GetHtml(Arg.Is<RequisitionHeader>(a => a.ReqNumber == 1))
+            this.HtmlTemplateService.GetHtml(Arg.Is<RequisitionHeader>(a => a.ReqNumber == this.reqNumber))
                 .Returns("<html></html>");
 
             this.result = await this.Sut.GetRequisitionAsHtml(this.reqNumber);
