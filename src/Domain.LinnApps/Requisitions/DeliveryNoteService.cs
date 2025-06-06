@@ -36,7 +36,7 @@
             return new DeliveryNoteDocument
             {
                 DocumentNumber = reqNumber,
-                AccountReference = "aunt",
+                AccountReference = string.Empty,
                 AddressOfIssuer = $"Linn Products Ltd, Glasgow Road, Waterfoot, Eaglesham, Glasgow G76 0EQ, Scotland{Environment.NewLine}"
                                   + $"Telephone (0141) 307 7777{Environment.NewLine}{Environment.NewLine}",
                 DocumentDate = req.DateBooked ?? DateTime.Now,
@@ -44,7 +44,7 @@
                                    + $"Company Registration Number SCO52366. VAT Registration Number: {registrationNumber}{Environment.NewLine}www.linn.co.uk",
                 DeliveryAddressId = address?.AddressId ?? 0,
                 DeliveryAddress = this.GetAddressString(address),
-                TransReference = req.Reference ?? "PO12323,213",
+                TransReference = req.Reference,
                 Lines = req.Lines.Select(l => new DeliveryNoteLine
                                                   {
                                                       Quantity = l.Qty,
