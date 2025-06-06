@@ -23,7 +23,7 @@
                 LocationCode = model.StorageLocation?.LocationCode,
                 LocationDescription = model.StorageLocation?.Description,
                 DateCreated = model.DateCreated.ToString("o"),
-                CreatedBy = model.CreatedBy?.Id,
+                CreatedById = model.CreatedBy?.Id,
                 CreatedByName = model.CreatedBy?.Name,
                 Links = this.BuildLinks(model, claims).ToArray()
             };

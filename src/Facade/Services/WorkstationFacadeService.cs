@@ -61,7 +61,7 @@
                     .Select(e => new WorkstationElement(
                         e.WorkStationElementId.GetValueOrDefault(),
                         e.WorkstationCode,
-                        e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
+                        e.CreatedById.HasValue ? this.employeeRepository.FindById(e.CreatedById.GetValueOrDefault()) : null,
                         DateTime.Parse(e.DateCreated),
                         e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
                         e.PalletNumber.HasValue ? this.palletRepository.FindById(e.PalletNumber.GetValueOrDefault()) : null))
@@ -79,7 +79,7 @@
                 .Select(e => new WorkstationElement(
                     e.WorkStationElementId.GetValueOrDefault(),
                     e.WorkstationCode,
-                    e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
+                    e.CreatedById.HasValue ? this.employeeRepository.FindById(e.CreatedById.GetValueOrDefault()) : null,
                     DateTime.Parse(e.DateCreated),
                     e.LocationId.HasValue ? this.storageLocationRepository.FindById(e.LocationId.GetValueOrDefault()) : null,
                     e.PalletNumber.HasValue ? this.palletRepository.FindById(e.PalletNumber.GetValueOrDefault()) : null))

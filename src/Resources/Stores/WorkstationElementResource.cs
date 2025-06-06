@@ -8,7 +8,7 @@
 
         public string WorkstationCode { get; set; }
 
-        public int? CreatedBy { get; set; }
+        public int? CreatedById { get; set; }
 
         public string CreatedByName { get; set; }
 

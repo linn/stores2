@@ -141,11 +141,11 @@ function Workstation({ creating }) {
                 {
                     workStationElementId: workStation.workStationElements.length + 1,
                     workStationCode: workStation?.workStationCode || '',
-                    createdBy: 0,
+                    createdBy: null,
                     createdByName: '',
                     dateCreated: new Date(),
                     locationId: 0,
-                    palletNumber: '',
+                    palletNumber: null,
                     isAddition: true
                 }
             ]
@@ -252,8 +252,8 @@ function Workstation({ creating }) {
             }
         },
         {
-            field: 'createdBy',
-            headerName: 'Added By',
+            field: 'createdById',
+            headerName: 'Created By',
             width: 200,
             editable: true,
             type: 'search',
@@ -261,8 +261,8 @@ function Workstation({ creating }) {
             searchResults: employeesSearchResults,
             searchLoading: employeesSearchLoading,
             searchUpdateFieldNames: [
-                { fieldName: 'createdBy', searchResultFieldName: 'id' },
-                { fieldName: 'createdByName', searchResultFieldName: 'fullName' }
+                { fieldName: 'createdByName', searchResultFieldName: 'fullName' },
+                { fieldName: 'createdById', searchResultFieldName: 'id' }
             ],
             clearSearch: clearEmployeesSearch,
             renderCell: params => (
@@ -276,7 +276,7 @@ function Workstation({ creating }) {
                             })
                         }
                     />
-                    {params.row?.createdBy}
+                    {params.row?.createdById}
                 </>
             )
         },

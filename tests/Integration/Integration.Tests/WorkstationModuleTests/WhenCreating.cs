@@ -56,7 +56,7 @@
                                                                         new WorkstationElementResource()
                                                                             {
                                                                                 WorkstationCode = "WORKSTATIONCODE",
-                                                                                CreatedBy = 33156,
+                                                                                CreatedById = 33156,
                                                                                 CreatedByName = "RSTEWART",
                                                                                 DateCreated = DateTime.Today.ToString("o"),
                                                                                 LocationId = this.location.LocationId,
@@ -65,7 +65,7 @@
                                                                         new WorkstationElementResource()
                                                                             {
                                                                                 WorkstationCode = "WORKSTATIONCODE",
-                                                                                CreatedBy = 33156,
+                                                                                CreatedById = 33156,
                                                                                 CreatedByName = "RSTEWART",
                                                                                 DateCreated = DateTime.Today.ToString("o"),
                                                                                 PalletNumber = this.pallet.PalletNumber,
