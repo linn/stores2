@@ -60,9 +60,9 @@
                                          DateLastAudited = DateTime.Today.ToString("o"),
                                          Accessible = "Y",
                                          StoresKittable = "Y",
-                                         StoresKittablePriority = 1,
+                                         StoresKittingPriority = 1,
                                          SalesKittable = "Y",
-                                         SalesKittablePriority = 1,
+                                         SalesKittingPriority = 1,
                                          AllocQueueTime = DateTime.Now.ToString("o"),
                                          LocationType = new LocationTypeResource 
                                                             {

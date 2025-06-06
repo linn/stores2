@@ -63,9 +63,9 @@
                 resource.StorageLocationId,
                 resource.Accessible,
                 resource.StoresKittable,
-                resource.StoresKittablePriority,
+                resource.StoresKittingPriority,
                 resource.SalesKittable,
-                resource.SalesKittablePriority,
+                resource.SalesKittingPriority,
                 DateTime.Parse(resource.AllocQueueTime),
                 locationType.FirstOrDefault(),
                 resource.LocationTypeId,
@@ -100,9 +100,9 @@
                 DateTime.Parse(updateResource.DateLastAudited),
                 updateResource.Accessible,
                 updateResource.StoresKittable,
-                updateResource.StoresKittablePriority,
+                updateResource.StoresKittingPriority,
                 updateResource.SalesKittable,
-                updateResource.SalesKittablePriority,
+                updateResource.SalesKittingPriority,
                 DateTime.Parse(updateResource.AllocQueueTime),
                 locationType.FirstOrDefault(),
                 updateResource.LocationTypeId,
@@ -120,7 +120,9 @@
 
         protected override Expression<Func<StoresPallet, bool>> SearchExpression(string searchTerm)
         {
-            throw new NotImplementedException();
+            bool isInt = int.TryParse(searchTerm, out int palletNumber);
+
+            return x => isInt && x.PalletNumber == palletNumber;
         }
 
         protected override async Task SaveToLogTable(

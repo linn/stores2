@@ -140,7 +140,6 @@
                 .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>()
                 .AddScoped<IBuilder<StoresPallet>, StoresPalletResourceBuilder>()
-                .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
                 .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>();
         }
     }
