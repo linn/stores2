@@ -9,6 +9,8 @@
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Stores;
@@ -21,10 +23,16 @@
 
         private readonly IRepository<Cit, string> citRepository;
 
+        private readonly IRepository<StorageLocation, int> storageLocationRepository;
+
+        private readonly IRepository<StoresPallet, int> palletRepository;
+
         public WorkstationFacadeService(
             IRepository<Workstation, string> repository,
             IRepository<Employee, int> employeeRepository,
             IRepository<Cit, string> citRepository,
+            IRepository<StorageLocation, int> storageLocationRepository,
+            IRepository<StoresPallet, int> palletRepository,
             ITransactionManager transactionManager,
             IBuilder<Workstation> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
@@ -32,31 +40,50 @@
             this.repository = repository;
             this.employeeRepository = employeeRepository;
             this.citRepository = citRepository;
+            this.storageLocationRepository = storageLocationRepository;
+            this.palletRepository = palletRepository;
         }
 
         protected override async Task<Workstation> CreateFromResourceAsync(
             WorkstationResource resource,
             IEnumerable<string> privileges = null)
         {
-            var workstation = await this.repository.FindByIdAsync(resource.WorkstationCode);
-
+            var workstation = await this.repository.FindByIdAsync(resource.WorkStationCode);
             var cit = await this.citRepository.FindByIdAsync(resource.CitCode);
 
+            var workStationElements = new List<WorkstationElement>();
+
+            foreach (var e in resource.WorkStationElements)
+            {
+                var createdBy = e.CreatedById.HasValue
+                                    ? await this.employeeRepository.FindByIdAsync(e.CreatedById.Value)
+                                    : null;
+
+                var location = e.LocationId.HasValue
+                                   ? await this.storageLocationRepository.FindByIdAsync(e.LocationId.Value)
+                                   : null;
+
+                var pallet = e.PalletNumber.HasValue
+                                 ? await this.palletRepository.FindByIdAsync(e.PalletNumber.Value)
+                                 : null;
+
+                var element = new WorkstationElement(
+                    e.WorkStationElementId.GetValueOrDefault(),
+                    e.WorkstationCode,
+                    createdBy,
+                    DateTime.Parse(e.DateCreated),
+                    location,
+                    pallet);
+
+                workStationElements.Add(element);
+            }
+
             return new Workstation(
-                resource.WorkstationCode,
+                resource.WorkStationCode,
                 resource.Description,
                 cit,
-                resource.VaxWorkstation,
                 resource.ZoneType,
-                resource.WorkstationElements
-                    .Select(e => new WorkstationElement(
-                        e.WorkstationElementId,
-                        e.WorkstationCode,
-                        e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
-                        DateTime.Parse(e.DateCreated),
-                        e.LocationId,
-                        e.PalletNumber))
-                    .ToList());
+                workStationElements);
         }
 
         protected override async Task UpdateFromResourceAsync(
@@ -66,23 +93,39 @@
         {
             var cit = await this.citRepository.FindByIdAsync(updateResource.CitCode);
 
-            var updateDetails = updateResource.WorkstationElements
-                .Select(e => new WorkstationElement(
-                    e.WorkstationElementId,
+            var workStationElements = new List<WorkstationElement>();
+
+            foreach (var e in updateResource.WorkStationElements)
+            {
+                var createdBy = e.CreatedById.HasValue
+                                    ? await this.employeeRepository.FindByIdAsync(e.CreatedById.GetValueOrDefault())
+                                    : null;
+
+                var location = e.LocationId.HasValue
+                                   ? await this.storageLocationRepository.FindByIdAsync(e.LocationId.GetValueOrDefault())
+                                   : null;
+
+                var pallet = e.PalletNumber.HasValue
+                                 ? await this.palletRepository.FindByIdAsync(e.PalletNumber.GetValueOrDefault())
+                                 : null;
+
+                var element = new WorkstationElement(
+                    e.WorkStationElementId.GetValueOrDefault(),
                     e.WorkstationCode,
-                    e.CreatedBy.HasValue ? this.employeeRepository.FindById(e.CreatedBy.GetValueOrDefault()) : null,
+                    createdBy,
                     DateTime.Parse(e.DateCreated),
-                    e.LocationId,
-                    e.PalletNumber))
-                .ToList();
+                    location,
+                    pallet);
+
+                workStationElements.Add(element);
+            }
 
             entity.Update(
-                updateResource.WorkstationCode,
+                updateResource.WorkStationCode,
                 updateResource.Description,
                 cit,
-                updateResource.VaxWorkstation,
                 updateResource.ZoneType,
-                updateDetails);
+                workStationElements);
         }
 
         protected override Expression<Func<Workstation, bool>> SearchExpression(string searchTerm)
@@ -103,8 +146,8 @@
         protected override Expression<Func<Workstation, bool>> FilterExpression(WorkstationSearchResource searchResource)
         {
             return w =>
-                (string.IsNullOrEmpty(searchResource.WorkstationCode) || w.WorkstationCode == searchResource.WorkstationCode)
-                && (string.IsNullOrEmpty(searchResource.CitCode) || w.Cit.Code == searchResource.CitCode);
+                (string.IsNullOrEmpty(searchResource.WorkStationCode) || w.WorkStationCode.ToUpper() == searchResource.WorkStationCode.Trim().ToUpper())
+                && (string.IsNullOrEmpty(searchResource.CitCode) || w.Cit.Code.ToUpper() == searchResource.CitCode.Trim().ToUpper());
         }
 
         protected override Expression<Func<Workstation, bool>> FindExpression(WorkstationSearchResource searchResource)

@@ -28,7 +28,6 @@
                         Code = "R",
                         Name = "R CODE"
                     },
-                "V",
                 "Z",
                 new List<WorkstationElement>
                     {
@@ -42,7 +41,6 @@
                         Code = "S",
                         Name = "S CODE"
                     },
-                "U",
                 "D",
                 new List<WorkstationElement>
                     {
@@ -78,7 +76,7 @@
         {
             var resources = this.Response.DeserializeBody<IEnumerable<WorkstationResource>>().ToList();
             resources.Count.Should().Be(1);
-            resources.First().WorkstationCode.Should().Be("Test");
+            resources.First().WorkStationCode.Should().Be("Test");
             resources.First().Description.Should().Be("description");
         }
     }

@@ -32,7 +32,7 @@
             var workstations = await service.FilterBy(
                                    new WorkstationSearchResource
                                        {
-                                           WorkstationCode = workstationCode,
+                                           WorkStationCode = workstationCode,
                                            CitCode = citCode
                                        });
             await res.Negotiate(workstations);

@@ -6,7 +6,7 @@
 
     public class WorkstationResource : HypermediaResource
     {
-        public string WorkstationCode { get; set; }
+        public string WorkStationCode { get; set; }
 
         public string Description { get; set; }
 
@@ -18,6 +18,6 @@
 
         public string ZoneType { get; set; }
 
-        public IEnumerable<WorkstationElementResource> WorkstationElements { get; set; }
+        public IEnumerable<WorkstationElementResource> WorkStationElements { get; set; }
     }
 }
