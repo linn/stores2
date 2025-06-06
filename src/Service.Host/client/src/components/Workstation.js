@@ -104,13 +104,7 @@ function Workstation({ creating }) {
             clearCreateWorkStation();
             clearUpdateResult();
         }
-    }, [
-        clearCreateWorkStation,
-        clearUpdateResult,
-        createWorkStationResult,
-        getNewWorkStations,
-        updateResult
-    ]);
+    }, [clearCreateWorkStation, clearUpdateResult, createWorkStationResult, updateResult]);
 
     useEffect(() => {
         if (!hasFetched) {

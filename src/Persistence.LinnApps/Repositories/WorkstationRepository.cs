@@ -27,6 +27,8 @@
                 .Include(we => we.WorkStationElements)
                 .ThenInclude(e => e.CreatedBy)
                 .Include(we => we.WorkStationElements)
+                .ThenInclude(p => p.Pallet)
+                .Include(we => we.WorkStationElements)
                 .ThenInclude(s => s.StorageLocation);
         }
 
@@ -36,6 +38,8 @@
                              .Include(c => c.Cit)
                              .Include(we => we.WorkStationElements)
                              .ThenInclude(e => e.CreatedBy)
+                             .Include(we => we.WorkStationElements)
+                             .ThenInclude(p => p.Pallet)
                              .Include(we => we.WorkStationElements)
                              .ThenInclude(s => s.StorageLocation)
                              .FirstOrDefaultAsync(w => w.WorkStationCode == key);

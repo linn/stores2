@@ -98,15 +98,15 @@
             foreach (var e in updateResource.WorkStationElements)
             {
                 var createdBy = e.CreatedById.HasValue
-                                    ? await this.employeeRepository.FindByIdAsync(e.CreatedById.Value)
+                                    ? await this.employeeRepository.FindByIdAsync(e.CreatedById.GetValueOrDefault())
                                     : null;
 
                 var location = e.LocationId.HasValue
-                                   ? await this.storageLocationRepository.FindByIdAsync(e.LocationId.Value)
+                                   ? await this.storageLocationRepository.FindByIdAsync(e.LocationId.GetValueOrDefault())
                                    : null;
 
                 var pallet = e.PalletNumber.HasValue
-                                 ? await this.palletRepository.FindByIdAsync(e.PalletNumber.Value)
+                                 ? await this.palletRepository.FindByIdAsync(e.PalletNumber.GetValueOrDefault())
                                  : null;
 
                 var element = new WorkstationElement(
