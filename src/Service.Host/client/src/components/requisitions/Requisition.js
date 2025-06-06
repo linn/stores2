@@ -557,7 +557,7 @@ function Requisition({ creating }) {
                         disabled={!reqNumber}
                         external={false}
                         openLinksInNewTabs={true}
-                        value="View Mode"
+                        value="Printable View"
                     />
                 </Grid>
                 <Grid size={1}>
