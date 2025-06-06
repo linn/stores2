@@ -102,12 +102,6 @@ function Workstation({ creating }) {
     }, [updateResult]);
 
     useEffect(() => {
-        if (workStation) {
-            console.log(workStation);
-        }
-    }, [workStation]);
-
-    useEffect(() => {
         if (updateResult || createWorkStationResult) {
             getNewWorkStations();
             setSnackbarVisible(true);
