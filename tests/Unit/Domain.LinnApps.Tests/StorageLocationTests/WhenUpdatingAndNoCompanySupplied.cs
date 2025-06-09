@@ -19,7 +19,7 @@
             var location = new StorageLocation();
             this.action = () =>
             {
-                location.Update("New Description", null, "Y", "Y", "Y", "A", "A", null, null, null);
+                location.Update("New Description", null, "Y", "Y", "Y", "Y", "A", "A", null, null, null);
             };
         }
 

@@ -12,6 +12,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
@@ -22,6 +23,7 @@
         private readonly IRepository<StorageSite, string> storageSiteRepository;
         private readonly IRepository<StockPool, string> stockPoolRepository;
         private readonly IRepository<StorageType, string> storageTypeRepository;
+        private readonly IRepository<Department, string> departmentRepository;
 
         public StorageLocationService(
             IRepository<StorageLocation, int> repository,
@@ -31,7 +33,8 @@
             IRepository<AccountingCompany, string> accountingCompanyRepository,
             IRepository<StorageSite, string> storageSiteRepository,
             IRepository<StockPool, string> stockPoolRepository,
-            IRepository<StorageType, string> storageTypeRepository)
+            IRepository<StorageType, string> storageTypeRepository,
+            IRepository<Department, string> departmentRepository)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.databaseSequenceService = databaseSequenceService;
@@ -39,6 +42,7 @@
             this.accountingCompanyRepository = accountingCompanyRepository;
             this.stockPoolRepository = stockPoolRepository;
             this.storageTypeRepository = storageTypeRepository;
+            this.departmentRepository = departmentRepository;
         }
 
         protected override Expression<Func<StorageLocation, bool>> SearchExpression(string searchTerm)
@@ -75,6 +79,8 @@
 
             var storageType = await this.GetStorageType(resource.StorageType);
 
+            var department = string.IsNullOrEmpty(resource.AuditedByDepartmentCode) ? null : await this.departmentRepository.FindByIdAsync(resource.AuditedByDepartmentCode);
+
             return new StorageLocation(
                        locationId,
                        resource.LocationCode,
@@ -84,6 +90,7 @@
                        company,
                        resource.AccessibleFlag,
                        resource.StoresKittableFlag,
+                       resource.SalesKittableFlag,
                        resource.MixStatesFlag,
                        resource.StockState,
                        resource.TypeOfStock,
@@ -92,12 +99,15 @@
                        {
                            DefaultStockPool = resource.DefaultStockPool,
                            StoresKittingPriority = resource.StoresKittingPriority,
+                           SalesKittingPriority = resource.SalesKittingPriority,
                            SpecProcFlag = resource.SpecProcFlag,
                            LocationType = resource.LocationType,
                            StorageTypeCode = resource.StorageType,
                            SalesAccountId = resource.SalesAccountId,
-                           OutletNumber = resource.OutletNumber
-                       };
+                           OutletNumber = resource.OutletNumber,
+                           AuditedByDepartmentCode = resource?.AuditedByDepartmentCode,
+                           AuditedByDepartment = department
+                        };
         }
 
         protected override async Task UpdateFromResourceAsync(
@@ -114,12 +124,14 @@
             var dateInvalid = string.IsNullOrEmpty(updateResource.DateInvalid)
                 ? (DateTime?)null
                 : DateTime.Parse(updateResource.DateInvalid);
-
+            var department = string.IsNullOrEmpty(updateResource.AuditedByDepartmentCode) ? null : await this.departmentRepository.FindByIdAsync(updateResource.AuditedByDepartmentCode);
+            
             entity.Update(
-                updateResource.Description,
-                company,
-                updateResource.AccessibleFlag,
+            updateResource.Description,
+            company,
+            updateResource.AccessibleFlag,
                 updateResource.StoresKittableFlag,
+                updateResource.SalesKittableFlag,
                 updateResource.MixStatesFlag,
                 updateResource.StockState,
                 updateResource.TypeOfStock,
@@ -129,6 +141,9 @@
 
             entity.AuditFrequencyWeeks = updateResource.AuditFrequencyWeeks;
             entity.StoresKittingPriority = updateResource.StoresKittingPriority;
+            entity.SalesKittingPriority = updateResource.SalesKittingPriority;
+            entity.AuditedByDepartmentCode = department?.DepartmentCode;
+            entity.AuditedByDepartment = department;
         }
 
         protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationResource searchResource)
