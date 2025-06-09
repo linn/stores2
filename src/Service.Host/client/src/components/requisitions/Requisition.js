@@ -17,7 +17,8 @@ import {
     Search,
     SaveBackCancelButtons,
     utilities,
-    LinkField
+    LinkField,
+    ExportButton
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -543,13 +544,24 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={8}>
+                <Grid size={7}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.req?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={1}>
+                    <ExportButton
+                        buttonText="Pdf"
+                        disabled={!reqNumber}
+                        accept="application/pdf"
+                        fileName={`req ${reqNumber}.pdf`}
+                        tooltipText="Download as PDF"
+                        accessToken={token}
+                        href={`${config.appRoot}/requisitions/${reqNumber}/pdf`}
+                    />
                 </Grid>
                 <Grid size={1}>
                     <LinkField
