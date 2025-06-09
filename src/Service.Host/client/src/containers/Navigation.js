@@ -12,7 +12,7 @@ function Navigation() {
     const auth = useAuth();
 
     // don't render the old sign out link on newer apps
-    const myStuffWithRemovedSignOutLink = {
+    const myStuffWithSignOutLinkRemoved = {
         ...menuData?.myStuff,
         groups: menuData?.myStuff?.groups.filter(
             group => !group.items.some(item => item.title === 'Sign Out')
@@ -27,7 +27,7 @@ function Navigation() {
             handleSignOut={handleSignOut}
             loading={menuLoading}
             sections={menuData?.sections}
-            myStuff={myStuffWithRemovedSignOutLink}
+            myStuff={myStuffWithSignOutLinkRemoved}
             username={auth?.user?.profile?.preferred_username}
             seenNotifications={[]}
             unseenNotifications={notifcationsData?.notifcations}
