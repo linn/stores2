@@ -114,11 +114,11 @@
 
         public string AccessibleFlag { get; set; }
 
-        public string StoresKittableFlag { get; set; }
+        public string StoresKittableFlag { get; protected set; }
 
         public int? StoresKittingPriority { get; set; }
 
-        public string SalesKittableFlag { get; set; }
+        public string SalesKittableFlag { get; protected set; }
 
         public int? SalesKittingPriority { get; set; }
 

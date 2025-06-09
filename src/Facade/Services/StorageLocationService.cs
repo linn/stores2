@@ -1,6 +1,4 @@
-﻿using Linn.Stores2.Domain.LinnApps.Accounts;
-
-namespace Linn.Stores2.Facade.Services
+﻿namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -14,6 +12,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 

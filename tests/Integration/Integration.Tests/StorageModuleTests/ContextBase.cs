@@ -1,12 +1,11 @@
-﻿using Linn.Stores2.Domain.LinnApps.Accounts;
-
-namespace Linn.Stores2.Integration.Tests.StorageModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 {
     using System.Net.Http;
 
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
