@@ -387,7 +387,6 @@ function Requisition({ creating }) {
             payload: selected
         });
 
-        console.log(selected);
         if (
             formState.req?.isReverseTransaction === 'Y' &&
             selected.canReverse &&
