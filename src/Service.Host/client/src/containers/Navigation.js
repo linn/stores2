@@ -10,11 +10,24 @@ function Navigation() {
     );
     const { result: notifcationsData } = useInitialise('https://app.linn.co.uk/notifications');
     const auth = useAuth();
+
+    // don't render the old sign out link on newer apps
+    const myStuffWithSignOutLinkRemoved = {
+        ...menuData?.myStuff,
+        groups: menuData?.myStuff?.groups.filter(
+            group => !group.items.some(item => item.href === '/signout')
+        )
+    };
+
+    // instead pass a working sign out behaviour for this context
+    const handleSignOut = () => auth.signoutRedirect();
+
     return (
         <NavigationUI
+            handleSignOut={handleSignOut}
             loading={menuLoading}
             sections={menuData?.sections}
-            myStuff={menuData?.myStuff}
+            myStuff={myStuffWithSignOutLinkRemoved}
             username={auth?.user?.profile?.preferred_username}
             seenNotifications={[]}
             unseenNotifications={notifcationsData?.notifcations}
