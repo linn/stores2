@@ -427,6 +427,7 @@ function Requisition({ creating }) {
             payload: selected
         });
 
+        console.log(selected);
         if (
             formState.req?.isReverseTransaction === 'Y' &&
             selected.canReverse &&
@@ -1337,6 +1338,7 @@ function Requisition({ creating }) {
                                         // BOOKLD doesn't necessary specify an original req
                                         // maybe sometimes it does?
                                         // but just keep it working as is for now
+                                        console.log(reqDetails);
                                         if (formState.req?.storesFunction?.code === 'BOOKLD') {
                                             dispatch({
                                                 type: 'set_reverse_details',
