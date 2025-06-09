@@ -15,7 +15,7 @@ function Navigation() {
     const myStuffWithSignOutLinkRemoved = {
         ...menuData?.myStuff,
         groups: menuData?.myStuff?.groups.filter(
-            group => !group.items.some(item => item.title === 'Sign Out')
+            group => !group.items.some(item => item.href === '/signout')
         )
     };
 
