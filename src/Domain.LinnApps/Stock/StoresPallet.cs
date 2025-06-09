@@ -165,13 +165,86 @@
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
-            this.StockType = stockType;
-            this.StockState = stockState;
+            this.StockType = this.GetStockType(stockType);
+            this.StockState = this.GetStockState(stockState);
             this.AuditOwnerId = auditOwnerId;
             this.AuditFrequencyWeeks = auditFrequencyWeeks;
             this.AuditedByDepartmentCode = auditedByDepartmentCode;
             this.MixStates = mixStates;
             this.Cage = cage;
         }
+
+        public string GetStockTypeString(string stockType)
+        {
+            if (stockType == "A")
+            {
+                return "Any Stock";
+            }
+            if (stockType == "R")
+            {
+                return "Raw Materials";
+            }
+            if (stockType == "F")
+            {
+                return "Finished Goods";
+            }
+
+            return null;
+        }
+
+        public string GetStockStateString(string stockState)
+        {
+            if (stockState == "A")
+            {
+                return "Any Stock";
+            }
+            if (stockState == "I")
+            {
+                return "Inspected State";
+            }
+            if (stockState == "Q")
+            {
+                return "QC/ Failed State";
+            }
+
+            return null;
+        }
+
+        public string GetStockType(string stockType)
+        {
+            if (stockType == "Any Stock")
+            {
+                return "A";
+            }
+            if (stockType == "Raw Materials")
+            {
+                return "R";
+            }
+            if (stockType == "Finished Goods")
+            {
+                return "F";
+            }
+
+            return null;
+        }
+
+        public string GetStockState(string stockState)
+        {
+            if (stockState == "Any Stock")
+            {
+                return "A";
+            }
+            if (stockState == "Inspected State")
+            {
+                return "I";
+            }
+            if (stockState == "QC/ Failed State")
+            {
+                return "Q";
+            }
+
+            return null;
+        }
+
     }
 }

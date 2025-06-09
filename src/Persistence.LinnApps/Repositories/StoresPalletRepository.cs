@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
+    using System;
     using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence.EntityFramework;
@@ -33,6 +35,14 @@
                              .Include(l => l.StorageLocation)
                              .FirstOrDefaultAsync(pallet => pallet.PalletNumber == key);
             return result;
+        }
+
+        public override IQueryable<StoresPallet> FilterBy(Expression<Func<StoresPallet, bool>> filterExpression)
+        {
+            return this.serviceDbContext.StoresPallets.Where(filterExpression)
+                .Include(a => a.DefaultStockPool)
+                .Include(a => a.LocationType)
+                .Include(l => l.StorageLocation);
         }
     }
 }
