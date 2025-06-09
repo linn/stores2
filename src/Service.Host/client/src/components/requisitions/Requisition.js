@@ -1388,6 +1388,7 @@ function Requisition({ creating }) {
                                     documentNumber={formState.req.document1}
                                     documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {
+
                                         // BOOKLD doesn't specify an original req
                                         // so just fill out reversal details on the client
                                         if (formState.req?.storesFunction?.code === 'BOOKLD') {
