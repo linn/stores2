@@ -12,7 +12,8 @@ import {
     ErrorCard,
     InputField,
     Loading,
-    SaveBackCancelButtons
+    SaveBackCancelButtons,
+    Search
 } from '@linn-it/linn-form-components-library';
 import PropTypes from 'prop-types';
 import config from '../config';
@@ -21,6 +22,7 @@ import useGet from '../hooks/useGet';
 import useInitialise from '../hooks/useInitialise';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
+import useSearch from '../hooks/useSearch';
 import Page from './Page';
 
 function StorageLocation({ creating }) {
@@ -53,6 +55,13 @@ function StorageLocation({ creating }) {
         isLoading: createLoading,
         errorMessage: createError
     } = usePost(itemTypes.storageLocations.url, true, true);
+
+    const {
+        search: searchDepartments,
+        results: departmentsSearchResults,
+        loading: departmentsSearchLoading,
+        clear: clearDepartmentsSearch
+    } = useSearch(itemTypes.departments.url, 'departmentCode', 'departmentCode', 'description');
 
     if (!creating && !hasFetched) {
         setHasFetched(true);
@@ -121,6 +130,14 @@ function StorageLocation({ creating }) {
                 ...current,
                 [propertyName]: newValue,
                 locationCode: locationCodePrefix(newValue)
+            }));
+        } else if (propertyName === 'locationCode') {
+            setFormValues(current => ({ ...current, locationCode: newValue.toUpperCase() }));
+        } else if (propertyName === 'auditedByDepartment') {
+            setFormValues(current => ({
+                ...current,
+                auditedByDepartmentCode: newValue.departmentCode,
+                auditedByDepartmentName: newValue.description
             }));
         } else {
             setFormValues(current => ({ ...current, [propertyName]: newValue }));
@@ -425,7 +442,37 @@ function StorageLocation({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid size={7}></Grid>
+                            <Grid size={3}>
+                                <Search
+                                    propertyName="departmentCode"
+                                    label="Audited by Dept"
+                                    resultsInModal
+                                    resultLimit={100}
+                                    value={formValues.auditedByDepartmentCode}
+                                    handleValueChange={(_, newVal) => {
+                                        handleFieldChange('auditedByDepartmentCode', newVal);
+                                    }}
+                                    search={searchDepartments}
+                                    loading={departmentsSearchLoading}
+                                    searchResults={departmentsSearchResults}
+                                    priorityFunction="closestMatchesFirst"
+                                    onResultSelect={r => {
+                                        handleFieldChange('auditedByDepartment', r);
+                                    }}
+                                    clearSearch={clearDepartmentsSearch}
+                                    autoFocus={false}
+                                />
+                            </Grid>
+                            <Grid size={4}>
+                                <InputField
+                                    fullWidth
+                                    value={formValues.auditedByDepartmentName}
+                                    onChange={() => {}}
+                                    disabled
+                                    label="Desc"
+                                    propertyName="auditedByDepartmentName"
+                                />
+                            </Grid>
                             {!creating && (
                                 <>
                                     <Grid size={2}>

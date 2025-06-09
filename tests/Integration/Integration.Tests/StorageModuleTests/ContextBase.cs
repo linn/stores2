@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
+﻿using Linn.Stores2.Domain.LinnApps.Accounts;
+
+namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 {
     using System.Net.Http;
 
@@ -42,6 +44,7 @@
             var stockPoolRepository = new StockPoolRepository(this.DbContext);
             var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
             var stockStateRepository = new EntityFrameworkRepository<StockState, string>(this.DbContext.StockStates);
+            var departmentRepository = new EntityFrameworkRepository<Department, string>(this.DbContext.Departments);
 
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
                 storageSiteService = new StorageSiteService(
@@ -60,7 +63,8 @@
                     accountingCompanyRepository,
                     storageSiteRepository,
                     stockPoolRepository,
-                    storageTypeRepository);
+                    storageTypeRepository,
+                    departmentRepository);
 
             IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>
                 stockStateFacadeService = new StockStateFacadeService(
