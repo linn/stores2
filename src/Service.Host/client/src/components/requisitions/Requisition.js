@@ -311,7 +311,7 @@ function Requisition({ creating }) {
         }
 
         // from hardcoding in REQLINES.when-new-record-instance
-        const partNosNotRequiredFuncs = ['LOAN OUT', 'LOAN BACK', 'CUSTRET', 'SUKIT'];
+        const partNosNotRequiredFuncs = ['LOAN BACK', 'CUSTRET', 'SUKIT'];
         if (partNosNotRequiredFuncs.includes(formState.req?.storesFunction?.code)) {
             return false;
         }
@@ -1388,7 +1388,6 @@ function Requisition({ creating }) {
                                     documentNumber={formState.req.document1}
                                     documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {
-
                                         // BOOKLD doesn't specify an original req
                                         // so just fill out reversal details on the client
                                         if (formState.req?.storesFunction?.code === 'BOOKLD') {

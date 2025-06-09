@@ -14,6 +14,8 @@ namespace Linn.Stores2.Resources.Requisitions
 
         public bool? StockAllocations { get; set; }
 
+        public string Document1Type { get; set; }
+
         public IEnumerable<string> FromStates { get; set; }
 
         public IEnumerable<string> ToStates { get; set; }

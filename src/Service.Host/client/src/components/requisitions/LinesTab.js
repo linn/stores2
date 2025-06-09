@@ -78,7 +78,7 @@ function LinesTab({
         { field: 'transactionCodeDescription', headerName: 'Trans Desc', width: 200 },
         { field: 'document1Type', headerName: 'Doc1', width: 80 },
         { field: 'document1Number', headerName: 'Number', width: 80 },
-        { field: 'document1Line', headerName: 'Line', width: 60 },
+        { field: 'document1Line', headerName: 'Line', width: 60, editable: true },
         {
             field: 'dateBooked',
             headerName: 'Booked',
