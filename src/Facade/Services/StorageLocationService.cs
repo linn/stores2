@@ -84,6 +84,7 @@
                        company,
                        resource.AccessibleFlag,
                        resource.StoresKittableFlag,
+                       resource.SalesKittableFlag,
                        resource.MixStatesFlag,
                        resource.StockState,
                        resource.TypeOfStock,
@@ -92,6 +93,7 @@
                        {
                            DefaultStockPool = resource.DefaultStockPool,
                            StoresKittingPriority = resource.StoresKittingPriority,
+                           SalesKittingPriority = resource.SalesKittingPriority,
                            SpecProcFlag = resource.SpecProcFlag,
                            LocationType = resource.LocationType,
                            StorageTypeCode = resource.StorageType,
@@ -120,6 +122,7 @@
                 company,
                 updateResource.AccessibleFlag,
                 updateResource.StoresKittableFlag,
+                updateResource.SalesKittableFlag,
                 updateResource.MixStatesFlag,
                 updateResource.StockState,
                 updateResource.TypeOfStock,
@@ -129,6 +132,7 @@
 
             entity.AuditFrequencyWeeks = updateResource.AuditFrequencyWeeks;
             entity.StoresKittingPriority = updateResource.StoresKittingPriority;
+            entity.SalesKittingPriority = updateResource.SalesKittingPriority;
         }
 
         protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationResource searchResource)

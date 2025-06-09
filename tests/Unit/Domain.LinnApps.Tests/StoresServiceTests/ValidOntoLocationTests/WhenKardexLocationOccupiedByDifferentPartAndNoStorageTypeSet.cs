@@ -34,6 +34,7 @@
                 "Y",
                 "N",
                 "N",
+                "N",
                 "I",
                 "R",
                 new StockPool(),

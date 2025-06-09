@@ -355,7 +355,7 @@ function StorageLocation({ creating }) {
                             </Grid>
                             <Grid size={2}>
                                 <Dropdown
-                                    value={formValues.mixStatesFlag}
+                                    value={formValues.storesKittableFlag}
                                     fullWidth
                                     label="Stores Kittable"
                                     propertyName="storesKittableFlag"
@@ -401,6 +401,31 @@ function StorageLocation({ creating }) {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
+                            <Grid size={2}>
+                                <Dropdown
+                                    value={formValues.salesKittableFlag}
+                                    fullWidth
+                                    label="Sales Kittable"
+                                    propertyName="salesKittableFlag"
+                                    allowNoValue
+                                    items={[
+                                        { id: 'Y', displayText: 'Yes' },
+                                        { id: 'N', displayText: 'No' }
+                                    ]}
+                                    onChange={handleFieldChange}
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    value={formValues.salesKittingPriority}
+                                    type="number"
+                                    fullWidth
+                                    label="Sales Kit Priority"
+                                    propertyName="salesKittingPriority"
+                                    onChange={handleFieldChange}
+                                />
+                            </Grid>
+                            <Grid size={7}></Grid>
                             {!creating && (
                                 <>
                                     <Grid size={2}>

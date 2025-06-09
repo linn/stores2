@@ -20,6 +20,7 @@
             AccountingCompany company,
             string accessible,
             string storesKittable,
+            string salesKittable,
             string mixStates,
             string stockState,
             string typeOfStock,
@@ -27,7 +28,7 @@
             StorageType storageType)
         {
             this.LocationId = locationId;
-            this.LocationCode = locationCode;
+            this.LocationCode = locationCode.ToUpper();
             this.Description = description;
             if (site == null)
             {
@@ -56,6 +57,9 @@
 
             this.CheckYesNoFlag(storesKittable, "Cannot create Location - stores kittable should be Y, N or blank", true);
             this.StoresKittableFlag = storesKittable;
+
+            this.CheckYesNoFlag(salesKittable, "Cannot create Location - sales kittable should be Y, N or blank", true);
+            this.SalesKittableFlag = salesKittable;
 
             this.CheckYesNoFlag(mixStates, "Cannot create Location - mix states should be Y or N");
             this.MixStatesFlag = mixStates;
@@ -114,6 +118,10 @@
 
         public int? StoresKittingPriority { get; set; }
 
+        public string SalesKittableFlag { get; set; }
+
+        public int? SalesKittingPriority { get; set; }
+
         public int? AuditFrequencyWeeks { get; set; }
 
         public int? AuditedByEmployeeId { get; set; }
@@ -132,7 +140,7 @@
 
         public bool StoresKittable() => StoresKittableFlag == "Y";
 
-        public void Update(string description, AccountingCompany company, string accessible, string storesKittable,
+        public void Update(string description, AccountingCompany company, string accessible, string storesKittable, string salesKittable,
             string mixStates, string stockState, string typeOfStock, StockPool stockPool, StorageType storageType, DateTime? dateInvalid)
         {
             this.Description = description;
@@ -149,6 +157,9 @@
 
             this.CheckYesNoFlag(storesKittable, "Cannot update Location - stores kittable should be Y, N or blank", true);
             this.StoresKittableFlag = storesKittable;
+
+            this.CheckYesNoFlag(salesKittable, "Cannot update Location - sales kittable should be Y, N or blank", true);
+            this.SalesKittableFlag = salesKittable;
 
             this.CheckYesNoFlag(mixStates, "Cannot update Location - mix states should be Y or N");
             this.MixStatesFlag = mixStates;

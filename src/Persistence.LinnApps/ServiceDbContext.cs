@@ -267,6 +267,8 @@
             e.Property(l => l.StoresKittableFlag).HasColumnName("STORES_KITTABLE").HasMaxLength(1);
             e.Property(l => l.SpecProcFlag).HasColumnName("SPEC_PROC_FLAG").HasMaxLength(10);
             e.Property(l => l.StoresKittingPriority).HasColumnName("STORES_KITTING_PRIORITY");
+            e.Property(l => l.SalesKittableFlag).HasColumnName("SALES_KITTABLE").HasMaxLength(1);
+            e.Property(l => l.SalesKittingPriority).HasColumnName("SALES_KITTING_PRIORITY");
             e.Property(l => l.AuditFrequencyWeeks).HasColumnName("AUDIT_FREQUENCY_WEEKS");
             e.Property(l => l.DateLastAudited).HasColumnName("DATE_LAST_AUDITED");
             e.Property(l => l.AuditedByEmployeeId).HasColumnName("AUDITED_BY");

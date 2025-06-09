@@ -38,6 +38,8 @@
                 AccessibleFlag = model.AccessibleFlag,
                 StoresKittableFlag = model.StoresKittableFlag,
                 StoresKittingPriority = model.StoresKittingPriority,
+                SalesKittableFlag = model.SalesKittableFlag,
+                SalesKittingPriority = model.SalesKittingPriority,
                 DateLastAudited = model.DateLastAudited?.ToString("o"),
                 AuditedBy = model.AuditedBy != null ? model.AuditedBy?.Name : string.Empty,
                 AuditedByDepartmentCode = model.AuditedByDepartmentCode,

@@ -1,15 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
     using System;
-
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
-
     using NUnit.Framework;
 
-    public class WhenCreatingAndInvalidTypeOfStock
+    public class WhenCreatingAndInvalidSalesKittable
     {
         private Action action;
 
@@ -30,10 +27,10 @@
                     company,
                     "Y",
                     "Y",
-                    "Y",
+                    "Z",
                     "Y",
                     "A",
-                    "Z",
+                    "A",
                     null,
                     null);
             };
@@ -42,7 +39,7 @@
         [Test]
         public void ShouldThrow()
         {
-            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - type of stock should be R, F or A");
+            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - sales kittable should be Y, N or blank");
         }
     }
 }
