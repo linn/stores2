@@ -69,7 +69,7 @@
                 location?.LocationId,
                 pallet?.PalletNumber);
 
-            var typeOfStock = location?.TypeOfStock ?? pallet?.TypeOfStock;
+            var typeOfStock = location?.TypeOfStock ?? pallet?.StockType;
             var stateAllowedAtLocation = location?.StockState ?? pallet?.StockState;
             
             if (!string.IsNullOrEmpty(typeOfStock) && typeOfStock != "A")

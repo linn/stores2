@@ -18,7 +18,7 @@ import { InputField, Search } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../../itemTypes';
 import useGet from '../../../hooks/useGet';
 import useSearch from '../../../hooks/useSearch';
-import { subtract, multiply, add } from '../../../helpers/numberUtilities';
+import { subtract, multiply, add, lessThan } from '../../../helpers/numberUtilities';
 
 function BookInPostingsDialog({
     open,
@@ -205,14 +205,15 @@ function BookInPostingsDialog({
     const handleConfirmClick = () => {
         const qtyLeft = subtract(orderDetail.ourQty, bookedInQuantity);
         const selectedQty = bookInOrderDetails.reduce((a, b) => add(a, b.quantity), 0);
-        if (qtyLeft < selectedQty && isReverse !== 'Y') {
+        const reverseQty = multiply(selectedQty, -1);
+        if (lessThan(qtyLeft, selectedQty) && isReverse !== 'Y') {
             setSnackbar({
                 message: `Quantity left on order line is ${qtyLeft} but quantity picked is ${selectedQty}`,
                 backgroundColour: 'red'
             });
-        } else if (bookedInQuantity < multiply(selectedQty, -1) && isReverse === 'Y') {
+        } else if (lessThan(bookedInQuantity, reverseQty) && isReverse === 'Y') {
             setSnackbar({
-                message: `Quantity booked on order line is ${bookedInQuantity} but trying to reverse ${selectedQty * -1}`,
+                message: `Quantity booked on order line is ${bookedInQuantity} but trying to reverse ${reverseQty}`,
                 backgroundColour: 'red'
             });
         } else if (

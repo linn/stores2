@@ -116,6 +116,8 @@
 
         public string DateReceived { get; set; }
 
+        public string AuditLocation { get; set; }
+
         public IEnumerable<BookInOrderDetailResource> BookInOrderDetails { get; set; }
     }
 }

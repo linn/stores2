@@ -88,7 +88,8 @@
                 PartSource = "N",
                 ProcessStage = 1,
                 ToStateRequired = "N",
-                CanBeReversed = "N"
+                CanBeReversed = "N",
+                AuditLocationRequired = "Y"
             };
 
         public static readonly StoresFunction BookWorksOrder =

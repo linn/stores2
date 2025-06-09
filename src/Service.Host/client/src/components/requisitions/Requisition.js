@@ -17,7 +17,8 @@ import {
     Search,
     SaveBackCancelButtons,
     utilities,
-    LinkField
+    LinkField,
+    ExportButton
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -44,6 +45,7 @@ import Document2 from './components/Document2';
 import Document3 from './components/Document3';
 import PickRequisitionDialog from './PickRequisitionDialog';
 import BookInPostingsDialog from './components/BookInPostingsDialog';
+import AuditLocationSearch from './components/AuditLocationSearch';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
@@ -60,6 +62,7 @@ function Requisition({ creating }) {
     const [functionCodeError, setFunctionCodeError] = useState(null);
     const [pickRequisitionDialogVisible, setPickRequisitionDialogVisible] = useState(false);
     const [bookInPostingsDialogVisible, setBookInPostingsDialogVisible] = useState(false);
+    const [changesMade, setChangesMade] = useState(false);
 
     const {
         send: fetchReversalPreview,
@@ -235,7 +238,6 @@ function Requisition({ creating }) {
             dispatch({ type: 'load_state', payload: result });
             setRevertState(result);
             clearReqResult();
-            setCommentsUpdated(false);
         }
         if (updateResult) {
             dispatch({ type: 'load_state', payload: updateResult });
@@ -260,6 +262,7 @@ function Requisition({ creating }) {
     ]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
+        setChangesMade(true);
         dispatch({ type: 'set_header_value', payload: { fieldName, newValue } });
     };
 
@@ -328,53 +331,8 @@ function Requisition({ creating }) {
         return false;
     };
 
-    // just for now to only allow updates of comments field
-    const [commentsUpdated, setCommentsUpdated] = useState(false);
-
-    const movesOntoAreValid = () => {
-        const newLines = formState.req?.lines?.filter(x => x.isAddition);
-        if (newLines?.length) {
-            if (
-                newLines.every(l =>
-                    !l.moves
-                        ? false
-                        : l.moves.every(m => m.qty && (m.toLocationCode || m.toPalletNumber))
-                )
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    };
-
-    const saveIsValid = () => {
-        if (creating) {
-            // validation perfomed on the server
-            return true;
-        }
-
-        // Allow saving if stock is picked for an either a new or existing line
-        if (formState.req?.lines.some(l => l.stockPicked)) {
-            return true;
-        }
-
-        // Allow saving if new move(s)
-        if (formState.req?.lines.some(l => l.moves?.some(x => x.isAddition))) {
-            return true;
-        }
-
-        //  or  a new line has been added with valid "onto" moves
-        if (movesOntoAreValid()) {
-            return true;
-        }
-
-        if (!creating) {
-            return commentsUpdated;
-        }
-    };
-
     const getAndSetFunctionCode = () => {
+        setChangesMade(true);
         if (formState.req?.storesFunction?.code) {
             const code = functionCodes.find(
                 a => a.code === formState.req.storesFunction.code.toUpperCase()
@@ -413,6 +371,7 @@ function Requisition({ creating }) {
     };
 
     const doPickStock = moves => {
+        setChangesMade(true);
         if (moves?.length) {
             dispatch({
                 type: 'set_options_from_pick',
@@ -422,6 +381,7 @@ function Requisition({ creating }) {
     };
 
     const handleDocument1Select = selected => {
+        setChangesMade(true);
         dispatch({
             type: 'set_document1_details',
             payload: selected
@@ -485,6 +445,7 @@ function Requisition({ creating }) {
     };
 
     const handleDocument1PartSelect = part => {
+        setChangesMade(true);
         dispatch({
             type: 'set_part_details',
             payload: part
@@ -527,6 +488,7 @@ function Requisition({ creating }) {
 
     const addSerialNumber = () => {
         if (canAddSerialNumber) {
+            setChangesMade(true);
             dispatch({
                 type: 'add_serial_number',
                 payload: {
@@ -536,10 +498,10 @@ function Requisition({ creating }) {
         }
     };
 
-    const debouncedFormState = useDebounceValue(formState);
+    const [debouncedFormState, isDebouncing] = useDebounceValue(formState);
 
     useEffect(() => {
-        if (!debouncedFormState.req || debouncedFormState.req?.reqNumber) return;
+        if (!debouncedFormState.req) return;
         clearValidation();
         setValidated(false);
         validateReq(null, debouncedFormState.req, false);
@@ -548,6 +510,10 @@ function Requisition({ creating }) {
     }, [debouncedFormState, clearValidation, validateReq, cancelValidation]);
 
     const validToSaveMessage = () => {
+        if (!creating && !changesMade) {
+            return 'No changes to save';
+        }
+
         if (codesLoading) {
             return 'Loading...';
         }
@@ -579,13 +545,41 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={10}>
+                <Grid size={7}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.req?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={1}>
+                    <ExportButton
+                        buttonText="Pdf"
+                        disabled={!reqNumber}
+                        accept="application/pdf"
+                        fileName={`req ${reqNumber}.pdf`}
+                        tooltipText="Download as PDF"
+                        accessToken={token}
+                        href={`${config.appRoot}/requisitions/${reqNumber}/pdf`}
+                    />
+                </Grid>
+                <Grid size={1}>
+                    <LinkField
+                        to={`${itemTypes.requisitions.url}/${reqNumber}/view`}
+                        disabled={!reqNumber}
+                        external={false}
+                        openLinksInNewTabs={true}
+                        value="Printable View"
+                    />
+                </Grid>
+                <Grid size={1}>
+                    <LinkField
+                        to={`/requisitions/reports/requisition-cost/${reqNumber}`}
+                        disabled={!reqNumber}
+                        external={false}
+                        value="Cost Of Req"
+                    />
                 </Grid>
                 <Grid size={2}>
                     {!creating && (
@@ -596,6 +590,7 @@ function Requisition({ creating }) {
                                 const defaults = { req: { userNumber, userName: name } };
                                 clearValidation();
                                 clearReqResult();
+                                setChangesMade(false);
                                 dispatch({
                                     type: 'load_create',
                                     payload: defaults
@@ -725,10 +720,13 @@ function Requisition({ creating }) {
                                         resultLimit={100}
                                         disabled={!creating || !!formState.req.lines?.length}
                                         helperText={
-                                            creating ? '<Enter> to search or <Tab> to select' : ''
+                                            creating
+                                                ? 'Enter a value and press <Enter> to search or <Tab> to select. Alternatively press <Enter> with no input to list all functions'
+                                                : ''
                                         }
                                         value={formState.req.storesFunction?.code}
                                         handleValueChange={(_, newVal) => {
+                                            setChangesMade(true);
                                             dispatch({
                                                 type: 'set_header_value',
                                                 payload: {
@@ -743,12 +741,13 @@ function Requisition({ creating }) {
                                         searchResults={functionCodes
                                             .filter(
                                                 f =>
-                                                    f.functionAvailable &&
-                                                    f.code.includes(
-                                                        formState.req.storesFunction?.code
-                                                            ?.trim()
-                                                            .toUpperCase()
-                                                    )
+                                                    !formState.req.storesFunction?.code ||
+                                                    (f.functionAvailable &&
+                                                        f.code.includes(
+                                                            formState.req.storesFunction?.code
+                                                                ?.trim()
+                                                                .toUpperCase()
+                                                        ))
                                             )
                                             .map(f => ({
                                                 ...f,
@@ -798,20 +797,18 @@ function Requisition({ creating }) {
                                     propertyName="storesFunctionDescription"
                                 />
                             </Grid>
-                            {creating ? (
-                                <Grid size={6}>
-                                    <InputField
-                                        label="Valid to Save?"
-                                        fullWidth
-                                        rows={2}
-                                        error={!validated}
-                                        propertyName="validToSaveMessage"
-                                        value={validToSaveMessage()}
-                                    />
-                                </Grid>
-                            ) : (
-                                <Grid size={6} />
-                            )}
+
+                            <Grid size={6}>
+                                <InputField
+                                    label="Valid to Save?"
+                                    fullWidth
+                                    rows={2}
+                                    error={changesMade && !validated}
+                                    propertyName="validToSaveMessage"
+                                    value={validToSaveMessage()}
+                                />
+                            </Grid>
+
                             <Grid size={2}>
                                 <InputField
                                     fullWidth
@@ -895,20 +892,23 @@ function Requisition({ creating }) {
                                 departmentCode={formState.req.department?.departmentCode}
                                 departmentDescription={formState.req.department?.description}
                                 disabled={!creating} // todo - maybe disable changing dept/nom if lines have already been added?
-                                setDepartment={newDept =>
+                                setDepartment={newDept => {
+                                    setChangesMade(true);
                                     dispatch({
                                         type: 'set_header_value',
                                         payload: { fieldName: 'department', newValue: newDept }
-                                    })
-                                }
+                                    });
+                                }}
                                 nominalCode={formState.req.nominal?.nominalCode}
                                 nominalDescription={formState.req.nominal?.description}
-                                setNominal={newNominal =>
+                                setNominal={newNominal => {
+                                    setChangesMade(true);
+
                                     dispatch({
                                         type: 'set_header_value',
                                         payload: { fieldName: 'nominal', newValue: newNominal }
-                                    })
-                                }
+                                    });
+                                }}
                                 shouldRender={shouldRender(requiresDepartmentNominal)}
                                 enterNominal={!formState.req.storesFunction?.nominalCode}
                             />
@@ -921,7 +921,11 @@ function Requisition({ creating }) {
                                     authorise(null, { reqNumber });
                                 }}
                             />
-                            {shouldRender(() => formState.req.storesFunction?.code !== 'MOVE') && (
+                            {shouldRender(
+                                () =>
+                                    formState.req.storesFunction?.code !== 'MOVE' &&
+                                    formState.req.storesFunction?.code !== 'AUDIT'
+                            ) && (
                                 <>
                                     <Grid size={2}>
                                         {formState.req.storesFunction?.manualPickRequired !==
@@ -960,6 +964,25 @@ function Requisition({ creating }) {
                                     <Grid size={8} />
                                 </>
                             )}
+                            <AuditLocationSearch
+                                auditLocation={formState.req.auditLocation}
+                                disabled={!creating}
+                                shouldRender={
+                                    formState.req.storesFunction?.auditLocationRequired === 'Y'
+                                }
+                                setAuditLocation={location =>
+                                    dispatch({
+                                        type: 'set_header_value',
+                                        payload: { fieldName: 'auditLocation', newValue: location }
+                                    })
+                                }
+                                setAuditLocationDetails={selectedLocation =>
+                                    dispatch({
+                                        type: 'set_audit_location_details',
+                                        payload: selectedLocation
+                                    })
+                                }
+                            />
                             <Document1
                                 document1={formState.req.document1}
                                 document1Text={formState.req.storesFunction?.document1Text}
@@ -1008,8 +1031,10 @@ function Requisition({ creating }) {
                                 showQuantity
                                 quantity={formState.req.quantity}
                                 setPart={
+                                    // todo - move this into the reducer?
                                     formState.req.storesFunction?.partSource === 'IP'
                                         ? newPart => {
+                                              setChangesMade(true);
                                               dispatch({
                                                   type: 'set_header_value',
                                                   payload: { fieldName: 'part', newValue: newPart }
@@ -1025,9 +1050,11 @@ function Requisition({ creating }) {
                                         : null
                                 }
                                 setQuantity={
+                                    // todo - again looks like state logic, should maybe live in reducer
                                     formState.req.storesFunction?.quantityRequired !== 'X' ||
                                     formState.req.storesFunction?.code === 'BOOKWO'
                                         ? newQty => {
+                                              setChangesMade(true);
                                               dispatch({
                                                   type: 'set_header_value',
                                                   payload: {
@@ -1053,6 +1080,7 @@ function Requisition({ creating }) {
                                     partLabel="New Part"
                                     showQuantity={false}
                                     setPart={newPart => {
+                                        setChangesMade(true);
                                         dispatch({
                                             type: 'set_header_value',
                                             payload: {
@@ -1096,12 +1124,13 @@ function Requisition({ creating }) {
                                 toPalletNumber={formState.req.toPalletNumber}
                                 functionCode={formState.req.storesFunction}
                                 batchRef={formState.req.batchRef}
-                                setItemValue={(fieldName, newValue) =>
+                                setItemValue={(fieldName, newValue) => {
+                                    setChangesMade(true);
                                     dispatch({
                                         type: 'set_header_value',
                                         payload: { fieldName, newValue }
-                                    })
-                                }
+                                    });
+                                }}
                                 disabled={stockStatesLoading || stockPoolsLoading || !creating}
                                 shouldRender={shouldRender(() => {
                                     const isMoveFunction =
@@ -1136,7 +1165,6 @@ function Requisition({ creating }) {
                                     value={formState.req.comments}
                                     onChange={(propertyName, newValue) => {
                                         handleHeaderFieldChange(propertyName, newValue);
-                                        setCommentsUpdated(true);
                                     }}
                                     label="Comments"
                                     propertyName="comments"
@@ -1193,12 +1221,17 @@ function Requisition({ creating }) {
                                         selected={selectedLine}
                                         setSelected={setSelectedLine}
                                         cancelLine={cancel}
+                                        removeLine={lineNumber => {
+                                            setChangesMade(true);
+                                            dispatch({ type: 'remove_line', payload: lineNumber });
+                                        }}
                                         canBook={canBookLines()}
                                         canAdd={canAddLines()}
                                         isFromStock={
                                             formState.req.reqType === 'F' || !formState.req.reqType
                                         }
                                         addLine={() => {
+                                            setChangesMade(true);
                                             dispatch({ type: 'add_line' });
                                         }}
                                         pickStock={(lineNumber, stockMoves) => {
@@ -1209,6 +1242,7 @@ function Requisition({ creating }) {
                                         }}
                                         showPostings={!creating}
                                         updateLine={(lineNumber, fieldName, newValue) => {
+                                            setChangesMade(true);
                                             dispatch({
                                                 type: 'set_line_value',
                                                 payload: {
@@ -1223,6 +1257,13 @@ function Requisition({ creating }) {
                                         }}
                                         fromState={formState.req.fromState}
                                         fromStockPool={formState.req.fromStockPool}
+                                        transactionOptions={
+                                            formState.req.storesFunction?.code === 'AUDIT'
+                                                ? formState.req.storesFunction.transactionTypes
+                                                : null
+                                        }
+                                        reqHeader={formState.req}
+                                        locationCodeRoot={formState.req.auditLocation}
                                     />
                                 )}
                                 {tab === 1 && (
@@ -1237,6 +1278,7 @@ function Requisition({ creating }) {
                                         addMoveOnto={
                                             canAddMovesOnto
                                                 ? () => {
+                                                      setChangesMade(true);
                                                       dispatch({
                                                           type: 'add_move_onto',
                                                           payload: {
@@ -1249,6 +1291,7 @@ function Requisition({ creating }) {
                                         addMove={
                                             canAddMoves
                                                 ? () => {
+                                                      setChangesMade(true);
                                                       dispatch({
                                                           type: 'add_move',
                                                           payload: {
@@ -1258,15 +1301,17 @@ function Requisition({ creating }) {
                                                   }
                                                 : null
                                         }
-                                        updateMoveOnto={updated =>
+                                        locationCodeRoot={formState.req.auditLocation}
+                                        updateMoveOnto={updated => {
+                                            setChangesMade(true);
                                             dispatch({
                                                 type: 'update_move_onto',
                                                 payload: {
                                                     lineNumber: selectedLine,
                                                     ...updated
                                                 }
-                                            })
-                                        }
+                                            });
+                                        }}
                                     />
                                 )}
                                 {tab === 2 && (
@@ -1311,11 +1356,20 @@ function Requisition({ creating }) {
                             </Grid>
                             <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    saveDisabled={!saveIsValid() || (creating && !validated)}
+                                    saveDisabled={
+                                        isDebouncing ||
+                                        !validated ||
+                                        validateLoading ||
+                                        !changesMade
+                                    }
                                     cancelClick={() => {
                                         dispatch({ type: 'load_state', payload: revertState });
+                                        cancelValidation();
+                                        setValidated(false);
+                                        setChangesMade(false);
                                     }}
                                     saveClick={() => {
+                                        setChangesMade(false);
                                         if (creating) {
                                             createReq(null, formState.req);
                                         } else {
@@ -1335,10 +1389,9 @@ function Requisition({ creating }) {
                                     documentNumber={formState.req.document1}
                                     documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {
-                                        // BOOKLD doesn't necessary specify an original req
-                                        // maybe sometimes it does?
-                                        // but just keep it working as is for now
-                                        console.log(reqDetails);
+
+                                        // BOOKLD doesn't specify an original req
+                                        // so just fill out reversal details on the client
                                         if (formState.req?.storesFunction?.code === 'BOOKLD') {
                                             dispatch({
                                                 type: 'set_reverse_details',

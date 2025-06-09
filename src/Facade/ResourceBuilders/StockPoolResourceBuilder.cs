@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
+    using System.Linq;
+
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -11,6 +13,11 @@
         public StockPoolResource Build(StockPool stockPool, IEnumerable<string> claims)
         {
             var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
+
+            if (stockPool == null)
+            {
+                return null;
+            }
 
             return new StockPoolResource
             {
@@ -31,13 +38,14 @@
                          DefaultLocationName = stockPool.StorageLocation?.LocationCode,
                          StorageLocation = stockPool.StorageLocation == null ? null : storageLocationResourceBuilder.Build(stockPool.StorageLocation, claims),
                          BridgeId = stockPool.BridgeId,
-                         AvailableToMrp = stockPool.AvailableToMrp
+                         AvailableToMrp = stockPool.AvailableToMrp,
+                         Links = this.BuildLinks(stockPool, claims).ToArray()
             };
         }
 
         public string GetLocation(StockPool model)
         {
-            return $"/stores2/stock-pool/{model.StockPoolCode}";
+            return $"/stores2/stock-pools/{model.StockPoolCode}";
         }
 
         object IBuilder<StockPool>.Build(StockPool entity, IEnumerable<string> claims) =>

@@ -18,7 +18,6 @@
             string document2Type,
             string departmentCode,
             string nominalCode,
-            LineCandidate firstLine = null,
             string reference = null,
             string comments = null,
             string manualPick = null,
@@ -41,6 +40,7 @@
             int? document3Number = null,
             IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
             DateTime? dateReceived = null,
-            string fromCategory = null);
+            string fromCategory = null,
+            string auditLocation = null);
     }
 }

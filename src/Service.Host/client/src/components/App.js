@@ -17,7 +17,7 @@ function App() {
                 <Grid size={12}>
                     <List>
                         <ListItem component={Link} to="/requisitions">
-                            <Typography color="primary">Search Requisitions</Typography>
+                            <Typography color="primary">Requisitions</Typography>
                         </ListItem>
                         <ListItem component={Link} to="/requisitions/pending">
                             <Typography color="primary">Pending Requisitions</Typography>
@@ -36,6 +36,9 @@ function App() {
                         </ListItem>
                         <ListItem component={Link} to="/stores2/storage">
                             <Typography color="primary">Storage Locations</Typography>
+                        </ListItem>
+                        <ListItem component={Link} to="/requisitions/reports/requisition-cost">
+                            <Typography color="primary">Cost Of Req Report</Typography>
                         </ListItem>
                     </List>
                 </Grid>

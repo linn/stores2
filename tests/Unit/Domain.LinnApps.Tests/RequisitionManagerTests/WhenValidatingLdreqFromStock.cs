@@ -5,6 +5,7 @@
 
     using FluentAssertions;
 
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -35,24 +36,31 @@
             this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
+            this.StockService.ValidStockLocation(null, 123, "PART", 1, null)
+                .Returns(new ProcessResult(true, "Ok"));
+
             this.result = await this.Sut.Validate(
-                33087,
-                TestFunctionCodes.LinnDeptReq.FunctionCode,
-                "F",
-                null,
-                null,
-                "1607",
-                "2963",
-                lines: new List<LineCandidate>
-                           {
-                               new LineCandidate
-                                   {
-                                       PartNumber = "PART",
-                                       Qty = 1,
-                                       TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode,
-                                       Moves = new[] { new MoveSpecification { Qty = 1, FromPallet = 123 } }
-                                   }
-                           });
+                              33087,
+                              TestFunctionCodes.LinnDeptReq.FunctionCode,
+                              "F",
+                              null,
+                              null,
+                              "1607",
+                              "2963",
+                              lines: new List<LineCandidate>
+                                         {
+                                             new LineCandidate
+                                                 {
+                                                     PartNumber = "PART",
+                                                     Qty = 1,
+                                                     TransactionDefinition =
+                                                         TestTransDefs.StockToLinnDept.TransactionCode,
+                                                     Moves = new[]
+                                                                 {
+                                                                     new MoveSpecification { Qty = 1, FromPallet = 123 }
+                                                                 }
+                                                 }
+                                         });
         }
 
         [Test]

@@ -39,12 +39,14 @@
             int? palletNumber, 
             string partNumber, 
             decimal qty, 
-            string state)
+            string state,
+            string stockPoolCode = null)
         {
             var stockData = await this.stockLocatorRepository
                 .FilterByAsync(x => x.PartNumber == partNumber 
                                     && (!locationId.HasValue || x.LocationId == locationId)
-                                    && (!palletNumber.HasValue || x.PalletNumber == palletNumber));
+                                    && (!palletNumber.HasValue || x.PalletNumber == palletNumber)
+                                    && (string.IsNullOrEmpty(stockPoolCode) || x.StockPoolCode == stockPoolCode));
 
             var groups = stockData.GroupBy(s => s.State)
                 .Select(g => new
@@ -56,8 +58,14 @@
                 .ToList();
 
             if (groups.Count == 0)
-            {
-                return new ProcessResult { Success = false, Message = $"Part {partNumber} not at this location" };
+            { 
+                var stockPoolMessage = string.Empty;
+                if (!string.IsNullOrEmpty(stockPoolCode))
+                {
+                    stockPoolMessage = $" in stock pool {stockPoolCode}";
+                }
+
+                return new ProcessResult { Success = false, Message = $"Part {partNumber} not at this location{stockPoolMessage}" };
             }
 
             var matchesState = false;

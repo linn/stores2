@@ -71,7 +71,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string isReverseTransaction = "N",
             int? originalDocumentNumber = null,
             IEnumerable<BookInOrderDetail> bookInOrderDetails = null,
-            DateTime? dateReceived = null);
+            DateTime? dateReceived = null,
+            string fromCategory = null,
+            string auditLocation = null);
 
         Task<RequisitionLine> ValidateLineCandidate(
             LineCandidate candidate, 
@@ -99,5 +101,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task CheckReturnOrderForFullyBooked(RequisitionHeader header, PurchaseOrderResult purchaseOrder);
 
         Task ValidateLineSerialNumbers(RequisitionLine line);
+
+        Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves);
     }
 }

@@ -38,7 +38,7 @@
             app.MapPost("/requisitions/print-qc-labels", this.PrintQcLabels);
             app.MapGet("/requisitions/{reqNumber:int}/preview-reversal", this.GetReversalPreview);
             app.MapGet("/requisitions/default-book-in-location", this.GetDefaultBookInLocation);
-            app.MapGet("/delivery-note/{reqNumber:int}", this.GetDeliveryNoteHtml);
+            app.MapGet("/requisitions/delivery-note/{reqNumber:int}", this.GetDeliveryNoteHtml);
         }
 
         private async Task Search(
@@ -186,8 +186,7 @@
             resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(await service.Validate(resource));
         }
-
-
+        
         private async Task Update(
             HttpResponse res,
             HttpRequest req,
