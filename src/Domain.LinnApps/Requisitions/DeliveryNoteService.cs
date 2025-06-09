@@ -36,7 +36,7 @@
             return new DeliveryNoteDocument
             {
                 DocumentNumber = reqNumber,
-                AccountReference = string.Empty,
+                AccountReference = string.Empty, // was used when delivery notes to records distributors but no more
                 AddressOfIssuer = $"Linn Products Ltd, Glasgow Road, Waterfoot, Eaglesham, Glasgow G76 0EQ, Scotland{Environment.NewLine}"
                                   + $"Telephone (0141) 307 7777{Environment.NewLine}{Environment.NewLine}",
                 DocumentDate = req.DateBooked ?? DateTime.Now,
