@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Pdf;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Facade.Services;
@@ -24,14 +25,18 @@
 
         protected IRequisitionReportService RequisitionReportService { get; private set; }
 
+        protected IPdfService PdfService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.RequisitionReportService = Substitute.For<IRequisitionReportService>();
+            this.PdfService = Substitute.For<IPdfService>();
 
             this.RequisitionReportFacadeService = new RequisitionReportFacadeService(
                 this.RequisitionReportService,
-                new ReportReturnResourceBuilder());
+                new ReportReturnResourceBuilder(),
+                this.PdfService);
 
             this.Client = TestClient.With<RequisitionReportModule>(
                 services =>

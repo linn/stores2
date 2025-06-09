@@ -624,6 +624,12 @@
             {
                 return this.StoresFunction.ToLocationRequiredOrOptional();
             }
+
+            if (this.StoresFunction.ToStockPoolRequired == "O")
+            {
+                // For MOVELOC
+                return false;
+            }
             
             return this.StoresFunction.ToLocationIsRequired();
         }
