@@ -32,6 +32,7 @@
                 null,
                 reference: null,
                 comments: "Uno reverse",
+                toState: "S1",
                 quantity: 1);
             
             this.DocumentProxy.GetWorksOrder(this.worksOrderNumber)
