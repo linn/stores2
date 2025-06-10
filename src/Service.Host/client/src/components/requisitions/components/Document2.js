@@ -19,7 +19,7 @@ function Document2({
     const href = () => {
         switch (document2Name) {
             case 'DN':
-                return itemTypes.debitNote.url;
+                return itemTypes.debitNotes.url;
             // TODO add in case 'R' for RSN when we have a competent RSN viewer
             default:
                 return '';

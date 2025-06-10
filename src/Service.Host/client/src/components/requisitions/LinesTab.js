@@ -163,6 +163,10 @@ function LinesTab({
             updateLine(updatedLine.lineNumber, 'qty', updatedLine.qty);
         }
 
+        if (updatedLine.document1Line !== oldLine.document1Line) {
+            updateLine(updatedLine.lineNumber, 'document1Line', updatedLine.document1Line);
+        }
+
         if (
             (updatedLine.transactionCode &&
                 updatedLine.transactionCode !== oldLine.transactionCode) ||
