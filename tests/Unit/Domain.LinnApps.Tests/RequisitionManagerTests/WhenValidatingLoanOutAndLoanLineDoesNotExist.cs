@@ -1,19 +1,14 @@
-using System.Collections.Generic;
-using Linn.Stores2.Domain.LinnApps.External;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
+    using System.Collections.Generic;
     using System.Threading.Tasks;
-
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
-
     using NSubstitute;
-
     using NUnit.Framework;
 
     public class WhenValidatingLoanOutAndLoanLineDoesNotExist : ContextBase
