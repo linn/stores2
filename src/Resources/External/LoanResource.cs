@@ -1,12 +1,14 @@
-using System.Collections.Generic;
-
-namespace Linn.Stores2.Resources.External;
-
-public class LoanResource
+namespace Linn.Stores2.Resources.External
 {
-    public int LoanNumber { get; set; }
+    using System.Collections.Generic;
+
+    public class LoanResource
+    {
+        public int LoanNumber { get; set; }
     
-    public string CancelledDate { get; set; }
+        public string CancelledDate { get; set; }
     
-    public IEnumerable<LoanDetailResource> LoanDetails { get; set; }
+        public IEnumerable<LoanDetailResource> LoanDetails { get; set; }
+    }
+
 }
