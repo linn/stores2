@@ -31,8 +31,8 @@ import Page from './Page';
 
 function Workstation({ creating }) {
     const [workStation, setWorkStation] = useState();
+    const [originalWorkStation, setOriginalWorkStation] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
-    const [rowUpdated, setRowUpdated] = useState();
     const [changesMade, setChangesMade] = useState(false);
     const [employeeSearchTerm, setEmployeeSearchTerm] = useState('');
     const [storageLocationSearchTerm, setStorageLocationSearchTerm] = useState('');
@@ -103,6 +103,11 @@ function Workstation({ creating }) {
             setSnackbarVisible(true);
             clearCreateWorkStation();
             clearUpdateResult();
+
+            const savedWorkStation = updateResult || createWorkStationResult;
+            setOriginalWorkStation(savedWorkStation);
+            setWorkStation(savedWorkStation);
+            setChangesMade(false);
         }
     }, [clearCreateWorkStation, clearUpdateResult, createWorkStationResult, updateResult]);
 
@@ -119,10 +124,11 @@ function Workstation({ creating }) {
     }, [creating, hasFetched, getNewWorkStations, code, getCitCodes]);
 
     useEffect(() => {
-        if (!workStation && newWorkStationsGetResult) {
+        if (!creating && newWorkStationsGetResult) {
             setWorkStation(newWorkStationsGetResult);
+            setOriginalWorkStation(newWorkStationsGetResult);
         }
-    }, [workStation, newWorkStationsGetResult]);
+    }, [creating, newWorkStationsGetResult]);
 
     const addNewRow = () => {
         setWorkStation(prev => ({
@@ -155,18 +161,8 @@ function Workstation({ creating }) {
     };
 
     const handleCancelSelect = () => {
-        const oldRow = newWorkStationsGetResult?.workStationElements?.find(
-            ws => ws.workStationElementId === rowUpdated
-        );
-
-        setWorkStation(prev => ({
-            ...prev,
-            workStationElements: prev?.workStationElements.map(e =>
-                e.workStationElementId === oldRow?.workStationElementId ? oldRow : e
-            )
-        }));
-
-        setRowUpdated(null);
+        setWorkStation(originalWorkStation);
+        setChangesMade(false);
     };
 
     const processRowUpdate = newRow => {
@@ -179,7 +175,6 @@ function Workstation({ creating }) {
             )
         }));
 
-        setRowUpdated(newRow.workStationElementId);
         setChangesMade(true);
 
         return newRow;
@@ -486,11 +481,6 @@ function Workstation({ creating }) {
                         density="compact"
                         editMode="cell"
                         processRowUpdate={processRowUpdate}
-                        rowSelectionModel={
-                            rowUpdated
-                                ? { type: 'include', ids: new Set([rowUpdated]) }
-                                : { type: 'include', ids: new Set() }
-                        }
                         loading={false}
                     />
                 </Grid>
@@ -509,14 +499,11 @@ function Workstation({ creating }) {
                                     e => (e.isAddition ? { ...e, workStationElementId: null } : e)
                                 )
                             };
-
                             if (creating) {
                                 createWorkStation(null, submitBody);
                             } else {
                                 updateWorkStation(submitBody.workStationCode, submitBody);
                             }
-
-                            setRowUpdated(null);
                         }}
                         saveDisabled={!changesMade}
                         cancelClick={handleCancelSelect}
