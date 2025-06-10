@@ -1,24 +1,20 @@
-﻿
-namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
     using System;
-
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
-
     using NUnit.Framework;
 
-    public class WhenCreatingAndInvalidLocationCodePrefix
+    public class WhenCreatingAndInvalidSalesKittable
     {
         private Action action;
 
         [SetUp]
         public void SetUp()
         {
-            var site = new StorageSite { SiteCode = "TEST", SitePrefix = "T" };
-            var area = new StorageArea { StorageAreaCode = "TEST", AreaPrefix = "TE" };
+            var site = new StorageSite { SiteCode = "TEST" };
+            var area = new StorageArea { StorageAreaCode = "TEST" };
             var company = new AccountingCompany { Name = "TRENT" };
             this.action = () =>
             {
@@ -31,6 +27,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
                     company,
                     "Y",
                     "Y",
+                    "Z",
                     "Y",
                     "A",
                     "A",
@@ -42,7 +39,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
         [Test]
         public void ShouldThrow()
         {
-            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - location code should start with T-TE-");
+            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot create Location - sales kittable should be Y, N or blank");
         }
     }
 }

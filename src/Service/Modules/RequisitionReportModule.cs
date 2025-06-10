@@ -19,6 +19,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/requisitions/reports/requisition-cost/report", this.RequisitionCostReport);
             app.MapGet("/requisitions/reports/requisition-cost", this.GetApp);
             app.MapGet("/requisitions/{reqNumber}/view", this.GetReqAsHtml);
+            app.MapGet("/requisitions/{reqNumber}/pdf", this.GetReqAsPdf);
         }
 
         private async Task RequisitionCostReport(
@@ -47,6 +48,18 @@ namespace Linn.Stores2.Service.Modules
             res.StatusCode = (int)HttpStatusCode.OK;
 
             await res.WriteAsync(result);
+        }
+
+        private async Task GetReqAsPdf(
+            HttpRequest req,
+            HttpResponse res,
+            int reqNumber,
+            IRequisitionReportFacadeService facadeService)
+        {
+            var result = await facadeService.GetRequisitionAsPdf(reqNumber);
+
+            res.ContentType = "application/pdf";
+            await res.FromStream(result, res.ContentType, new System.Net.Mime.ContentDisposition("attachment"));
         }
     }
 }

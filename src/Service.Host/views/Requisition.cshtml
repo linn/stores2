@@ -58,6 +58,14 @@
             grid-area: nominal;
         }
 
+        .reference {
+            grid-area: reference;
+        }
+
+        .comments {
+            grid-area: comments;
+        }
+
         .req-number {
             grid-area: reqNumber;
         }
@@ -86,6 +94,7 @@
             'reqNumber reqNumber reqType reqType reqType .'
             'createdBy createdBy dateCreated dateCreated dateBooked dateBooked'
             'department department department nominal nominal nominal'
+            'reference reference reference comments comments comments'
         }
 
         .line-grid-container {
@@ -135,6 +144,15 @@
                                 <div class="nominal">
                                     Nominal: @Model.Nominal.NominalCode @Model.Nominal.Description
                                 </div>
+                            }
+                            @if (Model.Comments != null || Model.Reference != null)
+                            {
+	                            <div class="reference">
+		                            Ref: @Model.Reference
+	                            </div>
+	                            <div class="comments">
+		                            Comments: @Model.Comments
+	                            </div>
                             }
                         </div>
                     </td>

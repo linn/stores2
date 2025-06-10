@@ -12,7 +12,8 @@ import {
     ErrorCard,
     InputField,
     Loading,
-    SaveBackCancelButtons
+    SaveBackCancelButtons,
+    Search
 } from '@linn-it/linn-form-components-library';
 import PropTypes from 'prop-types';
 import config from '../config';
@@ -21,6 +22,7 @@ import useGet from '../hooks/useGet';
 import useInitialise from '../hooks/useInitialise';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
+import useSearch from '../hooks/useSearch';
 import Page from './Page';
 
 function StorageLocation({ creating }) {
@@ -53,6 +55,13 @@ function StorageLocation({ creating }) {
         isLoading: createLoading,
         errorMessage: createError
     } = usePost(itemTypes.storageLocations.url, true, true);
+
+    const {
+        search: searchDepartments,
+        results: departmentsSearchResults,
+        loading: departmentsSearchLoading,
+        clear: clearDepartmentsSearch
+    } = useSearch(itemTypes.departments.url, 'departmentCode', 'departmentCode', 'description');
 
     if (!creating && !hasFetched) {
         setHasFetched(true);
@@ -121,6 +130,14 @@ function StorageLocation({ creating }) {
                 ...current,
                 [propertyName]: newValue,
                 locationCode: locationCodePrefix(newValue)
+            }));
+        } else if (propertyName === 'locationCode') {
+            setFormValues(current => ({ ...current, locationCode: newValue.toUpperCase() }));
+        } else if (propertyName === 'auditedByDepartment') {
+            setFormValues(current => ({
+                ...current,
+                auditedByDepartmentCode: newValue.departmentCode,
+                auditedByDepartmentName: newValue.description
             }));
         } else {
             setFormValues(current => ({ ...current, [propertyName]: newValue }));
@@ -355,7 +372,7 @@ function StorageLocation({ creating }) {
                             </Grid>
                             <Grid size={2}>
                                 <Dropdown
-                                    value={formValues.mixStatesFlag}
+                                    value={formValues.storesKittableFlag}
                                     fullWidth
                                     label="Stores Kittable"
                                     propertyName="storesKittableFlag"
@@ -399,6 +416,61 @@ function StorageLocation({ creating }) {
                                         { id: 'N', displayText: 'No' }
                                     ]}
                                     onChange={handleFieldChange}
+                                />
+                            </Grid>
+                            <Grid size={2}>
+                                <Dropdown
+                                    value={formValues.salesKittableFlag}
+                                    fullWidth
+                                    label="Sales Kittable"
+                                    propertyName="salesKittableFlag"
+                                    allowNoValue
+                                    items={[
+                                        { id: 'Y', displayText: 'Yes' },
+                                        { id: 'N', displayText: 'No' }
+                                    ]}
+                                    onChange={handleFieldChange}
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    value={formValues.salesKittingPriority}
+                                    type="number"
+                                    fullWidth
+                                    label="Sales Kit Priority"
+                                    propertyName="salesKittingPriority"
+                                    onChange={handleFieldChange}
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <Search
+                                    propertyName="departmentCode"
+                                    label="Audited by Dept"
+                                    resultsInModal
+                                    resultLimit={100}
+                                    value={formValues.auditedByDepartmentCode}
+                                    handleValueChange={(_, newVal) => {
+                                        handleFieldChange('auditedByDepartmentCode', newVal);
+                                    }}
+                                    search={searchDepartments}
+                                    loading={departmentsSearchLoading}
+                                    searchResults={departmentsSearchResults}
+                                    priorityFunction="closestMatchesFirst"
+                                    onResultSelect={r => {
+                                        handleFieldChange('auditedByDepartment', r);
+                                    }}
+                                    clearSearch={clearDepartmentsSearch}
+                                    autoFocus={false}
+                                />
+                            </Grid>
+                            <Grid size={4}>
+                                <InputField
+                                    fullWidth
+                                    value={formValues.auditedByDepartmentName}
+                                    onChange={() => {}}
+                                    disabled
+                                    label="Desc"
+                                    propertyName="auditedByDepartmentName"
                                 />
                             </Grid>
                             {!creating && (

@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom';
 import { Loading, InputField } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
+import Page from './Page';
 import StoresBudget from './StoresBudget';
 
 function StoresBudgetViewer() {
@@ -18,7 +18,7 @@ function StoresBudgetViewer() {
         send: getStoresBudget,
         isLoading,
         result: storesBudgetGetResult
-    } = useGet(itemTypes.storesBudget.url);
+    } = useGet(itemTypes.storesBudgets.url);
 
     if (id && !hasFetched) {
         setHasFetched(true);

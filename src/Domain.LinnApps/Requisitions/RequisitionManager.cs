@@ -709,15 +709,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 fromCategory,
                 auditLocation);
             
-            // loan out reqs are simple, just need to specify a valid Loan
             if (functionCode == "LOAN OUT")
             {
-                var loan = await this.documentProxy.GetLoan(document1Number.GetValueOrDefault());
-                if (loan == null)
-                {
-                    throw new CreateRequisitionException($"Loan Number {document1Number} does not exist");
-                }
-
+                await this.CheckLoan(document1Number, lines);
                 return req;
             }
 
@@ -1563,6 +1557,61 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                             header.Part?.PartNumber,
                             header.Quantity.GetValueOrDefault(),
                             header.FromState));
+                }
+            }
+        }
+
+        private async Task CheckLoan(int? loanNumber, IEnumerable<LineCandidate> reqLines)
+        {
+            if (!loanNumber.HasValue)
+            {
+                throw new CreateRequisitionException("No loan number specified");
+            }
+            
+            var loan = await this.documentProxy.GetLoan(loanNumber.Value);
+            if (loan == null)
+            {
+                throw new CreateRequisitionException($"Loan Number {loanNumber} does not exist");
+            }
+
+            if (loan.IsCancelled)
+            {
+                throw new CreateRequisitionException($"Loan Number {loanNumber} is cancelled");
+            }
+
+            // check the parts/qties on req lines match the loan
+            var lineCandidates = reqLines?.ToList();
+            
+            if (reqLines != null && lineCandidates.Count != 0)
+            {
+                if (lineCandidates.GroupBy(x => x.Document1Line).Count() != lineCandidates.Count())
+                {
+                    throw new RequisitionException("Each req line must specify a different loan line");
+                }
+                
+                foreach (var l in lineCandidates)
+                {
+                    var loanLine = loan.Details.SingleOrDefault(x => x.LineNumber == l.Document1Line);
+
+                    if (loanLine == null)
+                    {
+                        throw new RequisitionException($"Loan line {l.Document1Line} does not exist");
+                    }
+
+                    if (l.Cancelled != "Y" && loanLine.IsCancelled)
+                    {
+                        throw new RequisitionException($"Loan line {l.Document1Line} is cancelled");
+                    }
+
+                    if (loanLine.Quantity != l.Qty)
+                    {
+                        throw new RequisitionException($"Loan line {l.Document1Line} is for a qty of {loanLine.Quantity}");
+                    }
+                    
+                    if (loanLine.ArticleNumber != l.PartNumber)
+                    {
+                        throw new RequisitionException($"Loan line {l.Document1Line} is for {loanLine.ArticleNumber}");
+                    }
                 }
             }
         }

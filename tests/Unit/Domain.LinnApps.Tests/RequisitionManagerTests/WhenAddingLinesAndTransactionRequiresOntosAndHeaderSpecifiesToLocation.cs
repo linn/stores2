@@ -48,6 +48,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 new AccountingCompany(),
                 "Y",
                 null,
+                "Y",
                 "N",
                 "A",
                 "A",
