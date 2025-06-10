@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
 namespace Linn.Stores2.Domain.LinnApps.External
 {
+    using System.Collections.Generic;
+
     public class LoanResult
     {
         public int LoanNumber { get; set; }
