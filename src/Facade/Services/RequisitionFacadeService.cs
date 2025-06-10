@@ -389,6 +389,7 @@
                            Document1Line = resource.Document1Line,
                            Document1Type = resource.Document1Type,
                            StockPicked = resource.StockPicked,
+                           Cancelled = resource.Cancelled,
                            Qty = resource.Qty,
                            TransactionDefinition = resource.TransactionCode,
                            SerialNumbers = resource.SerialNumbers == null ? new List<int>() : resource.SerialNumbers

@@ -18,7 +18,7 @@ function Document3({ document3, storesFunction }) {
             <LinkField
                 value={document3}
                 label="Orig Order No"
-                to={`${itemTypes.purchaseOrder.url}/${document3}`}
+                to={`${itemTypes.purchaseOrders.url}/${document3}`}
                 external
                 openLinksInNewTabs
             />

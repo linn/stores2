@@ -1,5 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System.Collections.Generic;
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -7,7 +8,7 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValidatingLoanOutAndLoanExists : ContextBase
+    public class WhenValidatingLoanOutAndLoanLines : ContextBase
     {
         private RequisitionHeader result;
 
@@ -15,7 +16,16 @@
         public void SetUp()
         {
             this.DocumentProxy.GetLoan(123)
-                .Returns(new LoanResult { LoanNumber = 123 });
+                .Returns(
+                    new LoanResult
+                    {
+                        LoanNumber = 123, 
+                        IsCancelled = false, 
+                        Details = new List<LoanDetail>
+                        {
+                            new LoanDetail { LineNumber = 1, ArticleNumber = "ART", IsCancelled = false, Quantity = 10 }
+                        }
+                    });
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.LoanOut.FunctionCode)
                 .Returns(TestFunctionCodes.LoanOut);
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
@@ -26,7 +36,16 @@
                 123,
                 null,
                 null,
-                null).Result;
+                null,
+                lines: new List<LineCandidate>
+                {
+                    new LineCandidate
+                    {
+                        PartNumber = "ART",
+                        Qty = 10,
+                        Document1Line = 1
+                    }
+                }).Result;
         }
 
         [Test]

@@ -311,7 +311,7 @@ function Requisition({ creating }) {
         }
 
         // from hardcoding in REQLINES.when-new-record-instance
-        const partNosNotRequiredFuncs = ['LOAN OUT', 'LOAN BACK', 'CUSTRET', 'SUKIT'];
+        const partNosNotRequiredFuncs = ['LOAN BACK', 'CUSTRET', 'SUKIT'];
         if (partNosNotRequiredFuncs.includes(formState.req?.storesFunction?.code)) {
             return false;
         }

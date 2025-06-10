@@ -25,5 +25,7 @@
         public bool? StockPicked { get; set; }
 
         public IEnumerable<int> SerialNumbers { get; set; }
+        
+        public string Cancelled { get; set; }
     }
 }
