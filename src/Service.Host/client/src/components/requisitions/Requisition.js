@@ -555,7 +555,7 @@ function Requisition({ creating }) {
                 <Grid size={1}>
                     <ExportButton
                         buttonText="Pdf"
-                        disabled={!reqNumber}
+                        disabled={!reqNumber || creating}
                         accept="application/pdf"
                         fileName={`req ${reqNumber}.pdf`}
                         tooltipText="Download as PDF"
@@ -566,7 +566,7 @@ function Requisition({ creating }) {
                 <Grid size={1}>
                     <LinkField
                         to={`${itemTypes.requisitions.url}/${reqNumber}/view`}
-                        disabled={!reqNumber}
+                        disabled={!reqNumber || creating}
                         external={false}
                         openLinksInNewTabs={true}
                         value="Printable View"
@@ -575,7 +575,7 @@ function Requisition({ creating }) {
                 <Grid size={1}>
                     <LinkField
                         to={`/requisitions/reports/requisition-cost/${reqNumber}`}
-                        disabled={!reqNumber}
+                        disabled={!reqNumber || creating}
                         external={false}
                         value="Cost Of Req"
                     />

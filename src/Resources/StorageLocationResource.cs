@@ -42,6 +42,10 @@
 
         public int? StoresKittingPriority { get; set; }
 
+        public string SalesKittableFlag { get; set; }
+
+        public int? SalesKittingPriority { get; set; }
+
         public int? AuditFrequencyWeeks { get; set; }
 
         public string AuditedBy { get; set; }
