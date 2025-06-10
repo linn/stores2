@@ -2,12 +2,14 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
+    using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -56,6 +58,17 @@
 
             var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(resource.StorageLocationId);
 
+            DateTime? dateInvalid = null;
+            if (!string.IsNullOrWhiteSpace(resource.DateInvalid) && DateTime.TryParse(resource.DateInvalid, out var parsedDateInvalid))
+            {
+                dateInvalid = parsedDateInvalid;
+            }
+
+            DateTime? dateLastAudited = null;
+            if (!string.IsNullOrWhiteSpace(resource.DateLastAudited) && DateTime.TryParse(resource.DateLastAudited, out var parsedDateLastAudited))
+            {
+                dateLastAudited = parsedDateLastAudited;
+            }
             return new StoresPallet(
                 resource.PalletNumber,
                 resource.Description,
@@ -66,7 +79,6 @@
                 resource.StoresKittingPriority,
                 resource.SalesKittable,
                 resource.SalesKittingPriority,
-                DateTime.Parse(resource.AllocQueueTime),
                 locationType.FirstOrDefault(),
                 resource.LocationTypeId,
                 resource.AuditedBy,
@@ -92,18 +104,29 @@
 
             var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(updateResource.StorageLocationId);
 
+            DateTime? dateInvalid = null;
+            if (!string.IsNullOrWhiteSpace(updateResource.DateInvalid) && DateTime.TryParse(updateResource.DateInvalid, out var parsedDateInvalid))
+            {
+                dateInvalid = parsedDateInvalid;
+            }
+
+            DateTime? dateLastAudited = null;
+            if (!string.IsNullOrWhiteSpace(updateResource.DateLastAudited) && DateTime.TryParse(updateResource.DateLastAudited, out var parsedDateLastAudited))
+            {
+                dateLastAudited = parsedDateLastAudited;
+            }
+
             entity.Update(
                 updateResource.Description,
                 storageLocation, 
                 updateResource.StorageLocationId,
-                DateTime.Parse(updateResource.DateInvalid),
-                DateTime.Parse(updateResource.DateLastAudited),
+                dateInvalid,
+                dateLastAudited, 
                 updateResource.Accessible,
                 updateResource.StoresKittable,
                 updateResource.StoresKittingPriority,
                 updateResource.SalesKittable,
                 updateResource.SalesKittingPriority,
-                DateTime.Parse(updateResource.AllocQueueTime),
                 locationType.FirstOrDefault(),
                 updateResource.LocationTypeId,
                 updateResource.AuditedBy,
