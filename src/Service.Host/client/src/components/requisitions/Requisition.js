@@ -381,6 +381,13 @@ function Requisition({ creating }) {
     };
 
     const handleDocument1Select = selected => {
+        if (formState.req.storesFunction?.partSource === 'L') {
+            dispatch({
+                type: 'set_loan',
+                payload: selected
+            });
+            return;
+        }
         setChangesMade(true);
         dispatch({
             type: 'set_document1_details',
