@@ -57,6 +57,7 @@
                 new StorageArea(),
                 new AccountingCompany(),
                 "Y",
+                "Y",
                 null,
                 "N",
                 "A",

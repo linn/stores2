@@ -267,6 +267,8 @@
             e.Property(l => l.StoresKittableFlag).HasColumnName("STORES_KITTABLE").HasMaxLength(1);
             e.Property(l => l.SpecProcFlag).HasColumnName("SPEC_PROC_FLAG").HasMaxLength(10);
             e.Property(l => l.StoresKittingPriority).HasColumnName("STORES_KITTING_PRIORITY");
+            e.Property(l => l.SalesKittableFlag).HasColumnName("SALES_KITTABLE").HasMaxLength(1);
+            e.Property(l => l.SalesKittingPriority).HasColumnName("SALES_KITTING_PRIORITY");
             e.Property(l => l.AuditFrequencyWeeks).HasColumnName("AUDIT_FREQUENCY_WEEKS");
             e.Property(l => l.DateLastAudited).HasColumnName("DATE_LAST_AUDITED");
             e.Property(l => l.AuditedByEmployeeId).HasColumnName("AUDITED_BY");
@@ -404,6 +406,9 @@
             q.Property(d => d.DecrementTransaction).HasColumnName("DECREMENT_TRANSACTION").HasMaxLength(1);
             q.Property(d => d.TakePriceFrom).HasColumnName("TAKE_PRICE_FROM").HasMaxLength(1);
             q.Property(d => d.RequiresAuth).HasColumnName("REQUIRES_AUTH").HasMaxLength(1);
+            q.Property(d => d.UpdateStockBalance).HasColumnName("UPD_STOCK_BALANCE").HasMaxLength(1);
+            q.Property(d => d.UpdateQcBalance).HasColumnName("UPD_QC_BALANCE").HasMaxLength(1);
+            q.Property(d => d.UpdateSupplierBalance).HasColumnName("UPD_SUPP_BALANCE").HasMaxLength(1);
             q.Property(d => d.AuthOpCode).HasColumnName("AUTH_OP_CODE").HasMaxLength(10);
             q.Property(d => d.InspectedState).HasColumnName("INSPECTED_STATE").HasMaxLength(10);
             q.Property(d => d.FromState).HasColumnName("FROM_STATE").HasMaxLength(10);

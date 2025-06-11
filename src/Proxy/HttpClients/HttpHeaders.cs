@@ -1,5 +1,4 @@
-﻿
-namespace Linn.Stores2.Proxy.External
+﻿namespace Linn.Stores2.Proxy.HttpClients
 {
     using System.Collections.Generic;
 

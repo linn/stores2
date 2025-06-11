@@ -17,7 +17,8 @@ import {
     Search,
     SaveBackCancelButtons,
     utilities,
-    LinkField
+    LinkField,
+    ExportButton
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import Page from '../Page';
@@ -310,7 +311,7 @@ function Requisition({ creating }) {
         }
 
         // from hardcoding in REQLINES.when-new-record-instance
-        const partNosNotRequiredFuncs = ['LOAN OUT', 'LOAN BACK', 'CUSTRET', 'SUKIT'];
+        const partNosNotRequiredFuncs = ['LOAN BACK', 'CUSTRET', 'SUKIT'];
         if (partNosNotRequiredFuncs.includes(formState.req?.storesFunction?.code)) {
             return false;
         }
@@ -543,13 +544,41 @@ function Requisition({ creating }) {
                         }}
                     />
                 )}
-                <Grid size={10}>
+                <Grid size={7}>
                     <Typography variant="h6">
                         <span>{creating ? 'Create Requisition' : `Requisition ${reqNumber}`}</span>
                         {formState?.req?.cancelled === 'Y' && (
                             <span style={{ color: 'red' }}> [CANCELLED]</span>
                         )}
                     </Typography>
+                </Grid>
+                <Grid size={1}>
+                    <ExportButton
+                        buttonText="Pdf"
+                        disabled={!reqNumber || creating}
+                        accept="application/pdf"
+                        fileName={`req ${reqNumber}.pdf`}
+                        tooltipText="Download as PDF"
+                        accessToken={token}
+                        href={`${config.appRoot}/requisitions/${reqNumber}/pdf`}
+                    />
+                </Grid>
+                <Grid size={1}>
+                    <LinkField
+                        to={`${itemTypes.requisitions.url}/${reqNumber}/view`}
+                        disabled={!reqNumber || creating}
+                        external={false}
+                        openLinksInNewTabs={true}
+                        value="Printable View"
+                    />
+                </Grid>
+                <Grid size={1}>
+                    <LinkField
+                        to={`/requisitions/reports/requisition-cost/${reqNumber}`}
+                        disabled={!reqNumber || creating}
+                        external={false}
+                        value="Cost Of Req"
+                    />
                 </Grid>
                 <Grid size={2}>
                     {!creating && (

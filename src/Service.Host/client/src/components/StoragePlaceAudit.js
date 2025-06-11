@@ -5,11 +5,11 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { DataGrid } from '@mui/x-data-grid';
-import Page from './Page';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import usePost from '../hooks/usePost';
+import Page from './Page';
 import ReportDataGrids from './ReportDataGrids';
 
 function StoragePlaceAudit() {

@@ -20,6 +20,7 @@
             int? storesKittingPriority,
             string salesKittable,
             int? salesKittingPriority,
+            DateTime? allocQueueTime,
             LocationType locationType,
             string locationTypeId,
             int? auditedBy,
@@ -56,6 +57,7 @@
             this.StoresKittingPriority = storesKittingPriority;
             this.SalesKittable = salesKittable;
             this.SalesKittingPriority = salesKittingPriority;
+            this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
@@ -121,6 +123,7 @@
             int? storesKittingPriority,
             string salesKittable,
             int? salesKittingPriority,
+            DateTime? allocQueueTime,
             LocationType locationType,
             string locationTypeId,
             int? auditedBy,
@@ -158,6 +161,7 @@
             this.StoresKittingPriority = storesKittingPriority;
             this.SalesKittable = salesKittable;
             this.SalesKittingPriority = salesKittingPriority;
+            this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;

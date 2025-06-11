@@ -20,6 +20,7 @@
             AccountingCompany company,
             string accessible,
             string storesKittable,
+            string salesKittable,
             string mixStates,
             string stockState,
             string typeOfStock,
@@ -27,7 +28,7 @@
             StorageType storageType)
         {
             this.LocationId = locationId;
-            this.LocationCode = locationCode;
+            this.LocationCode = locationCode.ToUpper();
             this.Description = description;
             if (site == null)
             {
@@ -39,15 +40,6 @@
             if (area == null)
             {
                 throw new StorageLocationException("Location needs an area");
-            }
-
-            if (!string.IsNullOrEmpty(site.SitePrefix) || !string.IsNullOrEmpty(area.AreaPrefix))
-            {
-                var prefixShouldBe = $"{site.SitePrefix}-{area.AreaPrefix}-";
-                if (!locationCode.StartsWith(prefixShouldBe))
-                {
-                    throw new StorageLocationException($"Cannot create Location - Location code should start with {prefixShouldBe}");
-                }
             }
 
             this.StorageAreaCode = area.StorageAreaCode;
@@ -65,6 +57,9 @@
 
             this.CheckYesNoFlag(storesKittable, "Cannot create Location - stores kittable should be Y, N or blank", true);
             this.StoresKittableFlag = storesKittable;
+
+            this.CheckYesNoFlag(salesKittable, "Cannot create Location - sales kittable should be Y, N or blank", true);
+            this.SalesKittableFlag = salesKittable;
 
             this.CheckYesNoFlag(mixStates, "Cannot create Location - mix states should be Y or N");
             this.MixStatesFlag = mixStates;
@@ -119,9 +114,13 @@
 
         public string AccessibleFlag { get; set; }
 
-        public string StoresKittableFlag { get; set; }
+        public string StoresKittableFlag { get; protected set; }
 
         public int? StoresKittingPriority { get; set; }
+
+        public string SalesKittableFlag { get; protected set; }
+
+        public int? SalesKittingPriority { get; set; }
 
         public int? AuditFrequencyWeeks { get; set; }
 
@@ -141,7 +140,7 @@
 
         public bool StoresKittable() => StoresKittableFlag == "Y";
 
-        public void Update(string description, AccountingCompany company, string accessible, string storesKittable,
+        public void Update(string description, AccountingCompany company, string accessible, string storesKittable, string salesKittable,
             string mixStates, string stockState, string typeOfStock, StockPool stockPool, StorageType storageType, DateTime? dateInvalid)
         {
             this.Description = description;
@@ -158,6 +157,9 @@
 
             this.CheckYesNoFlag(storesKittable, "Cannot update Location - stores kittable should be Y, N or blank", true);
             this.StoresKittableFlag = storesKittable;
+
+            this.CheckYesNoFlag(salesKittable, "Cannot update Location - sales kittable should be Y, N or blank", true);
+            this.SalesKittableFlag = salesKittable;
 
             this.CheckYesNoFlag(mixStates, "Cannot update Location - mix states should be Y or N");
             this.MixStatesFlag = mixStates;

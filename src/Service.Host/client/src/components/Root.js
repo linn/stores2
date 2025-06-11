@@ -25,6 +25,7 @@ import StoresFunction from './StoresFunction';
 import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
 import PcasStorageTypes from './PcasStorageTypes';
 import PcasStorageType from './PcasStorageType';
+import RequisitionCostReport from './RequisitionCostReport';
 import Pallets from './Pallets';
 
 function Root() {
@@ -91,6 +92,14 @@ function Root() {
                     <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
                     <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />
+                    <Route
+                        path="/requisitions/reports/requisition-cost"
+                        element={<RequisitionCostReport />}
+                    />
+                    <Route
+                        path="/requisitions/reports/requisition-cost/:reqNumber"
+                        element={<RequisitionCostReport />}
+                    />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>
             </div>
