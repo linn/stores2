@@ -18,8 +18,8 @@
         {
             app.MapGet("/stores2/work-stations", this.Search);
             app.MapPost("/stores2/work-stations", this.Create);
-            app.MapGet("/stores2/work-stations/{code}", this.GetById);
-            app.MapPut("/stores2/work-stations/{code}", this.Update);
+            app.MapGet("/stores2/work-stations/{*code}", this.GetById);
+            app.MapPut("/stores2/work-stations/{*code}", this.Update);
         }
 
         private async Task Search(
