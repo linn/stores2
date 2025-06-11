@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using Linn.Common.Domain;
     using Linn.Common.Reporting.Models;
@@ -9,10 +10,11 @@
     {
         ResultsModel StoragePlaceAuditReport(IEnumerable<string> locationList, string locationRange);
 
-        ProcessResult CreateSuccessAuditReqs(
+        Task<ProcessResult> CreateSuccessAuditReqs(
             int employeeNumber,
             IEnumerable<string> locationList,
             string locationRange,
-            string departmentCode);
+            string departmentCode,
+            IList<string> privileges);
     }
 }

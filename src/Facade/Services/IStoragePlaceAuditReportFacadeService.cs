@@ -16,9 +16,11 @@
 
         Task<Stream> GetStoragePlaceAuditReportAsPdf(string[] locationList, string locationRange);
 
-        IResult<ProcessResultResource> CreateCheckedAuditReqs(
+        Task<IResult<ProcessResultResource>> CreateCheckedAuditReqs(
             string[] locationList,
             string locationRange,
-            int employeeNumber);
+            int employeeNumber,
+            string departmentCode,
+            IEnumerable<string> privileges);
     }
 }

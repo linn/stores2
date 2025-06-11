@@ -6,6 +6,7 @@ namespace Linn.Stores2.Service.Modules
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources.RequestResources;
+    using Linn.Stores2.Service.Extensions;
     using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
@@ -51,15 +52,17 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task CreateAuditReqs(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             StoragePlaceRequestResource resource,
             IStoragePlaceAuditReportFacadeService facadeService)
         {
-            var result = facadeService.CreateCheckedAuditReqs(
+            var result = await facadeService.CreateCheckedAuditReqs(
                 resource.LocationList,
                 resource.LocationRange,
-                resource.EmployeeNumber);
+                resource.EmployeeNumber,
+                resource.DepartmentCode,
+                req.HttpContext.GetPrivileges());
             await res.Negotiate(result);
         }
     }

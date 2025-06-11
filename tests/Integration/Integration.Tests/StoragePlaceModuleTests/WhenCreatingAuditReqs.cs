@@ -32,7 +32,8 @@ namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
                 111,
                 Arg.Is<string[]>(a => a.Contains("P745")),
                 Arg.Any<string>(),
-                Arg.Any<string>())
+                Arg.Any<string>(),
+                Arg.Any<List<string>>())
                 .Returns(new ProcessResult(true, "ok"));
 
             this.Response = this.Client.PostAsJsonAsync(

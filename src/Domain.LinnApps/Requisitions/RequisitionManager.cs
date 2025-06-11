@@ -446,15 +446,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 // function codes that are function_Type A and process stage 1 incl LOAN OUT, SUKIT
                 if (header.StoresFunction.ProcessStage == 2)
                 {
-                    DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
-                        header.ReqNumber,
-                        null,
-                        header.Quantity.GetValueOrDefault()));
-
-                    DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
-                        header.ReqNumber,
-                        null,
-                        header.CreatedBy.Id));
+                    await this.CheckAndBookRequisition(header);
                 }
             }
             catch (DomainException e)
@@ -474,6 +466,19 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 throw;
             }
+        }
+
+        public async Task CheckAndBookRequisition(RequisitionHeader header)
+        {
+            DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
+                                     header.ReqNumber,
+                                     null,
+                                     header.Quantity.GetValueOrDefault()));
+
+            DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
+                                     header.ReqNumber,
+                                     null,
+                                     header.CreatedBy.Id));
         }
 
         public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
@@ -1136,8 +1141,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     foreach (var serialNumber in line.SerialNumbers)
                     {
                         var check = await this.serialNumberService.CheckSerialNumber(
-                            line.TransactionDefinition.SernosTransCode, line.Part.PartNumber,
-                            serialNumber.SerialNumber);
+                                        line.TransactionDefinition.SernosTransCode,
+                                        line.Part.PartNumber,
+                                        serialNumber.SerialNumber);
                         if (!check.Success)
                         {
                             throw new SerialNumberException(check.Message);
