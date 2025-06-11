@@ -21,7 +21,7 @@
         {
             if (storageLocation == null && storesPallet == null)
             {
-                throw new WorkstationException("A workstation element must have either a storage location, a pallet, or both.");
+                throw new WorkstationException("A workstation element must have either a storage location or a pallet.");
             }
 
             this.WorkStationElementId = workStationElementId;

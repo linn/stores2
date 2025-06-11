@@ -180,10 +180,8 @@ function Workstation({ creating }) {
         return newRow;
     };
 
-    const [searchDialogOpen, setSearchDialogOpen] = useState({
-        forRow: null,
-        forColumn: null
-    });
+    const [employeeDialogOpenForRow, setEmployeeDialogOpenForRow] = useState(null);
+    const [storageDialogOpenForRow, setStorageDialogOpenForRow] = useState(null);
 
     const workStationElementColumns = [
         {
@@ -200,12 +198,7 @@ function Workstation({ creating }) {
                 <>
                     <GridSearchIcon
                         style={{ cursor: 'pointer' }}
-                        onClick={() =>
-                            setSearchDialogOpen({
-                                forRow: params.id,
-                                forColumn: params.field
-                            })
-                        }
+                        onClick={() => setStorageDialogOpenForRow(params.id)}
                     />
                     {params.row?.locationCode}
                 </>
@@ -247,12 +240,7 @@ function Workstation({ creating }) {
                 <>
                     <GridSearchIcon
                         style={{ cursor: 'pointer' }}
-                        onClick={() =>
-                            setSearchDialogOpen({
-                                forRow: params.id,
-                                forColumn: params.field
-                            })
-                        }
+                        onClick={() => setEmployeeDialogOpenForRow(params.id)}
                     />
                     {params.row?.createdById}
                 </>
@@ -285,113 +273,97 @@ function Workstation({ creating }) {
         }
     ];
 
-    const renderStorageLocationSearchDialog = s => {
-        const handleClose = () => {
-            setSearchDialogOpen({ forRow: null, forColumn: null });
-        };
+    const renderStorageLocationSearchDialog = () => {
+        const handleClose = () => setStorageDialogOpenForRow(null);
 
         const handleSearchResultSelect = selected => {
             const currentRow = workStation?.workStationElements.find(
-                r => r.workStationElementId === searchDialogOpen.forRow
+                r => r.workStationElementId === storageDialogOpenForRow
             );
 
             let newRow = {
                 ...currentRow,
-                [s.field]: selected.id,
                 locationId: selected.locationId,
                 locationCode: selected.locationCode,
                 locationDescription: selected.description
             };
 
-            processRowUpdate(newRow, currentRow);
-            setSearchDialogOpen({ forRow: null, forColumn: null });
+            processRowUpdate(newRow);
+            handleClose();
         };
 
         return (
-            <div id={s.field}>
-                <Dialog open={searchDialogOpen.forColumn === s.field} onClose={handleClose}>
-                    <DialogTitle>Search</DialogTitle>
-                    <DialogContent>
-                        <Search
-                            autoFocus
-                            propertyName={`${s.field}-searchTerm`}
-                            label=""
-                            resultsInModal
-                            resultLimit={100}
-                            value={storageLocationSearchTerm}
-                            handleValueChange={(_, newVal) => setStorageLocationSearchTerm(newVal)}
-                            search={s.search}
-                            searchResults={s.searchResults?.map(r => ({
-                                ...r,
-                                id: r[s.field]
-                            }))}
-                            searchLoading={s.loading}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handleSearchResultSelect}
-                            clearSearch={() => {}}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Close</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
+            <Dialog open={!!storageDialogOpenForRow} onClose={handleClose}>
+                <DialogTitle>Search Storage Location</DialogTitle>
+                <DialogContent>
+                    <Search
+                        autoFocus
+                        propertyName="storageLocation-searchTerm"
+                        label=""
+                        resultsInModal
+                        resultLimit={100}
+                        value={storageLocationSearchTerm}
+                        handleValueChange={(_, newVal) => setStorageLocationSearchTerm(newVal)}
+                        search={searchStorageLocations}
+                        searchResults={storageLocationsSearchResults?.map(r => ({
+                            ...r,
+                            id: r.locationId
+                        }))}
+                        searchLoading={storageLocationsSearchLoading}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handleSearchResultSelect}
+                        clearSearch={() => {}}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
         );
     };
 
-    const renderEmployeeSearchDialog = e => {
-        const handleClose = () => {
-            setSearchDialogOpen({ forRow: null, forColumn: null });
-        };
+    const renderEmployeeSearchDialog = () => {
+        const handleClose = () => setEmployeeDialogOpenForRow(null);
 
         const handleSearchResultSelect = selected => {
             const currentRow = workStation?.workStationElements.find(
-                r => r.workStationElementId === searchDialogOpen.forRow
+                r => r.workStationElementId === employeeDialogOpenForRow
             );
 
             let newRow = {
                 ...currentRow,
-                [e.field]: selected.id,
-                createdByName: selected.fullName,
-                createdById: selected.id
+                createdById: selected.id,
+                createdByName: selected.fullName
             };
 
-            e.searchUpdateFieldNames?.forEach(f => {
-                newRow = { ...newRow, [f.fieldName]: selected[f.searchResultFieldName] };
-            });
-            processRowUpdate(newRow, currentRow);
-            setSearchDialogOpen({ forRow: null, forColumn: null });
+            processRowUpdate(newRow);
+            handleClose();
         };
 
         return (
-            <div id={e.field}>
-                <Dialog open={searchDialogOpen.forColumn === e.field} onClose={handleClose}>
-                    <DialogTitle>Search</DialogTitle>
-                    <DialogContent>
-                        <Search
-                            autoFocus
-                            propertyName={`${e.field}-searchTerm`}
-                            label=""
-                            resultsInModal
-                            resultLimit={100}
-                            value={employeeSearchTerm}
-                            handleValueChange={(_, newVal) => setEmployeeSearchTerm(newVal)}
-                            search={e.search}
-                            searchResults={e.searchResults?.map(r => ({
-                                ...r,
-                                id: r.id
-                            }))}
-                            searchLoading={e.loading}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handleSearchResultSelect}
-                            clearSearch={() => {}}
-                        />
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={handleClose}>Close</Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
+            <Dialog open={!!employeeDialogOpenForRow} onClose={handleClose}>
+                <DialogTitle>Search Employee</DialogTitle>
+                <DialogContent>
+                    <Search
+                        autoFocus
+                        propertyName="employee-searchTerm"
+                        label=""
+                        resultsInModal
+                        resultLimit={100}
+                        value={employeeSearchTerm}
+                        handleValueChange={(_, newVal) => setEmployeeSearchTerm(newVal)}
+                        search={searchEmployees}
+                        searchResults={employeesSearchResults?.map(r => ({ ...r, id: r.id }))}
+                        searchLoading={employeesSearchLoading}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handleSearchResultSelect}
+                        clearSearch={() => {}}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Close</Button>
+                </DialogActions>
+            </Dialog>
         );
     };
 
@@ -468,12 +440,8 @@ function Workstation({ creating }) {
                     />
                 </Grid>
                 <Grid size={12}>
-                    {workStationElementColumns
-                        .filter(e => e.type === 'search' && e.headerName === 'Created By')
-                        .map(e => renderEmployeeSearchDialog(e))}
-                    {workStationElementColumns
-                        .filter(s => s.type === 'search' && s.headerName === 'Storage Location')
-                        .map(s => renderStorageLocationSearchDialog(s))}
+                    {renderEmployeeSearchDialog()}
+                    {renderStorageLocationSearchDialog()}
                     <DataGrid
                         getRowId={row => row?.workStationElementId}
                         rows={workStation?.workStationElements}
