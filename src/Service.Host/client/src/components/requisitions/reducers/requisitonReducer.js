@@ -5,6 +5,9 @@ function reducer(state, action) {
         case 'clear': {
             return { req: null, popUpMessage: null, document1Details: null, partDetails: null };
         }
+        case 'set_loan': {
+            return { ...state, loan: action.payload };
+        }
         case 'load_state': {
             // this action type is for updating the entire state of the form,
             // e.g. to reflect an API result from an update or similar
@@ -72,6 +75,36 @@ function reducer(state, action) {
                         document2Name: state.req.storesFunction?.document2Name,
                         document2: action.payload.newValue
                     }
+                };
+            } else if (action.payload.fieldName === 'document1Line') {
+                const { storesFunction } = state.req;
+                const isLoanSource = storesFunction?.partSource === 'L' && state.loan;
+
+                let updatedReq = {
+                    ...state.req,
+                    document1Line: action.payload.newValue
+                };
+
+                if (isLoanSource) {
+                    const loanLine = state.loan?.loanDetails?.find(
+                        x => x.lineNumber === action.payload.newValue
+                    );
+                    if (loanLine) {
+                        updatedReq.batchRef = `L${loanLine.loanNumber}`;
+                        updatedReq.fromStockPool = 'LN ON LOAN';
+                        updatedReq.quantity = loanLine.quantity;
+                        updatedReq.toState = 'STORES';
+                        updatedReq.toStockPool = state.req.storesFunction.toStockPool;
+                        updatedReq.part = {
+                            partNumber: loanLine.articleNumber
+                        };
+                        updatedReq.fromLocationCode = `A-LN-${state.loan.accountId}-${state.loan.outletNumber}`;
+                    }
+                }
+
+                return {
+                    ...state,
+                    req: updatedReq
                 };
             } else if (action.payload.fieldName === 'isReverseTransaction') {
                 if (action.payload.newValue === 'N') {
