@@ -245,8 +245,14 @@
             {
                 if (isReverseTrans == "Y")
                 {
-                    this.BatchRef = null; // todo - test
+                    this.BatchRef = null;
                 }
+            }
+
+            if (function.FunctionCode == "LOAN BACK")
+            {
+                this.FromState = "STORES";
+                this.LoanNumber = document1Number;
             }
         }
 

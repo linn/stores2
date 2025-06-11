@@ -89,7 +89,6 @@ function reducer(state, action) {
                     const loanLine = state.loan?.loanDetails?.find(
                         x => x.lineNumber === action.payload.newValue
                     );
-                    console.log(state.req.storesFunction);
                     if (loanLine) {
                         updatedReq.batchRef = `L${loanLine.loanNumber}`;
                         updatedReq.fromStockPool = 'LN ON LOAN';
