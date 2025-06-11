@@ -46,8 +46,7 @@ function Workstation({ creating }) {
     const {
         search: searchStorageLocations,
         results: storageLocationsSearchResults,
-        loading: storageLocationsSearchLoading,
-        clear: clearStorageLocation
+        loading: storageLocationsSearchLoading
     } = useSearch(itemTypes.storageLocations.url, 'locationId', 'locationCode', 'description');
 
     const {
@@ -81,8 +80,7 @@ function Workstation({ creating }) {
     const {
         search: searchEmployees,
         results: employeesSearchResults,
-        loading: employeesSearchLoading,
-        clear: clearEmployeesSearch
+        loading: employeesSearchLoading
     } = useSearch(itemTypes.historicEmployees.url, 'id', 'fullName', 'fullName', false, true);
 
     const [hasFetched, setHasFetched] = useState(false);
@@ -189,11 +187,6 @@ function Workstation({ creating }) {
             headerName: 'Storage Location',
             width: 150,
             editable: true,
-            type: 'search',
-            search: searchStorageLocations,
-            searchResults: storageLocationsSearchResults,
-            searchLoading: storageLocationsSearchLoading,
-            clearSearch: clearStorageLocation,
             renderCell: params => (
                 <>
                     <GridSearchIcon
@@ -221,9 +214,7 @@ function Workstation({ creating }) {
             type: 'date',
             editable: true,
             width: 150,
-            valueGetter: value => {
-                return new Date(value);
-            },
+            valueGetter: value => new Date(value),
             valueFormatter: value => value && moment(value).format('DD-MMM-YYYY')
         },
         {
@@ -231,11 +222,6 @@ function Workstation({ creating }) {
             headerName: 'Created By',
             width: 200,
             editable: true,
-            type: 'search',
-            search: searchEmployees,
-            searchResults: employeesSearchResults,
-            searchLoading: employeesSearchLoading,
-            clearSearch: clearEmployeesSearch,
             renderCell: params => (
                 <>
                     <GridSearchIcon
@@ -258,15 +244,13 @@ function Workstation({ creating }) {
             renderCell: params => (
                 <Tooltip title="Delete">
                     <div>
-                        {
-                            <IconButton
-                                aria-label="delete"
-                                size="small"
-                                onClick={() => handleDeleteRow(params.row)}
-                            >
-                                <DeleteIcon fontSize="inherit" />
-                            </IconButton>
-                        }
+                        <IconButton
+                            aria-label="delete"
+                            size="small"
+                            onClick={() => handleDeleteRow(params.row)}
+                        >
+                            <DeleteIcon fontSize="inherit" />
+                        </IconButton>
                     </div>
                 </Tooltip>
             )
