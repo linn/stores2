@@ -6,7 +6,6 @@ function reducer(state, action) {
             return { req: null, popUpMessage: null, document1Details: null, partDetails: null };
         }
         case 'set_loan': {
-            console.log('set_loan', action.payload);
             return { ...state, loan: action.payload };
         }
         case 'load_state': {
@@ -90,8 +89,13 @@ function reducer(state, action) {
                     const loanLine = state.loan?.loanDetails?.find(
                         x => x.lineNumber === action.payload.newValue
                     );
-
+                    console.log(state.req.storesFunction);
                     if (loanLine) {
+                        updatedReq.batchRef = `L${loanLine.loanNumber}`;
+                        updatedReq.fromStockPool = 'LN ON LOAN';
+                        updatedReq.quantity = loanLine.quantity;
+                        updatedReq.toState = 'STORES';
+                        updatedReq.toStockPool = state.req.storesFunction.toStockPool;
                         updatedReq.part = {
                             partNumber: loanLine.articleNumber
                         };

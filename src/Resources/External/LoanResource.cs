@@ -10,5 +10,4 @@ namespace Linn.Stores2.Resources.External
     
         public IEnumerable<LoanDetailResource> LoanDetails { get; set; }
     }
-
 }

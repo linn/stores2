@@ -381,14 +381,18 @@ function Requisition({ creating }) {
     };
 
     const handleDocument1Select = selected => {
+        setChangesMade(true);
         if (formState.req.storesFunction?.partSource === 'L') {
             dispatch({
                 type: 'set_loan',
                 payload: selected
             });
+            dispatch({
+                type: 'set_header_value',
+                payload: { fieldName: 'document1Line', newValue: 1 }
+            });
             return;
         }
-        setChangesMade(true);
         dispatch({
             type: 'set_document1_details',
             payload: selected

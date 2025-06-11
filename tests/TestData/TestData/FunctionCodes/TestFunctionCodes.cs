@@ -283,6 +283,36 @@
                 }
             };
 
+
+        public static readonly StoresFunction LoanBack =
+            new StoresFunction("LOAN BACK")
+                {
+                    Description = "RETURN LOAN GOODS FROM LOAN ACCOUNT TO STORES",
+                    BatchRequired = "O",
+                    Document1RequiredFlag = "Y",
+                    Document1Text = "Loan Number",
+                    Document1LineRequiredFlag = "O",
+                    DepartmentNominalRequired = "N",
+                    FromStateRequired = "N",
+                    FunctionType = "A",
+                    ManualPickRequired = "X",
+                    PartSource = "L",
+                    ProcessStage = 1,
+                    ToStateRequired = "O",
+                    ToStockPoolRequired = "O",
+                    CanBeReversed = "Y",
+                    TransactionsTypes = new List<StoresFunctionTransaction>
+                                            {
+                                                new StoresFunctionTransaction
+                                                    {
+                                                        FunctionCode = "LOAN BACK",
+                                                        Seq = 1,
+                                                        TransactionDefinition = TestTransDefs.LoanToStock,
+                                                        TransactionCode = TestTransDefs.LoanToStock.TransactionCode
+                                                    }
+                                            }
+                };
+
         public static readonly StoresFunction Rsn =
             new StoresFunction("RSN")
             {
