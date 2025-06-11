@@ -716,7 +716,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException("Specify a loan line");
                 }
 
-                await this.CheckLoan(document1Number, lines, document1Line, quantity);
+                if (isReverseTransaction != "Y")
+                {
+                    await this.CheckLoan(document1Number, lines, document1Line, quantity);
+                }
+                
                 return req;
             }
 

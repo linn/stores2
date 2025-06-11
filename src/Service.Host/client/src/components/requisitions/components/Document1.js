@@ -109,7 +109,7 @@ function Document1({
 
     useEffect(() => {
         if (loan) {
-            onSelect(loan);
+            onSelect({ ...loan, canReverse: 'Y' });
         }
         clearLoan();
     }, [loan, clearLoan, onSelect]);
