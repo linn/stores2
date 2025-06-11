@@ -446,15 +446,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 // function codes that are function_Type A and process stage 1 incl LOAN OUT, SUKIT
                 if (header.StoresFunction.ProcessStage == 2)
                 {
-                    DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
-                        header.ReqNumber,
-                        null,
-                        header.Quantity.GetValueOrDefault()));
-
-                    DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
-                        header.ReqNumber,
-                        null,
-                        header.CreatedBy.Id));
+                    await this.CheckAndBookRequisition(header);
                 }
             }
             catch (DomainException e)
@@ -474,6 +466,19 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 throw;
             }
+        }
+
+        public async Task CheckAndBookRequisition(RequisitionHeader header)
+        {
+            DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
+                                     header.ReqNumber,
+                                     null,
+                                     header.Quantity.GetValueOrDefault()));
+
+            DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
+                                     header.ReqNumber,
+                                     null,
+                                     header.CreatedBy.Id));
         }
 
         public async Task<RequisitionHeader> CreateLoanReq(int loanNumber)
@@ -709,9 +714,18 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 fromCategory,
                 auditLocation);
             
-            if (functionCode == "LOAN OUT")
+            if (functionCode == "LOAN OUT" || functionCode == "LOAN BACK")
             {
-                await this.CheckLoan(document1Number, lines);
+                if (functionCode == "LOAN BACK" && (!document1Line.HasValue || document1Line == 0))
+                {
+                    throw new CreateRequisitionException("Specify a loan line");
+                }
+
+                if (isReverseTransaction != "Y")
+                {
+                    await this.CheckLoan(document1Number, lines, document1Line, quantity);
+                }
+                
                 return req;
             }
 
@@ -1127,8 +1141,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     foreach (var serialNumber in line.SerialNumbers)
                     {
                         var check = await this.serialNumberService.CheckSerialNumber(
-                            line.TransactionDefinition.SernosTransCode, line.Part.PartNumber,
-                            serialNumber.SerialNumber);
+                                        line.TransactionDefinition.SernosTransCode,
+                                        line.Part.PartNumber,
+                                        serialNumber.SerialNumber);
                         if (!check.Success)
                         {
                             throw new SerialNumberException(check.Message);
@@ -1561,13 +1576,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        private async Task CheckLoan(int? loanNumber, IEnumerable<LineCandidate> reqLines)
+        private async Task CheckLoan(int? loanNumber, IEnumerable<LineCandidate> reqLines, int? lineNumber = null, decimal? headerQty = null)
         {
+            // check req header values against loan
             if (!loanNumber.HasValue)
             {
                 throw new CreateRequisitionException("No loan number specified");
             }
-            
+
             var loan = await this.documentProxy.GetLoan(loanNumber.Value);
             if (loan == null)
             {
@@ -1579,16 +1595,31 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new CreateRequisitionException($"Loan Number {loanNumber} is cancelled");
             }
 
+            if (lineNumber.HasValue)
+            {
+                var loanLine = loan.Details.SingleOrDefault(x => x.LineNumber == lineNumber.Value);
+
+                if (loanLine == null)
+                {
+                    throw new CreateRequisitionException($"Loan Number {loanNumber} does not have a line number {lineNumber.Value}");
+                }
+
+                if (headerQty.HasValue && loanLine.Quantity != headerQty.Value)
+                {
+                    throw new CreateRequisitionException($"Loan line {loanNumber}/{lineNumber} is for a qty of {headerQty}");
+                }
+            }
+
             // check the parts/qties on req lines match the loan
             var lineCandidates = reqLines?.ToList();
-            
+
             if (reqLines != null && lineCandidates.Count != 0)
             {
                 if (lineCandidates.GroupBy(x => x.Document1Line).Count() != lineCandidates.Count())
                 {
                     throw new RequisitionException("Each req line must specify a different loan line");
                 }
-                
+
                 foreach (var l in lineCandidates)
                 {
                     var loanLine = loan.Details.SingleOrDefault(x => x.LineNumber == l.Document1Line);
@@ -1605,9 +1636,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                     if (loanLine.Quantity != l.Qty)
                     {
-                        throw new RequisitionException($"Loan line {l.Document1Line} is for a qty of {loanLine.Quantity}");
+                        throw new RequisitionException(
+                            $"Loan line {l.Document1Line} is for a qty of {loanLine.Quantity}");
                     }
-                    
+
                     if (loanLine.ArticleNumber != l.PartNumber)
                     {
                         throw new RequisitionException($"Loan line {l.Document1Line} is for {loanLine.ArticleNumber}");

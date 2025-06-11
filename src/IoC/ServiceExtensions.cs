@@ -54,7 +54,6 @@
                 .AddScoped<IRequisitionManager, RequisitionManager>()
                 .AddScoped<IRequisitionFactory, RequisitionFactory>()
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
-                .AddScoped<IStoragePlaceAuditPack, StoragePlaceAuditPack>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
                 .AddTransient<IDatabaseService, DatabaseService>()
                 .AddTransient<IRestClient, RestClient>()

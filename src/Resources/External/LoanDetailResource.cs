@@ -11,4 +11,3 @@ namespace Linn.Stores2.Resources.External
         public string ArticleNumber { get; set; }
     }
 }
-

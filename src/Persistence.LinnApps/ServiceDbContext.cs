@@ -215,6 +215,7 @@
             builder.Entity<StoragePlace>().Property(e => e.Description).HasColumnName("STORAGE_PLACE_DESCRIPTION");
             builder.Entity<StoragePlace>().Property(e => e.Name).HasColumnName("STORAGE_PLACE");
             builder.Entity<StoragePlace>().Property(e => e.LocationId).HasColumnName("LOCATION_ID");
+            builder.Entity<StoragePlace>().Property(e => e.LocationCode).HasColumnName("LOCATION_CODE").HasMaxLength(16);
             builder.Entity<StoragePlace>().Property(e => e.PalletNumber).HasColumnName("PALLET_NUMBER");
             builder.Entity<StoragePlace>().Property(e => e.SiteCode).HasColumnName("SITE_CODE");
         }
@@ -610,10 +611,11 @@
 
         private static void BuildEmployees(ModelBuilder builder)
         {
-            var r = builder.Entity<Employee>().ToTable("AUTH_USER_NAME_VIEW");
+            var r = builder.Entity<Employee>().ToTable("AUTH_USER_DEPT_VIEW");
             r.HasKey(c => c.Id);
             r.Property(c => c.Id).HasColumnName("USER_NUMBER");
             r.Property(c => c.Name).HasColumnName("USER_NAME");
+            r.Property(c => c.DepartmentCode).HasColumnName("DEPARTMENT_CODE").HasMaxLength(10);
         }
 
         private static void BuildRequisitionCancelDetails(ModelBuilder builder)

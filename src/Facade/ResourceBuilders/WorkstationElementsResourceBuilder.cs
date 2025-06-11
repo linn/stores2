@@ -25,7 +25,7 @@
                 DateCreated = model.DateCreated.ToString("o"),
                 CreatedById = model.CreatedBy?.Id,
                 CreatedByName = model.CreatedBy?.Name,
-                Links = this.BuildLinks(model, claims).ToArray()
+                Links = this.BuildLinks(model, claimsList).ToArray()
             };
         }
 
