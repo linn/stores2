@@ -19,7 +19,7 @@
 
     using NUnit.Framework;
 
-    public class WhenCreatingOkRequisitions : ContextBase
+    public class WhenCreatingOkRequisitionsWithDefaultDeptCode : ContextBase
     {
         private ProcessResult result;
 
@@ -31,10 +31,10 @@
         public async Task SetUp()
         {
             this.employeeNumber = 111;
-            this.departmentCode = "0000038764";
+            this.departmentCode = null;
+            this.EmployeeRepository.FindByIdAsync(this.employeeNumber)
+                .Returns(new Employee { Id = this.employeeNumber, DepartmentCode = null });
 
-            this.DepartmentRepository.FindByIdAsync(this.departmentCode)
-                .Returns(new Department(this.departmentCode, "D"));
             this.StoragePlaceQueryRepository.FilterBy(Arg.Any<Expression<Func<StoragePlace, bool>>>())
                 .Returns(new List<StoragePlace> { new StoragePlace { PalletNumber = 745, Name = "P745" } }.AsQueryable());
             this.RequisitionFactory.CreateRequisition(
@@ -47,7 +47,7 @@
                 null,
                 null,
                 null,
-                this.departmentCode,
+                "0000021608",
                 "0000004710",
                 comments: "Correct",
                 auditLocation: "P745",
@@ -88,7 +88,7 @@
                 null,
                 null,
                 null,
-                this.departmentCode,
+                "0000021608",
                 "0000004710",
                 comments: "Correct",
                 auditLocation: "P745",

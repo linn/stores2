@@ -7,6 +7,7 @@
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
@@ -24,13 +25,16 @@
 
         private readonly IRepository<Employee, int> employeeRepository;
 
+        private readonly IRepository<Department, string> departmentRepository;
+
         public StoragePlaceAuditReportService(
             IReportingHelper reportingHelper,
             IRepository<StockLocator, int> stockLocatorRepository,
             IQueryRepository<StoragePlace> storagePlaceRepository,
             IRequisitionFactory requisitionFactory,
             IRequisitionManager requisitionManager,
-            IRepository<Employee, int> employeeRepository)
+            IRepository<Employee, int> employeeRepository,
+            IRepository<Department, string> departmentRepository)
         {
             this.reportingHelper = reportingHelper;
             this.stockLocatorRepository = stockLocatorRepository;
@@ -38,6 +42,7 @@
             this.requisitionFactory = requisitionFactory;
             this.requisitionManager = requisitionManager;
             this.employeeRepository = employeeRepository;
+            this.departmentRepository = departmentRepository;
         }
 
         public ResultsModel StoragePlaceAuditReport(IEnumerable<string> locationList, string locationRange)
@@ -112,38 +117,51 @@
 
             if (string.IsNullOrEmpty(departmentCode))
             {
-                var employee = await this.employeeRepository.FindByIdAsync(employeeNumber);
-                departmentCode = string.IsNullOrEmpty(employee?.DepartmentCode)
-                                     ? "0000021608"
-                                     : employee.DepartmentCode;
+                departmentCode = await this.GetDefaultDepartmentCode(employeeNumber);
+            }
+            else
+            {
+                var department = await this.departmentRepository.FindByIdAsync(departmentCode);
+                if (department == null)
+                {
+                    departmentCode = await this.GetDefaultDepartmentCode(employeeNumber);
+                }
             }
 
             foreach (var storagePlace in storagePlaces)
             {
-                var req = await this.requisitionFactory.CreateRequisition(
-                              employeeNumber,
-                              privileges,
-                              "AUDIT",
-                              null,
-                              null,
-                              null,
-                              null,
-                              null,
-                              null,
-                              departmentCode,
-                              "0000004710",
-                              comments: "Correct",
-                              auditLocation: storagePlace.Name,
-                              fromLocationCode: storagePlace.LocationCode,
-                              toLocationCode: storagePlace.LocationCode,
-                              fromPalletNumber: storagePlace.PalletNumber,
-                              toPalletNumber: storagePlace.PalletNumber,
-                              lines: new List<LineCandidate>());
+                    var req = await this.requisitionFactory.CreateRequisition(
+                                  employeeNumber,
+                                  privileges,
+                                  "AUDIT",
+                                  null,
+                                  null,
+                                  null,
+                                  null,
+                                  null,
+                                  null,
+                                  departmentCode,
+                                  "0000004710",
+                                  comments: "Correct",
+                                  auditLocation: storagePlace.Name,
+                                  fromLocationCode: storagePlace.LocationCode,
+                                  toLocationCode: storagePlace.LocationCode,
+                                  fromPalletNumber: storagePlace.PalletNumber,
+                                  toPalletNumber: storagePlace.PalletNumber,
+                                  lines: new List<LineCandidate>());
 
-                await this.requisitionManager.CheckAndBookRequisition(req);
+                    await this.requisitionManager.CheckAndBookRequisition(req);
             }
 
             return new ProcessResult(true, "Successfully created audit reqs");
+        }
+
+        private async Task<string> GetDefaultDepartmentCode(int employeeNumber)
+        {
+            var employee = await this.employeeRepository.FindByIdAsync(employeeNumber);
+            return string.IsNullOrEmpty(employee?.DepartmentCode)
+                                 ? "0000021608"
+                                 : employee.DepartmentCode;
         }
 
         private List<CalculationValueModel> SetModelRows(IEnumerable<StockLocator> stockLocators)

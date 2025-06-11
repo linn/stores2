@@ -2,6 +2,7 @@
 {
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -22,6 +23,8 @@
 
         protected IRepository<Employee, int> EmployeeRepository { get; private set; }
 
+        protected IRepository<Department, string> DepartmentRepository { get; private set; }
+
         protected IRequisitionFactory RequisitionFactory { get; private set; }
 
         protected IRequisitionManager RequisitionManager { get; private set; }
@@ -35,6 +38,7 @@
             this.EmployeeRepository = Substitute.For<IRepository<Employee, int>>();
             this.RequisitionFactory = Substitute.For<IRequisitionFactory>();
             this.RequisitionManager = Substitute.For<IRequisitionManager>();
+            this.DepartmentRepository = Substitute.For<IRepository<Department, string>>();
 
             this.Sut = new StoragePlaceAuditReportService(
                 this.ReportingHelper,
@@ -42,7 +46,8 @@
                 this.StoragePlaceQueryRepository,
                 this.RequisitionFactory,
                 this.RequisitionManager,
-                this.EmployeeRepository);
+                this.EmployeeRepository,
+                this.DepartmentRepository);
         }
     }
 }

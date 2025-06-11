@@ -19,7 +19,7 @@
 
     using NUnit.Framework;
 
-    public class WhenCreatingOkRequisitions : ContextBase
+    public class WhenCreatingOkRequisitionsWithoutDeptCode : ContextBase
     {
         private ProcessResult result;
 
@@ -27,14 +27,20 @@
 
         private string departmentCode;
 
+        private string employeeDepartmentCode;
+
         [SetUp]
         public async Task SetUp()
         {
             this.employeeNumber = 111;
-            this.departmentCode = "0000038764";
+            this.departmentCode = null;
+            this.employeeDepartmentCode = "0000045678";
 
-            this.DepartmentRepository.FindByIdAsync(this.departmentCode)
-                .Returns(new Department(this.departmentCode, "D"));
+            this.DepartmentRepository.FindByIdAsync(this.employeeDepartmentCode)
+                .Returns(new Department(this.employeeDepartmentCode, "Employee Department"));
+            this.EmployeeRepository.FindByIdAsync(this.employeeNumber)
+                .Returns(new Employee { Id = this.employeeNumber, DepartmentCode = this.employeeDepartmentCode });
+            
             this.StoragePlaceQueryRepository.FilterBy(Arg.Any<Expression<Func<StoragePlace, bool>>>())
                 .Returns(new List<StoragePlace> { new StoragePlace { PalletNumber = 745, Name = "P745" } }.AsQueryable());
             this.RequisitionFactory.CreateRequisition(
@@ -47,7 +53,7 @@
                 null,
                 null,
                 null,
-                this.departmentCode,
+                this.employeeDepartmentCode,
                 "0000004710",
                 comments: "Correct",
                 auditLocation: "P745",
@@ -88,7 +94,7 @@
                 null,
                 null,
                 null,
-                this.departmentCode,
+                this.employeeDepartmentCode,
                 "0000004710",
                 comments: "Correct",
                 auditLocation: "P745",
