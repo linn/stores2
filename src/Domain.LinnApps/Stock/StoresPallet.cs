@@ -59,8 +59,8 @@
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
-            this.StockType = stockType;
-            this.StockState = stockState;
+            this.StockType = this.GetStockType(stockType);
+            this.StockState = this.GetStockState(stockState);
             this.AuditOwnerId = auditOwnerId;
             this.AuditFrequencyWeeks = auditFrequencyWeeks;
             this.AuditedByDepartmentCode = auditedByDepartmentCode;
@@ -192,7 +192,7 @@
         {
             if (stockState == "A")
             {
-                return "Any Stock";
+                return "Any State";
             }
             if (stockState == "I")
             {
@@ -212,10 +212,12 @@
             {
                 return "A";
             }
+
             if (stockType == "Raw Materials")
             {
                 return "R";
             }
+
             if (stockType == "Finished Goods")
             {
                 return "F";
@@ -226,14 +228,16 @@
 
         public string GetStockState(string stockState)
         {
-            if (stockState == "Any Stock")
+            if (stockState == "Any State")
             {
                 return "A";
             }
+
             if (stockState == "Inspected State")
             {
                 return "I";
             }
+
             if (stockState == "QC/ Failed State")
             {
                 return "Q";

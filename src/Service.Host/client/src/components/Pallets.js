@@ -16,18 +16,15 @@ import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
 import usePut from '../hooks/usePut';
+import useGet from '../hooks/useGet';
 import usePost from '../hooks/usePost';
 import { lessThan } from '../helpers/numberUtilities';
 import Page from './Page';
 
 function Pallets() {
     const [searchPallet, setSearchPallet] = useState('');
-    const [employee, setEmployee] = useState('');
-    const [locationType, setLocationType] = useState();
     const [department, setDepartment] = useState('');
-    const [stockPool, setStockPool] = useState();
     const [creating, setCreating] = useState(false);
-    const [storageLocation, setStorageLocation] = useState();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
 
     const { isHistoricalEmployeeLoading, result: historicalEmployeesResult } = useInitialise(
@@ -38,19 +35,17 @@ function Pallets() {
         `${itemTypes.currentEmployees.url}`
     );
 
+    const {
+        send: getInitialDepartment,
+        isoading: isDepartmentLoading,
+        result: departmentGetResult
+    } = useGet(itemTypes.departments.url);
+
     const [pallet, setPallet] = useState('');
 
-    const stockTypes = [
-        { value: 'A', label: 'Any Stock' },
-        { value: 'R', label: 'Raw Materials' },
-        { value: 'F', label: 'Finished Goods' }
-    ];
+    const stockTypes = ['Any Stock', 'Raw Materials', 'Finished Goods'];
 
-    const stockStates = [
-        { value: 'A', label: 'Any State' },
-        { value: 'I', label: 'Inspected State' },
-        { value: 'Q', label: 'QC/ Failed State' }
-    ];
+    const stockStates = ['Any State', 'Inspected State', 'QC/ Failed State'];
 
     const {
         search: searchPallets,
@@ -113,46 +108,50 @@ function Pallets() {
         }
     }, [updateResult, createResult, clearCreateResult, clearUpdateResult]);
 
+    useEffect(() => {
+        if (departmentGetResult) {
+            setDepartment(departmentGetResult.description);
+        }
+    }, [departmentGetResult]);
+
     const handlePalletSearchResultSelect = selected => {
         if (selected && selected.palletNumber) {
-            setSearchPallet(selected.palletNumber);
             setPallet(selected);
-            setDepartment(selected.auditedByDepartmentName);
-            setStockPool(selected.defaultStockPool.description);
-            setStorageLocation(selected.storageLocation?.locationCode);
-            setLocationType({
-                key: selected.locationType,
-                description: selected.locationTypeDescription
-            });
+            getInitialDepartment(selected.auditedByDepartmentCode);
 
             const auditedByEmployee =
                 historicalEmployeesResult?.items.find(emp => emp.id === selected?.auditedBy) || '';
 
-            setEmployee(auditedByEmployee.fullName);
+            setPallet({
+                ...selected,
+                auditedByEmployee: auditedByEmployee.fullName,
+                storageLocationCode: selected.storageLocation?.locationCode,
+                deafultStockPoolDescription: selected.defaultStockPool?.stockPoolDescription
+            });
         }
     };
 
     const handleDepartmentSearchResultSelect = selected => {
         setDepartment(selected?.description);
-        setPallet(c => ({ ...c, auditedByDepartmentCode: selected.departmentCode }));
+        setPallet({ ...pallet, auditedByDepartmentCode: selected.departmentCode });
     };
 
     const handleStockPoolSearchResultSelect = selected => {
-        setStockPool(selected.stockPoolDescription);
-        setPallet(c => ({
-            ...c,
+        setPallet({
+            ...pallet,
             defaultStockPool: selected,
-            defaultStockPoolId: selected.stockPoolCode
-        }));
+            defaultStockPoolId: selected.stockPoolCode,
+            deafultStockPoolDescription: selected.stockPoolDescription
+        });
     };
 
     const handleStorageLocationSearchResultSelect = selected => {
-        setStorageLocation(selected.locationCode);
-        setPallet(c => ({
-            ...c,
+        setPallet({
+            ...pallet,
             storageLocation: selected,
-            storageLocationId: selected.locationId
-        }));
+            storageLocationId: selected.locationId,
+            storageLocationCode: selected.locationCode
+        });
     };
 
     const mappedPalletSearchResults =
@@ -162,48 +161,28 @@ function Pallets() {
         })) ?? [];
 
     const handleFieldChange = (propertyName, newValue) => {
-        setPallet(c => ({ ...c, [propertyName]: newValue }));
-    };
-
-    const handleNumberFieldChange = (propertyName, newValue) => {
-        if (!lessThan(newValue, 0)) {
-            setPallet(c => ({ ...c, [propertyName]: newValue }));
-        }
-    };
-
-    const handleLocationTypeFieldChange = (propertyName, newValue) => {
-        if (newValue === 'LINN') {
-            setLocationType({ key: 'L', description: newValue });
-            setPallet(c => ({
-                ...c,
-                locationTypeId: 'L'
-            }));
-        } else {
-            setLocationType({ key: '', description: '' });
-            setPallet(c => ({
-                ...c,
-                locationTypeId: null
-            }));
+        if (typeof newValue === 'string') {
+            setPallet({ ...pallet, [propertyName]: newValue });
+        } else if (typeof newValue === 'number' && !lessThan(newValue, 0)) {
+            setPallet({ ...pallet, [propertyName]: newValue });
+        } else if (newValue instanceof Date || newValue === null) {
+            setPallet({ ...pallet, [propertyName]: newValue });
         }
     };
 
     const handleEmployeeFieldChange = (propertyName, newValue) => {
         const employeeInfo = currentEmployeesResult?.items.find(emp => emp.fullName === newValue);
 
-        setEmployee(newValue);
         setPallet(c => ({
             ...c,
-            auditedBy: employeeInfo?.id
+            auditedBy: employeeInfo?.id,
+            auditedByEmployee: employeeInfo?.fullName
         }));
     };
 
     const handleCreatingFieldChange = () => {
         setPallet();
         setDepartment();
-        setStockPool();
-        setLocationType();
-        setStorageLocation('');
-        setEmployee();
         setCreating(!creating);
     };
 
@@ -217,12 +196,6 @@ function Pallets() {
         employeeNames = [...employeeNames, auditedByEmployee.fullName];
     }
 
-    const handleDateChange = (propertyName, momentObj) => {
-        // If you want to store as ISO string:
-        const dateValue = momentObj ? momentObj.toISOString() : null;
-        setPallet(c => ({ ...c, [propertyName]: dateValue }));
-    };
-
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid size={10}>
@@ -233,13 +206,14 @@ function Pallets() {
             {(createPalletLoading ||
                 updateLoading ||
                 isHistoricalEmployeeLoading ||
-                isCurrentEmployeeLoading) && (
+                isCurrentEmployeeLoading ||
+                isDepartmentLoading) && (
                 <Grid size={12}>
                     <Loading />
                 </Grid>
             )}
-            <Grid container spacing={70}>
-                <Grid item xs={10}>
+            <Grid container spacing={3}>
+                <Grid size={10}>
                     {!creating ? (
                         <Search
                             autoFocus
@@ -261,14 +235,14 @@ function Pallets() {
                             propertyName="palletNumber"
                             label="Pallet Number"
                             type="number"
-                            onChange={handleNumberFieldChange}
+                            onChange={handleFieldChange}
                             value={pallet?.palletNumber}
                             fullWidth
                         />
                     )}
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid size={2}>
                     <Button variant="outlined" fullWidth onClick={handleCreatingFieldChange}>
                         {creating ? `View Pallet` : 'Create Pallet'}
                     </Button>
@@ -277,7 +251,7 @@ function Pallets() {
 
             {(pallet || creating) && (
                 <>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Grid container spacing={2}>
                             <Grid item size={3}>
                                 <InputField
@@ -304,9 +278,11 @@ function Pallets() {
                                     label="Storage Location Name"
                                     resultsInModal
                                     resultLimit={100}
-                                    value={storageLocation}
+                                    value={pallet?.storageLocationCode}
                                     loading={storageLocationSearchLoading}
-                                    handleValueChange={(_, newVal) => setStorageLocation(newVal)}
+                                    handleValueChange={(_, newVal) =>
+                                        setPallet({ ...pallet, storageLocationCode: newVal })
+                                    }
                                     search={searchStorageLoction}
                                     searchResults={storageLocationSearchResults}
                                     priorityFunction="closestMatchesFirst"
@@ -316,11 +292,11 @@ function Pallets() {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Grid container spacing={2}>
                             <Grid item size={2}>
                                 <Dropdown
-                                    value={employee}
+                                    value={pallet.auditedByEmployee}
                                     fullWidth
                                     propertyName="lastAuditedBy"
                                     label="Last Audited By"
@@ -335,7 +311,7 @@ function Pallets() {
                                     label="Date Last Audited"
                                     propertyName="dateLastAudited"
                                     value={pallet?.dateLastAudited}
-                                    onChange={date => handleDateChange('dateLastAudited', date)}
+                                    onChange={handleFieldChange}
                                 />
                             </Grid>
                             <Grid item size={2}>
@@ -343,7 +319,7 @@ function Pallets() {
                                     propertyName="auditFrequencyWeeks"
                                     label="Audit Frequency Weeks"
                                     type="number"
-                                    onChange={handleNumberFieldChange}
+                                    onChange={handleFieldChange}
                                     value={pallet?.auditFrequencyWeeks}
                                     fullWidth
                                 />
@@ -376,9 +352,9 @@ function Pallets() {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
+                            <Grid size={2}>
                                 <Dropdown
                                     value={pallet?.accessible}
                                     fullWidth
@@ -389,12 +365,12 @@ function Pallets() {
                                     onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item xs={2}>
+                            <Grid size={2}>
                                 <DatePicker
                                     label="Date Invalid"
                                     propertyName="dateInvalid"
                                     value={pallet?.dateInvalid}
-                                    onChange={date => handleDateChange('dateInvalid', date)}
+                                    onChange={handleFieldChange}
                                 />
                             </Grid>
                             <Grid size={2}>
@@ -410,7 +386,7 @@ function Pallets() {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Grid container spacing={2}>
                             <Grid size={2}>
                                 <Dropdown
@@ -429,7 +405,7 @@ function Pallets() {
                                     label="Stores Kitting Priority"
                                     value={pallet?.storesKittingPriority}
                                     fullWidth
-                                    onChange={handleNumberFieldChange}
+                                    onChange={handleFieldChange}
                                     type="number"
                                 />
                             </Grid>
@@ -450,23 +426,23 @@ function Pallets() {
                                     label="Sales Kitting Priority"
                                     value={pallet?.salesKittingPriority}
                                     fullWidth
-                                    onChange={handleNumberFieldChange}
+                                    onChange={handleFieldChange}
                                     type="number"
                                 />
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
+                            <Grid size={2}>
                                 <Dropdown
-                                    value={locationType?.description}
+                                    value={pallet?.locationType}
                                     fullWidth
                                     propertyName="locationTypeId"
                                     label="Location Type ID"
                                     allowNoValue
                                     items={['LINN']}
-                                    onChange={handleLocationTypeFieldChange}
+                                    onChange={handleFieldChange}
                                 />
                             </Grid>
                             <Grid item size={4}>
@@ -485,9 +461,14 @@ function Pallets() {
                                     label="Default Stock Pool Description"
                                     resultsInModal
                                     resultLimit={100}
-                                    value={stockPool}
+                                    value={pallet?.deafultStockPoolDescription}
                                     loading={stockPoolSearchLoading}
-                                    handleValueChange={(_, newVal) => setStockPool(newVal)}
+                                    handleValueChange={(_, newVal) =>
+                                        setPallet({
+                                            ...pallet,
+                                            deafultStockPoolDescription: newVal
+                                        })
+                                    }
                                     search={searchStockPool}
                                     searchResults={stockPoolSearchResults}
                                     priorityFunction="closestMatchesFirst"
@@ -497,48 +478,28 @@ function Pallets() {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid size={12}>
                         <Grid container spacing={2}>
-                            <Grid item xs={2}>
+                            <Grid size={2}>
                                 <Dropdown
-                                    value={
-                                        stockTypes.find(t => t.value === pallet?.stockType)
-                                            ?.label || ''
-                                    }
+                                    value={pallet?.stockType}
                                     fullWidth
                                     propertyName="stockType"
                                     label="Stock Type"
                                     allowNoValue
-                                    items={stockTypes.map(t => t.label)}
-                                    onChange={(_, newLabel) => {
-                                        const selected = stockTypes.find(t => t.label === newLabel);
-                                        setPallet(c => ({
-                                            ...c,
-                                            stockType: selected ? selected.value : null
-                                        }));
-                                    }}
+                                    items={stockTypes}
+                                    onChange={handleFieldChange}
                                 />
                             </Grid>
-                            <Grid item xs={2}>
+                            <Grid size={2}>
                                 <Dropdown
-                                    value={
-                                        stockStates.find(s => s.value === pallet?.stockState)
-                                            ?.label || ''
-                                    }
+                                    value={pallet?.stockState}
                                     fullWidth
                                     propertyName="stockState"
                                     label="Stock State"
                                     allowNoValue
-                                    items={stockStates.map(s => s.label)}
-                                    onChange={(_, newLabel) => {
-                                        const selected = stockStates.find(
-                                            s => s.label === newLabel
-                                        );
-                                        setPallet(c => ({
-                                            ...c,
-                                            stockState: selected ? selected.value : null
-                                        }));
-                                    }}
+                                    items={stockStates}
+                                    onChange={handleFieldChange}
                                 />
                             </Grid>
                             <Grid size={2}>
@@ -559,12 +520,9 @@ function Pallets() {
                             <Button
                                 variant="contained"
                                 fullWidth
-                                disabled={
-                                    pallet === palletSearchResults || !pallet?.storageLocation
-                                }
+                                disabled={!pallet?.storageLocation}
                                 onClick={() => {
                                     if (creating) {
-                                        console.log(pallet);
                                         createPallet(null, pallet);
                                     } else {
                                         updatePallet(pallet?.palletNumber, pallet);
@@ -582,7 +540,7 @@ function Pallets() {
                             />
                         </Grid>
                         {(updateError || createError) && (
-                            <Grid item xs={12}>
+                            <Grid size={12}>
                                 <ErrorCard errorMessage={updateError ? updateError : createError} />
                             </Grid>
                         )}
