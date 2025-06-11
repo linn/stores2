@@ -171,7 +171,7 @@ function Pallets() {
     };
 
     const handleCreatingFieldChange = () => {
-        setPallet();
+        setPallet({ dateInvalid: null, dateLastAudited: null });
         setCreating(!creating);
     };
 
@@ -186,9 +186,12 @@ function Pallets() {
             setPallet({ ...pallet, [propertyName]: newValue });
         } else if (typeof newValue === 'number' && !lessThan(newValue, 0)) {
             setPallet({ ...pallet, [propertyName]: newValue });
-        } else if (newValue instanceof Date || newValue === null) {
-            setPallet({ ...pallet, [propertyName]: newValue });
         }
+    };
+
+    const handleDateChange = (propertyName, momentObj) => {
+        const dateValue = momentObj ? momentObj.toISOString() : null;
+        setPallet(c => ({ ...c, [propertyName]: dateValue }));
     };
 
     const auditedByEmployee = historicalEmployeesResult?.items.find(
@@ -199,6 +202,32 @@ function Pallets() {
 
     if (auditedByEmployee && !employeeNames.includes(auditedByEmployee.fullName)) {
         employeeNames = [...employeeNames, auditedByEmployee.fullName];
+    }
+
+    function getBackendPallet(pallet) {
+        return {
+            palletNumber: pallet.palletNumber,
+            description: pallet.description,
+            storageLocationId: pallet.storageLocationId,
+            storageLocation: pallet.storageLocation,
+            dateInvalid: pallet.dateInvalid,
+            dateLastAudited: pallet.dateLastAudited,
+            accessible: pallet.accessible,
+            storesKittable: pallet.storesKittable,
+            storesKittingPriority: pallet.storesKittingPriority,
+            salesKittable: pallet.salesKittable,
+            salesKittingPriority: pallet.salesKittingPriority,
+            locationTypeId: pallet.locationType == 'LINN' ? 'L' : null,
+            auditedBy: pallet.auditedBy,
+            defaultStockPoolId: pallet.defaultStockPoolId,
+            defaultStockPool: pallet.defaultStockPool,
+            stockType: pallet.stockType,
+            stockState: pallet.stockState,
+            auditFrequencyWeeks: pallet.auditFrequencyWeeks,
+            auditedByDepartmentCode: pallet.auditedByDepartmentCode,
+            mixStates: pallet.mixStates,
+            cage: pallet.cage
+        };
     }
 
     return (
@@ -316,7 +345,8 @@ function Pallets() {
                                     label="Date Last Audited"
                                     propertyName="dateLastAudited"
                                     value={pallet?.dateLastAudited}
-                                    onChange={handleFieldChange}
+                                    onChange={date => handleDateChange('dateLastAudited', date)}
+                                    clearable
                                 />
                             </Grid>
                             <Grid item size={2}>
@@ -380,7 +410,8 @@ function Pallets() {
                                     label="Date Invalid"
                                     propertyName="dateInvalid"
                                     value={pallet?.dateInvalid}
-                                    onChange={handleFieldChange}
+                                    onChange={date => handleDateChange('dateInvalid', date)}
+                                    clearable
                                 />
                             </Grid>
                             <Grid size={2}>
@@ -448,8 +479,8 @@ function Pallets() {
                                 <Dropdown
                                     value={pallet?.locationType}
                                     fullWidth
-                                    propertyName="locationTypeId"
-                                    label="Location Type ID"
+                                    propertyName="locationType"
+                                    label="Location Type"
                                     allowNoValue
                                     items={['LINN']}
                                     onChange={handleFieldChange}
@@ -532,10 +563,11 @@ function Pallets() {
                                 fullWidth
                                 disabled={!pallet?.storageLocation}
                                 onClick={() => {
+                                    const backendPallet = getBackendPallet(pallet);
                                     if (creating) {
-                                        createPallet(null, pallet);
+                                        createPallet(null, backendPallet);
                                     } else {
-                                        updatePallet(pallet?.palletNumber, pallet);
+                                        updatePallet(backendPallet?.palletNumber, backendPallet);
                                     }
                                 }}
                             >

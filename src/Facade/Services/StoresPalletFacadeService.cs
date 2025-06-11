@@ -80,7 +80,7 @@
                 resource.SalesKittable,
                 resource.SalesKittingPriority,
                 locationType.FirstOrDefault(),
-                resource.LocationTypeId,
+                resource.LocationTypeId == "LINN" ? "L" : null,
                 resource.AuditedBy,
                 stockPool,
                 resource.DefaultStockPoolId,
