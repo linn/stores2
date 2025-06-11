@@ -373,8 +373,9 @@ function reducer(state, action) {
 
             // this behaviour might differ for differing function code parameters
             // but for now...
-            newLine.document1Type = 'REQ';
-            newLine.document1Line = newLine.lineNumber;
+            newLine.document1Type = lineTransactionType?.document1Type ?? 'REQ';
+            newLine.document1Line = newLine.document1Type === 'REQ' ? newLine.lineNumber : null;
+            newLine.document1Number = state.req.document1;
             return {
                 ...state,
                 req: {

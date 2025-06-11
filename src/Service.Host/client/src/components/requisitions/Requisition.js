@@ -311,7 +311,7 @@ function Requisition({ creating }) {
         }
 
         // from hardcoding in REQLINES.when-new-record-instance
-        const partNosNotRequiredFuncs = ['LOAN OUT', 'LOAN BACK', 'CUSTRET', 'SUKIT'];
+        const partNosNotRequiredFuncs = ['LOAN BACK', 'CUSTRET', 'SUKIT'];
         if (partNosNotRequiredFuncs.includes(formState.req?.storesFunction?.code)) {
             return false;
         }
@@ -555,7 +555,7 @@ function Requisition({ creating }) {
                 <Grid size={1}>
                     <ExportButton
                         buttonText="Pdf"
-                        disabled={!reqNumber}
+                        disabled={!reqNumber || creating}
                         accept="application/pdf"
                         fileName={`req ${reqNumber}.pdf`}
                         tooltipText="Download as PDF"
@@ -566,7 +566,7 @@ function Requisition({ creating }) {
                 <Grid size={1}>
                     <LinkField
                         to={`${itemTypes.requisitions.url}/${reqNumber}/view`}
-                        disabled={!reqNumber}
+                        disabled={!reqNumber || creating}
                         external={false}
                         openLinksInNewTabs={true}
                         value="Printable View"
@@ -575,7 +575,7 @@ function Requisition({ creating }) {
                 <Grid size={1}>
                     <LinkField
                         to={`/requisitions/reports/requisition-cost/${reqNumber}`}
-                        disabled={!reqNumber}
+                        disabled={!reqNumber || creating}
                         external={false}
                         value="Cost Of Req"
                     />
@@ -1388,7 +1388,6 @@ function Requisition({ creating }) {
                                     documentNumber={formState.req.document1}
                                     documentType={formState.req.document1Name}
                                     handleSelect={reqDetails => {
-
                                         // BOOKLD doesn't specify an original req
                                         // so just fill out reversal details on the client
                                         if (formState.req?.storesFunction?.code === 'BOOKLD') {

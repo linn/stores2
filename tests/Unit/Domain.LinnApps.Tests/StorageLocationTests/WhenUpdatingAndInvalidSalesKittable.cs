@@ -1,15 +1,12 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
     using System;
-
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
-
     using NUnit.Framework;
 
-    public class WhenUpdatingAndInvalidStoresKittable
+    public class WhenUpdatingAndInvalidSalesKittable 
     {
         private Action action;
 
@@ -23,8 +20,8 @@
                     "New Description",
                     new AccountingCompany(),
                     "Y",
-                    "Z",
                     "Y",
+                    "Z",
                     "Y",
                     "A",
                     "A",
@@ -37,7 +34,7 @@
         [Test]
         public void ShouldThrow()
         {
-            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot update Location - stores kittable should be Y, N or blank");
+            this.action.Should().Throw<StorageLocationException>().WithMessage("Cannot update Location - sales kittable should be Y, N or blank");
         }
     }
 }

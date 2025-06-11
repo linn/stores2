@@ -27,7 +27,7 @@ function Document1({
         send: fetchPurchaseOrder,
         result: purchaseOrder,
         clearData: clearPurchaseOrder
-    } = useGet(itemTypes.purchaseOrder.url, true);
+    } = useGet(itemTypes.purchaseOrders.url, true);
 
     const {
         send: fetchCreditNote,
@@ -39,7 +39,7 @@ function Document1({
         send: fetchWorksOrder,
         result: worksOrder,
         clearData: clearWorksOrder
-    } = useGet(itemTypes.worksOrder.url, true);
+    } = useGet(itemTypes.worksOrders.url, true);
 
     const {
         send: fetchPart,
@@ -152,20 +152,20 @@ function Document1({
 
     const href = () => {
         if (document1Text === 'Loan Number') {
-            return itemTypes.loan.url;
+            return itemTypes.loans.url;
         }
 
         switch (partSource) {
             case 'C':
                 return itemTypes.creditNotes.url;
             case 'WO':
-                return itemTypes.worksOrder.url;
+                return itemTypes.worksOrders.url;
             case 'PO':
-                return itemTypes.purchaseOrder.url;
+                return itemTypes.purchaseOrders.url;
             case 'RO':
-                return itemTypes.purchaseOrder.url;
+                return itemTypes.purchaseOrders.url;
             case 'CO':
-                return itemTypes.purchaseOrder.url;
+                return itemTypes.purchaseOrders.url;
             default:
                 return '';
         }

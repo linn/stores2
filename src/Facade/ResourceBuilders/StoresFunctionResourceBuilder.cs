@@ -78,7 +78,8 @@
                                            TransactionDescription = t.TransactionDefinition?.Description,
                                            StockAllocations = t.TransactionDefinition?.StockAllocations == "Y",
                                            FromStates = t.TransactionDefinition?.GetTransactionStates("F"),
-                                           ToStates = t.TransactionDefinition?.GetTransactionStates("O")
+                                           ToStates = t.TransactionDefinition?.GetTransactionStates("O"),
+                                           Document1Type = t.TransactionDefinition?.DocType
                                        }),
                           Links = this.BuildLinks(model, claims).ToArray()
             };

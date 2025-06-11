@@ -52,7 +52,7 @@
             return null; 
         }
 
-        public async Task<DocumentResult> GetLoan(int loanNumber)
+        public async Task<LoanResult> GetLoan(int loanNumber)
         {
             var uri = $"{ConfigurationManager.Configuration["PROXY_ROOT"]}/sales/loans/{loanNumber}";
 
@@ -68,9 +68,20 @@
             }
 
             var json = new JsonSerializer();
-            var loan = json.Deserialize<DocumentResource>(response.Value);
+            var loan = json.Deserialize<LoanResource>(response.Value);
 
-            return new DocumentResult("L", loan.DocumentNumber, null, null, null);
+            return new LoanResult
+            {
+                LoanNumber = loan.LoanNumber,
+                IsCancelled = !string.IsNullOrEmpty(loan.CancelledDate),
+                Details = loan.LoanDetails.Select(d => new LoanDetail
+                {
+                    IsCancelled   = d.CancelledFlag == "Y",
+                    Quantity = d.Quantity,
+                    ArticleNumber = d.ArticleNumber,
+                    LineNumber = d.LineNumber
+                })
+            };
         }
 
         public async Task<PurchaseOrderResult> GetPurchaseOrder(int orderNumber)

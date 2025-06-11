@@ -208,6 +208,7 @@
                 this.Reference = isReversalOf.Reference;
                 this.FromState = isReversalOf.FromState;
                 this.ToStockPool = isReversalOf.ToStockPool;
+                this.ToState = isReversalOf.ToState;
                 this.FromStockPool = this.StoresFunction.FromStockPoolRequired == "Y" ? isReversalOf.FromStockPool : fromStockPool;
                 this.BatchRef = this.StoresFunction.FunctionCode == "LOAN BACK"
                     ? $"Q{isReversalOf.ReqNumber}" : batchRef;

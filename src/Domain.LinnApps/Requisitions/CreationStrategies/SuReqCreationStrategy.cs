@@ -77,7 +77,8 @@
                 toState: context.ToState,
                 batchRef: context.BatchRef,
                 batchDate: context.BatchDate,
-                document1Line: context.Document1Line);
+                document1Line: context.Document1Line,
+                lines: context.Lines);
 
             // header
             var req = new RequisitionHeader(

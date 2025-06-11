@@ -1,7 +1,6 @@
 ﻿import config from './config';
 
 const itemTypes = {
-    health: { url: `${config.appRoot}/healthcheck` },
     countries: { url: `${config.appRoot}/stores2/countries` },
     carriers: { url: `${config.appRoot}/stores2/carriers` },
     currentEmployees: { url: `${config.proxyRoot}/employees?currentEmployees=true` },
@@ -12,7 +11,7 @@ const itemTypes = {
     functionCodes: { url: `${config.appRoot}/requisitions/stores-functions` },
     goodsInLog: { url: `${config.appRoot}/stores2/goods-in-log/report` },
     createAuditReqs: { url: `${config.appRoot}/stores2/storage-places/create-checked-audit-reqs` },
-    storesBudget: { url: `${config.appRoot}/stores2/budgets` },
+    storesBudgets: { url: `${config.appRoot}/stores2/budgets` },
     sundryBookInDetails: { url: `${config.appRoot}/requisitions/sundry-book-ins` },
     auditLocations: { url: `${config.appRoot}/stores2/storage/audit-locations` },
     storageSites: { url: `${config.appRoot}/stores2/storage/sites` },
@@ -31,11 +30,11 @@ const itemTypes = {
     accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` },
     partsStorageTypes: { url: `${config.appRoot}/stores2/parts-storage-types` },
     storesTransViewer: { url: `${config.appRoot}/stores2/stores-trans-viewer/report` },
-    purchaseOrder: { url: `${config.proxyRoot}/purchasing/purchase-orders` },
-    loan: { url: `${config.proxyRoot}/sales/loans` },
+    purchaseOrders: { url: `${config.proxyRoot}/purchasing/purchase-orders` },
+    loans: { url: `${config.proxyRoot}/sales/loans` },
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
-    worksOrder: { url: `${config.proxyRoot}/production/works-orders` },
-    debitNote: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
+    worksOrders: { url: `${config.proxyRoot}/production/works-orders` },
+    debitNotes: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
     requisitionCostReport: {
         url: `${config.appRoot}/requisitions/reports/requisition-cost/report`
     },

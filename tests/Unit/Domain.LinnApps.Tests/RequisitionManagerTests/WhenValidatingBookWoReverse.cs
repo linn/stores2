@@ -60,6 +60,7 @@
                 null,
                 reference: null,
                 comments: "Uno reverse",
+                toState: "STORES",
                 quantity: 4);
             this.ReqRepository.FindByIdAsync(456).Returns(toBeReversed);
             this.result = await this.Sut.Validate(
