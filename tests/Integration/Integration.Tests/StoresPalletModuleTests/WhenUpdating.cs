@@ -56,19 +56,19 @@
                 1,
                 "Y",
                 1,
-                DateTime.Today,
+                null,
                 null,
                 null,
                 123,
                 null,
                 null,
-                "TypeA",
-                "StateA",
-                456,
+                "A",
+                "A",
                 4,
-                "DeptA",
+                1,
                 "State1,State2",
-                "A");
+                "A",
+                "Y");
 
             this.updateResource = new StoresPalletResource
             {
