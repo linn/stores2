@@ -24,13 +24,12 @@
 
             return new WorkstationResource
                        {
-                           WorkstationCode = model.WorkstationCode,
+                           WorkStationCode = model.WorkStationCode,
                            CitCode = model.Cit?.Code,
                            CitName = model.Cit?.Name,
                            Description = model.Description,
-                           VaxWorkstation = model.VaxWorkstation,
                            ZoneType = model.ZoneType,
-                           WorkstationElements = model.WorkstationElements
+                           WorkStationElements = model.WorkStationElements
                                ?.Select(c => (WorkstationElementResource)this.workstationElementsBuilder
                                    .Build(c, claimsList)), 
                            Links = this.BuildLinks(model, claims).ToArray()
@@ -39,7 +38,7 @@
 
         public string GetLocation(Workstation model)
         {
-            return $"/stores2/work-stations/{model.WorkstationCode}";
+            return $"/stores2/work-stations/{model.WorkStationCode}";
         }
 
         object IBuilder<Workstation>.Build(Workstation entity, IEnumerable<string> claims) =>

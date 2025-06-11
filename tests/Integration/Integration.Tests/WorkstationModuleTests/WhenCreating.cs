@@ -8,6 +8,7 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Stores;
@@ -17,39 +18,58 @@
     public class WhenCreating : ContextBase
     {
         private WorkstationResource createResource;
+        private StorageLocation location;
+        private StoresPallet pallet;
 
         [SetUp]
         public void SetUp()
         {
+            this.location = new StorageLocation
+                                 {
+                                     LocationId = 1,
+                                     LocationCode = "E-MH-KIT",
+                                     StorageAreaCode = "MHK",
+                                     Description = "MARK H"
+                                 };
+
+            this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.location);
+            this.DbContext.SaveChanges();
+
+            this.pallet = new StoresPallet
+                                {
+                                    PalletNumber = 999,
+                                    Description = "PALLET 999"
+                                };
+
+            this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
+            this.DbContext.SaveChanges();
+
             this.createResource = new WorkstationResource 
                                       {
-                                          WorkstationCode = "WORKSTATIONCODE",
+                                          WorkStationCode = "WORKSTATIONCODE",
                                           CitCode = "R",
                                           CitName = "R CODE",
                                           Description = "A TEST WORKSTATION",
                                           ZoneType = "Z",
-                                          VaxWorkstation = "161",
-                                          WorkstationElements = new List<WorkstationElementResource>
+                                          WorkStationElements = new List<WorkstationElementResource>
                                                                     {
                                                                         new WorkstationElementResource()
                                                                             {
                                                                                 WorkstationCode = "WORKSTATIONCODE",
-                                                                                CreatedBy = 33156,
+                                                                                CreatedById = 33156,
                                                                                 CreatedByName = "RSTEWART",
                                                                                 DateCreated = DateTime.Today.ToString("o"),
-                                                                                LocationId = 123,
-                                                                                PalletNumber = 567,
-                                                                                WorkstationElementId = 1
+                                                                                LocationId = this.location.LocationId,
+                                                                                WorkStationElementId = 1
                                                                             },
                                                                         new WorkstationElementResource()
                                                                             {
                                                                                 WorkstationCode = "WORKSTATIONCODE",
-                                                                                CreatedBy = 33156,
+                                                                                CreatedById = 33156,
                                                                                 CreatedByName = "RSTEWART",
                                                                                 DateCreated = DateTime.Today.ToString("o"),
-                                                                                LocationId = 567,
-                                                                                PalletNumber = 890,
-                                                                                WorkstationElementId = 2
+                                                                                PalletNumber = this.pallet.PalletNumber,
+                                                                                WorkStationElementId = 2
                                                                             }
                                                                     }
                                       };
@@ -74,7 +94,7 @@
         public void ShouldAdd()
         {
             this.DbContext.Workstations
-                .First(x => x.WorkstationCode == this.createResource.WorkstationCode).Description
+                .First(x => x.WorkStationCode == this.createResource.WorkStationCode).Description
                 .Should().Be(this.createResource.Description);
         }
 
@@ -82,7 +102,7 @@
         public void ShouldReturnUpdatedJsonBody()
         {
             var resource = this.Response.DeserializeBody<WorkstationResource>();
-            resource.WorkstationCode.Should().Be("WORKSTATIONCODE");
+            resource.WorkStationCode.Should().Be("WORKSTATIONCODE");
             resource.Description.Should().Be("A TEST WORKSTATION");
         }
     }

@@ -16,12 +16,14 @@
 
             return new WorkstationElementResource
             {
-                WorkstationElementId = model.WorkstationElementId,
-                WorkstationCode = model.WorkstationCode,
-                PalletNumber = model.PalletNumber,
-                LocationId = model.LocationId,
+                WorkStationElementId = model.WorkStationElementId,
+                WorkstationCode = model.WorkStationCode,
+                PalletNumber = model.Pallet?.PalletNumber,
+                LocationId = model.StorageLocation?.LocationId,
+                LocationCode = model.StorageLocation?.LocationCode,
+                LocationDescription = model.StorageLocation?.Description,
                 DateCreated = model.DateCreated.ToString("o"),
-                CreatedBy = model.CreatedBy?.Id,
+                CreatedById = model.CreatedBy?.Id,
                 CreatedByName = model.CreatedBy?.Name,
                 Links = this.BuildLinks(model, claims).ToArray()
             };
@@ -29,7 +31,7 @@
 
         public string GetLocation(WorkstationElement model)
         {
-            return $"/stores2/work-stations/{model.WorkstationCode}/{model.WorkstationElementId}";
+            return $"/stores2/work-stations/{model.WorkStationCode}/{model.WorkStationElementId}";
         }
 
         object IBuilder<WorkstationElement>.Build(WorkstationElement entity, IEnumerable<string> claims) =>
