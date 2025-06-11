@@ -23,7 +23,6 @@ import Page from './Page';
 
 function Pallets() {
     const [searchPallet, setSearchPallet] = useState('');
-    const [department, setDepartment] = useState('');
     const [creating, setCreating] = useState(false);
     const [snackbarVisible, setSnackbarVisible] = useState(false);
 
@@ -108,40 +107,47 @@ function Pallets() {
         }
     }, [updateResult, createResult, clearCreateResult, clearUpdateResult]);
 
-    useEffect(() => {
-        if (departmentGetResult) {
-            setDepartment(departmentGetResult.description);
-        }
-    }, [departmentGetResult]);
+    const [pendingSelected, setPendingSelected] = useState(null);
 
     const handlePalletSearchResultSelect = selected => {
         if (selected && selected.palletNumber) {
-            setPallet(selected);
             getInitialDepartment(selected.auditedByDepartmentCode);
-
-            const auditedByEmployee =
-                historicalEmployeesResult?.items.find(emp => emp.id === selected?.auditedBy) || '';
-
-            setPallet({
-                ...selected,
-                auditedByEmployee: auditedByEmployee.fullName,
-                storageLocationCode: selected.storageLocation?.locationCode,
-                deafultStockPoolDescription: selected.defaultStockPool?.stockPoolDescription
-            });
+            setPendingSelected(selected);
         }
     };
 
-    const handleDepartmentSearchResultSelect = selected => {
-        setDepartment(selected?.description);
-        setPallet({ ...pallet, auditedByDepartmentCode: selected.departmentCode });
-    };
+    useEffect(() => {
+        if (pendingSelected && departmentGetResult) {
+            const auditedByEmployee =
+                historicalEmployeesResult?.items.find(
+                    emp => emp.id === pendingSelected?.auditedBy
+                ) || {};
 
+            setPallet({
+                ...pendingSelected,
+                auditedByEmployee: auditedByEmployee.fullName,
+                storageLocationDescription: pendingSelected.storageLocation?.description,
+                defaultStockPoolDescription: pendingSelected.defaultStockPool?.stockPoolDescription,
+                departmentCode: departmentGetResult?.departmentCode,
+                auditedByDepartmentDescription: departmentGetResult?.description
+            });
+            setPendingSelected(null); // This prevents a loop!
+        }
+    }, [pendingSelected, departmentGetResult, historicalEmployeesResult]);
+
+    const handleDepartmentSearchResultSelect = selected => {
+        setPallet({
+            ...pallet,
+            auditedByDepartmentCode: selected.departmentCode,
+            auditedByDepartmentDescription: selected.description
+        });
+    };
     const handleStockPoolSearchResultSelect = selected => {
         setPallet({
             ...pallet,
             defaultStockPool: selected,
             defaultStockPoolId: selected.stockPoolCode,
-            deafultStockPoolDescription: selected.stockPoolDescription
+            defaultStockPoolDescription: selected.stockPoolDescription
         });
     };
 
@@ -150,8 +156,23 @@ function Pallets() {
             ...pallet,
             storageLocation: selected,
             storageLocationId: selected.locationId,
-            storageLocationCode: selected.locationCode
+            storageLocationDescription: selected.locationCode
         });
+    };
+
+    const handleEmployeeFieldChange = (propertyName, newValue) => {
+        const employeeInfo = currentEmployeesResult?.items.find(emp => emp.fullName === newValue);
+
+        setPallet(c => ({
+            ...c,
+            auditedBy: employeeInfo?.id,
+            auditedByEmployee: employeeInfo?.fullName
+        }));
+    };
+
+    const handleCreatingFieldChange = () => {
+        setPallet();
+        setCreating(!creating);
     };
 
     const mappedPalletSearchResults =
@@ -168,22 +189,6 @@ function Pallets() {
         } else if (newValue instanceof Date || newValue === null) {
             setPallet({ ...pallet, [propertyName]: newValue });
         }
-    };
-
-    const handleEmployeeFieldChange = (propertyName, newValue) => {
-        const employeeInfo = currentEmployeesResult?.items.find(emp => emp.fullName === newValue);
-
-        setPallet(c => ({
-            ...c,
-            auditedBy: employeeInfo?.id,
-            auditedByEmployee: employeeInfo?.fullName
-        }));
-    };
-
-    const handleCreatingFieldChange = () => {
-        setPallet();
-        setDepartment();
-        setCreating(!creating);
     };
 
     const auditedByEmployee = historicalEmployeesResult?.items.find(
@@ -278,10 +283,10 @@ function Pallets() {
                                     label="Storage Location Name"
                                     resultsInModal
                                     resultLimit={100}
-                                    value={pallet?.storageLocationCode}
+                                    value={pallet?.storageLocationDescription}
                                     loading={storageLocationSearchLoading}
                                     handleValueChange={(_, newVal) =>
-                                        setPallet({ ...pallet, storageLocationCode: newVal })
+                                        setPallet({ ...pallet, storageLocationDescription: newVal })
                                     }
                                     search={searchStorageLoction}
                                     searchResults={storageLocationSearchResults}
@@ -340,9 +345,14 @@ function Pallets() {
                                     label="Audited By Department"
                                     resultsInModal
                                     resultLimit={100}
-                                    value={department}
+                                    value={pallet?.auditedByDepartmentDescription}
                                     loading={departmentSearchLoading}
-                                    handleValueChange={(_, newVal) => setDepartment(newVal)}
+                                    handleValueChange={(_, newVal) =>
+                                        setPallet({
+                                            ...pallet,
+                                            auditedByDepartmentDescription: newVal
+                                        })
+                                    }
                                     search={searchDepartment}
                                     searchResults={departmentSearchResults}
                                     priorityFunction="closestMatchesFirst"
@@ -461,12 +471,12 @@ function Pallets() {
                                     label="Default Stock Pool Description"
                                     resultsInModal
                                     resultLimit={100}
-                                    value={pallet?.deafultStockPoolDescription}
+                                    value={pallet?.defaultStockPoolDescription}
                                     loading={stockPoolSearchLoading}
                                     handleValueChange={(_, newVal) =>
                                         setPallet({
                                             ...pallet,
-                                            deafultStockPoolDescription: newVal
+                                            defaultStockPoolDescription: newVal
                                         })
                                     }
                                     search={searchStockPool}
