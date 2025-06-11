@@ -29,6 +29,10 @@
 
         private readonly IRepository<StorageLocation, int> storageLocationRepository;
 
+        private readonly IRepository<StoresPallet, int> palletRepository;
+
+        private readonly IRepository<StockPool, string> stockPoolRepository;
+
         // This service is intended for stores_oo replacement methods that are not
         // suitable to be written in the requisition class itself
         public StoresService(
@@ -39,7 +43,9 @@
             IRepository<RequisitionHeader, int> requisitionRepository,
             IRepository<NominalAccount, int> nominalAccountRepository,
             IRepository<PartsStorageType, int> partStorageTypeRepository,
-            IRepository<StorageLocation, int> storageLocationRepository)
+            IRepository<StorageLocation, int> storageLocationRepository,
+            IRepository<StoresPallet, int> palletRepository,
+            IRepository<StockPool, string> stockPoolRepository)
         {
             this.stockService = stockService;
             this.storesTransactionStateRepository = storesTransactionStateRepository;
@@ -49,6 +55,8 @@
             this.nominalAccountRepository = nominalAccountRepository;
             this.partStorageTypeRepository = partStorageTypeRepository;
             this.storageLocationRepository = storageLocationRepository;
+            this.palletRepository = palletRepository;
+            this.stockPoolRepository = stockPoolRepository;
         }
 
         public async Task<ProcessResult> ValidOntoLocation(
@@ -344,6 +352,30 @@
             }
 
             return null;
+        }
+
+        public async Task<StockPool> DefaultStockPool(int? locationId, int? palletNumber)
+        {
+            StockPool stockPoolResult = null;
+
+            if (palletNumber.HasValue)
+            {
+                var pallet = await this.palletRepository.FindByIdAsync(palletNumber.Value);
+                if (pallet != null)
+                {
+                    stockPoolResult = pallet.DefaultStockPool;
+                }
+            } 
+            else if (locationId.HasValue)
+            {
+                var location = await this.storageLocationRepository.FindByIdAsync(locationId.Value);
+                if (location != null)
+                {
+                    stockPoolResult = await this.stockPoolRepository.FindByIdAsync(location.DefaultStockPool);
+                }
+            }
+
+            return stockPoolResult ?? await this.stockPoolRepository.FindByIdAsync("LINN");
         }
     }
 }

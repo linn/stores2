@@ -47,7 +47,7 @@ function StoragePlaceAudit() {
         errorMessage: createAuditErrorMessage,
         postResult: createAuditReqsResult,
         clearPostResult: clearCreateAuditData
-    } = usePost(itemTypes.createAuditReqs.url);
+    } = usePost(itemTypes.createAuditReqs.url, true);
 
     const getQueryString = () => {
         let queryString = '?';
