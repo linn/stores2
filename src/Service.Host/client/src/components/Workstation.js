@@ -130,12 +130,12 @@ function Workstation({ creating }) {
 
     const addNewRow = () => {
         setWorkStation(prev => ({
-            ...prev,
+            ...(prev ?? {}),
             workStationElements: [
-                ...(prev.workStationElements ?? []),
+                ...(prev?.workStationElements ?? []),
                 {
-                    workStationElementId: (prev.workStationElements?.length ?? 0) + 1,
-                    workStationCode: prev.workStationCode || '',
+                    workStationElementId: (prev?.workStationElements?.length ?? 0) + 1,
+                    workStationCode: prev?.workStationCode || '',
                     createdById: null,
                     createdByName: null,
                     dateCreated: new Date(),
