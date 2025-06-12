@@ -4,7 +4,13 @@ import { Link as RouterLink } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
-import { CreateButton, Dropdown, InputField, Loading } from '@linn-it/linn-form-components-library';
+import {
+    CreateButton,
+    Dropdown,
+    ErrorCard,
+    InputField,
+    Loading
+} from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
@@ -12,6 +18,7 @@ import config from '../config';
 import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
 import useGet from '../hooks/useGet';
+import usePut from '../hooks/usePut';
 import Page from './Page';
 
 function StorageLocations() {
@@ -59,6 +66,18 @@ function StorageLocations() {
         result: storageLocationsResult
     } = useGet(itemTypes.storageLocations.url);
 
+    const {
+        send: updateLocation,
+        isLoading: updateLoading,
+        errorMessage: updateError
+    } = usePut(itemTypes.storageLocations.url, true);
+
+    const makeInvalid = row => {
+        var updatedLoc = row;
+        updatedLoc.dateInvalid = new Date();
+        updateLocation(row.locationId, updatedLoc);
+    };
+
     const locationsColumns = [
         {
             field: 'locationCode',
@@ -93,6 +112,20 @@ function StorageLocations() {
             field: 'locationId',
             headerName: 'Id',
             width: 100
+        },
+        {
+            field: 'valid',
+            headerName: '',
+            width: 160,
+            renderCell: params => (
+                <Button
+                    disabled={params.row.dateInvalid || updateLoading}
+                    size="small"
+                    onClick={() => makeInvalid(params.row)}
+                >
+                    {params.row.dateInvalid ? 'Invalid' : 'Make Invalid'}
+                </Button>
+            )
         }
     ];
 
@@ -112,6 +145,13 @@ function StorageLocations() {
                 <Grid size={12}>
                     <Typography variant="h4">Storage Locations</Typography>
                 </Grid>
+                {updateError && (
+                    <Grid size={12}>
+                        <List>
+                            <ErrorCard errorMessage={updateError} />
+                        </List>
+                    </Grid>
+                )}
                 {isLoading ? (
                     <Grid size={12}>
                         <List>

@@ -15,31 +15,15 @@
 
     using NUnit.Framework;
 
-    public class WhenUpdating : ContextBase
+    public class WhenUpdatingWithNoStorageLocationOrPallet : ContextBase
     {
         private Workstation workstation;
-        private StorageLocation location;
-        private StoresPallet pallet;
 
         private WorkstationResource updateResource;
 
         [SetUp]
         public void SetUp()
         {
-            this.location = new StorageLocation
-                                {
-                                    LocationId = 1,
-                                    LocationCode = "E-MH-KIT",
-                                    StorageAreaCode = "MHK",
-                                    Description = "MARK H"
-                                };
-
-            this.pallet = new StoresPallet
-                              {
-                                  PalletNumber = 999,
-                                  Description = "PALLET 999"
-                              };
-
             this.workstation = new Workstation(
                 "Test",
                 "description",
@@ -65,36 +49,24 @@
                                                       WorkstationCode = "Test",
                                                       CreatedById = 33156,
                                                       CreatedByName = "RSTEWART",
-                                                      DateCreated = DateTime.Today.ToString("o"),
-                                                      LocationId = this.location.LocationId,
-                                                      PalletNumber = 567
+                                                      DateCreated = DateTime.Today.ToString("o")
                                                   },
                                               new WorkstationElementResource
                                                   {
                                                       WorkstationCode = "Test",
                                                       CreatedById = 33156,
                                                       CreatedByName = "RSTEWART",
-                                                      DateCreated = DateTime.Today.ToString("o"),
-                                                      LocationId = 567,
-                                                      PalletNumber = this.pallet.PalletNumber
+                                                      DateCreated = DateTime.Today.ToString("o")
                                                   }
                                           }
             };
 
             this.DbContext.Workstations.AddAndSave(this.DbContext, this.workstation);
-            this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.location);
-            this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
             this.DbContext.SaveChanges();
 
             this.Response = this.Client.PutAsJsonAsync(
                 $"/stores2/work-stations/Test",
                 this.updateResource).Result;
-        }
-
-        [Test]
-        public void ShouldReturnOk()
-        {
-            this.Response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Test]
@@ -105,18 +77,9 @@
         }
 
         [Test]
-        public void ShouldUpdateEntity()
+        public void ShouldThrow()
         {
-            this.DbContext.Workstations.First(x => x.WorkStationCode == this.workstation.WorkStationCode).Description
-                .Should().Be(this.updateResource.Description);
-        }
-
-        [Test]
-        public void ShouldReturnUpdatedJsonBody()
-        {
-            var resource = this.Response.DeserializeBody<WorkstationResource>();
-            resource.Description.Should().Be("A TEST WORKSTATION");
-            resource.WorkStationElements.Count().Should().Be(2);
+            this.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
     }
 }

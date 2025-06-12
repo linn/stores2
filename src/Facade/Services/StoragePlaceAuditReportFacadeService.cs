@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
@@ -55,16 +56,19 @@
             return await this.pdfService.ConvertHtmlToPdf(html, false);
         }
 
-        public IResult<ProcessResultResource> CreateCheckedAuditReqs(
+        public async Task<IResult<ProcessResultResource>> CreateCheckedAuditReqs(
             string[] locationList,
             string locationRange,
-            int employeeNumber)
+            int employeeNumber,
+            string departmentCode,
+            IEnumerable<string> privileges)
         {
-            var result = this.storagePlaceAuditReportService.CreateSuccessAuditReqs(
+            var result = await this.storagePlaceAuditReportService.CreateSuccessAuditReqs(
                 employeeNumber,
                 locationList,
                 locationRange,
-                null);
+                departmentCode,
+                privileges.ToList());
 
             var returnResource = new ProcessResultResource(result.Success, result.Message);
             return new SuccessResult<ProcessResultResource>(returnResource);

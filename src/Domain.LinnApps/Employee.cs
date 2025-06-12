@@ -5,5 +5,7 @@ namespace Linn.Stores2.Domain.LinnApps
         public int Id { get; set; }
         
         public string Name { get; set; }
+
+        public string DepartmentCode { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { Loading, ExportButton, Search } from '@linn-it/linn-form-components-library';
+import { Loading, ExportButton, Search, InputField } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -9,6 +9,7 @@ import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import usePost from '../hooks/usePost';
+import useSearch from '../hooks/useSearch';
 import Page from './Page';
 import ReportDataGrids from './ReportDataGrids';
 
@@ -16,10 +17,18 @@ function StoragePlaceAudit() {
     const [range, setRange] = useState(null);
     const [locationSelect, setLocationSelect] = useState(null);
     const [locations, setLocations] = useState([]);
+    const [departmentCode, setDepartmentCode] = useState(null);
+    const [departmentDescription, setDepartmentDescription] = useState(null);
 
     const auth = useAuth();
     const token = auth.user?.access_token;
     const employeeId = auth?.user?.profile?.employee?.split('/')?.[2];
+    const {
+        search: searchDepartments,
+        results: departmentsSearchResults,
+        loading: departmentsSearchLoading,
+        clear: clearDepartmentsSearch
+    } = useSearch(itemTypes.departments.url, 'departmentCode', 'departmentCode', 'description');
 
     const {
         send: getReport,
@@ -47,7 +56,7 @@ function StoragePlaceAudit() {
         errorMessage: createAuditErrorMessage,
         postResult: createAuditReqsResult,
         clearPostResult: clearCreateAuditData
-    } = usePost(itemTypes.createAuditReqs.url);
+    } = usePost(itemTypes.createAuditReqs.url, true);
 
     const getQueryString = () => {
         let queryString = '?';
@@ -66,7 +75,7 @@ function StoragePlaceAudit() {
     };
 
     const getCreateReqResource = () => {
-        const resource = { employeeNumber: employeeId };
+        const resource = { employeeNumber: employeeId, departmentCode };
 
         if (range) {
             resource.locationRange = range;
@@ -249,6 +258,7 @@ function StoragePlaceAudit() {
                 )}
                 <Grid size={2}>
                     <Button
+                        style={{ marginTop: '30px' }}
                         disabled={isLoading || createAuditReqsLoading || notReadyToRun()}
                         variant="outlined"
                         onClick={() => {
@@ -259,7 +269,40 @@ function StoragePlaceAudit() {
                         Create Audit Reqs
                     </Button>
                 </Grid>
-                <Grid size={10} />
+                <Grid size={2}>
+                    <Search
+                        propertyName="departmentCode"
+                        label="Department (If Not Your Own)"
+                        resultsInModal
+                        resultLimit={100}
+                        helperText={departmentDescription ? '' : '<Enter> to search'}
+                        value={departmentCode}
+                        handleValueChange={(_, newVal) => {
+                            setDepartmentCode(newVal);
+                        }}
+                        search={searchDepartments}
+                        loading={departmentsSearchLoading}
+                        searchResults={departmentsSearchResults}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={r => {
+                            setDepartmentCode(r.departmentCode);
+                            setDepartmentDescription(r.description);
+                        }}
+                        clearSearch={clearDepartmentsSearch}
+                        autoFocus={false}
+                    />
+                </Grid>
+                <Grid size={4}>
+                    <InputField
+                        fullWidth
+                        value={departmentDescription}
+                        onChange={() => {}}
+                        disabled
+                        label="Desc"
+                        propertyName="departmentDescription"
+                    />
+                </Grid>
+                <Grid size={4} />
                 {createAuditErrorMessage && (
                     <Grid size={12}>
                         <Typography variant="h6" color="red">

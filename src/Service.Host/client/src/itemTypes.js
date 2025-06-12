@@ -39,7 +39,9 @@ const itemTypes = {
         url: `${config.appRoot}/requisitions/reports/requisition-cost/report`
     },
     printQcLabels: { url: `${config.appRoot}/requisitions/print-qc-labels` },
-    getDefaultBookInLocation: { url: `${config.appRoot}/requisitions/default-book-in-location` }
+    getDefaultBookInLocation: { url: `${config.appRoot}/requisitions/default-book-in-location` },
+    workStations: { url: `${config.appRoot}/stores2/work-stations` },
+    citCodes: { url: `${config.proxyRoot}/production/maintenance/cits` }
 };
 
 export default itemTypes;

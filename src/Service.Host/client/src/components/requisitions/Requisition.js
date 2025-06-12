@@ -382,64 +382,76 @@ function Requisition({ creating }) {
 
     const handleDocument1Select = selected => {
         setChangesMade(true);
-        dispatch({
-            type: 'set_document1_details',
-            payload: selected
-        });
+        if (formState.req.storesFunction?.partSource === 'L') {
+            dispatch({
+                type: 'set_loan',
+                payload: selected
+            });
+            if (formState.req.isReverTransaction !== 'Y') {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'document1Line', newValue: 1 }
+                });
+            }
+        } else {
+            dispatch({
+                type: 'set_document1_details',
+                payload: selected
+            });
 
+            if (
+                formState.req.storesFunction?.code === 'BOOKLD' &&
+                selected.document1 &&
+                selected.document1Line
+            ) {
+                setBookInPostingsDialogVisible(true);
+            }
+
+            if (formState.req.storesFunction?.code === 'BOOKSU' && selected.partNumber) {
+                getDefaultBookInLocation(null, `?partNumber=${selected.partNumber}`);
+            }
+
+            if (selected.batchRef) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'batchRef', newValue: selected.batchRef }
+                });
+            }
+
+            if (selected.toLocationCode) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'toLocationCode', newValue: selected.toLocationCode }
+                });
+            }
+
+            if (selected.document2) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'document2', newValue: selected.document2 }
+                });
+            }
+
+            if (selected.document3) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'document3', newValue: selected.document3 }
+                });
+            }
+
+            if (selected.quantity) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'quantity', newValue: selected.quantity }
+                });
+            }
+        }
         if (
             formState.req?.isReverseTransaction === 'Y' &&
             selected.canReverse &&
             formState.req.storesFunction?.code !== 'BOOKLD'
         ) {
             setPickRequisitionDialogVisible(true);
-        }
-
-        if (
-            formState.req.storesFunction?.code === 'BOOKLD' &&
-            selected.document1 &&
-            selected.document1Line
-        ) {
-            setBookInPostingsDialogVisible(true);
-        }
-
-        if (formState.req.storesFunction?.code === 'BOOKSU' && selected.partNumber) {
-            getDefaultBookInLocation(null, `?partNumber=${selected.partNumber}`);
-        }
-
-        if (selected.batchRef) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'batchRef', newValue: selected.batchRef }
-            });
-        }
-
-        if (selected.toLocationCode) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'toLocationCode', newValue: selected.toLocationCode }
-            });
-        }
-
-        if (selected.document2) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'document2', newValue: selected.document2 }
-            });
-        }
-
-        if (selected.document3) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'document3', newValue: selected.document3 }
-            });
-        }
-
-        if (selected.quantity) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'quantity', newValue: selected.quantity }
-            });
         }
     };
 
