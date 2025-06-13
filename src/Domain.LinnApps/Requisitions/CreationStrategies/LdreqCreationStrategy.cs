@@ -126,8 +126,9 @@
                 part,
                 context.Quantity,
                 context.Document1Line,
-                context.FromState,
-                context.ToState);
+                context.ToState,
+                context.FromState
+                );
 
             await this.repository.AddAsync(req);
 
