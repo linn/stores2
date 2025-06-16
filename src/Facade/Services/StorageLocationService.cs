@@ -47,7 +47,7 @@
 
         protected override Expression<Func<StorageLocation, bool>> SearchExpression(string searchTerm)
         {
-            return l => l.DateInvalid == null && l.LocationCode.Contains(searchTerm.ToUpper());
+            return l => l.DateInvalid == null && (l.LocationCode.Contains(searchTerm.ToUpper()) || l.Description.Contains(searchTerm.ToUpper()));
         }
 
         protected override Task SaveToLogTable(
