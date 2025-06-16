@@ -6,6 +6,8 @@ import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import {
@@ -731,7 +733,7 @@ function Requisition({ creating }) {
                                         resultLimit={100}
                                         disabled={!creating || !!formState.req.lines?.length}
                                         helperText={
-                                            creating
+                                            creating && !formState.req.storesFunction?.description
                                                 ? 'Enter a value and press <Enter> to search or <Tab> to select. Alternatively press <Enter> with no input to list all functions'
                                                 : ''
                                         }
@@ -1246,6 +1248,7 @@ function Requisition({ creating }) {
                                             dispatch({ type: 'add_line' });
                                         }}
                                         pickStock={(lineNumber, stockMoves) => {
+                                            setChangesMade(true);
                                             dispatch({
                                                 type: 'pick_stock',
                                                 payload: { lineNumber, stockMoves }
@@ -1391,6 +1394,19 @@ function Requisition({ creating }) {
                                         navigate('/requisitions');
                                     }}
                                 />
+                                {changesMade && !validated && (
+                                    <Stack direction="row" spacing={2}>
+                                        <Chip
+                                            label="Invalid to Save"
+                                            color="error"
+                                            size="small"
+                                            variant="outlined"
+                                        />
+                                        <Typography variant="caption">
+                                            {validToSaveMessage()}
+                                        </Typography>
+                                    </Stack>
+                                )}
                             </Grid>
                             {pickRequisitionDialogVisible && (
                                 <PickRequisitionDialog
