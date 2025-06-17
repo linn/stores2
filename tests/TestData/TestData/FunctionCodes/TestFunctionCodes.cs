@@ -760,5 +760,42 @@
                     }
                 }
             };
+
+        public static readonly StoresFunction WriteOffFromQC =
+            new StoresFunction("WOFF QC")
+            {
+                Description = "WRITE OFF/ON PARTS IN STOCK",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "Y",
+                Document1RequiredFlag = "N",
+                Document1LineRequiredFlag = "N",
+                FromStateRequired = "Y",
+                FunctionType = "M",
+                ManualPickRequired = "M",
+                PartSource = "N",
+                ProcessStage = 2,
+                ToStockPoolRequired = "O",
+                ToStateRequired = "N",
+                CanBeReversed = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "WOFF QC",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.WriteOffQC,
+                        TransactionCode = TestTransDefs.WriteOffQC.TransactionCode,
+                        ReqType = "F"
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "WOFF QC",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.WriteOnQC,
+                        TransactionCode = TestTransDefs.WriteOnQC.TransactionCode,
+                        ReqType = "O"
+                    }
+                }
+            };
     }
 }
