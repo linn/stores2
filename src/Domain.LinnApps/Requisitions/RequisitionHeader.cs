@@ -617,6 +617,10 @@
             {
                 return new ProcessResult(true, "Audit functions don't need lines.");
             }
+            else if (this.Part != null)
+            {
+                return new ProcessResult(true, "Part is specified on header");
+            }
 
             return new ProcessResult(false, $"Selected line not found or unexpected result on lines check for req {this.ReqNumber}.");
         }
