@@ -470,10 +470,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task CheckAndBookRequisition(RequisitionHeader header)
         {
-            DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
-                                     header.ReqNumber,
-                                     null,
-                                     header.Quantity.GetValueOrDefault()));
+            DoProcessResultCheck(header.RequisitionCanBeBooked());
 
             DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
                                      header.ReqNumber,
