@@ -1,27 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FluentAssertions;
+using Linn.Stores2.Domain.LinnApps.Accounts;
+using Linn.Stores2.Domain.LinnApps.Exceptions;
+using Linn.Stores2.Domain.LinnApps.Parts;
+using Linn.Stores2.Domain.LinnApps.Requisitions;
+using Linn.Stores2.Domain.LinnApps.Stock;
+using Linn.Stores2.TestData.FunctionCodes;
+using Linn.Stores2.TestData.Transactions;
+using NSubstitute;
+using NUnit.Framework;
+
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-
-    using FluentAssertions;
-
-    using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.TestData.FunctionCodes;
-    using Linn.Stores2.TestData.Transactions;
-
-    using NSubstitute;
-
-    using NUnit.Framework;
-
-    public class WhenValidatingLdreqOntoStockAndHeaderSpecifiesToLocation : ContextBase
+    public class WhenValidatingLdReqOntoStockWithLocButNoStockPool : ContextBase
     {
-        private RequisitionHeader result;
+        private Func<Task> action;
 
         [SetUp]
-        public async Task SetUp()
+        public void SetUp()
         {
             this.DepartmentRepository.FindByIdAsync("1607")
                 .Returns(new Department("1607", "DESC"));
@@ -35,7 +33,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
-            this.result = await this.Sut.Validate(
+            this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.LinnDeptReq.FunctionCode,
                 "O",
@@ -44,23 +42,23 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 "1607",
                 "2963",
                 toPalletNumber: 123,
-                toStockPool: "LINN",
                 lines: new List<LineCandidate>
-                           {
-                               new LineCandidate
-                                   {
-                                       PartNumber = "PART",
-                                       Qty = 1,
-                                       TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
-                                       Moves = null // since header specifies toPalletNumber = 123 for all lines
-                                   }
-                           });
+                {
+                    new LineCandidate
+                    {
+                        PartNumber = "PART",
+                        Qty = 1,
+                        TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode,
+                        Moves = null // since header specifies toPalletNumber = 123 for all lines
+                    }
+                });
         }
 
         [Test]
-        public void ShouldReturnValidated()
+        public async Task ShouldThrow()
         {
-            this.result.Should().NotBeNull();
+            await this.action.Should().ThrowAsync<CreateRequisitionException>()
+                .WithMessage("Must specify both header loc and stock pool for onto");
         }
     }
 }

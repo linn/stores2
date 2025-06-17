@@ -35,6 +35,7 @@
                 null,
                 null,
                 toPalletNumber: 123,
+                toStockPool: "LINN",
                 partNumber: "PART",
                 lines: new List<LineCandidate> 
                            { 
