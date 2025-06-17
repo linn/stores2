@@ -139,7 +139,7 @@
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
 
-                if (model.Lines != null && model.CanBookReq(null)
+                if (model.Lines != null && model.RequisitionIsBookable(null)
                                         && this.authService.HasPermissionFor(AuthorisedActions.BookRequisition, claims))
                 {
                     yield return new LinkResource { Rel = "book", Href = "/requisitions/book" };

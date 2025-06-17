@@ -4,32 +4,24 @@
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-
     using NUnit.Framework;
 
-    public class WhenTryingToBookAndCancelled
+    public class WhenTryingToBookAndCancelled : ContextBase
     {
-        private RequisitionLine sut;
+        private bool result;
 
         [SetUp]
         public void SetUp()
         {
-            this.sut = new RequisitionLine(
-                123, 
-                1, 
-                new Part(), 
-                10,
-                new StoresTransactionDefinition());
+            this.Sut.Cancel(100, "For Test", new DateTime(2025, 2, 14));
 
-            this.sut.Cancel(100, "For Test", new DateTime(2025, 2, 14));
+            this.result = this.Sut.LineIsBookable();
         }
 
         [Test]
         public void ShouldNotBeOkToBook()
         {
-            this.sut.OkToBook().Should().BeFalse();
+            this.result.Should().BeFalse();
         }
     }
 }
