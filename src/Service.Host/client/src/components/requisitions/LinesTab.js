@@ -41,7 +41,7 @@ function LinesTab({
     const [partsSearchDialogOpen, setPartsSearchDialogOpen] = useState();
 
     const linesColumns = [
-        { field: 'lineNumber', headerName: '#', width: 60 },
+        { field: 'lineNumber', headerName: '#', width: 50 },
         {
             field: 'partNumber',
             headerName: 'Part',
@@ -75,28 +75,17 @@ function LinesTab({
             width: 100,
             editable: !!transactionOptions
         },
-        { field: 'transactionCodeDescription', headerName: 'Trans Desc', width: 200 },
-        { field: 'document1Type', headerName: 'Doc1', width: 80 },
-        { field: 'document1Number', headerName: 'Number', width: 80 },
-        { field: 'document1Line', headerName: 'Line', width: 60, editable: true },
-        {
-            field: 'dateBooked',
-            headerName: 'Booked',
-            width: 110,
-            renderCell: params =>
-                params.row.dateBooked ? moment(params.row.dateBooked).format('DD-MMM-YYYY') : ''
-        },
-        { field: 'cancelled', headerName: 'Cancelled', width: 100 },
-        {
-            field: 'actions',
-            headerName: 'Actions',
-            width: 150,
+                {
+            field: 'pick',
+            headerName: 'Pick',
+            width: 60,
+            disableColumnMenu: true,
             renderCell: params => {
                 const canCancel =
                     !params.row.dateBooked &&
                     params.row.cancelled === 'N' &&
+                    params.row.part?.description &&
                     !params.row.isAddition;
-                const canRemove = params.row.isAddition;
                 // just for now, only allowing stock pick for new rows onces
                 // todo - consider other scenarions e.g. changing pick after picked initially
                 const canPickStock =
@@ -117,6 +106,35 @@ function LinesTab({
                                 </IconButton>
                             </Tooltip>
                         )}
+                    </>
+                );
+            }
+        },
+        { field: 'transactionCodeDescription', headerName: 'Trans Desc', width: 200 },
+        { field: 'document1Type', headerName: 'Doc1', width: 80 },
+        { field: 'document1Number', headerName: 'Number', width: 80 },
+        { field: 'document1Line', headerName: 'Line', width: 60, editable: true },
+        {
+            field: 'dateBooked',
+            headerName: 'Booked',
+            width: 110,
+            renderCell: params =>
+                params.row.dateBooked ? moment(params.row.dateBooked).format('DD-MMM-YYYY') : ''
+        },
+        { field: 'cancelled', headerName: 'Cancelled', width: 100 },
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            width: 150,
+            disableColumnMenu: true,
+            renderCell: params => {
+                const canCancel =
+                    !params.row.dateBooked &&
+                    params.row.cancelled === 'N' &&
+                    !params.row.isAddition;
+                const canRemove = params.row.isAddition;
+                return (
+                    <>
                         {canCancel && (
                             <Tooltip title="Cancel Line">
                                 <IconButton

@@ -9,6 +9,7 @@ import DialogActions from '@mui/material/DialogActions';
 import Typography from '@mui/material/Typography';
 import SnackbarContent from '@mui/material/SnackbarContent';
 import Snackbar from '@mui/material/Snackbar';
+import { makeStyles } from '@mui/styles';
 import moment from 'moment';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
@@ -51,6 +52,16 @@ function PickStockDialog({
         setMoves([]);
         setOpen(false);
     };
+
+    const useStyles = makeStyles(() => ({
+        edittable: {
+            border: '1px solid #c4c4c4',
+            padding: '2px 8px',
+            backgroundColor: '#fff',
+            boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.1)'
+        }
+    }));
+    const classes = useStyles();
 
     const sortIt = (a, b) => {
         if (a.palletNumber && b.palletNumber) {
@@ -159,7 +170,8 @@ function PickStockDialog({
             headerName: 'Qty To Pick',
             width: 100,
             type: 'number',
-            editable: true
+            editable: true,
+            cellClassName: classes.edittable
         },
         {
             field: 'quantityAllocated',
