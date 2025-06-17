@@ -2,38 +2,26 @@
 {
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.NominalAccounts;
-    using Linn.Stores2.TestData.Parts;
 
     using NUnit.Framework;
 
-    public class WhenTryingToBookAndMissingDebitPostings
+    public class WhenTryingToBookAndMissingDebitPostings : ContextBase
     {
-        private RequisitionLine sut;
-
-        private StoresTransactionDefinition trans;
-
         [SetUp]
         public void SetUp()
         {
-            this.trans = new StoresTransactionDefinition
-            {
-                TransactionCode = "LDSTI",
-                Description = "Onto Transaction",
-                OntoTransactions = "Y"
-            };
+            this.Sut.AddPosting("D", 1, TestNominalAccounts.AssetsRawMat);
+            this.Sut.AddPosting("C", 2, TestNominalAccounts.FinAssWipUsed);
 
-            this.sut = new RequisitionLine(1, 1, TestParts.Cap003, 2, this.trans);
-
-            this.sut.AddPosting("D", 1, TestNominalAccounts.AssetsRawMat);
-            this.sut.AddPosting("C", 2, TestNominalAccounts.FinAssWipUsed);
+            this.ProcessResult = this.Sut.CanBookLine();
         }
 
         [Test]
         public void ShouldNotBeOkToBook()
         {
-            this.sut.OkToBook().Should().BeFalse();
+            this.ProcessResult.Success.Should().BeFalse();
+            this.ProcessResult.Message.Should().Be("Posting quantities incorrect on line 1.");
         }
     }
 }

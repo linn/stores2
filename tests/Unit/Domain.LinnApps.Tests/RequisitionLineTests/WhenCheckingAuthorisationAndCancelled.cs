@@ -2,26 +2,23 @@
 {
     using System;
     using FluentAssertions;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.TestData.Parts;
-    using Linn.Stores2.TestData.Transactions;
+
     using NUnit.Framework;
 
-    public class WhenCheckingAuthorisationAndCancelled
+    public class WhenCheckingAuthorisationAndCancelled : ContextBase
     {
-        private RequisitionLine sut;
-
         [SetUp]
         public void SetUp()
         {
-            this.sut = new RequisitionLine(1, 1, TestParts.SelektHub, 1, TestTransDefs.StockToLoan);
-            this.sut.Cancel(100, "For Test", new DateTime(2024, 1, 1));
+            this.Sut.Cancel(100, "For Test", new DateTime(2024, 1, 1));
+
+            this.BooleanResult = this.Sut.RequiresAuthorisation();
         }
 
         [Test]
         public void ShouldNotRequireAuthorisation()
         {
-            this.sut.RequiresAuthorisation().Should().BeFalse();
+            this.BooleanResult.Should().BeFalse();
         }
     }
 }

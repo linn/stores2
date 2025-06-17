@@ -7,7 +7,11 @@
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.NominalAccounts;
+    using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
@@ -26,10 +30,16 @@
         {
             this.employeeId = 567;
             this.quantity = 49;
+            var line = new RequisitionLine(123, 1, TestParts.Cap003, this.quantity, TestTransDefs.StockToLinnDept)
+                           {
+                               Moves = { new ReqMove(123, 1, 1, this.quantity, 1, null, null, null, null, null) },
+                           };
+            line.AddPosting("D", this.quantity, TestNominalAccounts.TestNomAcc);
+            line.AddPosting("C", this.quantity, TestNominalAccounts.AssetsRawMat);
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee { Id = this.employeeId },
-                new StoresFunction { FunctionCode = "FUNC", ProcessStage = 2 },
+                TestFunctionCodes.LinnDeptReq,
                 "F",
                 null,
                 "REQ",
@@ -37,8 +47,9 @@
                 new Nominal(),
                 part: new Part { PartNumber = "P1" },
                 quantity: this.quantity,
-                fromState: "S1",
-                toState: "S2");
+                fromState: "STORES",
+                toState: "STORES");
+            this.req.AddLine(line);
             this.ReqRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.req);
 
             this.StoresService.ValidOntoLocation(
@@ -53,8 +64,6 @@
                 .Returns(new ProcessResult(true, "From State Ok"));
             this.ReqStoredProcedures.CreateRequisitionLines(123, null)
                 .Returns(new ProcessResult(true, "lines ok"));
-            this.ReqStoredProcedures.CanBookRequisition(123, null, this.quantity)
-                .Returns(new ProcessResult(true, "can book ok"));
             this.ReqStoredProcedures.DoRequisition(Arg.Any<int>(), null, this.employeeId)
                 .Returns(new ProcessResult(true, "still ok"));
             this.StateRepository.FindByIdAsync("S2")
@@ -68,13 +77,7 @@
         {
             this.ReqStoredProcedures.DidNotReceive().CreateRequisitionLines(123, null);
         }
-
-        [Test]
-        public void ShouldCheckOnto()
-        {
-            this.ReqStoredProcedures.Received().CanBookRequisition(123, null, this.quantity);
-        }
-
+        
         [Test]
         public void ShouldDoReq()
         {

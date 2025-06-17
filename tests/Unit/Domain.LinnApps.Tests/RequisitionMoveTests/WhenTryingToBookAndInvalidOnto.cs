@@ -7,20 +7,20 @@
 
     using NUnit.Framework;
 
-    public class WhenTryingToBookAndInvalidOnto
+    public class WhenTryingToBookAndInvalidOnto : ContextBase
     {
-        private ReqMove sut;
-
         [SetUp]
         public void SetUp()
         {
-            this.sut = new ReqMove(1, 1, 1, 1, null, null, null, string.Empty, string.Empty, string.Empty);
+            this.Sut = new ReqMove(1, 1, 1, 1, null, null, null, string.Empty, string.Empty, string.Empty);
+            this.ProcessResult = this.Sut.MoveCanBeBooked(TestTransDefs.LinnDeptToStock);
         }
 
         [Test]
         public void ShouldNotBeOkToBook()
         {
-            this.sut.OkToBook(TestTransDefs.LinnDeptToStock).Should().BeFalse();
+            this.ProcessResult.Success.Should().BeFalse();
+            this.ProcessResult.Message.Should().Be("Move 0 on line 1 does not have a valid onto.");
         }
     }
 }

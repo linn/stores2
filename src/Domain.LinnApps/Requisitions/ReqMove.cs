@@ -2,6 +2,7 @@
 {
     using System;
 
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class ReqMove
@@ -93,22 +94,34 @@
 
         public bool IsBooked() => this.DateBooked != null || this.Booked == "Y";
 
-        public bool OkToBook(StoresTransactionDefinition transaction)
+        public bool MoveIsBookable(StoresTransactionDefinition transaction)
         {
             if (!this.IsBooked() && !this.IsCancelled())
             {
-                if (transaction.RequiresStockAllocations)
-                {
-                    return this.HasValidAllocation();
-                }
-
-                if (transaction.RequiresOntoTransactions)
-                {
-                    return this.HasValidOnto();
-                }
+                var canBeBooked = this.MoveCanBeBooked(transaction);
+                return canBeBooked.Success;
             }
 
             return false;
+        }
+
+        public ProcessResult MoveCanBeBooked(StoresTransactionDefinition transaction)
+        {
+            if (transaction.RequiresStockAllocations && !this.HasValidAllocation())
+            {
+                return new ProcessResult(
+                    false,
+                    $"Move {this.Sequence} on line {this.LineNumber} does not have a valid allocation.");
+            }
+
+            if (transaction.RequiresOntoTransactions && !this.HasValidOnto())
+            {
+                return new ProcessResult(
+                    false,
+                    $"Move {this.Sequence} on line {this.LineNumber} does not have a valid onto.");
+            }
+
+            return new ProcessResult(true, $"{this.Sequence} can be booked");
         }
 
         public void SetOntoFieldsFromHeader(RequisitionHeader header)

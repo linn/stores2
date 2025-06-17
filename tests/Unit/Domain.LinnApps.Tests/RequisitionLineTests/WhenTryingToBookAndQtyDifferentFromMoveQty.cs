@@ -2,30 +2,26 @@
 {
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.NominalAccounts;
-    using Linn.Stores2.TestData.Parts;
-    using Linn.Stores2.TestData.Transactions;
 
     using NUnit.Framework;
 
-    public class WhenTryingToBookAndQtyDifferentFromMoveQty
+    public class WhenTryingToBookAndQtyDifferentFromMoveQty : ContextBase
     {
-        private RequisitionLine sut;
-
         [SetUp]
         public void SetUp()
         {
-            this.sut = new RequisitionLine(1, 1, TestParts.Cap003, 2, TestTransDefs.StockToLinnDept);
+            this.Sut.AddPosting("D", 2, TestNominalAccounts.AssetsRawMat);
+            this.Sut.AddPosting("C", 2, TestNominalAccounts.FinAssWipUsed);
 
-            this.sut.AddPosting("D", 2, TestNominalAccounts.AssetsRawMat);
-            this.sut.AddPosting("C", 2, TestNominalAccounts.FinAssWipUsed);
+            this.ProcessResult = this.Sut.CanBookLine();
         }
 
         [Test]
         public void ShouldNotBeOkToBook()
         {
-            this.sut.OkToBook().Should().BeFalse();
+            this.ProcessResult.Success.Should().BeFalse();
+            this.ProcessResult.Message.Should().Be("Posting quantities incorrect on line 1.");
         }
     }
 }
