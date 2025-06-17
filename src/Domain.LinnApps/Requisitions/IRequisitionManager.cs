@@ -81,7 +81,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             LineCandidate candidate, 
             StoresFunction storesFunction = null,
             string reqType = null,
-            bool headerSpecifiesOntoLocation = false);
+            bool headerSpecifiesOntoLocation = false,
+            bool headerSpecifiesOntoStockPool = false);
 
         Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 
