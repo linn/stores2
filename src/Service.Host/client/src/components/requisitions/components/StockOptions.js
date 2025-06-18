@@ -30,6 +30,7 @@ function StockOptions({
     doPickStock = null,
     functionCode = null,
     batchRef = null,
+    reqType = null,
     setItemValue
 }) {
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -44,74 +45,87 @@ function StockOptions({
         return '';
     }
 
-    const stockPoolItems = stockPools?.length
-        ? utilities.sortEntityList(stockPools, 'stockPoolCode')
+    const validStockPools = stockPools?.filter(s => !s.dateInvalid);
+
+    const stockPoolItems = validStockPools?.length
+        ? utilities.sortEntityList(validStockPools, 'stockPoolCode')
         : [];
+
+    const getStockPoolItems = currentValue => {
+        const validStockPools = stockPools?.filter(
+            s => !s.dateInvalid || s.stockPoolCode == currentValue
+        );
+        return validStockPools?.length
+            ? utilities.sortEntityList(validStockPools, 'stockPoolCode')?.map(s => ({
+                  id: s.stockPoolCode,
+                  displayText: s.stockPoolCode
+              }))
+            : [];
+    };
 
     return (
         <>
             {(functionCode?.fromStateRequired !== 'N' ||
                 functionCode?.fromStockPoolRequired !== 'N' ||
                 functionCode?.batchDateRequired !== 'N' ||
-                functionCode?.code === 'MOVE') && (
-                <>
-                    <Grid size={2}>
-                        {functionCode?.fromStates && functionCode?.fromStateRequired !== 'N' && (
+                functionCode?.code === 'MOVE') &&
+                reqType !== 'O' && (
+                    <>
+                        <Grid size={2}>
+                            {functionCode?.fromStates &&
+                                functionCode?.fromStateRequired !== 'N' && (
+                                    <Dropdown
+                                        value={fromState}
+                                        disabled={disabled}
+                                        fullWidth
+                                        label="From State"
+                                        propertyName="fromState"
+                                        allowNoValue
+                                        items={functionCode?.fromStates?.map(s => ({
+                                            id: s,
+                                            displayText: s
+                                        }))}
+                                        onChange={setItemValue}
+                                    />
+                                )}
+                        </Grid>
+                        <Grid size={2}>
                             <Dropdown
-                                value={fromState}
+                                value={fromStockPool}
                                 disabled={disabled}
                                 fullWidth
-                                label="From State"
-                                propertyName="fromState"
+                                label="From Stock Pool"
+                                propertyName="fromStockPool"
                                 allowNoValue
-                                items={functionCode?.fromStates?.map(s => ({
-                                    id: s,
-                                    displayText: s
-                                }))}
+                                items={getStockPoolItems(fromStockPool)}
                                 onChange={setItemValue}
                             />
-                        )}
-                    </Grid>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={fromStockPool}
-                            disabled={disabled}
-                            fullWidth
-                            label="From Stock Pool"
-                            propertyName="fromStockPool"
-                            allowNoValue
-                            items={stockPoolItems?.map(s => ({
-                                id: s.stockPoolCode,
-                                displayText: s.stockPoolCode
-                            }))}
-                            onChange={setItemValue}
-                        />
-                    </Grid>
-                    <Grid size={2}>
-                        {functionCode?.batchDateRequired !== 'N' && (
-                            <DatePicker
-                                value={batchDate}
-                                disabled={disabled}
-                                onChange={newVal => setItemValue('batchDate', newVal)}
-                                label="Batch Date"
-                                propertyName="batchDate"
-                            />
-                        )}
-                    </Grid>
-                    <Grid size={2}>
-                        <Button
-                            onClick={() => setPickStockDialogVisible(true)}
-                            variant="outlined"
-                            style={{ marginTop: '32px' }}
-                            disabled={disabled || !doPickStock}
-                        >
-                            Pick Stock
-                        </Button>
-                    </Grid>
-                    <Grid size={4} />
-                </>
-            )}
-            {functionCode?.fromLocationRequired !== 'N' && (
+                        </Grid>
+                        <Grid size={2}>
+                            {functionCode?.batchDateRequired !== 'N' && (
+                                <DatePicker
+                                    value={batchDate}
+                                    disabled={disabled}
+                                    onChange={newVal => setItemValue('batchDate', newVal)}
+                                    label="Batch Date"
+                                    propertyName="batchDate"
+                                />
+                            )}
+                        </Grid>
+                        <Grid size={2}>
+                            <Button
+                                onClick={() => setPickStockDialogVisible(true)}
+                                variant="outlined"
+                                style={{ marginTop: '32px' }}
+                                disabled={disabled || !doPickStock}
+                            >
+                                Pick Stock
+                            </Button>
+                        </Grid>
+                        <Grid size={4} />
+                    </>
+                )}
+            {functionCode?.fromLocationRequired !== 'N' && reqType !== 'O' && (
                 <>
                     <Grid size={2}>
                         <Search
@@ -236,6 +250,9 @@ function StockOptions({
                                 setItemValue('toLocationId', r.locationId);
                                 setItemValue('toLocationCode', r.locationCode);
                                 setItemValue('toPalletNumber', null);
+                                if (r.defaultStockPool) {
+                                    setItemValue('toStockPool', r.defaultStockPool);
+                                }
                             }}
                             onKeyPressFunctions={[
                                 {

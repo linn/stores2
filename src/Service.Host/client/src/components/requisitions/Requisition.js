@@ -1138,6 +1138,7 @@ function Requisition({ creating }) {
                                 toPalletNumber={formState.req.toPalletNumber}
                                 functionCode={formState.req.storesFunction}
                                 batchRef={formState.req.batchRef}
+                                reqType={formState.req.reqType}
                                 setItemValue={(fieldName, newValue) => {
                                     setChangesMade(true);
                                     dispatch({
