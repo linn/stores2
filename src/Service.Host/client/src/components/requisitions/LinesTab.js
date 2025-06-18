@@ -325,7 +325,7 @@ function LinesTab({
                     closeDialog={() => setCancelDialogVisible(false)}
                     warningText={
                         changesMade
-                            ? 'Warning: there are changes on this req!  Cancelling this req will discard changes so please back out and save your changes if you want to keep them.'
+                            ? 'Warning: there are changes on this req!  Cancelling this req will discard changes so please save your changes first if you want to keep them.'
                             : ''
                     }
                     onConfirm={reason => {
