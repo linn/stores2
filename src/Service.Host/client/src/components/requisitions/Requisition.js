@@ -488,7 +488,8 @@ function Requisition({ creating }) {
     const canAddMovesOnto =
         selectedLine &&
         ((formState?.req?.storesFunction?.code === 'LDREQ' && formState?.req?.reqType === 'O') ||
-            (formState?.req?.manualPick && formState?.req?.reqreqType === 'O'));
+            (formState?.req?.manualPick && formState?.req?.reqType === 'O'));
+
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.req?.storesFunction?.code === 'MOVE';
 

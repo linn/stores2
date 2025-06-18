@@ -374,7 +374,8 @@ function reducer(state, action) {
                     lineTransaction = {
                         transactionCode: lineTransactionType.transactionDefinition,
                         transactionCodeDescription: lineTransactionType.transactionDescription,
-                        stockAllocations: lineTransactionType.stockAllocations
+                        stockAllocations: lineTransactionType.stockAllocations,
+                        ontoTransactions: lineTransactionType.ontoTransactions
                     };
                 }
             } else if (storesFunctionTransactions && storesFunctionTransactions.length) {

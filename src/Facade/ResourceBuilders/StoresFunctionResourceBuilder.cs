@@ -77,6 +77,7 @@
                                            TransactionDefinition = t.TransactionDefinition?.TransactionCode,
                                            TransactionDescription = t.TransactionDefinition?.Description,
                                            StockAllocations = t.TransactionDefinition?.StockAllocations == "Y",
+                                           OntoTransactions = t.TransactionDefinition?.OntoTransactions == "Y",
                                            FromStates = t.TransactionDefinition?.GetTransactionStates("F"),
                                            ToStates = t.TransactionDefinition?.GetTransactionStates("O"),
                                            Document1Type = t.TransactionDefinition?.DocType
