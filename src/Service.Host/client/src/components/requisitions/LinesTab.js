@@ -32,7 +32,8 @@ function LinesTab({
     removeLine,
     reqHeader,
     transactionOptions = null,
-    locationCodeRoot = null
+    locationCodeRoot = null,
+    changesMade = false
 }) {
     const [cancelDialogVisible, setCancelDialogVisible] = useState(false);
     const [pickStockDialogVisible, setPickStockDialogVisible] = useState(false);
@@ -75,7 +76,7 @@ function LinesTab({
             width: 100,
             editable: !!transactionOptions
         },
-                {
+        {
             field: 'pick',
             headerName: 'Pick',
             width: 60,
@@ -322,6 +323,11 @@ function LinesTab({
                     visible={cancelDialogVisible}
                     title={`Enter a reason to cancel LINE ${selected}`}
                     closeDialog={() => setCancelDialogVisible(false)}
+                    warningText={
+                        changesMade
+                            ? 'Warning: there are changes on this req!  Cancelling this req will discard changes so please back out and save your changes if you want to keep them.'
+                            : ''
+                    }
                     onConfirm={reason => {
                         cancelLine(null, {
                             reason,
