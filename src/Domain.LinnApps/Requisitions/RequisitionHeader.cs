@@ -388,7 +388,7 @@
             }
         }
 
-        public void Update(string comments)
+        public void Update(string comments, string reference)
         {
             if (this.IsBooked())
             {
@@ -396,6 +396,7 @@
             }
 
             this.Comments = comments;
+            this.Reference = reference;
         }
 
         public void AddLine(RequisitionLine toAdd)
