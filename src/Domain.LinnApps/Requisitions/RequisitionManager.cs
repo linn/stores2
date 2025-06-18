@@ -560,10 +560,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public async Task UpdateRequisition(
             RequisitionHeader current, 
             string updatedComments,
+            string updatedReference,
             IEnumerable<LineCandidate> lineUpdates)
         {
             // todo - permission checks? will be different for different req types I assume
-            current.Update(updatedComments);
+            current.Update(updatedComments, updatedReference);
 
             foreach (var line in lineUpdates)
             {

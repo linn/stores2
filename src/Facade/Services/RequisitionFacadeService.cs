@@ -280,6 +280,7 @@
                 await this.requisitionManager.UpdateRequisition(
                     entity, 
                     updateResource.Comments,
+                    updateResource.Reference,
                     updateResource.Lines.Select(BuildLineCandidateFromResource));
         }
 

@@ -554,6 +554,11 @@ function Requisition({ creating }) {
                     <CancelWithReasonDialog
                         visible={cancelDialogVisible}
                         closeDialog={() => setCancelDialogVisible(false)}
+                        warningText={
+                            changesMade
+                                ? 'Warning: there are changes on this req!  Cancelling this req will discard changes so please save your changes first if you want to keep them.'
+                                : ''
+                        }
                         onConfirm={reason => {
                             cancel(null, { reason, reqNumber });
                         }}
@@ -1169,7 +1174,10 @@ function Requisition({ creating }) {
                                     fullWidth
                                     value={formState.req.reference}
                                     onChange={handleHeaderFieldChange}
-                                    disabled={!creating}
+                                    disabled={
+                                        formState.req?.cancelled === 'Y' ||
+                                        formState.req?.dateBooked
+                                    }
                                     label="Reference"
                                     propertyName="reference"
                                 />
@@ -1280,6 +1288,7 @@ function Requisition({ creating }) {
                                         }
                                         reqHeader={formState.req}
                                         locationCodeRoot={formState.req.auditLocation}
+                                        changesMade={changesMade}
                                     />
                                 )}
                                 {tab === 1 && (
