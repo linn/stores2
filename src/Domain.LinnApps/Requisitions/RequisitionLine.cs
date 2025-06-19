@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -160,31 +161,52 @@
             }
         }
 
-        public bool OkToBook()
+        public bool LineIsBookable()
         {
             if (this.IsCancelled() || this.IsBooked() || this.Moves == null )
             {
                 return false;
             }
 
+            var canBook = this.CanBookLine();
+
+            return canBook.Success;
+        }
+
+        public ProcessResult CanBookLine()
+        {
             var creditQty = this.GetPostingQty("D");
             var debitQty = this.GetPostingQty("C");
 
             if (creditQty != this.Qty || debitQty != this.Qty)
             {
-                return false;
+                return new ProcessResult(false, $"Posting quantities incorrect on line {this.LineNumber}.");
             }
 
             if (this.TransactionDefinition == null || !this.TransactionDefinition.RequiresMoves)
             {
-                return true;
+                return new ProcessResult(true, "No moves required.");
             }
 
             var moveQty = this.Moves.Sum(m => m.Quantity);
-            return moveQty == this.Qty; // ensure moves have the qty 
+            if (moveQty != this.Qty)
+            {
+                return new ProcessResult(false, $"Line quantity ({this.Qty}) does not match moves quantity ({moveQty}).");
+            }
 
-            // some transactions dont require moves e.g. SUMVI
+            foreach (var reqMove in this.Moves)
+            {
+                if (!reqMove.IsBooked() && !reqMove.IsCancelled())
+                {
+                    var canBeBooked = reqMove.MoveCanBeBooked(this.TransactionDefinition);
+                    if (!canBeBooked.Success)
+                    {
+                        return canBeBooked;
+                    }
+                }
+            }
 
+            return new ProcessResult(true, $"Line {this.LineNumber} can be booked.");
         }
 
         public bool RequiresAuthorisation()

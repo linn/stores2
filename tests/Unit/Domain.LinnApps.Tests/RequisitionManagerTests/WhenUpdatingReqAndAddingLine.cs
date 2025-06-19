@@ -94,6 +94,7 @@
             await this.Sut.UpdateRequisition(
                 this.req,
                 this.req.Comments,
+                this.req.Reference,
                 new List<LineCandidate>
                     {
                         this.newLineCandidate

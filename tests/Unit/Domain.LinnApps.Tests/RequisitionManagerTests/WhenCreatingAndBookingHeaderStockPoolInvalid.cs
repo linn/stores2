@@ -45,8 +45,6 @@
                 .Returns(new ProcessResult(false, "Stock pool is bad"));
             this.ReqStoredProcedures.CreateRequisitionLines(123, null)
                 .Returns(new ProcessResult(true, "lines ok"));
-            this.ReqStoredProcedures.CanBookRequisition(123, null, this.quantity)
-                .Returns(new ProcessResult(true, "can book ok"));
             this.ReqStoredProcedures.DoRequisition(Arg.Any<int>(), null, this.employeeId)
                 .Returns(new ProcessResult(true, "still ok"));
             this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet { PalletNumber = 123 });
@@ -70,7 +68,7 @@
                                           fromLocationCode: null,
                                           toLocationCode: null,
                                           partNumber: "P1",
-                                          quantity: 1,
+                                          quantity: this.quantity,
                                           fromState: "S1",
                                           toState: "S2",
                                           batchRef: null,

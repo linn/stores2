@@ -9,23 +9,23 @@
 
     using NUnit.Framework;
 
-    public class WhenTryingToBookTransactionThatDoesntRequireMoves
+    public class WhenTryingToBookTransactionThatDoesNotRequireMoves : ContextBase
     {
-        private RequisitionLine sut;
-
         [SetUp]
         public void SetUp()
         {
-            this.sut = new RequisitionLine(1, 1, TestParts.Cap003, 2, TestTransDefs.SuppToMatVarTrans);
+            this.Sut = new RequisitionLine(1, 1, TestParts.Cap003, 2, TestTransDefs.SuppToMatVarTrans);
 
-            this.sut.AddPosting("D", 2, TestNominalAccounts.AssetsRawMat);
-            this.sut.AddPosting("C", 2, TestNominalAccounts.FinAssWipUsed);
+            this.Sut.AddPosting("D", 2, TestNominalAccounts.AssetsRawMat);
+            this.Sut.AddPosting("C", 2, TestNominalAccounts.FinAssWipUsed);
+
+            this.ProcessResult = this.Sut.CanBookLine();
         }
 
         [Test]
         public void ShouldBeOkToBook()
         {
-            this.sut.OkToBook().Should().BeTrue();
+            this.ProcessResult.Success.Should().BeTrue();
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests.CanBookTests
 {
+    using System;
+
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -12,28 +12,26 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 
     using NUnit.Framework;
 
-    public class WhenTryingToBookAndHeaderQty
+    public class WhenTryingToBookAndHeaderQty : CanBookContextBase
     {
-        private RequisitionHeader sut;
-
         [SetUp]
         public void SetUp()
         {
             var line1 = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.SupplierToStores)
             {
-                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) }
+                Moves = { new ReqMove(123, 1, 1, 1, 1, null, 123, "LINN", "OK", "FREE") }
             };
             line1.AddPosting("D", 1, TestNominalAccounts.AssetsRawMat);
             line1.AddPosting("C", 1, TestNominalAccounts.UninvoicedCreditors);
 
             var line2 = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.MaterialVarianceBelowStd)
             {
-                Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) }
+                Moves = { new ReqMove(123, 1, 1, 1, 1, null, 123, "LINN", "OK", "FREE") }
             };
             line2.AddPosting("D", 1, TestNominalAccounts.AssetsRawMat);
             line2.AddPosting("C", 1, TestNominalAccounts.UninvoicedCreditors);
 
-            this.sut = new RequisitionHeader(
+            this.Sut = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.BookFromSupplier,
                 null,
@@ -53,14 +51,16 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 part: TestParts.Cap003,
                 quantity: 1,
                 dateReceived: DateTime.Today);
-            this.sut.AddLine(line1);
-            this.sut.AddLine(line2);
+            this.Sut.AddLine(line1);
+            this.Sut.AddLine(line2);
+
+            this.Result = this.Sut.RequisitionCanBeBooked();
         }
 
         [Test]
         public void ShouldBeAbleToBook()
         {
-            this.sut.CanBookReq(null).Should().BeTrue();
+            this.Result.Success.Should().BeTrue();
         }
     }
 }

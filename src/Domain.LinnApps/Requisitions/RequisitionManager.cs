@@ -470,10 +470,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task CheckAndBookRequisition(RequisitionHeader header)
         {
-            DoProcessResultCheck(await this.requisitionStoredProcedures.CanBookRequisition(
-                                     header.ReqNumber,
-                                     null,
-                                     header.Quantity.GetValueOrDefault()));
+            DoProcessResultCheck(header.RequisitionCanBeBooked());
 
             DoProcessResultCheck(await this.requisitionStoredProcedures.DoRequisition(
                                      header.ReqNumber,
@@ -563,10 +560,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public async Task UpdateRequisition(
             RequisitionHeader current, 
             string updatedComments,
+            string updatedReference,
             IEnumerable<LineCandidate> lineUpdates)
         {
             // todo - permission checks? will be different for different req types I assume
-            current.Update(updatedComments);
+            current.Update(updatedComments, updatedReference);
 
             foreach (var line in lineUpdates)
             {
@@ -745,15 +743,18 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             if (lines != null)
-            {                    
-                var headerSpecifiesOnto = req.ToPalletNumber.HasValue || req.ToLocation != null;
+            {   
+                // LDREQ etc works with a to location but also needs a stock pool to avoid making stock locators with no stock pool
+                var headerSpecifiesOnto = (req.ToPalletNumber.HasValue || req.ToLocation != null);
+                var headerSpecifiesOntoStockPool = !string.IsNullOrEmpty(req.ToStockPool);
                 foreach (var candidate in lineCandidates)
                 {
                     req.AddLine(await this.ValidateLineCandidate(
                         candidate, 
                         req.StoresFunction, 
                         req.ReqType, 
-                        headerSpecifiesOnto));
+                        headerSpecifiesOnto,
+                        headerSpecifiesOntoStockPool));
                     
                     // need to run the moves validation separately if the header specifies the onto info
                     if (headerSpecifiesOnto && !(candidate.Moves?.Count() >= 1))
@@ -885,7 +886,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             LineCandidate candidate,
             StoresFunction storesFunction = null,
             string reqType = null,
-            bool headerSpecifiesOntoLocation = false)
+            bool headerSpecifiesOntoLocation = false,
+            bool headerSpecifiesOntoStockPool = false)
         {
             var part = !string.IsNullOrEmpty(candidate?.PartNumber)
                 ? await this.partRepository.FindByIdAsync(candidate.PartNumber)
@@ -918,6 +920,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (headerSpecifiesOntoLocation)
             {
+                if (!headerSpecifiesOntoStockPool)
+                {
+                    throw new CreateRequisitionException(
+                        "Must specify both header loc and stock pool for onto");
+                }
                 return line;
             }
             
