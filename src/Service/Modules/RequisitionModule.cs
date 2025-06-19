@@ -53,9 +53,14 @@
             bool? excludeReversals,
             bool? bookedOnly,
             string functionCode,
+            string startDate,
+            string endDate,
+            int? employeeId,
             IRequisitionFacadeService service)
         {
-            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && string.IsNullOrWhiteSpace(documentName) && pending != true)
+            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && string.IsNullOrEmpty(startDate)
+                && string.IsNullOrEmpty(endDate) && !employeeId.HasValue && string.IsNullOrWhiteSpace(documentName)
+                && pending != true)
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
             }
@@ -72,7 +77,10 @@
                         DocumentNumber = documentNumber,
                         ExcludeReversals = excludeReversals,
                         BookedOnly = bookedOnly,
-                        FunctionCode = functionCode
+                        FunctionCode = functionCode,
+                        StartDate = startDate,
+                        EndDate = endDate,
+                        EmployeeId = employeeId
                     });
                 await res.Negotiate(requisitions);
             }
