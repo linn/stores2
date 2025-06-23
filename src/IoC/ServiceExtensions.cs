@@ -28,6 +28,7 @@
     using Linn.Stores2.Proxy.HttpClients;
     using Linn.Stores2.Proxy.StoredProcedureClients;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
@@ -140,7 +141,8 @@
                 .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>()
                 .AddScoped<IBuilder<StoresPallet>, StoresPalletResourceBuilder>()
-                .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>();
+                .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>()
+                .AddScoped<IBuilder<Department>, DepartmentResourceBuilder>();
         }
     }
 }

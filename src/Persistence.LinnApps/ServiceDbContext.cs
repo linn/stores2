@@ -964,12 +964,13 @@
             r.Property(l => l.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
             r.Property(l => l.AuditOwnerId).HasColumnName("AUDIT_OWNER_ID");
             r.Property(l => l.AuditFrequencyWeeks).HasColumnName("AUDIT_FREQUENCY_WEEKS");
-            r.Property(l => l.AuditedByDepartmentCode).HasColumnName("AUDITED_BY_DEPARTMENT_CODE").HasMaxLength(10);
             r.Property(l => l.MixStates).HasColumnName("MIX_STATES").HasMaxLength(1);
+            r.Property(l => l.AuditedByDepartmentCode).HasColumnName("AUDITED_BY_DEPARTMENT_CODE").HasMaxLength(10);
             r.Property(l => l.Cage).HasColumnName("CAGE").HasMaxLength(1);
             r.HasOne(l => l.StorageLocation).WithMany().HasForeignKey("LOCATION_ID");
             r.HasOne(l => l.LocationType).WithMany().HasForeignKey("LOCATION_TYPE");
             r.HasOne(l => l.DefaultStockPool).WithMany().HasForeignKey("DEFAULT_STOCK_POOL");
+            r.HasOne(l => l.AuditedByDepartment).WithMany().HasForeignKey(l => l.AuditedByDepartmentCode); ;
         }
 
         private static void BuildLocationTypes(ModelBuilder builder)

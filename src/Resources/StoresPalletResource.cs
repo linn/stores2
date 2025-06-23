@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Resources
 {
     using Linn.Common.Resources;
+    using Linn.Stores2.Resources.Accounts;
 
     public class StoresPalletResource : HypermediaResource
     {
@@ -47,6 +48,8 @@
         public int? AuditFrequencyWeeks { get; set; }
 
         public string AuditedByDepartmentCode { get; set; }
+
+        public DepartmentResource AuditedByDepartment { get; set; }
 
         public string MixStates { get; set; }
 

@@ -24,7 +24,8 @@
             return this.serviceDbContext.StoresPallets
                 .Include(a => a.DefaultStockPool)
                 .Include(a => a.LocationType)
-                .Include(l => l.StorageLocation);
+                .Include(l => l.StorageLocation)
+                .Include(d => d.AuditedByDepartment);
         }
 
         public override async Task<StoresPallet> FindByIdAsync(int key)
@@ -33,6 +34,7 @@
                              .Include(a => a.DefaultStockPool)
                              .Include(a => a.LocationType)
                              .Include(l => l.StorageLocation)
+                             .Include(d => d.AuditedByDepartment)
                              .FirstOrDefaultAsync(pallet => pallet.PalletNumber == key);
             return result;
         }
@@ -42,7 +44,8 @@
             return this.serviceDbContext.StoresPallets.Where(filterExpression)
                 .Include(a => a.DefaultStockPool)
                 .Include(a => a.LocationType)
-                .Include(l => l.StorageLocation);
+                .Include(l => l.StorageLocation)
+                .Include(d => d.AuditedByDepartment);
         }
     }
 }

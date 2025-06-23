@@ -2,14 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Data;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -58,17 +56,6 @@
 
             var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(resource.StorageLocationId);
 
-            DateTime? dateInvalid = null;
-            if (!string.IsNullOrWhiteSpace(resource.DateInvalid) && DateTime.TryParse(resource.DateInvalid, out var parsedDateInvalid))
-            {
-                dateInvalid = parsedDateInvalid;
-            }
-
-            DateTime? dateLastAudited = null;
-            if (!string.IsNullOrWhiteSpace(resource.DateLastAudited) && DateTime.TryParse(resource.DateLastAudited, out var parsedDateLastAudited))
-            {
-                dateLastAudited = parsedDateLastAudited;
-            }
             return new StoresPallet(
                 resource.PalletNumber,
                 resource.Description,

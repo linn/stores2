@@ -6,23 +6,28 @@
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Accounts;
 
     public class StoresPalletResourceBuilder : IBuilder<StoresPallet>
     {
         private readonly IBuilder<StorageLocation> storageLocationResourceBuilder;
         private readonly IBuilder<LocationType> locationTypeResourceBuilder;
         private readonly IBuilder<StockPool> stockPoolResourceBuilder;
+        private readonly IBuilder<Department> departmentResourceBuilder;
 
         public StoresPalletResourceBuilder(
             IBuilder<StorageLocation> storageLocationResourceBuilder,
             IBuilder<LocationType> locationTypeResourceBuilder,
-            IBuilder<StockPool> stockPoolResourceBuilder)
+            IBuilder<StockPool> stockPoolResourceBuilder,
+            IBuilder<Department> departmentResourceBuilder)
         {
             this.storageLocationResourceBuilder = storageLocationResourceBuilder;
             this.locationTypeResourceBuilder = locationTypeResourceBuilder;
             this.stockPoolResourceBuilder = stockPoolResourceBuilder;
+            this.departmentResourceBuilder = departmentResourceBuilder;
         }
 
         public StoresPalletResource Build(StoresPallet pallet, IEnumerable<string> claims)
@@ -32,6 +37,8 @@
             var locationType = (LocationTypeResource)this.locationTypeResourceBuilder.Build(pallet.LocationType, claims);
 
             var stockPool = (StockPoolResource)this.stockPoolResourceBuilder.Build(pallet.DefaultStockPool, claims);
+
+            var department = (DepartmentResource)this.departmentResourceBuilder.Build(pallet.AuditedByDepartment, claims);
 
             return new StoresPalletResource
                        {
@@ -57,6 +64,7 @@
                            AuditOwnerId = pallet.AuditOwnerId,
                            AuditFrequencyWeeks = pallet.AuditFrequencyWeeks,
                            AuditedByDepartmentCode = pallet.AuditedByDepartmentCode,
+                           AuditedByDepartment = department,
                            MixStates = pallet.MixStates,
                            Cage = pallet.Cage,
                            Links = this.BuildLinks(pallet, claims).ToArray()

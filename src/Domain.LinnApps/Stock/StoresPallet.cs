@@ -2,6 +2,7 @@
 {
     using System;
 
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     
     public class StoresPallet
@@ -107,6 +108,8 @@
         public int? AuditFrequencyWeeks { get; set; }
 
         public string AuditedByDepartmentCode { get; set; }
+
+        public Department AuditedByDepartment { get; set; }
 
         public string MixStates { get; set; }
 

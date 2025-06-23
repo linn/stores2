@@ -43,12 +43,13 @@
             var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
             var stockPoolResourceBuilder = new StockPoolResourceBuilder();
             var locationTypeResourceBuilder = new LocationTypeResourceBuilder();
+            var departmentResourceBuilder = new DepartmentResourceBuilder();
 
             IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> storesPalletFacadeService
                 = new StoresPalletFacadeService(
                     storesPalletRepository,
                     transactionManager,
-                    new StoresPalletResourceBuilder(storageLocationResourceBuilder, locationTypeResourceBuilder, stockPoolResourceBuilder),
+                    new StoresPalletResourceBuilder(storageLocationResourceBuilder, locationTypeResourceBuilder, stockPoolResourceBuilder, departmentResourceBuilder),
                     stockPoolRepository,
                     locationTypeRepository,
                     storageLocationRepository);
