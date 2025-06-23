@@ -147,8 +147,8 @@
                 var transactionDefinition = await this.transactionDefinitionRepository
                                                 .FindByIdAsync(context.Lines.First().TransactionDefinition);
                 req.SetStateAndCategory(
-                    transactionDefinition.FromState, 
-                    transactionDefinition.InspectedState, 
+                    req.FromState ?? transactionDefinition.FromState, 
+                    req.ToState ?? transactionDefinition.InspectedState, 
                     transactionDefinition.OntoCategory,
                     transactionDefinition.FromCategory); 
             }
