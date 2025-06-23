@@ -7,6 +7,7 @@
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Stores;
+    using Linn.Stores2.Service.Extensions;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -23,7 +24,7 @@
         }
 
         private async Task Search(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             string workstationCode,
             string citCode,
@@ -34,36 +35,37 @@
                                        {
                                            WorkStationCode = workstationCode,
                                            CitCode = citCode
-                                       });
+                                       },
+                                   req.HttpContext.GetPrivileges());
             await res.Negotiate(workstations);
         }
 
         private async Task GetById(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             string code,
             IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> service)
         {
-            await res.Negotiate(await service.GetById(code));
+            await res.Negotiate(await service.GetById(code, req.HttpContext.GetPrivileges()));
         }
 
         private async Task Create(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             WorkstationResource resource,
             IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> service)
         {
-            await res.Negotiate(await service.Add(resource));
+            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
         }
 
         private async Task Update(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             string code,
             WorkstationResource resource,
             IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> service)
         {
-            await res.Negotiate(await service.Update(code, resource));
+            await res.Negotiate(await service.Update(code, resource, req.HttpContext.GetPrivileges()));
         }
     }
 }

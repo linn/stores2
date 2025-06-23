@@ -24,8 +24,6 @@
 
         public WorkstationResource Build(Workstation model, IEnumerable<string> claims)
         {
-            var claimsList = claims?.ToList() ?? new List<string>();
-
             return new WorkstationResource
             {
                 WorkStationCode = model.WorkStationCode,
@@ -35,8 +33,8 @@
                 ZoneType = model.ZoneType,
                 WorkStationElements = model.WorkStationElements
                                ?.Select(c => (WorkstationElementResource)this.workstationElementsBuilder
-                                   .Build(c, claimsList)), 
-                Links = this.BuildLinks(model, claimsList).ToArray()
+                                   .Build(c, claims)),
+                Links = this.BuildLinks(model, claims?.ToList()).ToArray()
             };
         }
 
