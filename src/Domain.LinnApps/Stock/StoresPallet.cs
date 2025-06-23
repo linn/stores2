@@ -2,8 +2,9 @@
 {
     using System;
 
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
-    
+
     public class StoresPallet
     {
         public StoresPallet()
@@ -20,7 +21,6 @@
             int? storesKittingPriority,
             string salesKittable,
             int? salesKittingPriority,
-            DateTime? allocQueueTime,
             LocationType locationType,
             string locationTypeId,
             int? auditedBy,
@@ -57,7 +57,6 @@
             this.StoresKittingPriority = storesKittingPriority;
             this.SalesKittable = salesKittable;
             this.SalesKittingPriority = salesKittingPriority;
-            this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
@@ -96,6 +95,8 @@
 
         public int? AuditedBy { get; set; }
 
+        public Employee AuditedByEmployee { get; set; }
+
         public StockPool DefaultStockPool { get; set; }
 
         public string StockType { get; set; }
@@ -107,6 +108,8 @@
         public int? AuditFrequencyWeeks { get; set; }
 
         public string AuditedByDepartmentCode { get; set; }
+
+        public Department AuditedByDepartment { get; set; }
 
         public string MixStates { get; set; }
 
@@ -123,7 +126,6 @@
             int? storesKittingPriority,
             string salesKittable,
             int? salesKittingPriority,
-            DateTime? allocQueueTime,
             LocationType locationType,
             string locationTypeId,
             int? auditedBy,
@@ -161,7 +163,6 @@
             this.StoresKittingPriority = storesKittingPriority;
             this.SalesKittable = salesKittable;
             this.SalesKittingPriority = salesKittingPriority;
-            this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;

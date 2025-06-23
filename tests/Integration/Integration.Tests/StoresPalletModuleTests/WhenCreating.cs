@@ -24,6 +24,8 @@
 
         private LocationType locationType;
 
+        private Employee employee;
+
         [SetUp]
         public void SetUp()
         {
@@ -44,6 +46,8 @@
                 Code = "LOC_TYPE",
                 Description = "Location Type Description",
             };
+
+            this.employee = new Employee { Id = 123, Name = "Pallets Pat" };
 
 
             this.createResource = new StoresPalletResource
@@ -91,6 +95,8 @@
             this.DbContext.StockPools.AddAndSave(this.DbContext, this.stockPool);
 
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.storageLocation);
+
+            this.DbContext.Employees.AddAndSave(this.DbContext, this.employee);
 
             this.Response = this.Client.PostAsJsonAsync("/stores2/pallets", this.createResource).Result;
         }

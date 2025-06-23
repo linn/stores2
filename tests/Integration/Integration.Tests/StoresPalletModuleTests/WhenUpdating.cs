@@ -25,6 +25,8 @@
 
         private LocationType locationType;
 
+        private Employee employee;
+
         [SetUp]
         public void SetUp()
         {
@@ -46,6 +48,8 @@
                                         Description = "Location Type Description",
                                     };
 
+            this.employee = new Employee { Id = 123, Name = "Pallets Pat" };
+
             this.pallet = new StoresPallet(
                 1,
                 "Test-Description",
@@ -56,19 +60,18 @@
                 1,
                 "Y",
                 1,
-                DateTime.Today,
                 null,
                 null,
                 123,
                 null,
                 null,
-                "TypeA",
-                "StateA",
-                456,
+                "A",
+                "A",
                 4,
-                "DeptA",
+                1,
                 "State1,State2",
-                "A");
+                "A",
+                "Y");
 
             this.updateResource = new StoresPalletResource
             {
@@ -105,6 +108,7 @@
             this.DbContext.LocationTypes.AddAndSave(this.DbContext, this.locationType);
             this.DbContext.StockPools.AddAndSave(this.DbContext, this.stockPool);
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.storageLocation);
+            this.DbContext.Employees.AddAndSave(this.DbContext, this.employee);
 
             this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
 
