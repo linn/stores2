@@ -13,6 +13,7 @@
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.External;
     using Linn.Stores2.Service.Modules;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -44,12 +45,18 @@
             var stockPoolResourceBuilder = new StockPoolResourceBuilder();
             var locationTypeResourceBuilder = new LocationTypeResourceBuilder();
             var departmentResourceBuilder = new DepartmentResourceBuilder();
+            var employeeResourceBuilder = new EmployeeResourceBuilder();
 
             IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> storesPalletFacadeService
                 = new StoresPalletFacadeService(
                     storesPalletRepository,
                     transactionManager,
-                    new StoresPalletResourceBuilder(storageLocationResourceBuilder, locationTypeResourceBuilder, stockPoolResourceBuilder, departmentResourceBuilder),
+                    new StoresPalletResourceBuilder(
+                        storageLocationResourceBuilder,
+                        locationTypeResourceBuilder,
+                        stockPoolResourceBuilder,
+                        departmentResourceBuilder,
+                        employeeResourceBuilder),
                     stockPoolRepository,
                     locationTypeRepository,
                     storageLocationRepository);

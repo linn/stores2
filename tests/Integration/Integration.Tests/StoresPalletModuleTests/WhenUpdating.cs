@@ -25,6 +25,8 @@
 
         private LocationType locationType;
 
+        private Employee employee;
+
         [SetUp]
         public void SetUp()
         {
@@ -45,6 +47,8 @@
                                         Code = "LOC_TYPE",
                                         Description = "Location Type Description",
                                     };
+
+            this.employee = new Employee { Id = 123, Name = "Pallets Pat" };
 
             this.pallet = new StoresPallet(
                 1,
@@ -105,6 +109,7 @@
             this.DbContext.LocationTypes.AddAndSave(this.DbContext, this.locationType);
             this.DbContext.StockPools.AddAndSave(this.DbContext, this.stockPool);
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.storageLocation);
+            this.DbContext.Employees.AddAndSave(this.DbContext, this.employee);
 
             this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
 

@@ -53,9 +53,9 @@ function Pallet({ creating }) {
     const stockStates = ['Any State', 'Inspected State', 'QC/ Failed State'];
 
     const {
-        search: searchDepartment,
-        results: departmentSearchResults,
-        loading: departmentSearchLoading,
+        search: searchDepartments,
+        results: departmentsSearchResults,
+        loading: departmentsSearchLoading,
         clear: clearDepartments
     } = useSearch(itemTypes.departments.url, 'departmentCode', 'departmentCode', 'description');
 
@@ -158,8 +158,8 @@ function Pallet({ creating }) {
 
     let employeeNames = currentEmployeesResult?.items.map(emp => emp.fullName);
 
-    if (auditedByEmployee && !employeeNames.includes(auditedByEmployee.fullName)) {
-        employeeNames = [...employeeNames, auditedByEmployee.fullName];
+    if (auditedByEmployee && !employeeNames?.includes(auditedByEmployee?.fullName)) {
+        employeeNames = [...employeeNames, auditedByEmployee?.fullName];
     }
 
     return (
@@ -243,7 +243,7 @@ function Pallet({ creating }) {
                 <Grid container spacing={2}>
                     <Grid item size={2}>
                         <Dropdown
-                            value={pallet.auditedByEmployee}
+                            value={auditedByEmployee?.fullName}
                             fullWidth
                             propertyName="lastAuditedBy"
                             label="Last Audited By"
@@ -289,15 +289,15 @@ function Pallet({ creating }) {
                             resultsInModal
                             resultLimit={100}
                             value={pallet?.auditedByDepartment?.description}
-                            loading={departmentSearchLoading}
+                            loading={departmentsSearchLoading}
                             handleValueChange={(_, newVal) =>
                                 setPallet(p => ({
                                     ...p,
                                     auditedByDepartmentDescription: newVal
                                 }))
                             }
-                            search={searchDepartment}
-                            searchResults={departmentSearchResults}
+                            search={searchDepartments}
+                            searchResults={departmentsSearchResults}
                             priorityFunction="closestMatchesFirst"
                             onResultSelect={handleDepartmentSearchResultSelect}
                             clearSearch={clearDepartments}
@@ -422,7 +422,7 @@ function Pallet({ creating }) {
                                     ...p,
                                     defaultStockPool: {
                                         ...p.defaultStockPool,
-                                        description: newVal
+                                        stockPoolDescription: newVal
                                     }
                                 }))
                             }

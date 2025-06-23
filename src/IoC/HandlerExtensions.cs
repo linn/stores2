@@ -7,6 +7,7 @@
     using Linn.Common.Service.Core.Handlers;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Accounts;
+    using Linn.Stores2.Resources.External;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
@@ -55,7 +56,9 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresPalletResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<LocationTypeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<DepartmentResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<DepartmentResource>>();
+                .AddSingleton<IHandler, JsonResultHandler<DepartmentResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<EmployeeResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<EmployeeResource>>();
         }
     }
 }

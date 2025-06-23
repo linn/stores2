@@ -911,7 +911,6 @@
             v.Ignore(p => p.Key);
         }
 
-
         private static void BuildPcasBoard(ModelBuilder builder)
         {
             var v = builder.Entity<PcasBoard>().ToTable("PCAS_BOARDS");
@@ -975,7 +974,8 @@
             r.HasOne(l => l.StorageLocation).WithMany().HasForeignKey("LOCATION_ID");
             r.HasOne(l => l.LocationType).WithMany().HasForeignKey("LOCATION_TYPE");
             r.HasOne(l => l.DefaultStockPool).WithMany().HasForeignKey("DEFAULT_STOCK_POOL");
-            r.HasOne(l => l.AuditedByDepartment).WithMany().HasForeignKey(l => l.AuditedByDepartmentCode); ;
+            r.HasOne(l => l.AuditedByDepartment).WithMany().HasForeignKey(l => l.AuditedByDepartmentCode);
+            r.HasOne(l => l.AuditedByEmployee).WithMany().HasForeignKey(l => l.AuditedBy);
         }
 
         private static void BuildLocationTypes(ModelBuilder builder)

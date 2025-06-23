@@ -2,6 +2,7 @@
 {
     using Linn.Common.Resources;
     using Linn.Stores2.Resources.Accounts;
+    using Linn.Stores2.Resources.External;
 
     public class StoresPalletResource : HypermediaResource
     {
@@ -34,6 +35,8 @@
         public string LocationTypeId { get; set; }
 
         public int? AuditedBy { get; set; }
+
+        public EmployeeResource AuditedByEmployee { get; set; }
 
         public string DefaultStockPoolId { get; set; }
 

@@ -31,10 +31,11 @@
         public override async Task<StoresPallet> FindByIdAsync(int key)
         {
             var result = await this.serviceDbContext.StoresPallets
-                             .Include(a => a.DefaultStockPool)
-                             .Include(a => a.LocationType)
-                             .Include(l => l.StorageLocation)
-                             .Include(d => d.AuditedByDepartment)
+                             .Include(p => p.DefaultStockPool)
+                             .Include(p => p.LocationType)
+                             .Include(p => p.StorageLocation)
+                             .Include(p => p.AuditedByEmployee)
+                             .Include(p => p.AuditedByDepartment)
                              .FirstOrDefaultAsync(pallet => pallet.PalletNumber == key);
             return result;
         }

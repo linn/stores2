@@ -7,6 +7,7 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
@@ -19,6 +20,8 @@
 
         private StorageLocation storageLocation;
 
+        private Employee employee;
+
         [SetUp]
         public void SetUp()
         {
@@ -27,6 +30,8 @@
                                            LocationId = 3,
                                            Description = "Test Location"
                                        };
+
+            this.employee = new Employee { Id = 123, Name = "Pallets Pat" };
 
             this.pallet = new StoresPallet(
                 1,
@@ -53,6 +58,8 @@
                 "Y");
 
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.storageLocation);
+
+            this.DbContext.Employees.AddAndSave(this.DbContext, this.employee);
 
             this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
 

@@ -62,8 +62,8 @@
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
-            this.StockType = this.GetStockType(stockType);
-            this.StockState = this.GetStockState(stockState);
+            this.StockType = this.GetStockType();
+            this.StockState = this.GetStockState();
             this.AuditOwnerId = auditOwnerId;
             this.AuditFrequencyWeeks = auditFrequencyWeeks;
             this.AuditedByDepartmentCode = auditedByDepartmentCode;
@@ -96,6 +96,8 @@
         public LocationType LocationType { get; set; }
 
         public int? AuditedBy { get; set; }
+
+        public Employee AuditedByEmployee { get; set; }
 
         public StockPool DefaultStockPool { get; set; }
 
@@ -168,8 +170,8 @@
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
-            this.StockType = this.GetStockType(stockType);
-            this.StockState = this.GetStockState(stockState);
+            this.StockType = this.GetStockType();
+            this.StockState = this.GetStockState();
             this.AuditOwnerId = auditOwnerId;
             this.AuditFrequencyWeeks = auditFrequencyWeeks;
             this.AuditedByDepartmentCode = auditedByDepartmentCode;
@@ -177,61 +179,32 @@
             this.Cage = cage;
         }
 
-        public string GetStockTypeString(string stockType)
-        {
-            if (stockType == "A")
-            {
-                return "Any Stock";
-            }
-            if (stockType == "R")
-            {
-                return "Raw Materials";
-            }
-            if (stockType == "F")
-            {
-                return "Finished Goods";
-            }
+        public string GetStockTypeString() =>
+            this.StockType switch
+                {
+                    "A" => "Any Stock",
+                    "R" => "raw Material",
+                    "F" => "Finished Goods",
+                    _ => "Unknown"
+                };
 
-            return null;
-        }
+        public string GetStockStateString() =>
+            this.StockState switch
+                {
+                    "A" => "Any State",
+                    "I" => "Inspected State",
+                    "Q" => "QC/ Failed State",
+                    _ => "Unknown"
+                };
 
-        public string GetStockStateString(string stockState)
-        {
-            if (stockState == "A")
-            {
-                return "Any State";
-            }
-            if (stockState == "I")
-            {
-                return "Inspected State";
-            }
-            if (stockState == "Q")
-            {
-                return "QC/ Failed State";
-            }
-
-            return null;
-        }
-
-        public string GetStockType(string stockType)
-        {
-            if (stockType == "Any Stock")
-            {
-                return "A";
-            }
-
-            if (stockType == "Raw Materials")
-            {
-                return "R";
-            }
-
-            if (stockType == "Finished Goods")
-            {
-                return "F";
-            }
-
-            return null;
-        }
+        public string GetStockType() =>
+            this.StockState switch
+                {
+                    "Any Stock" => "A",
+                    "Raw Materials" => "R",
+                    "Finished Goods" => "F",
+                    _ => "Unknown"
+                };
 
         public string GetStockState(string stockState)
         {
@@ -252,6 +225,14 @@
 
             return null;
         }
+        public string GetStockState() =>
+            this.StockState switch
+                {
+                    "Any State" => "A",
+                    "Inspected State" => "I",
+                    "QC/ Failed State" => "Q",
+                    _ => "Unknown"
+                };
 
     }
 }

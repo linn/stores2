@@ -141,6 +141,7 @@
                 .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>()
                 .AddScoped<IBuilder<StoresPallet>, StoresPalletResourceBuilder>()
                 .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>()
+                .AddScoped<IBuilder<Employee>, EmployeeResourceBuilder>()
                 .AddScoped<IBuilder<Department>, DepartmentResourceBuilder>();
         }
     }
