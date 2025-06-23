@@ -4,7 +4,7 @@
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
-    
+
     public class StoresPallet
     {
         public StoresPallet()
@@ -21,7 +21,6 @@
             int? storesKittingPriority,
             string salesKittable,
             int? salesKittingPriority,
-            DateTime? allocQueueTime,
             LocationType locationType,
             string locationTypeId,
             int? auditedBy,
@@ -58,12 +57,11 @@
             this.StoresKittingPriority = storesKittingPriority;
             this.SalesKittable = salesKittable;
             this.SalesKittingPriority = salesKittingPriority;
-            this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
-            this.StockType = this.GetStockType();
-            this.StockState = this.GetStockState();
+            this.StockType = stockType;
+            this.StockState = stockState;
             this.AuditOwnerId = auditOwnerId;
             this.AuditFrequencyWeeks = auditFrequencyWeeks;
             this.AuditedByDepartmentCode = auditedByDepartmentCode;
@@ -78,7 +76,7 @@
         public StorageLocation StorageLocation { get; set; }
 
         public DateTime? DateInvalid { get; set; }
-
+            
         public DateTime? DateLastAudited { get; set; }
 
         public string Accessible { get; set; }
@@ -128,7 +126,6 @@
             int? storesKittingPriority,
             string salesKittable,
             int? salesKittingPriority,
-            DateTime? allocQueueTime,
             LocationType locationType,
             string locationTypeId,
             int? auditedBy,
@@ -166,73 +163,16 @@
             this.StoresKittingPriority = storesKittingPriority;
             this.SalesKittable = salesKittable;
             this.SalesKittingPriority = salesKittingPriority;
-            this.AllocQueueTime = allocQueueTime;
             this.LocationType = locationType;
             this.AuditedBy = auditedBy;
             this.DefaultStockPool = defaultStockPool;
-            this.StockType = this.GetStockType();
-            this.StockState = this.GetStockState();
+            this.StockType = stockType;
+            this.StockState = stockState;
             this.AuditOwnerId = auditOwnerId;
             this.AuditFrequencyWeeks = auditFrequencyWeeks;
             this.AuditedByDepartmentCode = auditedByDepartmentCode;
             this.MixStates = mixStates;
             this.Cage = cage;
         }
-
-        public string GetStockTypeString() =>
-            this.StockType switch
-                {
-                    "A" => "Any Stock",
-                    "R" => "raw Material",
-                    "F" => "Finished Goods",
-                    _ => "Unknown"
-                };
-
-        public string GetStockStateString() =>
-            this.StockState switch
-                {
-                    "A" => "Any State",
-                    "I" => "Inspected State",
-                    "Q" => "QC/ Failed State",
-                    _ => "Unknown"
-                };
-
-        public string GetStockType() =>
-            this.StockState switch
-                {
-                    "Any Stock" => "A",
-                    "Raw Materials" => "R",
-                    "Finished Goods" => "F",
-                    _ => "Unknown"
-                };
-
-        public string GetStockState(string stockState)
-        {
-            if (stockState == "Any State")
-            {
-                return "A";
-            }
-
-            if (stockState == "Inspected State")
-            {
-                return "I";
-            }
-
-            if (stockState == "QC/ Failed State")
-            {
-                return "Q";
-            }
-
-            return null;
-        }
-        public string GetStockState() =>
-            this.StockState switch
-                {
-                    "Any State" => "A",
-                    "Inspected State" => "I",
-                    "QC/ Failed State" => "Q",
-                    _ => "Unknown"
-                };
-
     }
 }

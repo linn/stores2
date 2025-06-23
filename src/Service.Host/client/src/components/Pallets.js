@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { Search, utilities } from '@linn-it/linn-form-components-library';
+import { Search, CreateButton, utilities } from '@linn-it/linn-form-components-library';
 import config from '../config';
 import itemTypes from '../itemTypes';
 import useSearch from '../hooks/useSearch';
@@ -51,6 +51,9 @@ function Pallets() {
                         onResultSelect={handlePalletSearchResultSelect}
                         clearSearch={clearPallets}
                     />
+                </Grid>
+                <Grid size={2}>
+                    <CreateButton createUrl="/stores2/pallets/create" />
                 </Grid>
             </Grid>
         </Page>

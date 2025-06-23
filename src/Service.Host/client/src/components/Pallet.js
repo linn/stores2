@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router';
 import Grid from '@mui/material/Grid';
@@ -25,6 +25,7 @@ import Page from './Page';
 function Pallet({ creating }) {
     const { id } = useParams();
     const [snackbarVisible, setSnackbarVisible] = useState(false);
+    const [pallet, setPallet] = useState({});
 
     const { isHistoricalEmployeeLoading, result: historicalEmployeesResult } = useInitialise(
         `${itemTypes.historicEmployees.url}`
@@ -33,24 +34,32 @@ function Pallet({ creating }) {
     const { isPalletLoading, result: palletResult } = useInitialise(`${itemTypes.pallets.url}`, id);
 
     useEffect(() => {
-        if (palletResult) {
+        if (palletResult && !creating) {
             setPallet(palletResult);
         } else if (createResult) {
             setPallet(createResult);
         } else if (updateResult) {
             setPallet(updateResult);
         }
-    }, [createResult, palletResult, updateResult]);
+    }, [createResult, creating, palletResult, updateResult]);
 
     const { isCurrentEmployeeLoading, result: currentEmployeesResult } = useInitialise(
         `${itemTypes.currentEmployees.url}`
     );
 
-    const [pallet, setPallet] = useState({});
+    const stockTypes = [
+        { id: 'A', displayText: 'Any Stock' },
+        { id: 'R', displayText: 'Raw Materials' },
+        { id: 'F', displayText: 'Finished Goods' }
+    ];
 
-    const stockTypes = ['Any Stock', 'Raw Materials', 'Finished Goods'];
+    const stockStates = [
+        { id: 'A', displayText: 'Any State' },
+        { id: 'I', displayText: 'Inspected State' },
+        { id: 'Q', displayText: 'QC/ Failed State' }
+    ];
 
-    const stockStates = ['Any State', 'Inspected State', 'QC/ Failed State'];
+    const locationTypes = [{ id: 'L', displayText: 'LINN' }];
 
     const {
         search: searchDepartments,
@@ -130,20 +139,17 @@ function Pallet({ creating }) {
     };
 
     const handleEmployeeFieldChange = (propertyName, newValue) => {
-        const employeeInfo = currentEmployeesResult?.items.find(emp => emp.fullName === newValue);
-
         setPallet(c => ({
             ...c,
-            auditedBy: employeeInfo?.id,
-            auditedByEmployee: employeeInfo?.fullName
+            auditedBy: newValue
         }));
     };
 
     const handleFieldChange = (propertyName, newValue) => {
         if (typeof newValue === 'string') {
-            setPallet({ ...pallet, [propertyName]: newValue });
+            setPallet(p => ({ ...p, [propertyName]: newValue }));
         } else if (typeof newValue === 'number' && !lessThan(newValue, 0)) {
-            setPallet({ ...pallet, [propertyName]: newValue });
+            setPallet(p => ({ ...p, [propertyName]: newValue }));
         }
     };
 
@@ -161,6 +167,15 @@ function Pallet({ creating }) {
     if (auditedByEmployee && !employeeNames?.includes(auditedByEmployee?.fullName)) {
         employeeNames = [...employeeNames, auditedByEmployee?.fullName];
     }
+
+    const employeeDropdownItems = useMemo(
+        () =>
+            currentEmployeesResult?.items.map(emp => ({
+                id: emp.id,
+                displayText: emp.fullName
+            })) ?? [],
+        [currentEmployeesResult]
+    );
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -191,285 +206,264 @@ function Pallet({ creating }) {
                     />
                 </Grid>
             </Grid>
+            <Grid container spacing={2}>
+                <Grid item size={3}>
+                    <InputField
+                        propertyName="description"
+                        label="Description"
+                        value={pallet?.description}
+                        onChange={handleFieldChange}
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item size={3}>
+                    <InputField
+                        propertyName="storageLocationId"
+                        label="Storage Location ID"
+                        value={pallet?.storageLocationId}
+                        fullWidth
+                        disabled
+                    />
+                </Grid>
+                <Grid item size={3}>
+                    <Search
+                        autoFocus
+                        propertyName="storageLocationName"
+                        label="Storage Location Name"
+                        resultsInModal
+                        resultLimit={100}
+                        value={pallet?.storageLocation?.description}
+                        loading={storageLocationSearchLoading}
+                        handleValueChange={(_, newVal) =>
+                            setPallet(p => ({
+                                ...p,
+                                storageLocation: {
+                                    ...p.storageLocation,
+                                    description: newVal
+                                }
+                            }))
+                        }
+                        search={searchStorageLoction}
+                        searchResults={storageLocationSearchResults}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handleStorageLocationSearchResultSelect}
+                        clearSearch={clearStorageLocation}
+                    />
+                </Grid>
+            </Grid>
+            <Grid container spacing={2}>
+                <Grid item size={2}>
+                    <Dropdown
+                        value={pallet?.auditedBy ?? ''}
+                        fullWidth
+                        propertyName="auditedBy"
+                        label="Last Audited By"
+                        allowNoValue
+                        items={employeeDropdownItems}
+                        onChange={handleEmployeeFieldChange}
+                    />
+                </Grid>
 
-            <Grid size={12}>
-                <Grid container spacing={2}>
-                    <Grid item size={3}>
-                        <InputField
-                            propertyName="description"
-                            label="Description"
-                            value={pallet?.description}
-                            onChange={handleFieldChange}
-                            fullWidth
-                        />
-                    </Grid>
-                    <Grid item size={3}>
-                        <InputField
-                            propertyName="storageLocationId"
-                            label="Storage Location ID"
-                            value={pallet?.storageLocationId}
-                            fullWidth
-                            disabled
-                        />
-                    </Grid>
-                    <Grid item size={3}>
-                        <Search
-                            autoFocus
-                            propertyName="storageLocationName"
-                            label="Storage Location Name"
-                            resultsInModal
-                            resultLimit={100}
-                            value={pallet?.storageLocation?.description}
-                            loading={storageLocationSearchLoading}
-                            handleValueChange={(_, newVal) =>
-                                setPallet(p => ({
-                                    ...p,
-                                    storageLocation: {
-                                        ...p.storageLocation,
-                                        description: newVal
-                                    }
-                                }))
-                            }
-                            search={searchStorageLoction}
-                            searchResults={storageLocationSearchResults}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handleStorageLocationSearchResultSelect}
-                            clearSearch={clearStorageLocation}
-                        />
-                    </Grid>
+                <Grid item size={2}>
+                    <DatePicker
+                        label="Date Last Audited"
+                        propertyName="dateLastAudited"
+                        value={pallet?.dateLastAudited}
+                        onChange={date => handleDateChange('dateLastAudited', date)}
+                    />
+                </Grid>
+                <Grid item size={2}>
+                    <InputField
+                        propertyName="auditFrequencyWeeks"
+                        label="Audit Frequency Weeks"
+                        type="number"
+                        onChange={handleFieldChange}
+                        value={pallet?.auditFrequencyWeeks}
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item size={2}>
+                    <InputField
+                        propertyName="auditedByDepartmentCode"
+                        label="Audited By Department Code"
+                        value={pallet?.auditedByDepartmentCode}
+                        disabled
+                        fullWidth
+                    />
+                </Grid>
+                <Grid item size={4}>
+                    <Search
+                        autoFocus
+                        propertyName="auditedByDepartment"
+                        label="Audited By Department"
+                        resultsInModal
+                        resultLimit={100}
+                        value={pallet?.auditedByDepartment?.description}
+                        loading={departmentsSearchLoading}
+                        handleValueChange={(_, newVal) =>
+                            setPallet(p => ({
+                                ...p,
+                                auditedByDepartment: {
+                                    ...p.auditedByDepartment,
+                                    description: newVal
+                                }
+                            }))
+                        }
+                        search={searchDepartments}
+                        searchResults={departmentsSearchResults}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handleDepartmentSearchResultSelect}
+                        clearSearch={clearDepartments}
+                    />
                 </Grid>
             </Grid>
-            <Grid size={12}>
-                <Grid container spacing={2}>
-                    <Grid item size={2}>
-                        <Dropdown
-                            value={auditedByEmployee?.fullName}
-                            fullWidth
-                            propertyName="lastAuditedBy"
-                            label="Last Audited By"
-                            allowNoValue
-                            items={employeeNames}
-                            onChange={handleEmployeeFieldChange}
-                        />
-                    </Grid>
-
-                    <Grid item size={2}>
-                        <DatePicker
-                            label="Date Last Audited"
-                            propertyName="dateLastAudited"
-                            value={pallet?.dateLastAudited}
-                            onChange={date => handleDateChange('dateLastAudited', date)}
-                            clearable
-                        />
-                    </Grid>
-                    <Grid item size={2}>
-                        <InputField
-                            propertyName="auditFrequencyWeeks"
-                            label="Audit Frequency Weeks"
-                            type="number"
-                            onChange={handleFieldChange}
-                            value={pallet?.auditFrequencyWeeks}
-                            fullWidth
-                        />
-                    </Grid>
-                    <Grid item size={2}>
-                        <InputField
-                            propertyName="auditedByDepartmentCode"
-                            label="Audited By Department Code"
-                            value={pallet?.auditedByDepartmentCode}
-                            disabled
-                            fullWidth
-                        />
-                    </Grid>
-                    <Grid item size={4}>
-                        <Search
-                            autoFocus
-                            propertyName="auditedByDepartment"
-                            label="Audited By Department"
-                            resultsInModal
-                            resultLimit={100}
-                            value={pallet?.auditedByDepartment?.description}
-                            loading={departmentsSearchLoading}
-                            handleValueChange={(_, newVal) =>
-                                setPallet(p => ({
-                                    ...p,
-                                    auditedByDepartmentDescription: newVal
-                                }))
-                            }
-                            search={searchDepartments}
-                            searchResults={departmentsSearchResults}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handleDepartmentSearchResultSelect}
-                            clearSearch={clearDepartments}
-                        />
-                    </Grid>
+            <Grid container spacing={2}>
+                <Grid size={2}>
+                    <Dropdown
+                        value={pallet?.accessible}
+                        fullWidth
+                        label="Acessible"
+                        propertyName="accessible"
+                        allowNoValue
+                        items={['Y', 'N']}
+                        onChange={handleFieldChange}
+                    />
+                </Grid>
+                <Grid size={2}>
+                    <DatePicker
+                        label="Date Invalid"
+                        propertyName="dateInvalid"
+                        value={pallet?.dateInvalid}
+                        onChange={date => handleDateChange('dateInvalid', date)}
+                    />
+                </Grid>
+                <Grid size={2}>
+                    <Dropdown
+                        value={pallet?.cage}
+                        fullWidth
+                        label="Cage"
+                        propertyName="cage"
+                        allowNoValue
+                        items={['Y', 'N']}
+                        onChange={handleFieldChange}
+                    />
                 </Grid>
             </Grid>
-            <Grid size={12}>
-                <Grid container spacing={2}>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={pallet?.accessible}
-                            fullWidth
-                            label="Acessible"
-                            propertyName="accessible"
-                            allowNoValue
-                            items={['Y', 'N']}
-                            onChange={handleFieldChange}
-                        />
-                    </Grid>
-                    <Grid size={2}>
-                        <DatePicker
-                            label="Date Invalid"
-                            propertyName="dateInvalid"
-                            value={pallet?.dateInvalid}
-                            onChange={date => handleDateChange('dateInvalid', date)}
-                            clearable
-                        />
-                    </Grid>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={pallet?.cage}
-                            fullWidth
-                            label="Cage"
-                            propertyName="cage"
-                            allowNoValue
-                            items={['Y', 'N']}
-                            onChange={handleFieldChange}
-                        />
-                    </Grid>
+            <Grid container spacing={2}>
+                <Grid size={2}>
+                    <Dropdown
+                        value={pallet?.storesKittable}
+                        fullWidth
+                        label="Stores Kittable"
+                        propertyName="storesKittable"
+                        allowNoValue
+                        items={['Y', 'N']}
+                        onChange={handleFieldChange}
+                    />
+                </Grid>
+                <Grid item size={4}>
+                    <InputField
+                        propertyName="storesKittingPriority"
+                        label="Stores Kitting Priority"
+                        value={pallet?.storesKittingPriority}
+                        fullWidth
+                        onChange={handleFieldChange}
+                        type="number"
+                    />
+                </Grid>
+                <Grid size={2}>
+                    <Dropdown
+                        value={pallet?.salesKittable}
+                        fullWidth
+                        label="Sales Kittable"
+                        propertyName="salesKittable"
+                        allowNoValue
+                        items={['Y', 'N']}
+                        onChange={handleFieldChange}
+                    />
+                </Grid>
+                <Grid item size={4}>
+                    <InputField
+                        propertyName="salesKittingPriority"
+                        label="Sales Kitting Priority"
+                        value={pallet?.salesKittingPriority}
+                        fullWidth
+                        onChange={handleFieldChange}
+                        type="number"
+                    />
                 </Grid>
             </Grid>
-            <Grid size={12}>
-                <Grid container spacing={2}>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={pallet?.storesKittable}
-                            fullWidth
-                            label="Stores Kittable"
-                            propertyName="storesKittable"
-                            allowNoValue
-                            items={['Y', 'N']}
-                            onChange={handleFieldChange}
-                        />
-                    </Grid>
-                    <Grid item size={4}>
-                        <InputField
-                            propertyName="storesKittingPriority"
-                            label="Stores Kitting Priority"
-                            value={pallet?.storesKittingPriority}
-                            fullWidth
-                            onChange={handleFieldChange}
-                            type="number"
-                        />
-                    </Grid>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={pallet?.salesKittable}
-                            fullWidth
-                            label="Sales Kittable"
-                            propertyName="salesKittable"
-                            allowNoValue
-                            items={['Y', 'N']}
-                            onChange={handleFieldChange}
-                        />
-                    </Grid>
-                    <Grid item size={4}>
-                        <InputField
-                            propertyName="salesKittingPriority"
-                            label="Sales Kitting Priority"
-                            value={pallet?.salesKittingPriority}
-                            fullWidth
-                            onChange={handleFieldChange}
-                            type="number"
-                        />
-                    </Grid>
+            <Grid container spacing={2}>
+                <Grid size={2}>
+                    <Dropdown
+                        value={pallet?.locationTypeId}
+                        fullWidth
+                        propertyName="locationTypeId"
+                        label="Location Type"
+                        allowNoValue
+                        items={locationTypes}
+                        onChange={handleFieldChange}
+                    />
+                </Grid>
+                <Grid item size={6}>
+                    <Search
+                        autoFocus
+                        propertyName="defaultStockPoolDescription"
+                        label="Default Stock Pool Description"
+                        resultsInModal
+                        resultLimit={100}
+                        value={pallet?.defaultStockPool?.stockPoolDescription}
+                        loading={stockPoolSearchLoading}
+                        handleValueChange={(_, newVal) =>
+                            setPallet(p => ({
+                                ...p,
+                                defaultStockPool: {
+                                    ...p.defaultStockPool,
+                                    stockPoolDescription: newVal
+                                }
+                            }))
+                        }
+                        search={searchStockPool}
+                        searchResults={stockPoolSearchResults}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handleStockPoolSearchResultSelect}
+                        clearSearch={clearStockPool}
+                    />
                 </Grid>
             </Grid>
-            <Grid size={12}>
-                <Grid container spacing={2}>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={pallet?.locationType}
-                            fullWidth
-                            propertyName="locationType"
-                            label="Location Type"
-                            allowNoValue
-                            items={['LINN']}
-                            onChange={handleFieldChange}
-                        />
-                    </Grid>
-                    <Grid item size={4}>
-                        <InputField
-                            propertyName="defaultStockPoolId"
-                            label="Default Stock Pool"
-                            disabled
-                            value={pallet?.defaultStockPoolId}
-                            fullWidth
-                        />
-                    </Grid>
-                    <Grid item size={6}>
-                        <Search
-                            autoFocus
-                            propertyName="defaultStockPoolDescription"
-                            label="Default Stock Pool Description"
-                            resultsInModal
-                            resultLimit={100}
-                            value={pallet?.defaultStockPool?.stockPoolDescription}
-                            loading={stockPoolSearchLoading}
-                            handleValueChange={(_, newVal) =>
-                                setPallet(p => ({
-                                    ...p,
-                                    defaultStockPool: {
-                                        ...p.defaultStockPool,
-                                        stockPoolDescription: newVal
-                                    }
-                                }))
-                            }
-                            search={searchStockPool}
-                            searchResults={stockPoolSearchResults}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handleStockPoolSearchResultSelect}
-                            clearSearch={clearStockPool}
-                        />
-                    </Grid>
+            <Grid container spacing={2}>
+                <Grid size={2}>
+                    <Dropdown
+                        value={pallet?.stockType}
+                        fullWidth
+                        propertyName="stockType"
+                        label="Stock Type"
+                        allowNoValue
+                        items={stockTypes}
+                        onChange={handleFieldChange}
+                    />
                 </Grid>
-            </Grid>
-            <Grid size={12}>
-                <Grid container spacing={2}>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={pallet?.stockType}
-                            fullWidth
-                            propertyName="stockType"
-                            label="Stock Type"
-                            allowNoValue
-                            items={stockTypes}
-                            onChange={handleFieldChange}
-                        />
-                    </Grid>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={pallet?.stockState}
-                            fullWidth
-                            propertyName="stockState"
-                            label="Stock State"
-                            allowNoValue
-                            items={stockStates}
-                            onChange={handleFieldChange}
-                        />
-                    </Grid>
-                    <Grid size={2}>
-                        <Dropdown
-                            value={pallet?.mixStates}
-                            fullWidth
-                            label="Mix States"
-                            propertyName="mixStates"
-                            allowNoValue
-                            items={['Y', 'N']}
-                            onChange={handleFieldChange}
-                        />
-                    </Grid>
+                <Grid size={2}>
+                    <Dropdown
+                        value={pallet?.stockState}
+                        fullWidth
+                        propertyName="stockState"
+                        label="Stock State"
+                        allowNoValue
+                        items={stockStates}
+                        onChange={handleFieldChange}
+                    />
+                </Grid>
+                <Grid size={2}>
+                    <Dropdown
+                        value={pallet?.mixStates}
+                        fullWidth
+                        label="Mix States"
+                        propertyName="mixStates"
+                        allowNoValue
+                        items={['Y', 'N']}
+                        onChange={handleFieldChange}
+                    />
                 </Grid>
             </Grid>
             <Grid>

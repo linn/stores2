@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Resources.External
+﻿using System.Globalization;
+
+namespace Linn.Stores2.Resources.External
 {
     public class EmployeeResource
     {

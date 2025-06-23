@@ -1,13 +1,10 @@
 ﻿namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
-    using System.Linq;
 
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.External;
 
     public class EmployeeResourceBuilder : IBuilder<Employee>
@@ -22,7 +19,7 @@
         return new EmployeeResource
         {
             Id = employee.Id,
-            Name = employee.Name
+            Name = employee.Name,
         };
     }
 
