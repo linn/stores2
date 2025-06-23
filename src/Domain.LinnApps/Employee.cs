@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace Linn.Stores2.Domain.LinnApps
 {
     public class Employee

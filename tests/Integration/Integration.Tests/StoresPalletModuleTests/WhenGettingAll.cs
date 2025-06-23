@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;

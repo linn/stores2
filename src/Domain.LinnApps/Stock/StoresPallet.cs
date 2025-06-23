@@ -76,7 +76,7 @@
         public StorageLocation StorageLocation { get; set; }
 
         public DateTime? DateInvalid { get; set; }
-            
+
         public DateTime? DateLastAudited { get; set; }
 
         public string Accessible { get; set; }
