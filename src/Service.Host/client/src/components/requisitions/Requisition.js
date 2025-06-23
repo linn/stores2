@@ -963,7 +963,7 @@ function Requisition({ creating }) {
                                             />
                                         )}
                                     </Grid>
-                                    <Grid size={2}>
+                                    <Grid size={4}>
                                         {shouldRender(requiresDepartmentNominal) && (
                                             <Dropdown
                                                 fullWidth
@@ -980,7 +980,7 @@ function Requisition({ creating }) {
                                             />
                                         )}
                                     </Grid>
-                                    <Grid size={8} />
+                                    <Grid size={6} />
                                 </>
                             )}
                             <AuditLocationSearch
@@ -1002,6 +1002,30 @@ function Requisition({ creating }) {
                                     })
                                 }
                             />
+                            <Grid size={6}>
+                                <InputField
+                                    fullWidth
+                                    value={formState.req.reference}
+                                    onChange={handleHeaderFieldChange}
+                                    disabled={
+                                        formState.req?.cancelled === 'Y' ||
+                                        formState.req?.dateBooked
+                                    }
+                                    label="Reference"
+                                    propertyName="reference"
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    fullWidth
+                                    value={formState.req.comments}
+                                    onChange={(propertyName, newValue) => {
+                                        handleHeaderFieldChange(propertyName, newValue);
+                                    }}
+                                    label="Comments"
+                                    propertyName="comments"
+                                />
+                            </Grid>
                             <Document1
                                 document1={formState.req.document1}
                                 document1Text={formState.req.storesFunction?.document1Text}
@@ -1169,30 +1193,6 @@ function Requisition({ creating }) {
                                     );
                                 })}
                             />
-                            <Grid size={6}>
-                                <InputField
-                                    fullWidth
-                                    value={formState.req.reference}
-                                    onChange={handleHeaderFieldChange}
-                                    disabled={
-                                        formState.req?.cancelled === 'Y' ||
-                                        formState.req?.dateBooked
-                                    }
-                                    label="Reference"
-                                    propertyName="reference"
-                                />
-                            </Grid>
-                            <Grid size={6}>
-                                <InputField
-                                    fullWidth
-                                    value={formState.req.comments}
-                                    onChange={(propertyName, newValue) => {
-                                        handleHeaderFieldChange(propertyName, newValue);
-                                    }}
-                                    label="Comments"
-                                    propertyName="comments"
-                                />
-                            </Grid>
                             {shouldRender(
                                 () => formState.req.storesFunction?.receiptDateRequired === 'Y'
                             ) && (

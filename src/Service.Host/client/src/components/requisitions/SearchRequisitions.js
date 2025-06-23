@@ -99,6 +99,7 @@ function SearchRequisitions() {
         },
         { field: 'created', headerName: 'Created', width: 120 },
         { field: 'createdByName', headerName: 'By', width: 200 },
+        { field: 'functionCode', headerName: 'Function', width: 150 },
         { field: 'doc1', headerName: 'Doc1', width: 110 },
         { field: 'comments', headerName: 'Comments', width: 300 }
     ];
@@ -225,7 +226,8 @@ function SearchRequisitions() {
                                 ...r,
                                 id: r.reqNumber,
                                 created: moment(r.dateCreated).format('DD-MMM-YYYY'),
-                                doc1: `${r.document1Name} ${r.document1}`
+                                doc1: `${r.document1Name ? r.document1Name : ''} ${r.document1 ? r.document1 : ''}`,
+                                functionCode: r.storesFunction?.code
                             })) || []
                         }
                         columns={columns}
