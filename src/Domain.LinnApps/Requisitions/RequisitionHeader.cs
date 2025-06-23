@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -245,8 +246,14 @@
             {
                 if (isReverseTrans == "Y")
                 {
-                    this.BatchRef = null; // todo - test
+                    this.BatchRef = null;
                 }
+            }
+
+            if (function.FunctionCode == "LOAN BACK")
+            {
+                this.FromState = "STORES";
+                this.LoanNumber = document1Number;
             }
         }
 
@@ -381,7 +388,7 @@
             }
         }
 
-        public void Update(string comments)
+        public void Update(string comments, string reference)
         {
             if (this.IsBooked())
             {
@@ -389,6 +396,7 @@
             }
 
             this.Comments = comments;
+            this.Reference = reference;
         }
 
         public void AddLine(RequisitionLine toAdd)
@@ -543,47 +551,79 @@
             return this.RequiresAuthorisation() ? this.Lines.First(l => l.RequiresAuthorisation()).AuthorisePrivilege() : null;
         }
 
-        public bool CanBookReq(int? lineNumber)
+        public bool RequisitionIsBookable(int? lineNumber)
         {
             if (!this.IsBooked() && !this.IsCancelled() && this.StoresFunction != null)
             {
-                var lines = this.Lines.Where(l => l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled());
-                var requisitionLines = lines as RequisitionLine[] ?? lines.ToArray();
-                if (requisitionLines.Any())
-                {
-                    if (requisitionLines.All(l => l.OkToBook()))
-                    {
-                        if (!this.RequiresAuthorisation())
-                        {
-                            var linesQty = this.Lines.Where(l => !l.HasDecrementTransaction() && !l.HasMaterialVarianceTransaction()).Sum(l => l.Qty);
-
-                            if (linesQty > 0)
-                            {
-                                if (this.Quantity == null)
-                                {
-                                    // no header qty to check thus true
-                                    return true;
-                                }
-                                else if (this.StoresFunction.FunctionCode == "PARTNO CH" ||
-                                         this.StoresFunction.FunctionCode == "BOOKWO" ||
-                                         this.StoresFunction.FunctionCode == "SUKIT")
-                                {
-                                    // you guys are exempt from this check although most times BOOKWO should pass it
-                                    return true;
-                                }
-                                return linesQty == this.Quantity.Value;
-                            }
-                        }
-                    }
-                }
-                else if (this.StoresFunction.AuditFunction())
-                {
-                    // audit functions don't need lines or checks
-                    return true;
-                }
+                var canBeBooked = this.RequisitionCanBeBooked(lineNumber);
+                return canBeBooked.Success;
             }
 
             return false;
+        }
+
+        public ProcessResult RequisitionCanBeBooked(int? lineNumber = null)
+        {
+            var requisitionLines = this.Lines.Where(l =>
+                l.LineNumber == (lineNumber ?? l.LineNumber) && !l.IsBooked() && !l.IsCancelled()).ToList();
+
+            if (requisitionLines.Any())
+            {
+                if (this.RequiresAuthorisation())
+                {
+                    return new ProcessResult(false, $"Req {this.ReqNumber} requires authorisation.");
+                }
+
+                var linesQty = 0m;
+                foreach (var requisitionLine in requisitionLines)
+                {
+                    var canBook = requisitionLine.CanBookLine();
+                    if (!canBook.Success)
+                    {
+                        return new ProcessResult(false, canBook.Message);
+                    }
+
+                    if (!requisitionLine.HasDecrementTransaction() && !requisitionLine.HasMaterialVarianceTransaction())
+                    {
+                        linesQty += requisitionLine.Qty;
+                    }
+                }
+
+                if (linesQty > 0)
+                {
+                    if (this.Quantity == null)
+                    {
+                        // no header qty to check thus true
+                        return new ProcessResult(true, "No header quantity to check.");
+                    }
+                    
+                    if (this.StoresFunction.FunctionCode == "PARTNO CH" ||
+                             this.StoresFunction.FunctionCode == "BOOKWO" ||
+                             this.StoresFunction.FunctionCode == "SUKIT")
+                    {
+                        return new ProcessResult(true, "Function code does not require line quantity check.");
+                    }
+
+                    if (linesQty != this.Quantity.Value)
+                    {
+                        return new ProcessResult(
+                            false,
+                            $"Quantity on req {this.ReqNumber} is {this.Quantity} but lines have quantity {linesQty}.");
+                    }
+
+                    return new ProcessResult(true, $"Quantity on req {this.ReqNumber} is {this.Quantity} and the lines match.");
+                }
+            }
+            else if (this.StoresFunction.AuditFunction())
+            {
+                return new ProcessResult(true, "Audit functions don't need lines.");
+            }
+            else if (this.Part != null)
+            {
+                return new ProcessResult(true, "Part is specified on header");
+            }
+
+            return new ProcessResult(false, $"Selected line not found or unexpected result on lines check for req {this.ReqNumber}.");
         }
 
         public string AccountingCompanyCode()

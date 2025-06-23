@@ -52,6 +52,7 @@
                            ToLocationCode = header.ToLocation?.LocationCode,
                            FromLocationId = header.FromLocation?.LocationId,
                            FromLocationCode = header.FromLocation?.LocationCode,
+                           Document1Line = header.Document1Line,
                            ToPalletNumber = header.ToPalletNumber,
                            FromPalletNumber = header.FromPalletNumber,
                            Cancelled = header.Cancelled,
@@ -100,12 +101,12 @@
                            FromCategory = header.FromCategory,
                            ToCategory = header.ToCategory,
                            NewPart = header.NewPart == null
-                               ? null
-                               : new PartResource
-                               {
-                                   PartNumber = header.NewPart.PartNumber,
-                                   Description = header.NewPart.Description
-                               },
+                                         ? null
+                                         : new PartResource
+                                               {
+                                                   PartNumber = header.NewPart.PartNumber,
+                                                   Description = header.NewPart.Description
+                                               },
                            IsReverseTransaction = header.IsReverseTransaction,
                            OriginalReqNumber = header.OriginalReqNumber,
                            Document3 = header.Document3,
@@ -138,7 +139,7 @@
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
 
-                if (model.Lines != null && model.CanBookReq(null)
+                if (model.Lines != null && model.RequisitionIsBookable(null)
                                         && this.authService.HasPermissionFor(AuthorisedActions.BookRequisition, claims))
                 {
                     yield return new LinkResource { Rel = "book", Href = "/requisitions/book" };

@@ -26,6 +26,8 @@ import QcLabelPrintScreen from './requisitions/containers/QcLabelPrinter';
 import PcasStorageTypes from './PcasStorageTypes';
 import PcasStorageType from './PcasStorageType';
 import RequisitionCostReport from './RequisitionCostReport';
+import Workstations from './Workstations';
+import Workstation from './Workstation';
 import Pallets from './Pallets';
 import Pallet from './Pallet';
 
@@ -102,6 +104,12 @@ function Root() {
                     <Route
                         path="/requisitions/reports/requisition-cost/:reqNumber"
                         element={<RequisitionCostReport />}
+                    />
+                    <Route path="/stores2/work-stations" element={<Workstations />} />
+                    <Route path="/stores2/work-stations/detail" element={<Workstation />} />
+                    <Route
+                        path="/stores2/work-stations/create"
+                        element={<Workstation creating />}
                     />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>

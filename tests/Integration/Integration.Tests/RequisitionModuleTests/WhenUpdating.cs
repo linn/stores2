@@ -69,6 +69,7 @@
             this.ReqManager.Received().UpdateRequisition(
                 Arg.Any<RequisitionHeader>(), 
                 Arg.Any<string>(),
+                Arg.Any<string>(),
                 Arg.Any<IEnumerable<LineCandidate>>());
         }
         

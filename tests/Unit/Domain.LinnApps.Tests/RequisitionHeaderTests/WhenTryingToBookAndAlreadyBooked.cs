@@ -30,7 +30,7 @@
         [Test]
         public void ShouldNotBeAbleToBook()
         {
-            this.sut.CanBookReq(null).Should().BeFalse();
+            this.sut.RequisitionIsBookable(null).Should().BeFalse();
         }
     }
 }

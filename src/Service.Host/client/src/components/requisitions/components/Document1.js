@@ -47,6 +47,12 @@ function Document1({
         clearData: clearDocument1Part
     } = useGet(itemTypes.parts.url, true);
 
+    const {
+        send: fetchLoan,
+        result: loan,
+        clearData: clearLoan
+    } = useGet(itemTypes.loans.url, true);
+
     function toIntId(href) {
         if (href) {
             const segments = href.split('/');
@@ -100,6 +106,13 @@ function Document1({
             clearPurchaseOrder();
         }
     }, [purchaseOrder, onSelect, clearPurchaseOrder, storesFunction, fetchPart]);
+
+    useEffect(() => {
+        if (loan) {
+            onSelect({ ...loan, canReverse: 'Y' });
+        }
+        clearLoan();
+    }, [loan, clearLoan, onSelect]);
 
     useEffect(() => {
         if (creditNote && document1Line) {
@@ -199,6 +212,8 @@ function Document1({
                                         fetchCreditNote(document1);
                                     } else if (partSource == 'WO') {
                                         fetchWorksOrder(document1);
+                                    } else if (partSource === 'L') {
+                                        fetchLoan(document1);
                                     }
                                 }
                             }

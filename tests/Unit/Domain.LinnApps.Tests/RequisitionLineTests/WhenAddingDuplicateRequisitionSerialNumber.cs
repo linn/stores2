@@ -5,30 +5,19 @@
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
 
     using NUnit.Framework;
 
-    public class WhenAddingDuplicateRequisitionSerialNumber
+    public class WhenAddingDuplicateRequisitionSerialNumber : ContextBase
     {
-        private RequisitionLine sut;
-
         private Action action;
 
         [SetUp]
         public void SetUp()
         {
-            this.sut = new RequisitionLine(
-                123,
-                1,
-                new Part(),
-                10,
-                new StoresTransactionDefinition());
+            this.Sut.AddSerialNumber(1);
 
-            this.sut.AddSerialNumber(1);
-
-            this.action = () => this.sut.AddSerialNumber(1);
+            this.action = () => this.Sut.AddSerialNumber(1);
         }
 
         [Test]

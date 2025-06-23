@@ -44,6 +44,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 "1607",
                 "2963",
                 toPalletNumber: 123,
+                toStockPool: "LINN",
                 lines: new List<LineCandidate>
                            {
                                new LineCandidate

@@ -36,5 +36,8 @@
 
         // stores_oo.default_bookin_location
         Task<StorageLocation> DefaultBookInLocation(string partNumber);
+
+        // stores_oo.default_stock_pool
+        Task<StockPool> DefaultStockPool(int? locationId, int? palletNumber);
     }
 }

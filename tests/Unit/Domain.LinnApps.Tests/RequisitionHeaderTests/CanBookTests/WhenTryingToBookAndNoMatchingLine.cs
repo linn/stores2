@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests.CanBookTests
 {
     using FluentAssertions;
 
@@ -7,14 +7,12 @@
 
     using NUnit.Framework;
 
-    public class WhenTryingToBookAndNoMatchingLine
+    public class WhenTryingToBookAndNoMatchingLine : CanBookContextBase
     {
-        private RequisitionHeader sut;
-
         [SetUp]
         public void SetUp()
         {
-            this.sut = new RequisitionHeader(
+            this.Sut = new RequisitionHeader(
                 new Employee(),
                 new StoresFunction { FunctionCode = "F1" },
                 "F",
@@ -24,12 +22,15 @@
                 new Nominal(),
                 reference: null,
                 comments: "A Good Book");
+
+            this.Result = this.Sut.RequisitionCanBeBooked(2);
         }
 
         [Test]
         public void ShouldNotBeAbleToBook()
         {
-            this.sut.CanBookReq(2).Should().BeFalse();
+            this.Result.Success.Should().BeFalse();
+            this.Result.Message.Should().Be($"Selected line not found or unexpected result on lines check for req 0.");
         }
     }
 }

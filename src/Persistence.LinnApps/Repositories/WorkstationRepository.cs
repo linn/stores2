@@ -24,17 +24,25 @@
         {
             return this.serviceDbContext.Workstations.Where(filterExpression)
                 .Include(c => c.Cit)
-                .Include(we => we.WorkstationElements)
-                .ThenInclude(e => e.CreatedBy);
+                .Include(we => we.WorkStationElements)
+                .ThenInclude(e => e.CreatedBy)
+                .Include(we => we.WorkStationElements)
+                .ThenInclude(p => p.Pallet)
+                .Include(we => we.WorkStationElements)
+                .ThenInclude(s => s.StorageLocation);
         }
 
         public override async Task<Workstation> FindByIdAsync(string key)
         {
             var result = await this.serviceDbContext.Workstations
                              .Include(c => c.Cit)
-                             .Include(we => we.WorkstationElements)
+                             .Include(we => we.WorkStationElements)
                              .ThenInclude(e => e.CreatedBy)
-                             .FirstOrDefaultAsync(w => w.WorkstationCode == key);
+                             .Include(we => we.WorkStationElements)
+                             .ThenInclude(p => p.Pallet)
+                             .Include(we => we.WorkStationElements)
+                             .ThenInclude(s => s.StorageLocation)
+                             .FirstOrDefaultAsync(w => w.WorkStationCode == key);
             return result;
         }
     }

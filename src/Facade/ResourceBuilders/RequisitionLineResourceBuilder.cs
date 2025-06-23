@@ -104,7 +104,7 @@
                 yield return new LinkResource("part", $"/parts/{model.Part.Id}");
             }
 
-            if (model.OkToBook())
+            if (model.LineIsBookable())
             {
                 yield return new LinkResource("book-line", "/requisitions/book");
             }

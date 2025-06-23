@@ -2,11 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
-    using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class StoragePlaceAuditReportService : IStoragePlaceAuditReportService
@@ -15,20 +17,32 @@
 
         private readonly IRepository<StockLocator, int> stockLocatorRepository;
 
-        private readonly IStoragePlaceAuditPack storagePlaceAuditPack;
-
         private readonly IQueryRepository<StoragePlace> storagePlaceRepository;
+
+        private readonly IRequisitionFactory requisitionFactory;
+
+        private readonly IRequisitionManager requisitionManager;
+
+        private readonly IRepository<Employee, int> employeeRepository;
+
+        private readonly IRepository<Department, string> departmentRepository;
 
         public StoragePlaceAuditReportService(
             IReportingHelper reportingHelper,
             IRepository<StockLocator, int> stockLocatorRepository,
-            IStoragePlaceAuditPack storagePlaceAuditPack,
-            IQueryRepository<StoragePlace> storagePlaceRepository)
+            IQueryRepository<StoragePlace> storagePlaceRepository,
+            IRequisitionFactory requisitionFactory,
+            IRequisitionManager requisitionManager,
+            IRepository<Employee, int> employeeRepository,
+            IRepository<Department, string> departmentRepository)
         {
             this.reportingHelper = reportingHelper;
             this.stockLocatorRepository = stockLocatorRepository;
-            this.storagePlaceAuditPack = storagePlaceAuditPack;
             this.storagePlaceRepository = storagePlaceRepository;
+            this.requisitionFactory = requisitionFactory;
+            this.requisitionManager = requisitionManager;
+            this.employeeRepository = employeeRepository;
+            this.departmentRepository = departmentRepository;
         }
 
         public ResultsModel StoragePlaceAuditReport(IEnumerable<string> locationList, string locationRange)
@@ -79,11 +93,12 @@
             return model;
         }
 
-        public ProcessResult CreateSuccessAuditReqs(
+        public async Task<ProcessResult> CreateSuccessAuditReqs(
             int employeeNumber,
             IEnumerable<string> locationList,
             string locationRange,
-            string departmentCode)
+            string departmentCode,
+            IList<string> privileges)
         {
             List<StoragePlace> storagePlaces;
 
@@ -100,20 +115,53 @@
                     .OrderBy(s => s.Name).ToList();
             }
 
-            foreach (var storagePlace in storagePlaces)
+            if (string.IsNullOrEmpty(departmentCode))
             {
-                var result = this.storagePlaceAuditPack.CreateAuditReq(
-                    storagePlace.Name,
-                    employeeNumber,
-                    departmentCode);
-
-                if (result != "SUCCESS")
+                departmentCode = await this.GetDefaultDepartmentCode(employeeNumber);
+            }
+            else
+            {
+                var department = await this.departmentRepository.FindByIdAsync(departmentCode);
+                if (department == null)
                 {
-                    return new ProcessResult(false, result);
+                    departmentCode = await this.GetDefaultDepartmentCode(employeeNumber);
                 }
             }
 
+            foreach (var storagePlace in storagePlaces)
+            {
+                    var req = await this.requisitionFactory.CreateRequisition(
+                                  employeeNumber,
+                                  privileges,
+                                  "AUDIT",
+                                  null,
+                                  null,
+                                  null,
+                                  null,
+                                  null,
+                                  null,
+                                  departmentCode,
+                                  "0000004710",
+                                  comments: "Correct",
+                                  auditLocation: storagePlace.Name,
+                                  fromLocationCode: storagePlace.LocationCode,
+                                  toLocationCode: storagePlace.LocationCode,
+                                  fromPalletNumber: storagePlace.PalletNumber,
+                                  toPalletNumber: storagePlace.PalletNumber,
+                                  lines: new List<LineCandidate>());
+
+                    await this.requisitionManager.CheckAndBookRequisition(req);
+            }
+
             return new ProcessResult(true, "Successfully created audit reqs");
+        }
+
+        private async Task<string> GetDefaultDepartmentCode(int employeeNumber)
+        {
+            var employee = await this.employeeRepository.FindByIdAsync(employeeNumber);
+            return string.IsNullOrEmpty(employee?.DepartmentCode)
+                                 ? "0000021608"
+                                 : employee.DepartmentCode;
         }
 
         private List<CalculationValueModel> SetModelRows(IEnumerable<StockLocator> stockLocators)

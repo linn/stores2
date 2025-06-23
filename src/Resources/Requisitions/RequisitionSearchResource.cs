@@ -19,5 +19,11 @@
         public string FunctionCode { get; set; }
 
         public bool? ExcludeReversals { get; set; }
+
+        public int? EmployeeId { get; set; }
+
+        public string StartDate { get; set; }
+
+        public string EndDate { get; set; }
     }
 }

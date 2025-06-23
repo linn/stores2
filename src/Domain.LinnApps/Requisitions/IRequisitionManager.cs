@@ -33,6 +33,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         Task CreateLinesAndBookAutoRequisitionHeader(RequisitionHeader header);
 
+        Task CheckAndBookRequisition(RequisitionHeader header);
+
         Task<RequisitionHeader> CreateLoanReq(int loanNumber);
 
         Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks);
@@ -40,6 +42,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task UpdateRequisition(
             RequisitionHeader headerUpdates, 
             string updatedComments,
+            string updatedReference,
             IEnumerable<LineCandidate> lineUpdates);
 
         Task<RequisitionHeader> Validate(
@@ -79,7 +82,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             LineCandidate candidate, 
             StoresFunction storesFunction = null,
             string reqType = null,
-            bool headerSpecifiesOntoLocation = false);
+            bool headerSpecifiesOntoLocation = false,
+            bool headerSpecifiesOntoStockPool = false);
 
         Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 

@@ -4,17 +4,21 @@
 
     public class WorkstationElementResource : HypermediaResource
     {
-        public int WorkstationElementId { get; set; }
+        public int? WorkStationElementId { get; set; }
 
         public string WorkstationCode { get; set; }
 
-        public int? CreatedBy { get; set; }
+        public int? CreatedById { get; set; }
 
         public string CreatedByName { get; set; }
 
         public string DateCreated { get; set; }
 
         public int? LocationId { get; set; }
+
+        public string LocationCode { get; set; }
+
+        public string LocationDescription { get; set; }
 
         public int? PalletNumber { get; set; }
     }

@@ -7,17 +7,14 @@
     using Linn.Stores2.TestData.Transactions;
     using NUnit.Framework;
 
-    public class WhenCreatingWithoutAPart
+    public class WhenCreatingWithoutAPart : ContextBase
     {
         private Action action;
 
         [SetUp]
         public void SetUp()
         {
-            this.action = () =>
-            {
-                var sut = new RequisitionLine(1, 1, null, 2, TestTransDefs.LinnDeptToStock);
-            };
+            this.action = () => this.Sut = new RequisitionLine(1, 1, null, 2, TestTransDefs.LinnDeptToStock);
         }
 
         [Test]

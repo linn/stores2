@@ -6,6 +6,8 @@ import Grid from '@mui/material/Grid';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import {
@@ -382,64 +384,76 @@ function Requisition({ creating }) {
 
     const handleDocument1Select = selected => {
         setChangesMade(true);
-        dispatch({
-            type: 'set_document1_details',
-            payload: selected
-        });
+        if (formState.req.storesFunction?.partSource === 'L') {
+            dispatch({
+                type: 'set_loan',
+                payload: selected
+            });
+            if (formState.req.isReverTransaction !== 'Y') {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'document1Line', newValue: 1 }
+                });
+            }
+        } else {
+            dispatch({
+                type: 'set_document1_details',
+                payload: selected
+            });
 
+            if (
+                formState.req.storesFunction?.code === 'BOOKLD' &&
+                selected.document1 &&
+                selected.document1Line
+            ) {
+                setBookInPostingsDialogVisible(true);
+            }
+
+            if (formState.req.storesFunction?.code === 'BOOKSU' && selected.partNumber) {
+                getDefaultBookInLocation(null, `?partNumber=${selected.partNumber}`);
+            }
+
+            if (selected.batchRef) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'batchRef', newValue: selected.batchRef }
+                });
+            }
+
+            if (selected.toLocationCode) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'toLocationCode', newValue: selected.toLocationCode }
+                });
+            }
+
+            if (selected.document2) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'document2', newValue: selected.document2 }
+                });
+            }
+
+            if (selected.document3) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'document3', newValue: selected.document3 }
+                });
+            }
+
+            if (selected.quantity) {
+                dispatch({
+                    type: 'set_header_value',
+                    payload: { fieldName: 'quantity', newValue: selected.quantity }
+                });
+            }
+        }
         if (
             formState.req?.isReverseTransaction === 'Y' &&
             selected.canReverse &&
             formState.req.storesFunction?.code !== 'BOOKLD'
         ) {
             setPickRequisitionDialogVisible(true);
-        }
-
-        if (
-            formState.req.storesFunction?.code === 'BOOKLD' &&
-            selected.document1 &&
-            selected.document1Line
-        ) {
-            setBookInPostingsDialogVisible(true);
-        }
-
-        if (formState.req.storesFunction?.code === 'BOOKSU' && selected.partNumber) {
-            getDefaultBookInLocation(null, `?partNumber=${selected.partNumber}`);
-        }
-
-        if (selected.batchRef) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'batchRef', newValue: selected.batchRef }
-            });
-        }
-
-        if (selected.toLocationCode) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'toLocationCode', newValue: selected.toLocationCode }
-            });
-        }
-
-        if (selected.document2) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'document2', newValue: selected.document2 }
-            });
-        }
-
-        if (selected.document3) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'document3', newValue: selected.document3 }
-            });
-        }
-
-        if (selected.quantity) {
-            dispatch({
-                type: 'set_header_value',
-                payload: { fieldName: 'quantity', newValue: selected.quantity }
-            });
         }
     };
 
@@ -474,7 +488,8 @@ function Requisition({ creating }) {
     const canAddMovesOnto =
         selectedLine &&
         ((formState?.req?.storesFunction?.code === 'LDREQ' && formState?.req?.reqType === 'O') ||
-            (formState?.req?.manualPick && formState?.req?.reqreqType === 'O'));
+            (formState?.req?.manualPick && formState?.req?.reqType === 'O'));
+
     //todo also needs to be improved
     const canAddMoves = selectedLine && formState?.req?.storesFunction?.code === 'MOVE';
 
@@ -539,6 +554,11 @@ function Requisition({ creating }) {
                     <CancelWithReasonDialog
                         visible={cancelDialogVisible}
                         closeDialog={() => setCancelDialogVisible(false)}
+                        warningText={
+                            changesMade
+                                ? 'Warning: there are changes on this req!  Cancelling this req will discard changes so please save your changes first if you want to keep them.'
+                                : ''
+                        }
                         onConfirm={reason => {
                             cancel(null, { reason, reqNumber });
                         }}
@@ -719,7 +739,7 @@ function Requisition({ creating }) {
                                         resultLimit={100}
                                         disabled={!creating || !!formState.req.lines?.length}
                                         helperText={
-                                            creating
+                                            creating && !formState.req.storesFunction?.description
                                                 ? 'Enter a value and press <Enter> to search or <Tab> to select. Alternatively press <Enter> with no input to list all functions'
                                                 : ''
                                         }
@@ -1123,6 +1143,7 @@ function Requisition({ creating }) {
                                 toPalletNumber={formState.req.toPalletNumber}
                                 functionCode={formState.req.storesFunction}
                                 batchRef={formState.req.batchRef}
+                                reqType={formState.req.reqType}
                                 setItemValue={(fieldName, newValue) => {
                                     setChangesMade(true);
                                     dispatch({
@@ -1153,7 +1174,10 @@ function Requisition({ creating }) {
                                     fullWidth
                                     value={formState.req.reference}
                                     onChange={handleHeaderFieldChange}
-                                    disabled={!creating}
+                                    disabled={
+                                        formState.req?.cancelled === 'Y' ||
+                                        formState.req?.dateBooked
+                                    }
                                     label="Reference"
                                     propertyName="reference"
                                 />
@@ -1234,6 +1258,7 @@ function Requisition({ creating }) {
                                             dispatch({ type: 'add_line' });
                                         }}
                                         pickStock={(lineNumber, stockMoves) => {
+                                            setChangesMade(true);
                                             dispatch({
                                                 type: 'pick_stock',
                                                 payload: { lineNumber, stockMoves }
@@ -1263,6 +1288,7 @@ function Requisition({ creating }) {
                                         }
                                         reqHeader={formState.req}
                                         locationCodeRoot={formState.req.auditLocation}
+                                        changesMade={changesMade}
                                     />
                                 )}
                                 {tab === 1 && (
@@ -1379,6 +1405,19 @@ function Requisition({ creating }) {
                                         navigate('/requisitions');
                                     }}
                                 />
+                                {changesMade && !validated && (
+                                    <Stack direction="row" spacing={2}>
+                                        <Chip
+                                            label="Invalid to Save"
+                                            color="error"
+                                            size="small"
+                                            variant="outlined"
+                                        />
+                                        <Typography variant="caption">
+                                            {validToSaveMessage()}
+                                        </Typography>
+                                    </Stack>
+                                )}
                             </Grid>
                             {pickRequisitionDialogVisible && (
                                 <PickRequisitionDialog

@@ -280,6 +280,7 @@
                 await this.requisitionManager.UpdateRequisition(
                     entity, 
                     updateResource.Comments,
+                    updateResource.Reference,
                     updateResource.Lines.Select(BuildLineCandidateFromResource));
         }
 
@@ -317,7 +318,12 @@
         protected override Expression<Func<RequisitionHeader, bool>> FilterExpression(
             RequisitionSearchResource searchResource)
         {
-            if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
+            DateTime? startDate = string.IsNullOrEmpty(searchResource.StartDate)
+                                      ? null
+                                      : DateTime.Parse(searchResource.StartDate);
+            DateTime? endDate = string.IsNullOrEmpty(searchResource.EndDate) ? null : DateTime.Parse(searchResource.EndDate);
+            
+            if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber.HasValue)
             {
                 return x => x.Document1Name == searchResource.DocumentName &&
                             x.Document1 == searchResource.DocumentNumber
@@ -332,10 +338,19 @@
                 return x => x.Cancelled != "Y" && x.DateBooked == null;
             }
 
+            if (!searchResource.ReqNumber.HasValue && string.IsNullOrEmpty(searchResource.Comments)
+                                                   && !startDate.HasValue)
+            {
+                startDate = DateTime.Today.AddYears(-1);
+            }
+
             return x => (string.IsNullOrEmpty(searchResource.Comments) 
                          || x.Comments.ToUpper().Contains(searchResource.Comments.ToUpper().Trim())) 
                         && (searchResource.IncludeCancelled || x.Cancelled != "Y")
-                        && (!searchResource.ReqNumber.HasValue || x.ReqNumber == searchResource.ReqNumber);
+                        && (!searchResource.ReqNumber.HasValue || x.ReqNumber == searchResource.ReqNumber)
+                        && (!startDate.HasValue || x.DateCreated >= startDate)
+                        && (!endDate.HasValue || x.DateCreated.Date <= endDate)
+                        && (!searchResource.EmployeeId.HasValue || x.CreatedBy.Id == searchResource.EmployeeId);
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> FindExpression(

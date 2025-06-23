@@ -10,18 +10,27 @@ import {
     utilities,
     InputField,
     Dropdown,
-    CreateButton
+    CreateButton,
+    DatePicker
 } from '@linn-it/linn-form-components-library';
 import Page from '../Page';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
+import useInitialise from '../../hooks/useInitialise';
 
 function SearchRequisitions() {
     const { send, isLoading, result } = useGet(itemTypes.requisitions.url);
     const navigate = useNavigate();
 
-    const [options, setOptions] = useState({ includeCancelled: false });
+    const [options, setOptions] = useState({
+        includeCancelled: false,
+        startDateOption: null,
+        endDateOption: null
+    });
+    const { result: currentEmployees, isLoading: employeesLoading } = useInitialise(
+        itemTypes.currentEmployees.url
+    );
 
     const handleOptionChange = (property, newValue) => {
         if (property === 'includeCancelled') {
@@ -40,8 +49,27 @@ function SearchRequisitions() {
     };
 
     const doQuery = () => {
+        if (options.startDateOption) {
+            options.startDate = options.startDateOption.toISOString();
+        } else {
+            options.startDate = null;
+        }
+
+        if (options.endDateOption) {
+            options.endDate = options.endDateOption.toISOString();
+        } else {
+            options.endDate = null;
+        }
+
         const query = queryString.stringify(options);
-        if (options.reqNumber || options.comments || options.documentNumber) {
+        if (
+            options.reqNumber ||
+            options.comments ||
+            options.documentNumber ||
+            options.employeeId ||
+            options.startDate ||
+            options.endDate
+        ) {
             send(null, `?${query}`);
         }
     };
@@ -69,10 +97,10 @@ function SearchRequisitions() {
             headerName: 'Req Number',
             width: 140
         },
-        { field: 'created', headerName: 'Created', width: 100 },
+        { field: 'created', headerName: 'Created', width: 120 },
         { field: 'createdByName', headerName: 'By', width: 200 },
-        { field: 'doc1', headerName: 'Doc1', width: 100 },
-        { field: 'comments', headerName: 'Comments', width: 200 }
+        { field: 'doc1', headerName: 'Doc1', width: 110 },
+        { field: 'comments', headerName: 'Comments', width: 300 }
     ];
 
     return (
@@ -114,12 +142,22 @@ function SearchRequisitions() {
                         helperText="you can search for a string included in the comments field of the header"
                     />
                 </Grid>
-                <Grid size={3}>
-                    <Button onClick={doQuery} variant="outlined" style={{ marginTop: '29px' }}>
-                        Search
-                    </Button>
+                <Grid size={2}>
+                    <DatePicker
+                        label="Start Date"
+                        value={options.startDateOption}
+                        onChange={value => handleOptionChange('startDateOption', value)}
+                    />
                 </Grid>
-                <Grid size={2} />
+                <Grid size={2}>
+                    <DatePicker
+                        label="To Date"
+                        value={options.endDateOption}
+                        maxDate={new Date()}
+                        onChange={value => handleOptionChange('endDateOption', value)}
+                    />
+                </Grid>
+                <Grid size={1} />
                 <Grid size={2}>
                     <Dropdown
                         fullWidth
@@ -139,7 +177,7 @@ function SearchRequisitions() {
                         ]}
                     />
                 </Grid>
-                <Grid size={3}>
+                <Grid size={2}>
                     {options.documentName && (
                         <InputField
                             fullWidth
@@ -162,8 +200,24 @@ function SearchRequisitions() {
                         items={['N', 'Y']}
                     />
                 </Grid>
-                <Grid size={5} />
-
+                <Grid size={3}>
+                    <Dropdown
+                        propertyName="employeeId"
+                        items={currentEmployees?.items.map(employee => ({
+                            id: employee.id,
+                            displayText: `${employee?.firstName} ${employee?.lastName}`
+                        }))}
+                        label="Created By"
+                        optionsLoading={employeesLoading}
+                        onChange={handleOptionChange}
+                        value={options.employeeId}
+                    />
+                </Grid>
+                <Grid size={3}>
+                    <Button onClick={doQuery} variant="outlined" style={{ marginTop: '29px' }}>
+                        Search
+                    </Button>
+                </Grid>
                 <Grid size={12}>
                     <DataGrid
                         rows={

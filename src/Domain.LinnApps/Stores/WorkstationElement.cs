@@ -2,6 +2,9 @@
 {
     using System;
 
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+
     public class WorkstationElement
     {
         public WorkstationElement()
@@ -9,31 +12,36 @@
         }
 
         public WorkstationElement(
-            int workstationElementId,
-            string workstationCode,
+            int workStationElementId,
+            string workStationCode,
             Employee createdBy,
             DateTime dateCreated,
-            int? locationId,
-            int? palletNumber)
+            StorageLocation storageLocation,
+            StoresPallet storesPallet)
         {
-            this.WorkstationElementId = workstationElementId;
-            this.WorkstationCode = workstationCode;
+            if (storageLocation == null && storesPallet == null)
+            {
+                throw new WorkstationException("A workstation element must have either a storage location or a pallet.");
+            }
+
+            this.WorkStationElementId = workStationElementId;
+            this.WorkStationCode = workStationCode;
             this.CreatedBy = createdBy;
             this.DateCreated = dateCreated;
-            this.LocationId = locationId;
-            this.PalletNumber = palletNumber;
+            this.StorageLocation = storageLocation;
+            this.Pallet = storesPallet;
         }
 
-        public int WorkstationElementId { get; protected set; }
+        public int WorkStationElementId { get; protected set; }
 
-        public string WorkstationCode { get; protected set; }
+        public string WorkStationCode { get; protected set; }
 
         public Employee CreatedBy { get; protected set; }
 
         public DateTime DateCreated { get; protected set; }
 
-        public int? LocationId { get; protected set; }
+        public StorageLocation StorageLocation { get; protected set; }
 
-        public int? PalletNumber { get; protected set; }
+        public StoresPallet Pallet { get; protected set; }
     }
 }

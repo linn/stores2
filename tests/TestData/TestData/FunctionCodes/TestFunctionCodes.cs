@@ -283,6 +283,36 @@
                 }
             };
 
+
+        public static readonly StoresFunction LoanBack =
+            new StoresFunction("LOAN BACK")
+                {
+                    Description = "RETURN LOAN GOODS FROM LOAN ACCOUNT TO STORES",
+                    BatchRequired = "O",
+                    Document1RequiredFlag = "Y",
+                    Document1Text = "Loan Number",
+                    Document1LineRequiredFlag = "O",
+                    DepartmentNominalRequired = "N",
+                    FromStateRequired = "N",
+                    FunctionType = "A",
+                    ManualPickRequired = "X",
+                    PartSource = "L",
+                    ProcessStage = 1,
+                    ToStateRequired = "O",
+                    ToStockPoolRequired = "O",
+                    CanBeReversed = "Y",
+                    TransactionsTypes = new List<StoresFunctionTransaction>
+                                            {
+                                                new StoresFunctionTransaction
+                                                    {
+                                                        FunctionCode = "LOAN BACK",
+                                                        Seq = 1,
+                                                        TransactionDefinition = TestTransDefs.LoanToStock,
+                                                        TransactionCode = TestTransDefs.LoanToStock.TransactionCode
+                                                    }
+                                            }
+                };
+
         public static readonly StoresFunction Rsn =
             new StoresFunction("RSN")
             {
@@ -727,6 +757,43 @@
                         FunctionCode = "OFF DEM",
                         TransactionDefinition = TestTransDefs.MoveDemToStock,
                         TransactionCode = TestTransDefs.MoveDemToStock.TransactionCode
+                    }
+                }
+            };
+
+        public static readonly StoresFunction WriteOffFromQC =
+            new StoresFunction("WOFF QC")
+            {
+                Description = "WRITE OFF/ON PARTS IN STOCK",
+                BatchRequired = "N",
+                DepartmentNominalRequired = "Y",
+                Document1RequiredFlag = "N",
+                Document1LineRequiredFlag = "N",
+                FromStateRequired = "Y",
+                FunctionType = "M",
+                ManualPickRequired = "M",
+                PartSource = "N",
+                ProcessStage = 2,
+                ToStockPoolRequired = "O",
+                ToStateRequired = "N",
+                CanBeReversed = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
+                {
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "WOFF QC",
+                        Seq = 1,
+                        TransactionDefinition = TestTransDefs.WriteOffQC,
+                        TransactionCode = TestTransDefs.WriteOffQC.TransactionCode,
+                        ReqType = "F"
+                    },
+                    new StoresFunctionTransaction
+                    {
+                        FunctionCode = "WOFF QC",
+                        Seq = 2,
+                        TransactionDefinition = TestTransDefs.WriteOnQC,
+                        TransactionCode = TestTransDefs.WriteOnQC.TransactionCode,
+                        ReqType = "O"
                     }
                 }
             };
