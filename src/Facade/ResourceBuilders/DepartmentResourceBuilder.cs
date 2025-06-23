@@ -33,7 +33,7 @@
 
         public string GetLocation(Department model)
         {
-            return $"/stores2/stock-pools/{model.DepartmentCode}";
+            return $"/stores2/department/{model.DepartmentCode}";
         }
 
         object IBuilder<Department>.Build(Department entity, IEnumerable<string> claims) =>

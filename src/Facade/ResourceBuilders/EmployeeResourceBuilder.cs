@@ -25,7 +25,7 @@
 
     public string GetLocation(Employee model)
     {
-        return $"/stores2/stock-pools/{model.Id}";
+        return $"/stores2/employee/{model.Id}";
     }
 
     object IBuilder<Employee>.Build(Employee entity, IEnumerable<string> claims) =>
