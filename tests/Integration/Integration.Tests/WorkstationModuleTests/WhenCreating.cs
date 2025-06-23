@@ -8,10 +8,13 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Stores;
+
+    using NSubstitute;
 
     using NUnit.Framework;
 
@@ -24,34 +27,37 @@
         [SetUp]
         public void SetUp()
         {
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkstationAdmin, Arg.Any<IEnumerable<string>>())
+                .Returns(true);
+
             this.location = new StorageLocation
-                                 {
-                                     LocationId = 1,
-                                     LocationCode = "E-MH-KIT",
-                                     StorageAreaCode = "MHK",
-                                     Description = "MARK H"
-                                 };
+            {
+                LocationId = 1,
+                LocationCode = "E-MH-KIT",
+                StorageAreaCode = "MHK",
+                Description = "MARK H"
+            };
 
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.location);
             this.DbContext.SaveChanges();
 
             this.pallet = new StoresPallet
-                                {
-                                    PalletNumber = 999,
-                                    Description = "PALLET 999"
-                                };
+            {
+                PalletNumber = 999,
+                Description = "PALLET 999"
+            };
 
             this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
             this.DbContext.SaveChanges();
 
-            this.createResource = new WorkstationResource 
-                                      {
-                                          WorkStationCode = "WORKSTATIONCODE",
-                                          CitCode = "R",
-                                          CitName = "R CODE",
-                                          Description = "A TEST WORKSTATION",
-                                          ZoneType = "Z",
-                                          WorkStationElements = new List<WorkstationElementResource>
+            this.createResource = new WorkstationResource
+            {
+                WorkStationCode = "WORKSTATIONCODE",
+                CitCode = "R",
+                CitName = "R CODE",
+                Description = "A TEST WORKSTATION",
+                ZoneType = "Z",
+                WorkStationElements = new List<WorkstationElementResource>
                                                                     {
                                                                         new WorkstationElementResource()
                                                                             {
@@ -72,7 +78,7 @@
                                                                                 WorkStationElementId = 2
                                                                             }
                                                                     }
-                                      };
+            };
 
             this.Response = this.Client.PostAsJsonAsync($"/stores2/work-stations", this.createResource).Result;
         }

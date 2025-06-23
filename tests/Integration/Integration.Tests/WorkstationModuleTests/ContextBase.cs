@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -16,6 +17,8 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -26,10 +29,15 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
+
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
 
             var transactionManager = new TransactionManager(this.DbContext);
 
@@ -55,8 +63,9 @@
                     citRepository,
                     storageLocationRepository,
                     palletRepository,
+                    this.AuthorisationService,
                     transactionManager,
-                    new WorkstationResourceBuilder(new WorkstationElementsResourceBuilder()));
+                    new WorkstationResourceBuilder(new WorkstationElementsResourceBuilder(), this.AuthorisationService));
 
             this.Client = TestClient.With<WorkstationModule>(
                 services =>

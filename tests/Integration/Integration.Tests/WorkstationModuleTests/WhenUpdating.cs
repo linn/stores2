@@ -8,10 +8,13 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Stores;
+
+    using NSubstitute;
 
     using NUnit.Framework;
 
@@ -26,28 +29,31 @@
         [SetUp]
         public void SetUp()
         {
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkstationAdmin, Arg.Any<IEnumerable<string>>())
+                .Returns(true);
+
             this.location = new StorageLocation
-                                {
-                                    LocationId = 1,
-                                    LocationCode = "E-MH-KIT",
-                                    StorageAreaCode = "MHK",
-                                    Description = "MARK H"
-                                };
+            {
+                LocationId = 1,
+                LocationCode = "E-MH-KIT",
+                StorageAreaCode = "MHK",
+                Description = "MARK H"
+            };
 
             this.pallet = new StoresPallet
-                              {
-                                  PalletNumber = 999,
-                                  Description = "PALLET 999"
-                              };
+            {
+                PalletNumber = 999,
+                Description = "PALLET 999"
+            };
 
             this.workstation = new Workstation(
                 "Test",
                 "description",
                 new Cit
-                    {
-                        Code = "R",
-                        Name = "R CODE"
-                    },
+                {
+                    Code = "R",
+                    Name = "R CODE"
+                },
                 "Z",
                 null);
 

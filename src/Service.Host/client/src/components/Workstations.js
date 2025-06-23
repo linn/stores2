@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { CreateButton, InputField, Loading } from '@linn-it/linn-form-components-library';
+import {
+    CreateButton,
+    InputField,
+    Loading,
+    PermissionIndicator,
+    utilities
+} from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
@@ -22,6 +28,8 @@ function Workstations() {
             setCitCodeSearchTerm(newValue);
         }
     };
+
+    const hasPermission = utilities.getHref(workStationsResult?.[0], 'workstation-admin');
 
     const {
         send: getWorkStations,
@@ -76,11 +84,21 @@ function Workstations() {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
-                <Grid size={12}>
+                <Grid size={11}>
                     <Typography variant="h4">Workstation Utility</Typography>
                 </Grid>
+                <Grid size={1}>
+                    <PermissionIndicator
+                        hasPermission={hasPermission}
+                        hasPermissionMessage="You have create/update workstation permissions"
+                        noPermissionMessage="You do not have create/update workstation permissions"
+                    />
+                </Grid>
                 <Grid size={12}>
-                    <CreateButton createUrl="/stores2/work-stations/create" />
+                    <CreateButton
+                        createUrl="/stores2/work-stations/create"
+                        disabled={!hasPermission}
+                    />
                 </Grid>
                 <Grid size={4}>
                     <InputField

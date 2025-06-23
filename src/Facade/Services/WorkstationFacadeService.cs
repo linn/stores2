@@ -6,6 +6,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
@@ -27,12 +28,15 @@
 
         private readonly IRepository<StoresPallet, int> palletRepository;
 
+        private readonly IAuthorisationService authService;
+
         public WorkstationFacadeService(
             IRepository<Workstation, string> repository,
             IRepository<Employee, int> employeeRepository,
             IRepository<Cit, string> citRepository,
             IRepository<StorageLocation, int> storageLocationRepository,
             IRepository<StoresPallet, int> palletRepository,
+            IAuthorisationService authService,
             ITransactionManager transactionManager,
             IBuilder<Workstation> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
@@ -42,13 +46,18 @@
             this.citRepository = citRepository;
             this.storageLocationRepository = storageLocationRepository;
             this.palletRepository = palletRepository;
+            this.authService = authService;
         }
 
         protected override async Task<Workstation> CreateFromResourceAsync(
             WorkstationResource resource,
             IEnumerable<string> privileges = null)
         {
-            var workstation = await this.repository.FindByIdAsync(resource.WorkStationCode);
+            if (!this.authService.HasPermissionFor(AuthorisedActions.WorkstationAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to create work stations");
+            }
+
             var cit = await this.citRepository.FindByIdAsync(resource.CitCode);
 
             var workStationElements = new List<WorkstationElement>();
@@ -91,6 +100,11 @@
             WorkstationResource updateResource,
             IEnumerable<string> privileges = null)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.WorkstationAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to update work stations");
+            }
+
             var cit = await this.citRepository.FindByIdAsync(updateResource.CitCode);
 
             var workStationElements = new List<WorkstationElement>();
@@ -145,9 +159,13 @@
 
         protected override Expression<Func<Workstation, bool>> FilterExpression(WorkstationSearchResource searchResource)
         {
+            var workStationCode = searchResource.WorkStationCode?.Trim().ToUpper();
+            var citCode = searchResource.CitCode?.Trim().ToUpper();
+
             return w =>
-                (string.IsNullOrEmpty(searchResource.WorkStationCode) || w.WorkStationCode.ToUpper() == searchResource.WorkStationCode.Trim().ToUpper())
-                && (string.IsNullOrEmpty(searchResource.CitCode) || w.Cit.Code.ToUpper() == searchResource.CitCode.Trim().ToUpper());
+                (workStationCode == null || (w.WorkStationCode != null && w.WorkStationCode.ToUpper().Contains(workStationCode)))
+                &&
+                (citCode == null || (w.Cit != null && w.Cit.Code != null && w.Cit.Code.ToUpper().Contains(citCode)));
         }
 
         protected override Expression<Func<Workstation, bool>> FindExpression(WorkstationSearchResource searchResource)
