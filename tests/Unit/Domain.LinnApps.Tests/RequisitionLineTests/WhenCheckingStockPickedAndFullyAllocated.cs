@@ -1,12 +1,12 @@
-﻿using FluentAssertions;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using Linn.Stores2.Domain.LinnApps.Stock;
-using Linn.Stores2.TestData.Parts;
-using Linn.Stores2.TestData.Transactions;
-using NUnit.Framework;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
 {
+    using FluentAssertions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.Parts;
+    using Linn.Stores2.TestData.Transactions;
+    using NUnit.Framework;
+
     public class WhenCheckingStockPickedAndFullyAllocated
     {
         private RequisitionLine sut;
