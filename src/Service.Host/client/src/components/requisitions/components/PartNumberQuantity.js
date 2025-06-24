@@ -31,10 +31,15 @@ function PartNumberQuantity({
             );
             if (exactMatch) {
                 setPart(exactMatch);
-                clearPartsSearch();
             }
         }
     }, [partsSearchResults, partNumber, clearPartsSearch, setPart]);
+
+    const maybeSearchParts = partValue => {
+        if (partValue) {
+            searchParts(partValue?.toUpperCase());
+        }
+    };
 
     if (!shouldRender) {
         return '';
@@ -64,15 +69,14 @@ function PartNumberQuantity({
                         {
                             keyCode: 9,
                             action: () => {
-                                if (partNumber) {
-                                    searchParts(partNumber?.toUpperCase());
-                                }
+                                maybeSearchParts(partNumber);
                             }
                         }
                     ]}
                     onResultSelect={r => {
                         setPart(r);
                     }}
+                    handleOnBlur={() => maybeSearchParts(partNumber)}
                     clearSearch={clearPartsSearch}
                     autoFocus={false}
                 />
