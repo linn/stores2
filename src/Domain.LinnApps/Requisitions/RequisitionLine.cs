@@ -251,5 +251,16 @@
 
             this.SerialNumbers.Add(new RequisitionSerialNumber(this.ReqNumber, this.LineNumber, nextSeq, serialNumber));
         }
+
+        public bool StockPicked()
+        {
+            if (!this.IsBooked() && !this.IsCancelled() && this.Qty > 0 && this.TransactionDefinition.RequiresStockAllocations)
+            {
+                var totalQtyAllocated =
+                    this.Moves.Where(m => m.StockLocator != null && !m.IsBooked() && !m.IsCancelled()).Sum(m => m.Quantity);
+                return this.Qty == totalQtyAllocated;
+            }
+            return false;
+        }
     }
 }
