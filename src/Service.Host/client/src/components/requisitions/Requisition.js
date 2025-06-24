@@ -785,6 +785,7 @@ function Requisition({ creating }) {
                                         onKeyPressFunctions={[
                                             { keyCode: 9, action: getAndSetFunctionCode }
                                         ]}
+                                        handleOnBlur={getAndSetFunctionCode}
                                         priorityFunction="closestMatchesFirst"
                                         onResultSelect={r => {
                                             if (utilities.getHref(r, 'create-req')) {
