@@ -1454,14 +1454,17 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         locationId = location.LocationId;
                     }
 
-                    DoProcessResultCheck(
-                        await this.stockService.ValidStockLocation(
-                            locationId,
-                            m.FromPallet,
-                            partNumber, 
-                            m.Qty,
-                            m.FromState,
-                            m.FromStockPool));
+                    if (m.IsAddition)
+                    {
+                        DoProcessResultCheck(
+                            await this.stockService.ValidStockLocation(
+                                locationId,
+                                m.FromPallet,
+                                partNumber,
+                                m.Qty,
+                                m.FromState,
+                                m.FromStockPool));
+                    }
                 }
 
                 // just checking moves onto for now, but could extend if required

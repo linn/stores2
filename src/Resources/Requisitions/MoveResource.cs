@@ -47,6 +47,8 @@ namespace Linn.Stores2.Resources.Requisitions
         public decimal? QtyAtLocation { get; set; }
 
         public decimal? QtyAllocated { get; set; }
+
+        public int? StockLocatorId { get; set; }
         
         public bool? IsFrom { get; set; }
         

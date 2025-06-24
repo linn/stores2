@@ -113,14 +113,16 @@ function StockOptions({
                             )}
                         </Grid>
                         <Grid size={2}>
-                            <Button
-                                onClick={() => setPickStockDialogVisible(true)}
-                                variant="outlined"
-                                style={{ marginTop: '32px' }}
-                                disabled={disabled || !doPickStock}
-                            >
-                                Pick Stock
-                            </Button>
+                            {partNumber && (
+                                <Button
+                                    onClick={() => setPickStockDialogVisible(true)}
+                                    variant="outlined"
+                                    style={{ marginTop: '32px' }}
+                                    disabled={disabled || !doPickStock}
+                                >
+                                    Pick Stock
+                                </Button>
+                            )}
                         </Grid>
                         <Grid size={4} />
                     </>

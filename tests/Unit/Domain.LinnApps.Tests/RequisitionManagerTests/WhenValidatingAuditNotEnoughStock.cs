@@ -65,7 +65,7 @@
                                        TransactionDefinition = TestTransDefs.StockToAdjust.TransactionCode,
                                        Moves = new List<MoveSpecification>
                                                    {
-                                                       new MoveSpecification { Qty = 1, FromPallet = 123, FromStockPool = "LINN" }
+                                                       new MoveSpecification { Qty = 1, FromPallet = 123, FromStockPool = "LINN", IsAddition = true}
                                                    }
                                    },
                                new LineCandidate
@@ -75,7 +75,7 @@
                                        TransactionDefinition = TestTransDefs.AdjustToStock.TransactionCode,
                                        Moves = new List<MoveSpecification>
                                                    {
-                                                       new MoveSpecification { Qty = 12, ToPallet = 456, ToStockPool = "LINN" }
+                                                       new MoveSpecification { Qty = 12, ToPallet = 456, ToStockPool = "LINN", IsAddition = true }
                                                    }
                                    }
                            });
