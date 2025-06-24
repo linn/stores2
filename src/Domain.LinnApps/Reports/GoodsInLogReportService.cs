@@ -130,6 +130,13 @@
                     new CalculationValueModel
                         {
                             RowId = rowId,
+                            TextDisplay = goodsInLogEntry.ReqNumber.ToString(),
+                            ColumnId = "ReqNumber"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
                             TextDisplay = goodsInLogEntry.SerialNumber.ToString(),
                             ColumnId = "SerialNumber"
                         });
@@ -189,13 +196,6 @@
                             TextDisplay = goodsInLogEntry.DemLocation,
                             ColumnId = "DemLocation"
                         });
-                values.Add(
-                    new CalculationValueModel
-                        {
-                            RowId = rowId,
-                            TextDisplay = goodsInLogEntry.ReqNumber.ToString(),
-                            ColumnId = "ReqNumber"
-                    });
                 values.Add(
                     new CalculationValueModel
                         {
@@ -277,6 +277,7 @@
                                   new AxisDetailsModel("Quantity", "Qty", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("StorageType", "Storage Type", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("StoragePlace", "Onto", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("ReqNumber", "Req Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("SerialNumber", "Serial Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("ArticleNumber", "Article Number", GridDisplayType.TextValue, 200),
                                   new AxisDetailsModel("LoanNumber", "Loan Number", GridDisplayType.TextValue, 100),
@@ -286,7 +287,6 @@
                                   new AxisDetailsModel("LogCondition", "Condition", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("State", "State", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("DemLocation", "Dem Location", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("ReqNumber", "Req Number", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("ReqLine", "Line", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("WandString", "Wand String", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("ManufacturersPartNumber", "Manuf Part Number", GridDisplayType.TextValue, 100),
