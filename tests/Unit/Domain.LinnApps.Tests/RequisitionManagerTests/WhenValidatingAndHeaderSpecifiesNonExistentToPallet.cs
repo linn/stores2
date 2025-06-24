@@ -5,6 +5,7 @@
 
     using FluentAssertions;
 
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -23,9 +24,9 @@
         public void SetUp()
         {
             this.DepartmentRepository.FindByIdAsync("1607")
-                .Returns(new Department("1607", "DESC"));
+                .Returns(new Department("0000001607", "DESC"));
             this.NominalRepository.FindByIdAsync("2963")
-                .Returns(new Nominal("2963", "DESC"));
+                .Returns(new Nominal("0000002963", "DESC"));
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.Move.FunctionCode)
                 .Returns(TestFunctionCodes.Move);
@@ -33,6 +34,8 @@
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StoresMove.TransactionCode)
                 .Returns(TestTransDefs.StoresMove);
+            this.StoresService.ValidDepartmentNominal("0000001607", "0000002963")
+                .Returns(new ProcessResult(true, "ok"));
 
             this.act = () => this.Sut.Validate(
                 33087,

@@ -727,6 +727,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 return req;
             }
 
+            if (req.Department != null && req.Nominal != null)
+            {
+                DoProcessResultCheck(
+                    await this.storesService.ValidDepartmentNominal(
+                        req.Department.DepartmentCode,
+                        req.Nominal.NominalCode));
+            }
+
             if (!string.IsNullOrEmpty(auditLocation))
             {
                 var location = await this.auditLocationRepository.FindByAsync(a => a.StoragePlace == auditLocation);
