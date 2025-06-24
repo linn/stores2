@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import { InputField, Search } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../../itemTypes';
 import useSearch from '../../../hooks/useSearch';
+import useGet from '../../../hooks/useGet';
 
 function PartNumberQuantity({
     partNumber = null,
@@ -24,20 +25,22 @@ function PartNumberQuantity({
         clear: clearPartsSearch
     } = useSearch(itemTypes.parts.url, 'id', 'partNumber', 'description');
 
-    useEffect(() => {
-        if (partsSearchResults?.length) {
-            const exactMatch = partsSearchResults.find(
-                part => part.partNumber.toUpperCase() === partNumber?.toUpperCase()
-            );
-            if (exactMatch) {
-                setPart(exactMatch);
-            }
-        }
-    }, [partsSearchResults, partNumber, clearPartsSearch, setPart]);
+    const {
+        send: getPart,
+        result: getPartResult,
+        clearData: clearPartResult
+    } = useGet(itemTypes.parts.url, true);
 
-    const maybeSearchParts = partValue => {
+    useEffect(() => {
+        if (getPartResult && getPartResult.length === 1) {
+            setPart(getPartResult[0]);
+            clearPartResult();
+        }
+    }, [getPartResult, clearPartResult, setPart]);
+
+    const maybeGetPart = partValue => {
         if (partValue) {
-            searchParts(partValue?.toUpperCase());
+            getPart(null, `?searchTerm=${partValue?.toUpperCase()}&exactOnly=true`);
         }
     };
 
@@ -69,14 +72,14 @@ function PartNumberQuantity({
                         {
                             keyCode: 9,
                             action: () => {
-                                maybeSearchParts(partNumber);
+                                maybeGetPart(partNumber);
                             }
                         }
                     ]}
                     onResultSelect={r => {
                         setPart(r);
                     }}
-                    handleOnBlur={() => maybeSearchParts(partNumber)}
+                    handleOnBlur={() => maybeGetPart(partNumber)}
                     clearSearch={clearPartsSearch}
                     autoFocus={false}
                 />
