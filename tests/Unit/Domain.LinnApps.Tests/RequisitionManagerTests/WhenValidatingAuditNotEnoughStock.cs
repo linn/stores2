@@ -46,6 +46,8 @@
                 .Returns(new ProcessResult(false, "only got a wee bit left"));
             this.AuditLocationRepository.FindByAsync(Arg.Any<Expression<Func<AuditLocation, bool>>>())
                 .Returns(new AuditLocation());
+            this.StoresService.ValidDepartmentNominal("1607", "2963")
+                .Returns(new ProcessResult(true, "ok"));
 
             this.action = () => this.Sut.Validate(
                 100,
