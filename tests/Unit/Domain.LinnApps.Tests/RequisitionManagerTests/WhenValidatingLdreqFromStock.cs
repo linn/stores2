@@ -38,6 +38,8 @@
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
             this.StockService.ValidStockLocation(null, 123, "PART", 1, null)
                 .Returns(new ProcessResult(true, "Ok"));
+            this.StoresService.ValidDepartmentNominal("1607", "2963")
+                .Returns(new ProcessResult(true, "ok"));
 
             this.result = await this.Sut.Validate(
                               33087,

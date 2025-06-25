@@ -41,6 +41,8 @@
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
             this.StoresService.ValidPartNumberChange(Arg.Any<Part>(), Arg.Any<Part>())
                 .Returns(new ProcessResult(false, "Invalid part number change"));
+            this.StoresService.ValidDepartmentNominal("0000042808", "0000000480")
+                .Returns(new ProcessResult(true, "ok"));
 
             this.action = () => this.Sut.Validate(
                 33087,

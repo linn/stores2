@@ -38,6 +38,7 @@
                            Document2Type = l.Document2Type,
                            DateBooked = l.DateBooked?.ToString("o"),
                            Cancelled = l.Cancelled,
+                           StockPicked = l.StockPicked(),
                            StoresBudgets = l.StoresBudgets?.Select(
                                b => storesBudgetResourceBuilder.Build(b, null)),
                            Postings = l.NominalAccountPostings?.Select(
@@ -76,7 +77,9 @@
                                                                 SerialNumber = m.SerialNumber, 
                                                                 Remarks = m.Remarks,
                                                                 IsFrom = m.StockLocator != null,
-                                                                IsTo = m.PalletNumber.HasValue || m.Location != null
+                                                                IsTo = m.PalletNumber.HasValue || m.Location != null,
+                                                                StockLocatorId = m.StockLocator?.Id,
+                                                                IsAddition = false
                                                             }),
                            SerialNumbers = l.SerialNumbers == null
                                                ? new List<RequisitionSerialNumberResource>()

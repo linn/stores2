@@ -46,6 +46,8 @@
                 .Returns(new ProcessResult(false, "only got a wee bit left"));
             this.AuditLocationRepository.FindByAsync(Arg.Any<Expression<Func<AuditLocation, bool>>>())
                 .Returns(new AuditLocation());
+            this.StoresService.ValidDepartmentNominal("1607", "2963")
+                .Returns(new ProcessResult(true, "ok"));
 
             this.action = () => this.Sut.Validate(
                 100,
@@ -65,7 +67,7 @@
                                        TransactionDefinition = TestTransDefs.StockToAdjust.TransactionCode,
                                        Moves = new List<MoveSpecification>
                                                    {
-                                                       new MoveSpecification { Qty = 1, FromPallet = 123, FromStockPool = "LINN" }
+                                                       new MoveSpecification { Qty = 1, FromPallet = 123, FromStockPool = "LINN", IsAddition = true}
                                                    }
                                    },
                                new LineCandidate
@@ -75,7 +77,7 @@
                                        TransactionDefinition = TestTransDefs.AdjustToStock.TransactionCode,
                                        Moves = new List<MoveSpecification>
                                                    {
-                                                       new MoveSpecification { Qty = 12, ToPallet = 456, ToStockPool = "LINN" }
+                                                       new MoveSpecification { Qty = 12, ToPallet = 456, ToStockPool = "LINN", IsAddition = true }
                                                    }
                                    }
                            });

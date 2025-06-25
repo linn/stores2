@@ -45,6 +45,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 .Returns(new ProcessResult(true, "ok"));
             this.AuditLocationRepository.FindByAsync(Arg.Any<Expression<Func<AuditLocation, bool>>>())
                 .Returns(new AuditLocation());
+            this.StoresService.ValidDepartmentNominal("1607", "2963")
+                .Returns(new ProcessResult(true, "ok"));
 
             this.result = await this.Sut.Validate(
                 100,

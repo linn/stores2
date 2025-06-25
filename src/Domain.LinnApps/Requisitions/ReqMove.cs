@@ -22,7 +22,8 @@
             int? locationId,
             string stockPool,
             string state,
-            string category)
+            string category,
+            StockLocator stockLocator = null)
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
@@ -37,6 +38,7 @@
             this.DateBooked = null;
             this.DateCancelled = null;
             this.Booked = "N";
+            this.StockLocator = stockLocator;
         }
 
         public int ReqNumber { get; protected init; }
