@@ -229,6 +229,31 @@
             return new SuccessResult<StorageLocationResource>(builder.Build(result, new List<string>()));
         }
 
+        public async Task<IResult<RequisitionHeaderResource>> UnpickRequisitionMove(int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate,
+            IEnumerable<string> privileges)
+        {
+            try
+            {
+                var privilegeList = privileges.ToList();
+
+                var cancelled = await this.requisitionManager.UnpickRequisitionMove(
+                    reqNumber,
+                    lineNumber,
+                    seq,
+                    qtyToUnpick,
+                    unpickedBy,
+                    reallocate,
+                    privilegeList);
+
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(cancelled, privilegeList));
+            }
+            catch (DomainException e)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(e.Message);
+            }
+        }
+
         protected override async Task<RequisitionHeader> CreateFromResourceAsync(
             RequisitionHeaderResource resource,
             IEnumerable<string> privileges = null)

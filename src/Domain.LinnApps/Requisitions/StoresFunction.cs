@@ -75,6 +75,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string AuditLocationRequired { get; set; }
 
+        public string UpdateSodQtyOS { get; set; }
+
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
         public string LinesRequired { get; set;  }

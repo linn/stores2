@@ -20,6 +20,7 @@
                 ProcessStage = 1,
                 ToStateRequired = "N",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -56,6 +57,7 @@
                 ProcessStage = 1,
                 ToStateRequired = "N",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -89,6 +91,7 @@
                 ProcessStage = 1,
                 ToStateRequired = "N",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 AuditLocationRequired = "Y"
             };
 
@@ -106,7 +109,8 @@
                 PartSource = "WO",
                 ProcessStage = 2,
                 ToStateRequired = "O",
-                CanBeReversed = "Y"
+                CanBeReversed = "Y",
+                UpdateSodQtyOS = "N"
             };
 
         public static readonly StoresFunction BookToLinnDepartment =
@@ -124,6 +128,7 @@
                     ProcessStage = 2,
                     ToStateRequired = "N",
                     CanBeReversed = "Y",
+                    UpdateSodQtyOS = "N",
                     ToLocationRequired = "N"
                 };
 
@@ -144,6 +149,7 @@
                 CanBeReversed = "Y",
                 ReceiptDateRequired = "Y",
                 DepartmentNominalRequired = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -196,6 +202,7 @@
                 PartSource = "C",
                 ProcessStage = 2,
                 CanBeReversed = "Y",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>()
                 {
                     new StoresFunctionTransaction
@@ -233,6 +240,7 @@
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -271,6 +279,7 @@
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -301,7 +310,8 @@
                     ToStateRequired = "O",
                     ToStockPoolRequired = "O",
                     CanBeReversed = "Y",
-                    TransactionsTypes = new List<StoresFunctionTransaction>
+                    UpdateSodQtyOS = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
                                                     {
@@ -329,6 +339,7 @@
                 ProcessStage = 1,
                 ToStateRequired = "N",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -368,6 +379,7 @@
                 ToLocationRequired = "Y",
                 ToStateRequired = "N",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -395,6 +407,7 @@
                 ToStockPoolRequired = "O",
                 ToStateRequired = "N",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -434,7 +447,8 @@
                     FunctionType = "A",
                     ToStateRequired = "X",
                     CanBeReversed = "Y",
-                    TransactionsTypes = new List<StoresFunctionTransaction>
+                    UpdateSodQtyOS = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
                                                     {
@@ -462,7 +476,8 @@
                     FunctionType = "A",
                     ToStateRequired = "X",
                     CanBeReversed = "N",
-                    TransactionsTypes = new List<StoresFunctionTransaction>
+                    UpdateSodQtyOS = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
                                                     {
@@ -484,7 +499,8 @@
                     ToStateRequired = "N",
                     BatchRequired = "N",
                     ProcessStage = 1,
-                    CanBeReversed = "N"
+                    CanBeReversed = "N",
+                    UpdateSodQtyOS = "N",
             };
 
         public static readonly StoresFunction SupplierReturn =
@@ -495,7 +511,8 @@
                     ToStateRequired = "Y",
                     ToStockPool = "LINN",
                     ProcessStage = 1,
-                    CanBeReversed = "N"
+                    UpdateSodQtyOS = "N"
+
             };
 
         public static readonly StoresFunction Move =
@@ -510,7 +527,8 @@
                     CanBeReversed = "N",
                     ProcessStage = 2,
                     ToLocationRequired = "O",
-                    TransactionsTypes = new List<StoresFunctionTransaction>
+                    UpdateSodQtyOS = "N",
+                TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
                                                     {
@@ -537,6 +555,7 @@
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -566,6 +585,7 @@
                 ToStateRequired = "N",
                 ToStockPoolRequired = "N",
                 CanBeReversed = "Y",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -615,6 +635,7 @@
                 ToStateRequired = "N",
                 ToStockPoolRequired = "O",
                 CanBeCancelled = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -642,6 +663,7 @@
                 ToStateRequired = "O",
                 ToStockPoolRequired = "O",
                 CanBeCancelled = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -750,6 +772,7 @@
                 ToLocationRequired = "O",
                 ToStateRequired = "N",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction
@@ -777,6 +800,7 @@
                 ToStockPoolRequired = "O",
                 ToStateRequired = "N",
                 CanBeReversed = "N",
+                UpdateSodQtyOS = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                 {
                     new StoresFunctionTransaction

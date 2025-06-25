@@ -27,7 +27,7 @@
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
-            this.Sequence = Sequence;
+            this.Sequence = seq;
             this.Quantity = qty;
             this.StockLocatorId = stockLocatorId;
             this.PalletNumber = palletNumber;
@@ -95,6 +95,8 @@
         public bool IsCancelled() => this.DateCancelled != null;
 
         public bool IsBooked() => this.DateBooked != null || this.Booked == "Y";
+
+        public bool CanUnPick() => !this.IsBooked() && !this.IsCancelled() && this.StockLocator != null;
 
         public bool MoveIsBookable(StoresTransactionDefinition transaction)
         {

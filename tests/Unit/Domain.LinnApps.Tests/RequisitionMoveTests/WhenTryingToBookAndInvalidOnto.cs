@@ -20,7 +20,7 @@
         public void ShouldNotBeOkToBook()
         {
             this.ProcessResult.Success.Should().BeFalse();
-            this.ProcessResult.Message.Should().Be("Move 0 on line 1 does not have a valid onto.");
+            this.ProcessResult.Message.Should().Be("Move 1 on line 1 does not have a valid onto.");
         }
     }
 }
