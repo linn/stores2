@@ -1,21 +1,21 @@
-﻿using Linn.Common.Domain;
-using Linn.Stores2.Domain.LinnApps.Accounts;
-using Linn.Stores2.Domain.LinnApps.Exceptions;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using Linn.Stores2.Domain.LinnApps.Stock;
-using Linn.Stores2.TestData.FunctionCodes;
-using Linn.Stores2.TestData.Parts;
-using Linn.Stores2.TestData.Requisitions;
-using Linn.Stores2.TestData.Transactions;
-using NSubstitute;
-using NUnit.Framework;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using FluentAssertions;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Parts;
+    using Linn.Stores2.TestData.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
+    using NSubstitute;
+    using NUnit.Framework;
+
     public class WhenUnpickingReqMoveAndQtyMoreThanQtyAllocated : ContextBase
     {
         private Func<Task> action;

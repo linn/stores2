@@ -1,7 +1,7 @@
-using Linn.Common.Resources;
-
 namespace Linn.Stores2.Resources.Requisitions
 {
+    using Linn.Common.Resources;
+
     public class MoveResource : HypermediaResource
     {
         public int Seq { get; set; }
