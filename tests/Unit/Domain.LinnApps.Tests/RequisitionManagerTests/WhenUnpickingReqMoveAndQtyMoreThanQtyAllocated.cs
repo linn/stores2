@@ -1,20 +1,25 @@
 ﻿using Linn.Common.Domain;
+using Linn.Stores2.Domain.LinnApps.Accounts;
+using Linn.Stores2.Domain.LinnApps.Exceptions;
+using Linn.Stores2.Domain.LinnApps.Requisitions;
 using Linn.Stores2.Domain.LinnApps.Stock;
+using Linn.Stores2.TestData.FunctionCodes;
+using Linn.Stores2.TestData.Parts;
+using Linn.Stores2.TestData.Requisitions;
+using Linn.Stores2.TestData.Transactions;
 using NSubstitute;
+using NUnit.Framework;
+using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using FluentAssertions;
 
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using System.Collections.Generic;
-    using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.TestData.FunctionCodes;
-    using Linn.Stores2.TestData.Parts;
-    using Linn.Stores2.TestData.Requisitions;
-    using Linn.Stores2.TestData.Transactions;
-    using NUnit.Framework;
-
-    public class WhenUnpickingReqMove : ContextBase
+    public class WhenUnpickingReqMoveAndQtyMoreThanQtyAllocated : ContextBase
     {
+        private Func<Task> action;
+
         private RequisitionHeader req;
 
         [SetUp]
@@ -52,30 +57,21 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                     1,
                     123,
                     1,
-                    1,
+                    4,
                     1,
                     7004,
                     false,
-                    false).Returns(new ProcessResult(true, "Done it"));
+                    false).Returns(new ProcessResult(false, "Unpick failed"));
 
-            this.Sut.UnpickRequisitionMove(123, 1, 1, 1, 7004, false, new List<string>());
+            this.action = async () =>
+                await this.Sut.UnpickRequisitionMove(123, 1, 1, 4, 7004, false, new List<string>());
         }
 
         [Test]
-        public void ShouldUnPickStock()
+        public async Task ShouldThrow()
         {
-            this.ReqStoredProcedures.Received(1)
-                .UnPickStock(
-                    123,
-                    Arg.Any<int>(),
-                    1,
-                    123,
-                    1,
-                    1,
-                    1,
-                    7004,
-                    false,
-                    false);
+            await this.action.Should().ThrowAsync<RequisitionException>()
+                .WithMessage($"Cannot unpick more than the qty allocated on the move which is 1"); ;
         }
     }
 }

@@ -303,6 +303,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public async Task<RequisitionHeader> UnpickRequisitionMove(int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate,
             IEnumerable<string> privileges)
         {
+            if (qtyToUnpick <= 0)
+            {
+                throw new RequisitionException($"Must unpick positive qty not {qtyToUnpick}");
+            }
+
             var req = await this.repository.FindByIdAsync(reqNumber);
 
             if (req == null)
@@ -337,7 +342,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException($"Move {seq} of Line {lineNumber} on Req {reqNumber} cannot be unpicked");
             }
 
-            var result = this.requisitionStoredProcedures.UnPickStock(
+            if (qtyToUnpick > move.Quantity)
+            {
+                throw new RequisitionException($"Cannot unpick more than the qty allocated on the move which is {move.Quantity}");
+            }
+
+            var result = await this.requisitionStoredProcedures.UnPickStock(
                 move.ReqNumber, 
                 move.LineNumber, 
                 move.Sequence,
@@ -348,6 +358,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 unpickedBy, 
                 reallocate,
                 req.StoresFunction.UpdateSodQtyOS == "Y");
+
+            if (!result.Success)
+            {
+                throw new RequisitionException($"Failed to unpick stock: {result.Message}");
+            }
 
             var unpickedReq = await this.repository.FindByIdAsync(reqNumber);
             return unpickedReq;
