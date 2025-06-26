@@ -107,5 +107,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task ValidateLineSerialNumbers(RequisitionLine line);
 
         Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves);
+
+        Task<RequisitionHeader> UnpickRequisitionMove(
+            int reqNumber,
+            int lineNumber,
+            int seq,
+            decimal qtyToUnpick,
+            int unpickedBy,
+            bool reallocate,
+            IEnumerable<string> privileges);
     }
 }

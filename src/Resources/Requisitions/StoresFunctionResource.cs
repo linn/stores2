@@ -81,6 +81,8 @@
         
         public string AuditLocationRequired { get; set; }
 
+        public string UpdateSodQtyOS { get; set; }
+
         public IEnumerable<string> FromStates { get; set; }
 
         public IEnumerable<string> ToStates { get; set; }

@@ -79,8 +79,9 @@
                                                                 IsFrom = m.StockLocator != null,
                                                                 IsTo = m.PalletNumber.HasValue || m.Location != null,
                                                                 StockLocatorId = m.StockLocator?.Id,
-                                                                IsAddition = false
-                                                            }),
+                                                                IsAddition = false,
+                                                                Links = this.BuildMoveLinks(m).ToArray()
+                           }),
                            SerialNumbers = l.SerialNumbers == null
                                                ? new List<RequisitionSerialNumberResource>()
                                                : l.SerialNumbers.Select(s => new RequisitionSerialNumberResource
@@ -110,6 +111,14 @@
             if (model.LineIsBookable())
             {
                 yield return new LinkResource("book-line", "/requisitions/book");
+            }
+        }
+
+        private IEnumerable<LinkResource> BuildMoveLinks(ReqMove model)
+        {
+            if (model.CanUnPick())
+            {
+                yield return new LinkResource("unpick", "/requisitions/unpick");
             }
         }
     }
