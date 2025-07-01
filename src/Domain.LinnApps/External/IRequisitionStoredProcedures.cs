@@ -47,5 +47,17 @@
         Task<ProcessResult> CreateLoanReq(int loanNumber);
 
         Task<decimal> GetQtyReturned(int returnOrderNumber, int lineNumber);
+
+        Task<ProcessResult> UnPickStock(
+            int reqNumber,
+            int lineNumber,
+            int seq,
+            int? orderNumber,
+            int? orderLine,
+            decimal qtyToUnPick,
+            int? stockLocatorId,
+            int unpickedBy,
+            bool reallocate = false,
+            bool updSodAllocQty = false);
     }
 }

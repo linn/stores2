@@ -300,6 +300,74 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
+        public async Task<RequisitionHeader> UnpickRequisitionMove(int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate,
+            IEnumerable<string> privileges)
+        {
+            if (qtyToUnpick <= 0)
+            {
+                throw new RequisitionException($"Must unpick positive qty not {qtyToUnpick}");
+            }
+
+            var req = await this.repository.FindByIdAsync(reqNumber);
+
+            if (req == null)
+            {
+                throw new RequisitionException($"Req {reqNumber} not found");
+            }
+
+            var line = req.Lines.SingleOrDefault(l => l.LineNumber == lineNumber);
+            if (line == null)
+            {
+                throw new RequisitionException($"Line {lineNumber} not found on req {reqNumber}");
+            }
+
+            if (line.IsBooked())
+            {
+                throw new RequisitionException($"Line {lineNumber} on req {reqNumber} is already booked");
+            }
+
+            if (line.IsCancelled())
+            {
+                throw new RequisitionException($"Line {lineNumber} on req {reqNumber} is already cancelled");
+            }
+
+            var move = line.Moves.SingleOrDefault(mv => mv.Sequence == seq);
+            if (move == null)
+            {
+                throw new RequisitionException($"Line {lineNumber} on Req {reqNumber} has no move with seq {seq}");
+            }
+
+            if (!move.CanUnPick())
+            {
+                throw new RequisitionException($"Move {seq} of Line {lineNumber} on Req {reqNumber} cannot be unpicked");
+            }
+
+            if (qtyToUnpick > move.Quantity)
+            {
+                throw new RequisitionException($"Cannot unpick more than the qty allocated on the move which is {move.Quantity}");
+            }
+
+            var result = await this.requisitionStoredProcedures.UnPickStock(
+                move.ReqNumber, 
+                move.LineNumber, 
+                move.Sequence,
+                line.Document1Number, 
+                line.Document1Line, 
+                qtyToUnpick, 
+                move.StockLocator?.Id, 
+                unpickedBy, 
+                reallocate,
+                req.StoresFunction.UpdateSalesOrderDetQtyOutstanding == "Y");
+
+            if (!result.Success)
+            {
+                throw new RequisitionException($"Failed to unpick stock: {result.Message}");
+            }
+
+            var unpickedReq = await this.repository.FindByIdAsync(reqNumber);
+            return unpickedReq;
+        }
+
         public async Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd)
         {
             var part = await this.partRepository.FindByIdAsync(toAdd.PartNumber);

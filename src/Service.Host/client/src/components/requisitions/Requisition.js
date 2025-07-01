@@ -153,6 +153,14 @@ function Requisition({ creating }) {
     } = usePost(`${itemTypes.requisitions.url}/authorise`, true);
 
     const {
+        send: unpick,
+        isLoading: unpickLoading,
+        errorMessage: unpickError,
+        postResult: unpickResult,
+        clearPostResult: clearUnpickResult
+    } = usePost(`${itemTypes.requisitions.url}/unpick`, true);
+
+    const {
         send: createReq,
         isLoading: createLoading,
         errorMessage: createError
@@ -236,6 +244,11 @@ function Requisition({ creating }) {
             setRevertState(authoriseResult);
             clearAuthoriseResult();
         }
+        if (unpickResult) {
+            dispatch({ type: 'load_state', payload: unpickResult });
+            setRevertState(unpickResult);
+            clearUnpickResult();
+        }
         if (result) {
             dispatch({ type: 'load_state', payload: result });
             setRevertState(result);
@@ -251,6 +264,7 @@ function Requisition({ creating }) {
         cancelResult,
         bookResult,
         authoriseResult,
+        unpickResult,
         creating,
         name,
         userNumber,
@@ -260,7 +274,8 @@ function Requisition({ creating }) {
         clearCancelResult,
         clearBookResult,
         clearReqResult,
-        clearAuthoriseResult
+        clearAuthoriseResult,
+        clearUnpickResult
     ]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
@@ -651,6 +666,11 @@ function Requisition({ creating }) {
                         <ErrorCard errorMessage={authoriseError} />
                     </Grid>
                 )}
+                {unpickError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={unpickError} />
+                    </Grid>
+                )}
                 {createError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={createError} />
@@ -666,7 +686,8 @@ function Requisition({ creating }) {
                     bookLoading ||
                     authoriseLoading ||
                     createLoading ||
-                    updateLoading) && (
+                    updateLoading ||
+                    unpickLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -1336,6 +1357,16 @@ function Requisition({ creating }) {
                                                     lineNumber: selectedLine,
                                                     ...updated
                                                 }
+                                            });
+                                        }}
+                                        changesMade={changesMade}
+                                        unpick={(qtyToUnpick, move) => {
+                                            unpick(null, {
+                                                reqNumber: move.reqNumber,
+                                                lineNumber: move.lineNumber,
+                                                seq: move.seq,
+                                                qtyToUnpick,
+                                                realloc: false
                                             });
                                         }}
                                     />
