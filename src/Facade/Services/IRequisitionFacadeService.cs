@@ -32,5 +32,8 @@
             int toBeReversedId);
 
         Task<IResult<StorageLocationResource>> GetDefaultBookInLocation(string partNumber);
+
+        Task<IResult<RequisitionHeaderResource>> UnpickRequisitionMove(
+            int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate, IEnumerable<string> privileges);
     }
 }

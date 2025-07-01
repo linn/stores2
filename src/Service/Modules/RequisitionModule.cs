@@ -26,6 +26,7 @@
             app.MapPost("/requisitions/cancel", this.Cancel);
             app.MapPost("/requisitions/book", this.Book);
             app.MapPost("/requisitions/authorise", this.Authorise);
+            app.MapPost("/requisitions/unpick", this.UnpickRequisitionMove);
             app.MapGet("/requisitions/stores-functions", this.GetFunctionCodes);
             app.MapGet("/requisitions/stores-functions/view", this.GetApp);
             app.MapGet("/requisitions/stores-functions/{code}", this.GetStoresFunction);
@@ -264,6 +265,22 @@
             res.StatusCode = (int)HttpStatusCode.OK;
 
             await res.WriteAsync(result);
+        }
+
+        private async Task UnpickRequisitionMove(
+            HttpRequest req,
+            HttpResponse res,
+            UnpickRequisitionResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.UnpickRequisitionMove(
+                resource.ReqNumber,
+                resource.LineNumber,
+                resource.Seq,
+                resource.QtyToUnpick,
+                req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                resource.Reallocate ?? false,
+                req.HttpContext.GetPrivileges()));
         }
     }
 }

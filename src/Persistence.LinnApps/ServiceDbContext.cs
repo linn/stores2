@@ -576,6 +576,7 @@
             r.Property(c => c.CanBeCancelled).HasColumnName("CAN_BE_CANCELLED").HasMaxLength(1);
             r.Property(c => c.ReceiptDateRequired).HasColumnName("RECEIPT_DATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.AuditLocationRequired).HasColumnName("AUDIT_LOC_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.UpdateSalesOrderDetQtyOutstanding).HasColumnName("UPDATE_SOD_QTY_OS").HasMaxLength(1);
             r.Property(c => c.ProcessStage).HasColumnName("PROCESS_STAGE");
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }

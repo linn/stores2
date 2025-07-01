@@ -67,6 +67,7 @@
                           ProcessStage = model.ProcessStage,
                           AuditLocationRequired = model.AuditLocationRequired,
                           ReceiptDateRequired = model.ReceiptDateRequired,
+                          UpdateSodQtyOS = model.UpdateSalesOrderDetQtyOutstanding,
                           FromStates = model.GetTransactionStates("F"),
                           ToStates = model.GetTransactionStates("O"),
                           TransactionTypes = model.TransactionsTypes?.Select(

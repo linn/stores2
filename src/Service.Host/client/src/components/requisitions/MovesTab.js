@@ -14,6 +14,7 @@ import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import useSearch from '../../hooks/useSearch';
 import itemTypes from '../../itemTypes';
+import UnpickMoveDialog from './components/UnpickMoveDialog';
 
 function MovesTab({
     moves = [],
@@ -22,11 +23,16 @@ function MovesTab({
     updateMoveOnto = null,
     stockPools = [],
     stockStates = [],
-    locationCodeRoot = null
+    locationCodeRoot = null,
+    unpick,
+    changesMade = false
 }) {
     const [searchDialogOpen, setSearchDialogOpen] = useState({
         forRow: null
     });
+
+    const [unpickDialogVisible, setUnpickDialogVisible] = useState(false);
+    const [selectedMove, setSelectedMove] = useState(null);
 
     const palletFormat = Intl.NumberFormat('en-GB', {
         useGrouping: false
@@ -48,6 +54,11 @@ function MovesTab({
             setIsSelectingLocation(true);
             searchLocations(searchTerm.trim().toUpperCase());
         }
+    };
+
+    const showUnpickDialog = move => {
+        setSelectedMove(move);
+        setUnpickDialogVisible(true);
     };
 
     const handleSearchResultSelect = useCallback(
@@ -165,7 +176,7 @@ function MovesTab({
         {
             field: 'fromPalletNumber',
             headerName: 'Pallet',
-            width: 150,
+            width: 120,
             type: 'number',
             valueFormatter: value => {
                 if (value == null) {
@@ -208,6 +219,16 @@ function MovesTab({
             field: 'qtyAllocated',
             headerName: 'Allocated',
             width: 100
+        },
+        {
+            field: 'unpick',
+            headerName: '',
+            width: 80,
+            renderCell: params => (
+                <Button size="small" onClick={() => showUnpickDialog(params.row)}>
+                    Unpick
+                </Button>
+            )
         }
     ];
 
@@ -251,7 +272,7 @@ function MovesTab({
             field: 'toPalletNumber',
             headerName: 'Pallet',
             editable: true,
-            width: 150,
+            width: 120,
             type: 'number',
             valueFormatter: value => {
                 if (value == null) {
@@ -297,6 +318,19 @@ function MovesTab({
     return (
         <>
             {searchDialogOpen.forRow && renderSearchDialog()}
+            {unpickDialogVisible && (
+                <UnpickMoveDialog
+                    visible={unpickDialogVisible}
+                    move={selectedMove}
+                    closeDialog={() => setUnpickDialogVisible(false)}
+                    warningText={
+                        changesMade
+                            ? 'Warning: there are changes on this req!  Unpicking this move will discard changes so please save your changes first if you want to keep them.'
+                            : ''
+                    }
+                    doUnpick={unpick}
+                />
+            )}
             <Grid container spacing={3}>
                 <Grid size={6}>
                     <DataGrid
