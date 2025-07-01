@@ -71,13 +71,13 @@ function Workstation({ creating }) {
         send: getNewWorkStations,
         isNewWorkStationsLoading,
         result: newWorkStationsGetResult
-    } = useGet(itemTypes.workStations.url);
+    } = useGet(itemTypes.workStations.url, true);
 
     const {
         send: getCitCodes,
         isCitCodesLoading,
         result: citCodesGetResult
-    } = useGet(itemTypes.citCodes.url);
+    } = useGet(itemTypes.citCodes.url, true);
 
     const {
         search: searchEmployees,
@@ -87,7 +87,7 @@ function Workstation({ creating }) {
 
     const [hasFetched, setHasFetched] = useState(false);
 
-    const hasPermission = utilities.getHref(originalWorkStation, 'workstation-admin');
+    const hasPermission = utilities.getHref(originalWorkStation, 'workstation.admin');
 
     const handleFieldChange = (propertyName, newValue) => {
         setWorkStation(current => ({ ...current, [propertyName]: newValue }));

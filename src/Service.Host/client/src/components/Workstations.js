@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from 'react-oidc-context';
 import { Link as RouterLink } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -28,18 +29,18 @@ function Workstations() {
             setCitCodeSearchTerm(newValue);
         }
     };
-
-    const hasPermission = utilities.getHref(workStationsResult?.[0], 'workstation-admin');
+    const auth = useAuth();
+    const token = auth.user?.access_token;
 
     const {
         send: getWorkStations,
         workStationsLoading,
         result: workStationsResult
-    } = useGet(itemTypes.workStations.url);
+    } = useGet(itemTypes.workStations.url, true);
 
     const [hasFetched, setHasFetched] = useState(false);
 
-    if (!hasFetched) {
+    if (!hasFetched && token) {
         setHasFetched(true);
         getWorkStations();
     }
@@ -80,6 +81,8 @@ function Workstations() {
             width: 150
         }
     ];
+
+    const hasPermission = utilities.getHref(workStationsResult?.[0], 'workstation.admin');
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>

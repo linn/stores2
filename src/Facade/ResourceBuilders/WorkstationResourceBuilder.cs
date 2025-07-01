@@ -55,7 +55,7 @@
 
             if (this.authService.HasPermissionFor(AuthorisedActions.WorkstationAdmin, claims))
             {
-                yield return new LinkResource { Rel = "workstation-admin", Href = "/stores2/work-stations/admin" };
+                yield return new LinkResource { Rel = "workstation.admin", Href = "/stores2/work-stations/admin" };
             }
         }
     }
