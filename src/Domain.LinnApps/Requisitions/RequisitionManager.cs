@@ -357,7 +357,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 move.StockLocator?.Id, 
                 unpickedBy, 
                 reallocate,
-                req.StoresFunction.UpdateSodQtyOS == "Y");
+                req.StoresFunction.UpdateSalesOrderDetQtyOutstanding == "Y");
 
             if (!result.Success)
             {
