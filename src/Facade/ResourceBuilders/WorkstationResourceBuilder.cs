@@ -46,8 +46,13 @@
         object IBuilder<WorkStation>.Build(WorkStation entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
 
-        private IEnumerable<LinkResource> BuildLinks(WorkStation model, IEnumerable<string> claims)
+        private IEnumerable<LinkResource> BuildLinks(WorkStation model, IList<string> claims)
         {
+            if (claims?.Count > 0)
+            {
+                yield return new LinkResource { Rel = "create-work-station", Href = "/stores2/work-stations/" };
+            }
+
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
@@ -55,7 +60,7 @@
 
             if (this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, claims))
             {
-                yield return new LinkResource { Rel = "workstation.admin", Href = "/stores2/work-stations/admin" };
+                yield return new LinkResource { Rel = "update-work-station", Href = this.GetLocation(model) };
             }
         }
     }

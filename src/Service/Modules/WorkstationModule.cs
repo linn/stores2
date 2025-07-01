@@ -17,7 +17,7 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/work-stations/state", this.GetWorkstationApplicationState);
+            app.MapGet("/stores2/work-stations/application-state", this.GetWorkstationApplicationState);
             app.MapGet("/stores2/work-stations", this.Search);
             app.MapPost("/stores2/work-stations", this.Create);
             app.MapGet("/stores2/work-stations/{*code}", this.GetById);
