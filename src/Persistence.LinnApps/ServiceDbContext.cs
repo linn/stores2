@@ -71,7 +71,7 @@
 
         public DbSet<LabelType> LabelTypes { get; set; }
         
-        public DbSet<Workstation> Workstations { get; set; }
+        public DbSet<WorkStation> WorkStations { get; set; }
 
         public DbSet<Cit> Cits { get; set; }
 
@@ -132,8 +132,8 @@
             BuildStockTransactionPostings(builder);
             BuildPotentialMoveDetails(builder);
             BuildLabelTypes(builder);
-            BuildWorkstations(builder);
-            BuildWorkstationElements(builder);
+            BuildWorkStations(builder);
+            BuildWorkStationElements(builder);
             BuildCits(builder);
             BuildBookInOrderDetails(builder);
             BuildPcasStorageTypes(builder);
@@ -847,9 +847,9 @@
             e.Property(t => t.FileName).HasColumnName("FILENAME");
         }
 
-        private static void BuildWorkstations(ModelBuilder builder)
+        private static void BuildWorkStations(ModelBuilder builder)
         {
-            var e = builder.Entity<Workstation>().ToTable("WORK_STATIONS");
+            var e = builder.Entity<WorkStation>().ToTable("WORK_STATIONS");
             e.HasKey(l => l.WorkStationCode);
             e.Property(s => s.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
@@ -862,9 +862,9 @@
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private static void BuildWorkstationElements(ModelBuilder builder)
+        private static void BuildWorkStationElements(ModelBuilder builder)
         {
-            var e = builder.Entity<WorkstationElement>().ToTable("WORK_STATION_ELEMENTS");
+            var e = builder.Entity<WorkStationElement>().ToTable("WORK_STATION_ELEMENTS");
             e.HasKey(l => l.WorkStationElementId);
             e.Property(s => s.WorkStationElementId).HasColumnName("WSE_ID");
             e.Property(s => s.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);

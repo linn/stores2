@@ -2,18 +2,18 @@
 {
     using System.Collections.Generic;
 
-    public class Workstation
+    public class WorkStation
     {
-        public Workstation()
+        public WorkStation()
         {
         }
 
-        public Workstation(
+        public WorkStation(
             string workStationCode,
             string description,
             Cit cit,
             string zoneType,
-            ICollection<WorkstationElement> elements)
+            ICollection<WorkStationElement> elements)
         {
             this.WorkStationCode = workStationCode;
             this.Description = description;
@@ -30,14 +30,14 @@
 
         public string ZoneType { get; protected set; }
 
-        public ICollection<WorkstationElement> WorkStationElements { get; protected set; }
+        public ICollection<WorkStationElement> WorkStationElements { get; protected set; }
 
         public void Update(
             string workStationCode,
             string description,
             Cit cit,
             string zoneType,
-            ICollection<WorkstationElement> elements)
+            ICollection<WorkStationElement> elements)
         {
             this.WorkStationCode = workStationCode;
             this.Description = description;

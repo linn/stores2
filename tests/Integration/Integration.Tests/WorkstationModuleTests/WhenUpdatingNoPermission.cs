@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkstationModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System;
     using System.Collections.Generic;
@@ -19,16 +19,16 @@
 
     public class WhenUpdatingNoPermission : ContextBase
     {
-        private Workstation workstation;
+        private WorkStation workStation;
         private StorageLocation location;
         private StoresPallet pallet;
 
-        private WorkstationResource updateResource;
+        private WorkStationResource updateResource;
 
         [SetUp]
         public void SetUp()
         {
-            this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkstationAdmin, Arg.Any<IEnumerable<string>>())
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, Arg.Any<IEnumerable<string>>())
                 .Returns(false);
 
             this.location = new StorageLocation
@@ -45,7 +45,7 @@
                 Description = "PALLET 999"
             };
 
-            this.workstation = new Workstation(
+            this.workStation = new WorkStation(
                 "Test",
                 "description",
                 new Cit
@@ -56,27 +56,27 @@
                 "Z",
                 null);
 
-            this.updateResource = new WorkstationResource
+            this.updateResource = new WorkStationResource
             {
                 WorkStationCode = "Test",
                 CitCode = "R",
                 CitName = "R CODE",
                 Description = "A TEST WORKSTATION",
                 ZoneType = "Z",
-                WorkStationElements = new List<WorkstationElementResource>
+                WorkStationElements = new List<WorkStationElementResource>
                                           {
-                                              new WorkstationElementResource
+                                              new WorkStationElementResource
                                                   {
-                                                      WorkstationCode = "Test",
+                                                      WorkStationCode = "Test",
                                                       CreatedById = 33156,
                                                       CreatedByName = "RSTEWART",
                                                       DateCreated = DateTime.Today.ToString("o"),
                                                       LocationId = this.location.LocationId,
                                                       PalletNumber = 567
                                                   },
-                                              new WorkstationElementResource
+                                              new WorkStationElementResource
                                                   {
-                                                      WorkstationCode = "Test",
+                                                      WorkStationCode = "Test",
                                                       CreatedById = 33156,
                                                       CreatedByName = "RSTEWART",
                                                       DateCreated = DateTime.Today.ToString("o"),
@@ -86,7 +86,7 @@
                                           }
             };
 
-            this.DbContext.Workstations.AddAndSave(this.DbContext, this.workstation);
+            this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workStation);
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.location);
             this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
             this.DbContext.SaveChanges();

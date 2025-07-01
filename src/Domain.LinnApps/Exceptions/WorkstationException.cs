@@ -4,14 +4,14 @@
 
     using Linn.Common.Domain.Exceptions;
 
-    public class WorkstationException : DomainException
+    public class WorkStationException : DomainException
     {
-        public WorkstationException(string message)
+        public WorkStationException(string message)
             : base(message)
         {
         }
 
-        public WorkstationException(string message, Exception innerException)
+        public WorkStationException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

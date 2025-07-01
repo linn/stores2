@@ -10,21 +10,21 @@
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Resources.Stores;
 
-    public class WorkstationResourceBuilder : IBuilder<Workstation>
+    public class WorkStationResourceBuilder : IBuilder<WorkStation>
     {
-        private readonly IBuilder<WorkstationElement> workstationElementsBuilder;
+        private readonly IBuilder<WorkStationElement> workStationsElementsBuilder;
 
         private readonly IAuthorisationService authService;
 
-        public WorkstationResourceBuilder(IBuilder<WorkstationElement> workstationElementsBuilder, IAuthorisationService authService)
+        public WorkStationResourceBuilder(IBuilder<WorkStationElement> workstationElementsBuilder, IAuthorisationService authService)
         {
-            this.workstationElementsBuilder = workstationElementsBuilder;
+            this.workStationsElementsBuilder = workstationElementsBuilder;
             this.authService = authService;
         }
 
-        public WorkstationResource Build(Workstation model, IEnumerable<string> claims)
+        public WorkStationResource Build(WorkStation model, IEnumerable<string> claims)
         {
-            return new WorkstationResource
+            return new WorkStationResource
             {
                 WorkStationCode = model.WorkStationCode,
                 CitCode = model.Cit?.Code,
@@ -32,28 +32,28 @@
                 Description = model.Description,
                 ZoneType = model.ZoneType,
                 WorkStationElements = model.WorkStationElements
-                               ?.Select(c => (WorkstationElementResource)this.workstationElementsBuilder
+                               ?.Select(c => (WorkStationElementResource)this.workStationsElementsBuilder
                                    .Build(c, claims)),
                 Links = this.BuildLinks(model, claims?.ToList()).ToArray()
             };
         }
 
-        public string GetLocation(Workstation model)
+        public string GetLocation(WorkStation model)
         {
             return $"/stores2/work-stations/{model.WorkStationCode}";
         }
 
-        object IBuilder<Workstation>.Build(Workstation entity, IEnumerable<string> claims) =>
+        object IBuilder<WorkStation>.Build(WorkStation entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
 
-        private IEnumerable<LinkResource> BuildLinks(Workstation model, IEnumerable<string> claims)
+        private IEnumerable<LinkResource> BuildLinks(WorkStation model, IEnumerable<string> claims)
         {
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
             }
 
-            if (this.authService.HasPermissionFor(AuthorisedActions.WorkstationAdmin, claims))
+            if (this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, claims))
             {
                 yield return new LinkResource { Rel = "workstation.admin", Href = "/stores2/work-stations/admin" };
             }

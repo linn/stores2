@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkstationModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System.Net.Http;
 
@@ -31,7 +31,6 @@
 
         protected IAuthorisationService AuthorisationService { get; private set; }
 
-
         [SetUp]
         public void SetUpContext()
         {
@@ -41,8 +40,8 @@
 
             var transactionManager = new TransactionManager(this.DbContext);
 
-            var workstationRepository
-                = new EntityFrameworkRepository<Workstation, string>(this.DbContext.Workstations);
+            var workStationRepository
+                = new EntityFrameworkRepository<WorkStation, string>(this.DbContext.WorkStations);
 
             var employeeRepository
                 = new EntityFrameworkRepository<Employee, int>(this.DbContext.Employees);
@@ -56,21 +55,21 @@
             var palletRepository
                 = new EntityFrameworkRepository<StoresPallet, int>(this.DbContext.StoresPallets);
 
-            IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource> workstationFacadeService
-                = new WorkstationFacadeService(
-                    workstationRepository,
+            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> workStationFacadeService
+                = new WorkStationFacadeService(
+                    workStationRepository,
                     employeeRepository,
                     citRepository,
                     storageLocationRepository,
                     palletRepository,
                     this.AuthorisationService,
                     transactionManager,
-                    new WorkstationResourceBuilder(new WorkstationElementsResourceBuilder(), this.AuthorisationService));
+                    new WorkStationResourceBuilder(new WorkStationElementsResourceBuilder(), this.AuthorisationService));
 
             this.Client = TestClient.With<WorkstationModule>(
                 services =>
                 {
-                    services.AddSingleton(workstationFacadeService);
+                    services.AddSingleton(workStationFacadeService);
                     services.AddHandlers();
                     services.AddRouting();
                 });

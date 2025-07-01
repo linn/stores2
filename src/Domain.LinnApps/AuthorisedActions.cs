@@ -10,7 +10,7 @@ namespace Linn.Stores2.Domain.LinnApps
 
         public const string ReverseRequisition = "stores.requisitions.reverse";
 
-        public const string WorkstationAdmin = "workstation.admin";
+        public const string WorkStationAdmin = "workstation.admin";
 
         private const string FunctionsPrefix = "stores.requisitions.functions";
 

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkstationModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System;
     using System.Collections.Generic;
@@ -20,14 +20,14 @@
 
     public class WhenCreating : ContextBase
     {
-        private WorkstationResource createResource;
+        private WorkStationResource createResource;
         private StorageLocation location;
         private StoresPallet pallet;
 
         [SetUp]
         public void SetUp()
         {
-            this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkstationAdmin, Arg.Any<IEnumerable<string>>())
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, Arg.Any<IEnumerable<string>>())
                 .Returns(true);
 
             this.location = new StorageLocation
@@ -50,27 +50,27 @@
             this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
             this.DbContext.SaveChanges();
 
-            this.createResource = new WorkstationResource
+            this.createResource = new WorkStationResource
             {
                 WorkStationCode = "WORKSTATIONCODE",
                 CitCode = "R",
                 CitName = "R CODE",
                 Description = "A TEST WORKSTATION",
                 ZoneType = "Z",
-                WorkStationElements = new List<WorkstationElementResource>
+                WorkStationElements = new List<WorkStationElementResource>
                                                                     {
-                                                                        new WorkstationElementResource()
+                                                                        new WorkStationElementResource
                                                                             {
-                                                                                WorkstationCode = "WORKSTATIONCODE",
+                                                                                WorkStationCode = "WORKSTATIONCODE",
                                                                                 CreatedById = 33156,
                                                                                 CreatedByName = "RSTEWART",
                                                                                 DateCreated = DateTime.Today.ToString("o"),
                                                                                 LocationId = this.location.LocationId,
                                                                                 WorkStationElementId = 1
                                                                             },
-                                                                        new WorkstationElementResource()
+                                                                        new WorkStationElementResource
                                                                             {
-                                                                                WorkstationCode = "WORKSTATIONCODE",
+                                                                                WorkStationCode = "WORKSTATIONCODE",
                                                                                 CreatedById = 33156,
                                                                                 CreatedByName = "RSTEWART",
                                                                                 DateCreated = DateTime.Today.ToString("o"),
@@ -99,7 +99,7 @@
         [Test]
         public void ShouldAdd()
         {
-            this.DbContext.Workstations
+            this.DbContext.WorkStations
                 .First(x => x.WorkStationCode == this.createResource.WorkStationCode).Description
                 .Should().Be(this.createResource.Description);
         }
@@ -107,7 +107,7 @@
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {
-            var resource = this.Response.DeserializeBody<WorkstationResource>();
+            var resource = this.Response.DeserializeBody<WorkStationResource>();
             resource.WorkStationCode.Should().Be("WORKSTATIONCODE");
             resource.Description.Should().Be("A TEST WORKSTATION");
         }
