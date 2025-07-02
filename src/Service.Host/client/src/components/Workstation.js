@@ -69,13 +69,13 @@ function Workstation({ creating }) {
         errorMessage: createWorkStationError,
         postResult: createWorkStationResult,
         clearPostResult: clearCreateWorkStation
-    } = usePost(itemTypes.workStations.url);
+    } = usePost(itemTypes.workStations.url, true);
 
     const { send: getWorkStationApplicationState, result: workStationApplicationStateResult } =
         useGet(itemTypes.workStationsApplicationState.url, true);
 
     const {
-        send: getNewWorkStations,
+        send: getWorkStations,
         isNewWorkStationsLoading,
         result: newWorkStationsGetResult
     } = useGet(itemTypes.workStations.url, true);
@@ -126,7 +126,7 @@ function Workstation({ creating }) {
             setHasFetched(true);
 
             if (!creating) {
-                getNewWorkStations(encodeURI(code));
+                getWorkStations(encodeURI(code));
             } else {
                 getWorkStationApplicationState();
             }
@@ -138,7 +138,7 @@ function Workstation({ creating }) {
         creating,
         hasFetched,
         getCitCodes,
-        getNewWorkStations,
+        getWorkStations,
         getWorkStationApplicationState,
         token
     ]);
@@ -408,6 +408,7 @@ function Workstation({ creating }) {
                         propertyName="workStationCode"
                         onChange={handleFieldChange}
                         disabled={!creating}
+                        required
                     />
                 </Grid>
                 <Grid size={8}>
@@ -486,7 +487,9 @@ function Workstation({ creating }) {
                                 updateWorkStation(submitBody.workStationCode, submitBody);
                             }
                         }}
-                        saveDisabled={!changesMade || !hasUpdatePermission}
+                        saveDisabled={
+                            !(changesMade && (creating ? hasCreatePermission : hasUpdatePermission))
+                        }
                         cancelClick={handleCancelSelect}
                     />
                 </Grid>
