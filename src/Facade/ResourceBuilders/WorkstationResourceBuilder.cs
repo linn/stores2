@@ -24,6 +24,14 @@
 
         public WorkStationResource Build(WorkStation model, IEnumerable<string> claims)
         {
+            if (model == null)
+            {
+                return new WorkStationResource
+                {
+                    Links = this.BuildLinks(null, claims.ToList()).ToArray()
+                };
+            }
+
             return new WorkStationResource
             {
                 WorkStationCode = model.WorkStationCode,
@@ -48,19 +56,19 @@
 
         private IEnumerable<LinkResource> BuildLinks(WorkStation model, IList<string> claims)
         {
-            if (claims?.Count > 0)
+            if (this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, claims))
             {
-                yield return new LinkResource { Rel = "create-work-station", Href = "/stores2/work-stations/" };
+                yield return new LinkResource { Rel = "create", Href = "/stores2/work-stations/create" };
             }
 
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
-            }
-
-            if (this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, claims))
-            {
-                yield return new LinkResource { Rel = "update-work-station", Href = this.GetLocation(model) };
+                
+                if (this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, claims))
+                {
+                    yield return new LinkResource { Rel = "update", Href = this.GetLocation(model) };
+                }
             }
         }
     }

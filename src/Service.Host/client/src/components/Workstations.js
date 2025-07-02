@@ -7,8 +7,7 @@ import {
     CreateButton,
     InputField,
     Loading,
-    PermissionIndicator,
-    utilities
+    PermissionIndicator
 } from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
@@ -39,10 +38,12 @@ function Workstations() {
     } = useGet(itemTypes.workStations.url, true);
 
     const [hasFetched, setHasFetched] = useState(false);
+    const [hasPermission, setHasPermission] = useState(false);
 
     if (!hasFetched && token) {
         setHasFetched(true);
         getWorkStations();
+        setHasPermission(getWorkStations(null, 'application-state'));
     }
 
     const workStationColumns = [
@@ -81,8 +82,6 @@ function Workstations() {
             width: 150
         }
     ];
-
-    const hasPermission = utilities.getHref(workStationsResult?.[0], 'workstation.admin');
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>

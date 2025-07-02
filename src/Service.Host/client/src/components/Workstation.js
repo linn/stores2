@@ -87,7 +87,7 @@ function Workstation({ creating }) {
 
     const [hasFetched, setHasFetched] = useState(false);
 
-    const hasPermission = utilities.getHref(originalWorkStation, 'workstation.admin');
+    const hasPermission = utilities.getHref(originalWorkStation, 'update');
 
     const handleFieldChange = (propertyName, newValue) => {
         setWorkStation(current => ({ ...current, [propertyName]: newValue }));
