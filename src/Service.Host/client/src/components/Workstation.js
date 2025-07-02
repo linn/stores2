@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
@@ -43,6 +44,9 @@ function Workstation({ creating }) {
     const queryParams = new URLSearchParams(location.search);
     const code = queryParams.get('code');
 
+    const auth = useAuth();
+    const token = auth.user?.access_token;
+
     const navigate = useNavigate();
 
     const {
@@ -67,6 +71,9 @@ function Workstation({ creating }) {
         clearPostResult: clearCreateWorkStation
     } = usePost(itemTypes.workStations.url);
 
+    const { send: getWorkStationApplicationState, result: workStationApplicationStateResult } =
+        useGet(itemTypes.workStationsApplicationState.url, true);
+
     const {
         send: getNewWorkStations,
         isNewWorkStationsLoading,
@@ -87,7 +94,8 @@ function Workstation({ creating }) {
 
     const [hasFetched, setHasFetched] = useState(false);
 
-    const hasPermission = utilities.getHref(originalWorkStation, 'update');
+    const hasUpdatePermission = utilities.getHref(originalWorkStation, 'update');
+    const hasCreatePermission = utilities.getHref(workStationApplicationStateResult, 'create');
 
     const handleFieldChange = (propertyName, newValue) => {
         setWorkStation(current => ({ ...current, [propertyName]: newValue }));
@@ -114,16 +122,26 @@ function Workstation({ creating }) {
     }, [clearCreateWorkStation, clearUpdateResult, createWorkStationResult, updateResult]);
 
     useEffect(() => {
-        if (!hasFetched) {
+        if (!hasFetched && token) {
             setHasFetched(true);
 
             if (!creating) {
                 getNewWorkStations(encodeURI(code));
+            } else {
+                getWorkStationApplicationState();
             }
 
             getCitCodes();
         }
-    }, [creating, hasFetched, getNewWorkStations, code, getCitCodes]);
+    }, [
+        code,
+        creating,
+        hasFetched,
+        getCitCodes,
+        getNewWorkStations,
+        getWorkStationApplicationState,
+        token
+    ]);
 
     useEffect(() => {
         if (!creating && newWorkStationsGetResult) {
@@ -372,7 +390,7 @@ function Workstation({ creating }) {
                 </Grid>
                 <Grid size={1}>
                     <PermissionIndicator
-                        hasPermission={hasPermission}
+                        hasPermission={creating ? hasCreatePermission : hasUpdatePermission}
                         hasPermissionMessage="You have create/update workstation permissions"
                         noPermissionMessage="You do not have create/update workstation permissions"
                     />
@@ -468,7 +486,7 @@ function Workstation({ creating }) {
                                 updateWorkStation(submitBody.workStationCode, submitBody);
                             }
                         }}
-                        saveDisabled={!changesMade || !hasPermission}
+                        saveDisabled={!changesMade || !hasUpdatePermission}
                         cancelClick={handleCancelSelect}
                     />
                 </Grid>
