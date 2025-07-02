@@ -555,8 +555,13 @@
         {
             if (!this.IsBooked() && !this.IsCancelled() && this.StoresFunction != null)
             {
-                var canBeBooked = this.RequisitionCanBeBooked(lineNumber);
-                return canBeBooked.Success;
+                if (this.StoresFunction.LinesRequired != "N")
+                {
+                    var canBeBooked = this.RequisitionCanBeBooked(lineNumber);
+                    return canBeBooked.Success;
+                }
+                // moveloc don't need no lines
+                return true;
             }
 
             return false;
@@ -617,6 +622,10 @@
             else if (this.StoresFunction.AuditFunction())
             {
                 return new ProcessResult(true, "Audit functions don't need lines.");
+            }
+            else if (this.StoresFunction.NoLinesRequiredFunction())
+            {
+                return new ProcessResult(true, $"{this.StoresFunction.FunctionCode} functions don't need lines.");
             }
             else if (this.Part != null)
             {

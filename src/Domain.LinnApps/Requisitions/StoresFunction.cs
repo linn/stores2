@@ -81,7 +81,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public string LinesRequired { get; set;  }
 
+        public bool NoLinesRequiredFunction() => this.LinesRequired == "N";
+
         public bool AuditFunction() => this.FunctionCode == "AUDIT" || this.FunctionCode == "KOUNT";
+
+
 
         public bool Document1Required() => this.Document1RequiredFlag is "Y" or "O" or "X";
 
