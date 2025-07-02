@@ -7,7 +7,8 @@ import {
     CreateButton,
     InputField,
     Loading,
-    PermissionIndicator
+    PermissionIndicator,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
@@ -37,14 +38,18 @@ function Workstations() {
         result: workStationsResult
     } = useGet(itemTypes.workStations.url, true);
 
+    const { send: getWorkStationApplicationState, result: workStationApplicationStateResult } =
+        useGet(itemTypes.workStationsApplicationState.url, true);
+
     const [hasFetched, setHasFetched] = useState(false);
-    const [hasPermission, setHasPermission] = useState(false);
 
     if (!hasFetched && token) {
         setHasFetched(true);
         getWorkStations();
-        setHasPermission(getWorkStations(null, 'application-state'));
+        getWorkStationApplicationState();
     }
+
+    const createLink = utilities.getHref(workStationApplicationStateResult, 'create');
 
     const workStationColumns = [
         {
@@ -91,16 +96,13 @@ function Workstations() {
                 </Grid>
                 <Grid size={1}>
                     <PermissionIndicator
-                        hasPermission={hasPermission}
+                        hasPermission={createLink}
                         hasPermissionMessage="You have create/update workstation permissions"
                         noPermissionMessage="You do not have create/update workstation permissions"
                     />
                 </Grid>
                 <Grid size={12}>
-                    <CreateButton
-                        createUrl="/stores2/work-stations/create"
-                        disabled={!hasPermission}
-                    />
+                    <CreateButton createUrl={createLink} disabled={!createLink} />
                 </Grid>
                 <Grid size={4}>
                     <InputField
