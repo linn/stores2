@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkstationModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -14,13 +14,13 @@
 
     public class WhenSearching : ContextBase
     {
-        private Workstation workstation;
-        private Workstation secondWorkstation;
+        private WorkStation workstation;
+        private WorkStation secondWorkstation;
 
         [SetUp]
         public void SetUp()
         {
-            this.workstation = new Workstation(
+            this.workstation = new WorkStation(
                 "Test",
                 "description",
                 new Cit
@@ -29,11 +29,11 @@
                         Name = "R CODE"
                     },
                 "Z",
-                new List<WorkstationElement>
+                new List<WorkStationElement>
                     {
                     });
 
-            this.secondWorkstation = new Workstation(
+            this.secondWorkstation = new WorkStation(
                 "aredundantworkstation",
                 "description",
                 new Cit
@@ -42,12 +42,12 @@
                         Name = "S CODE"
                     },
                 "D",
-                new List<WorkstationElement>
+                new List<WorkStationElement>
                     {
                     });
 
-            this.DbContext.Workstations.AddAndSave(this.DbContext, this.workstation);
-            this.DbContext.Workstations.AddAndSave(this.DbContext, this.secondWorkstation);
+            this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workstation);
+            this.DbContext.WorkStations.AddAndSave(this.DbContext, this.secondWorkstation);
 
 
             this.Response = this.Client.Get(
@@ -74,7 +74,7 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resources = this.Response.DeserializeBody<IEnumerable<WorkstationResource>>().ToList();
+            var resources = this.Response.DeserializeBody<IEnumerable<WorkStationResource>>().ToList();
             resources.Count.Should().Be(1);
             resources.First().WorkStationCode.Should().Be("Test");
             resources.First().Description.Should().Be("description");

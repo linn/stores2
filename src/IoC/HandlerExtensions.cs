@@ -46,8 +46,8 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageLocationResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StoresFunctionResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<StoresFunctionResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<WorkstationResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<WorkstationResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<WorkStationResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<WorkStationResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<PcasStorageTypeResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<PcasStorageTypeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<PcasBoardResource>>()
@@ -58,7 +58,8 @@
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<DepartmentResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<DepartmentResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<EmployeeResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<EmployeeResource>>();
+                .AddSingleton<IHandler, JsonResultHandler<EmployeeResource>>()
+                .AddTransient<IHandler, WorkStationsApplicationStateResultHandler>();
         }
     }
 }

@@ -8,16 +8,16 @@
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Resources.Stores;
 
-    public class WorkstationElementsResourceBuilder : IBuilder<WorkstationElement>
+    public class WorkStationElementsResourceBuilder : IBuilder<WorkStationElement>
     {
-        public WorkstationElementResource Build(WorkstationElement model, IEnumerable<string> claims)
+        public WorkStationElementResource Build(WorkStationElement model, IEnumerable<string> claims)
         {
             var claimsList = claims?.ToList() ?? new List<string>();
 
-            return new WorkstationElementResource
+            return new WorkStationElementResource
             {
                 WorkStationElementId = model.WorkStationElementId,
-                WorkstationCode = model.WorkStationCode,
+                WorkStationCode = model.WorkStationCode,
                 PalletNumber = model.Pallet?.PalletNumber,
                 LocationId = model.StorageLocation?.LocationId,
                 LocationCode = model.StorageLocation?.LocationCode,
@@ -29,15 +29,15 @@
             };
         }
 
-        public string GetLocation(WorkstationElement model)
+        public string GetLocation(WorkStationElement model)
         {
             return $"/stores2/work-stations/{model.WorkStationCode}/{model.WorkStationElementId}";
         }
 
-        object IBuilder<WorkstationElement>.Build(WorkstationElement entity, IEnumerable<string> claims) =>
+        object IBuilder<WorkStationElement>.Build(WorkStationElement entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
 
-        private IEnumerable<LinkResource> BuildLinks(WorkstationElement model, IEnumerable<string> claims)
+        private IEnumerable<LinkResource> BuildLinks(WorkStationElement model, IEnumerable<string> claims)
         {
             if (model != null)
             {

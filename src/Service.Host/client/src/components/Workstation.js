@@ -17,9 +17,11 @@ import {
     ErrorCard,
     InputField,
     Loading,
+    PermissionIndicator,
     SaveBackCancelButtons,
     Search,
-    SnackbarMessage
+    SnackbarMessage,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import config from '../config';
 import itemTypes from '../itemTypes';
@@ -69,13 +71,13 @@ function Workstation({ creating }) {
         send: getNewWorkStations,
         isNewWorkStationsLoading,
         result: newWorkStationsGetResult
-    } = useGet(itemTypes.workStations.url);
+    } = useGet(itemTypes.workStations.url, true);
 
     const {
         send: getCitCodes,
         isCitCodesLoading,
         result: citCodesGetResult
-    } = useGet(itemTypes.citCodes.url);
+    } = useGet(itemTypes.citCodes.url, true);
 
     const {
         search: searchEmployees,
@@ -84,6 +86,8 @@ function Workstation({ creating }) {
     } = useSearch(itemTypes.historicEmployees.url, 'id', 'fullName', 'fullName', false, true);
 
     const [hasFetched, setHasFetched] = useState(false);
+
+    const hasPermission = utilities.getHref(originalWorkStation, 'update');
 
     const handleFieldChange = (propertyName, newValue) => {
         setWorkStation(current => ({ ...current, [propertyName]: newValue }));
@@ -363,8 +367,15 @@ function Workstation({ creating }) {
                         />
                     </Grid>
                 )}
-                <Grid size={12}>
+                <Grid size={11}>
                     <Typography variant="h4">Workstation Utility</Typography>
+                </Grid>
+                <Grid size={1}>
+                    <PermissionIndicator
+                        hasPermission={hasPermission}
+                        hasPermissionMessage="You have create/update workstation permissions"
+                        noPermissionMessage="You do not have create/update workstation permissions"
+                    />
                 </Grid>
                 {(isNewWorkStationsLoading || updateLoading || createWorkStationLoading) && (
                     <Grid size={12}>
@@ -457,7 +468,7 @@ function Workstation({ creating }) {
                                 updateWorkStation(submitBody.workStationCode, submitBody);
                             }
                         }}
-                        saveDisabled={!changesMade}
+                        saveDisabled={!changesMade || !hasPermission}
                         cancelClick={handleCancelSelect}
                     />
                 </Grid>

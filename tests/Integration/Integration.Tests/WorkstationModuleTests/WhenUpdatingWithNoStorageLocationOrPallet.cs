@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkstationModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System;
     using System.Collections.Generic;
@@ -17,14 +17,14 @@
 
     public class WhenUpdatingWithNoStorageLocationOrPallet : ContextBase
     {
-        private Workstation workstation;
+        private WorkStation workStation;
 
-        private WorkstationResource updateResource;
+        private WorkStationResource updateResource;
 
         [SetUp]
         public void SetUp()
         {
-            this.workstation = new Workstation(
+            this.workStation = new WorkStation(
                 "Test",
                 "description",
                 new Cit
@@ -35,25 +35,25 @@
                 "Z",
                 null);
 
-            this.updateResource = new WorkstationResource
+            this.updateResource = new WorkStationResource
             {
                 WorkStationCode = "Test",
                 CitCode = "R",
                 CitName = "R CODE",
                 Description = "A TEST WORKSTATION",
                 ZoneType = "Z",
-                WorkStationElements = new List<WorkstationElementResource>
+                WorkStationElements = new List<WorkStationElementResource>
                                           {
-                                              new WorkstationElementResource
+                                              new WorkStationElementResource
                                                   {
-                                                      WorkstationCode = "Test",
+                                                      WorkStationCode = "Test",
                                                       CreatedById = 33156,
                                                       CreatedByName = "RSTEWART",
                                                       DateCreated = DateTime.Today.ToString("o")
                                                   },
-                                              new WorkstationElementResource
+                                              new WorkStationElementResource
                                                   {
-                                                      WorkstationCode = "Test",
+                                                      WorkStationCode = "Test",
                                                       CreatedById = 33156,
                                                       CreatedByName = "RSTEWART",
                                                       DateCreated = DateTime.Today.ToString("o")
@@ -61,7 +61,7 @@
                                           }
             };
 
-            this.DbContext.Workstations.AddAndSave(this.DbContext, this.workstation);
+            this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workStation);
             this.DbContext.SaveChanges();
 
             this.Response = this.Client.PutAsJsonAsync(

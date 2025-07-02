@@ -1,6 +1,6 @@
 ﻿namespace Linn.Stores2.Resources.Stores
 {
-    public class WorkstationSearchResource
+    public class WorkStationSearchResource
     {
         public string WorkStationCode { get; set; }
 

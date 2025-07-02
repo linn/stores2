@@ -81,7 +81,7 @@
                     r => new EntityFrameworkRepository<PcasBoard, string>(r.GetService<ServiceDbContext>()?.PcasBoards))
                 .AddTransient<IRepository<NominalAccount, int>, EntityFrameworkRepository<NominalAccount, int>>(r =>
                     new EntityFrameworkRepository<NominalAccount, int>(r.GetService<ServiceDbContext>()?.NominalAccounts))
-                .AddScoped<IRepository<Workstation, string>, WorkstationRepository>()
+                .AddScoped<IRepository<WorkStation, string>, WorkStationRepository>()
                 .AddScoped<IQueryRepository<SundryBookInDetail>, EntityFrameworkQueryRepository<SundryBookInDetail>>(
                     r => new EntityFrameworkQueryRepository<SundryBookInDetail>(r.GetService<ServiceDbContext>()?.SundryBookInDetails))
                 .AddScoped<IQueryRepository<AuditLocation>, EntityFrameworkQueryRepository<AuditLocation>>(

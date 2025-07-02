@@ -6,6 +6,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
@@ -15,9 +16,9 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Stores;
 
-    public class WorkstationFacadeService : AsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>
+    public class WorkStationFacadeService : AsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource>
     {
-        private readonly IRepository<Workstation, string> repository;
+        private readonly IRepository<WorkStation, string> repository;
 
         private readonly IRepository<Employee, int> employeeRepository;
 
@@ -27,14 +28,17 @@
 
         private readonly IRepository<StoresPallet, int> palletRepository;
 
-        public WorkstationFacadeService(
-            IRepository<Workstation, string> repository,
+        private readonly IAuthorisationService authService;
+
+        public WorkStationFacadeService(
+            IRepository<WorkStation, string> repository,
             IRepository<Employee, int> employeeRepository,
             IRepository<Cit, string> citRepository,
             IRepository<StorageLocation, int> storageLocationRepository,
             IRepository<StoresPallet, int> palletRepository,
+            IAuthorisationService authService,
             ITransactionManager transactionManager,
-            IBuilder<Workstation> resourceBuilder)
+            IBuilder<WorkStation> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.repository = repository;
@@ -42,16 +46,21 @@
             this.citRepository = citRepository;
             this.storageLocationRepository = storageLocationRepository;
             this.palletRepository = palletRepository;
+            this.authService = authService;
         }
 
-        protected override async Task<Workstation> CreateFromResourceAsync(
-            WorkstationResource resource,
+        protected override async Task<WorkStation> CreateFromResourceAsync(
+            WorkStationResource resource,
             IEnumerable<string> privileges = null)
         {
-            var workstation = await this.repository.FindByIdAsync(resource.WorkStationCode);
+            if (!this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to create work stations");
+            }
+
             var cit = await this.citRepository.FindByIdAsync(resource.CitCode);
 
-            var workStationElements = new List<WorkstationElement>();
+            var workStationElements = new List<WorkStationElement>();
 
             foreach (var e in resource.WorkStationElements)
             {
@@ -67,9 +76,9 @@
                                  ? await this.palletRepository.FindByIdAsync(e.PalletNumber.Value)
                                  : null;
 
-                var element = new WorkstationElement(
+                var element = new WorkStationElement(
                     e.WorkStationElementId.GetValueOrDefault(),
-                    e.WorkstationCode,
+                    e.WorkStationCode,
                     createdBy,
                     DateTime.Parse(e.DateCreated),
                     location,
@@ -78,7 +87,7 @@
                 workStationElements.Add(element);
             }
 
-            return new Workstation(
+            return new WorkStation(
                 resource.WorkStationCode,
                 resource.Description,
                 cit,
@@ -87,13 +96,18 @@
         }
 
         protected override async Task UpdateFromResourceAsync(
-            Workstation entity,
-            WorkstationResource updateResource,
+            WorkStation entity,
+            WorkStationResource updateResource,
             IEnumerable<string> privileges = null)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to update work stations");
+            }
+
             var cit = await this.citRepository.FindByIdAsync(updateResource.CitCode);
 
-            var workStationElements = new List<WorkstationElement>();
+            var workStationElements = new List<WorkStationElement>();
 
             foreach (var e in updateResource.WorkStationElements)
             {
@@ -109,9 +123,9 @@
                                  ? await this.palletRepository.FindByIdAsync(e.PalletNumber.GetValueOrDefault())
                                  : null;
 
-                var element = new WorkstationElement(
+                var element = new WorkStationElement(
                     e.WorkStationElementId.GetValueOrDefault(),
-                    e.WorkstationCode,
+                    e.WorkStationCode,
                     createdBy,
                     DateTime.Parse(e.DateCreated),
                     location,
@@ -128,29 +142,33 @@
                 workStationElements);
         }
 
-        protected override Expression<Func<Workstation, bool>> SearchExpression(string searchTerm)
+        protected override Expression<Func<WorkStation, bool>> SearchExpression(string searchTerm)
         {
             throw new NotImplementedException();
         }
 
-        protected override Task SaveToLogTable(string actionType, int userNumber, Workstation entity, WorkstationResource resource, WorkstationResource updateResource)
+        protected override Task SaveToLogTable(string actionType, int userNumber, WorkStation entity, WorkStationResource resource, WorkStationResource updateResource)
         {
             throw new NotImplementedException();
         }
 
-        protected override void DeleteOrObsoleteResource(Workstation entity, IEnumerable<string> privileges = null)
+        protected override void DeleteOrObsoleteResource(WorkStation entity, IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<Workstation, bool>> FilterExpression(WorkstationSearchResource searchResource)
+        protected override Expression<Func<WorkStation, bool>> FilterExpression(WorkStationSearchResource searchResource)
         {
+            var workStationCode = searchResource.WorkStationCode?.Trim().ToUpper();
+            var citCode = searchResource.CitCode?.Trim().ToUpper();
+
             return w =>
-                (string.IsNullOrEmpty(searchResource.WorkStationCode) || w.WorkStationCode.ToUpper() == searchResource.WorkStationCode.Trim().ToUpper())
-                && (string.IsNullOrEmpty(searchResource.CitCode) || w.Cit.Code.ToUpper() == searchResource.CitCode.Trim().ToUpper());
+                (workStationCode == null || (w.WorkStationCode != null && w.WorkStationCode.ToUpper().Contains(workStationCode)))
+                &&
+                (citCode == null || (w.Cit != null && w.Cit.Code != null && w.Cit.Code.ToUpper().Contains(citCode)));
         }
 
-        protected override Expression<Func<Workstation, bool>> FindExpression(WorkstationSearchResource searchResource)
+        protected override Expression<Func<WorkStation, bool>> FindExpression(WorkStationSearchResource searchResource)
         {
             throw new NotImplementedException();
         }

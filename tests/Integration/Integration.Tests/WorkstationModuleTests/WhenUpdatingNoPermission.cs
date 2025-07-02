@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
 
@@ -18,9 +17,9 @@
 
     using NUnit.Framework;
 
-    public class WhenUpdating : ContextBase
+    public class WhenUpdatingNoPermission : ContextBase
     {
-        private WorkStation workstation;
+        private WorkStation workStation;
         private StorageLocation location;
         private StoresPallet pallet;
 
@@ -30,7 +29,7 @@
         public void SetUp()
         {
             this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, Arg.Any<IEnumerable<string>>())
-                .Returns(true);
+                .Returns(false);
 
             this.location = new StorageLocation
             {
@@ -46,7 +45,7 @@
                 Description = "PALLET 999"
             };
 
-            this.workstation = new WorkStation(
+            this.workStation = new WorkStation(
                 "Test",
                 "description",
                 new Cit
@@ -87,7 +86,7 @@
                                           }
             };
 
-            this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workstation);
+            this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workStation);
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.location);
             this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
             this.DbContext.SaveChanges();
@@ -98,9 +97,9 @@
         }
 
         [Test]
-        public void ShouldReturnOk()
+        public void ShouldThrow()
         {
-            this.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            this.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Test]
@@ -108,21 +107,6 @@
         {
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
-        }
-
-        [Test]
-        public void ShouldUpdateEntity()
-        {
-            this.DbContext.WorkStations.First(x => x.WorkStationCode == this.workstation.WorkStationCode).Description
-                .Should().Be(this.updateResource.Description);
-        }
-
-        [Test]
-        public void ShouldReturnUpdatedJsonBody()
-        {
-            var resource = this.Response.DeserializeBody<WorkStationResource>();
-            resource.Description.Should().Be("A TEST WORKSTATION");
-            resource.WorkStationElements.Count().Should().Be(2);
         }
     }
 }
