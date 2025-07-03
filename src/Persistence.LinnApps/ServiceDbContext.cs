@@ -71,7 +71,7 @@
 
         public DbSet<LabelType> LabelTypes { get; set; }
         
-        public DbSet<Workstation> Workstations { get; set; }
+        public DbSet<WorkStation> WorkStations { get; set; }
 
         public DbSet<Cit> Cits { get; set; }
 
@@ -132,8 +132,8 @@
             BuildStockTransactionPostings(builder);
             BuildPotentialMoveDetails(builder);
             BuildLabelTypes(builder);
-            BuildWorkstations(builder);
-            BuildWorkstationElements(builder);
+            BuildWorkStations(builder);
+            BuildWorkStationElements(builder);
             BuildCits(builder);
             BuildBookInOrderDetails(builder);
             BuildPcasStorageTypes(builder);
@@ -576,6 +576,7 @@
             r.Property(c => c.CanBeCancelled).HasColumnName("CAN_BE_CANCELLED").HasMaxLength(1);
             r.Property(c => c.ReceiptDateRequired).HasColumnName("RECEIPT_DATE_REQUIRED").HasMaxLength(1);
             r.Property(c => c.AuditLocationRequired).HasColumnName("AUDIT_LOC_REQUIRED").HasMaxLength(1);
+            r.Property(c => c.UpdateSalesOrderDetQtyOutstanding).HasColumnName("UPDATE_SOD_QTY_OS").HasMaxLength(1);
             r.Property(c => c.ProcessStage).HasColumnName("PROCESS_STAGE");
             r.HasMany(c => c.TransactionsTypes).WithOne().HasForeignKey(t => t.FunctionCode);
         }
@@ -846,9 +847,9 @@
             e.Property(t => t.FileName).HasColumnName("FILENAME");
         }
 
-        private static void BuildWorkstations(ModelBuilder builder)
+        private static void BuildWorkStations(ModelBuilder builder)
         {
-            var e = builder.Entity<Workstation>().ToTable("WORK_STATIONS");
+            var e = builder.Entity<WorkStation>().ToTable("WORK_STATIONS");
             e.HasKey(l => l.WorkStationCode);
             e.Property(s => s.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
             e.Property(s => s.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
@@ -861,9 +862,9 @@
                 .OnDelete(DeleteBehavior.Cascade);
         }
 
-        private static void BuildWorkstationElements(ModelBuilder builder)
+        private static void BuildWorkStationElements(ModelBuilder builder)
         {
-            var e = builder.Entity<WorkstationElement>().ToTable("WORK_STATION_ELEMENTS");
+            var e = builder.Entity<WorkStationElement>().ToTable("WORK_STATION_ELEMENTS");
             e.HasKey(l => l.WorkStationElementId);
             e.Property(s => s.WorkStationElementId).HasColumnName("WSE_ID");
             e.Property(s => s.WorkStationCode).HasColumnName("WORK_STATION_CODE").HasMaxLength(16);
@@ -910,7 +911,6 @@
             v.HasOne(e => e.StorageType).WithMany().HasForeignKey(e => e.StorageTypeCode);
             v.Ignore(p => p.Key);
         }
-
 
         private static void BuildPcasBoard(ModelBuilder builder)
         {
@@ -969,12 +969,14 @@
             r.Property(l => l.StockState).HasColumnName("STOCK_STATE").HasMaxLength(1);
             r.Property(l => l.AuditOwnerId).HasColumnName("AUDIT_OWNER_ID");
             r.Property(l => l.AuditFrequencyWeeks).HasColumnName("AUDIT_FREQUENCY_WEEKS");
-            r.Property(l => l.AuditedByDepartmentCode).HasColumnName("AUDITED_BY_DEPARTMENT_CODE").HasMaxLength(10);
             r.Property(l => l.MixStates).HasColumnName("MIX_STATES").HasMaxLength(1);
+            r.Property(l => l.AuditedByDepartmentCode).HasColumnName("AUDITED_BY_DEPARTMENT_CODE").HasMaxLength(10);
             r.Property(l => l.Cage).HasColumnName("CAGE").HasMaxLength(1);
             r.HasOne(l => l.StorageLocation).WithMany().HasForeignKey("LOCATION_ID");
             r.HasOne(l => l.LocationType).WithMany().HasForeignKey("LOCATION_TYPE");
             r.HasOne(l => l.DefaultStockPool).WithMany().HasForeignKey("DEFAULT_STOCK_POOL");
+            r.HasOne(l => l.AuditedByDepartment).WithMany().HasForeignKey(l => l.AuditedByDepartmentCode);
+            r.HasOne(l => l.AuditedByEmployee).WithMany().HasForeignKey(l => l.AuditedBy);
         }
 
         private static void BuildLocationTypes(ModelBuilder builder)

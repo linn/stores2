@@ -4,7 +4,7 @@
 
     using Linn.Common.Resources;
 
-    public class WorkstationResource : HypermediaResource
+    public class WorkStationResource : HypermediaResource
     {
         public string WorkStationCode { get; set; }
 
@@ -18,6 +18,6 @@
 
         public string ZoneType { get; set; }
 
-        public IEnumerable<WorkstationElementResource> WorkStationElements { get; set; }
+        public IEnumerable<WorkStationElementResource> WorkStationElements { get; set; }
     }
 }

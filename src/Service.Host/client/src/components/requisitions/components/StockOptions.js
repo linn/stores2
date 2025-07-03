@@ -113,14 +113,16 @@ function StockOptions({
                             )}
                         </Grid>
                         <Grid size={2}>
-                            <Button
-                                onClick={() => setPickStockDialogVisible(true)}
-                                variant="outlined"
-                                style={{ marginTop: '32px' }}
-                                disabled={disabled || !doPickStock}
-                            >
-                                Pick Stock
-                            </Button>
+                            {partNumber && (
+                                <Button
+                                    onClick={() => setPickStockDialogVisible(true)}
+                                    variant="outlined"
+                                    style={{ marginTop: '32px' }}
+                                    disabled={disabled || !doPickStock}
+                                >
+                                    Pick Stock
+                                </Button>
+                            )}
                         </Grid>
                         <Grid size={4} />
                     </>
@@ -133,7 +135,9 @@ function StockOptions({
                             label="From Loc"
                             resultsInModal
                             resultLimit={100}
-                            helperText="<Enter> to search or <Tab> to select"
+                            helperText={
+                                fromLocationCode ? '' : '<Enter> to search or <Tab> to select'
+                            }
                             value={fromLocationCode}
                             handleValueChange={setItemValue}
                             disabled={disabled}
@@ -239,7 +243,11 @@ function StockOptions({
                             label="To Loc"
                             resultsInModal
                             resultLimit={100}
-                            helperText={disabled ? '' : '<Enter> to search or <Tab> to select'}
+                            helperText={
+                                disabled || toLocationCode
+                                    ? ''
+                                    : '<Enter> to search or <Tab> to select'
+                            }
                             value={toLocationCode}
                             handleValueChange={setItemValue}
                             search={searchLocations}

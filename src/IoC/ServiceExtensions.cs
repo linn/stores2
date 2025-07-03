@@ -28,6 +28,7 @@
     using Linn.Stores2.Proxy.HttpClients;
     using Linn.Stores2.Proxy.StoredProcedureClients;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
@@ -107,7 +108,7 @@
                 .AddScoped<IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource>, StoresFunctionCodeService>()
                 .AddScoped<IGoodsInLogReportFacadeService, GoodsInLogReportFacadeService>()
                 .AddScoped<IStoresTransViewerReportFacadeService, StoresTransViewerReportFacadeService>()
-                .AddScoped<IAsyncFacadeService<Workstation, string, WorkstationResource, WorkstationResource, WorkstationSearchResource>, WorkstationFacadeService>()
+                .AddScoped<IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource>, WorkStationFacadeService>()
                 .AddScoped<IRequisitionLabelsFacadeService, RequisitionLabelsFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
@@ -134,12 +135,14 @@
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
-                .AddScoped<IBuilder<Workstation>, WorkstationResourceBuilder>()
-                .AddScoped<IBuilder<WorkstationElement>, WorkstationElementsResourceBuilder>()
+                .AddScoped<IBuilder<WorkStation>, WorkStationResourceBuilder>()
+                .AddScoped<IBuilder<WorkStationElement>, WorkStationElementsResourceBuilder>()
                 .AddScoped<IBuilder<PcasStorageType>, PcasStorageTypeResourceBuilder>()
                 .AddScoped<IBuilder<PcasBoard>, PcasBoardResourceBuilder>()
                 .AddScoped<IBuilder<StoresPallet>, StoresPalletResourceBuilder>()
-                .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>();
+                .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>()
+                .AddScoped<IBuilder<Employee>, EmployeeResourceBuilder>()
+                .AddScoped<IBuilder<Department>, DepartmentResourceBuilder>();
         }
     }
 }

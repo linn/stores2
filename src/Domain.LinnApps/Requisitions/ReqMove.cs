@@ -22,11 +22,12 @@
             int? locationId,
             string stockPool,
             string state,
-            string category)
+            string category,
+            StockLocator stockLocator = null)
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;
-            this.Sequence = Sequence;
+            this.Sequence = seq;
             this.Quantity = qty;
             this.StockLocatorId = stockLocatorId;
             this.PalletNumber = palletNumber;
@@ -37,6 +38,7 @@
             this.DateBooked = null;
             this.DateCancelled = null;
             this.Booked = "N";
+            this.StockLocator = stockLocator;
         }
 
         public int ReqNumber { get; protected init; }
@@ -93,6 +95,8 @@
         public bool IsCancelled() => this.DateCancelled != null;
 
         public bool IsBooked() => this.DateBooked != null || this.Booked == "Y";
+
+        public bool CanUnPick() => !this.IsBooked() && !this.IsCancelled() && this.StockLocator != null;
 
         public bool MoveIsBookable(StoresTransactionDefinition transaction)
         {

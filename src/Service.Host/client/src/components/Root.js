@@ -28,6 +28,8 @@ import PcasStorageType from './PcasStorageType';
 import RequisitionCostReport from './RequisitionCostReport';
 import Workstations from './Workstations';
 import Workstation from './Workstation';
+import Pallets from './Pallets';
+import Pallet from './Pallet';
 
 function Root() {
     useSignIn();
@@ -89,6 +91,9 @@ function Root() {
                         path="/stores2/storage/locations/create"
                         element={<StorageLocation creating />}
                     />
+                    <Route path="/stores2/pallets" element={<Pallets />} />
+                    <Route path="/stores2/pallets/:id" element={<Pallet />} />
+                    <Route path="/stores2/pallets/create" element={<Pallet creating />} />
                     <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
                     <Route path="/stores2/stock-pools" element={<StockPools />} />
                     <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />

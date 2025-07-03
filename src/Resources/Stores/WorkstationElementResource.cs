@@ -2,11 +2,11 @@
 {
     using Linn.Common.Resources;
 
-    public class WorkstationElementResource : HypermediaResource
+    public class WorkStationElementResource : HypermediaResource
     {
         public int? WorkStationElementId { get; set; }
 
-        public string WorkstationCode { get; set; }
+        public string WorkStationCode { get; set; }
 
         public int? CreatedById { get; set; }
 

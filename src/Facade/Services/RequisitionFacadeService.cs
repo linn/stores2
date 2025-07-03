@@ -229,6 +229,31 @@
             return new SuccessResult<StorageLocationResource>(builder.Build(result, new List<string>()));
         }
 
+        public async Task<IResult<RequisitionHeaderResource>> UnpickRequisitionMove(int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate,
+            IEnumerable<string> privileges)
+        {
+            try
+            {
+                var privilegeList = privileges.ToList();
+
+                var cancelled = await this.requisitionManager.UnpickRequisitionMove(
+                    reqNumber,
+                    lineNumber,
+                    seq,
+                    qtyToUnpick,
+                    unpickedBy,
+                    reallocate,
+                    privilegeList);
+
+                return new SuccessResult<RequisitionHeaderResource>(
+                    this.BuildResource(cancelled, privilegeList));
+            }
+            catch (DomainException e)
+            {
+                return new BadRequestResult<RequisitionHeaderResource>(e.Message);
+            }
+        }
+
         protected override async Task<RequisitionHeader> CreateFromResourceAsync(
             RequisitionHeaderResource resource,
             IEnumerable<string> privileges = null)
@@ -318,7 +343,12 @@
         protected override Expression<Func<RequisitionHeader, bool>> FilterExpression(
             RequisitionSearchResource searchResource)
         {
-            if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber != null)
+            DateTime? startDate = string.IsNullOrEmpty(searchResource.StartDate)
+                                      ? null
+                                      : DateTime.Parse(searchResource.StartDate);
+            DateTime? endDate = string.IsNullOrEmpty(searchResource.EndDate) ? null : DateTime.Parse(searchResource.EndDate);
+            
+            if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber.HasValue)
             {
                 return x => x.Document1Name == searchResource.DocumentName &&
                             x.Document1 == searchResource.DocumentNumber
@@ -333,10 +363,19 @@
                 return x => x.Cancelled != "Y" && x.DateBooked == null;
             }
 
+            if (!searchResource.ReqNumber.HasValue && string.IsNullOrEmpty(searchResource.Comments)
+                                                   && !startDate.HasValue)
+            {
+                startDate = DateTime.Today.AddYears(-1);
+            }
+
             return x => (string.IsNullOrEmpty(searchResource.Comments) 
                          || x.Comments.ToUpper().Contains(searchResource.Comments.ToUpper().Trim())) 
                         && (searchResource.IncludeCancelled || x.Cancelled != "Y")
-                        && (!searchResource.ReqNumber.HasValue || x.ReqNumber == searchResource.ReqNumber);
+                        && (!searchResource.ReqNumber.HasValue || x.ReqNumber == searchResource.ReqNumber)
+                        && (!startDate.HasValue || x.DateCreated >= startDate)
+                        && (!endDate.HasValue || x.DateCreated.Date <= endDate)
+                        && (!searchResource.EmployeeId.HasValue || x.CreatedBy.Id == searchResource.EmployeeId);
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> FindExpression(
@@ -383,7 +422,7 @@
                                             ToStockPool = m.ToStockPool,
                                             ToState = m.ToState,
                                             IsAddition = m.IsAddition.GetValueOrDefault()
-                                        }),
+                               }),
                            LineNumber = resource.LineNumber,
                            PartNumber = resource.Part?.PartNumber,
                            Document1 = resource.Document1Number,

@@ -153,6 +153,14 @@ function Requisition({ creating }) {
     } = usePost(`${itemTypes.requisitions.url}/authorise`, true);
 
     const {
+        send: unpick,
+        isLoading: unpickLoading,
+        errorMessage: unpickError,
+        postResult: unpickResult,
+        clearPostResult: clearUnpickResult
+    } = usePost(`${itemTypes.requisitions.url}/unpick`, true);
+
+    const {
         send: createReq,
         isLoading: createLoading,
         errorMessage: createError
@@ -236,6 +244,11 @@ function Requisition({ creating }) {
             setRevertState(authoriseResult);
             clearAuthoriseResult();
         }
+        if (unpickResult) {
+            dispatch({ type: 'load_state', payload: unpickResult });
+            setRevertState(unpickResult);
+            clearUnpickResult();
+        }
         if (result) {
             dispatch({ type: 'load_state', payload: result });
             setRevertState(result);
@@ -251,6 +264,7 @@ function Requisition({ creating }) {
         cancelResult,
         bookResult,
         authoriseResult,
+        unpickResult,
         creating,
         name,
         userNumber,
@@ -260,7 +274,8 @@ function Requisition({ creating }) {
         clearCancelResult,
         clearBookResult,
         clearReqResult,
-        clearAuthoriseResult
+        clearAuthoriseResult,
+        clearUnpickResult
     ]);
 
     const handleHeaderFieldChange = (fieldName, newValue) => {
@@ -651,6 +666,11 @@ function Requisition({ creating }) {
                         <ErrorCard errorMessage={authoriseError} />
                     </Grid>
                 )}
+                {unpickError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={unpickError} />
+                    </Grid>
+                )}
                 {createError && (
                     <Grid size={12}>
                         <ErrorCard errorMessage={createError} />
@@ -666,7 +686,8 @@ function Requisition({ creating }) {
                     bookLoading ||
                     authoriseLoading ||
                     createLoading ||
-                    updateLoading) && (
+                    updateLoading ||
+                    unpickLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -785,6 +806,7 @@ function Requisition({ creating }) {
                                         onKeyPressFunctions={[
                                             { keyCode: 9, action: getAndSetFunctionCode }
                                         ]}
+                                        handleOnBlur={getAndSetFunctionCode}
                                         priorityFunction="closestMatchesFirst"
                                         onResultSelect={r => {
                                             if (utilities.getHref(r, 'create-req')) {
@@ -963,7 +985,7 @@ function Requisition({ creating }) {
                                             />
                                         )}
                                     </Grid>
-                                    <Grid size={2}>
+                                    <Grid size={4}>
                                         {shouldRender(requiresDepartmentNominal) && (
                                             <Dropdown
                                                 fullWidth
@@ -980,7 +1002,7 @@ function Requisition({ creating }) {
                                             />
                                         )}
                                     </Grid>
-                                    <Grid size={8} />
+                                    <Grid size={6} />
                                 </>
                             )}
                             <AuditLocationSearch
@@ -1002,6 +1024,30 @@ function Requisition({ creating }) {
                                     })
                                 }
                             />
+                            <Grid size={6}>
+                                <InputField
+                                    fullWidth
+                                    value={formState.req.reference}
+                                    onChange={handleHeaderFieldChange}
+                                    disabled={
+                                        formState.req?.cancelled === 'Y' ||
+                                        formState.req?.dateBooked
+                                    }
+                                    label="Reference"
+                                    propertyName="reference"
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    fullWidth
+                                    value={formState.req.comments}
+                                    onChange={(propertyName, newValue) => {
+                                        handleHeaderFieldChange(propertyName, newValue);
+                                    }}
+                                    label="Comments"
+                                    propertyName="comments"
+                                />
+                            </Grid>
                             <Document1
                                 document1={formState.req.document1}
                                 document1Text={formState.req.storesFunction?.document1Text}
@@ -1169,30 +1215,6 @@ function Requisition({ creating }) {
                                     );
                                 })}
                             />
-                            <Grid size={6}>
-                                <InputField
-                                    fullWidth
-                                    value={formState.req.reference}
-                                    onChange={handleHeaderFieldChange}
-                                    disabled={
-                                        formState.req?.cancelled === 'Y' ||
-                                        formState.req?.dateBooked
-                                    }
-                                    label="Reference"
-                                    propertyName="reference"
-                                />
-                            </Grid>
-                            <Grid size={6}>
-                                <InputField
-                                    fullWidth
-                                    value={formState.req.comments}
-                                    onChange={(propertyName, newValue) => {
-                                        handleHeaderFieldChange(propertyName, newValue);
-                                    }}
-                                    label="Comments"
-                                    propertyName="comments"
-                                />
-                            </Grid>
                             {shouldRender(
                                 () => formState.req.storesFunction?.receiptDateRequired === 'Y'
                             ) && (
@@ -1335,6 +1357,16 @@ function Requisition({ creating }) {
                                                     lineNumber: selectedLine,
                                                     ...updated
                                                 }
+                                            });
+                                        }}
+                                        changesMade={changesMade}
+                                        unpick={(qtyToUnpick, move) => {
+                                            unpick(null, {
+                                                reqNumber: move.reqNumber,
+                                                lineNumber: move.lineNumber,
+                                                seq: move.seq,
+                                                qtyToUnpick,
+                                                realloc: false
                                             });
                                         }}
                                     />

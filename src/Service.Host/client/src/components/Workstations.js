@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
+import { useAuth } from 'react-oidc-context';
 import { Link as RouterLink } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { CreateButton, InputField, Loading } from '@linn-it/linn-form-components-library';
+import {
+    CreateButton,
+    InputField,
+    Loading,
+    PermissionIndicator,
+    utilities
+} from '@linn-it/linn-form-components-library';
 import Link from '@mui/material/Link';
 import Button from '@mui/material/Button';
 import { DataGrid } from '@mui/x-data-grid';
@@ -22,19 +29,27 @@ function Workstations() {
             setCitCodeSearchTerm(newValue);
         }
     };
+    const auth = useAuth();
+    const token = auth.user?.access_token;
 
     const {
         send: getWorkStations,
         workStationsLoading,
         result: workStationsResult
-    } = useGet(itemTypes.workStations.url);
+    } = useGet(itemTypes.workStations.url, true);
+
+    const { send: getWorkStationApplicationState, result: workStationApplicationStateResult } =
+        useGet(itemTypes.workStationsApplicationState.url, true);
 
     const [hasFetched, setHasFetched] = useState(false);
 
-    if (!hasFetched) {
+    if (!hasFetched && token) {
         setHasFetched(true);
         getWorkStations();
+        getWorkStationApplicationState();
     }
+
+    const createLink = utilities.getHref(workStationApplicationStateResult, 'create');
 
     const workStationColumns = [
         {
@@ -76,11 +91,18 @@ function Workstations() {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={3}>
-                <Grid size={12}>
+                <Grid size={11}>
                     <Typography variant="h4">Workstation Utility</Typography>
                 </Grid>
+                <Grid size={1}>
+                    <PermissionIndicator
+                        hasPermission={createLink}
+                        hasPermissionMessage="You have create/update workstation permissions"
+                        noPermissionMessage="You do not have create/update workstation permissions"
+                    />
+                </Grid>
                 <Grid size={12}>
-                    <CreateButton createUrl="/stores2/work-stations/create" />
+                    <CreateButton createUrl={createLink} disabled={!createLink} />
                 </Grid>
                 <Grid size={4}>
                     <InputField

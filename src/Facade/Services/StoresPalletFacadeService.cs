@@ -66,7 +66,6 @@
                 resource.StoresKittingPriority,
                 resource.SalesKittable,
                 resource.SalesKittingPriority,
-                DateTime.Parse(resource.AllocQueueTime),
                 locationType.FirstOrDefault(),
                 resource.LocationTypeId,
                 resource.AuditedBy,
@@ -92,18 +91,29 @@
 
             var storageLocation = await this.storageLocationTypeRepository.FindByIdAsync(updateResource.StorageLocationId);
 
+            DateTime? dateInvalid = null;
+            if (!string.IsNullOrWhiteSpace(updateResource.DateInvalid) && DateTime.TryParse(updateResource.DateInvalid, out var parsedDateInvalid))
+            {
+                dateInvalid = parsedDateInvalid;
+            }
+
+            DateTime? dateLastAudited = null;
+            if (!string.IsNullOrWhiteSpace(updateResource.DateLastAudited) && DateTime.TryParse(updateResource.DateLastAudited, out var parsedDateLastAudited))
+            {
+                dateLastAudited = parsedDateLastAudited;
+            }
+
             entity.Update(
                 updateResource.Description,
                 storageLocation, 
                 updateResource.StorageLocationId,
-                DateTime.Parse(updateResource.DateInvalid),
-                DateTime.Parse(updateResource.DateLastAudited),
+                dateInvalid,
+                dateLastAudited, 
                 updateResource.Accessible,
                 updateResource.StoresKittable,
                 updateResource.StoresKittingPriority,
                 updateResource.SalesKittable,
                 updateResource.SalesKittingPriority,
-                DateTime.Parse(updateResource.AllocQueueTime),
                 locationType.FirstOrDefault(),
                 updateResource.LocationTypeId,
                 updateResource.AuditedBy,

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from 'react-oidc-context';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
@@ -17,9 +18,11 @@ import {
     ErrorCard,
     InputField,
     Loading,
+    PermissionIndicator,
     SaveBackCancelButtons,
     Search,
-    SnackbarMessage
+    SnackbarMessage,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import config from '../config';
 import itemTypes from '../itemTypes';
@@ -40,6 +43,9 @@ function Workstation({ creating }) {
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const code = queryParams.get('code');
+
+    const auth = useAuth();
+    const token = auth.user?.access_token;
 
     const navigate = useNavigate();
 
@@ -63,19 +69,22 @@ function Workstation({ creating }) {
         errorMessage: createWorkStationError,
         postResult: createWorkStationResult,
         clearPostResult: clearCreateWorkStation
-    } = usePost(itemTypes.workStations.url);
+    } = usePost(itemTypes.workStations.url, true);
+
+    const { send: getWorkStationApplicationState, result: workStationApplicationStateResult } =
+        useGet(itemTypes.workStationsApplicationState.url, true);
 
     const {
-        send: getNewWorkStations,
+        send: getWorkStations,
         isNewWorkStationsLoading,
         result: newWorkStationsGetResult
-    } = useGet(itemTypes.workStations.url);
+    } = useGet(itemTypes.workStations.url, true);
 
     const {
         send: getCitCodes,
         isCitCodesLoading,
         result: citCodesGetResult
-    } = useGet(itemTypes.citCodes.url);
+    } = useGet(itemTypes.citCodes.url, true);
 
     const {
         search: searchEmployees,
@@ -84,6 +93,9 @@ function Workstation({ creating }) {
     } = useSearch(itemTypes.historicEmployees.url, 'id', 'fullName', 'fullName', false, true);
 
     const [hasFetched, setHasFetched] = useState(false);
+
+    const hasUpdatePermission = utilities.getHref(originalWorkStation, 'update');
+    const hasCreatePermission = utilities.getHref(workStationApplicationStateResult, 'create');
 
     const handleFieldChange = (propertyName, newValue) => {
         setWorkStation(current => ({ ...current, [propertyName]: newValue }));
@@ -110,16 +122,26 @@ function Workstation({ creating }) {
     }, [clearCreateWorkStation, clearUpdateResult, createWorkStationResult, updateResult]);
 
     useEffect(() => {
-        if (!hasFetched) {
+        if (!hasFetched && token) {
             setHasFetched(true);
 
             if (!creating) {
-                getNewWorkStations(encodeURI(code));
+                getWorkStations(encodeURI(code));
+            } else {
+                getWorkStationApplicationState();
             }
 
             getCitCodes();
         }
-    }, [creating, hasFetched, getNewWorkStations, code, getCitCodes]);
+    }, [
+        code,
+        creating,
+        hasFetched,
+        getCitCodes,
+        getWorkStations,
+        getWorkStationApplicationState,
+        token
+    ]);
 
     useEffect(() => {
         if (!creating && newWorkStationsGetResult) {
@@ -363,8 +385,15 @@ function Workstation({ creating }) {
                         />
                     </Grid>
                 )}
-                <Grid size={12}>
+                <Grid size={11}>
                     <Typography variant="h4">Workstation Utility</Typography>
+                </Grid>
+                <Grid size={1}>
+                    <PermissionIndicator
+                        hasPermission={creating ? hasCreatePermission : hasUpdatePermission}
+                        hasPermissionMessage="You have create/update workstation permissions"
+                        noPermissionMessage="You do not have create/update workstation permissions"
+                    />
                 </Grid>
                 {(isNewWorkStationsLoading || updateLoading || createWorkStationLoading) && (
                     <Grid size={12}>
@@ -379,6 +408,7 @@ function Workstation({ creating }) {
                         propertyName="workStationCode"
                         onChange={handleFieldChange}
                         disabled={!creating}
+                        required
                     />
                 </Grid>
                 <Grid size={8}>
@@ -457,7 +487,9 @@ function Workstation({ creating }) {
                                 updateWorkStation(submitBody.workStationCode, submitBody);
                             }
                         }}
-                        saveDisabled={!changesMade}
+                        saveDisabled={
+                            !(changesMade && (creating ? hasCreatePermission : hasUpdatePermission))
+                        }
                         cancelClick={handleCancelSelect}
                     />
                 </Grid>

@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
     using FluentAssertions;
@@ -18,7 +17,7 @@
     using NSubstitute;
     using NUnit.Framework;
 
-    public class WhenValilidatingAndSecondLineHasNoQty : ContextBase
+    public class WhenValidatingAndSecondLineHasNoQty : ContextBase
     {
         private Func<Task> action;
 
@@ -75,6 +74,8 @@
                     Moves = new[] { new MoveSpecification { Qty = 0 } }
                 }
             };
+            this.StoresService.ValidDepartmentNominal("1607", "2963")
+                .Returns(new ProcessResult(true, "ok"));
 
             this.action = () => this.Sut.Validate(
                 33087,

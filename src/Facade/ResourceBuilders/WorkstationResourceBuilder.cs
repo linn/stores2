@@ -3,51 +3,72 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Resources.Stores;
 
-    public class WorkstationResourceBuilder : IBuilder<Workstation>
+    public class WorkStationResourceBuilder : IBuilder<WorkStation>
     {
-        private readonly IBuilder<WorkstationElement> workstationElementsBuilder;
+        private readonly IBuilder<WorkStationElement> workStationsElementsBuilder;
 
-        public WorkstationResourceBuilder(IBuilder<WorkstationElement> workstationElementsBuilder)
+        private readonly IAuthorisationService authService;
+
+        public WorkStationResourceBuilder(IBuilder<WorkStationElement> workstationElementsBuilder, IAuthorisationService authService)
         {
-            this.workstationElementsBuilder = workstationElementsBuilder;
+            this.workStationsElementsBuilder = workstationElementsBuilder;
+            this.authService = authService;
         }
 
-        public WorkstationResource Build(Workstation model, IEnumerable<string> claims)
+        public WorkStationResource Build(WorkStation model, IEnumerable<string> claims)
         {
-            var claimsList = claims?.ToList() ?? new List<string>();
+            if (model == null)
+            {
+                return new WorkStationResource
+                {
+                    Links = this.BuildLinks(null, claims.ToList()).ToArray()
+                };
+            }
 
-            return new WorkstationResource
-                       {
-                           WorkStationCode = model.WorkStationCode,
-                           CitCode = model.Cit?.Code,
-                           CitName = model.Cit?.Name,
-                           Description = model.Description,
-                           ZoneType = model.ZoneType,
-                           WorkStationElements = model.WorkStationElements
-                               ?.Select(c => (WorkstationElementResource)this.workstationElementsBuilder
-                                   .Build(c, claimsList)), 
-                           Links = this.BuildLinks(model, claimsList).ToArray()
+            return new WorkStationResource
+            {
+                WorkStationCode = model.WorkStationCode,
+                CitCode = model.Cit?.Code,
+                CitName = model.Cit?.Name,
+                Description = model.Description,
+                ZoneType = model.ZoneType,
+                WorkStationElements = model.WorkStationElements
+                               ?.Select(c => (WorkStationElementResource)this.workStationsElementsBuilder
+                                   .Build(c, claims)),
+                Links = this.BuildLinks(model, claims?.ToList()).ToArray()
             };
         }
 
-        public string GetLocation(Workstation model)
+        public string GetLocation(WorkStation model)
         {
             return $"/stores2/work-stations/{model.WorkStationCode}";
         }
 
-        object IBuilder<Workstation>.Build(Workstation entity, IEnumerable<string> claims) =>
+        object IBuilder<WorkStation>.Build(WorkStation entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
 
-        private IEnumerable<LinkResource> BuildLinks(Workstation model, IEnumerable<string> claims)
+        private IEnumerable<LinkResource> BuildLinks(WorkStation model, IList<string> claims)
         {
+            if (this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, claims))
+            {
+                yield return new LinkResource { Rel = "create", Href = "/stores2/work-stations/create" };
+            }
+
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
+                
+                if (this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, claims))
+                {
+                    yield return new LinkResource { Rel = "update", Href = this.GetLocation(model) };
+                }
             }
         }
     }

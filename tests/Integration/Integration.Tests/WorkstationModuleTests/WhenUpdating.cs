@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkstationModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System;
     using System.Collections.Generic;
@@ -8,70 +8,76 @@
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Stores;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenUpdating : ContextBase
     {
-        private Workstation workstation;
+        private WorkStation workstation;
         private StorageLocation location;
         private StoresPallet pallet;
 
-        private WorkstationResource updateResource;
+        private WorkStationResource updateResource;
 
         [SetUp]
         public void SetUp()
         {
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, Arg.Any<IEnumerable<string>>())
+                .Returns(true);
+
             this.location = new StorageLocation
-                                {
-                                    LocationId = 1,
-                                    LocationCode = "E-MH-KIT",
-                                    StorageAreaCode = "MHK",
-                                    Description = "MARK H"
-                                };
+            {
+                LocationId = 1,
+                LocationCode = "E-MH-KIT",
+                StorageAreaCode = "MHK",
+                Description = "MARK H"
+            };
 
             this.pallet = new StoresPallet
-                              {
-                                  PalletNumber = 999,
-                                  Description = "PALLET 999"
-                              };
+            {
+                PalletNumber = 999,
+                Description = "PALLET 999"
+            };
 
-            this.workstation = new Workstation(
+            this.workstation = new WorkStation(
                 "Test",
                 "description",
                 new Cit
-                    {
-                        Code = "R",
-                        Name = "R CODE"
-                    },
+                {
+                    Code = "R",
+                    Name = "R CODE"
+                },
                 "Z",
                 null);
 
-            this.updateResource = new WorkstationResource
+            this.updateResource = new WorkStationResource
             {
                 WorkStationCode = "Test",
                 CitCode = "R",
                 CitName = "R CODE",
                 Description = "A TEST WORKSTATION",
                 ZoneType = "Z",
-                WorkStationElements = new List<WorkstationElementResource>
+                WorkStationElements = new List<WorkStationElementResource>
                                           {
-                                              new WorkstationElementResource
+                                              new WorkStationElementResource
                                                   {
-                                                      WorkstationCode = "Test",
+                                                      WorkStationCode = "Test",
                                                       CreatedById = 33156,
                                                       CreatedByName = "RSTEWART",
                                                       DateCreated = DateTime.Today.ToString("o"),
                                                       LocationId = this.location.LocationId,
                                                       PalletNumber = 567
                                                   },
-                                              new WorkstationElementResource
+                                              new WorkStationElementResource
                                                   {
-                                                      WorkstationCode = "Test",
+                                                      WorkStationCode = "Test",
                                                       CreatedById = 33156,
                                                       CreatedByName = "RSTEWART",
                                                       DateCreated = DateTime.Today.ToString("o"),
@@ -81,7 +87,7 @@
                                           }
             };
 
-            this.DbContext.Workstations.AddAndSave(this.DbContext, this.workstation);
+            this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workstation);
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.location);
             this.DbContext.StoresPallets.AddAndSave(this.DbContext, this.pallet);
             this.DbContext.SaveChanges();
@@ -107,14 +113,14 @@
         [Test]
         public void ShouldUpdateEntity()
         {
-            this.DbContext.Workstations.First(x => x.WorkStationCode == this.workstation.WorkStationCode).Description
+            this.DbContext.WorkStations.First(x => x.WorkStationCode == this.workstation.WorkStationCode).Description
                 .Should().Be(this.updateResource.Description);
         }
 
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {
-            var resource = this.Response.DeserializeBody<WorkstationResource>();
+            var resource = this.Response.DeserializeBody<WorkStationResource>();
             resource.Description.Should().Be("A TEST WORKSTATION");
             resource.WorkStationElements.Count().Should().Be(2);
         }

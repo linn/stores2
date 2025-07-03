@@ -38,6 +38,7 @@
                            Document2Type = l.Document2Type,
                            DateBooked = l.DateBooked?.ToString("o"),
                            Cancelled = l.Cancelled,
+                           StockPicked = l.StockPicked(),
                            StoresBudgets = l.StoresBudgets?.Select(
                                b => storesBudgetResourceBuilder.Build(b, null)),
                            Postings = l.NominalAccountPostings?.Select(
@@ -76,8 +77,11 @@
                                                                 SerialNumber = m.SerialNumber, 
                                                                 Remarks = m.Remarks,
                                                                 IsFrom = m.StockLocator != null,
-                                                                IsTo = m.PalletNumber.HasValue || m.Location != null
-                                                            }),
+                                                                IsTo = m.PalletNumber.HasValue || m.Location != null,
+                                                                StockLocatorId = m.StockLocator?.Id,
+                                                                IsAddition = false,
+                                                                Links = this.BuildMoveLinks(m).ToArray()
+                           }),
                            SerialNumbers = l.SerialNumbers == null
                                                ? new List<RequisitionSerialNumberResource>()
                                                : l.SerialNumbers.Select(s => new RequisitionSerialNumberResource
@@ -107,6 +111,14 @@
             if (model.LineIsBookable())
             {
                 yield return new LinkResource("book-line", "/requisitions/book");
+            }
+        }
+
+        private IEnumerable<LinkResource> BuildMoveLinks(ReqMove model)
+        {
+            if (model.CanUnPick())
+            {
+                yield return new LinkResource("unpick", "/requisitions/unpick");
             }
         }
     }

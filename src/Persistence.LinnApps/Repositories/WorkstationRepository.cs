@@ -10,19 +10,19 @@
 
     using Microsoft.EntityFrameworkCore;
 
-    public class WorkstationRepository : EntityFrameworkRepository<Workstation, string>
+    public class WorkStationRepository : EntityFrameworkRepository<WorkStation, string>
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public WorkstationRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.Workstations)
+        public WorkStationRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.WorkStations)
         {
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override IQueryable<Workstation> FilterBy(
-            Expression<Func<Workstation, bool>> filterExpression)
+        public override IQueryable<WorkStation> FilterBy(
+            Expression<Func<WorkStation, bool>> filterExpression)
         {
-            return this.serviceDbContext.Workstations.Where(filterExpression)
+            return this.serviceDbContext.WorkStations.Where(filterExpression)
                 .Include(c => c.Cit)
                 .Include(we => we.WorkStationElements)
                 .ThenInclude(e => e.CreatedBy)
@@ -32,9 +32,9 @@
                 .ThenInclude(s => s.StorageLocation);
         }
 
-        public override async Task<Workstation> FindByIdAsync(string key)
+        public override async Task<WorkStation> FindByIdAsync(string key)
         {
-            var result = await this.serviceDbContext.Workstations
+            var result = await this.serviceDbContext.WorkStations
                              .Include(c => c.Cit)
                              .Include(we => we.WorkStationElements)
                              .ThenInclude(e => e.CreatedBy)

@@ -26,6 +26,7 @@
             app.MapPost("/requisitions/cancel", this.Cancel);
             app.MapPost("/requisitions/book", this.Book);
             app.MapPost("/requisitions/authorise", this.Authorise);
+            app.MapPost("/requisitions/unpick", this.UnpickRequisitionMove);
             app.MapGet("/requisitions/stores-functions", this.GetFunctionCodes);
             app.MapGet("/requisitions/stores-functions/view", this.GetApp);
             app.MapGet("/requisitions/stores-functions/{code}", this.GetStoresFunction);
@@ -53,9 +54,14 @@
             bool? excludeReversals,
             bool? bookedOnly,
             string functionCode,
+            string startDate,
+            string endDate,
+            int? employeeId,
             IRequisitionFacadeService service)
         {
-            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && string.IsNullOrWhiteSpace(documentName) && pending != true)
+            if (!reqNumber.HasValue && string.IsNullOrWhiteSpace(comments) && string.IsNullOrEmpty(startDate)
+                && string.IsNullOrEmpty(endDate) && !employeeId.HasValue && string.IsNullOrWhiteSpace(documentName)
+                && pending != true)
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
             }
@@ -72,7 +78,10 @@
                         DocumentNumber = documentNumber,
                         ExcludeReversals = excludeReversals,
                         BookedOnly = bookedOnly,
-                        FunctionCode = functionCode
+                        FunctionCode = functionCode,
+                        StartDate = startDate,
+                        EndDate = endDate,
+                        EmployeeId = employeeId
                     });
                 await res.Negotiate(requisitions);
             }
@@ -256,6 +265,22 @@
             res.StatusCode = (int)HttpStatusCode.OK;
 
             await res.WriteAsync(result);
+        }
+
+        private async Task UnpickRequisitionMove(
+            HttpRequest req,
+            HttpResponse res,
+            UnpickRequisitionResource resource,
+            IRequisitionFacadeService service)
+        {
+            await res.Negotiate(await service.UnpickRequisitionMove(
+                resource.ReqNumber,
+                resource.LineNumber,
+                resource.Seq,
+                resource.QtyToUnpick,
+                req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
+                resource.Reallocate ?? false,
+                req.HttpContext.GetPrivileges()));
         }
     }
 }

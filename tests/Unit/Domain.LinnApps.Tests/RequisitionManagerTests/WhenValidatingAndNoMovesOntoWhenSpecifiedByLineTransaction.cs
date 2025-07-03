@@ -6,6 +6,7 @@
 
     using FluentAssertions;
 
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -37,6 +38,8 @@
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
                 .Returns(TestTransDefs.LinnDeptToStock);
+            this.StoresService.ValidDepartmentNominal("1607", "2963")
+                .Returns(new ProcessResult(true, "ok"));
 
             this.action = () => this.Sut.Validate(
                 33087,

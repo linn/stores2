@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkstationModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System.Collections.Generic;
     using System.Net;
@@ -13,12 +13,12 @@
 
     public class WhenGettingById : ContextBase
     {
-        private Workstation workstation;
+        private WorkStation workStation;
 
         [SetUp]
         public void SetUp()
         {
-            this.workstation = new Workstation(
+            this.workStation = new WorkStation(
                 "Test", 
                 "description", 
                 new Cit
@@ -27,11 +27,11 @@
                         Name = "R CODE"
                     }, 
                 "Z", 
-                new List<WorkstationElement> 
+                new List<WorkStationElement> 
                 {
                 });
 
-            this.DbContext.Workstations.AddAndSave(this.DbContext, this.workstation);
+            this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workStation);
 
             this.Response = this.Client.Get(
                 "/stores2/work-stations/Test",
@@ -57,7 +57,7 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<WorkstationResource>();
+            var resource = this.Response.DeserializeBody<WorkStationResource>();
             resource.WorkStationCode.Should().Be("Test");
             resource.Description.Should().Be("description");
         }

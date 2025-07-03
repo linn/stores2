@@ -1,6 +1,8 @@
 namespace Linn.Stores2.Resources.Requisitions
 {
-    public class MoveResource
+    using Linn.Common.Resources;
+
+    public class MoveResource : HypermediaResource
     {
         public int Seq { get; set; }
         
@@ -47,6 +49,8 @@ namespace Linn.Stores2.Resources.Requisitions
         public decimal? QtyAtLocation { get; set; }
 
         public decimal? QtyAllocated { get; set; }
+
+        public int? StockLocatorId { get; set; }
         
         public bool? IsFrom { get; set; }
         

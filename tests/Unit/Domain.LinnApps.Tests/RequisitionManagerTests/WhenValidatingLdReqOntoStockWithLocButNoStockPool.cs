@@ -1,19 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Linn.Stores2.Domain.LinnApps.Accounts;
-using Linn.Stores2.Domain.LinnApps.Exceptions;
-using Linn.Stores2.Domain.LinnApps.Parts;
-using Linn.Stores2.Domain.LinnApps.Requisitions;
-using Linn.Stores2.Domain.LinnApps.Stock;
-using Linn.Stores2.TestData.FunctionCodes;
-using Linn.Stores2.TestData.Transactions;
-using NSubstitute;
-using NUnit.Framework;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    using FluentAssertions;
+
+    using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
+
+    using NSubstitute;
+
+    using NUnit.Framework;
+
     public class WhenValidatingLdReqOntoStockWithLocButNoStockPool : ContextBase
     {
         private Func<Task> action;
@@ -33,6 +38,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
+            this.StoresService.ValidDepartmentNominal("1607", "2963")
+                .Returns(new ProcessResult(true, "ok"));
+
             this.action = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.LinnDeptReq.FunctionCode,

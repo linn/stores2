@@ -188,20 +188,23 @@
                 return new ProcessResult(true, "No moves required.");
             }
 
-            var moveQty = this.Moves.Sum(m => m.Quantity);
+            var moveQty = this.Moves?.Sum(m => m.Quantity) ?? 0;
             if (moveQty != this.Qty)
             {
                 return new ProcessResult(false, $"Line quantity ({this.Qty}) does not match moves quantity ({moveQty}).");
             }
 
-            foreach (var reqMove in this.Moves)
+            if (this.Moves != null)
             {
-                if (!reqMove.IsBooked() && !reqMove.IsCancelled())
+                foreach (var reqMove in this.Moves)
                 {
-                    var canBeBooked = reqMove.MoveCanBeBooked(this.TransactionDefinition);
-                    if (!canBeBooked.Success)
+                    if (!reqMove.IsBooked() && !reqMove.IsCancelled())
                     {
-                        return canBeBooked;
+                        var canBeBooked = reqMove.MoveCanBeBooked(this.TransactionDefinition);
+                        if (!canBeBooked.Success)
+                        {
+                            return canBeBooked;
+                        }
                     }
                 }
             }
@@ -250,6 +253,17 @@
             }
 
             this.SerialNumbers.Add(new RequisitionSerialNumber(this.ReqNumber, this.LineNumber, nextSeq, serialNumber));
+        }
+
+        public bool StockPicked()
+        {
+            if (!this.IsBooked() && !this.IsCancelled() && this.Qty > 0 && this.Moves != null && this.TransactionDefinition.RequiresStockAllocations)
+            {
+                var totalQtyAllocated =
+                    this.Moves.Where(m => m.StockLocator != null && !m.IsBooked() && !m.IsCancelled()).Sum(m => m.Quantity);
+                return this.Qty == totalQtyAllocated;
+            }
+            return false;
         }
     }
 }

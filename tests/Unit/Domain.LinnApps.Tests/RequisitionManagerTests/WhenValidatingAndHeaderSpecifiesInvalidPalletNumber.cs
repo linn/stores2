@@ -5,6 +5,7 @@
 
     using FluentAssertions;
 
+    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -35,6 +36,9 @@
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StoresMove.TransactionCode)
                 .Returns(TestTransDefs.StoresMove);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Today });
+            this.StoresService.ValidDepartmentNominal("1607", "2963")
+                .Returns(new ProcessResult(true, "ok")); 
+            
             this.act = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.Move.FunctionCode,
