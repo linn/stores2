@@ -177,6 +177,23 @@
                     yield return new LinkResource { Rel = "print-qc-labels", Href = href };
                 }
 
+                if (model.StoresFunction?.FunctionCode == "BOOKSU")
+                {
+                    var transaction = model.Lines?.FirstOrDefault()?.TransactionDefinition;
+    
+                    var href = "/requisitions/print-qc-labels?";
+                    href += $"&reqNumber={model.ReqNumber}";
+                    href += $"&docType={model.Document1Name}";
+                    href += $"&orderNumber={model.Document1}";
+                    href += $"&qcState={transaction?.GetPrintQcState()}";
+                    href += $"&partNumber={model.Lines?.FirstOrDefault()?.Part?.PartNumber}";
+                    href += $"&partDescription={model.Lines?.FirstOrDefault()?.Part?.Description}";
+                    href += $"&qtyReceived={model.Lines?.FirstOrDefault()?.Qty}";
+                    href += $"&unitOfMeasure={model.Lines?.FirstOrDefault()?.Part?.OurUnitOfMeasure}";
+                    href += $"&qcInfo={model.Lines?.FirstOrDefault()?.Part?.QcInformation}";
+                    yield return new LinkResource { Rel = "print-qc-labels", Href = href };
+                }
+
                 if (model.HasDeliveryNote())
                 {
                     yield return new LinkResource { Rel = "delivery-note", Href = $"/requisitions/delivery-note/{model.ReqNumber}" };

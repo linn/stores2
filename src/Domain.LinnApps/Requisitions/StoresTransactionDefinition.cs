@@ -134,5 +134,7 @@
         public bool HasDefaultFromState() => !string.IsNullOrEmpty(this.DefaultFromState());
 
         public bool HasDefaultToState() => !string.IsNullOrEmpty(this.DefaultFromState());
+
+        public string GetPrintQcState() => this.QcType == "Q" ? "QUARANTINE" : "PASS";
     }
 }
