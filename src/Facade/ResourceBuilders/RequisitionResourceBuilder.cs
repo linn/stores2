@@ -179,18 +179,13 @@
 
                 if (model.StoresFunction?.FunctionCode == "BOOKSU")
                 {
-                    var qc = model.Lines?.FirstOrDefault()?.TransactionDefinition.QcType;
-                    var printState = "PASS";
-                    if (qc == "Q")
-                    {
-                        printState = "QUARANTINE";
-                    }
-
+                    var transaction = model.Lines?.FirstOrDefault()?.TransactionDefinition;
+    
                     var href = "/requisitions/print-qc-labels?";
                     href += $"&reqNumber={model.ReqNumber}";
                     href += $"&docType={model.Document1Name}";
                     href += $"&orderNumber={model.Document1}";
-                    href += $"&qcState={printState}";
+                    href += $"&qcState={transaction?.GetPrintQcState()}";
                     href += $"&partNumber={model.Lines?.FirstOrDefault()?.Part?.PartNumber}";
                     href += $"&partDescription={model.Lines?.FirstOrDefault()?.Part?.Description}";
                     href += $"&qtyReceived={model.Lines?.FirstOrDefault()?.Qty}";
