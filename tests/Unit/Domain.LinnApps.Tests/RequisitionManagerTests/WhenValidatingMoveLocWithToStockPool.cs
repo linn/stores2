@@ -1,0 +1,50 @@
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+{
+    using System.Threading.Tasks;
+    using FluentAssertions;
+    using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.FunctionCodes;
+    using Linn.Stores2.TestData.Transactions;
+    using MimeKit;
+    using NSubstitute;
+    using NUnit.Framework;
+
+    public class WhenValidatingMoveLocWithToStockPool : ContextBase
+    {
+        private RequisitionHeader result;
+
+        [SetUp]
+        public async Task SetUp()
+        {
+            this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
+            this.StoresFunctionRepository.FindByIdAsync(TestFunctionCodes.MoveLocation.FunctionCode)
+                .Returns(TestFunctionCodes.MoveLocation);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.CustomerToGoodStock.TransactionCode)
+                .Returns(TestTransDefs.CustomerToGoodStock);
+            this.PalletRepository.FindByIdAsync(502).Returns(new StoresPallet());
+            this.PalletRepository.FindByIdAsync(503).Returns(new StoresPallet());
+            this.StockPoolRepository.FindByIdAsync("LINN").Returns(new StockPool { StockPoolCode = "LINN" });
+            this.StockService.ValidStockLocation(null, 502, Arg.Any<string>(), Arg.Any<decimal>(), Arg.Any<string>())
+                .Returns(new ProcessResult(true, null));
+            this.result = await this.Sut.Validate(
+                33087,
+                TestFunctionCodes.MoveLocation.FunctionCode,
+                null,
+                null,
+                null,
+                null,
+                null,
+                fromPalletNumber: 502,
+                toPalletNumber: 503,
+                toStockPool: "LINN");
+        }
+
+        [Test]
+        public void ShouldReturnValidated()
+        {
+            this.result.Should().NotBeNull();
+        }
+    }
+}

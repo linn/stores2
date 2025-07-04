@@ -1642,7 +1642,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     "O"));
             }
 
-            if (!string.IsNullOrEmpty(header.ToStockPool))
+            if (!string.IsNullOrEmpty(header.ToStockPool) && header.StoresFunction.PartNumberRequired()) 
             {
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }
