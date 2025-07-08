@@ -88,6 +88,19 @@
             this.Booked = "Y";
         }
 
+        public void UnpickQuantity(decimal unpickQty)
+        {
+            if (unpickQty < this.Quantity)
+            {
+                this.Quantity = this.Quantity - unpickQty;
+            }
+            else if (unpickQty == this.Quantity)
+            {
+                // previous req_ut.fmb did this if unpicking full quantity in UNPICK_STOCK
+                this.Cancel(DateTime.Now);
+            }
+        }
+
         public bool HasValidAllocation() => (this.StockLocatorId != null);
 
         public bool HasValidOnto() => (this.PalletNumber != null || this.LocationId != null) && !string.IsNullOrEmpty(this.StockPoolCode) && !string.IsNullOrEmpty(this.State) && !string.IsNullOrEmpty(this.Category);

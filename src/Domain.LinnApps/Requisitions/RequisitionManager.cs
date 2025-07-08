@@ -364,7 +364,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new RequisitionException($"Failed to unpick stock: {result.Message}");
             }
 
+            // now adjust move qty
+            move.UnpickQuantity(qtyToUnpick);
+            await this.transactionManager.CommitAsync();
+
             var unpickedReq = await this.repository.FindByIdAsync(reqNumber);
+
             return unpickedReq;
         }
 
