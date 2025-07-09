@@ -19,6 +19,14 @@ const devServer = new Server(
                 protocol: 'ws'
             }
         },
+        watchFiles: {
+            paths: ['src/components/', '!node_modules', '!dist'],
+            options: {
+                ignored: ['*', '**/node_modules', '**/dist', '**/.git'],
+                usePolling: true,
+                interval: 1000
+            }
+        },
         devMiddleware: {
             index: true,
             mimeTypes: { 'text/html': ['phtml'] },

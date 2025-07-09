@@ -7,8 +7,12 @@ const esModules = ['query-string', 'decode-uri-component', 'split-on-first', 'fi
 
 module.exports = {
     moduleNameMapper: {
+        '^@mui/material$': '<rootDir>/node_modules/@mui/material',
+        // if you use submodules (e.g. @mui/material/TextField), map them as well:
+        '^@mui/material/(.*)$': '<rootDir>/node_modules/@mui/material/$1',
         '\\.css$': '<rootDir>/styleMock.js'
     },
+
     setupFiles: ['./setupJest.js'],
     testPathIgnorePatterns: ['./client/src/components/__tests__/fakeData/*'],
     testEnvironment: 'jsdom',

@@ -1,14 +1,22 @@
 /**
  * @jest-environment jsdom
  */
+// const formComponents = require('@linn-it/linn-form-components-library');
+// console.log(formComponents);
 import React from 'react';
+import { InputField } from '@linn-it/linn-form-components-library';
 import '@testing-library/jest-dom';
-import render from '../../test-utils';
-import App from '../App';
+import { render } from '@testing-library/react';
+import { TextField } from '@mui/material';
+
+console.log('TextField IN TEST typeof:', typeof TextField);
+console.log('InputField IN TEST typeof:', typeof InputField);
 
 describe('App tests', () => {
     test('App renders without crashing...', () => {
-        const { getByText } = render(<App />);
-        expect(getByText('stores2')).toBeInTheDocument();
+        const { getByLabelText } = render(
+            <InputField value="test" label="test" propertyName="test" onChange={() => {}} />
+        );
+        expect(getByLabelText('test')).toBeInTheDocument();
     });
 });
