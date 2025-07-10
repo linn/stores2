@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 
 const isProd = process.env.BUILD_ENV === 'production';
 
-// Simple CSS mock plugin for Vitest to avoid CSS import errors
+// simple CSS mock plugin for Vitest to avoid CSS import errors
 function mockCssPlugin() {
     return {
         name: 'mock-css',
@@ -21,14 +21,14 @@ function mockCssPlugin() {
 }
 
 export default defineConfig({
-    base: '/stores2/', // Base for production asset paths
+    base: '/stores2/',
     plugins: [
         react({
             jsxImportSource: 'react',
             babel: {
                 plugins: [['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }]]
             },
-            include: [/\.js$/, /\.jsx$/] // Treat .js as JSX
+            include: [/\.js$/, /\.jsx$/]
         }),
         mockCssPlugin()
     ],
