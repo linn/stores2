@@ -21,7 +21,7 @@ function mockCssPlugin() {
 }
 
 export default defineConfig({
-    base: '/stores2/',
+    base: '/',
     plugins: [
         react({
             jsxImportSource: 'react',
