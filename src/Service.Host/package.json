@@ -6,7 +6,7 @@
     "type": "module",
     "scripts": {
         "start": "vite",
-        "build": "vite build",
+        "build": "vite build --mode production",
         "test": "vitest run",
         "preview": "vite preview"
     },
@@ -37,7 +37,7 @@
         "@date-io/moment": "3.2.0",
         "@emotion/react": "11.14.0",
         "@emotion/styled": "11.14.1",
-        "@linn-it/linn-form-components-library": "31.1.2-alpha",
+        "@linn-it/linn-form-components-library": "31.1.2",
         "@mui/icons-material": "7.2.0",
         "@mui/material": "7.2.0",
         "@mui/styles": "6.4.8",
