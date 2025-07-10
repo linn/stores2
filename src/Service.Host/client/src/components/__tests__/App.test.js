@@ -1,15 +1,12 @@
 import React from 'react';
-import { InputField } from '@linn-it/linn-form-components-library';
-import '@testing-library/jest-dom/vitest';
-import { render } from '@testing-library/react';
+import '@testing-library/jest-dom';
 import { describe, test, expect } from 'vitest';
-import { TextField } from '@mui/material';
+import render from '../../test-utils';
+import App from '../App';
 
 describe('App tests', () => {
     test('App renders without crashing...', () => {
-        const { getByLabelText } = render(
-            <InputField value="test" label="test" propertyName="test" onChange={() => {}} />
-        );
-        expect(getByLabelText('test')).toBeInTheDocument();
+        const { getByText } = render(<App />);
+        expect(getByText('stores2')).toBeInTheDocument();
     });
 });

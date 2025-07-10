@@ -46,6 +46,9 @@ export default defineConfig({
         globals: true,
         environment: 'jsdom',
         setupFiles: './vitest.setup.js',
+        transformMode: {
+            web: [/\.[jt]sx?$/] // ensure js and jsx get transformed
+        },
         pool: 'vmThreads'
     },
     build: {
