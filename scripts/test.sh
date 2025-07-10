@@ -25,7 +25,7 @@ fi
 
 # javascript tests
 cd ./src/Service.Host
-./node_modules/.bin/jest
+npm test
 echo $?
 result=$?
 cd ../..
