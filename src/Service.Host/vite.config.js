@@ -52,7 +52,7 @@ export default defineConfig({
         pool: 'vmThreads'
     },
     build: {
-        outDir: isProd ? 'app/client/build' : 'client/build',
+        outDir: 'client/build',
         emptyOutDir: true,
         sourcemap: !isProd,
         minify: isProd ? 'esbuild' : false,
