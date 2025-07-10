@@ -54,7 +54,7 @@ export default defineConfig({
         sourcemap: !isProd,
         minify: isProd ? 'esbuild' : false,
         rollupOptions: {
-            input: 'client/src/index.html',
+            input: 'index.html',
             output: {
                 entryFileNames: 'app.js',
                 assetFileNames: '[name].[ext]'
