@@ -11,7 +11,3 @@ then
 	nvm use 22;
 fi
 
-cd ./src/Service.Host
-npm ci
-BUILD_ENV=production npm run build
-cd ../..
