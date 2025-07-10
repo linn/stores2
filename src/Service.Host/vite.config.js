@@ -2,33 +2,35 @@ import path from 'path';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// export default defineConfig({
-//   base: '/stores2/build/',
-//   build: {
-//     outDir: 'client/build',  // ✅ Matches dev StaticFileOptions
-//     emptyOutDir: true,
-//     rollupOptions: {
-//       input: 'client/src/index.html',
-//       output: {
-//         entryFileNames: 'app.js', // or hashed name if you're using manifest lookup
-//         assetFileNames: '[name].[ext]'
-//       }
-//     }
-//   }
-// });
-
 const isProd = process.env.BUILD_ENV === 'production';
 
+// Simple CSS mock plugin for Vitest to avoid CSS import errors
+function mockCssPlugin() {
+    return {
+        name: 'mock-css',
+        enforce: 'pre',
+        transform(code, id) {
+            if (id.endsWith('.css')) {
+                return {
+                    code: 'export default {}',
+                    map: null
+                };
+            }
+        }
+    };
+}
+
 export default defineConfig({
-    base: '/',
+    base: '/stores2/', // Base for production asset paths
     plugins: [
         react({
             jsxImportSource: 'react',
             babel: {
                 plugins: [['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }]]
             },
-            include: [/\.js$/, /\.jsx$/] // 👈 Add .js here explicitly
-        })
+            include: [/\.js$/, /\.jsx$/] // Treat .js as JSX
+        }),
+        mockCssPlugin()
     ],
     resolve: {
         alias: {
@@ -40,12 +42,24 @@ export default defineConfig({
             '@material-ui/styles': path.resolve(__dirname, 'node_modules/@material-ui/styles')
         }
     },
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        setupFiles: './vitest.setup.js',
+        pool: 'vmThreads'
+    },
     build: {
         outDir: isProd ? 'app/client/build' : 'client/build',
         emptyOutDir: true,
-
-        sourcemap: !isProd, // Enable source maps only in non-prod
-        minify: isProd ? 'esbuild' : false // Minify only in prod
+        sourcemap: !isProd,
+        minify: isProd ? 'esbuild' : false,
+        rollupOptions: {
+            input: 'client/src/index.html',
+            output: {
+                entryFileNames: 'app.js',
+                assetFileNames: '[name].[ext]'
+            }
+        }
     },
     define: {
         'PROCESS.ENV.appRoot': JSON.stringify('http://localhost:5050')
