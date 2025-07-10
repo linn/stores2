@@ -13,6 +13,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
+        "@testing-library/jest-dom": "^6.6.3",
         "@testing-library/react": "^16.3.0",
         "@vitejs/plugin-react": "^4.6.0",
         "autoprefixer": "10.4.21",
@@ -32,6 +33,7 @@
         "vitest": "^3.2.4"
     },
     "dependencies": {
+        "@babel/plugin-transform-react-jsx": "^7.27.1",
         "@date-io/moment": "3.2.0",
         "@emotion/react": "11.14.0",
         "@emotion/styled": "11.14.1",
@@ -41,7 +43,6 @@
         "@mui/styles": "6.4.8",
         "@mui/x-data-grid": "8.7.0",
         "@mui/x-date-pickers": "8.7.0",
-        "core-js": "3.44.0",
         "decimal.js": "10.6.0",
         "eslint-plugin-react-hooks": "5.2.0",
         "install": "0.13.0",
