@@ -32,13 +32,10 @@
                 StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA"
             };
 
-            this.eaglesham = new StorageSite()
-            {
-                SiteCode = "EAGLESHAM",
-                Description = "EAGLESHAM",
-                SitePrefix = "E",
-                StorageAreas = new List<StorageArea> { factoryArea }
-            };
+            this.eaglesham = new StorageSite("SUPSTORES", "SUPPLIER STORES", null)
+                                 {
+                                     StorageAreas = new List<StorageArea> { factoryArea }
+                                 };
 
             this.linn = new AccountingCompany
             {

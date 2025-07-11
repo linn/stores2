@@ -30,6 +30,8 @@ import Workstations from './Workstations';
 import Workstation from './Workstation';
 import Pallets from './Pallets';
 import Pallet from './Pallet';
+import StorageSites from './storageSites/StorageSites';
+import StorageSite from './storageSites/StorageSite';
 
 function Root() {
     useSignIn();
@@ -87,6 +89,12 @@ function Root() {
                         path="/stores2/pcas-storage-types/:boardCode/:storageTypeCode"
                         element={<PcasStorageType />}
                     />
+                    <Route path="/stores2/storage/sites" element={<StorageSites />} />
+                    <Route
+                        path="/stores2/storage/sites/create"
+                        element={<StorageSite creating />}
+                    />
+                    <Route path="/service/storage-sites/:code" element={<StorageSite />} />
                     <Route
                         path="/stores2/storage/locations/create"
                         element={<StorageLocation creating />}

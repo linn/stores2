@@ -25,22 +25,19 @@
         [SetUp]
         public void SetUp()
         {
-            this.eaglesham = new StorageSite()
-            {
-                SiteCode = "EAGLESHAM",
-                Description = "EAGLESHAM",
-                SitePrefix = "E",
-                StorageAreas = new List<StorageArea>
-                                   {
-                                       new StorageArea
-                                           {
-                                               StorageAreaCode = "FACTORY",
-                                               Description = "FACTORY AREA",
-                                               SiteCode = "EAGLESHAM",
-                                               AreaPrefix = "FA"
-                                           }
-                                   }
-            };
+            this.eaglesham = new StorageSite("EAGLESHAM", "SUPPLIER STORES", null)
+                                 {
+                                     StorageAreas = new List<StorageArea>
+                                                        {
+                                                            new StorageArea
+                                                                {
+                                                                    StorageAreaCode = "FACTORY",
+                                                                    Description = "FACTORY AREA",
+                                                                    SiteCode = "EAGLESHAM",
+                                                                    AreaPrefix = "FA"
+                                                                }
+                                                        }
+                                 };
 
             this.linn = new AccountingCompany
             {

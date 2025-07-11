@@ -31,6 +31,10 @@ export default defineConfig(({ mode }) => {
             }),
             mockCssPlugin()
         ],
+        esbuild: {
+            loader: 'jsx',
+            include: /src\/.*\.js$/
+        },
         test: {
             globals: true,
             environment: 'jsdom',
