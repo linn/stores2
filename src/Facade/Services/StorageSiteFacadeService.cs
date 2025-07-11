@@ -10,9 +10,9 @@
     using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
-    public class StorageSiteService : AsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
+    public class StorageSiteFacadeService : AsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
     {
-        public StorageSiteService(IRepository<StorageSite, string> repository, ITransactionManager transactionManager, IBuilder<StorageSite> resourceBuilder) : base(repository, transactionManager, resourceBuilder)
+        public StorageSiteFacadeService(IRepository<StorageSite, string> repository, ITransactionManager transactionManager, IBuilder<StorageSite> resourceBuilder) : base(repository, transactionManager, resourceBuilder)
         {
         }
 
@@ -39,6 +39,16 @@
         protected override Expression<Func<StorageSite, bool>> FindExpression(StorageSiteResource searchResource)
         {
             throw new NotImplementedException();
+        }
+
+        protected override StorageSite CreateFromResource(StorageSiteResource resource, IEnumerable<string> privileges = null)
+        {
+            return new StorageSite(resource.SiteCode, resource.Description, resource.SitePrefix);
+        }
+
+        protected override void UpdateFromResource(StorageSite entity, StorageSiteResource updateResource, IEnumerable<string> privileges = null)
+        {
+            entity.Update(updateResource.Description, updateResource.SitePrefix);
         }
     }
 }

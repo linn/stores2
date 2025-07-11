@@ -28,7 +28,7 @@
         {
             var result = await this.serviceDbContext.StorageSites
                 .Include(x => x.StorageAreas)
-                .FirstOrDefaultAsync(loc => loc.SiteCode == key);
+                .FirstOrDefaultAsync(loc => loc.Code == key);
             return result;
         }
     }

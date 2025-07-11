@@ -1,6 +1,12 @@
 #!/bin/bash
 set -ev
 
+# build the client app
+cd ./src/Service.Host
+npm ci
+BUILD_ENV=production npm run build
+cd ../..
+
 # build dotnet application
 dotnet publish ./src/Service.Host/ -c release
 # dotnet publish ./src/Messaging.Host/ -c release

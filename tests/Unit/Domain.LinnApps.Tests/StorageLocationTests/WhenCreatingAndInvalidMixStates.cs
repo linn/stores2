@@ -16,7 +16,7 @@
         [SetUp]
         public void SetUp()
         {
-            var site = new StorageSite { SiteCode = "TEST" };
+            var site = new StorageSite ("SUPSTORES", "SUPPLIER STORES", null);
             var area = new StorageArea { StorageAreaCode = "TEST" };
             var company = new AccountingCompany { Name = "TRENT" };
             this.action = () =>

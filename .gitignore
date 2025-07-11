@@ -79,3 +79,7 @@ local-update.sh
 ./src/Service.Host/Service.Host.sln
 
 *.idea*
+
+*.DS_Store
+
+
