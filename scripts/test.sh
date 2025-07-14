@@ -25,6 +25,7 @@ fi
 
 # javascript tests
 cd ./src/Service.Host
+npm ci
 npm test
 echo $?
 result=$?
