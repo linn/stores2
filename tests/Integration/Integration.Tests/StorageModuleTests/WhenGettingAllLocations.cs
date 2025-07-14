@@ -23,28 +23,22 @@
         [SetUp]
         public void SetUp()
         {
-            this.eaglesham = new StorageSite
-            {
-                SiteCode = "EAGLESHAM",
-                Description = "EAGLESHAM",
-                SitePrefix = "E",
-                StorageAreas = new List<StorageArea>
-                {
-                    new StorageArea { StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA" },
-                    new StorageArea { StorageAreaCode = "PCB", Description = "PCB AREA", SiteCode = "EAGLESHAM", AreaPrefix = "PCB" }
-                }
-            };
+            this.eaglesham = new StorageSite("A", "SUPPLIER STORES", null)
+                                 {
+                                     StorageAreas = new List<StorageArea>
+                                                        {
+                                                            new StorageArea { StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA" },
+                                                            new StorageArea { StorageAreaCode = "PCB", Description = "PCB AREA", SiteCode = "EAGLESHAM", AreaPrefix = "PCB" }
+                                                        }
+                                 };
 
-            this.secretBunker = new StorageSite
-            {
-                SiteCode = "BUNKER",
-                Description = "SHH ITS A SECRET",
-                SitePrefix = "B",
-                StorageAreas = new List<StorageArea>
-                {
-                    new StorageArea { StorageAreaCode = "VAULT", Description = "THE VAULT", SiteCode = "EAGLESHAM", AreaPrefix = "VA" }
-                }
-            };
+            this.secretBunker = new StorageSite("B", "SUPPLIER STORES", null)
+                                    {
+                                        StorageAreas = new List<StorageArea>
+                                                           {
+                                                               new StorageArea { StorageAreaCode = "VAULT", Description = "THE VAULT", SiteCode = "EAGLESHAM", AreaPrefix = "VA" }
+                                                           }
+                                    };
 
             this.DbContext.StorageSites.AddAndSave(this.DbContext, this.eaglesham);
             this.DbContext.StorageSites.AddAndSave(this.DbContext, this.secretBunker);
@@ -53,7 +47,7 @@
             {
                 LocationId = 1,
                 LocationCode = "E-FA-FLOOR",
-                SiteCode = this.eaglesham.SiteCode,
+                SiteCode = this.eaglesham.Code,
                 StorageAreaCode = "FACTORY",
                 Description = "FINAL ASSEMBLY FLOOR"
             };
@@ -62,7 +56,7 @@
             {
                 LocationId = 2,
                 LocationCode = "E-PCB-ATE",
-                SiteCode = this.eaglesham.SiteCode,
+                SiteCode = this.eaglesham.Code,
                 StorageAreaCode = "FACTORY",
                 Description = "BOARDS A/W ATE TEST"
             };
@@ -71,7 +65,7 @@
             {
                 LocationId = 3,
                 LocationCode = "B-VA-ULT",
-                SiteCode = this.eaglesham.SiteCode,
+                SiteCode = this.eaglesham.Code,
                 StorageAreaCode = "VAULT",
                 Description = "SECRET BUNKER VAULT"
             };

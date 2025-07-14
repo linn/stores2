@@ -35,7 +35,7 @@
                 throw new StorageLocationException("Location needs a site");
             }
 
-            this.SiteCode = site.SiteCode;
+            this.SiteCode = site.Code;
             
             if (area == null)
             {

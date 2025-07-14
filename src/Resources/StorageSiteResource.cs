@@ -2,7 +2,9 @@
 {
     using System.Collections.Generic;
 
-    public class StorageSiteResource
+    using Linn.Common.Resources;
+
+    public class StorageSiteResource : HypermediaResource
     {
         public string SiteCode { get; set; }
 

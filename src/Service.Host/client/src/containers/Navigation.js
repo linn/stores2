@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavigationUI } from '@linn-it/linn-form-components-library';
+import { Navigation as NavigationUI } from '@linn-it/linn-form-components-library';
 import { useAuth } from 'react-oidc-context';
 import useInitialise from '../hooks/useInitialise';
 import config from '../config';

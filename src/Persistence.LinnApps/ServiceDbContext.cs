@@ -717,10 +717,10 @@
         private static void BuildStorageSites(ModelBuilder builder)
         {
             var e = builder.Entity<StorageSite>().ToTable("STORAGE_SITES");
-            e.HasKey(l => l.SiteCode);
-            e.Property(l => l.SiteCode).HasColumnName("SITE_CODE").HasMaxLength(16);
+            e.HasKey(l => l.Code);
+            e.Property(l => l.Code).HasColumnName("SITE_CODE").HasMaxLength(16);
             e.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
-            e.Property(l => l.SitePrefix).HasColumnName("SITE_PREFIX").HasMaxLength(1);
+            e.Property(l => l.Prefix).HasColumnName("SITE_PREFIX").HasMaxLength(1);
             e.HasMany(r => r.StorageAreas).WithOne(a => a.StorageSite).HasForeignKey(r => r.SiteCode);
         }
 
