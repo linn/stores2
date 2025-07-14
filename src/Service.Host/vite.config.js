@@ -32,7 +32,7 @@ export default defineConfig(({ mode }) => {
             mockCssPlugin()
         ],
         esbuild: {
-            loader: 'jsx',
+            loader: { '.js': 'jsx' },
             include: /src\/.*\.js$/
         },
         test: {
