@@ -46,7 +46,7 @@
             var departmentRepository = new EntityFrameworkRepository<Department, string>(this.DbContext.Departments);
 
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
-                storageSiteService = new StorageSiteService(
+                storageSiteService = new StorageSiteFacadeService(
                     siteRepository,
                     new TransactionManager(this.DbContext),
                     new StorageSiteResourceBuilder());

@@ -59,7 +59,9 @@
                 .AddSingleton<IHandler, JsonResultHandler<DepartmentResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<EmployeeResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<EmployeeResource>>()
-                .AddTransient<IHandler, WorkStationsApplicationStateResultHandler>();
+                .AddTransient<IHandler, WorkStationsApplicationStateResultHandler>()
+                .AddSingleton<IHandler, JsonResultHandler<StorageSiteResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageSiteResource>>>();
         }
     }
 }

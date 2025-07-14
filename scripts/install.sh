@@ -7,11 +7,7 @@ dotnet restore
 if [ "$CI" ] && [ "$TRAVIS" ]
 then 
 	source ~/.nvm/nvm.sh; 
-	nvm install 20;
-	nvm use 20;
+	nvm install 22;
+	nvm use 22;
 fi
 
-cd ./src/Service.Host
-npm ci
-npm run build
-cd ../..

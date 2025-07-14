@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import moment from 'moment';
 import Grid from '@mui/material/Grid';
-import { Search } from '@linn-it/linn-form-components-library';
+import { Search, utilities } from '@linn-it/linn-form-components-library';
 import { DataGrid, GridSearchIcon } from '@mui/x-data-grid';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -225,7 +225,11 @@ function MovesTab({
             headerName: '',
             width: 80,
             renderCell: params => (
-                <Button size="small" onClick={() => showUnpickDialog(params.row)}>
+                <Button
+                    size="small"
+                    disabled={!utilities.getHref(params.row, 'unpick')}
+                    onClick={() => showUnpickDialog(params.row)}
+                >
                     Unpick
                 </Button>
             )

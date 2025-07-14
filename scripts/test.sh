@@ -5,8 +5,8 @@ set -ev
 if [ "$CI" ] && [ "$TRAVIS" ]
 then 
 	source ~/.nvm/nvm.sh; 
-	nvm install 20;
-	nvm use 20;
+	nvm install 22;
+	nvm use 22;
 fi
 
 # c# tests
@@ -25,7 +25,7 @@ fi
 
 # javascript tests
 cd ./src/Service.Host
-./node_modules/.bin/jest
+npm test
 echo $?
 result=$?
 cd ../..

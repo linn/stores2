@@ -20,14 +20,10 @@
                 Description = "PRO-JECT AUDIO SYSTEMS",
                 StorageArea = new StorageArea
                                   {
-                    StorageAreaCode = "SUPLOC",
-                    SiteCode = "SUPSTORES",
-                    StorageSite = new StorageSite
-                                      {
-                        SiteCode = "SUPSTORES",
-                        Description = "SUPPLIER STORES"
-                    }
-                }
+                                     StorageAreaCode = "SUPLOC",
+                                     SiteCode = "SUPSTORES",
+                                    StorageSite = new StorageSite("SUPSTORES", "SUPPLIER STORES", null)
+                                  }
             };
 
             this.sut = new RequisitionHeader(

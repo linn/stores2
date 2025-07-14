@@ -3,9 +3,10 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
+import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import { ErrorCard, InputField } from '@linn-it/linn-form-components-library';
+import { ErrorCard, InputField, OnOffSwitch } from '@linn-it/linn-form-components-library';
 
 function UnpickMoveDialog({
     visible,
@@ -16,7 +17,8 @@ function UnpickMoveDialog({
     onCancel,
     closeDialog
 }) {
-    const [unPickQty, setUnPickQty] = useState(false);
+    const [unPickQty, setUnPickQty] = useState(null);
+    const [realloc, setRealloc] = useState(false);
     return (
         <Dialog open={visible} fullWidth maxWidth={maxWidth} onClose={closeDialog}>
             <DialogTitle variant="h4">Unpick Req Move</DialogTitle>
@@ -33,15 +35,23 @@ function UnpickMoveDialog({
                 </Typography>
             </DialogContent>
             <DialogContent dividers>
-                <InputField
-                    label="Qty to UnPick"
-                    type="number"
-                    value={unPickQty}
-                    onChange={(_, newVal) => {
-                        setUnPickQty(newVal);
-                    }}
-                    propertyName="reason"
-                />
+                <Stack direction="row" spacing={2}>
+                    <InputField
+                        label="Qty to UnPick"
+                        type="number"
+                        value={unPickQty}
+                        onChange={(_, newVal) => {
+                            setUnPickQty(newVal);
+                        }}
+                        propertyName="reason"
+                    />
+                    <OnOffSwitch
+                        label="Reallocate"
+                        value={realloc}
+                        onChange={() => setRealloc(realloc => !realloc)}
+                        propertyName="dateInvalid"
+                    />
+                </Stack>
             </DialogContent>
             <DialogActions>
                 <Button
@@ -58,7 +68,7 @@ function UnpickMoveDialog({
                     variant="contained"
                     onClick={() => {
                         closeDialog();
-                        doUnpick(unPickQty, move);
+                        doUnpick(unPickQty, realloc, move);
                     }}
                 >
                     UnPick

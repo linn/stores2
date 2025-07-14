@@ -1,4 +1,5 @@
-﻿import { toTitleCase, isUpperCase, isEmpty } from '../strings';
+﻿import { describe, test, expect, it } from 'vitest';
+import { toTitleCase, isUpperCase, isEmpty } from '../strings';
 
 describe('when converting string to title case', () => {
     test('should convert correctly', () => {

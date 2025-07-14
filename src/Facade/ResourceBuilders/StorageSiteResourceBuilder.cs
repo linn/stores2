@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Linn.Common.Facade;
+    using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
 
@@ -12,11 +13,12 @@
         {
             return new StorageSiteResource
             {
-                SiteCode = model.SiteCode,
+                Links = new LinkResource[1] { new LinkResource("self", this.GetLocation(model)) },
+                SiteCode = model.Code,
                 Description = model.Description,
-                SitePrefix = model.SitePrefix,
+                SitePrefix = model.Prefix,
                 StorageAreas = model.StorageAreas
-                    .Where(a => a.DateInvalid == null)
+                    ?.Where(a => a.DateInvalid == null)
                     .OrderBy(a => a.Description)
                     .Select(a => new StorageAreaResource 
                                      {
@@ -30,7 +32,7 @@
 
         public string GetLocation(StorageSite model)
         {
-            throw new System.NotImplementedException();
+            return $"/stores2/storage/sites/{model.Code}";
         }
 
         object IBuilder<StorageSite>.Build(StorageSite model, IEnumerable<string> claims) => this.Build(model, claims);

@@ -1360,13 +1360,13 @@ function Requisition({ creating }) {
                                             });
                                         }}
                                         changesMade={changesMade}
-                                        unpick={(qtyToUnpick, move) => {
+                                        unpick={(qtyToUnpick, realloc, move) => {
                                             unpick(null, {
                                                 reqNumber: move.reqNumber,
                                                 lineNumber: move.lineNumber,
                                                 seq: move.seq,
                                                 qtyToUnpick,
-                                                realloc: false
+                                                realloc
                                             });
                                         }}
                                     />
