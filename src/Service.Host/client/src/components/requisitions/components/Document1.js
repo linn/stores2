@@ -221,8 +221,6 @@ function Document1({
                     <InputField
                         value={document1Line}
                         type="number"
-                        // if credit note, don't allow setting line number until creditNote data is available
-                        // since we need access to the details data to proceed with allowing the user to choose a line
                         disabled={!shouldEnter}
                         label="Line"
                         onChange={handleFieldChange}
