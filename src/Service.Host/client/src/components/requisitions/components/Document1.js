@@ -29,11 +29,7 @@ function Document1({
         clearData: clearPurchaseOrder
     } = useGet(itemTypes.purchaseOrders.url, true);
 
-    const {
-        send: fetchCreditNote,
-        result: creditNote,
-        clearData: clearCreditNote
-    } = useGet(itemTypes.creditNotes.url, true);
+    const { send: fetchCreditNote, result: creditNote } = useGet(itemTypes.creditNotes.url, true);
 
     const {
         send: fetchWorksOrder,
@@ -115,22 +111,6 @@ function Document1({
     }, [loan, clearLoan, onSelect]);
 
     useEffect(() => {
-        if (creditNote && document1Line) {
-            let line = creditNote.details.find(f => f.lineNumber === document1Line);
-            if (line) {
-                onSelect({
-                    partNumber: line.articleNumber,
-                    partDescription: line.description,
-                    document1Line,
-                    docType: creditNote.documentType,
-                    canReverse: 'Y'
-                });
-                clearCreditNote();
-            }
-        }
-    }, [creditNote, document1Line, onSelect, clearCreditNote]);
-
-    useEffect(() => {
         if (worksOrder) {
             onSelect({
                 partNumber: worksOrder.partNumber,
@@ -184,6 +164,21 @@ function Document1({
         }
     };
 
+    const acceptCreditNoteLine = () => {
+        if (creditNote?.details?.length && document1Line) {
+            const line = creditNote.details.find(f => f.lineNumber === document1Line);
+            if (line) {
+                onSelect({
+                    partNumber: line.articleNumber,
+                    partDescription: line.description,
+                    document1Line,
+                    docType: creditNote.documentType,
+                    canReverse: 'Y'
+                });
+            }
+        }
+    };
+
     return (
         <>
             <Grid size={2}>
@@ -230,6 +225,17 @@ function Document1({
                         label="Line"
                         onChange={handleFieldChange}
                         propertyName="document1Line"
+                        textFieldProps={{
+                            onBlur: acceptCreditNoteLine,
+                            onKeyDown: data => {
+                                if (
+                                    (partSource === 'C' && data.keyCode == 13) ||
+                                    data.keyCode == 9
+                                ) {
+                                    acceptCreditNoteLine();
+                                }
+                            }
+                        }}
                     />
                 )}
             </Grid>

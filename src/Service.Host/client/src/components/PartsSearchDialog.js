@@ -59,7 +59,6 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
                     autoFocus
                     propertyName="partSearchTerm"
                     label="Part Number"
-                    // resultsInModal
                     resultLimit={100}
                     helperText="<Enter> to search or <Tab> to select if you have entered a known part number"
                     onKeyPressFunctions={[{ keyCode: 9, action: handlePartTab }]}
@@ -72,8 +71,12 @@ function PartsSearchDialog({ searchDialogOpen, setSearchDialogOpen, handleSearch
                     onResultSelect={r => {
                         setSearchDialogOpen(false);
                         handleSearchResultSelect(r);
+                        setSearchTerm(null);
                     }}
-                    clearSearch={clear}
+                    clearSearch={() => {
+                        setSearchTerm(null);
+                        clear();
+                    }}
                 />
             </DialogContent>
         </Dialog>
