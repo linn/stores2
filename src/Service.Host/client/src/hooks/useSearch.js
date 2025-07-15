@@ -26,8 +26,7 @@ function useSearch(
           })) ?? []);
     const search = searchTerm => send(null, `?searchTerm=${searchTerm}`);
     const loading = isLoading;
-    const clear = clearData;
-    return { search, results, loading, clear };
+    return { search, results, loading, clear: clearData };
 }
 
 export default useSearch;
