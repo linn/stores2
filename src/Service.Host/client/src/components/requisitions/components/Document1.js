@@ -165,7 +165,7 @@ function Document1({
     };
 
     const acceptCreditNoteLine = () => {
-        if (document1Line) {
+        if (creditNote?.details?.length && document1Line) {
             const line = creditNote.details.find(f => f.lineNumber === document1Line);
             if (line) {
                 onSelect({
