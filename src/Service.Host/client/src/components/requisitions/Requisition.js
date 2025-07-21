@@ -986,7 +986,8 @@ function Requisition({ creating }) {
                                         )}
                                     </Grid>
                                     <Grid size={4}>
-                                        {shouldRender(requiresDepartmentNominal) && (
+                                        {(shouldRender(requiresDepartmentNominal) ||
+                                            formState.req.storesFunction?.code === 'RSN') && (
                                             <Dropdown
                                                 fullWidth
                                                 items={[
