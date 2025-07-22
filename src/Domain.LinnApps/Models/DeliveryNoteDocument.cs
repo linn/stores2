@@ -21,6 +21,8 @@
 
         public string TransReference { get; set; }
 
+        public string Comments { get; set; }
+
         public IList<DeliveryNoteLine> Lines { get; set; }
     }
 }

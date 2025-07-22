@@ -104,6 +104,10 @@
                 grid-area: reference;
             }
 
+            .comments {
+                grid-area: comments;
+            }
+
             .table-item {
                 width: 110px
             }
@@ -164,6 +168,7 @@
                 '. . . . . .'
                 '. documentNumber documentNumber account . .'
                 '. documentDate documentDate reference . .'
+                '. . . comments . .'
             }
 
             span {
@@ -221,6 +226,9 @@
 	                            </div>
 	                            <div class="reference">
 		                            <b>Your Ref:</b> @Model.TransReference
+	                            </div>
+	                            <div class="comments">
+		                            <b>Comments:</b> @Model.Comments
 	                            </div>
                             </div>
                         </td>
