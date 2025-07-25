@@ -932,7 +932,6 @@ function Requisition({ creating }) {
                             <DepartmentNominal
                                 departmentCode={formState.req.department?.departmentCode}
                                 departmentDescription={formState.req.department?.description}
-                                disabled={!creating} // todo - maybe disable changing dept/nom if lines have already been added?
                                 setDepartment={newDept => {
                                     setChangesMade(true);
                                     dispatch({

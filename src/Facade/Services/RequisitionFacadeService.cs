@@ -306,7 +306,9 @@
                     entity, 
                     updateResource.Comments,
                     updateResource.Reference,
-                    updateResource.Lines.Select(BuildLineCandidateFromResource));
+                    updateResource.Department?.DepartmentCode,
+                    updateResource.Lines.Select(BuildLineCandidateFromResource),
+                    privileges);
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(

@@ -43,7 +43,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             RequisitionHeader headerUpdates, 
             string updatedComments,
             string updatedReference,
-            IEnumerable<LineCandidate> lineUpdates);
+            string updatedDepartment,
+            IEnumerable<LineCandidate> lineUpdates,
+            IEnumerable<string> privileges);
 
         Task<RequisitionHeader> Validate(
             int createdBy,

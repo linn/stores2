@@ -70,7 +70,9 @@
                 Arg.Any<RequisitionHeader>(), 
                 Arg.Any<string>(),
                 Arg.Any<string>(),
-                Arg.Any<IEnumerable<LineCandidate>>());
+                Arg.Any<string>(),
+                Arg.Any<IEnumerable<LineCandidate>>(),
+                Arg.Any<IEnumerable<string>>());
         }
         
 

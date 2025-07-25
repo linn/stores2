@@ -32,7 +32,7 @@
             req.AddLine(new LineWithMoves(1, 1, TestTransDefs.StockToLinnDept));
             req.Book(new Employee());
 
-            this.action = () => req.Update("new comment", null);
+            this.action = () => req.Update("new comment", null, null);
         }
 
         [Test]
