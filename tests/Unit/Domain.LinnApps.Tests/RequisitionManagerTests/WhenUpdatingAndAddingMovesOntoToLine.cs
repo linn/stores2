@@ -75,7 +75,9 @@
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
                 .Returns(TestTransDefs.LinnDeptToStock);
-
+            this.AuthService.HasPermissionFor(
+                AuthorisedActions.GetRequisitionActionByFunction(TestFunctionCodes.LinnDeptReq.FunctionCode),
+                Arg.Any<IEnumerable<string>>()).Returns(true);
             var loc = new StorageLocation { LocationCode = "LOC", LocationId = 567 };
 
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
@@ -109,10 +111,12 @@
                 this.req,
                 this.req.Comments,
                 this.req.Reference,
+                this.req.Department?.DepartmentCode,
                 new List<LineCandidate>
                     {
                         this.line
-                    });
+                    },
+                new List<string>());
         }
 
         [Test]

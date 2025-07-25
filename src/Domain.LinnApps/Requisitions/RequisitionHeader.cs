@@ -67,7 +67,7 @@
 
         public ICollection<CancelDetails> CancelDetails { get; protected set; }
 
-        public Department Department { get; protected init; }
+        public Department Department { get; protected set; }
 
         public Nominal Nominal { get; protected init; }
 
@@ -388,7 +388,7 @@
             }
         }
 
-        public void Update(string comments, string reference)
+        public void Update(string comments, string reference, Department department)
         {
             if (this.IsBooked())
             {
@@ -397,6 +397,7 @@
 
             this.Comments = comments;
             this.Reference = reference;
+            this.Department = department;
         }
 
         public void AddLine(RequisitionLine toAdd)

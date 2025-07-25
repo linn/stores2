@@ -27,8 +27,9 @@ export default defineConfig(({ mode }) => {
                 babel: {
                     plugins: [['@babel/plugin-transform-react-jsx', { runtime: 'automatic' }]]
                 },
-                include: [/\.js$/, /\.jsx$/]
+                include: [/\.[jt]sx?$/] // handles both .js/.jsx and .ts/.tsx
             }),
+
             mockCssPlugin()
         ],
         esbuild: {

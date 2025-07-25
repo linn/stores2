@@ -10,7 +10,9 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Requisitions;
+    using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
 
@@ -30,8 +32,8 @@
             this.req = new ReqWithReqNumber(
                 123,
                 new Employee(),
-                new StoresFunction { FunctionCode = "F1" },
-                null,
+                TestFunctionCodes.LinnDeptReq,
+                "F",
                 12345678,
                 "TYPE",
                 dept,
@@ -44,9 +46,12 @@
                 1,
                 new Part(),
                 10,
-                new StoresTransactionDefinition());
+                TestTransDefs.StockToLinnDept);
             this.req.AddLine(requisitionLine);
-
+            this.AuthService.HasPermissionFor(
+                AuthorisedActions.GetRequisitionActionByFunction(
+                    TestFunctionCodes.LinnDeptReq.FunctionCode),
+                    Arg.Any<IEnumerable<string>>()).Returns(true);
             this.newLineCandidate = new LineCandidate
                                         {
                                             PartNumber = "PART",
@@ -62,13 +67,13 @@
                                                                     FromState = "STORES"
                                                                 }
                                                         },
-                                            TransactionDefinition = "DEF"
+                                            TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode
                                         };
 
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
-            this.TransactionDefinitionRepository.FindByIdAsync("DEF")
-                .Returns(new StoresTransactionDefinition("DEF"));
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
+                .Returns(TestTransDefs.StockToLinnDept);
             this.DepartmentRepository.FindByIdAsync(dept.DepartmentCode).Returns(dept);
             this.NominalRepository.FindByIdAsync(nom.NominalCode).Returns(nom);
 
@@ -80,7 +85,7 @@
                 null,
                 123,
                 "LINN",
-                "DEF").Returns(new ProcessResult(true, string.Empty));
+                TestTransDefs.StockToLinnDept.TransactionCode).Returns(new ProcessResult(true, string.Empty));
 
             this.ReqStoredProcedures.CreateNominals(
                 this.req.ReqNumber,
@@ -95,10 +100,12 @@
                 this.req,
                 this.req.Comments,
                 this.req.Reference,
+                this.req.Department?.DepartmentCode,
                 new List<LineCandidate>
                     {
                         this.newLineCandidate
-                    });
+                    },
+                new List<string>());
         }
 
         [Test]
@@ -112,7 +119,7 @@
                 null,
                 123,
                 "LINN",
-                "DEF");
+                TestTransDefs.StockToLinnDept.TransactionCode);
         }
 
         [Test]
