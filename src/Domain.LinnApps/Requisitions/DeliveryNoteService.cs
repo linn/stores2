@@ -45,6 +45,7 @@
                 DeliveryAddressId = address?.AddressId ?? 0,
                 DeliveryAddress = this.GetAddressString(address),
                 TransReference = req.Reference,
+                Comments = req.Comments,
                 Lines = req.Lines.Select(l => new DeliveryNoteLine
                                                   {
                                                       Quantity = l.Qty,
