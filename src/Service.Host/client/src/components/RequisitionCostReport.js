@@ -50,7 +50,7 @@ function RequisitionCostReport() {
                 <Grid size={12}>
                     <Typography variant="h4">Requisition Cost Report</Typography>
                 </Grid>
-                <Grid size={3}>
+                <Grid size={2}>
                     <InputField
                         fullWidth
                         value={reqNo}
@@ -73,6 +73,15 @@ function RequisitionCostReport() {
                     </Button>
                 </Grid>
                 <Grid size={6} />
+                <Grid size={1}>
+                    <LinkField
+                        to={`${itemTypes.requisitionCostReport.url}/${reqNumber}/view`}
+                        disabled={!reqNumber}
+                        external={false}
+                        openLinksInNewTabs={true}
+                        value="Printable View"
+                    />
+                </Grid>
                 <Grid size={2}>
                     <LinkField
                         to={`/requisitions/${reqNo}`}

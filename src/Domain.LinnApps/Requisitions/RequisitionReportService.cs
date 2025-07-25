@@ -56,6 +56,18 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             return model;
         }
 
+        public async Task<string> GetRequisitionCostReportAsHtml(int reqNumber)
+        {
+            var requisition = await this.requisitionRepository.FindByIdAsync(reqNumber);
+
+            if (requisition == null)
+            {
+                throw new NotFoundException($"No req with number {reqNumber} was found.");
+            }
+
+            return await this.htmlTemplateService.GetHtml(requisition);
+        }
+
         public async Task<string> GetRequisitionAsHtml(int reqNumber)
         {
             var requisition = await this.requisitionRepository.FindByIdAsync(reqNumber);
