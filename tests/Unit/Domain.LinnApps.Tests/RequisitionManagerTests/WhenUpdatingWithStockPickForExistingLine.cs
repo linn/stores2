@@ -66,6 +66,10 @@
                 TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode
             };
 
+            this.AuthService.HasPermissionFor(
+                AuthorisedActions.GetRequisitionActionByFunction(TestFunctionCodes.LinnDeptReq.FunctionCode),
+                Arg.Any<IEnumerable<string>>()).Returns(true);
+
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
@@ -95,10 +99,12 @@
                 this.req,
                 this.req.Comments,
                 this.req.Reference,
+                this.req.Department?.DepartmentCode,
                 new List<LineCandidate>
                     {
                         this.line
-                    });
+                    },
+                new List<string>());
         }
 
         [Test]

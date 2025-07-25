@@ -634,10 +634,38 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             RequisitionHeader current, 
             string updatedComments,
             string updatedReference,
-            IEnumerable<LineCandidate> lineUpdates)
+            string updatedDepartmentNumber,
+            IEnumerable<LineCandidate> lineUpdates,
+            IEnumerable<string> privileges)
         {
-            // todo - permission checks? will be different for different req types I assume
-            current.Update(updatedComments, updatedReference);
+            if (!this.authService.HasPermissionFor(
+                    AuthorisedActions.GetRequisitionActionByFunction(current.StoresFunction.FunctionCode), privileges))
+            {
+                throw new UnauthorisedActionException(
+                    $"You are not authorised to make changes to {current.StoresFunction.FunctionCode} reqs");
+            }
+
+            var dept = current.Department;
+
+            if (updatedDepartmentNumber != current.Department?.DepartmentCode)
+            {
+                var updatedDepartment = await this.departmentRepository.FindByIdAsync(updatedDepartmentNumber);
+
+                var isValid = await this.storesService.ValidDepartmentNominal(
+                                  updatedDepartment.DepartmentCode,
+                                  current.Nominal.NominalCode);
+
+                if (!isValid.Success)
+                {
+                    throw new RequisitionException("Department Code not valid for selected Nominal Code");
+                }
+
+                dept = updatedDepartment;
+            }
+
+
+            current.Update(updatedComments, updatedReference, dept);
+
 
             foreach (var line in lineUpdates)
             {
