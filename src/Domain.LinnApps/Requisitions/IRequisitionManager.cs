@@ -40,7 +40,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks);
 
         Task UpdateRequisition(
-            RequisitionHeader headerUpdates, 
+            RequisitionHeader current, 
             string updatedComments,
             string updatedReference,
             string updatedDepartment,

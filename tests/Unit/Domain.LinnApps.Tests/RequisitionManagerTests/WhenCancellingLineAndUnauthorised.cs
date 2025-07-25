@@ -19,7 +19,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
         [SetUp]
         public void SetUp()
         {
-           
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>())
                 .Returns(false);
