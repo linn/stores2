@@ -75,8 +75,8 @@ function RequisitionCostReport() {
                 <Grid size={6} />
                 <Grid size={1}>
                     <LinkField
-                        to={`${itemTypes.requisitionCostReport.url}/${reqNumber}/view`}
-                        disabled={!reqNumber}
+                        to={`${itemTypes.requisitionCostReport.url}/${reqNo}/view`}
+                        disabled={!reports}
                         external={false}
                         openLinksInNewTabs={true}
                         value="Printable View"

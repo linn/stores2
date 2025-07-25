@@ -17,7 +17,7 @@ namespace Linn.Stores2.Service.Modules
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/requisitions/reports/requisition-cost/report", this.RequisitionCostReport);
-            app.MapGet("/requisitions/reports/requisition-cost/report/view", this.RequisitionCostReportAsHtml);
+            app.MapGet("/requisitions/reports/requisition-cost/report/{reqNumber}/view", this.RequisitionCostReportAsHtml);
             app.MapGet("/requisitions/reports/requisition-cost", this.GetApp);
             app.MapGet("/requisitions/{reqNumber}/view", this.GetReqAsHtml);
             app.MapGet("/requisitions/{reqNumber}/pdf", this.GetReqAsPdf);
@@ -38,7 +38,7 @@ namespace Linn.Stores2.Service.Modules
             int reqNumber,
             IRequisitionReportFacadeService facadeService)
         {
-            var result = await facadeService.GetRequisitionCostReportAsHtml(reqNumber);
+           var result = await facadeService.GetRequisitionCostReportAsHtml(reqNumber);
 
             res.ContentType = "text/html";
             res.StatusCode = (int)HttpStatusCode.OK;
