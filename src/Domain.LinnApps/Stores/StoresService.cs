@@ -312,6 +312,7 @@
             return new ProcessResult(true, $"Reverse quantity of {quantity} for req {originalReqNumber} is valid");
         }
 
+        // maybe refactor to return the nominal account too? a tuple? or just the nomacc if valiud, throw if not with the message?
         public async Task<ProcessResult> ValidDepartmentNominal(string departmentCode, string nominalCode)
         {
             // stores_oo.valid_dept_nom

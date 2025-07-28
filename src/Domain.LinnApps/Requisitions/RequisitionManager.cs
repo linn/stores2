@@ -644,7 +644,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new UnauthorisedActionException(
                     $"You are not authorised to make changes to {current.StoresFunction.FunctionCode} reqs");
             }
-
+            
             var dept = current.Department;
 
             if (updatedDepartmentNumber != current.Department?.DepartmentCode)
@@ -660,11 +660,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("Department Code not valid for selected Nominal Code");
                 }
 
-                dept = updatedDepartment;
+                // look up nominal account
             }
-
-
-            current.Update(updatedComments, updatedReference, dept);
+            
+            current.Update(updatedComments, updatedReference);
 
 
             foreach (var line in lineUpdates)

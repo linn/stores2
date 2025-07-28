@@ -388,7 +388,7 @@
             }
         }
 
-        public void Update(string comments, string reference, Department department)
+        public void Update(string comments, string reference)
         {
             if (this.IsBooked())
             {
@@ -397,7 +397,36 @@
 
             this.Comments = comments;
             this.Reference = reference;
-            this.Department = department;
+        }
+        
+        public void ApplyNominalAccountChange(NominalAccount nominalAccount)
+        {
+            if (this.IsBooked())
+            {
+                throw new RequisitionException("Cannot amend a booked req");
+            }
+            
+            if (nominalAccount != null 
+                && nominalAccount?.DepartmentCode != this.Department?.DepartmentCode)
+            {
+                if (this.IsReverseTrans())
+                {
+                    throw new RequisitionException("Cannot change department on a reverse transaction");
+                }
+
+                // just for now
+                var functionCodesDepartmentCanBeChangedFor = new List<string> { "WOFF", "WOFF QC" };
+
+                if (functionCodesDepartmentCanBeChangedFor.Contains(this.StoresFunction.FunctionCode))
+                {
+                    this.Department = nominalAccount.Department;
+                    
+                    foreach (var requisitionLine in this.Lines)
+                    {
+                        // update nominal posting for line
+                    }
+                }
+            }
         }
 
         public void AddLine(RequisitionLine toAdd)
@@ -428,7 +457,6 @@
             
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
-            var headerSpecifiesOntLocation = this.ToLocation != null || this.ToPalletNumber.HasValue;
             
             this.Lines.Add(toAdd);
         }
