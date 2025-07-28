@@ -98,8 +98,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 Arg.Any<string>(),
                 Arg.Any<string>())
                 .Returns(new ProcessResult(true, "State ok"));
-            this.StoresService.ValidDepartmentNominal("0000011111", "0000022222")
-                .Returns(new ProcessResult(true, "ok"));
+            this.StoresService.ValidNominalAccount("0000011111", "0000022222")
+                .Returns(new NominalAccount(new Department(), new Nominal(), "Y"));
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
 
             this.Sut = new RequisitionManager(

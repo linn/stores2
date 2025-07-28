@@ -16,6 +16,7 @@
     using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
 
     using NUnit.Framework;
 
@@ -38,8 +39,8 @@
             this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
-            this.StoresService.ValidDepartmentNominal("1607", "2963")
-                .Returns(new ProcessResult(false, "Dept Nom Not Ok"));
+            this.StoresService.ValidNominalAccount("1607", "2963")
+                .Throws(new InvalidNominalAccountException("Dept Nom Not Ok"));
 
             this.action = () => this.Sut.Validate(
                                     33087,
@@ -71,7 +72,7 @@
         [Test]
         public async Task ShouldThrowCorrectException()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>()
+            await this.action.Should().ThrowAsync<InvalidNominalAccountException>()
                 .WithMessage("Dept Nom Not Ok");
         }
     }

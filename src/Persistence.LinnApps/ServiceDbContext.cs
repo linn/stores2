@@ -819,6 +819,8 @@
             e.Property(s => s.TransactionCode).HasColumnName("TRANSACTION_CODE").HasMaxLength(10);
             e.Property(s => s.DebitOrCredit).HasColumnName("DEBIT_OR_CREDIT").HasMaxLength(1);
             e.HasOne(r => r.Nominal).WithMany().HasForeignKey("NOMINAL");
+            e.Property(s => s.NominalRule).HasColumnName("NOM_RULE").HasMaxLength(maxLength: 16);
+            e.Property(s => s.DepartmentRule).HasColumnName("DEPT_RULE").HasMaxLength(maxLength: 16);
         }
 
         private static void BuildPotentialMoveDetails(ModelBuilder builder)

@@ -415,6 +415,7 @@
                 }
 
                 // just for now
+                // since we know these transactions have a fixed credit nomacc
                 var functionCodesDepartmentCanBeChangedFor = new List<string> { "WOFF", "WOFF QC" };
 
                 if (functionCodesDepartmentCanBeChangedFor.Contains(this.StoresFunction.FunctionCode))
@@ -423,7 +424,7 @@
                     
                     foreach (var requisitionLine in this.Lines)
                     {
-                        // update nominal posting for line
+                        
                     }
                 }
             }

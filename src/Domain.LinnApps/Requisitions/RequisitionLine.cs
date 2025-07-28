@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Xml.Linq;
 
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -264,6 +265,63 @@
                 return this.Qty == totalQtyAllocated;
             }
             return false;
+        }
+
+        public void UpdateNominalAccount(NominalAccount newNominalAccount)
+        {
+            if (this.IsBooked())
+            {
+                throw new RequisitionException("Cannot change nominal account for a booked line");
+            }
+
+            // Before a line is booked, it can receive updates to its NominalPostings via user
+            // applying changes to the headers Department field
+
+            // This method applies a new NominalAccount (i.e. with an updated department)
+            // to the line's nominal postings, based on posting rules.
+
+            // Each TransactionDefinition includes StoresTransactionPostings rules
+            // that define whether the nominal and/or department values should come from user input.
+            // Currently, we only support updating the department (not the nominal), subject to change
+            // with user requirements of course.
+            var trans = this.TransactionDefinition;
+
+            // Look for a rule that allows the department to be overridden via input.
+            var departmentInputRule = trans.StoresTransactionPostings
+                .FirstOrDefault(x => x.DepartmentRule == "INPUT");
+
+            if (departmentInputRule == null)
+            {
+                throw new RequisitionException(
+                    $"Cannot update department of a {trans.TransactionCode} line – rule does not allow input.");
+            }
+
+            // Determine which side (debit or credit) of the nominal posting this rule applies to.
+            if (departmentInputRule.DebitOrCredit == "C")
+            {
+                var creditPosting = this.NominalAccountPostings
+                    .First(x => x.DebitOrCredit == "C");
+
+                // Ensure only the department has changed – updating nominal is not currently supported.
+                if (creditPosting.NominalAccount.NominalCode != newNominalAccount.NominalCode)
+                {
+                    throw new RequisitionException("Updating nominal code is not currently supported");
+                }
+
+                creditPosting.NominalAccount = newNominalAccount;
+            }
+            else if (departmentInputRule.DebitOrCredit == "D")
+            {
+                var debitPosting = this.NominalAccountPostings
+                    .First(x => x.DebitOrCredit == "D");
+
+                if (debitPosting.NominalAccount.NominalCode != newNominalAccount.NominalCode)
+                {
+                    throw new RequisitionException("Updating nominal code is not currently supported");
+                }
+
+                debitPosting.NominalAccount = newNominalAccount;
+            }
         }
     }
 }

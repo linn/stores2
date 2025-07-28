@@ -2,6 +2,7 @@
 {
     using System.Threading.Tasks;
     using Linn.Common.Domain;
+    using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -32,7 +33,7 @@
         Task<ProcessResult> ValidReverseQuantity(int originalReqNumber, decimal quantity);
 
         // stores_oo.valid_dept_nom
-        Task<ProcessResult> ValidDepartmentNominal(string departmentCode, string nominalCode);
+        Task<NominalAccount> ValidNominalAccount(string departmentCode, string nominalCode);
 
         // stores_oo.default_bookin_location
         Task<StorageLocation> DefaultBookInLocation(string partNumber);
