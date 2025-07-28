@@ -35,7 +35,7 @@
                                     {
                                         Qty = 1,
                                         LineNumber = 1,
-                                        TransactionDefinition = TestTransDefs.WriteOffQC.TransactionCode,
+                                        TransactionDefinition = TestTransDefs.WriteOffGoodsInInspection.TransactionCode,
                                         PartNumber = "PART",
                                     }
                             },
@@ -52,8 +52,8 @@
                     AuthorisedActions.GetRequisitionActionByFunction(context.Function.FunctionCode),
                     Arg.Any<IEnumerable<string>>())
                 .Returns(true);
-            this.StoresTransactionDefinitionRepository.FindByIdAsync(TestTransDefs.WriteOffQC.TransactionCode)
-                .Returns(TestTransDefs.WriteOffQC);
+            this.StoresTransactionDefinitionRepository.FindByIdAsync(TestTransDefs.WriteOffGoodsInInspection.TransactionCode)
+                .Returns(TestTransDefs.WriteOffGoodsInInspection);
 
             this.RequisitionManager.Validate(
                 Arg.Any<int>(),
