@@ -415,7 +415,7 @@
                 }
 
                 // a temporary defensive measure to prevent more widespread problems
-                // if i'm getting any of this wrong
+                // just in case any of the following updating nominal accounts code is wrong
                 var functionCodesDepartmentCanBeChangedFor = new List<string> { "WOFF", "WOFF QC" };
 
                 if (functionCodesDepartmentCanBeChangedFor.Contains(this.StoresFunction.FunctionCode))

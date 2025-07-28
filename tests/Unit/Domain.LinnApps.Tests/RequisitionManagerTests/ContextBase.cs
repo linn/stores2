@@ -14,7 +14,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
     using NUnit.Framework;
 
-    public class ContextBase
+    public class ContextBase 
     {
         protected IRequisitionManager Sut { get; set; }
         

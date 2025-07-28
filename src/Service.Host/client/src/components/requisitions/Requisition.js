@@ -218,8 +218,6 @@ function Requisition({ creating }) {
 
     const [revertState, setRevertState] = useState({});
 
-    console.log(updateResult);
-
     useEffect(() => {
         if (creating && !hasLoadedDefaultState && userNumber) {
             setHasFetched(false);
@@ -257,7 +255,6 @@ function Requisition({ creating }) {
             clearReqResult();
         }
         if (updateResult) {
-            console.log(updateResult);
             dispatch({ type: 'load_state', payload: updateResult });
             setRevertState(updateResult);
             clearUpdateResult();

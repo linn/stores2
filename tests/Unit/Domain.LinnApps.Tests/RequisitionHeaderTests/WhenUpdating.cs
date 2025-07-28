@@ -1,17 +1,13 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
-    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Requisitions;
     using Linn.Stores2.TestData.Transactions;
