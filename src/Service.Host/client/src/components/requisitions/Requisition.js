@@ -187,7 +187,7 @@ function Requisition({ creating }) {
         errorMessage: updateError,
         postResult: updateResult,
         clearPostResult: clearUpdateResult
-    } = usePost(itemTypes.requisitions.url, true, true);
+    } = usePost(itemTypes.requisitions.url, true, false);
 
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
@@ -217,6 +217,8 @@ function Requisition({ creating }) {
     const [hasLoadedDefaultState, setHasLoadedDefaultState] = useState(false);
 
     const [revertState, setRevertState] = useState({});
+
+    console.log(updateResult);
 
     useEffect(() => {
         if (creating && !hasLoadedDefaultState && userNumber) {
@@ -255,6 +257,7 @@ function Requisition({ creating }) {
             clearReqResult();
         }
         if (updateResult) {
+            console.log(updateResult);
             dispatch({ type: 'load_state', payload: updateResult });
             setRevertState(updateResult);
             clearUpdateResult();

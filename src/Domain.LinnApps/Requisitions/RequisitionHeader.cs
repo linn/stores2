@@ -414,8 +414,8 @@
                     throw new RequisitionException("Cannot change department on a reverse transaction");
                 }
 
-                // a temporary defensive measure to prevent widespread problems
-                // if i'm getting this wrong
+                // a temporary defensive measure to prevent more widespread problems
+                // if i'm getting any of this wrong
                 var functionCodesDepartmentCanBeChangedFor = new List<string> { "WOFF", "WOFF QC" };
 
                 if (functionCodesDepartmentCanBeChangedFor.Contains(this.StoresFunction.FunctionCode))
