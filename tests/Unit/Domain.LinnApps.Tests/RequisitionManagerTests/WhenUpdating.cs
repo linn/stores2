@@ -59,17 +59,11 @@
                 .Returns(TestTransDefs.StockToLinnDept);
             this.NominalRepository.FindByIdAsync(nom.NominalCode).Returns(nom);
 
-            var updatedDept = new Department { DepartmentCode = "0002" };
-            this.DepartmentRepository.FindByIdAsync(updatedDept.DepartmentCode).Returns(updatedDept);
-
-            this.StoresService.ValidNominalAccount(updatedDept.DepartmentCode, this.sut.Nominal.NominalCode)
-                .Returns(new NominalAccount());
-
             this.Sut.UpdateRequisition(
                 this.sut,
                 "NEW COMMENT",
                 "NEW REF",
-                updatedDept.DepartmentCode,
+                this.sut.Department.DepartmentCode,
                 new List<LineCandidate>
                 {
                 },
@@ -81,7 +75,6 @@
         {
             this.sut.Comments.Should().Be("NEW COMMENT");
             this.sut.Reference.Should().Be("NEW REF");
-            // this.sut.Department.DepartmentCode.Should().Be("0002");
         }
     }
 }

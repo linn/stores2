@@ -414,8 +414,8 @@
                     throw new RequisitionException("Cannot change department on a reverse transaction");
                 }
 
-                // just for now
-                // since we know these transactions have a fixed credit nomacc
+                // a temporary defensive measure to prevent widespread problems
+                // if i'm getting this wrong
                 var functionCodesDepartmentCanBeChangedFor = new List<string> { "WOFF", "WOFF QC" };
 
                 if (functionCodesDepartmentCanBeChangedFor.Contains(this.StoresFunction.FunctionCode))
@@ -426,6 +426,11 @@
                     {
                         
                     }
+                }
+                else
+                {
+                    throw new RequisitionException(
+                        $"Can't currently change department for {this.StoresFunction.FunctionCode}");
                 }
             }
         }
