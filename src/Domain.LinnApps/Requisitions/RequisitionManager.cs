@@ -648,7 +648,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                   updatedDepartment.DepartmentCode,
                                   current.Nominal.NominalCode);
 
-                current.ApplyNominalAccountChange(newNomAcc);
+                current.ApplyNominalAccountChange(newNomAcc); // todo - test
             }
             
             current.Update(updatedComments, updatedReference);

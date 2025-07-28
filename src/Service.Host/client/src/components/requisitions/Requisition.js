@@ -930,7 +930,7 @@ function Requisition({ creating }) {
                             </Grid>
                             <Grid size={2} />
                             <DepartmentNominal
-                                disabled={!creating}
+                                // disabled={!creating}
                                 departmentCode={formState.req.department?.departmentCode}
                                 departmentDescription={formState.req.department?.description}
                                 setDepartment={newDept => {

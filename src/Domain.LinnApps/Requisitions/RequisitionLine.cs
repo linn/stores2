@@ -267,7 +267,7 @@
             return false;
         }
 
-        public void UpdateNominalAccount(NominalAccount newNominalAccount)
+        public void ApplyNominalAccountUpdate(NominalAccount newNominalAccount)
         {
             if (this.IsBooked())
             {

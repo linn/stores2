@@ -424,7 +424,7 @@
                     
                     foreach (var requisitionLine in this.Lines)
                     {
-                        
+                        requisitionLine.ApplyNominalAccountUpdate(nominalAccount);
                     }
                 }
                 else
