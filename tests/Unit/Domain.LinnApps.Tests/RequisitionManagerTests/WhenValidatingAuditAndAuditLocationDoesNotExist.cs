@@ -43,8 +43,8 @@
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 456).Returns(true);
             this.StockService.ValidStockLocation(null, 123, "PART", 1, null, "LINN")
                 .Returns(new ProcessResult(true, "ok"));
-            this.StoresService.ValidDepartmentNominal("1607", "2963")
-                .Returns(new ProcessResult(true, "ok"));
+            this.StoresService.ValidNominalAccount("1607", "2963")
+                .Returns(new NominalAccount());
 
             this.action = () => this.Sut.Validate(
                 100,

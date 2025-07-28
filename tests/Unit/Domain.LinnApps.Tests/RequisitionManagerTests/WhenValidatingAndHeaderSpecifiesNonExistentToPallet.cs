@@ -34,8 +34,8 @@
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StoresMove.TransactionCode)
                 .Returns(TestTransDefs.StoresMove);
-            this.StoresService.ValidDepartmentNominal("0000001607", "0000002963")
-                .Returns(new ProcessResult(true, "ok"));
+            this.StoresService.ValidNominalAccount("0000001607", "0000002963")
+                .Returns(new NominalAccount());
 
             this.act = () => this.Sut.Validate(
                 33087,

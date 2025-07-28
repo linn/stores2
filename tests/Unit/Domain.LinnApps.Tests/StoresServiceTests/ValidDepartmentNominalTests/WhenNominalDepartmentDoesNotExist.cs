@@ -7,6 +7,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidDepartmentN
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
 
     using NSubstitute;
 
@@ -14,21 +15,22 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidDepartmentN
 
     public class WhenNominalDepartmentDoesNotExist : ContextBase
     {
+        private Func<Task> action;
+
         [SetUp]
-        public async Task Setup()
+        public void Setup()
         {
             this.NominalAccountRepository.FindByAsync(Arg.Any<Expression<Func<NominalAccount, bool>>>())
                 .Returns((NominalAccount)null);
 
-            this.Result = await this.Sut.ValidDepartmentNominal(this.DepartmentCode, this.NominalCode);
+            this.action = () => this.Sut.ValidNominalAccount(this.DepartmentCode, this.NominalCode);
         }
 
         [Test]
-        public void ShouldReturnFailureWithCorrectMessage()
+        public async Task ShouldReturnFailureWithCorrectMessage()
         {
-            this.Result.Success.Should().BeFalse();
-            this.Result.Message.Should()
-                .Be($"Department / Nominal {this.DepartmentCode} / {this.NominalCode} are not a valid combination");
+            await this.action.Should().ThrowAsync<InvalidNominalAccountException>()
+                .WithMessage($"Department / Nominal {this.DepartmentCode} / {this.NominalCode} are not a valid combination");
         }
     }
 }

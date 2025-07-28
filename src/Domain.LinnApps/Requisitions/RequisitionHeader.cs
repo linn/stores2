@@ -388,7 +388,7 @@
             }
         }
 
-        public void Update(string comments, string reference, Department department)
+        public void Update(string comments, string reference)
         {
             if (this.IsBooked())
             {
@@ -397,7 +397,42 @@
 
             this.Comments = comments;
             this.Reference = reference;
-            this.Department = department;
+        }
+        
+        public void ApplyNominalAccountChange(NominalAccount nominalAccount)
+        {
+            if (this.IsBooked())
+            {
+                throw new RequisitionException("Cannot amend a booked req");
+            }
+            
+            if (nominalAccount != null 
+                && nominalAccount?.DepartmentCode != this.Department?.DepartmentCode)
+            {
+                if (this.IsReverseTrans())
+                {
+                    throw new RequisitionException("Cannot change department on a reverse transaction");
+                }
+
+                // a temporary defensive measure to prevent more widespread problems
+                // just in case any of the following updating nominal accounts code is wrong
+                var functionCodesDepartmentCanBeChangedFor = new List<string> { "WOFF", "WOFF QC" };
+
+                if (functionCodesDepartmentCanBeChangedFor.Contains(this.StoresFunction.FunctionCode))
+                {
+                    this.Department = nominalAccount.Department;
+                    
+                    foreach (var requisitionLine in this.Lines)
+                    {
+                        requisitionLine.ApplyNominalAccountUpdate(nominalAccount);
+                    }
+                }
+                else
+                {
+                    throw new RequisitionException(
+                        $"Can't currently change department for {this.StoresFunction.FunctionCode}");
+                }
+            }
         }
 
         public void AddLine(RequisitionLine toAdd)
@@ -428,7 +463,6 @@
             
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
-            var headerSpecifiesOntLocation = this.ToLocation != null || this.ToPalletNumber.HasValue;
             
             this.Lines.Add(toAdd);
         }

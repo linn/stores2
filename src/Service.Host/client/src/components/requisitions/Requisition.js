@@ -187,7 +187,7 @@ function Requisition({ creating }) {
         errorMessage: updateError,
         postResult: updateResult,
         clearPostResult: clearUpdateResult
-    } = usePost(itemTypes.requisitions.url, true, true);
+    } = usePost(itemTypes.requisitions.url, true, false);
 
     const [tab, setTab] = useState(0);
     const [selectedLine, setSelectedLine] = useState(1);
@@ -930,7 +930,7 @@ function Requisition({ creating }) {
                             </Grid>
                             <Grid size={2} />
                             <DepartmentNominal
-                                disabled={!creating}
+                                // disabled={!creating}
                                 departmentCode={formState.req.department?.departmentCode}
                                 departmentDescription={formState.req.department?.description}
                                 setDepartment={newDept => {

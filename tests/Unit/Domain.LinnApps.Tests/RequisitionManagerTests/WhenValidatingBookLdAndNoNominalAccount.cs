@@ -13,6 +13,8 @@
     using Linn.Stores2.TestData.FunctionCodes;
 
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
+
     using NUnit.Framework;
 
     public class WhenValidatingBookLdAndNoNominalAccount : ContextBase
@@ -42,8 +44,10 @@
                                                       PartNumber = "SUNDRY PART"
                                                   }
                                           };
-            this.StoresService.ValidDepartmentNominal("0000011111", "0000022222")
-                .Returns(new ProcessResult(false, "Dept/Nom not valid"));
+
+            this.StoresService.ValidNominalAccount("0000011111", "0000022222")
+                .Throws(new InvalidNominalAccountException("Dept/Nom not valid"));
+
             this.DocumentProxy.GetPurchaseOrder(1234).Returns(
                 new PurchaseOrderResult
                 {
@@ -76,7 +80,7 @@
         [Test]
         public async Task ShouldThrowCorrectException()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>()
+            await this.action.Should().ThrowAsync<InvalidNominalAccountException>()
                 .WithMessage("Dept/Nom not valid");
         }
     }

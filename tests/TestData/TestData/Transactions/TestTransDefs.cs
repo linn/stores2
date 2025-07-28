@@ -672,7 +672,7 @@
                 }
             };
 
-        public static readonly StoresTransactionDefinition WriteOffQC =
+        public static readonly StoresTransactionDefinition WriteOffGoodsInInspection =
             new StoresTransactionDefinition
             {
                 TransactionCode = "GIWOI",
@@ -694,5 +694,26 @@
                     new StoresTransactionState("F", "GIWOI", "FAIL")
                 }
             };
+
+        public static readonly StoresTransactionDefinition WriteOffUnusableStock =
+            new StoresTransactionDefinition
+                {
+                    TransactionCode = "STWOI",
+                    Description = "WRITE OFF DAMAGED/UNUSABLE STOCK",
+                    StockAllocations = "Y",
+                    OntoTransactions = "N",
+                    DecrementTransaction = "N",
+                    TakePriceFrom = "P",
+                    RequiresAuth = "Y",
+                    AuthOpCode = "STORESAUTH",
+                    StoresTransactionPostings = new List<StoresTransactionPosting>
+                                                    {
+                                                        new StoresTransactionPosting("STWOI", "D", new Nominal("0000004729", "STOCK WRITE OFF"))
+                                                            {
+                                                                DepartmentRule = "INPUT"
+                                                            },
+                                                        new StoresTransactionPosting("STWOI", "C", null)
+                                                    }
+                };
     }
 }

@@ -23,5 +23,9 @@
         public string DebitOrCredit { get; set; }
 
         public Nominal Nominal { get; set; }
+
+        public string NominalRule { get; set; }
+
+        public string DepartmentRule { get; set; }
     }
 }

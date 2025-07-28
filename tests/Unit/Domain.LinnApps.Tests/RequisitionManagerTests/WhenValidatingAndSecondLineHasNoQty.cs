@@ -74,8 +74,8 @@
                     Moves = new[] { new MoveSpecification { Qty = 0 } }
                 }
             };
-            this.StoresService.ValidDepartmentNominal("1607", "2963")
-                .Returns(new ProcessResult(true, "ok"));
+            this.StoresService.ValidNominalAccount("1607", "2963")
+                .Returns(new NominalAccount());
 
             this.action = () => this.Sut.Validate(
                 33087,

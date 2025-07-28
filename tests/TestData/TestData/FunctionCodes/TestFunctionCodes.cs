@@ -807,8 +807,8 @@
                     {
                         FunctionCode = "WOFF QC",
                         Seq = 1,
-                        TransactionDefinition = TestTransDefs.WriteOffQC,
-                        TransactionCode = TestTransDefs.WriteOffQC.TransactionCode,
+                        TransactionDefinition = TestTransDefs.WriteOffGoodsInInspection,
+                        TransactionCode = TestTransDefs.WriteOffGoodsInInspection.TransactionCode,
                         ReqType = "F"
                     },
                     new StoresFunctionTransaction
