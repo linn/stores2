@@ -1,0 +1,127 @@
+@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Requisitions.RequisitionCost>
+@{
+    <style>
+
+        @@media print {
+            @@page {
+                size: A4 portrait;
+                margin: 25px;
+                margin-bottom: 20px;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+        }
+
+        @@media screen {
+            @@page {
+                size: A4 portrait;
+                margin: 50px;
+            }
+
+            thead {
+                display: block;
+                margin-left: 50px;
+                margin-right: 600px;
+                margin-top: 20px;
+            }
+
+            tbody {
+                display: block;
+                margin-top: 30px;
+                margin-left: 50px;
+                margin-right: 50px;
+                margin-bottom: 20px;
+            }
+        }
+
+        thead {
+            font-size: 0.8em;
+            font-family: Arial, sans-serif;
+        }
+
+        tbody {
+            font-size: 0.8em;
+            font-family: Arial, sans-serif;
+        }
+
+        .auto {
+            grid: auto;
+        }
+
+        .line-grid-container {
+            column-gap: 10px;
+            display: grid;
+            grid-template-columns: auto auto auto auto;
+            row-gap: 5px;
+        }
+
+        #tcb-extension-uk-wrapper {
+            display: none !important;
+        }
+    </style>
+    <div>
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="line-grid-container">
+                            <div>
+                                <b>Line</b>
+                            </div>
+                            <div>
+                                <b>Part Number</b>
+                            </div>
+                            <div>
+                                <b>Description</b>
+                            </div>
+                            <div>
+                                <b>Unit Price</b>
+                            </div>
+                            <div>
+                                <b>Quantity</b>
+                            </div>
+                            <div>
+                                <b>Net Cost</b>
+                            </div>
+                            <div>
+                                <b>Cost</b>
+                            </div>
+                            @foreach (var line in Model.Lines.Where(a => !a.IsCancelled()))
+                            {
+                                <div>
+                                    @line.Part.PartNumber
+                                </div>
+                                <div>
+                                    @line.Part.Description
+                                </div>
+                                <div>
+                                    @line.UnitPrice
+                                </div>
+                                <div>
+                                    @line.Qty
+                                </div>
+                                <div>
+                                    @line.Cost
+                                </div>
+                                <div>
+                                    @line.NetCost
+                                </div>
+                                
+                                
+                                @foreach (var move in line.Moves)
+                                {
+                                    <div></div>
+                                    <div></div>
+                                    <div>@move.TextSummary()</div>
+                                    <div></div>
+                                }
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+}
