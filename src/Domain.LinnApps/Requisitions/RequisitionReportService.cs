@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -17,16 +18,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         private readonly IReportingHelper reportingHelper;
 
-        private readonly IHtmlTemplateService<RequisitionHeader> htmlTemplateService;
+        private readonly IHtmlTemplateService<RequisitionHeader> requisitionHeaderHtmlTemplateService;
+
+        private readonly IHtmlTemplateService<RequisitionCostReport> requisitionCostHtmlTemplateService;
 
         public RequisitionReportService(
             IRepository<RequisitionHeader, int> requisitionRepository,
             IReportingHelper reportingHelper,
-            IHtmlTemplateService<RequisitionHeader> htmlTemplateService)
+            IHtmlTemplateService<RequisitionHeader> requisitionHeaderHtmlTemplateService,
+            IHtmlTemplateService<RequisitionCostReport> requisitionCostHtmlTemplateService)
         {
             this.requisitionRepository = requisitionRepository;
             this.reportingHelper = reportingHelper;
-            this.htmlTemplateService = htmlTemplateService;
+            this.requisitionHeaderHtmlTemplateService = requisitionHeaderHtmlTemplateService;
+            this.requisitionCostHtmlTemplateService = requisitionCostHtmlTemplateService;
         }
 
         public async Task<ResultsModel> GetRequisitionCostReport(int reqNumber)
@@ -60,12 +65,25 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             var requisition = await this.requisitionRepository.FindByIdAsync(reqNumber);
 
-            if (requisition == null)
+            var model = new RequisitionCostReport
             {
-                throw new NotFoundException($"No req with number {reqNumber} was found.");
-            }
+                ReqNumber = requisition.ReqNumber,
+                TotalCost = requisition.Lines.Sum(l => this.WorkOutCost(l.StoresBudgets, l.Qty, l.Part)),
+                TotalNetCost = requisition.Lines.Sum(l => this.WorkOutNetCost(l.StoresBudgets, l.Qty, l.Part, l.TransactionDefinition)),
+                ReportLines = requisition.Lines.Select(l => new RequisitionCostLine
+                                                                 {
+                                                                     ReqNumber = l.ReqNumber,
+                                                                     Cost = this.WorkOutCost(l.StoresBudgets, l.Qty, l.Part),
+                                                                     Description = l.Part.Description,
+                                                                     PartNumber = l.Part.PartNumber,
+                                                                     Qty = l.Qty,
+                                                                     NetCost = this.WorkOutNetCost(l.StoresBudgets, l.Qty, l.Part, l.TransactionDefinition),
+                                                                     UnitPrice = l.StoresBudgets?.FirstOrDefault()?.PartPrice
+                                                                         ?? l.Part.BaseUnitPrice.GetValueOrDefault()
+                })
+            };
 
-            return await this.htmlTemplateService.GetHtml(requisition);
+            return await this.requisitionCostHtmlTemplateService.GetHtml(model);
         }
 
         public async Task<string> GetRequisitionAsHtml(int reqNumber)
@@ -76,7 +94,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new NotFoundException($"No req with number {reqNumber} was found.");
             }
 
-            return await this.htmlTemplateService.GetHtml(requisition);
+            return await this.requisitionHeaderHtmlTemplateService.GetHtml(requisition);
         }
 
         private List<CalculationValueModel> SetModelRows(IEnumerable<RequisitionLine> lines)

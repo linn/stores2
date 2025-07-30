@@ -83,8 +83,8 @@
                     x => new HtmlTemplateService<RequisitionHeader>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}Requisition.cshtml",
                         x.GetService<ITemplateEngine>()))
-                .AddScoped<IHtmlTemplateService<RequisitionHeader>>(
-                    x => new HtmlTemplateService<RequisitionHeader>(
+                .AddScoped<IHtmlTemplateService<RequisitionCostReport>>(
+                    x => new HtmlTemplateService<RequisitionCostReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}RequisitionCost.cshtml",
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()

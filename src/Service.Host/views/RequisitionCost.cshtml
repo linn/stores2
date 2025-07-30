@@ -1,7 +1,6 @@
-@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Requisitions.RequisitionCost>
+@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Requisitions.RequisitionCostReport>
 @{
     <style>
-
         @@media print {
             @@page {
                 size: A4 portrait;
@@ -46,6 +45,18 @@
             font-family: Arial, sans-serif;
         }
 
+        .requisition-number {
+            grid-area: reqNumber;
+        }
+
+        .total-cost {
+            grid-area: totalCost;
+        }
+
+        .total-net-cost {
+            grid-area: totalNetCost;
+        }
+
         .auto {
             grid: auto;
         }
@@ -53,7 +64,7 @@
         .line-grid-container {
             column-gap: 10px;
             display: grid;
-            grid-template-columns: auto auto auto auto;
+            grid-template-columns: auto auto auto auto auto auto;
             row-gap: 5px;
         }
 
@@ -63,13 +74,27 @@
     </style>
     <div>
         <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="header-grid-container">
+                            <div class="req-number">
+                                <b>Req Number: @Model.ReqNumber</b>
+                            </div>
+                            <div class="total-cost">
+                                <b>Total Cost: @Model.TotalCost</b>
+                            </div>
+                            <div class="total-net-cost">
+                                <b>Total Net Cost: @Model.TotalNetCost</b>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
             <tbody>
                 <tr>
                     <td>
                         <div class="line-grid-container">
-                            <div>
-                                <b>Line</b>
-                            </div>
                             <div>
                                 <b>Part Number</b>
                             </div>
@@ -83,18 +108,18 @@
                                 <b>Quantity</b>
                             </div>
                             <div>
-                                <b>Net Cost</b>
-                            </div>
-                            <div>
                                 <b>Cost</b>
                             </div>
-                            @foreach (var line in Model.Lines.Where(a => !a.IsCancelled()))
+                            <div>
+                                <b>Net Cost</b>
+                            </div>
+                            @foreach (var line in Model.ReportLines)
                             {
                                 <div>
-                                    @line.Part.PartNumber
+                                    @line.PartNumber
                                 </div>
                                 <div>
-                                    @line.Part.Description
+                                    @line.Description
                                 </div>
                                 <div>
                                     @line.UnitPrice
@@ -108,15 +133,6 @@
                                 <div>
                                     @line.NetCost
                                 </div>
-                                
-                                
-                                @foreach (var move in line.Moves)
-                                {
-                                    <div></div>
-                                    <div></div>
-                                    <div>@move.TextSummary()</div>
-                                    <div></div>
-                                }
                             }
                         </div>
                     </td>

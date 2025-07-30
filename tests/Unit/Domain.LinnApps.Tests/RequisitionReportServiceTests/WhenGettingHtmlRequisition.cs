@@ -36,7 +36,7 @@
                 new Nominal("0000004710", "N"));
             this.RequisitionRepository.FindByIdAsync(this.reqNumber)
                 .Returns(this.req);
-            this.HtmlTemplateService.GetHtml(Arg.Is<RequisitionHeader>(a => a.ReqNumber == this.reqNumber))
+            this.RequisitionHeaderHtmlTemplateService.GetHtml(Arg.Is<RequisitionHeader>(a => a.ReqNumber == this.reqNumber))
                 .Returns("<html></html>");
 
             this.result = await this.Sut.GetRequisitionAsHtml(this.reqNumber);

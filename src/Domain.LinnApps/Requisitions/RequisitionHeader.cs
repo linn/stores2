@@ -22,7 +22,7 @@
         public int? Document1 { get; protected set; }
 
         public ICollection<RequisitionLine> Lines { get; protected set; }
-        
+
         public decimal? Quantity { get; protected set; }
 
         public string Document1Name { get; protected set; }
@@ -62,7 +62,7 @@
         public string Booked { get; protected set; }
         
         public string IsReversed { get; protected set; }
-        
+
         public string IsReverseTransaction { get; set; }
 
         public ICollection<CancelDetails> CancelDetails { get; protected set; }
