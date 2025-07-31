@@ -65,23 +65,43 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             var requisition = await this.requisitionRepository.FindByIdAsync(reqNumber);
 
+            var totalCost = requisition.Lines.Sum(l => this.WorkOutCost(l.StoresBudgets, l.Qty, l.Part));
+            var totalNetCost = requisition.Lines.Sum(
+                l => this.WorkOutNetCost(l.StoresBudgets, l.Qty, l.Part, l.TransactionDefinition));
+
+            var reportLines = requisition.Lines
+                .Select(l => new RequisitionCostLine
+                                 {
+                                     ReqNumber = l.ReqNumber,
+                                     Cost = this.WorkOutCost(l.StoresBudgets, l.Qty, l.Part),
+                                     Description = l.Part.Description,
+                                     PartNumber = l.Part.PartNumber,
+                                     Qty = l.Qty,
+                                     NetCost = this.WorkOutNetCost(l.StoresBudgets, l.Qty, l.Part, l.TransactionDefinition),
+                                     UnitPrice = l.StoresBudgets?.FirstOrDefault()?.PartPrice
+                                                 ?? l.Part.BaseUnitPrice.GetValueOrDefault()
+                                 })
+                .ToList();
+
+            reportLines.Add(new RequisitionCostLine
+                                {
+                                    ReqNumber = null,
+                                    Description = "TOTAL",
+                                    Cost = totalCost,
+                                    NetCost = totalNetCost,
+                                    Qty = null,
+                                    PartNumber = null,
+                                    UnitPrice = null
+                                });
+
             var model = new RequisitionCostReport
-            {
-                ReqNumber = requisition.ReqNumber,
-                TotalCost = requisition.Lines.Sum(l => this.WorkOutCost(l.StoresBudgets, l.Qty, l.Part)),
-                TotalNetCost = requisition.Lines.Sum(l => this.WorkOutNetCost(l.StoresBudgets, l.Qty, l.Part, l.TransactionDefinition)),
-                ReportLines = requisition.Lines.Select(l => new RequisitionCostLine
-                                                                 {
-                                                                     ReqNumber = l.ReqNumber,
-                                                                     Cost = this.WorkOutCost(l.StoresBudgets, l.Qty, l.Part),
-                                                                     Description = l.Part.Description,
-                                                                     PartNumber = l.Part.PartNumber,
-                                                                     Qty = l.Qty,
-                                                                     NetCost = this.WorkOutNetCost(l.StoresBudgets, l.Qty, l.Part, l.TransactionDefinition),
-                                                                     UnitPrice = l.StoresBudgets?.FirstOrDefault()?.PartPrice
-                                                                         ?? l.Part.BaseUnitPrice.GetValueOrDefault()
-                })
-            };
+                            {
+                                ReqNumber = requisition.ReqNumber,
+                                TotalCost = totalCost,
+                                TotalNetCost = totalNetCost,
+                                ReportLines = reportLines
+                            };
+
 
             return await this.requisitionCostHtmlTemplateService.GetHtml(model);
         }
