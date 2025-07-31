@@ -15,14 +15,14 @@ function useSearch(
         ? (result?.items.map(s => ({
               ...s,
               id: s[idFieldKey],
-              name: s[nameFieldKey],
-              description: s[descriptionFieldKey]
+              name: s[nameFieldKey].toString(),
+              description: s[descriptionFieldKey].toString()
           })) ?? [])
         : (result?.map(s => ({
               ...s,
               id: s[idFieldKey],
-              name: s[nameFieldKey],
-              description: s[descriptionFieldKey]
+              name: s[nameFieldKey].toString(),
+              description: s[descriptionFieldKey].toString()
           })) ?? []);
     const search = searchTerm => send(null, `?searchTerm=${searchTerm}`);
     const loading = isLoading;
