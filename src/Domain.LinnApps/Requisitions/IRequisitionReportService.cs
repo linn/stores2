@@ -8,6 +8,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     {
         Task<ResultsModel> GetRequisitionCostReport(int reqNumber);
 
+        Task<string> GetRequisitionCostReportAsHtml(int reqNumber);
+
         Task<string> GetRequisitionAsHtml(int reqNumber);
     }
 }

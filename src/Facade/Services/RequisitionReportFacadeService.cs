@@ -45,6 +45,13 @@
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
         }
 
+        public async Task<string> GetRequisitionCostReportAsHtml(int reqNumber)
+        {
+            var htmlResult = await this.requisitionReportService.GetRequisitionCostReportAsHtml(reqNumber);
+
+            return htmlResult;
+        }
+
         public async Task<string> GetRequisitionAsHtml(int reqNumber)
         {
             var htmlResult = await this.requisitionReportService.GetRequisitionAsHtml(reqNumber);
