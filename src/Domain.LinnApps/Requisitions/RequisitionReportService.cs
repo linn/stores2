@@ -82,17 +82,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                  })
                 .ToList();
 
-            reportLines.Add(new RequisitionCostLine
-                                {
-                                    ReqNumber = null,
-                                    Description = "TOTAL",
-                                    Cost = totalCost,
-                                    NetCost = totalNetCost,
-                                    Qty = null,
-                                    PartNumber = null,
-                                    UnitPrice = null
-                                });
-
             var model = new RequisitionCostReport
                             {
                                 ReqNumber = requisition.ReqNumber,
