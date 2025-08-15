@@ -2,10 +2,10 @@ namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Facade;
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
     using Microsoft.AspNetCore.Builder;

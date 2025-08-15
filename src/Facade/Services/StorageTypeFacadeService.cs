@@ -8,7 +8,6 @@
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
     public class StorageTypeFacadeService : AsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>

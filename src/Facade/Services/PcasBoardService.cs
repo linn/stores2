@@ -8,7 +8,6 @@
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Pcas;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Pcas;
 
     public class PcasBoardService : AsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>

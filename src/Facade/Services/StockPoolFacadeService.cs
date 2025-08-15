@@ -9,7 +9,6 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
     public class StockPoolFacadeService : AsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>
