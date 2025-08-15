@@ -8,7 +8,6 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Stores;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Stores;
 
     public class StoresBudgetFacadeService : AsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>

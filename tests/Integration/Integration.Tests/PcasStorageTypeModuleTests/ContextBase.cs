@@ -1,10 +1,11 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
 {
     using System.Net.Http;
+
+    using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
