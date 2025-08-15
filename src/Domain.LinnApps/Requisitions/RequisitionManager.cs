@@ -657,7 +657,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             foreach (var line in lineUpdates)
             {
                 var existingLine = current.Lines.SingleOrDefault(l => l.LineNumber == line.LineNumber);
-                
+                var toLocationRequired = current.ReqType != "F"
+                                         && current.StoresFunction.ToLocationRequiredOrOptional()
+                                         && current.StoresFunction.FunctionCode != "AUDIT";
+
                 // are we updating an existing line?
                 if (existingLine != null)
                 {
@@ -675,10 +678,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         continue;
                     }
 
-                    await this.CheckMoves(
-                        line.PartNumber,
-                        movesToAdd,
-                        current.ReqType != "F" && current.StoresFunction.ToLocationRequiredOrOptional());
+                    await this.CheckMoves(line.PartNumber, movesToAdd, toLocationRequired);
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
@@ -689,7 +689,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckMoves(
                         line.PartNumber,
                         line.Moves == null ? new List<MoveSpecification>() : line.Moves.ToList(),
-                        current.ReqType != "F" && current.StoresFunction.ToLocationRequiredOrOptional());
+                        toLocationRequired);
                     await this.AddRequisitionLine(current, line);
                 }
             }
