@@ -22,13 +22,11 @@
     using Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Proxy.HttpClients;
     using Linn.Stores2.Proxy.StoredProcedureClients;
     using Linn.Stores2.Resources;
-    using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
@@ -82,6 +80,10 @@
                 .AddScoped<IHtmlTemplateService<RequisitionHeader>>(
                     x => new HtmlTemplateService<RequisitionHeader>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}Requisition.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<RequisitionCostReport>>(
+                    x => new HtmlTemplateService<RequisitionCostReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}RequisitionCost.cshtml",
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()
                 .AddScoped<ISerialNumberService, SerialNumberService>();

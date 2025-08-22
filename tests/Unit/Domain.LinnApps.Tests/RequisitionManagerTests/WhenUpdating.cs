@@ -1,15 +1,10 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
-    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
@@ -22,14 +17,14 @@
 
     public class WhenUpdating : ContextBase
     {
-        private RequisitionHeader sut;
+        private RequisitionHeader req;
 
         [SetUp]
         public void Setup()
         {
             var dept = new Department { DepartmentCode = "0001" };
             var nom = new Nominal { NominalCode = "0002" };
-            this.sut = new ReqWithReqNumber(
+            this.req = new ReqWithReqNumber(
                 123,
                 new Employee(),
                 TestFunctionCodes.LinnDeptReq,
@@ -47,7 +42,7 @@
                 new Part(),
                 10,
                 TestTransDefs.StockToLinnDept);
-            this.sut.AddLine(requisitionLine);
+            this.req.AddLine(requisitionLine);
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.GetRequisitionActionByFunction(
                     TestFunctionCodes.LinnDeptReq.FunctionCode),
@@ -59,17 +54,11 @@
                 .Returns(TestTransDefs.StockToLinnDept);
             this.NominalRepository.FindByIdAsync(nom.NominalCode).Returns(nom);
 
-            var updatedDept = new Department { DepartmentCode = "0002" };
-            this.DepartmentRepository.FindByIdAsync(updatedDept.DepartmentCode).Returns(updatedDept);
-
-            this.StoresService.ValidDepartmentNominal(updatedDept.DepartmentCode, this.sut.Nominal.NominalCode)
-                .Returns(new ProcessResult(true, string.Empty));
-
             this.Sut.UpdateRequisition(
-                this.sut,
+                this.req,
                 "NEW COMMENT",
                 "NEW REF",
-                updatedDept.DepartmentCode,
+                this.req.Department.DepartmentCode,
                 new List<LineCandidate>
                 {
                 },
@@ -79,9 +68,8 @@
         [Test]
         public void ShouldUpdate()
         {
-            this.sut.Comments.Should().Be("NEW COMMENT");
-            this.sut.Reference.Should().Be("NEW REF");
-            this.sut.Department.DepartmentCode.Should().Be("0002");
+            this.req.Comments.Should().Be("NEW COMMENT");
+            this.req.Reference.Should().Be("NEW REF");
         }
     }
 }

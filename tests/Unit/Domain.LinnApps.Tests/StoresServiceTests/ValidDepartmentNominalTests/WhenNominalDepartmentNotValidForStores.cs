@@ -1,27 +1,31 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidDepartmentNominalTests
 {
+    using System;
     using System.Threading.Tasks;
 
     using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
 
     using NUnit.Framework;
 
     public class WhenNominalDepartmentNotValidForStores : ContextBase
     {
+        private Func<Task> action;
+
         [SetUp]
-        public async Task Setup()
+        public void Setup()
         {
             this.NominalAccount.StoresPostsAllowed = "N";
 
-            this.Result = await this.Sut.ValidDepartmentNominal(this.DepartmentCode, this.NominalCode);
+            this.action = () => this.Sut.ValidNominalAccount(this.DepartmentCode, this.NominalCode);
         }
 
         [Test]
-        public void ShouldReturnFailureWithCorrectMessage()
+        public async Task ShouldThrow()
         {
-            this.Result.Success.Should().BeFalse();
-            this.Result.Message.Should()
-                .Be($"Department / Nominal {this.DepartmentCode} / {this.NominalCode} are not a valid for stores posting");
+            await this.action.Should().ThrowAsync<InvalidNominalAccountException>()
+                .WithMessage($"Department / Nominal {this.DepartmentCode} / {this.NominalCode} are not a valid for stores posting");
         }
     }
 }

@@ -12,7 +12,7 @@
 
     using NUnit.Framework;
 
-    public class WhenGettingHtmlRequisition : ContextBase
+    public class WhenGettingCostReportAsHtml : ContextBase
     {
         private int reqNumber;
 
@@ -36,10 +36,11 @@
                 new Nominal("0000004710", "N"));
             this.RequisitionRepository.FindByIdAsync(this.reqNumber)
                 .Returns(this.req);
-            this.RequisitionHeaderHtmlTemplateService.GetHtml(Arg.Is<RequisitionHeader>(a => a.ReqNumber == this.reqNumber))
+
+            this.RequisitionCostReportHtmlTemplateService.GetHtml(Arg.Is<RequisitionCostReport>(a => a.ReqNumber == this.reqNumber))
                 .Returns("<html></html>");
 
-            this.result = await this.Sut.GetRequisitionAsHtml(this.reqNumber);
+            this.result = await this.Sut.GetRequisitionCostReportAsHtml(this.reqNumber);
         }
 
         [Test]
@@ -49,3 +50,4 @@
         }
     }
 }
+

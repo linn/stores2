@@ -37,8 +37,8 @@
                 .Returns(TestTransDefs.StoresMove);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet());
             this.StateRepository.FindByIdAsync("BLAH").Returns(new StockState());
-            this.StoresService.ValidDepartmentNominal("1607", "2963")
-                .Returns(new ProcessResult(true, "ok"));
+            this.StoresService.ValidNominalAccount("1607", "2963")
+                .Returns(new NominalAccount());
 
             this.act = () => this.Sut.Validate(
                 33087,

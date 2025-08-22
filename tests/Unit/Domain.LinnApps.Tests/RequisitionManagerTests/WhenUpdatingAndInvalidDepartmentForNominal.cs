@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -17,6 +16,7 @@
     using Linn.Stores2.TestData.Transactions;
 
     using NSubstitute;
+    using NSubstitute.ExceptionExtensions;
 
     using NUnit.Framework;
 
@@ -62,8 +62,8 @@
             var updatedDept = new Department { DepartmentCode = "0002" };
             this.DepartmentRepository.FindByIdAsync(updatedDept.DepartmentCode).Returns(updatedDept);
 
-            this.StoresService.ValidDepartmentNominal(updatedDept.DepartmentCode, req.Nominal.NominalCode)
-                .Returns(new ProcessResult(false, string.Empty));
+            this.StoresService.ValidNominalAccount(updatedDept.DepartmentCode, req.Nominal.NominalCode)
+                .Throws(new InvalidNominalAccountException("Dept Nom Not Ok"));
 
             this.action = async () => await this.Sut.UpdateRequisition(
                 req,
@@ -79,7 +79,7 @@
         [Test]
         public async Task ShouldThrow()
         {
-            await this.action.Should().ThrowAsync<RequisitionException>();
+            await this.action.Should().ThrowAsync<InvalidNominalAccountException>();
         }
     }
 }

@@ -17,6 +17,7 @@ function reducer(state, action) {
             }
 
             if (newState.reqNumber) {
+                // console.log(newState);
                 return { ...state, req: newState, document1Details: newState.document1Details };
             } else {
                 return { ...state, req: { ...state.req, links: newState.links } };

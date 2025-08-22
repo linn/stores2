@@ -7,6 +7,7 @@
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -312,7 +313,8 @@
             return new ProcessResult(true, $"Reverse quantity of {quantity} for req {originalReqNumber} is valid");
         }
 
-        public async Task<ProcessResult> ValidDepartmentNominal(string departmentCode, string nominalCode)
+        // maybe refactor to return the nominal account too? a tuple? or just the nomacc if valiud, throw if not with the message?
+        public async Task<NominalAccount> ValidNominalAccount(string departmentCode, string nominalCode)
         {
             // stores_oo.valid_dept_nom
             var nominalAccount = await this.nominalAccountRepository.FindByAsync(a =>
@@ -320,15 +322,15 @@
 
             if (nominalAccount == null)
             {
-                return new ProcessResult(false, $"Department / Nominal {departmentCode} / { nominalCode} are not a valid combination");
+                throw new InvalidNominalAccountException($"Department / Nominal {departmentCode} / { nominalCode} are not a valid combination");
             }
 
             if (nominalAccount.StoresPostsAllowed != "Y")
             {
-                return new ProcessResult(false, $"Department / Nominal {departmentCode} / {nominalCode} are not a valid for stores posting");
+                throw new InvalidNominalAccountException($"Department / Nominal {departmentCode} / {nominalCode} are not a valid for stores posting");
             }
 
-            return new ProcessResult(true, $"Department / Nominal {departmentCode} / {nominalCode} are a valid combination for stores");
+            return nominalAccount;
         }
 
         public async Task<StorageLocation> DefaultBookInLocation(string partNumber)

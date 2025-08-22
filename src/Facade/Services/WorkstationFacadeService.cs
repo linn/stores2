@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
@@ -13,7 +12,6 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Stores;
 
     public class WorkStationFacadeService : AsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource>

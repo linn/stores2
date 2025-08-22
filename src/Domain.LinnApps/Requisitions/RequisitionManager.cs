@@ -279,7 +279,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             var moveSpecifications = moves.ToList();
             await this.CheckMoves(line.Part.PartNumber, moveSpecifications);
             
-            // only implementing moves onto for now
             foreach (var moveOnto
                      in moveSpecifications.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
             {
@@ -453,7 +452,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 var insertOrUpdateMoves = "I";
                 if (header.ManualPick == "N" && transactionDefinition.RequiresStockAllocations)
                 {
-                    // todo can we make automatic from picks see CREATE_REQ_MOVES in REQ_UT.fmb
                     var autopickResult = await this.requisitionStoredProcedures.PickStock(
                         toAdd.PartNumber,
                         header.ReqNumber,
@@ -472,7 +470,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     }
                 }
                 
-                // todo what about the ontos
                 if (transactionDefinition.RequiresOntoTransactions)
                 {
                     var ontoResult = await this.requisitionStoredProcedures.InsertReqOntos(
@@ -493,8 +490,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
             }
 
-            // todo - consider what has to happen if a move is from one place to another
-            // i.e. cases where both a 'from' and a 'to' location or pallet is set
             var createPostingsResult = await this.requisitionStoredProcedures.CreateNominals(
                                            header.ReqNumber,
                                            toAdd.Qty,
@@ -644,33 +639,28 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new UnauthorisedActionException(
                     $"You are not authorised to make changes to {current.StoresFunction.FunctionCode} reqs");
             }
-
-            var dept = current.Department;
-
+            
             if (updatedDepartmentNumber != current.Department?.DepartmentCode)
             {
                 var updatedDepartment = await this.departmentRepository.FindByIdAsync(updatedDepartmentNumber);
 
-                var isValid = await this.storesService.ValidDepartmentNominal(
+                var newNomAcc = await this.storesService.ValidNominalAccount(
                                   updatedDepartment.DepartmentCode,
                                   current.Nominal.NominalCode);
 
-                if (!isValid.Success)
-                {
-                    throw new RequisitionException("Department Code not valid for selected Nominal Code");
-                }
-
-                dept = updatedDepartment;
+                current.ApplyNominalAccountChange(newNomAcc); // todo - test
             }
-
-
-            current.Update(updatedComments, updatedReference, dept);
+            
+            current.Update(updatedComments, updatedReference);
 
 
             foreach (var line in lineUpdates)
             {
                 var existingLine = current.Lines.SingleOrDefault(l => l.LineNumber == line.LineNumber);
-                
+                var toLocationRequired = current.ReqType != "F"
+                                         && current.StoresFunction.ToLocationRequiredOrOptional()
+                                         && current.StoresFunction.FunctionCode != "AUDIT";
+
                 // are we updating an existing line?
                 if (existingLine != null)
                 {
@@ -688,10 +678,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         continue;
                     }
 
-                    await this.CheckMoves(
-                        line.PartNumber,
-                        movesToAdd,
-                        current.ReqType != "F" && current.StoresFunction.ToLocationRequiredOrOptional());
+                    await this.CheckMoves(line.PartNumber, movesToAdd, toLocationRequired);
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
@@ -702,7 +689,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     await this.CheckMoves(
                         line.PartNumber,
                         line.Moves == null ? new List<MoveSpecification>() : line.Moves.ToList(),
-                        current.ReqType != "F" && current.StoresFunction.ToLocationRequiredOrOptional());
+                        toLocationRequired);
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -830,10 +817,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (req.Department != null && req.Nominal != null)
             {
-                DoProcessResultCheck(
-                    await this.storesService.ValidDepartmentNominal(
+                    await this.storesService.ValidNominalAccount(
                         req.Department.DepartmentCode,
-                        req.Nominal.NominalCode));
+                        req.Nominal.NominalCode);
             }
 
             if (!string.IsNullOrEmpty(auditLocation))
@@ -1455,10 +1441,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             foreach (var bookInOrderDetail in bookInOrderDetails)
             {
-                DoProcessResultCheck(
-                    await this.storesService.ValidDepartmentNominal(
+                    await this.storesService.ValidNominalAccount(
                         bookInOrderDetail.DepartmentCode,
-                        bookInOrderDetail.NominalCode));
+                        bookInOrderDetail.NominalCode);
             }
         }
 

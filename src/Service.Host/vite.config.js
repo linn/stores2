@@ -36,6 +36,13 @@ export default defineConfig(({ mode }) => {
             loader: { '.js': 'jsx' },
             include: /src\/.*\.js$/
         },
+        optimizeDeps: {
+            esbuildOptions: {
+                loader: {
+                    '.js': 'jsx'
+                }
+            }
+        },
         test: {
             globals: true,
             environment: 'jsdom',

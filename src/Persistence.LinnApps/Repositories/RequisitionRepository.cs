@@ -32,7 +32,7 @@
                 .ThenInclude(d => d.TransactionDefinition)
                 .ThenInclude(d => d.StoresTransactionStates)
                 .Include(r => r.Lines).ThenInclude(l => l.Part)
-                .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition)
+                .Include(r => r.Lines).ThenInclude(l => l.TransactionDefinition).ThenInclude(d => d.StoresTransactionPostings)
                 .Include(r => r.Lines).ThenInclude(l => l.NominalAccountPostings).ThenInclude(p => p.NominalAccount)
                 .ThenInclude(a => a.Nominal)
                 .Include(r => r.Lines).ThenInclude(l => l.NominalAccountPostings).ThenInclude(p => p.NominalAccount)

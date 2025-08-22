@@ -2,10 +2,10 @@
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Facade;
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps.Pcas;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources.Pcas;
 
     using Microsoft.AspNetCore.Builder;

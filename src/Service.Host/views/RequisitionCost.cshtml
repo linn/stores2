@@ -1,0 +1,144 @@
+@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Requisitions.RequisitionCostReport>
+@{
+    <style>
+        @@media print {
+            @@page {
+                size: A4 portrait;
+                margin: 25px;
+                margin-bottom: 20px;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+        }
+
+        @@media screen {
+            @@page {
+                size: A4 portrait;
+                margin: 50px;
+            }
+
+            thead {
+                display: block;
+                margin-left: 50px;
+                margin-right: 600px;
+                margin-top: 20px;
+            }
+
+            tbody {
+                display: block;
+                margin-top: 30px;
+                margin-left: 50px;
+                margin-right: 50px;
+                margin-bottom: 20px;
+            }
+        }
+
+        thead {
+            font-size: 0.8em;
+            font-family: Arial, sans-serif;
+        }
+
+        tbody {
+            font-size: 0.8em;
+            font-family: Arial, sans-serif;
+        }
+
+        .requisition-number {
+            grid-area: reqNumber;
+        }
+
+        .total-cost {
+            grid-area: totalCost;
+        }
+
+        .total-net-cost {
+            grid-area: totalNetCost;
+        }
+
+        .auto {
+            grid: auto;
+        }
+
+        .line-grid-container {
+            column-gap: 10px;
+            display: grid;
+            grid-template-columns: auto auto auto auto auto auto;
+            row-gap: 5px;
+        }
+
+        #tcb-extension-uk-wrapper {
+            display: none !important;
+        }
+    </style>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="header-grid-container">
+                            <div class="req-number">
+                                <b>Req Number: @Model.ReqNumber</b>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="total-cost">
+                            <b>Total Cost: @Model.TotalCost</b>
+                        </div>
+                        <div class="total-net-cost">
+                            <b>Total Net Cost: @Model.TotalNetCost</b>
+                        </div>
+                        <br />
+                        <div class="line-grid-container">
+                            <div>
+                                <b>Part Number</b>
+                            </div>
+                            <div>
+                                <b>Description</b>
+                            </div>
+                            <div>
+                                <b>Unit Price</b>
+                            </div>
+                            <div>
+                                <b>Quantity</b>
+                            </div>
+                            <div>
+                                <b>Cost</b>
+                            </div>
+                            <div>
+                                <b>Net Cost</b>
+                            </div>
+                            @foreach (var line in Model.ReportLines)
+                            {
+                                <div>
+                                    @line.PartNumber
+                                </div>
+                                <div>
+                                    @line.Description
+                                </div>
+                                <div>
+                                    @line.UnitPrice
+                                </div>
+                                <div>
+                                    @line.Qty
+                                </div>
+                                <div>
+                                    @line.Cost
+                                </div>
+                                <div>
+                                    @line.NetCost
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+}

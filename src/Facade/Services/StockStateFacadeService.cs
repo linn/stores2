@@ -7,7 +7,6 @@
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Facade.Common;
     using Linn.Stores2.Resources;
 
     public class StockStateFacadeService : AsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>

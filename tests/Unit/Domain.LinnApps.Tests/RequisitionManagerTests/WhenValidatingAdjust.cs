@@ -33,8 +33,8 @@
             this.PalletRepository.FindByIdAsync(123).Returns(new StoresPallet());
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
-            this.StoresService.ValidDepartmentNominal("0000042808", "0000004710")
-                .Returns(new ProcessResult(true, "ok"));
+            this.StoresService.ValidNominalAccount("0000042808", "0000004710")
+                .Returns(new NominalAccount());
             this.result = await this.Sut.Validate(
                 33087,
                 TestFunctionCodes.Adjust.FunctionCode,

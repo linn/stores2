@@ -17,19 +17,23 @@
 
         protected IReportingHelper ReportingHelper { get; private set; }
 
-        protected IHtmlTemplateService<RequisitionHeader> HtmlTemplateService { get; private set; }
-        
+        protected IHtmlTemplateService<RequisitionHeader> RequisitionHeaderHtmlTemplateService { get; private set; }
+
+        protected IHtmlTemplateService<RequisitionCostReport> RequisitionCostReportHtmlTemplateService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.RequisitionRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
             this.ReportingHelper = new ReportingHelper();
-            this.HtmlTemplateService = Substitute.For<IHtmlTemplateService<RequisitionHeader>>();
+            this.RequisitionHeaderHtmlTemplateService = Substitute.For<IHtmlTemplateService<RequisitionHeader>>();
+            this.RequisitionCostReportHtmlTemplateService = Substitute.For<IHtmlTemplateService<RequisitionCostReport>>();
 
             this.Sut = new RequisitionReportService(
                 this.RequisitionRepository,
                 this.ReportingHelper,
-                this.HtmlTemplateService);
+                this.RequisitionHeaderHtmlTemplateService,
+                this.RequisitionCostReportHtmlTemplateService);
         }
     }
 }
