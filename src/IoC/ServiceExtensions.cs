@@ -29,6 +29,7 @@
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
 
@@ -95,7 +96,7 @@
                 .AddSingleton<IRazorEngine, RazorEngine>()
                 .AddScoped<IStoragePlaceAuditReportFacadeService, StoragePlaceAuditReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>, CarrierService>()
-                .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>, StoresBudgetFacadeService>()
+                .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource>, StoresBudgetFacadeService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
                 .AddScoped<IRequisitionReportFacadeService, RequisitionReportFacadeService>()

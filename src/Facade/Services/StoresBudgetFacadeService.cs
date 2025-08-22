@@ -8,9 +8,10 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Stores;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Stores;
 
-    public class StoresBudgetFacadeService : AsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>
+    public class StoresBudgetFacadeService : AsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource>
     {
         public StoresBudgetFacadeService(
             IRepository<StoresBudget, int> repository, 
@@ -42,12 +43,20 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<StoresBudget, bool>> FilterExpression(StoresBudgetResource searchResource)
+        protected override Expression<Func<StoresBudget, bool>> FilterExpression(StoresBudgetSearchResource searchResource)
         {
-            throw new NotImplementedException();
+            return a =>
+                (string.IsNullOrEmpty(searchResource.FromDate)
+                 || a.DateBooked >= DateTime.Parse(searchResource.FromDate))
+                && (string.IsNullOrEmpty(searchResource.ToDate)
+                    || a.DateBooked <= DateTime.Parse(searchResource.ToDate))
+                && (string.IsNullOrEmpty(searchResource.PartNumber)
+                    || a.PartNumber == searchResource.PartNumber.ToUpper())
+                && (string.IsNullOrEmpty(searchResource.PartNumberStartsWith)
+                    || a.PartNumber.StartsWith(searchResource.PartNumberStartsWith.ToUpper()));
         }
 
-        protected override Expression<Func<StoresBudget, bool>> FindExpression(StoresBudgetResource searchResource)
+        protected override Expression<Func<StoresBudget, bool>> FindExpression(StoresBudgetSearchResource searchResource)
         {
             throw new NotImplementedException();
         }
