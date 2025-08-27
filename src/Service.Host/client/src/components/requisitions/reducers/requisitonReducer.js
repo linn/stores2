@@ -477,6 +477,7 @@ function reducer(state, action) {
                 };
             }
         case 'pick_stock':
+            console.log(state);
             return {
                 ...state,
                 req: {

@@ -36,7 +36,7 @@
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
-                .Returns(TestTransDefs.StockToLinnDept);
+                .Returns(TestTransDefs.LinnDeptToStock);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Now });
             this.StoresService.ValidNominalAccount("1607", "2963")
                 .Returns(new NominalAccount());
