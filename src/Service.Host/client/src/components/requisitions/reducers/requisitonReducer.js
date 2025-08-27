@@ -477,7 +477,6 @@ function reducer(state, action) {
                 };
             }
         case 'pick_stock':
-            console.log(state);
             return {
                 ...state,
                 req: {
@@ -547,13 +546,17 @@ function reducer(state, action) {
                                                     ? state.req.toState
                                                     : move.state,
                                           toLocationCode:
-                                              move.isTo === false || state.req.reqType === 'F'
+                                              move.isTo === false ||
+                                              state.req.reqType === 'F' ||
+                                              line.transactionCode === 'STADI'
                                                   ? null
                                                   : state.req.toLocationCode
                                                     ? state.req.toLocationCode
                                                     : null,
                                           toPalletNumber:
-                                              move.isTo === false || state.req.reqType === 'F'
+                                              move.isTo === false ||
+                                              state.req.reqType === 'F' ||
+                                              line.transactionCode === 'STADI'
                                                   ? null
                                                   : state.req.toPalletNumber
                                                     ? state.req.toPalletNumber
