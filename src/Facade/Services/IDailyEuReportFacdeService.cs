@@ -1,14 +1,18 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
-    using System.Threading.Tasks;
+    using System.Collections.Generic;
 
-    using Linn.Common.Facade;
-    using Linn.Common.Reporting.Resources.ReportResultResources;
+    using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps;
 
     public interface IDailyEuReportFacdeService
     {
-        Task<IResult<ReportReturnResource>> GetDailyEuImportRsnReport(string fromDate, string toDate);
+        ResultsModel GetDailyEuImportRsnReport(string fromDate, string toDate);
 
-        Task<IResult<ReportReturnResource>> GetDailyEuDespatchReport(string fromDate, string toDate);
+        ResultsModel GetDailyEuDespatchReport(string fromDate, string toDate);
+
+        List<DailyEuImportRsnReportLine> GetDailyEuImportRsnLines(string fromDate, string toDate);
+
+        List<DailyEuDespatchReportLine> GetDailyEuDespatchLines(string fromDate, string toDate);
     }
 }
