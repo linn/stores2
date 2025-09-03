@@ -32,6 +32,8 @@ import Pallets from './Pallets';
 import Pallet from './Pallet';
 import StorageSites from './storageSites/StorageSites';
 import StorageSite from './storageSites/StorageSite';
+import DailyEuImportRsnReport from './DailyEuImportRsnReport';
+import DailyEuDespatchReport from './DailyEuDespatchReport';
 
 function Root() {
     useSignIn();
@@ -68,6 +70,15 @@ function Root() {
                     <Route
                         path="/requisitions/:reqNumber"
                         element={<Requisition creating={false} />}
+                    />
+
+                    <Route
+                        path="/stores2/customs/daily/eu/import/rsn/report"
+                        element={<DailyEuImportRsnReport />}
+                    />
+                    <Route
+                        path="/stores2/customs/daily/eu/despatch/report"
+                        element={<DailyEuDespatchReport />}
                     />
 
                     <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />

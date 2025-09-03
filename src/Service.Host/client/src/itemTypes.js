@@ -35,6 +35,12 @@ const itemTypes = {
     creditNotes: { url: `${config.proxyRoot}/sales/credit-notes` },
     worksOrders: { url: `${config.proxyRoot}/production/works-orders` },
     debitNotes: { url: `${config.proxyRoot}/purchasing/pl-credit-debit-notes` },
+    dailyEuImportRsnReport: {
+        url: `${config.appRoot}/stores2/customs/daily/eu/import/rsn/report`
+    },
+    getDailyEuDespatchReport: {
+        url: `${config.appRoot}/stores2/customs/daily/eu/despatch/report`
+    },
     requisitionCostReport: {
         url: `${config.appRoot}/requisitions/reports/requisition-cost/report`
     },
