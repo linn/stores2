@@ -14,8 +14,9 @@
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.RequestResources;
 
-    public class StorageLocationService : AsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
+    public class StorageLocationService : AsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource>
     {
         private readonly IDatabaseSequenceService databaseSequenceService;
         private readonly IRepository<AccountingCompany, string> accountingCompanyRepository;
@@ -146,7 +147,7 @@
             entity.AuditedByDepartment = department;
         }
 
-        protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationResource searchResource)
+        protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationSearchResource searchResource)
         {
             Expression<Func<StorageLocation, bool>> expression = loc => true;
 
@@ -173,7 +174,7 @@
             return expression;
         }
 
-        protected override Expression<Func<StorageLocation, bool>> FindExpression(StorageLocationResource searchResource)
+        protected override Expression<Func<StorageLocation, bool>> FindExpression(StorageLocationSearchResource searchResource)
         {
             throw new NotImplementedException();
         }

@@ -55,7 +55,5 @@
         public string AuditedByDepartmentCode { get; set; }
 
         public string AuditedByDepartmentName { get; set; }
-
-        public bool? IncludeInvalid { get; set; }
     }
 }

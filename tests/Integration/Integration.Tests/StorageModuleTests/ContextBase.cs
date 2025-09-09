@@ -14,6 +14,7 @@
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Service.Modules;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -53,7 +54,7 @@
 
             var databaseSequenceService = new TestDatabaseSequenceService();
 
-            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource>
                 storageLocationService = new StorageLocationService(
                     locationRepository,
                     new TransactionManager(this.DbContext),
