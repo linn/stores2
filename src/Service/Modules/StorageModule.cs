@@ -39,26 +39,18 @@
             string searchTerm,
             string siteCode,
             string storageAreaCode,
+            bool? includeInvalid,
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> service)
         {
-            if (string.IsNullOrEmpty(searchTerm) && string.IsNullOrEmpty(siteCode) && string.IsNullOrEmpty(storageAreaCode))
-            {
-                await res.Negotiate(await service.GetAll());
-            }
-            else if (string.IsNullOrEmpty(siteCode) && string.IsNullOrEmpty(storageAreaCode))
-            {
-                await res.Negotiate(await service.Search(searchTerm));
-            }
-            else
-            {
-                var searchResource = new StorageLocationResource()
-                {
-                    LocationCode = searchTerm,
-                    StorageAreaCode = storageAreaCode,
-                    SiteCode = siteCode
-                };
-                await res.Negotiate(await service.FilterBy(searchResource));
-            }
+            var searchResource = new StorageLocationResource
+                                     {
+                                         LocationCode = searchTerm,
+                                         StorageAreaCode = storageAreaCode,
+                                         SiteCode = siteCode,
+                                         IncludeInvalid = includeInvalid
+                                     };
+
+            await res.Negotiate(await service.FilterBy(searchResource));
         }
 
         private async Task GetAuditLocations(

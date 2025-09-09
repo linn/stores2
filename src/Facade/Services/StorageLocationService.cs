@@ -126,9 +126,10 @@
             var department = string.IsNullOrEmpty(updateResource.AuditedByDepartmentCode) ? null : await this.departmentRepository.FindByIdAsync(updateResource.AuditedByDepartmentCode);
             
             entity.Update(
-            updateResource.Description,
-            company,
-            updateResource.AccessibleFlag,
+                updateResource.LocationCode, 
+                updateResource.Description, 
+                company, 
+                updateResource.AccessibleFlag,
                 updateResource.StoresKittableFlag,
                 updateResource.SalesKittableFlag,
                 updateResource.MixStatesFlag,
@@ -147,7 +148,12 @@
 
         protected override Expression<Func<StorageLocation, bool>> FilterExpression(StorageLocationResource searchResource)
         {
-            Expression<Func<StorageLocation, bool>> expression = loc => loc.DateInvalid == null;
+            Expression<Func<StorageLocation, bool>> expression = loc => true;
+
+            if (searchResource.IncludeInvalid != true)
+            {
+                expression = this.CombineExpression(expression, loc => loc.DateInvalid == null);
+            }
 
             if (!string.IsNullOrEmpty(searchResource.SiteCode))
             {

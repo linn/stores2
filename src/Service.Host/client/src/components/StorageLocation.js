@@ -233,11 +233,7 @@ function StorageLocation({ creating }) {
                             </Grid>
                             <Grid size={5}>
                                 <InputField
-                                    disabled={
-                                        !creating ||
-                                        !formValues.siteCode ||
-                                        !formValues.storageAreaCode
-                                    }
+                                    disabled={!formValues.siteCode || !formValues.storageAreaCode}
                                     value={formValues.locationCode}
                                     fullWidth
                                     label="Code"
