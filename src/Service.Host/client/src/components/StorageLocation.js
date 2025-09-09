@@ -157,8 +157,13 @@ function StorageLocation({ creating }) {
         return true;
     };
 
-    const makeInvalid = () => {
-        handleFieldChange('dateInvalid', new Date());
+    const toggleValidity = () => {
+        if (formValues.dateInvalid) {
+            handleFieldChange('dateInvalid', null);
+        } else {
+            handleFieldChange('dateInvalid', new Date());
+        }
+        setChangesMade(true);
     };
 
     useEffect(() => {
@@ -496,9 +501,9 @@ function StorageLocation({ creating }) {
                                         />
                                     </Grid>
                                     <Grid size={7}>
-                                        {!formValues.dateInvalid && (
-                                            <Button onClick={makeInvalid}>Make Invalid</Button>
-                                        )}
+                                        <Button onClick={toggleValidity}>
+                                            {formValues.dateInvalid ? 'Make Valid' : 'Make Invalid'}
+                                        </Button>
                                     </Grid>
                                 </>
                             )}
