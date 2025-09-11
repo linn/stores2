@@ -66,7 +66,8 @@
                 this.ReqManager,
                 this.RequisitionFactory,
                 this.RequisitionHistoryRepository,
-                this.StoresService);
+                this.StoresService,
+                this.AuthorisationService);
 
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
                 StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(

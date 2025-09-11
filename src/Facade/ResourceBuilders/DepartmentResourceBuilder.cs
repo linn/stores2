@@ -3,15 +3,23 @@
     using System;
     using System.Collections.Generic;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Resources.Accounts;
 
     public class DepartmentResourceBuilder : IBuilder<Department>
     {
+        private readonly IAuthorisationService authService;
+
+        public DepartmentResourceBuilder(IAuthorisationService authService)
+        {
+            this.authService = authService;
+        }
+
         public DepartmentResource Build(Department department, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
+            var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.authService);
 
             if (department == null)
             {

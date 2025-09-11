@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
@@ -30,6 +31,8 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
         protected IQueryRepository<AuditLocation> AuditLocationRepository { get; private set; }
 
         [SetUp]
@@ -45,6 +48,7 @@
             var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
             var stockStateRepository = new EntityFrameworkRepository<StockState, string>(this.DbContext.StockStates);
             var departmentRepository = new EntityFrameworkRepository<Department, string>(this.DbContext.Departments);
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
 
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
                 storageSiteService = new StorageSiteFacadeService(
@@ -58,13 +62,14 @@
                 storageLocationService = new StorageLocationService(
                     locationRepository,
                     new TransactionManager(this.DbContext),
-                    new StorageLocationResourceBuilder(),
+                    new StorageLocationResourceBuilder(this.AuthorisationService),
                     databaseSequenceService,
                     accountingCompanyRepository,
                     storageSiteRepository,
                     stockPoolRepository,
                     storageTypeRepository,
-                    departmentRepository);
+                    departmentRepository,
+                    this.AuthorisationService);
 
             IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>
                 stockStateFacadeService = new StockStateFacadeService(

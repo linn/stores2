@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Pcas;
@@ -10,9 +11,16 @@
 
     public class PcasBoardResourceBuilder : IBuilder<PcasBoard>
     {
+        private readonly IAuthorisationService authService;
+
+        public PcasBoardResourceBuilder(IAuthorisationService authService)
+        {
+            this.authService = authService;
+        }
+
         public PcasBoardResource Build(PcasBoard pcasBoard, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
+            var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.authService);
 
             return new PcasBoardResource
             {

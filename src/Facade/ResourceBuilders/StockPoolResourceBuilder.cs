@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -10,9 +11,16 @@
 
     public class StockPoolResourceBuilder : IBuilder<StockPool>
     {
+        private readonly IAuthorisationService authService;
+
+        public StockPoolResourceBuilder(IAuthorisationService authService)
+        {
+            this.authService = authService;
+        }
+
         public StockPoolResource Build(StockPool stockPool, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
+            var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.authService);
 
             if (stockPool == null)
             {

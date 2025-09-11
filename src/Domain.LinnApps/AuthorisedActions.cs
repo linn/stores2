@@ -12,6 +12,8 @@ namespace Linn.Stores2.Domain.LinnApps
 
         public const string WorkStationAdmin = "workstation.admin";
 
+        public const string StorageLocationAdmin = "stores.storage-locations.admin";
+
         private const string FunctionsPrefix = "stores.requisitions.functions";
 
         public static string GetRequisitionActionByFunction(string functionCode)

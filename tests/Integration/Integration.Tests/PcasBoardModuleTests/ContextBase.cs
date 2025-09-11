@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Pcas;
@@ -14,6 +15,8 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -24,19 +27,23 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
 
             var pcasBoardRepository = new EntityFrameworkRepository<PcasBoard, string>(this.DbContext.PcasBoards);
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
             var transactionManager = new TransactionManager(this.DbContext);
 
             IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource> pcasBoardFacadeService
                 = new PcasBoardService(
                     pcasBoardRepository,
                     transactionManager,
-                    new PcasBoardResourceBuilder());
+                    new PcasBoardResourceBuilder(this.AuthorisationService));
 
             this.Client = TestClient.With<PcasBoardModule>(
                 services =>

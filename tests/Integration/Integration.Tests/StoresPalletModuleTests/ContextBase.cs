@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
@@ -16,6 +17,8 @@
     using Linn.Stores2.Service.Modules;
     using Microsoft.Extensions.DependencyInjection;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -28,6 +31,8 @@
 
         protected IRepository<StoresPallet, int> StoresPalletRepository { get; set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -37,13 +42,14 @@
             var stockPoolRepository = new EntityFrameworkRepository<StockPool, string>(this.DbContext.StockPools);
             var locationTypeRepository = new EntityFrameworkQueryRepository<LocationType>(this.DbContext.LocationTypes);
             var storageLocationRepository = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
 
             var transactionManager = new TransactionManager(this.DbContext);
 
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
-            var stockPoolResourceBuilder = new StockPoolResourceBuilder();
+            var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.AuthorisationService);
+            var stockPoolResourceBuilder = new StockPoolResourceBuilder(this.AuthorisationService);
             var locationTypeResourceBuilder = new LocationTypeResourceBuilder();
-            var departmentResourceBuilder = new DepartmentResourceBuilder();
+            var departmentResourceBuilder = new DepartmentResourceBuilder(this.AuthorisationService);
             var employeeResourceBuilder = new EmployeeResourceBuilder();
 
             IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> storesPalletFacadeService

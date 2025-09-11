@@ -6,6 +6,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
@@ -32,6 +33,8 @@
 
         private readonly IRepository<RequisitionHeader, int> reqRepository;
 
+        private readonly IAuthorisationService authService;
+
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -39,7 +42,8 @@
             IRequisitionManager requisitionManager,
             IRequisitionFactory requisitionFactory,
             IRepository<RequisitionHistory, int> reqHistoryRepository,
-            IStoresService storesService)
+            IStoresService storesService,
+            IAuthorisationService authService)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionManager = requisitionManager;
@@ -48,6 +52,7 @@
             this.reqHistoryRepository = reqHistoryRepository;
             this.storesService = storesService;
             this.reqRepository = repository;
+            this.authService = authService;
         }
         
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -224,7 +229,7 @@
                 return new SuccessResult<StorageLocationResource>(null);
             }
 
-            var builder = new StorageLocationResourceBuilder();
+            var builder = new StorageLocationResourceBuilder(this.authService);
             return new SuccessResult<StorageLocationResource>(builder.Build(result, new List<string>()));
         }
 

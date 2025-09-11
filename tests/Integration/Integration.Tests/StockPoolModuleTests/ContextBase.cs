@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
@@ -16,6 +17,8 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -25,7 +28,9 @@
         protected HttpResponseMessage Response { get; set; }
         
         protected TestServiceDbContext DbContext { get; private set; }
-        
+
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -34,13 +39,14 @@
             var accountingCompanyRepository = new EntityFrameworkRepository<AccountingCompany, string>(this.DbContext.AccountingCompanies);
             var storageLocationRepository = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
             var stockPoolRepository = new StockPoolRepository(this.DbContext);
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
             var transactionManager = new TransactionManager(this.DbContext);
 
             IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> stockPoolFacadeService 
                 = new StockPoolFacadeService(
                     stockPoolRepository, 
                     transactionManager, 
-                    new StockPoolResourceBuilder(),
+                    new StockPoolResourceBuilder(this.AuthorisationService),
                     storageLocationRepository,
                     accountingCompanyRepository);
             
