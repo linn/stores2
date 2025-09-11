@@ -73,7 +73,7 @@
         {
             if (this.authService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, claims))
             {
-                yield return new LinkResource { Rel = "create", Href = "/stores2/work-stations/create" };
+                yield return new LinkResource { Rel = "create", Href = "/stores2/storage/locations/create" };
             }
 
             if (model != null)
