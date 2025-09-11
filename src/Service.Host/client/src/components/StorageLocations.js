@@ -289,7 +289,6 @@ function StorageLocations() {
                                     getRowId={r => r.locationId}
                                     rows={storageLocationsResult}
                                     columns={locationsColumns}
-                                    hideFooter
                                     density="compact"
                                     loading={storageLocationsLoading}
                                 />
