@@ -6,6 +6,7 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
@@ -24,6 +25,7 @@
         private readonly IRepository<StockPool, string> stockPoolRepository;
         private readonly IRepository<StorageType, string> storageTypeRepository;
         private readonly IRepository<Department, string> departmentRepository;
+        private readonly IAuthorisationService authService;
 
         public StorageLocationService(
             IRepository<StorageLocation, int> repository,
@@ -34,7 +36,8 @@
             IRepository<StorageSite, string> storageSiteRepository,
             IRepository<StockPool, string> stockPoolRepository,
             IRepository<StorageType, string> storageTypeRepository,
-            IRepository<Department, string> departmentRepository)
+            IRepository<Department, string> departmentRepository,
+            IAuthorisationService authService)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.databaseSequenceService = databaseSequenceService;
@@ -43,6 +46,7 @@
             this.stockPoolRepository = stockPoolRepository;
             this.storageTypeRepository = storageTypeRepository;
             this.departmentRepository = departmentRepository;
+            this.authService = authService;
         }
 
         protected override Expression<Func<StorageLocation, bool>> SearchExpression(string searchTerm)
@@ -69,6 +73,11 @@
             StorageLocationResource resource,
             IEnumerable<string> privileges = null)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to create storage locations");
+            }
+
             var locationId = await this.databaseSequenceService.NextStorageLocationId();
 
             var company = await this.accountingCompanyRepository.FindByIdAsync(resource.AccountingCompany);
@@ -115,6 +124,11 @@
             StorageLocationResource updateResource,
             IEnumerable<string> privileges = null)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to update storage locations");
+            }
+
             var company = await this.accountingCompanyRepository.FindByIdAsync(updateResource.AccountingCompany);
 
             var stockPool = await this.GetDefaultStockPool(updateResource.DefaultStockPool);

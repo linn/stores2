@@ -12,6 +12,8 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenUpdatingLocation : ContextBase
@@ -27,6 +29,8 @@
         [SetUp]
         public void SetUp()
         {
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, Arg.Any<IEnumerable<string>>()).Returns(true);
+
             var factoryArea = new StorageArea
             {
                 StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA"

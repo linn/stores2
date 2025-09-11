@@ -12,6 +12,8 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenCreatingLocation : ContextBase
@@ -25,6 +27,8 @@
         [SetUp]
         public void SetUp()
         {
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, Arg.Any<IEnumerable<string>>()).Returns(true);
+
             this.eaglesham = new StorageSite("EAGLESHAM", "SUPPLIER STORES", null)
                                  {
                                      StorageAreas = new List<StorageArea>
