@@ -1,6 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Loading, InputField, LinkField, ErrorCard } from '@linn-it/linn-form-components-library';
+import {
+    Loading,
+    InputField,
+    LinkField,
+    ErrorCard,
+    ReportDataGrids
+} from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -8,7 +14,6 @@ import config from '../config';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import Page from './Page';
-import ReportDataGrids from './ReportDataGrids';
 
 function RequisitionCostReport() {
     const { reqNumber } = useParams();
