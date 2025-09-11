@@ -4,7 +4,8 @@ import {
     Dropdown,
     InputField,
     Loading,
-    Search
+    Search,
+    ReportDataGrids
 } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -16,7 +17,6 @@ import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
 import useInitialise from '../hooks/useInitialise';
 import Page from './Page';
-import ReportDataGrids from './ReportDataGrids';
 
 function GoodsInLog() {
     const [createdBy, setCreatedBy] = useState(null);

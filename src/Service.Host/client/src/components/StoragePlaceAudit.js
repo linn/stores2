@@ -1,6 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { Loading, ExportButton, Search, InputField } from '@linn-it/linn-form-components-library';
+import {
+    Loading,
+    ExportButton,
+    Search,
+    InputField,
+    ReportDataGrids
+} from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -11,7 +17,6 @@ import useGet from '../hooks/useGet';
 import usePost from '../hooks/usePost';
 import useSearch from '../hooks/useSearch';
 import Page from './Page';
-import ReportDataGrids from './ReportDataGrids';
 
 function StoragePlaceAudit() {
     const [range, setRange] = useState(null);
