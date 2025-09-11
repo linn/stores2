@@ -11,6 +11,7 @@
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Resources;
@@ -32,6 +33,8 @@
 
         private readonly IRepository<RequisitionHeader, int> reqRepository;
 
+        private readonly IBuilder<StorageLocation> storageLocationResourceBuilder;
+
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
             ITransactionManager transactionManager, 
@@ -39,7 +42,8 @@
             IRequisitionManager requisitionManager,
             IRequisitionFactory requisitionFactory,
             IRepository<RequisitionHistory, int> reqHistoryRepository,
-            IStoresService storesService)
+            IStoresService storesService,
+            IBuilder<StorageLocation> storageLocationResourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionManager = requisitionManager;
@@ -48,6 +52,7 @@
             this.reqHistoryRepository = reqHistoryRepository;
             this.storesService = storesService;
             this.reqRepository = repository;
+            this.storageLocationResourceBuilder = storageLocationResourceBuilder;
         }
         
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -224,8 +229,7 @@
                 return new SuccessResult<StorageLocationResource>(null);
             }
 
-            var builder = new StorageLocationResourceBuilder();
-            return new SuccessResult<StorageLocationResource>(builder.Build(result, new List<string>()));
+            return new SuccessResult<StorageLocationResource>((StorageLocationResource)this.storageLocationResourceBuilder.Build(result, new List<string>()));
         }
 
         public async Task<IResult<RequisitionHeaderResource>> UnpickRequisitionMove(int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate,

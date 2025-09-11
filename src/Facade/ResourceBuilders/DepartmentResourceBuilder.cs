@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Resources.Accounts;
@@ -11,8 +12,6 @@
     {
         public DepartmentResource Build(Department department, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
-
             if (department == null)
             {
                 return null;

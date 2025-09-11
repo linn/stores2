@@ -59,6 +59,8 @@
             this.RequisitionHistoryRepository = Substitute.For<IRepository<RequisitionHistory, int>>();
             this.SundryBookInDetailRepository = Substitute.For<IQueryRepository<SundryBookInDetail>>();
             this.StoresService = Substitute.For<IStoresService>();
+            var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.AuthorisationService);
+
             IRequisitionFacadeService requisitionFacadeService = new RequisitionFacadeService(
                 requisitionRepository,
                 transactionManager,
@@ -66,7 +68,8 @@
                 this.ReqManager,
                 this.RequisitionFactory,
                 this.RequisitionHistoryRepository,
-                this.StoresService);
+                this.StoresService,
+                storageLocationResourceBuilder);
 
             IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource,
                 StoresFunctionResource> functionCodeService = new StoresFunctionCodeService(

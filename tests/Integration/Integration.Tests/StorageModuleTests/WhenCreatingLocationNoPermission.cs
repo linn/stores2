@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
 
@@ -14,7 +13,7 @@
 
     using NUnit.Framework;
 
-    public class WhenCreatingLocation : ContextBase
+    public class WhenCreatingLocationNoPermission : ContextBase
     {
         private StorageLocationResource createResource;
 
@@ -67,9 +66,9 @@
         }
 
         [Test]
-        public void ShouldReturnCreated()
+        public void ShouldThrow()
         {
-            this.Response.StatusCode.Should().Be(HttpStatusCode.Created);
+            this.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Test]
@@ -77,22 +76,6 @@
         {
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
-        }
-
-        [Test]
-        public void ShouldAdd()
-        {
-            this.DbContext.StorageLocations
-                .First(x => x.LocationCode == this.createResource.LocationCode).Description
-                .Should().Be(this.createResource.Description);
-        }
-
-        [Test]
-        public void ShouldReturnUpdatedJsonBody()
-        {
-            var resource = this.Response.DeserializeBody<StorageLocationResource>();
-            resource.LocationId.Should().Be(1);
-            resource.LocationCode.Should().Be("E-FA-TOAST");
         }
     }
 }

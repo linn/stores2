@@ -140,9 +140,21 @@
 
         public bool StoresKittable() => StoresKittableFlag == "Y";
 
-        public void Update(string description, AccountingCompany company, string accessible, string storesKittable, string salesKittable,
-            string mixStates, string stockState, string typeOfStock, StockPool stockPool, StorageType storageType, DateTime? dateInvalid)
+        public void Update(
+            string locationCode, 
+            string description, 
+            AccountingCompany company, 
+            string accessible, 
+            string storesKittable, 
+            string salesKittable,
+            string mixStates, 
+            string stockState, 
+            string typeOfStock, 
+            StockPool stockPool, 
+            StorageType storageType, 
+            DateTime? dateInvalid)
         {
+            this.LocationCode = locationCode?.ToUpper();
             this.Description = description;
 
             if (company == null)
@@ -184,6 +196,7 @@
             {
                 return int.Parse(this.LocationCode.Substring(5));
             }
+
             return 0;
         }
 
@@ -193,6 +206,7 @@
             {
                 return;
             }
+
             if (!(field == "Y" || field == "N"))
             {
                 throw new StorageLocationException(errorMessage);

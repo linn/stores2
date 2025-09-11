@@ -19,13 +19,6 @@
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override IQueryable<StorageLocation> FindAll()
-        {
-            return this.serviceDbContext.StorageLocations
-                       .Where(l => l.DateInvalid == null)
-                       .OrderBy(l => l.LocationCode);
-        }
-
         public override IQueryable<StorageLocation> FilterBy(
             Expression<Func<StorageLocation, bool>> filterExpression)
         {

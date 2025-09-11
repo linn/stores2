@@ -1,7 +1,6 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
 
@@ -16,7 +15,7 @@
 
     using NUnit.Framework;
 
-    public class WhenUpdatingLocation : ContextBase
+    public class WhenUpdatingNoPermission : ContextBase
     {
         private StorageSite eaglesham;
 
@@ -29,17 +28,21 @@
         [SetUp]
         public void SetUp()
         {
-            this.AuthorisationService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, Arg.Any<IEnumerable<string>>()).Returns(true);
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, Arg.Any<IEnumerable<string>>())
+                .Returns(false);
 
             var factoryArea = new StorageArea
             {
-                StorageAreaCode = "FACTORY", Description = "FACTORY AREA", SiteCode = "EAGLESHAM", AreaPrefix = "FA"
+                StorageAreaCode = "FACTORY",
+                Description = "FACTORY AREA",
+                SiteCode = "EAGLESHAM",
+                AreaPrefix = "FA"
             };
 
             this.eaglesham = new StorageSite("SUPSTORES", "SUPPLIER STORES", null)
-                                 {
-                                     StorageAreas = new List<StorageArea> { factoryArea }
-                                 };
+            {
+                StorageAreas = new List<StorageArea> { factoryArea }
+            };
 
             this.linn = new AccountingCompany
             {
@@ -69,28 +72,28 @@
                 null);
 
             this.updateResource = new StorageLocationResource
-                                      {
-                                          LocationId = 1,
-                                          LocationCode = "E-FA-TEST",
-                                          AccountingCompany = this.linn.Name,
-                                          Description = "THIS IS A TEST",
-                                          AccessibleFlag = "Y",
-                                          StoresKittableFlag = "Y",
-                                          MixStatesFlag = "Y",
-                                          TypeOfStock = "A",
-                                          StockState = "A",
-                                          DefaultStockPool = null,
-                                          StorageType = null
-                                      };
+            {
+                LocationId = 1,
+                LocationCode = "E-FA-TEST",
+                AccountingCompany = this.linn.Name,
+                Description = "THIS IS A TEST",
+                AccessibleFlag = "Y",
+                StoresKittableFlag = "Y",
+                MixStatesFlag = "Y",
+                TypeOfStock = "A",
+                StockState = "A",
+                DefaultStockPool = null,
+                StorageType = null
+            };
 
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.storageLocation);
             this.Response = this.Client.PutAsJsonAsync($"/stores2/storage/locations/{this.storageLocation.LocationId}", this.updateResource).Result;
         }
 
         [Test]
-        public void ShouldReturnOk()
+        public void ShouldThrow()
         {
-            this.Response.StatusCode.Should().Be(HttpStatusCode.OK);
+            this.Response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [Test]
@@ -98,21 +101,6 @@
         {
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
-        }
-
-        [Test]
-        public void ShouldUpdateEntity()
-        {
-            this.DbContext.StorageLocations
-                .First(x => x.LocationId == this.storageLocation.LocationId).Description
-                .Should().Be(this.updateResource.Description);
-        }
-
-        [Test]
-        public void ShouldReturnUpdatedJsonBody()
-        {
-            var resource = this.Response.DeserializeBody<StorageLocationResource>();
-            resource.Description.Should().Be("THIS IS A TEST");
         }
     }
 }
