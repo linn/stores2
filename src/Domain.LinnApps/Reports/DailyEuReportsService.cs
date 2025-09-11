@@ -1,46 +1,17 @@
-﻿namespace Linn.Stores2.Facade.Services
+﻿using Linn.Common.Reporting.Layouts;
+using Linn.Common.Reporting.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Linn.Stores2.Domain.LinnApps.Reports
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-
-    using Linn.Common.Facade;
-    using Linn.Common.Pdf;
-    using Linn.Common.Persistence;
-    using Linn.Common.Reporting.Layouts;
-    using Linn.Common.Reporting.Models;
-    using Linn.Common.Reporting.Resources.ReportResultResources;
-    using Linn.Common.Reporting.Resources.ResourceBuilders;
-    using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Reports;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-
-    internal class DailyEuReportsFacadeService : IDailyEuReportFacdeService
+    public class DailyEuReportsService
     {
-        private readonly DailyEuReportsService dailyEuReportService;
-        private readonly IReportReturnResourceBuilder reportResourceBuilder;
-        private readonly IReportingHelper reportingHelper;
-        private readonly IRepository<InterCompanyInvoice, int> InterCompanyInvoiceRepository;
-
-        public DailyEuReportsFacadeService(
-            DailyEuReportsService dailyEuReportService,
-            IReportingHelper reportingHelper,
-            IReportReturnResourceBuilder reportResourceBuilder,
-            IRepository<InterCompanyInvoice, int> InterCompanyInvoiceRepository)
-        {
-            this.dailyEuReportService = dailyEuReportService;
-            this.reportResourceBuilder = reportResourceBuilder;
-            this.reportingHelper = reportingHelper;
-            this.InterCompanyInvoiceRepository = InterCompanyInvoiceRepository;
-        }
-
         public async Task<ResultsModel> GetDailyEuDespatchReport(string fromDate, string toDate)
         {
             var lines =
-                await this.InterCompanyInvoiceRepository.FilterByAsync(
-                    i => i.DocumentDate >= DateTime.Parse(fromDate) && i.DocumentDate <= DateTime.Parse(toDate) && i.DocumentType == "E"); 
+                await this.InterCompanyInvoiceRepository.FilterByAsync(i => i.DocumentDate >= DateTime.Parse(fromDate) && i.DocumentDate <= DateTime.Parse(toDate));
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -106,7 +77,7 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "commercialInvNo",
-                        TextDisplay = line.DocumentNumber.ToString()
+                        TextDisplay = line.CommercialInvNo.ToString()
                     });
                 values.Add(
                     new CalculationValueModel
@@ -189,17 +160,17 @@
                     });
                 values.Add(
                     new CalculationValueModel
-                        {
-                            RowId = rowId.ToString(),
-                            ColumnId = "packingList",
-                            TextDisplay = line.PackingList.ToString()
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "packingList",
+                        TextDisplay = line.PackingList.ToString()
                     });
                 values.Add(
                     new CalculationValueModel
-                        {
-                            RowId = rowId.ToString(),
-                            ColumnId = "deliveryTerms",
-                            TextDisplay = line.DeliveryTerms
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "deliveryTerms",
+                        TextDisplay = line.DeliveryTerms
                     });
 
                 rowIndex++;
@@ -378,11 +349,11 @@
                     });
                 values.Add(
                     new CalculationValueModel
-                        {
-                            RowId = rowId.ToString(),
-                            ColumnId = "customsValue",
-                            TextDisplay = line.CustomsValue.ToString()
-                        });
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "customsValue",
+                        TextDisplay = line.CustomsValue.ToString()
+                    });
 
                 rowIndex++;
             }
@@ -394,4 +365,5 @@
             return reportLayout.GetResultsModel();
         }
     }
+}
 }
