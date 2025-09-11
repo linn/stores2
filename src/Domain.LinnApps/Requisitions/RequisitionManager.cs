@@ -1488,6 +1488,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new CreateRequisitionException($"Nothing built on Works Order {document1Number} that can be reversed.");
             }
 
+            if (worksOrder.Quantity - worksOrder.QuantityBuilt < quantity && isReverseTransaction != "Y")
+            {
+                throw new CreateRequisitionException($"Works Order {document1Number} has {worksOrder.Quantity - worksOrder.QuantityBuilt} left to build. Cannot build {quantity}.");
+            }
+
             var salesPart = await this.salesProxy.GetSalesArticle(worksOrder.PartNumber);
             if (salesPart != null && isReverseTransaction != "Y"
                                   && (salesPart.TypeOfSerialNumber == "S" || salesPart.TypeOfSerialNumber == "P1"
