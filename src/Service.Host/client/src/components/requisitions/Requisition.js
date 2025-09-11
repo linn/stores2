@@ -32,6 +32,7 @@ import usePost from '../../hooks/usePost';
 import useUserProfile from '../../hooks/useUserProfile';
 import CancelWithReasonDialog from '../CancelWithReasonDialog';
 import useDebounceValue from '../../hooks/useDebounceValue';
+import { subtract } from '../../helpers/numberUtilities';
 import requisitionReducer from './reducers/requisitonReducer';
 import LinesTab from './LinesTab';
 import MovesTab from './MovesTab';
@@ -457,9 +458,14 @@ function Requisition({ creating }) {
             }
 
             if (selected.quantity) {
+                let quantityToSet = selected.quantity;
+                if (formState.req.storesFunction?.code === 'BOOKWO') {
+                    quantityToSet = subtract(selected.quantity, selected.quantityBuilt);
+                }
+
                 dispatch({
                     type: 'set_header_value',
-                    payload: { fieldName: 'quantity', newValue: selected.quantity }
+                    payload: { fieldName: 'quantity', newValue: quantityToSet }
                 });
             }
         }
@@ -1117,8 +1123,7 @@ function Requisition({ creating }) {
                                 }
                                 setQuantity={
                                     // todo - again looks like state logic, should maybe live in reducer
-                                    formState.req.storesFunction?.quantityRequired !== 'X' ||
-                                    formState.req.storesFunction?.code === 'BOOKWO'
+                                    formState.req.storesFunction?.quantityRequired !== 'X'
                                         ? newQty => {
                                               setChangesMade(true);
                                               dispatch({

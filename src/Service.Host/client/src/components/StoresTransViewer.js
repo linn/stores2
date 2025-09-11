@@ -5,7 +5,8 @@ import {
     ExportButton,
     InputField,
     Loading,
-    Search
+    Search,
+    ReportDataGrids
 } from '@linn-it/linn-form-components-library';
 import { DataGrid } from '@mui/x-data-grid';
 import Grid from '@mui/material/Grid';
@@ -18,7 +19,6 @@ import useGet from '../hooks/useGet';
 import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
 import Page from './Page';
-import ReportDataGrids from './ReportDataGrids';
 
 function StoresTransViewer() {
     const [partNumber, setPartNumber] = useState(null);
