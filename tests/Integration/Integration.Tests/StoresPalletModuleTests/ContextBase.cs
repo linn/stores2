@@ -47,9 +47,9 @@
             var transactionManager = new TransactionManager(this.DbContext);
 
             var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.AuthorisationService);
-            var stockPoolResourceBuilder = new StockPoolResourceBuilder(this.AuthorisationService);
+            var stockPoolResourceBuilder = new StockPoolResourceBuilder(storageLocationResourceBuilder);
             var locationTypeResourceBuilder = new LocationTypeResourceBuilder();
-            var departmentResourceBuilder = new DepartmentResourceBuilder(this.AuthorisationService);
+            var departmentResourceBuilder = new DepartmentResourceBuilder();
             var employeeResourceBuilder = new EmployeeResourceBuilder();
 
             IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> storesPalletFacadeService

@@ -10,17 +10,8 @@
 
     public class DepartmentResourceBuilder : IBuilder<Department>
     {
-        private readonly IAuthorisationService authService;
-
-        public DepartmentResourceBuilder(IAuthorisationService authService)
-        {
-            this.authService = authService;
-        }
-
         public DepartmentResource Build(Department department, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.authService);
-
             if (department == null)
             {
                 return null;

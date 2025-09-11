@@ -35,18 +35,20 @@
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
 
             var accountingCompanyRepository = new EntityFrameworkRepository<AccountingCompany, string>(this.DbContext.AccountingCompanies);
             var storageLocationRepository = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
             var stockPoolRepository = new StockPoolRepository(this.DbContext);
-            this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.AuthorisationService);
+
             var transactionManager = new TransactionManager(this.DbContext);
 
             IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> stockPoolFacadeService 
                 = new StockPoolFacadeService(
                     stockPoolRepository, 
                     transactionManager, 
-                    new StockPoolResourceBuilder(this.AuthorisationService),
+                    new StockPoolResourceBuilder(storageLocationResourceBuilder),
                     storageLocationRepository,
                     accountingCompanyRepository);
             

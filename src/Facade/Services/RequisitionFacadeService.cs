@@ -6,12 +6,12 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
-    using Linn.Common.Authorisation;
     using Linn.Common.Domain.Exceptions;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Resources;
@@ -33,7 +33,7 @@
 
         private readonly IRepository<RequisitionHeader, int> reqRepository;
 
-        private readonly IAuthorisationService authService;
+        private readonly IBuilder<StorageLocation> storageLocationResourceBuilder;
 
         public RequisitionFacadeService(
             IRepository<RequisitionHeader, int> repository, 
@@ -43,7 +43,7 @@
             IRequisitionFactory requisitionFactory,
             IRepository<RequisitionHistory, int> reqHistoryRepository,
             IStoresService storesService,
-            IAuthorisationService authService)
+            IBuilder<StorageLocation> storageLocationResourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.requisitionManager = requisitionManager;
@@ -52,7 +52,7 @@
             this.reqHistoryRepository = reqHistoryRepository;
             this.storesService = storesService;
             this.reqRepository = repository;
-            this.authService = authService;
+            this.storageLocationResourceBuilder = storageLocationResourceBuilder;
         }
         
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
@@ -229,8 +229,7 @@
                 return new SuccessResult<StorageLocationResource>(null);
             }
 
-            var builder = new StorageLocationResourceBuilder(this.authService);
-            return new SuccessResult<StorageLocationResource>(builder.Build(result, new List<string>()));
+            return new SuccessResult<StorageLocationResource>((StorageLocationResource)this.storageLocationResourceBuilder.Build(result, new List<string>()));
         }
 
         public async Task<IResult<RequisitionHeaderResource>> UnpickRequisitionMove(int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate,

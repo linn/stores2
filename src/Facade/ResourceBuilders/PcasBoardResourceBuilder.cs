@@ -11,17 +11,8 @@
 
     public class PcasBoardResourceBuilder : IBuilder<PcasBoard>
     {
-        private readonly IAuthorisationService authService;
-
-        public PcasBoardResourceBuilder(IAuthorisationService authService)
-        {
-            this.authService = authService;
-        }
-
         public PcasBoardResource Build(PcasBoard pcasBoard, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder(this.authService);
-
             return new PcasBoardResource
             {
                 BoardCode = pcasBoard.BoardCode,

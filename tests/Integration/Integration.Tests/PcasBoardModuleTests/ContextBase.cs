@@ -27,23 +27,19 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
-        protected IAuthorisationService AuthorisationService { get; private set; }
-
-
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
 
             var pcasBoardRepository = new EntityFrameworkRepository<PcasBoard, string>(this.DbContext.PcasBoards);
-            this.AuthorisationService = Substitute.For<IAuthorisationService>();
             var transactionManager = new TransactionManager(this.DbContext);
 
             IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource> pcasBoardFacadeService
                 = new PcasBoardService(
                     pcasBoardRepository,
                     transactionManager,
-                    new PcasBoardResourceBuilder(this.AuthorisationService));
+                    new PcasBoardResourceBuilder());
 
             this.Client = TestClient.With<PcasBoardModule>(
                 services =>
