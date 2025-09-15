@@ -2,12 +2,13 @@
 {
     using System.Threading.Tasks;
 
-    using Linn.Common.Reporting.Models;
+    using Linn.Common.Facade;
+    using Linn.Common.Reporting.Resources.ReportResultResources;
 
     public interface IDailyEuReportFacdeService
     {
-        Task<ResultsModel> GetDailyEuImportRsnReport(string fromDate, string toDate);
+        Task<IResult<ReportReturnResource>> GetDailyEuImportRsnReport(string fromDate, string toDate);
 
-        Task<ResultsModel> GetDailyEuDespatchReport(string fromDate, string toDate);
+        Task<IResult<ReportReturnResource>> GetDailyEuDispatchReport(string fromDate, string toDate);
     }
 }

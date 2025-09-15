@@ -4,7 +4,10 @@
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
+    using Linn.Common.Reporting.Models;
+    using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -16,6 +19,8 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -26,27 +31,27 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IReportingHelper ReportingHelper { get; private set; }
+
+        protected IReportReturnResourceBuilder ReportReturnResourceBuilder { get; private set; }
+
+        protected IDailyEuReportService DailyEuReportService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
-
-            var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
-            var pcasBoardsRepository = new EntityFrameworkRepository<PcasBoard, string>(this.DbContext.PcasBoards);
-
-            var transactionManager = new TransactionManager(this.DbContext);
+            this.ReportingHelper = Substitute.For<IReportingHelper>();
+            this.ReportReturnResourceBuilder = new ReportReturnResourceBuilder();
+            this.DailyEuReportService = Substitute.For<IDailyEuReportService>();
 
             var pcasStorageTypeRepository = new PcasStorageTypeRepository(this.DbContext);
 
-            IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource,
-                PcasStorageTypeResource> pcasStorageTypeFacadeService = new PcasStorageTypeFacadeService(
-                pcasStorageTypeRepository,
-                transactionManager,
-                new PcasStorageTypeResourceBuilder(),
-                storageTypeRepository,
-                pcasBoardsRepository);
+            IDailyEuReportFacdeService pcasStorageTypeFacadeService = new DailyEuReportsFacadeService(
+                this.DailyEuReportService,
+                this.ReportReturnResourceBuilder);
 
-            this.Client = TestClient.With<PcasStorageTypeModule>(
+            this.Client = TestClient.With<DailyEuReportsModule>(
                 services =>
                     {
                         services.AddSingleton(pcasStorageTypeFacadeService);

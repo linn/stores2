@@ -28,7 +28,7 @@
             string toDate,
             IDailyEuReportFacdeService facadeService)
         {
-            await res.Negotiate(facadeService.GetDailyEuImportRsnReport(fromDate, toDate));
+            await res.Negotiate(await facadeService.GetDailyEuImportRsnReport(fromDate, toDate));
         }
 
         private async Task DailyEuDespatchReport(
@@ -38,7 +38,7 @@
             string toDate,
             IDailyEuReportFacdeService facadeService)
         {
-            await res.Negotiate(facadeService.GetDailyEuDespatchReport(fromDate, toDate));
+            await res.Negotiate(await facadeService.GetDailyEuDispatchReport(fromDate, toDate));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)

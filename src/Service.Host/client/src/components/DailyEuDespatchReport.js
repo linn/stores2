@@ -22,25 +22,27 @@ function DailyEuDespatchReport() {
         result
     } = useGet(itemTypes.dailyEuDespatchReport.url, true);
 
-    const report = useMemo(
-        () => (
+    const report = useMemo(() => {
+        if (!result || !Array.isArray(result.reportResults) || !result.reportResults[0]) {
+            return null;
+        }
+        return (
             <ReportDataGrid
-                report={result?.reportResults[0]}
+                report={result.reportResults[0]}
                 fixedRowHeight
                 showHeader={true}
                 renderZeroes
                 showTotals={false}
             />
-        ),
-        [result]
-    );
+        );
+    }, [result]);
 
     return (
         <Page>
             <Grid container spacing={2}>
                 <Grid size={12}>
                     <Typography color="primary" variant="h4">
-                        Incomplete RSN Report
+                        Daily Eu Dispatch Report
                     </Typography>
                 </Grid>
                 <Grid item xs={3}>

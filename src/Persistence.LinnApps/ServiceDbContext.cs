@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps
 {
     using Linn.Common.Configuration;
+    using Linn.Service.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
@@ -91,7 +92,11 @@
 
         public DbSet<InterCompanyInvoice> InterCompanyInvoices { get; set; }
 
-        public DbSet<InterCompanyInvoiceDetail> InterCompanyInvoiceDetail { get; set; }
+        public DbSet<InterCompanyInvoiceDetail> InterCompanyInvoiceDetails { get; set; }
+
+        public DbSet<SalesArticle> SalesArticles { get; set; }
+
+        public DbSet<Tariff> Tariffs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -148,6 +153,7 @@
             BuildLocationTypes(builder);
             BuildInterCompanyInvoices(builder);
             BuildIntercompanyInvoiceDetails(builder);
+            BuildSalesArticles(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -176,6 +182,7 @@
             builder.Entity<Country>().HasKey(c => c.CountryCode);
             builder.Entity<Country>().Property(c => c.CountryCode).HasColumnName("COUNTRY_CODE").HasMaxLength(2);
             builder.Entity<Country>().Property(c => c.Name).HasColumnName("NAME").HasMaxLength(50);
+            builder.Entity<Country>().Property(c => c.Currency).HasColumnName("TRADE_CURRENCY").HasMaxLength(4);
         }
 
         private static void BuildAddresses(ModelBuilder builder)
@@ -1039,6 +1046,30 @@
             q.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN").HasMaxLength(1);
             q.Property(e => e.TariffId).HasColumnName("TARIFF_ID");
             q.HasOne(i => i.InterCompanyInvoice).WithMany(i => i.Details).HasForeignKey(ic => new { ic.DocumentType, ic.DocumentNumber });
+        }
+
+        private static void BuildSalesArticles(ModelBuilder builder)
+        {
+            var e = builder.Entity<SalesArticle>().ToTable("SALES_ARTICLES");
+            e.HasKey(a => a.ArticleNumber);
+            e.Property(a => a.ArticleNumber).HasColumnName("ARTICLE_NUMBER");
+            e.Property(a => a.PhaseOutDate).HasColumnName("PHASE_OUT_DATE");
+            e.Property(a => a.Description).HasColumnName("INVOICE_DESCRIPTION");
+            e.Property(a => a.TariffId).HasColumnName("TARIFF_ID");
+            e.Property(a => a.Weight).HasColumnName("WEIGHT");
+            e.Property(a => a.ArticleType).HasColumnName("ARTICLE_TYPE").HasMaxLength(1);
+            e.Property(a => a.TypeOfSerialNumber).HasColumnName("TYPE_OF_SERIAL_NUMBER").HasMaxLength(2);
+            e.HasOne(a => a.Tariff).WithOne().HasForeignKey<SalesArticle>(x => x.TariffId);
+        }
+
+        private static void BuildTariffs(ModelBuilder builder)
+        {
+            var q = builder.Entity<Tariff>().ToTable("TARIFFS");
+            q.HasKey(e => e.TariffId);
+            q.Property(e => e.TariffId).HasColumnName("TARIFF_ID").HasMaxLength(3);
+            q.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE").HasMaxLength(14);
+            q.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(2000);
+            q.Property(e => e.ValidForIPR).HasColumnName("VALID_FOR_IPR").HasMaxLength(1);
         }
     }
 }

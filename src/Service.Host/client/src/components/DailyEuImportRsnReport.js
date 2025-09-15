@@ -40,7 +40,7 @@ function DailyEuImportRsnReport() {
             <Grid container spacing={2}>
                 <Grid size={12}>
                     <Typography color="primary" variant="h4">
-                        Incomplete RSN Report
+                        Daily Eu Import RSN Report
                     </Typography>
                 </Grid>
                 <Grid item xs={3}>

@@ -87,7 +87,8 @@
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}RequisitionCost.cshtml",
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()
-                .AddScoped<ISerialNumberService, SerialNumberService>();
+                .AddScoped<ISerialNumberService, SerialNumberService>()
+                .AddScoped<IDailyEuReportService, DailyEuReportsService>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -116,6 +117,7 @@
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
                 .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
+                .AddScoped<IDailyEuReportFacdeService, IDailyEuReportFacdeService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
         }
 
@@ -135,7 +137,6 @@
                 .AddScoped<IBuilder<SundryBookInDetail>, SundryBookInDetailResourceBuilder>()
                 .AddScoped<IBuilder<AuditLocation>, AuditLocationResourceBuilder>()
                 .AddScoped<IBuilder<StorageLocation>, StorageLocationResourceBuilder>()
-                .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<StockPool>, StockPoolResourceBuilder>()
                 .AddTransient<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()
                 .AddScoped<IBuilder<WorkStation>, WorkStationResourceBuilder>()

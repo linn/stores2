@@ -1,12 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Linn.Stores2.Domain.LinnApps.Reports
+﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
-    internal interface IDailyEuReportService
+    using System.Threading.Tasks;
+
+    using Linn.Common.Reporting.Models;
+
+    public interface IDailyEuReportService
     {
+        Task<ResultsModel> GetDailyEuImportRsnReport(
+            string startDate,
+            string toDate);
+
+        Task<ResultsModel> GetDailyEuDispatchReport(
+            string startDate,
+            string toDate);
     }
 }

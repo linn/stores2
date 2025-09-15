@@ -15,5 +15,7 @@
         public string CountryCode { get; protected set; }
 
         public string Name { get; protected set; }
+
+        public string Currency { get; protected set; }
     }
 }

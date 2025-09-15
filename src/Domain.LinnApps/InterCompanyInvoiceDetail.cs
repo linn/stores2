@@ -1,5 +1,8 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps
 {
+    using Linn.Service.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.External;
+
     public class InterCompanyInvoiceDetail
     {
         public string DocumentType { get; set; }
@@ -11,6 +14,8 @@
         public string CustomerOrderNos { get; set; }
 
         public string ArticleNumber { get; set; }
+
+        public SalesArticle SalesArticle {get; set; }
 
         public string Description { get; set; }
 
@@ -28,7 +33,11 @@
 
         public string CountryOfOrigin { get; set; }
 
+        public Country Country { get; set; }
+
         public int TariffId { get; set; }
+
+        public Tariff Tariff { get; set; }
 
         public string LineComment { get; set; }
 

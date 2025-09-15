@@ -38,7 +38,7 @@ const itemTypes = {
     dailyEuImportRsnReport: {
         url: `${config.appRoot}/stores2/customs/daily/eu/import/rsn/report`
     },
-    getDailyEuDespatchReport: {
+    dailyEuDespatchReport: {
         url: `${config.appRoot}/stores2/customs/daily/eu/despatch/report`
     },
     requisitionCostReport: {
