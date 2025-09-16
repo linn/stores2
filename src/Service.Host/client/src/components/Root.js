@@ -33,7 +33,7 @@ import Pallet from './Pallet';
 import StorageSites from './storageSites/StorageSites';
 import StorageSite from './storageSites/StorageSite';
 import DailyEuImportRsnReport from './DailyEuImportRsnReport';
-import DailyEuDespatchReport from './DailyEuDespatchReport';
+import DailyEuDespatchReport from './DailyEuDispatchReport';
 
 function Root() {
     useSignIn();
@@ -77,7 +77,7 @@ function Root() {
                         element={<DailyEuImportRsnReport />}
                     />
                     <Route
-                        path="/stores2/customs/daily/eu/despatch/report"
+                        path="/stores2/customs/daily/eu/dispatch/report"
                         element={<DailyEuDespatchReport />}
                     />
 

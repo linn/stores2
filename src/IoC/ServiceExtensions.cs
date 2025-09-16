@@ -117,7 +117,7 @@
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
                 .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
-                .AddScoped<IDailyEuReportFacdeService, IDailyEuReportFacdeService>()
+                .AddScoped<IDailyEuReportFacdeService, DailyEuReportsFacadeService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
         }
 

@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
-
-namespace Linn.Stores2.Domain.LinnApps
+﻿namespace Linn.Stores2.Domain.LinnApps
 {
+    using System;
+    using System.Collections.Generic;
+
     public class InterCompanyInvoice
     {
         public string DocumentType { get; set; }
@@ -11,7 +11,7 @@ namespace Linn.Stores2.Domain.LinnApps
 
         public DateTime DocumentDate { get; set; }
 
-        public int ExportReturnId { get; set; }
+        public int? ExportReturnId { get; set; }
 
         public int InvoiceAddressId { get; set; }
 
@@ -31,9 +31,9 @@ namespace Linn.Stores2.Domain.LinnApps
 
         public string CurrencyCode { get; set; }
 
-        public decimal GrossWeightKG { get; set; }
+        public decimal? GrossWeightKG { get; set; }
 
-        public decimal GrossDimsM3 { get; set; }
+        public decimal? GrossDimsM3 { get; set; }
 
         public string Terms { get; set; }
 

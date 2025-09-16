@@ -88,8 +88,7 @@
                     r => new EntityFrameworkQueryRepository<AuditLocation>(r.GetService<ServiceDbContext>()?.AuditLocations))
                 .AddScoped<IQueryRepository<LocationType>, EntityFrameworkQueryRepository<LocationType>>(r =>
                     new EntityFrameworkQueryRepository<LocationType>(r.GetService<ServiceDbContext>()?.LocationTypes))
-                .AddTransient<IRepository<InterCompanyInvoice, string>, EntityFrameworkRepository<InterCompanyInvoice, string>>(r =>
-                    new EntityFrameworkRepository<InterCompanyInvoice, string>(r.GetService<ServiceDbContext>()?.InterCompanyInvoices));
+                .AddScoped<IRepository<InterCompanyInvoice, InterCompanyInvoiceKey>, InterCompanyInvoiceRepository>();
         }
     }
 }

@@ -17,7 +17,7 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/stores2/customs/daily/eu/import/rsn/report", this.DailyEuImportRsnReport);
-            app.MapGet("/stores2/customs/daily/eu/despatch/report", this.DailyEuDespatchReport);
+            app.MapGet("/stores2/customs/daily/eu/dispatch/report", this.DailyEuDispatchReport);
             app.MapGet("/requisitions/reports/requisition-cost", this.GetApp);
         }
 
@@ -31,7 +31,7 @@
             await res.Negotiate(await facadeService.GetDailyEuImportRsnReport(fromDate, toDate));
         }
 
-        private async Task DailyEuDespatchReport(
+        private async Task DailyEuDispatchReport(
             HttpRequest _,
             HttpResponse res,
             string fromDate,

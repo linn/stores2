@@ -7,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace Linn.Stores2.Domain.LinnApps.Reports
 {
+    using System.Linq;
+
     public class DailyEuReportsService : IDailyEuReportService
     {
-        private readonly IRepository<InterCompanyInvoice, int> interCompanyInvoiceRepository;
+        private readonly IRepository<InterCompanyInvoice, InterCompanyInvoiceKey> interCompanyInvoiceRepository;
 
         private readonly IReportingHelper reportingHelper;
 
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
-            IRepository<InterCompanyInvoice, int> interCompanyInvoiceRepository)
+            IRepository<InterCompanyInvoice, InterCompanyInvoiceKey> interCompanyInvoiceRepository)
         {
             this.reportingHelper = reportingHelper;
             this.interCompanyInvoiceRepository = interCompanyInvoiceRepository;
@@ -24,7 +26,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
         public async Task<ResultsModel> GetDailyEuDispatchReport(string fromDate, string toDate)
         {
             var lines =
-                await this.interCompanyInvoiceRepository.FilterByAsync(i => i.DocumentDate >= DateTime.Parse(fromDate) && i.DocumentDate <= DateTime.Parse(toDate));
+                await this.interCompanyInvoiceRepository.FilterByAsync(i => i.DocumentDate >= DateTime.Parse(fromDate) && i.DocumentDate <= DateTime.Parse(toDate) && i.DocumentType == "E");
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -70,20 +72,20 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
             {
                 var lineRow = 0;
 
-                foreach (var detail in line.Details)
+                foreach (var detail in line?.Details)
                 {
                     var rowId = rowIndex;
 
                     values.Add(
                         new CalculationValueModel
                             {
-                                RowId = rowId.ToString(), ColumnId = "recordExporter", TextDisplay = lineRow == 0 ? line.InvoiceAddress?.Addressee : string.Empty
+                                RowId = rowId.ToString(), ColumnId = "recordExporter", TextDisplay = lineRow == 0 ? line.InvoiceAddress?.Addressee : "null"
                         });
 
                     values.Add(
                         new CalculationValueModel
                             {
-                                RowId = rowId.ToString(), ColumnId = "recordImporter", TextDisplay = lineRow == 0 ? line.DeliveryAddress?.Addressee : string.Empty
+                                RowId = rowId.ToString(), ColumnId = "recordImporter", TextDisplay = lineRow == 0 ? line.DeliveryAddress?.Addressee : "null"
                         });
                     values.Add(
                         new CalculationValueModel
@@ -97,7 +99,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                             {
                                 RowId = rowId.ToString(),
                                 ColumnId = "productId",
-                                TextDisplay = detail.ArticleNumber.ToString()
+                                TextDisplay = detail?.ArticleNumber.ToString()
                             });
 
                     values.Add(
@@ -106,13 +108,14 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                 RowId = rowId.ToString(), ColumnId = "hsNumber", TextDisplay = detail.Tariff?.TariffCode
                         });
 
-                    //values.Add(
-                    //    new CalculationValueModel
-                    //        {
-                    //            RowId = rowId.ToString(),
-                    //            ColumnId = "serialNumber",
-                    //            TextDisplay = detail.SalesArticle..ToString(),
-                    //        });
+                    values.Add(
+                        new CalculationValueModel
+                        {
+                            RowId = rowId.ToString(),
+                            ColumnId = "serialNumber",
+                            TextDisplay = "test"
+                            //detail.SalesArticle..ToString(),
+                        });
 
                     values.Add(
                         new CalculationValueModel
@@ -148,13 +151,14 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                 TextDisplay = detail.Total.ToString()
                             });
 
-                    //values.Add(
-                    //    new CalculationValueModel
-                    //        {
-                    //            RowId = rowId.ToString(),
-                    //            ColumnId = "quantityPackage",
-                    //            TextDisplay = line.QuantityPackage.ToString()
-                    //        });
+                    values.Add(
+                        new CalculationValueModel
+                        {
+                            RowId = rowId.ToString(),
+                            ColumnId = "quantityPackage",
+                            TextDisplay = "Test"
+                                //line.QuantityPackage.ToString()
+                        });
 
                     values.Add(
                         new CalculationValueModel
@@ -170,11 +174,14 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                 ColumnId = "packingList",
                                 TextDisplay = line.Terms.ToString()
                             });
-                    //values.Add(
-                    //    new CalculationValueModel
-                    //        {
-                    //            RowId = rowId.ToString(), ColumnId = "deliveryTerms", TextDisplay = line.DeliveryTerms
-                    //        });
+                    values.Add(
+                        new CalculationValueModel
+                        {
+                            RowId = rowId.ToString(),
+                            ColumnId = "deliveryTerms",
+                            TextDisplay = "Test"
+                            //line.DeliveryTerms
+                        });
 
                     lineRow++;
                     rowIndex++;

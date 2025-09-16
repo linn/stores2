@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import itemTypes from '../itemTypes';
 import Page from './Page';
 
-function DailyEuDespatchReport() {
+function DailyEuDispatchReport() {
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
 
@@ -20,7 +20,7 @@ function DailyEuDespatchReport() {
         send: getDailyEuDespatchReport,
         isLoading,
         result
-    } = useGet(itemTypes.dailyEuDespatchReport.url, true);
+    } = useGet(itemTypes.dailyEuDispatchReport.url, true);
 
     const report = useMemo(() => {
         if (!result || !Array.isArray(result.reportResults) || !result.reportResults[0]) {
@@ -84,4 +84,4 @@ function DailyEuDespatchReport() {
     );
 }
 
-export default DailyEuDespatchReport;
+export default DailyEuDispatchReport;

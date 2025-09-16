@@ -152,8 +152,9 @@
             BuildReqSerialNumbers(builder);
             BuildLocationTypes(builder);
             BuildInterCompanyInvoices(builder);
-            BuildIntercompanyInvoiceDetails(builder);
+            BuildInterCompanyInvoiceDetails(builder);
             BuildSalesArticles(builder);
+            BuildTariffs(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1005,7 +1006,7 @@
         private static void BuildInterCompanyInvoices(ModelBuilder builder)
         {
             var q = builder.Entity<InterCompanyInvoice>().ToTable("INTER_COMPANY_INVOICES");
-            q.HasKey(e => new { e.DocumentType, e.DocumentNumber });
+            q.HasKey(e => new InterCompanyInvoiceKey( e.DocumentType, e.DocumentNumber));
             q.Property(e => e.DocumentNumber).HasColumnName("DOCUMENT_NUMBER");
             q.Property(e => e.DocumentDate).HasColumnName("DOCUMENT_DATE");
             q.Property(e => e.DocumentType).HasColumnName("DOCUMENT_TYPE").HasMaxLength(1);
@@ -1021,12 +1022,10 @@
             q.Property(e => e.SalesAccountId).HasColumnName("ACCOUNT_ID");
             q.Property(e => e.GrossWeightKG).HasColumnName("GROSS_WEIGHT_KG");
             q.Property(e => e.GrossDimsM3).HasColumnName("GROSS_DIMS_M3");
-            //q.HasOne(e => e.DeliveryAddress).WithMany(a => a.DeliveryInterCompanies).HasForeignKey(e => e.DeliveryAddressId);
-            //q.HasOne(e => e.InvoiceAddress).WithMany(a => a.InvoiceInterCompanies).HasForeignKey(e => e.InvoiceAddressId);
-            q.HasMany(c => c.Details).WithOne().HasForeignKey(ic => new { ic.DocumentType, ic.DocumentNumber });
+            q.HasMany(c => c.Details).WithOne(d => d.InterCompanyInvoice).HasForeignKey(d => new { d.DocumentType, d.DocumentNumber });
         }
 
-        private void BuildIntercompanyInvoiceDetails(ModelBuilder builder)
+        private void BuildInterCompanyInvoiceDetails(ModelBuilder builder)
         {
             var q = builder.Entity<InterCompanyInvoiceDetail>().ToTable("INTER_COMP_INV_DETAILS");
             q.HasKey(e => new { e.DocumentType, e.DocumentNumber, e.LineNumber });
@@ -1045,7 +1044,10 @@
             q.Property(e => e.VatCode).HasColumnName("VAT_CODE").HasMaxLength(1);
             q.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN").HasMaxLength(1);
             q.Property(e => e.TariffId).HasColumnName("TARIFF_ID");
-            q.HasOne(i => i.InterCompanyInvoice).WithMany(i => i.Details).HasForeignKey(ic => new { ic.DocumentType, ic.DocumentNumber });
+            q.HasOne(d => d.InterCompanyInvoice).WithMany(c => c.Details).HasForeignKey(d => new { d.DocumentType, d.DocumentNumber });
+            q.HasOne(e => e.SalesArticle).WithMany().HasForeignKey(d => d.ArticleNumber);
+            q.HasOne(e => e.Tariff).WithMany().HasForeignKey(d => d.TariffId);
+            q.HasOne(e => e.Country).WithMany().HasForeignKey(d => d.CountryOfOrigin);
         }
 
         private static void BuildSalesArticles(ModelBuilder builder)

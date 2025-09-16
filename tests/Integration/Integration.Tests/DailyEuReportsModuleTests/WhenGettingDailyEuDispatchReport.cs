@@ -37,7 +37,7 @@ namespace Linn.Service.Integration.Tests.RsnReportsModuleTests
                 .Returns(result);
 
             this.Response = Client.Get(
-                $"/stores2/customs/daily/eu/despatch/report?fromDate={fromDate.ToString("o")}&toDate={toDate.ToString("o")}",
+                $"/stores2/customs/daily/eu/dispatch/report?fromDate={fromDate.ToString("o")}&toDate={toDate.ToString("o")}",
                 with => { with.Accept("application/json"); }).Result;
 
         }
