@@ -13,14 +13,18 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
     {
         private readonly IRepository<InterCompanyInvoice, InterCompanyInvoiceKey> interCompanyInvoiceRepository;
 
+        private readonly IRepository<InterCompanyInvoiceDetail, InterCompanyInvoiceKey> interCompanyInvoiceDetailRepository;
+
         private readonly IReportingHelper reportingHelper;
 
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
-            IRepository<InterCompanyInvoice, InterCompanyInvoiceKey> interCompanyInvoiceRepository)
+            IRepository<InterCompanyInvoice, InterCompanyInvoiceKey> interCompanyInvoiceRepository,
+            IRepository<InterCompanyInvoiceDetail, InterCompanyInvoiceKey> interCompanyInvoiceDetailRepository;)
         {
             this.reportingHelper = reportingHelper;
             this.interCompanyInvoiceRepository = interCompanyInvoiceRepository;
+            this.interCompanyInvoiceDetailRepository = interCompanyInvoiceDetailRepository;
         }
 
         public async Task<ResultsModel> GetDailyEuDispatchReport(string fromDate, string toDate)
@@ -92,7 +96,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                             {
                                 RowId = rowId.ToString(),
                                 ColumnId = "commercialInvNo",
-                                TextDisplay = lineRow == 0 ? line.DocumentNumber.ToString() : string.Empty
+                                TextDisplay = lineRow == 0 ? line.DocumentNumber.ToString() : ""
                         });
                     values.Add(
                         new CalculationValueModel
@@ -105,7 +109,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                     values.Add(
                         new CalculationValueModel
                             {
-                                RowId = rowId.ToString(), ColumnId = "hsNumber", TextDisplay = detail.Tariff?.TariffCode
+                                RowId = rowId.ToString(), ColumnId = "hsNumber", TextDisplay = detail?.TariffId != 0 ? detail?.Tariff.TariffCode.ToString() : ""
                         });
 
                     values.Add(
@@ -199,7 +203,8 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
         public async Task<ResultsModel> GetDailyEuImportRsnReport(string fromDate, string toDate)
         {
             var lines =
-                await this.interCompanyInvoiceRepository.FilterByAsync(i => i.DocumentDate >= DateTime.Parse(fromDate) && i.DocumentDate <= DateTime.Parse(toDate));
+                await this.interCompanyInvoiceDetailRepository.FilterByAsync(
+                    i => i.InterCompanyInvoice.DocumentDate >= DateTime.Parse(fromDate) && i.InterCompanyInvoice.DocumentDate <= DateTime.Parse(toDate) && i.DocumentType == "R" );
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -240,135 +245,127 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
             var values = new List<CalculationValueModel>();
             var rowIndex = 0;
 
-            //foreach (var line in lines)
-            //{
-            //    var rowId = rowIndex;
+            foreach (var line in lines)
+            {
+                var rowId = rowIndex;
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "intercompanyInvoice",
-            //            TextDisplay = line.IntercompanyInvoice.ToString()
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "intercompanyInvoice",
+                        TextDisplay = line.DocumentNumber.ToString()
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "pieces",
-            //            TextDisplay = line.Pieces.ToString()
-            //        });
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "weight",
-            //            TextDisplay = line.Weight.ToString()
-            //        });
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "dims",
-            //            TextDisplay = line.Dims
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "pieces",
+                        TextDisplay = line.Pieces.ToString()
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "weight",
+                        TextDisplay = line..ToString()
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "dims",
+                        TextDisplay = line.Dims
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "retailerDetails",
-            //            TextDisplay = line.RetailerDetails
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "retailerDetails",
+                        TextDisplay = line.RetailerDetails
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "rsnNumber",
-            //            TextDisplay = line.RsnNumber.ToString()
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "rsnNumber",
+                        TextDisplay = line.RsnNumber.ToString()
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "originCountry",
-            //            TextDisplay = line.OriginCountry
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "partNumber",
+                        TextDisplay = line.PartNumber
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "partNumber",
-            //            TextDisplay = line.PartNumber
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "description",
+                        TextDisplay = line.Description
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "currency",
-            //            TextDisplay = line?.Currency
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "returnReason",
+                        TextDisplay = line.ReturnReason
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "description",
-            //            TextDisplay = line.Description
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "customsCpcNumber",
+                        TextDisplay = line.CustomsCpcNumber
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "returnReason",
-            //            TextDisplay = line.ReturnReason
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "tariffCode",
+                        TextDisplay = line.Tariff.TariffCode
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId.ToString(),
+                            ColumnId = "countryOFOrigin",
+                            TextDisplay = line.CountryOfOrigin
+                        });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "customsCpcNumber",
-            //            TextDisplay = line.CustomsCpcNumber
-            //        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "quantity",
+                        TextDisplay = line.Quantity.ToString()
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "currency",
+                        TextDisplay = line.Country.Currency
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId.ToString(),
+                        ColumnId = "customsValue",
+                        TextDisplay = line.Total.ToString()
+                    });
 
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "tariffCode",
-            //            TextDisplay = line.TarrifCode
-            //        });
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "quantity",
-            //            TextDisplay = line.Qty.ToString()
-            //        });
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "currency",
-            //            TextDisplay = line.Currency
-            //        });
-            //    values.Add(
-            //        new CalculationValueModel
-            //        {
-            //            RowId = rowId.ToString(),
-            //            ColumnId = "customsValue",
-            //            TextDisplay = line.CustomsValue.ToString()
-            //        });
-
-            //    rowIndex++;
-            //}
+                rowIndex++;
+            }
 
             reportLayout.AddColumnComponent(null, columns);
 

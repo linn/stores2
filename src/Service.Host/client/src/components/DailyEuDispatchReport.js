@@ -22,6 +22,8 @@ function DailyEuDispatchReport() {
         result
     } = useGet(itemTypes.dailyEuDispatchReport.url, true);
 
+    console.log('report result', result);
+
     const report = useMemo(() => {
         if (!result || !Array.isArray(result.reportResults) || !result.reportResults[0]) {
             return null;
