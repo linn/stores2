@@ -89,6 +89,8 @@
 
         public DbSet<AuditLocation> AuditLocations { get; set; }
 
+        public DbSet<TqmsData> TqmsData { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -142,6 +144,8 @@
             BuildAuditLocations(builder);
             BuildReqSerialNumbers(builder);
             BuildLocationTypes(builder);
+            BuildTqmsData(builder);
+            BuildBoms(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -364,6 +368,11 @@
             e.Property(p => p.SimModelName).HasColumnName("SIM_MODEL_NAME").HasMaxLength(100);
             e.Property(p => p.AltiumValue).HasColumnName("ALTIUM_VALUE").HasMaxLength(100);
             e.Property(p => p.ResistorTolerance).HasColumnName("RES_TOLERANCE");
+            e.HasOne(p => p.Bom)
+                .WithOne(b => b.Part)
+                .HasForeignKey<Part>(p => p.BomId)
+                .HasPrincipalKey<Bom>(b => b.BomId);
+
         }
         
         private static void BuildStockPool(ModelBuilder builder)
@@ -987,6 +996,30 @@
             r.HasKey(l => l.Code);
             r.Property(l => l.Code).HasColumnName("LOCATION_TYPE_CODE").HasMaxLength(1);
             r.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+        }
+
+        private static void BuildTqmsData(ModelBuilder builder)
+        {
+            var entity = builder.Entity<Linn.Stores2.Domain.LinnApps.Stock.TqmsData>().ToTable("V_TQMS2001_DATA").HasNoKey();
+            // entity.HasKey(e => new { e.Jobref, e.PartNumber, e.TqmsCategoryCode }); // Adjust if the key is different
+            entity.Property(e => e.Jobref).HasColumnName("JOBREF").HasMaxLength(6);
+            entity.Property(e => e.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            entity.Property(e => e.TqmsCategoryCode).HasColumnName("TQMS_CATEGORY").HasMaxLength(10);
+            entity.Property(e => e.CurrentUnitPrice).HasColumnName("CURRENT_UNIT_PRICE");
+            entity.Property(e => e.TotalQty).HasColumnName("TOTAL_QTY");
+            entity.HasOne(e => e.Part)
+                .WithMany()
+                .HasForeignKey(e => e.PartNumber);
+        }
+
+        private static void BuildBoms(ModelBuilder builder)
+        {
+            var entity = builder.Entity<Bom>().ToTable("BOMS");
+            entity.HasKey(e => e.BomId);
+            entity.Property(e => e.BomId).HasColumnName("BOM_ID");
+            entity.Property(e => e.BomName).HasColumnName("BOM_NAME").HasMaxLength(14);
+            entity.Property(e => e.LabourTimeMins).HasColumnName("LABOUR_TIME_MINS");
+            entity.Property(e => e.TotalLabourTimeMins).HasColumnName("TOTAL_LABOUR_TIME_MINS");
         }
     }
 }

@@ -40,6 +40,9 @@ function App() {
                         <ListItem component={Link} to="/requisitions/reports/requisition-cost">
                             <Typography color="primary">Cost Of Req Report</Typography>
                         </ListItem>
+                        <ListItem component={Link} to="/stores2/reports/labour-hours-in-stock">
+                            <Typography color="primary">Labour Hours In Stock Report</Typography>
+                        </ListItem>
                     </List>
                 </Grid>
             </Grid>
