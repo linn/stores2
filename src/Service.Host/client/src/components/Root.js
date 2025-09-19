@@ -33,6 +33,7 @@ import Pallet from './Pallet';
 import StorageSites from './storageSites/StorageSites';
 import StorageSite from './storageSites/StorageSite';
 import LabourHoursInStockReport from './LabourHoursInStockReport';
+import LabourHoursSummaryReport from './LabourHoursSummaryReport';
 
 function Root() {
     useSignIn();
@@ -123,6 +124,10 @@ function Root() {
                     <Route
                         path="/stores2/reports/labour-hours-in-stock"
                         element={<LabourHoursInStockReport />}
+                    />
+                    <Route
+                        path="/stores2/reports/labour-hours-summary"
+                        element={<LabourHoursSummaryReport />}
                     />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>

@@ -14,5 +14,8 @@
         Task<IResult<TotalResource>> LabourHoursInStockTotal(string jobref,
             string accountingCompany = "LINN",
             bool includeObsolete = true);
+
+        Task<IResult<ReportReturnResource>> LabourHourSummary(string fromDate, string toDate,
+            string accountingCompany = "LINN");
     }
 }

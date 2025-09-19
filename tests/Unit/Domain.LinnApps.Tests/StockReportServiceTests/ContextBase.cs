@@ -1,0 +1,33 @@
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
+{
+    using Linn.Common.Persistence;
+    using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps.Reports;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using NSubstitute;
+    using NUnit.Framework;
+
+    public class ContextBase
+    {
+        protected StockReportService Sut { get; set; }
+
+        protected IQueryRepository<TqmsData> TqmsRepository;
+
+        protected IQueryRepository<LabourHoursSummary> LabourHoursSummaryRepository;
+
+        protected IReportingHelper ReportingHelper { get; private set; }
+
+        [SetUp]
+        public void SetUpContext()
+        {
+            this.TqmsRepository = Substitute.For<IQueryRepository<TqmsData>>();
+            this.LabourHoursSummaryRepository = Substitute.For<IQueryRepository<LabourHoursSummary>>();
+            this.ReportingHelper = new ReportingHelper();
+
+            this.Sut = new StockReportService(
+                this.TqmsRepository,
+                this.LabourHoursSummaryRepository,
+                this.ReportingHelper);
+        }
+    }
+}

@@ -17,6 +17,8 @@
             app.MapGet("/stores2/reports/labour-hours-in-stock/report", this.GetLabourHoursInStock);
             app.MapGet("/stores2/reports/labour-hours-in-stock/total", this.GetLabourHoursInStockTotal);
             app.MapGet("/stores2/reports/labour-hours-in-stock", this.GetApp);
+            app.MapGet("/stores2/reports/labour-hours-summary", this.GetApp);
+            app.MapGet("/stores2/reports/labour-hours-summary/report", this.GetLabourHourSummaries);
         }
 
         private async Task GetLabourHoursInStock(
@@ -37,6 +39,17 @@
             IStockReportFacadeService facadeService)
         {
             await res.Negotiate(await facadeService.LabourHoursInStockTotal(jobref, accountingCompany, true));
+        }
+
+        private async Task GetLabourHourSummaries(
+            HttpRequest _,
+            HttpResponse res,
+            string accountingCompany,
+            string fromDate,
+            string toDate,
+            IStockReportFacadeService facadeService)
+        {
+            await res.Negotiate(await facadeService.LabourHourSummary(fromDate, toDate, accountingCompany));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)

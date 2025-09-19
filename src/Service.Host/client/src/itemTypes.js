@@ -51,6 +51,9 @@ const itemTypes = {
     tqmsJobrefs: { url: `${config.proxyRoot}/inventory/tqms-jobrefs` },
     labourHoursInStockTotal: {
         url: `${config.appRoot}/stores2/reports/labour-hours-in-stock/total`
+    },
+    labourHoursSummaryReport: {
+        url: `${config.appRoot}/stores2/reports/labour-hours-summary/report`
     }
 };
 

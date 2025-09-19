@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.IoC
+﻿using Linn.Stores2.Domain.LinnApps.Reports;
+
+namespace Linn.Stores2.IoC
 {
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
@@ -88,7 +90,10 @@
                     r => new EntityFrameworkQueryRepository<AuditLocation>(r.GetService<ServiceDbContext>()?.AuditLocations))
                 .AddScoped<IQueryRepository<LocationType>, EntityFrameworkQueryRepository<LocationType>>(r =>
                     new EntityFrameworkQueryRepository<LocationType>(r.GetService<ServiceDbContext>()?.LocationTypes))
-                .AddScoped<IQueryRepository<TqmsData>, TqmsDataRepository>();
+                .AddScoped<IQueryRepository<TqmsData>, TqmsDataRepository>()
+                .AddScoped<IQueryRepository<LabourHoursSummary>, EntityFrameworkQueryRepository<LabourHoursSummary>>(
+                    r => new EntityFrameworkQueryRepository<LabourHoursSummary>(
+                        r.GetService<ServiceDbContext>()?.LabourHourSummaries));
         }
     }
 }
