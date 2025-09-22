@@ -8,6 +8,7 @@
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -87,7 +88,11 @@
                 .AddScoped<IQueryRepository<AuditLocation>, EntityFrameworkQueryRepository<AuditLocation>>(
                     r => new EntityFrameworkQueryRepository<AuditLocation>(r.GetService<ServiceDbContext>()?.AuditLocations))
                 .AddScoped<IQueryRepository<LocationType>, EntityFrameworkQueryRepository<LocationType>>(r =>
-                    new EntityFrameworkQueryRepository<LocationType>(r.GetService<ServiceDbContext>()?.LocationTypes));
+                    new EntityFrameworkQueryRepository<LocationType>(r.GetService<ServiceDbContext>()?.LocationTypes))
+                .AddScoped<IQueryRepository<TqmsData>, TqmsDataRepository>()
+                .AddScoped<IQueryRepository<LabourHoursSummary>, EntityFrameworkQueryRepository<LabourHoursSummary>>(
+                    r => new EntityFrameworkQueryRepository<LabourHoursSummary>(
+                        r.GetService<ServiceDbContext>()?.LabourHourSummaries));
         }
     }
 }

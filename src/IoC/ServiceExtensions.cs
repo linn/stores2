@@ -87,7 +87,9 @@
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}RequisitionCost.cshtml",
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()
-                .AddScoped<ISerialNumberService, SerialNumberService>();
+                .AddScoped<ISerialNumberService, SerialNumberService>()
+                .AddScoped<IStockReportService, StockReportService>()
+                .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -116,7 +118,8 @@
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
                 .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
-                .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
+                .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>()
+                .AddScoped<IStockReportFacadeService, StockReportFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

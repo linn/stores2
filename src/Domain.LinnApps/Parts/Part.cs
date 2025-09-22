@@ -50,6 +50,8 @@
 
         public int? BomId { get; set; }
 
+        public Bom Bom { get; set; }
+
         public string OurUnitOfMeasure { get; set; }
 
         public int? PreferredSupplierId { get; set; }

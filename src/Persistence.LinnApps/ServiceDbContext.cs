@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Persistence.LinnApps
+﻿
+
+namespace Linn.Stores2.Persistence.LinnApps
 {
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
@@ -7,10 +9,10 @@
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
-
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 
@@ -89,6 +91,10 @@
 
         public DbSet<AuditLocation> AuditLocations { get; set; }
 
+        public DbSet<TqmsData> TqmsData { get; set; }
+
+        public DbSet<LabourHoursSummary> LabourHourSummaries { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -142,6 +148,9 @@
             BuildAuditLocations(builder);
             BuildReqSerialNumbers(builder);
             BuildLocationTypes(builder);
+            BuildTqmsData(builder);
+            BuildBoms(builder);
+            BuildLabourHourSummaries(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -364,6 +373,11 @@
             e.Property(p => p.SimModelName).HasColumnName("SIM_MODEL_NAME").HasMaxLength(100);
             e.Property(p => p.AltiumValue).HasColumnName("ALTIUM_VALUE").HasMaxLength(100);
             e.Property(p => p.ResistorTolerance).HasColumnName("RES_TOLERANCE");
+            e.HasOne(p => p.Bom)
+                .WithOne(b => b.Part)
+                .HasForeignKey<Part>(p => p.BomId)
+                .HasPrincipalKey<Bom>(b => b.BomId);
+
         }
         
         private static void BuildStockPool(ModelBuilder builder)
@@ -987,6 +1001,46 @@
             r.HasKey(l => l.Code);
             r.Property(l => l.Code).HasColumnName("LOCATION_TYPE_CODE").HasMaxLength(1);
             r.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+        }
+
+        private static void BuildTqmsData(ModelBuilder builder)
+        {
+            var entity = builder.Entity<TqmsData>().ToTable("V_TQMS2001_DATA").HasNoKey();
+            // entity.HasKey(e => new { e.Jobref, e.PartNumber, e.TqmsCategoryCode }); // Adjust if the key is different
+            entity.Property(e => e.Jobref).HasColumnName("JOBREF").HasMaxLength(6);
+            entity.Property(e => e.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            entity.Property(e => e.TqmsCategoryCode).HasColumnName("TQMS_CATEGORY").HasMaxLength(10);
+            entity.Property(e => e.CurrentUnitPrice).HasColumnName("CURRENT_UNIT_PRICE");
+            entity.Property(e => e.TotalQty).HasColumnName("TOTAL_QTY");
+            entity.HasOne(e => e.Part)
+                .WithMany()
+                .HasForeignKey(e => e.PartNumber);
+        }
+
+        private static void BuildBoms(ModelBuilder builder)
+        {
+            var entity = builder.Entity<Bom>().ToTable("BOMS");
+            entity.HasKey(e => e.BomId);
+            entity.Property(e => e.BomId).HasColumnName("BOM_ID");
+            entity.Property(e => e.BomName).HasColumnName("BOM_NAME").HasMaxLength(14);
+            entity.Property(e => e.LabourTimeMins).HasColumnName("LABOUR_TIME_MINS");
+            entity.Property(e => e.TotalLabourTimeMins).HasColumnName("TOTAL_LABOUR_TIME_MINS");
+        }
+
+        private static void BuildLabourHourSummaries(ModelBuilder builder)
+        {
+            var q = builder.Entity<LabourHoursSummary>().ToTable("LABOUR_HOURS_VIEW").HasNoKey();
+            q.Property(e => e.TransactionMonth).HasColumnName("TRANSACTION_MONTH");
+            q.Property(e => e.StartJobref).HasColumnName("START_JOBREF").HasMaxLength(6);
+            q.Property(e => e.EndJobref).HasColumnName("END_JOBREF").HasMaxLength(6);
+            q.Property(e => e.StockTransactions).HasColumnName("STOCK_TRANSACTIONS");
+            q.Property(e => e.BuildHours).HasColumnName("BUILD_HOURS");
+            q.Property(e => e.AlternativeBuildHours).HasColumnName("ALTERNATIVE_BUILD_HOURS");
+            q.Property(e => e.SoldHours).HasColumnName("SOLD_HOURS");
+            q.Property(e => e.UsedHours).HasColumnName("USED_HOURS");
+            q.Property(e => e.LoanOutHours).HasColumnName("LOAN_OUT_HOURS");
+            q.Property(e => e.LoanBackHours).HasColumnName("LOAN_BACK_HOURS");
+            q.Property(e => e.OtherHours).HasColumnName("OTHER_HOURS");
         }
     }
 }
