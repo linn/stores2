@@ -14,8 +14,6 @@
 
         public string CitName { get; set; }
 
-        public string VaxWorkstation { get; set; }
-
         public string ZoneType { get; set; }
 
         public IEnumerable<WorkStationElementResource> WorkStationElements { get; set; }

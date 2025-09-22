@@ -7,15 +7,20 @@
 
     public interface IStockReportFacadeService
     {
-        Task<IResult<ReportReturnResource>> LabourHoursInStock(string jobref,
+        Task<IResult<ReportReturnResource>> LabourHoursInStock(
+            string jobref,
             string accountingCompany = "LINN",
             bool includeObsolete = true);
 
-        Task<IResult<TotalResource>> LabourHoursInStockTotal(string jobref,
+        Task<IResult<TotalResource>> LabourHoursInStockTotal(
+            string jobref,
             string accountingCompany = "LINN",
             bool includeObsolete = true);
 
-        Task<IResult<ReportReturnResource>> LabourHourSummary(string fromDate, string toDate,
-            string accountingCompany = "LINN", bool recalcLabourTimes = false);
+        Task<IResult<ReportReturnResource>> LabourHourSummary(
+            string fromDate,
+            string toDate,
+            string accountingCompany = "LINN",
+            bool recalcLabourTimes = false);
     }
 }

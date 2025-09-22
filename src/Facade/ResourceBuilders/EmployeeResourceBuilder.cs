@@ -8,28 +8,22 @@
     using Linn.Stores2.Resources.External;
 
     public class EmployeeResourceBuilder : IBuilder<Employee>
-{
-    public EmployeeResource Build(Employee employee, IEnumerable<string> claims)
     {
-        if (employee == null)
+        public EmployeeResource Build(Employee employee, IEnumerable<string> claims)
         {
-            return null;
+            if (employee == null)
+            {
+                return null;
+            }
+
+            return new EmployeeResource { Id = employee.Id, Name = employee.Name, };
         }
 
-        return new EmployeeResource
+        public string GetLocation(Employee model)
         {
-            Id = employee.Id,
-            Name = employee.Name,
-        };
+            throw new NotImplementedException();
+        }
+
+        object IBuilder<Employee>.Build(Employee entity, IEnumerable<string> claims) => this.Build(entity, claims);
     }
-
-    public string GetLocation(Employee model)
-    {
-        throw new NotImplementedException();
-        }
-
-    object IBuilder<Employee>.Build(Employee entity, IEnumerable<string> claims) =>
-        this.Build(entity, claims);
-
-}
 }
