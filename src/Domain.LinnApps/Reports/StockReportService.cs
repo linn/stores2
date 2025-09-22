@@ -113,7 +113,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                     x => x.TransactionMonth >= fromDate
                          && x.TransactionMonth <= toDate);
 
-            var gridModel = new ResultsModel { ReportTitle = new NameModel($"Labour Hours {fromDate:MMM-yy} to {toDate:MMM-yy}") };
+            var gridModel = new ResultsModel { ReportTitle = new NameModel($"Labour Hours {fromDate.ToString("MMM-yy", CultureInfo.InvariantCulture)} to {toDate.ToString("MMM-yy", CultureInfo.InvariantCulture)}") };
             var reconcileModel = new ResultsModel { ReportTitle = new NameModel("Reconciliation") };
 
             gridModel.AddSortedColumns(this.LabourSummaryColumns());

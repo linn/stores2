@@ -47,7 +47,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
         {
             this.result.Should().NotBeNull();
             var summary = this.result.ToList().FirstOrDefault();
-            summary.ReportTitle.DisplayValue.Should().Be("Labour Hours Aug-25 to Sept-25");
+            summary.ReportTitle.DisplayValue.Should().Be("Labour Hours Aug-25 to Sep-25");
             summary.Columns.Should().HaveCount(10);
             summary.Rows.Should().HaveCount(2);
             summary.GetGridTextValue(0, 0).Should().Be("Aug-25");
