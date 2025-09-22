@@ -1,15 +1,14 @@
-﻿using System.Globalization;
-
-namespace Linn.Stores2.Domain.LinnApps.Reports
+﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using Newtonsoft.Json.Linq;
 
     public class StockReportService : IStockReportService
     {
@@ -22,8 +21,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
         public StockReportService(
             IQueryRepository<TqmsData> tqmsRepository,
             IQueryRepository<LabourHoursSummary> labourHoursSummaryRepository,
-            IReportingHelper reportingHelper
-            )
+            IReportingHelper reportingHelper)
         {
             this.tqmsRepository = tqmsRepository;
             this.labourHoursSummaryRepository = labourHoursSummaryRepository;
@@ -77,12 +75,38 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
             foreach (var item in grouped)
             {
                 var rowId = item.Part.PartNumber;
-                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "PartNumber", TextDisplay = item.Part.PartNumber });
-                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "Description", TextDisplay = item.Part?.Description });
-                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "MaterialPrice", TextDisplay = item.CurrentUnitPrice.ToString() });
-                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "LabourTimeMins", TextDisplay = item.Part?.Bom?.TotalLabourTimeMins.ToString() });
-                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "TotalStockQty", TextDisplay = item.TotalQty.ToString() });
-                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "LabourHours", TextDisplay = item.LabourHours().ToString("F2") });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "PartNumber", TextDisplay = item.Part.PartNumber
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "Description", TextDisplay = item.Part?.Description
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "MaterialPrice", TextDisplay = item.CurrentUnitPrice.ToString()
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "LabourTimeMins",
+                            TextDisplay = item.Part?.Bom?.TotalLabourTimeMins.ToString()
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "TotalStockQty", TextDisplay = item.TotalQty.ToString()
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "LabourHours", TextDisplay = item.LabourHours().ToString("F2")
+                        });
             }
 
             this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Quantity, true);
@@ -90,14 +114,20 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
             return model;
         }
 
-        public async Task<decimal> GetStockInLabourHoursTotal(string jobref, string accountingCompany = "LINN", bool includeObsolete = true)
+        public async Task<decimal> GetStockInLabourHoursTotal(
+            string jobref,
+            string accountingCompany = "LINN",
+            bool includeObsolete = true)
         {
             var tqmsData = await this.GetTqmsData(jobref, accountingCompany, includeObsolete);
 
-            return Math.Round(tqmsData.Sum(t => t.LabourHours()),2);
+            return Math.Round(tqmsData.Sum(t => t.LabourHours()), 2);
         }
 
-        public async Task<IEnumerable<ResultsModel>> GetLabourHoursSummaryReport(DateTime fromDate, DateTime toDate, string accountingCompany = "LINN")
+        public async Task<IEnumerable<ResultsModel>> GetLabourHoursSummaryReport(
+            DateTime fromDate,
+            DateTime toDate,
+            string accountingCompany = "LINN")
         {
             var reports = new List<ResultsModel>();
             decimal firstStartMonth = 0;
@@ -113,7 +143,11 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                     x => x.TransactionMonth >= fromDate
                          && x.TransactionMonth <= toDate);
 
-            var gridModel = new ResultsModel { ReportTitle = new NameModel($"Labour Hours {fromDate.ToString("MMM-yy", CultureInfo.InvariantCulture)} to {toDate.ToString("MMM-yy", CultureInfo.InvariantCulture)}") };
+            var gridModel = new ResultsModel
+                                {
+                                    ReportTitle = new NameModel(
+                                        $"Labour Hours {fromDate.ToString("MMM-yy", CultureInfo.InvariantCulture)} to {toDate.ToString("MMM-yy", CultureInfo.InvariantCulture)}")
+                                };
             var reconcileModel = new ResultsModel { ReportTitle = new NameModel("Reconciliation") };
 
             gridModel.AddSortedColumns(this.LabourSummaryColumns());
@@ -131,7 +165,13 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                     lastEndOfMonth = firstStartMonth;
                 }
 
-                values.Add(new CalculationValueModel { RowId = monthIndex.ToString(), ColumnId = "Month", TextDisplay = summary.TransactionMonth.ToString("MMM-yy", CultureInfo.InvariantCulture) });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = monthIndex.ToString(),
+                            ColumnId = "Month",
+                            TextDisplay = summary.TransactionMonth.ToString("MMM-yy", CultureInfo.InvariantCulture)
+                        });
                 values.Add(
                     new CalculationValueModel
                     {
@@ -254,50 +294,41 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
             {
                 new AxisDetailsModel("Month", "Month", GridDisplayType.TextValue, 120),
                 new AxisDetailsModel("StartOfMonth", "Start Of Month", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("EndOfMonth", "End Of Month", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("Diff", "Diff", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("StockTrans", "Stock Trans", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("BuildHours", "Build Hours", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("SoldHours", "Sold Hours", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("OtherHours", "Other Hours", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("LoanOutHours", "Loan Out Hours", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("LoanBackHours", "Loan Back Hours", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                }
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    }
             };
         }
 
@@ -307,29 +338,34 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
             {
                 new AxisDetailsModel("Heading", " ", GridDisplayType.TextValue, 120),
                 new AxisDetailsModel("Value", " ", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                },
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    },
                 new AxisDetailsModel("Running", " ", GridDisplayType.Value, 120)
-                {
-                    Align = "right",
-                    DecimalPlaces = 2
-                }
+                    {
+                        Align = "right", DecimalPlaces = 2
+                    }
             };
         }
 
-        private List<CalculationValueModel> AddReconcileValue(string rowId, string heading, decimal value, decimal running)
+        private List<CalculationValueModel> AddReconcileValue(
+            string rowId,
+            string heading,
+            decimal value,
+            decimal running)
         {
-            return new List<CalculationValueModel>()
-            {
-                new CalculationValueModel { RowId = rowId, ColumnId = "Heading", TextDisplay = heading },
-                new CalculationValueModel { RowId = rowId, ColumnId = "Value", Value = value },
-                new CalculationValueModel { RowId = rowId, ColumnId = "Running", Value = running }
-            };
+            return new List<CalculationValueModel>
+                       {
+                           new CalculationValueModel { RowId = rowId, ColumnId = "Heading", TextDisplay = heading },
+                           new CalculationValueModel { RowId = rowId, ColumnId = "Value", Value = value },
+                           new CalculationValueModel { RowId = rowId, ColumnId = "Running", Value = running }
+                       };
         }
 
-        private async Task<IEnumerable<TqmsData>> GetTqmsData(string jobref, string accountingCompany = "LINN", bool includeObsolete = true)
+        private async Task<IEnumerable<TqmsData>> GetTqmsData(
+            string jobref,
+            string accountingCompany = "LINN",
+            bool includeObsolete = true)
         {
             return await this.tqmsRepository
                 .FilterByAsync(
@@ -341,7 +377,10 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                          && (includeObsolete || x.Part.IsLive()));
         }
 
-        private async Task<decimal> GetTqmsDataTotal(string jobref, string accountingCompany = "LINN", bool includeObsolete = true)
+        private async Task<decimal> GetTqmsDataTotal(
+            string jobref,
+            string accountingCompany = "LINN",
+            bool includeObsolete = true)
         {
             var tqmsData = await this.GetTqmsData(jobref, accountingCompany, includeObsolete);
             return Math.Round(tqmsData.Sum(t => t.LabourHours()), 2);

@@ -11,9 +11,9 @@
     {
         protected StockReportService Sut { get; set; }
 
-        protected IQueryRepository<TqmsData> TqmsRepository;
+        protected IQueryRepository<TqmsData> TqmsRepository { get; private set; }
 
-        protected IQueryRepository<LabourHoursSummary> LabourHoursSummaryRepository;
+        protected IQueryRepository<LabourHoursSummary> LabourHoursSummaryRepository { get; private set; }
 
         protected IReportingHelper ReportingHelper { get; private set; }
 

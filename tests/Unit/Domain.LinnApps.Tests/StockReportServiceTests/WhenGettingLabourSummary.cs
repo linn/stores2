@@ -1,16 +1,19 @@
-﻿using System.Linq;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using FluentAssertions.Extensions;
+
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.Reports;
+
     using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenGettingLabourSummary : ContextBase
@@ -20,33 +23,33 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
         [SetUp]
         public async Task SetUp()
         {
-            var summaries = new List<LabourHoursSummary>()
-            {
-                new LabourHoursSummary
-                {
-                    TransactionMonth = 1.August(2025),
-                    StockTransactions = 906.54m,
-                    AlternativeBuildHours = 3404.73m
-                },
-                new LabourHoursSummary
-                {
-                    TransactionMonth = 1.September(2025),
-                    StockTransactions = 294.7m,
-                    AlternativeBuildHours = 3850.29m
-                }
-            };
+            var summaries = new List<LabourHoursSummary>
+                                {
+                                    new LabourHoursSummary
+                                        {
+                                            TransactionMonth = 1.August(2025),
+                                            StockTransactions = 906.54m,
+                                            AlternativeBuildHours = 3404.73m
+                                        },
+                                    new LabourHoursSummary
+                                        {
+                                            TransactionMonth = 1.September(2025),
+                                            StockTransactions = 294.7m,
+                                            AlternativeBuildHours = 3850.29m
+                                        }
+                                };
 
             this.LabourHoursSummaryRepository.FilterByAsync(Arg.Any<Expression<Func<LabourHoursSummary, bool>>>())
                 .Returns(summaries);
 
-            this.result = await this.Sut.GetLabourHoursSummaryReport(1.August(2025), 1.September(2025), "LINN");
+            this.result = await this.Sut.GetLabourHoursSummaryReport(1.August(2025), 1.September(2025));
         }
 
         [Test]
         public void ShouldReturnSummaryReport()
         {
             this.result.Should().NotBeNull();
-            var summary = this.result.ToList().FirstOrDefault();
+            var summary = this.result.ToList().First();
             summary.ReportTitle.DisplayValue.Should().Be("Labour Hours Aug-25 to Sep-25");
             summary.Columns.Should().HaveCount(10);
             summary.Rows.Should().HaveCount(2);

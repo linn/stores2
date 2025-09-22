@@ -1,13 +1,17 @@
 ﻿namespace Linn.Stores2.Integration.Tests.StockReportModuleTests
 {
     using System.Linq;
+    using System.Net;
+
     using FluentAssertions;
+
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using NUnit.Framework;
-    using System.Net;
+
     using NSubstitute;
+
+    using NUnit.Framework;
 
     public class WhenGettingLabourHoursInStockReport : ContextBase
     {

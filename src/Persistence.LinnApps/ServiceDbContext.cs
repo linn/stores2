@@ -1,6 +1,4 @@
-﻿
-
-namespace Linn.Stores2.Persistence.LinnApps
+﻿namespace Linn.Stores2.Persistence.LinnApps
 {
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;

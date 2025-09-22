@@ -17,7 +17,8 @@
 
         private readonly ICalcLabourHoursProxy labourHoursProxy;
 
-        public StockReportFacadeService(IStockReportService stockReportService,
+        public StockReportFacadeService(
+            IStockReportService stockReportService,
             IReportReturnResourceBuilder reportResourceBuilder,
             ICalcLabourHoursProxy labourHoursProxy)
         {
@@ -26,24 +27,37 @@
             this.labourHoursProxy = labourHoursProxy;
         }
 
-        public async Task<IResult<ReportReturnResource>> LabourHoursInStock(string jobref,
+        public async Task<IResult<ReportReturnResource>> LabourHoursInStock(
+            string jobref,
             string accountingCompany = "LINN",
         bool includeObsolete = true)
         {
-            var result = await stockReportService.GetStockInLabourHours(jobref, accountingCompany, includeObsolete);
+            var result = await this.stockReportService.GetStockInLabourHours(
+                             jobref,
+                             accountingCompany,
+                             includeObsolete);
 
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
         }
 
-        public async Task<IResult<TotalResource>> LabourHoursInStockTotal(string jobref, string accountingCompany = "LINN", bool includeObsolete = true)
+        public async Task<IResult<TotalResource>> LabourHoursInStockTotal(
+            string jobref,
+            string accountingCompany = "LINN",
+            bool includeObsolete = true)
         {
-            var total = await stockReportService.GetStockInLabourHoursTotal(jobref, accountingCompany, includeObsolete);
+            var total = await this.stockReportService.GetStockInLabourHoursTotal(
+                            jobref,
+                            accountingCompany,
+                            includeObsolete);
 
             return new SuccessResult<TotalResource>(new TotalResource(total));
         }
 
-        public async Task<IResult<ReportReturnResource>> LabourHourSummary(string fromDate, string toDate,
-            string accountingCompany = "LINN", bool recalcLabourTimes = false)
+        public async Task<IResult<ReportReturnResource>> LabourHourSummary(
+            string fromDate,
+            string toDate,
+            string accountingCompany = "LINN",
+            bool recalcLabourTimes = false)
         {
             if (!DateTime.TryParse(fromDate, out var from) || !DateTime.TryParse(toDate, out var to))
             {
@@ -55,7 +69,7 @@
                 await this.labourHoursProxy.CalcLabourTimes();
             }
 
-            var result = await stockReportService.GetLabourHoursSummaryReport(from, to, accountingCompany);
+            var result = await this.stockReportService.GetLabourHoursSummaryReport(from, to, accountingCompany);
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
         }
     }

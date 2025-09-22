@@ -1,17 +1,20 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System;
-    using System.Threading.Tasks;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     using Linn.Common.Reporting.Models;
 
     public interface IStockReportService
     {
-        Task<ResultsModel> GetStockInLabourHours(string jobref,
+        Task<ResultsModel> GetStockInLabourHours(
+            string jobref,
             string accountingCompany = "LINN",
             bool includeObsolete = true);
 
-        Task<decimal> GetStockInLabourHoursTotal(string jobref,
+        Task<decimal> GetStockInLabourHoursTotal(
+            string jobref,
             string accountingCompany = "LINN",
             bool includeObsolete = true);
 
