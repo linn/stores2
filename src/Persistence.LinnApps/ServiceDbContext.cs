@@ -1,4 +1,4 @@
-﻿using Linn.Stores2.Domain.LinnApps.Reports;
+﻿
 
 namespace Linn.Stores2.Persistence.LinnApps
 {
@@ -9,10 +9,10 @@ namespace Linn.Stores2.Persistence.LinnApps
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
-
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 

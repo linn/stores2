@@ -1,6 +1,4 @@
-﻿using Linn.Stores2.Domain.LinnApps.Reports;
-
-namespace Linn.Stores2.IoC
+﻿namespace Linn.Stores2.IoC
 {
     using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
@@ -10,6 +8,7 @@ namespace Linn.Stores2.IoC
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;

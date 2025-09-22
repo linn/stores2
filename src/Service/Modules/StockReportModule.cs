@@ -7,7 +7,6 @@
     using Linn.Stores2.Service.Models;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Routing;
 
     public class StockReportModule : IModule

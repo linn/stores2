@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Reports
+﻿using System.Globalization;
+
+namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System;
     using System.Collections.Generic;
@@ -129,7 +131,7 @@
                     lastEndOfMonth = firstStartMonth;
                 }
 
-                values.Add(new CalculationValueModel { RowId = monthIndex.ToString(), ColumnId = "Month", TextDisplay = summary.TransactionMonth.ToString("MMM-yy") });
+                values.Add(new CalculationValueModel { RowId = monthIndex.ToString(), ColumnId = "Month", TextDisplay = summary.TransactionMonth.ToString("MMM-yy", CultureInfo.InvariantCulture) });
                 values.Add(
                     new CalculationValueModel
                     {
@@ -246,7 +248,7 @@
             return reports;
         }
 
-        private new List<AxisDetailsModel> LabourSummaryColumns()
+        private List<AxisDetailsModel> LabourSummaryColumns()
         {
             return new List<AxisDetailsModel>
             {
@@ -299,7 +301,7 @@
             };
         }
 
-        private new List<AxisDetailsModel> ReconcileColumns()
+        private List<AxisDetailsModel> ReconcileColumns()
         {
             return new List<AxisDetailsModel>
             {

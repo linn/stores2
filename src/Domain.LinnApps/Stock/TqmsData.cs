@@ -18,7 +18,7 @@
 
         public decimal LabourHours()
         {
-            if (this.Part != null && this.Part.Bom != null)
+            if (this.Part?.Bom != null)
             {
                 return this.Part.Bom.TotalLabourTimeHours * this.TotalQty;
             }
