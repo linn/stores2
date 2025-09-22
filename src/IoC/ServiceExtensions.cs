@@ -88,7 +88,8 @@
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()
                 .AddScoped<ISerialNumberService, SerialNumberService>()
-                .AddScoped<IStockReportService, StockReportService>();
+                .AddScoped<IStockReportService, StockReportService>()
+                .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>();
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

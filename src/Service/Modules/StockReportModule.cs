@@ -47,9 +47,10 @@
             string accountingCompany,
             string fromDate,
             string toDate,
-            IStockReportFacadeService facadeService)
+            IStockReportFacadeService facadeService,
+            bool recalcLabourTimes = false)
         {
-            await res.Negotiate(await facadeService.LabourHourSummary(fromDate, toDate, accountingCompany));
+            await res.Negotiate(await facadeService.LabourHourSummary(fromDate, toDate, accountingCompany, recalcLabourTimes));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)

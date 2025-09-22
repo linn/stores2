@@ -16,6 +16,6 @@
             bool includeObsolete = true);
 
         Task<IResult<ReportReturnResource>> LabourHourSummary(string fromDate, string toDate,
-            string accountingCompany = "LINN");
+            string accountingCompany = "LINN", bool recalcLabourTimes = false);
     }
 }

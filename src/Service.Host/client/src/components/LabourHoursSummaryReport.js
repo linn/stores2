@@ -21,7 +21,8 @@ const LabourHoursSummaryReport = () => {
     const [options, setOptions] = useState({
         fromDate: moment('2025-08-01'),
         toDate: moment('2025-09-01'),
-        accountingCompany: 'LINN'
+        accountingCompany: 'LINN',
+        recalcLabourTimes: false
     });
     const {
         send: getReport,
@@ -34,8 +35,6 @@ const LabourHoursSummaryReport = () => {
         fromDate: options.fromDate.toISOString(),
         toDate: options.toDate.toISOString()
     };
-
-    const [refreshLabourTimes, setRefreshLabourTimes] = useState(false);
 
     const reports = useMemo(
         () => (
@@ -104,10 +103,12 @@ const LabourHoursSummaryReport = () => {
                 </Grid>
                 <Grid size={3}>
                     <CheckboxWithLabel
-                        label="Refresh Labour Times"
-                        checked={refreshLabourTimes}
-                        onChange={(e, checked) => setRefreshLabourTimes(checked)}
-                        propertyName="refreshLabourTimes"
+                        label="Recalc Labour Times"
+                        checked={options.recalcLabourTimes}
+                        onChange={(e, checked) =>
+                            setOptions(o => ({ ...o, recalcLabourTimes: checked }))
+                        }
+                        propertyName="recalcLabourTimes"
                     />
                 </Grid>
                 <Grid size={6}>
