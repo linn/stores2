@@ -54,12 +54,12 @@
             {
                 new AxisDetailsModel("PartNumber", "Part Num", GridDisplayType.TextValue, 150),
                 new AxisDetailsModel("Description", "Description", GridDisplayType.TextValue, 250),
-                new AxisDetailsModel("MaterialPrice", "Material Price", GridDisplayType.TextValue, 120 ),
-                new AxisDetailsModel("LabourTimeMins", "Labour Time Mins", GridDisplayType.TextValue,130)
+                new AxisDetailsModel("MaterialPrice", "Material Price", GridDisplayType.TextValue, 120),
+                new AxisDetailsModel("LabourTimeMins", "Labour Time Mins", GridDisplayType.TextValue, 130)
                     {
                         Align = "right"
                     },
-                new AxisDetailsModel("TotalStockQty", "Total Qty", GridDisplayType.TextValue,130)
+                new AxisDetailsModel("TotalStockQty", "Total Qty", GridDisplayType.TextValue, 130)
                    {
                        Align = "right"
                    },
@@ -121,7 +121,7 @@
         {
             var tqmsData = await this.GetTqmsData(jobref, accountingCompany, includeObsolete);
 
-            return Math.Round(tqmsData.Sum(t => t.LabourHours()), 2);
+            return decimal.Round(tqmsData.Sum(t => t.LabourHours()), 2);
         }
 
         public async Task<IEnumerable<ResultsModel>> GetLabourHoursSummaryReport(
@@ -130,13 +130,13 @@
             string accountingCompany = "LINN")
         {
             var reports = new List<ResultsModel>();
-            decimal firstStartMonth = 0;
-            decimal lastEndOfMonth = 0;
-            decimal soldTotal = 0;
-            decimal loanBackTotal = 0;
-            decimal loanOutTotal = 0;
-            decimal othersTotal = 0;
-            decimal buildTotal = 0;
+            var firstStartMonth = 0m;
+            var lastEndOfMonth = 0m;
+            var soldTotal = 0m;
+            var loanBackTotal = 0m;
+            var loanOutTotal = 0m;
+            var othersTotal = 0m;
+            var buildTotal = 0m;
 
             var summaries = await this.labourHoursSummaryRepository
                 .FilterByAsync(
@@ -383,7 +383,7 @@
             bool includeObsolete = true)
         {
             var tqmsData = await this.GetTqmsData(jobref, accountingCompany, includeObsolete);
-            return Math.Round(tqmsData.Sum(t => t.LabourHours()), 2);
+            return decimal.Round(tqmsData.Sum(t => t.LabourHours()), 2);
         }
     }
 }
