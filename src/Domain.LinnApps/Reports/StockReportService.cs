@@ -95,19 +95,160 @@
             return Math.Round(tqmsData.Sum(t => t.LabourHours()),2);
         }
 
-        public async Task<ResultsModel> GetLabourHoursSummaryReport(DateTime fromDate, DateTime toDate, string accountingCompany = "LINN")
+        public async Task<IEnumerable<ResultsModel>> GetLabourHoursSummaryReport(DateTime fromDate, DateTime toDate, string accountingCompany = "LINN")
         {
+            var reports = new List<ResultsModel>();
             decimal firstStartMonth = 0;
             decimal lastEndOfMonth = 0;
+            decimal soldTotal = 0;
+            decimal loanBackTotal = 0;
+            decimal loanOutTotal = 0;
+            decimal othersTotal = 0;
+            decimal buildTotal = 0;
 
             var summaries = await this.labourHoursSummaryRepository
                 .FilterByAsync(
                     x => x.TransactionMonth >= fromDate
                          && x.TransactionMonth <= toDate);
 
-            var model = new ResultsModel { ReportTitle = new NameModel($"Labour Hours {fromDate:MMM-yy} to {toDate:MMM-yy}") };
+            var gridModel = new ResultsModel { ReportTitle = new NameModel($"Labour Hours {fromDate:MMM-yy} to {toDate:MMM-yy}") };
+            var reconcileModel = new ResultsModel { ReportTitle = new NameModel("Reconciliation") };
 
-            var columns = new List<AxisDetailsModel>
+            gridModel.AddSortedColumns(this.LabourSummaryColumns());
+            reconcileModel.AddSortedColumns(this.ReconcileColumns());
+
+            var values = new List<CalculationValueModel>();
+
+            var monthIndex = 0;
+            foreach (var summary in summaries.OrderBy(s => s.TransactionMonth))
+            {
+                if (lastEndOfMonth == 0 && !string.IsNullOrEmpty(summary.StartJobref))
+                {
+                    // only have to get startOfMonth for first month, after that it's lastEndOfMonth
+                    firstStartMonth = await this.GetTqmsDataTotal(summary.StartJobref, accountingCompany);
+                    lastEndOfMonth = firstStartMonth;
+                }
+
+                values.Add(new CalculationValueModel { RowId = monthIndex.ToString(), ColumnId = "Month", TextDisplay = summary.TransactionMonth.ToString("MMM-yy") });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "StartOfMonth",
+                        Value = lastEndOfMonth
+                    });
+
+                if (!string.IsNullOrEmpty(summary.EndJobref))
+                {
+                    // get date for end of month / start of next month
+                    lastEndOfMonth = await this.GetTqmsDataTotal(summary.EndJobref, accountingCompany);
+                }
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "EndOfMonth",
+                        Value = string.IsNullOrEmpty(summary.EndJobref) ? 0 : lastEndOfMonth
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "Diff",
+                        Value = 0
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "StockTrans",
+                        Value = summary.StockTransactions
+                    });
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "BuildHours",
+                        Value = summary.AlternativeBuildHours
+                    });
+                buildTotal += summary.AlternativeBuildHours;
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "SoldHours",
+                        Value = summary.SoldHours
+                    });
+                soldTotal += summary.SoldHours;
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "OtherHours",
+                        Value = summary.OtherHours
+                    });
+                othersTotal += summary.OtherHours;
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "LoanOutHours",
+                        Value = summary.LoanOutHours
+                    });
+                loanOutTotal += summary.LoanOutHours;
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = monthIndex.ToString(),
+                        ColumnId = "LoanBackHours",
+                        Value = summary.LoanBackHours
+                    });
+                loanBackTotal += summary.LoanBackHours;
+
+                monthIndex++;
+            }
+
+            this.reportingHelper.AddResultsToModel(gridModel, values, CalculationValueModelType.Value, true);
+
+            var reconcileValues = new List<CalculationValueModel>();
+
+            var running = lastEndOfMonth;
+            reconcileValues.AddRange(this.AddReconcileValue("end", "End", lastEndOfMonth, running));
+
+            running += soldTotal;
+            reconcileValues.AddRange(this.AddReconcileValue("sold", "Add Sold", soldTotal, running));
+
+            running -= loanBackTotal;
+            reconcileValues.AddRange(this.AddReconcileValue("loanBack", "Minus Loan Back", loanBackTotal, running));
+
+            running += loanOutTotal;
+            reconcileValues.AddRange(this.AddReconcileValue("loanOut", "Add Loan Out", loanOutTotal, running));
+
+            running -= othersTotal;
+            reconcileValues.AddRange(this.AddReconcileValue("others", "Minus Others", othersTotal, running));
+
+            running -= firstStartMonth;
+            reconcileValues.AddRange(this.AddReconcileValue("start", "Minus Start", firstStartMonth, running));
+
+            running -= buildTotal;
+            reconcileValues.AddRange(this.AddReconcileValue("build", "Minus Build", buildTotal, running));
+
+            this.reportingHelper.AddResultsToModel(reconcileModel, reconcileValues, CalculationValueModelType.Value, true);
+
+            reports.Add(gridModel);
+            reports.Add(reconcileModel);
+            return reports;
+        }
+
+        private new List<AxisDetailsModel> LabourSummaryColumns()
+        {
+            return new List<AxisDetailsModel>
             {
                 new AxisDetailsModel("Month", "Month", GridDisplayType.TextValue, 120),
                 new AxisDetailsModel("StartOfMonth", "Start Of Month", GridDisplayType.Value, 120)
@@ -156,96 +297,34 @@
                     DecimalPlaces = 2
                 }
             };
-            model.AddSortedColumns(columns);
+        }
 
-            var values = new List<CalculationValueModel>();
-
-            var monthIndex = 0;
-            foreach (var summary in summaries.OrderBy(s => s.TransactionMonth))
+        private new List<AxisDetailsModel> ReconcileColumns()
+        {
+            return new List<AxisDetailsModel>
             {
-                if (lastEndOfMonth == 0 && !string.IsNullOrEmpty(summary.StartJobref))
+                new AxisDetailsModel("Heading", " ", GridDisplayType.TextValue, 120),
+                new AxisDetailsModel("Value", " ", GridDisplayType.Value, 120)
                 {
-                    // only have to get startOfMonth for first month, after that it's lastEndOfMonth
-                    lastEndOfMonth = await this.GetTqmsDataTotal(summary.StartJobref, accountingCompany);
-                }
-
-                values.Add(new CalculationValueModel { RowId = monthIndex.ToString(), ColumnId = "Month", TextDisplay = summary.TransactionMonth.ToString("MMM-yy") });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "StartOfMonth",
-                        Value = lastEndOfMonth
-                    });
-
-                if (!string.IsNullOrEmpty(summary.EndJobref))
+                    Align = "right",
+                    DecimalPlaces = 2
+                },
+                new AxisDetailsModel("Running", " ", GridDisplayType.Value, 120)
                 {
-                    // get date for end of month / start of next month
-                    lastEndOfMonth = await this.GetTqmsDataTotal(summary.EndJobref, accountingCompany);
+                    Align = "right",
+                    DecimalPlaces = 2
                 }
+            };
+        }
 
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "EndOfMonth",
-                        Value = string.IsNullOrEmpty(summary.EndJobref) ? 0 : lastEndOfMonth
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "Diff",
-                        Value = 0
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "StockTrans",
-                        Value = summary.StockTransactions
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "BuildHours",
-                        Value = summary.AlternativeBuildHours
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "SoldHours",
-                        Value = summary.SoldHours
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "OtherHours",
-                        Value = summary.OtherHours
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "LoanOutHours",
-                        Value = summary.LoanOutHours
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = monthIndex.ToString(),
-                        ColumnId = "LoanBackHours",
-                        Value = summary.LoanBackHours
-                    });
-                monthIndex++;
-            }
-
-            this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Value, true);
-
-            return model;
+        private List<CalculationValueModel> AddReconcileValue(string rowId, string heading, decimal value, decimal running)
+        {
+            return new List<CalculationValueModel>()
+            {
+                new CalculationValueModel { RowId = rowId, ColumnId = "Heading", TextDisplay = heading },
+                new CalculationValueModel { RowId = rowId, ColumnId = "Value", Value = value },
+                new CalculationValueModel { RowId = rowId, ColumnId = "Running", Value = running }
+            };
         }
 
         private async Task<IEnumerable<TqmsData>> GetTqmsData(string jobref, string accountingCompany = "LINN", bool includeObsolete = true)

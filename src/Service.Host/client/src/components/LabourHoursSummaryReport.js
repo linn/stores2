@@ -4,7 +4,8 @@ import {
     Loading,
     ReportDataGrids,
     ExportButton,
-    InputField
+    InputField,
+    CheckboxWithLabel
 } from '@linn-it/linn-form-components-library';
 import moment from 'moment';
 import Grid from '@mui/material/Grid';
@@ -34,6 +35,8 @@ const LabourHoursSummaryReport = () => {
         toDate: options.toDate.toISOString()
     };
 
+    const [refreshLabourTimes, setRefreshLabourTimes] = useState(false);
+
     const reports = useMemo(
         () => (
             <ReportDataGrids
@@ -43,7 +46,7 @@ const LabourHoursSummaryReport = () => {
                 fixedRowHeight
                 showHeader
                 renderZeroes
-                showTotals
+                showTotals={false}
             />
         ),
         [reportResult]
@@ -99,7 +102,19 @@ const LabourHoursSummaryReport = () => {
                         Run
                     </Button>
                 </Grid>
-                <Grid size={9}></Grid>
+                <Grid size={3}>
+                    <CheckboxWithLabel
+                        label="Refresh Labour Times"
+                        checked={refreshLabourTimes}
+                        onChange={(e, checked) => setRefreshLabourTimes(checked)}
+                        propertyName="refreshLabourTimes"
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <Typography variant="body">
+                        Warning: may take up to 5 minutes to generate results for a whole year
+                    </Typography>
+                </Grid>
                 {isLoading ? (
                     <Grid size={12}>
                         <Loading />

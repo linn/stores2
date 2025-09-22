@@ -2,6 +2,7 @@
 {
     using System;
     using System.Threading.Tasks;
+    using System.Collections.Generic;
     using Linn.Common.Reporting.Models;
 
     public interface IStockReportService
@@ -14,7 +15,7 @@
             string accountingCompany = "LINN",
             bool includeObsolete = true);
 
-        Task<ResultsModel> GetLabourHoursSummaryReport(
+        Task<IEnumerable<ResultsModel>> GetLabourHoursSummaryReport(
             DateTime fromDate,
             DateTime toDate,
             string accountingCompany = "LINN");

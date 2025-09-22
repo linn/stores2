@@ -1,4 +1,6 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
+﻿using System.Linq;
+
+namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
 {
     using System;
     using System.Collections.Generic;
@@ -13,7 +15,7 @@
 
     public class WhenGettingLabourSummary : ContextBase
     {
-        private ResultsModel result;
+        private IEnumerable<ResultsModel> result;
 
         [SetUp]
         public async Task SetUp()
@@ -41,17 +43,19 @@
         }
 
         [Test]
-        public void ShouldReturnReport()
+        public void ShouldReturnSummaryReport()
         {
-            this.result.ReportTitle.DisplayValue.Should().Be("Labour Hours Aug-25 to Sept-25");
-            this.result.Columns.Should().HaveCount(10);
-            this.result.Rows.Should().HaveCount(2);
-            this.result.GetGridTextValue(0, 0).Should().Be("Aug-25");
-            this.result.GetGridValue(0, 4).Should().Be(906.54m);
-            this.result.GetGridValue(0, 5).Should().Be(3404.73m);
-            this.result.GetGridTextValue(1, 0).Should().Be("Sept-25");
-            this.result.GetGridValue(1, 4).Should().Be(294.7m);
-            this.result.GetGridValue(1, 5).Should().Be(3850.29m);
+            this.result.Should().NotBeNull();
+            var summary = this.result.ToList().FirstOrDefault();
+            summary.ReportTitle.DisplayValue.Should().Be("Labour Hours Aug-25 to Sept-25");
+            summary.Columns.Should().HaveCount(10);
+            summary.Rows.Should().HaveCount(2);
+            summary.GetGridTextValue(0, 0).Should().Be("Aug-25");
+            summary.GetGridValue(0, 4).Should().Be(906.54m);
+            summary.GetGridValue(0, 5).Should().Be(3404.73m);
+            summary.GetGridTextValue(1, 0).Should().Be("Sept-25");
+            summary.GetGridValue(1, 4).Should().Be(294.7m);
+            summary.GetGridValue(1, 5).Should().Be(3850.29m);
         }
     }
 }
