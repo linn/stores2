@@ -32,6 +32,8 @@ import Pallets from './Pallets';
 import Pallet from './Pallet';
 import StorageSites from './storageSites/StorageSites';
 import StorageSite from './storageSites/StorageSite';
+import DailyEuDispatchReport from './DailyEuDespatchReport';
+import DailyEuImportRsnReport from './DailyEuImportRsnReport';
 
 function Root() {
     useSignIn();
@@ -98,6 +100,14 @@ function Root() {
                     <Route
                         path="/stores2/storage/locations/create"
                         element={<StorageLocation creating />}
+                    />
+                    <Route
+                        path="/stores2/despatch/exbook/despatch/report"
+                        element={<DailyEuDispatchReport />}
+                    />
+                    <Route
+                        path="/stores2/despatch/ eu/import/returns/report"
+                        element={<DailyEuImportRsnReport />}
                     />
                     <Route path="/stores2/pallets" element={<Pallets />} />
                     <Route path="/stores2/pallets/:id" element={<Pallet />} />

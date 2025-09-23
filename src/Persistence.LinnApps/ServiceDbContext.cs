@@ -89,6 +89,10 @@
 
         public DbSet<AuditLocation> AuditLocations { get; set; }
 
+        public DbSet<DailyEuDespatchReport> DailyEuDespatchReport { get; set; }
+
+        public DbSet<DailyEuRsnImportReport> DailyEuRsnImportReport { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -142,6 +146,8 @@
             BuildAuditLocations(builder);
             BuildReqSerialNumbers(builder);
             BuildLocationTypes(builder);
+            BuildDailyEuDespatchReport(builder);
+            BuildDailyEuRsnImportReport(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -987,6 +993,63 @@
             r.HasKey(l => l.Code);
             r.Property(l => l.Code).HasColumnName("LOCATION_TYPE_CODE").HasMaxLength(1);
             r.Property(l => l.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+        }
+
+        private static void BuildDailyEuDespatchReport(ModelBuilder builder)
+        {
+            var entity = builder.Entity<DailyEuDespatchReport>().ToView("DAILY_EU_DESPATCH_REPORT").HasNoKey();
+
+            entity.Property(e => e.AccountName).HasColumnName("ACCOUNT_NAME");
+            entity.Property(e => e.Country).HasColumnName("COUNTRY");
+            entity.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");
+            entity.Property(e => e.ExbookId).HasColumnName("EXBOOK_ID");
+            entity.Property(e => e.LineNo).HasColumnName("LINE_NO");
+            entity.Property(e => e.InvDocumentNumber).HasColumnName("INV_DOCUMENT_NUMBER");
+            entity.Property(e => e.InvLineNo).HasColumnName("INV_LINE_NO");
+            entity.Property(e => e.Currency).HasColumnName("CURRENCY");
+            entity.Property(e => e.ArticleNumber).HasColumnName("ARTICLE_NUMBER");
+            entity.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE");
+            entity.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN");
+            entity.Property(e => e.Qty).HasColumnName("QTY");
+            entity.Property(e => e.UnitPrice).HasColumnName("UNIT_PRICE");
+            entity.Property(e => e.Total).HasColumnName("TOTAL");
+            entity.Property(e => e.CustomsTotal).HasColumnName("CUSTOMS_TOTAL");
+            entity.Property(e => e.UnitWeight).HasColumnName("UNIT_WEIGHT");
+            entity.Property(e => e.Terms).HasColumnName("TERMS");
+            entity.Property(e => e.ConsignmentId).HasColumnName("CONSIGNMENT_ID");
+            entity.Property(e => e.NetWeight).HasColumnName("NET_WEIGHT");
+            entity.Property(e => e.ConsignmentItemType).HasColumnName("CONSIGNMENT_ITEM_TYPE");
+            entity.Property(e => e.QuantityPackage).HasColumnName("QUANTITY_PACKAGE");
+            entity.Property(e => e.QuantityPiecesPerPackage).HasColumnName("QUANTITY_PIECES_PER_PACKAGE");
+        }
+
+        private static void BuildDailyEuRsnImportReport(ModelBuilder builder)
+        {
+            var entity = builder.Entity<DailyEuRsnImportReport>().ToView("DAILY_EU_RSN_IMPORT_REPORT").HasNoKey();
+
+            entity.Property(e => e.RsnNumber).HasColumnName("RSN_NUMBER");
+            entity.Property(e => e.Addresse).HasColumnName("ADDRESSE");
+            entity.Property(e => e.Country).HasColumnName("COUNTRY");
+            entity.Property(e => e.DocumentDate).HasColumnName("DOCUMENT_DATE");
+            entity.Property(e => e.InvoiceNumber).HasColumnName("INVOICE_NUMBER");
+            entity.Property(e => e.PartNo).HasColumnName("PART_NO");
+            entity.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE");
+            entity.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN");
+            entity.Property(e => e.Qty).HasColumnName("QTY");
+            entity.Property(e => e.QuantityPackage).HasColumnName("QUANTITY_PACKAGE");
+            entity.Property(e => e.QuantityPiecesPerPackage).HasColumnName("QUANTITY_PIECES_PER_PACKAGE");
+            entity.Property(e => e.Currency).HasColumnName("CURRENCY");
+            entity.Property(e => e.LineUnitPrice).HasColumnName("LINE_UNIT_PRICE");
+            entity.Property(e => e.LineTotal).HasColumnName("LINE_TOTAL");
+            entity.Property(e => e.UnitPrice).HasColumnName("UNIT_PRICE");
+            entity.Property(e => e.Total).HasColumnName("TOTAL");
+            entity.Property(e => e.CustomsTotal).HasColumnName("CUSTOMS_TOTAL");
+            entity.Property(e => e.NetWeightKg).HasColumnName("NET_WEIGHT_KG");
+            entity.Property(e => e.GrossWeightKg).HasColumnName("GROSS_WEIGHT_KG");
+            entity.Property(e => e.PackingList).HasColumnName("PACKING_LIST");
+            entity.Property(e => e.Terms).HasColumnName("TERMS");
+            entity.Property(e => e.InvoiceLine).HasColumnName("INVOICE_LINE");
+            entity.Property(e => e.Upgrade).HasColumnName("UPGRADE");
         }
     }
 }
