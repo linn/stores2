@@ -1,0 +1,102 @@
+﻿@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Models.LabourHoursSummaryReport>
+@{
+  <style>
+        body { font-family: Trebuchet, sans-serif; font-size: 10px; }
+
+        .title { grid-area: title; }
+        .dates  { grid-area: dates; }
+
+        .company {
+            grid-area: company;
+        }
+       
+        .grid-container {
+            column-gap: 10px;
+            display: grid;
+            grid-template-areas:
+              'title dates company';
+            padding: 10px;
+            row-gap: 20px;
+        }
+
+        .grid-item {
+            text-align: right;
+        }
+
+        .grid-text-item {
+            text-align: left;
+            page-break-inside: avoid;
+            white-space: pre-wrap;
+        }
+
+        .grid-text-no-wrap-item {
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .grid-description-item {
+            text-align: left;
+            page-break-inside: avoid;
+            word-wrap: break-word;
+            width: 270px;
+        }
+        .column-grid-container {
+                column-gap: 10px;
+                display: grid;
+                grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+                row-gap: 10px;
+        }
+
+        .footer-grid-container {
+            column-gap: 10px;
+            row-gap: 30px;
+            padding-top: 30px;
+            display: grid;
+            grid-template-columns: auto auto auto;
+        }
+        .page { page-break-after: always; }
+    </style>
+    
+  <div class="page">
+      <div class="grid-container">
+          <div class="title">
+              <b>Labour Hours Summary Report</b>
+          </div>
+            <div class="dates">@Model.FromDate.ToString("dd MMM yyyy") - @Model.ToDate.ToString("dd MMM yyyy")</div>
+      </div>
+
+      <div class="column-grid-container">
+          <div class="grid-text-item"><b>Month</b></div>
+          <div class="grid-item"><b>Start Of Month</b></div>
+          <div class="grid-item"><b>End Of Month</b></div>
+          <div class="grid-item"><b>Diff</b></div>
+          <div class="grid-item"><b>Stock Trans</b></div>
+          <div class="grid-item"><b>Build Hours</b></div>
+          <div class="grid-item"><b>Sold Hours</b></div>
+          <div class="grid-item"><b>Other Hours</b></div>
+          <div class="grid-item"><b>Loan Out Hours</b></div>
+          <div class="grid-item"><b>Loan Back Hours</b></div>
+          @foreach (var line in Model.Report.Rows.OrderBy(b => b.SortOrder))
+          {
+	          <div class="grid-text-no-wrap-item">@Model.Report.GetGridTextValue(line.RowIndex, 0)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 1)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 2)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 3)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 4)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 5)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 6)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 7)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 8)</div>
+                <div class="grid-item">@Model.Report.GetGridValue(line.RowIndex, 9)</div>
+          }
+      </div>
+      <div class="footer-grid-container">
+	      @foreach (var total in Model.TotalsReport.Rows.OrderBy(b => b.SortOrder))
+	      {
+                <div class="grid-text-no-wrap-item">@Model.TotalsReport.GetGridTextValue(total.RowIndex, 0)</div>
+                <div class="grid-item">@Model.TotalsReport.GetGridValue(total.RowIndex, 1)</div>
+                <div class="grid-item">@Model.TotalsReport.GetGridValue(total.RowIndex, 2)</div>
+	      }
+      </div>
+</div>
+}
