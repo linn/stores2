@@ -1,7 +1,4 @@
-﻿using Linn.Common.Rendering;
-using Linn.Stores2.Domain.LinnApps.Models;
-
-namespace Linn.Stores2.Domain.LinnApps.Reports
+﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System;
     using System.Collections.Generic;
