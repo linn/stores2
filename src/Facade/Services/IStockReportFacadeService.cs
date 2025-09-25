@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
+    using System.IO;
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
@@ -13,6 +14,16 @@
             bool includeObsolete = true);
 
         Task<IResult<TotalResource>> LabourHoursInStockTotal(
+            string jobref,
+            string accountingCompany = "LINN",
+            bool includeObsolete = true);
+
+        Task<string> LabourHoursInStockAsHtml(
+            string jobref,
+            string accountingCompany = "LINN",
+            bool includeObsolete = true);
+
+        Task<Stream> LabourHoursInStockAsPdf(
             string jobref,
             string accountingCompany = "LINN",
             bool includeObsolete = true);

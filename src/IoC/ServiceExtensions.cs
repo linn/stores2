@@ -89,7 +89,11 @@
                 .AddScoped<ISupplierProxy, SupplierProxy>()
                 .AddScoped<ISerialNumberService, SerialNumberService>()
                 .AddScoped<IStockReportService, StockReportService>()
-                .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>();
+                .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>()
+                .AddScoped<IHtmlTemplateService<LabourHoursInStockReport>>(
+                    x => new HtmlTemplateService<LabourHoursInStockReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursInStock.cshtml",
+                        x.GetService<ITemplateEngine>()));
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
