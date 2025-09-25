@@ -57,7 +57,16 @@ const LabourHoursSummaryReport = () => {
                 <Grid size={6}>
                     <Typography variant="h6">Labour Hours Summary Report</Typography>
                 </Grid>
-                <Grid size={6}>
+                <Grid size={3}>
+                    <ExportButton
+                        buttonText="PDF"
+                        accept="application/pdf"
+                        fileName="labourHoursSummary.pdf"
+                        tooltipText="Download report as PDF"
+                        href={`${itemTypes.labourHoursSummaryReport.url}/pdf?${queryString.stringify(reportOptions)}`}
+                    />
+                </Grid>
+                <Grid size={3}>
                     <ExportButton
                         href={`${itemTypes.labourHoursSummaryReport.url}?${queryString.stringify(reportOptions)}`}
                         fileName="labourHoursSummary.csv"

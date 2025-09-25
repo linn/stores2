@@ -5,12 +5,15 @@
 
         .title { grid-area: title; }
         .date  { grid-area: date; }
+        .jobref {
+            grid-area: jobref;
+        }
        
         .grid-container {
             column-gap: 10px;
             display: grid;
             grid-template-areas:
-              'title date';
+              'title date jobref';
             padding: 10px;
             row-gap: 20px;
         }
@@ -58,7 +61,10 @@
           <div class="title">
               <b>Labour Hours In Stock Report</b>
           </div>
-            <div class="date"><b>@Model.ReportDate.ToString("dd MMM yyyy")</b></div>
+          <div class="date"><b>@Model.ReportDate.ToString("dd MMM yyyy")</b></div>
+          <div class="jobref">
+	          Jobref @Model.Jobref
+          </div>
       </div>
 
       <div class="column-grid-container">

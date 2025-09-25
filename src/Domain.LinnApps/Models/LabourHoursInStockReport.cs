@@ -5,14 +5,17 @@
 
     public class LabourHoursInStockReport
     {
-        public LabourHoursInStockReport(ResultsModel report, decimal hoursTotal)
+        public LabourHoursInStockReport(ResultsModel report, decimal hoursTotal, string jobref)
         {
             this.Report = report;
             this.ReportDate = DateTime.Now;
             HoursTotal = hoursTotal;
+            Jobref = jobref;
         }
 
         public ResultsModel Report { get; set; }
+
+        public string Jobref { get; set; }
 
         public DateTime ReportDate { get; set; }
 

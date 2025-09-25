@@ -1,9 +1,8 @@
-﻿using System.IO;
-
-namespace Linn.Stores2.Facade.Services
+﻿namespace Linn.Stores2.Facade.Services
 {
     using System;
-    using System.Security.Cryptography;
+    using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
@@ -27,18 +26,22 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IHtmlTemplateService<LabourHoursInStockReport> htmlTemplateForLabourHoursInStock;
 
+        private readonly IHtmlTemplateService<LabourHoursSummaryReport> htmlTemplateForLabourHoursSummary;
+
         public StockReportFacadeService(
             IStockReportService stockReportService,
             IReportReturnResourceBuilder reportResourceBuilder,
             ICalcLabourHoursProxy labourHoursProxy,
             IPdfService pdfService,
-            IHtmlTemplateService<LabourHoursInStockReport> htmlTemplateForLabourHoursInStock)
+            IHtmlTemplateService<LabourHoursInStockReport> htmlTemplateForLabourHoursInStock,
+            IHtmlTemplateService<LabourHoursSummaryReport> htmlTemplateForLabourHoursSummary)
         {
             this.stockReportService = stockReportService;
             this.reportResourceBuilder = reportResourceBuilder;
             this.labourHoursProxy = labourHoursProxy;
             this.pdfService = pdfService;
             this.htmlTemplateForLabourHoursInStock = htmlTemplateForLabourHoursInStock;
+            this.htmlTemplateForLabourHoursSummary = htmlTemplateForLabourHoursSummary;
         }
 
         public async Task<IResult<ReportReturnResource>> LabourHoursInStock(
@@ -79,7 +82,7 @@ namespace Linn.Stores2.Facade.Services
                 accountingCompany,
                 includeObsolete);
 
-            var data = new LabourHoursInStockReport(result, total);
+            var data = new LabourHoursInStockReport(result, total, jobref);
 
             return await this.htmlTemplateForLabourHoursInStock.GetHtml(data);
         }
@@ -109,6 +112,37 @@ namespace Linn.Stores2.Facade.Services
 
             var result = await this.stockReportService.GetLabourHoursSummaryReport(from, to, accountingCompany);
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
+        }
+
+        public async Task<string> LabourHourSummaryAsHtml(string fromDate, string toDate, string accountingCompany = "LINN")
+        {
+            if (!DateTime.TryParse(fromDate, out var from) || !DateTime.TryParse(toDate, out var to))
+            {
+                return "Invalid date format for fromDate or toDate.";
+            }
+
+            var result = await this.stockReportService.GetLabourHoursSummaryReport(
+                from, to,
+                accountingCompany);
+
+            var data = new LabourHoursSummaryReport
+            {
+                AccountingCompany = accountingCompany,
+                FromDate = from,
+                ToDate = to,
+                ReportDate = DateTime.UtcNow,
+                Report = result.First(),
+                TotalsReport = result.Last()
+            };
+
+            return await this.htmlTemplateForLabourHoursSummary.GetHtml(data);
+        }
+
+        public async Task<Stream> LabourHourSummaryAsPdf(string fromDate, string toDate, string accountingCompany = "LINN")
+        {
+            var html = await this.LabourHourSummaryAsHtml(fromDate, toDate, accountingCompany);
+
+            return await this.pdfService.ConvertHtmlToPdf(html, true);
         }
     }
 }

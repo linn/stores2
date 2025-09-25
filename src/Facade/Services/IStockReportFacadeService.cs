@@ -33,5 +33,15 @@
             string toDate,
             string accountingCompany = "LINN",
             bool recalcLabourTimes = false);
+
+        Task<string> LabourHourSummaryAsHtml(
+            string fromDate,
+            string toDate,
+            string accountingCompany = "LINN");
+
+        Task<Stream> LabourHourSummaryAsPdf(
+            string fromDate,
+            string toDate,
+            string accountingCompany = "LINN");
     }
 }
