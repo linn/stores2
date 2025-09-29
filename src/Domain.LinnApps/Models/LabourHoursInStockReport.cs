@@ -9,8 +9,8 @@
         {
             this.Report = report;
             this.ReportDate = DateTime.Now;
-            HoursTotal = hoursTotal;
-            Jobref = jobref;
+            this.HoursTotal = hoursTotal;
+            this.Jobref = jobref;
         }
 
         public ResultsModel Report { get; set; }

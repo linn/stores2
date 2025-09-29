@@ -150,7 +150,6 @@
             var result = await this.stockReportService.GetLabourHoursInLoans();
 
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
-
         }
     }
 }

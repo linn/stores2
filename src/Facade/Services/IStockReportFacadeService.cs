@@ -43,7 +43,7 @@
             string fromDate,
             string toDate,
             string accountingCompany = "LINN");
-
+			
         Task<IResult<ReportReturnResource>> LabourHoursInLoans();
     }
 }
