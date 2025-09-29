@@ -144,5 +144,12 @@
 
             return await this.pdfService.ConvertHtmlToPdf(html, true);
         }
+
+        public async Task<IResult<ReportReturnResource>> LabourHoursInLoans()
+        {
+            var result = await this.stockReportService.GetLabourHoursInLoans();
+
+            return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
+        }
     }
 }

@@ -22,5 +22,7 @@
             DateTime fromDate,
             DateTime toDate,
             string accountingCompany = "LINN");
+
+        Task<ResultsModel> GetLabourHoursInLoans();
     }
 }

@@ -54,6 +54,9 @@ const itemTypes = {
     },
     labourHoursSummaryReport: {
         url: `${config.appRoot}/stores2/reports/labour-hours-summary/report`
+    },
+    labourHoursInLoansReport: {
+        url: `${config.appRoot}/stores2/reports/labour-hours-in-loans/report`
     }
 };
 
