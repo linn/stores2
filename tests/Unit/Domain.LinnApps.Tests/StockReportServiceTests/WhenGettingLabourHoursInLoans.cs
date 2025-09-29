@@ -39,7 +39,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
                                         BatchRef = "BATCH1",
                                         StorageLocation = new StorageLocation
                                         {
-                                            LocationCode = "A-LN-LOAN"
+                                            LocationCode = "A-LN-LOAN",
+                                            Description = "LUCY LOANS"
                                         },
                                         Quantity = 1
                                     },
@@ -61,7 +62,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
                                         BatchRef = "BATCH2",
                                         StorageLocation = new StorageLocation
                                         {
-                                            LocationCode = "A-LN-LOAN2"
+                                            LocationCode = "A-LN-LOAN2",
+                                            Description = "LUCY LOANS2"
                                         }
                                     }
                                 };
@@ -83,14 +85,16 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
             this.result.GetGridTextValue(0, 1).Should().Be("1");
             this.result.GetGridTextValue(0, 2).Should().Be("BATCH1");
             this.result.GetGridTextValue(0, 3).Should().Be("A-LN-LOAN");
-            this.result.GetGridTextValue(0, 4).Should().Be("PART DESC");
+            this.result.GetGridTextValue(0, 4).Should().Be("LUCY LOANS");
             this.result.GetGridTextValue(0, 5).Should().Be("60");
+            this.result.GetGridValue(0, 6).Should().Be(1);
             this.result.GetGridTextValue(1, 0).Should().Be("PART2");
             this.result.GetGridTextValue(1, 1).Should().Be("2");
             this.result.GetGridTextValue(1, 2).Should().Be("BATCH2");
             this.result.GetGridTextValue(1, 3).Should().Be("A-LN-LOAN2");
-            this.result.GetGridTextValue(1, 4).Should().Be("PART DESC2");
+            this.result.GetGridTextValue(1, 4).Should().Be("LUCY LOANS2");
             this.result.GetGridTextValue(1, 5).Should().Be("120");
+            this.result.GetGridValue(1, 6).Should().Be(4);
         }
     }
 }
