@@ -17,17 +17,21 @@
 
         protected IReportingHelper ReportingHelper { get; private set; }
 
+        protected IRepository<StockLocator, int> StockLocatorRepository { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.TqmsRepository = Substitute.For<IQueryRepository<TqmsData>>();
             this.LabourHoursSummaryRepository = Substitute.For<IQueryRepository<LabourHoursSummary>>();
             this.ReportingHelper = new ReportingHelper();
+            this.StockLocatorRepository = Substitute.For<IRepository<StockLocator, int>>();
 
             this.Sut = new StockReportService(
                 this.TqmsRepository,
                 this.LabourHoursSummaryRepository,
-                this.ReportingHelper);
+                this.ReportingHelper,
+                this.StockLocatorRepository);
         }
     }
 }
