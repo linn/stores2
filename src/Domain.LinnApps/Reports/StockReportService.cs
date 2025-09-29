@@ -364,7 +364,7 @@
                     {
                         RowId = rowId,
                         ColumnId = "Description",
-                        TextDisplay = item.Part?.Description
+                        TextDisplay = item.StorageLocation.Description
                     });
                 values.Add(
                     new CalculationValueModel
@@ -383,8 +383,8 @@
                     });
             }
 
-            this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Quantity, true);
-
+            this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Value, true);
+            //             this.reportingHelper.AddResultsToModel(gridModel, values, CalculationValueModelType.Value, true);
             return model;
         }
 
