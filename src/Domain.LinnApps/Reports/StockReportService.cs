@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
@@ -18,14 +19,18 @@
 
         private readonly IReportingHelper reportingHelper;
 
+        private readonly IRepository<StockLocator, int> stockLocatorRepository;
+
         public StockReportService(
             IQueryRepository<TqmsData> tqmsRepository,
             IQueryRepository<LabourHoursSummary> labourHoursSummaryRepository,
-            IReportingHelper reportingHelper)
+            IReportingHelper reportingHelper,
+            IRepository<StockLocator, int> stockLocatorRepository)
         {
             this.tqmsRepository = tqmsRepository;
             this.labourHoursSummaryRepository = labourHoursSummaryRepository;
             this.reportingHelper = reportingHelper;
+            this.stockLocatorRepository = stockLocatorRepository;
         }
 
         public async Task<ResultsModel> GetStockInLabourHours(
@@ -286,6 +291,102 @@
             reports.Add(gridModel);
             reports.Add(reconcileModel);
             return reports;
+        }
+
+        public async Task<ResultsModel> GetLabourHoursInLoans()
+        {
+            var model = new ResultsModel
+            {
+                ReportTitle = new NameModel(
+                    "Labour Hours in Current Stock Out On Loan")
+            };
+
+            var columns = new List<AxisDetailsModel>
+            {
+                new AxisDetailsModel("PartNumber", "Part Num", GridDisplayType.TextValue, 150),
+                new AxisDetailsModel("Qty", "Qty", GridDisplayType.TextValue, 100),
+                new AxisDetailsModel("BatchRef", "Batch Ref", GridDisplayType.TextValue, 150),
+                new AxisDetailsModel("LocationCode", "Loc Code", GridDisplayType.TextValue, 180),
+                new AxisDetailsModel("Description", "Description", GridDisplayType.TextValue, 200),
+                new AxisDetailsModel("LabourTimeMins", "Labour Mins Per Part", GridDisplayType.TextValue, 130)
+                {
+                    Align = "right"
+                },
+                new AxisDetailsModel("LabourHours", "Labour Hours", GridDisplayType.Value, 140)
+                {
+                    Align = "right"
+                }
+            };
+            model.AddSortedColumns(columns);
+
+            var values = new List<CalculationValueModel>();
+
+            var data = await this.stockLocatorRepository
+                .FilterByAsync(
+                    l => l.Quantity > 0
+                         && l.StorageLocation != null
+                         && l.StorageLocation.LocationCode.StartsWith("A-LN-")
+                         && l.Part != null
+                         && l.Part.BomType != "C");
+
+            foreach (var item in data)
+            {
+                var rowId = item.Id.ToString();
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "PartNumber",
+                        TextDisplay = item.Part.PartNumber
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "Qty",
+                        TextDisplay = item.Quantity.ToString()
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "BatchRef",
+                        TextDisplay = item.BatchRef
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "LocationCode",
+                        TextDisplay = item.StorageLocation.LocationCode
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "Description",
+                        TextDisplay = item.Part?.Description
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "LabourTimeMins",
+                        TextDisplay = item.Part?.Bom?.TotalLabourTimeMins.ToString()
+                    });
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "LabourHours",
+                        Value = item.LabourHours()
+                    });
+            }
+
+            this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Quantity, true);
+
+            return model;
         }
 
         private List<AxisDetailsModel> LabourSummaryColumns()

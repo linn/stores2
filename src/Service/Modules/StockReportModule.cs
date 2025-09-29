@@ -17,9 +17,11 @@
             app.MapGet("/stores2/reports/labour-hours-in-stock/total", this.GetLabourHoursInStockTotal);
             app.MapGet("/stores2/reports/labour-hours-in-stock/report/pdf", this.GetLabourHoursInStockTotalAsPdf);
             app.MapGet("/stores2/reports/labour-hours-in-stock", this.GetApp);
+            app.MapGet("/stores2/reports/labour-hours-in-loans", this.GetApp);
             app.MapGet("/stores2/reports/labour-hours-summary", this.GetApp);
             app.MapGet("/stores2/reports/labour-hours-summary/report", this.GetLabourHourSummaries); 
             app.MapGet("/stores2/reports/labour-hours-summary/report/pdf", this.GetLabourHourSummariesAsPdf);
+            app.MapGet("/stores2/reports/labour-hours-in-loans/report", this.GetLabourHoursInLoans);
         }
 
         private async Task GetLabourHoursInStock(
@@ -79,6 +81,14 @@
 
             res.ContentType = "application/pdf";
             await res.FromStream(result, res.ContentType, new System.Net.Mime.ContentDisposition("attachment"));
+        }
+
+        private async Task GetLabourHoursInLoans(
+            HttpRequest _,
+            HttpResponse res,
+            IStockReportFacadeService facadeService)
+        {
+            await res.Negotiate(await facadeService.LabourHoursInLoans());
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
