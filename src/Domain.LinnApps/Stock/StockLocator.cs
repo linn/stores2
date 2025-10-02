@@ -47,5 +47,17 @@
 
             return 0;
         }
+
+        public int? LoanNumber()
+        {
+            if (this.BatchRef.StartsWith("L"))
+            {
+                if (int.TryParse(this.BatchRef.Substring(1), out var loanNumber))
+                {
+                    return loanNumber;
+                }
+            }
+            return null;
+        }
     }
 }
