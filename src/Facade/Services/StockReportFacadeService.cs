@@ -30,7 +30,6 @@
 
         private readonly IHtmlTemplateService<LabourHoursInLoansReport> htmlTemplateForLabourHoursInLoans;
 
-
         public StockReportFacadeService(
             IStockReportService stockReportService,
             IReportReturnResourceBuilder reportResourceBuilder,
