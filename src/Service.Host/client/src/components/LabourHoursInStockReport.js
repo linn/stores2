@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
 import {
     Loading,
@@ -48,6 +48,13 @@ const LabourHoursInStockReport = () => {
         getJobrefs();
         setFirstTime(false);
     }
+
+    // Set default jobref to last (highest) after jobrefsResult loads, only if not set
+    useEffect(() => {
+        if (jobrefsResult && jobrefsResult.length > 0 && !options.jobref) {
+            setOptions(o => ({ ...o, jobref: jobrefsResult[0].jobRef }));
+        }
+    }, [jobrefsResult, options.jobref]);
 
     const reports = useMemo(
         () => (

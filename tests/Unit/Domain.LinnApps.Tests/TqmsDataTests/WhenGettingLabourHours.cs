@@ -13,13 +13,13 @@
         {
             this.sut = new TqmsData
             {
-                TotalQty = 5,
+                TotalQty = 1,
                 Part = new Parts.Part
                 {
                     PartNumber = "URIKA",
                     Bom = new Parts.Bom
                     {
-                        TotalLabourTimeMins = 123.9m
+                        TotalLabourTimeMins = 9.9m
                     }
                 }
             };
@@ -28,7 +28,7 @@
         [Test]
         public void ShouldSetOntoFields()
         {
-            this.sut.LabourHours().Should().Be(10.325m);
+            this.sut.LabourHours().Should().Be(0.165m);
         }
     }
 }

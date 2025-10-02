@@ -36,7 +36,15 @@ const LabourHoursInStockReport = () => {
                 <Grid size={6}>
                     <Typography variant="h6">Labour Hours In Stock Report</Typography>
                 </Grid>
-                <Grid size={3}></Grid>
+                <Grid size={3}>
+                    <ExportButton
+                        buttonText="PDF"
+                        accept="application/pdf"
+                        fileName="labourHoursInLoanExport.pdf"
+                        tooltipText="Download report as PDF"
+                        href={`${itemTypes.labourHoursInLoansReport.url}/pdf`}
+                    />
+                </Grid>
                 <Grid size={3}>
                     <ExportButton
                         href={itemTypes.labourHoursInLoansReport.url}

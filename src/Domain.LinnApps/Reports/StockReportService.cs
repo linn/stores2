@@ -328,7 +328,7 @@
                          && l.Part != null
                          && l.Part.BomType != "C");
 
-            foreach (var item in data)
+            foreach (var item in data.OrderBy(l => l.LoanNumber()))
             {
                 var rowId = item.Id.ToString();
                 values.Add(
@@ -374,12 +374,13 @@
                         TextDisplay = item.Part?.Bom?.TotalLabourTimeMins.ToString()
                     });
 
+                // Leigh wanted the rounding to work as the Oracle one which means not default "banker's rounding" but AwayFromZero
                 values.Add(
                     new CalculationValueModel
                     {
                         RowId = rowId,
                         ColumnId = "LabourHours",
-                        Value = item.LabourHours()
+                        Value = Math.Round(item.LabourHours(), 2, MidpointRounding.AwayFromZero)
                     });
             }
 
