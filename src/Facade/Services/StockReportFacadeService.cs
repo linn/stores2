@@ -28,13 +28,17 @@
 
         private readonly IHtmlTemplateService<LabourHoursSummaryReport> htmlTemplateForLabourHoursSummary;
 
+        private readonly IHtmlTemplateService<LabourHoursInLoansReport> htmlTemplateForLabourHoursInLoans;
+
+
         public StockReportFacadeService(
             IStockReportService stockReportService,
             IReportReturnResourceBuilder reportResourceBuilder,
             ICalcLabourHoursProxy labourHoursProxy,
             IPdfService pdfService,
             IHtmlTemplateService<LabourHoursInStockReport> htmlTemplateForLabourHoursInStock,
-            IHtmlTemplateService<LabourHoursSummaryReport> htmlTemplateForLabourHoursSummary)
+            IHtmlTemplateService<LabourHoursSummaryReport> htmlTemplateForLabourHoursSummary,
+            IHtmlTemplateService<LabourHoursInLoansReport> htmlTemplateForLabourHoursInLoans)
         {
             this.stockReportService = stockReportService;
             this.reportResourceBuilder = reportResourceBuilder;
@@ -42,6 +46,7 @@
             this.pdfService = pdfService;
             this.htmlTemplateForLabourHoursInStock = htmlTemplateForLabourHoursInStock;
             this.htmlTemplateForLabourHoursSummary = htmlTemplateForLabourHoursSummary;
+            this.htmlTemplateForLabourHoursInLoans = htmlTemplateForLabourHoursInLoans;
         }
 
         public async Task<IResult<ReportReturnResource>> LabourHoursInStock(
@@ -150,6 +155,26 @@
             var result = await this.stockReportService.GetLabourHoursInLoans();
 
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
+        }
+
+        public async Task<string> LabourHoursInLoansAsHtml()
+        {
+            var result = await this.stockReportService.GetLabourHoursInLoans();
+
+            var data = new LabourHoursInLoansReport
+            {
+                ReportDate = DateTime.UtcNow,
+                Report = result
+            };
+
+            return await this.htmlTemplateForLabourHoursInLoans.GetHtml(data);
+        }
+
+        public async Task<Stream> LabourHoursInLoansAsPdf()
+        {
+            var html = await this.LabourHoursInLoansAsHtml();
+
+            return await this.pdfService.ConvertHtmlToPdf(html, true);
         }
     }
 }

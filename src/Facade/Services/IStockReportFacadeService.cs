@@ -45,5 +45,9 @@
             string accountingCompany = "LINN");
 			
         Task<IResult<ReportReturnResource>> LabourHoursInLoans();
+
+        Task<string> LabourHoursInLoansAsHtml();
+
+        Task<Stream> LabourHoursInLoansAsPdf();
     }
 }

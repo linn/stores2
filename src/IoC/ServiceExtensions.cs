@@ -97,6 +97,10 @@
                 .AddScoped<IHtmlTemplateService<LabourHoursSummaryReport>>(
                     x => new HtmlTemplateService<LabourHoursSummaryReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursSummary.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<LabourHoursInLoansReport>>(
+                    x => new HtmlTemplateService<LabourHoursInLoansReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursInLoans.cshtml",
                         x.GetService<ITemplateEngine>()));
         }
 

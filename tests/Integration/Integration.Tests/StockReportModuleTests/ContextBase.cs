@@ -32,6 +32,8 @@
 
         protected IHtmlTemplateService<LabourHoursSummaryReport> HtmlTemplateForLabourHoursSummary { get; set; }
 
+        protected IHtmlTemplateService<LabourHoursInLoansReport> HtmlTemplateForLabourHoursInLoans { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -45,13 +47,16 @@
 
             this.HtmlTemplateForLabourHoursSummary = Substitute.For<IHtmlTemplateService<LabourHoursSummaryReport>>();
 
+            this.HtmlTemplateForLabourHoursInLoans = Substitute.For<IHtmlTemplateService<LabourHoursInLoansReport>>();
+
             this.StockReportFacadeService = new StockReportFacadeService(
                 this.StockReportService,
                 new ReportReturnResourceBuilder(),
                 this.CalcLabourHoursProxy,
                 this.PdfService,
                 this.HtmlTemplateForLabourHoursInStock,
-                this.HtmlTemplateForLabourHoursSummary);
+                this.HtmlTemplateForLabourHoursSummary,
+                this.HtmlTemplateForLabourHoursInLoans);
 
             this.Client = TestClient.With<StockReportModule>(
                 services =>
