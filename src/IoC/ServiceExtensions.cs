@@ -40,6 +40,8 @@
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+            services.AddHttpClient<IRestClient, RestClient>();
+
             return services
                 .AddSingleton<IReportingHelper, ReportingHelper>()
                 .AddSingleton<ITemplateEngine, RazorTemplateEngine>()
@@ -56,7 +58,6 @@
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
                 .AddTransient<IDatabaseService, DatabaseService>()
-                .AddTransient<IRestClient, RestClient>()
                 .AddScoped<IDocumentProxy, DocumentProxy>()
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()

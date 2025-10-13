@@ -1,6 +1,6 @@
 ﻿namespace Linn.Stores2.Service.ResultHandlers
 {
-    using Linn.Common.Service.Core.Handlers;
+    using Linn.Common.Service.Handlers;
     using Linn.Stores2.Resources.Stores;
 
     public class WorkStationsApplicationStateResultHandler : JsonResultHandler<WorkStationResource>

@@ -6,7 +6,7 @@ namespace Linn.Stores2.Service.Host.Negotiators
 
     using Linn.Common.Configuration;
     using Linn.Common.Rendering;
-    using Linn.Common.Service.Core;
+    using Linn.Common.Service;
     using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Http;

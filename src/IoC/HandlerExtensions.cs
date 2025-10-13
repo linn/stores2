@@ -4,7 +4,7 @@
 
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Resources;
-    using Linn.Common.Service.Core.Handlers;
+    using Linn.Common.Service.Handlers;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.External;
