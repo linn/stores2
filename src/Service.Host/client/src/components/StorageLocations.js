@@ -26,6 +26,7 @@ function StorageLocations() {
     const [selectedSiteCode, setSelectedSiteCode] = useState(null);
     const [selectedAreaCode, setSelectedAreaCode] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [includeInvalid, setIncludeInvalid] = useState(false);
 
     const handleFieldChange = (propertyName, newValue) => {
         if (propertyName === 'storageSite') {
@@ -34,6 +35,8 @@ function StorageLocations() {
             setSelectedAreaCode(newValue);
         } else if (propertyName === 'searchTerm') {
             setSearchTerm(newValue);
+        } else if (propertyName === 'includeInvalid') {
+            setIncludeInvalid(newValue === 'true');
         }
     };
 
@@ -72,9 +75,13 @@ function StorageLocations() {
         errorMessage: updateError
     } = usePut(itemTypes.storageLocations.url, true);
 
-    const makeInvalid = row => {
+    const toggleValidity = row => {
         var updatedLoc = row;
-        updatedLoc.dateInvalid = new Date();
+        if (updatedLoc.dateInvalid) {
+            updatedLoc.dateInvalid = null;
+        } else {
+            updatedLoc.dateInvalid = new Date();
+        }
         updateLocation(row.locationId, updatedLoc);
     };
 
@@ -119,11 +126,11 @@ function StorageLocations() {
             width: 160,
             renderCell: params => (
                 <Button
-                    disabled={params.row.dateInvalid || updateLoading}
+                    disabled={updateLoading}
                     size="small"
-                    onClick={() => makeInvalid(params.row)}
+                    onClick={() => toggleValidity(params.row)}
                 >
-                    {params.row.dateInvalid ? 'Invalid' : 'Make Invalid'}
+                    {params.row.dateInvalid ? 'Make Valid' : 'Make Invalid'}
                 </Button>
             )
         }
@@ -244,6 +251,20 @@ function StorageLocations() {
                             />
                         </Grid>
                         <Grid size={7} />
+                        <Grid size={5}>
+                            <Dropdown
+                                value={includeInvalid ? 'true' : 'false'}
+                                fullWidth
+                                label="Include Invalid"
+                                propertyName="includeInvalid"
+                                items={[
+                                    { id: 'false', displayText: 'No' },
+                                    { id: 'true', displayText: 'Yes' }
+                                ]}
+                                onChange={handleFieldChange}
+                            />
+                        </Grid>
+                        <Grid size={7} />
                         <Grid size={6}>
                             <Button
                                 disabled={isLoading}
@@ -251,7 +272,7 @@ function StorageLocations() {
                                 onClick={() =>
                                     getStorageLocations(
                                         null,
-                                        `?searchTerm=${searchTerm}&siteCode=${selectedSiteCode || ''}&storageAreaCode=${selectedAreaCode || ''}`
+                                        `?searchTerm=${searchTerm}&siteCode=${selectedSiteCode || ''}&storageAreaCode=${selectedAreaCode || ''}&includeInvalid=${includeInvalid}`
                                     )
                                 }
                             >
@@ -268,7 +289,6 @@ function StorageLocations() {
                                     getRowId={r => r.locationId}
                                     rows={storageLocationsResult}
                                     columns={locationsColumns}
-                                    hideFooter
                                     density="compact"
                                     loading={storageLocationsLoading}
                                 />

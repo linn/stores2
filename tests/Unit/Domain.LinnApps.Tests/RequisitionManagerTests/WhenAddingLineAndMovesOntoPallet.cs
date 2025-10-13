@@ -40,7 +40,7 @@
             this.header = new RequisitionHeader(
                 new Employee { Id = 33087 },
                 TestFunctionCodes.LinnDeptReq,
-                "F",
+                "O",
                 null,
                 null,
                 this.department,
@@ -65,7 +65,7 @@
                                 },
                 PartNumber = this.part.PartNumber,
                 Qty = 10,
-                TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode
+                TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode
             };
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
                 .Returns(this.department);
@@ -83,8 +83,8 @@
                     TestTransDefs.StockToLinnDept.TransactionCode)
                 .Returns(new ProcessResult(
                     true, string.Empty));
-            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
-                .Returns(TestTransDefs.StockToLinnDept);
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
+                .Returns(TestTransDefs.LinnDeptToStock);
             this.ReqStoredProcedures.CreateNominals(
                 Arg.Any<int>(),
                 10,

@@ -10,10 +10,15 @@
 
     public class StockPoolResourceBuilder : IBuilder<StockPool>
     {
+        private readonly IBuilder<StorageLocation> storageLocationResourceBuilder;
+
+        public StockPoolResourceBuilder(IBuilder<StorageLocation> storageLocationResourceBuilder)
+        {
+            this.storageLocationResourceBuilder = storageLocationResourceBuilder;
+        }
+
         public StockPoolResource Build(StockPool stockPool, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
-
             if (stockPool == null)
             {
                 return null;
@@ -36,7 +41,7 @@
                          StockCategory = stockPool.StockCategory,
                          DefaultLocation = stockPool.DefaultLocation,
                          DefaultLocationName = stockPool.StorageLocation?.LocationCode,
-                         StorageLocation = stockPool.StorageLocation == null ? null : storageLocationResourceBuilder.Build(stockPool.StorageLocation, claims),
+                         StorageLocation = stockPool.StorageLocation == null ? null : (StorageLocationResource)this.storageLocationResourceBuilder.Build(stockPool.StorageLocation, claims),
                          BridgeId = stockPool.BridgeId,
                          AvailableToMrp = stockPool.AvailableToMrp,
                          Links = this.BuildLinks(stockPool, claims).ToArray()

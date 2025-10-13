@@ -277,7 +277,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public async Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves)
         {
             var moveSpecifications = moves.ToList();
-            await this.CheckMoves(line.Part.PartNumber, moveSpecifications);
+            await this.CheckMoves(line.Part.PartNumber, moveSpecifications, false, line.TransactionDefinition);
             
             foreach (var moveOnto
                      in moveSpecifications.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
@@ -398,7 +398,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 var toLocationRequired = header.ReqType != "F" && header.StoresFunction.ToLocationRequiredOrOptional()
                                                                && header.StoresFunction.FunctionCode != "AUDIT";
-                await this.CheckMoves(toAdd.PartNumber, movesToAdd, toLocationRequired);
+                await this.CheckMoves(toAdd.PartNumber, movesToAdd, toLocationRequired, transactionDefinition);
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
@@ -678,18 +678,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         continue;
                     }
 
-                    await this.CheckMoves(line.PartNumber, movesToAdd, toLocationRequired);
+                    await this.CheckMoves(line.PartNumber, movesToAdd, toLocationRequired, existingLine.TransactionDefinition);
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
                 {
+                    var transaction = await this.transactionDefinitionRepository.FindByIdAsync(line.TransactionDefinition);
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
                     await this.CheckMoves(
                         line.PartNumber,
                         line.Moves == null ? new List<MoveSpecification>() : line.Moves.ToList(),
-                        toLocationRequired);
+                        toLocationRequired, 
+                        transaction);
                     await this.AddRequisitionLine(current, line);
                 }
             }
@@ -1010,7 +1012,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckMoves(
                     candidate.PartNumber,
                     candidate.Moves.ToList(),
-                    toLocationRequired);
+                    toLocationRequired,
+                    transactionDefinition);
             }
 
             if (headerSpecifiesOntoLocation)
@@ -1485,6 +1488,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new CreateRequisitionException($"Nothing built on Works Order {document1Number} that can be reversed.");
             }
 
+            if (worksOrder.Quantity - worksOrder.QuantityBuilt < quantity && isReverseTransaction != "Y")
+            {
+                throw new CreateRequisitionException($"Works Order {document1Number} has {worksOrder.Quantity - worksOrder.QuantityBuilt} left to build. Cannot build {quantity}.");
+            }
+
             var salesPart = await this.salesProxy.GetSalesArticle(worksOrder.PartNumber);
             if (salesPart != null && isReverseTransaction != "Y"
                                   && (salesPart.TypeOfSerialNumber == "S" || salesPart.TypeOfSerialNumber == "P1"
@@ -1513,7 +1521,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         private async Task CheckMoves(
             string partNumber,
             IList<MoveSpecification> moves,
-            bool toLocationRequired = false)
+            bool toLocationRequired = false,
+            StoresTransactionDefinition transaction = null)
         {
             foreach (var m in moves)
             {
@@ -1569,6 +1578,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         throw new InsertReqOntosException(
                             "Move onto must specify either location code or pallet number");
+                    }
+
+                    // check for AUDIT bug that allows from/to location when stock transaction only write off
+                    // will cause stock discrepancy is unchecked
+                    if (transaction != null && !transaction.RequiresOntoTransactions)
+                    {
+                        throw new InsertReqOntosException($"{transaction.TransactionCode} transaction cannot specify onto location or pallet");
                     }
 
                     if (m.ToPallet.HasValue)

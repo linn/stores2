@@ -6,6 +6,7 @@ namespace Linn.Stores2.Service.Modules
     using Linn.Common.Service.Core;
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps.Stores;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Stores;
     using Linn.Stores2.Service.Models;
 
@@ -19,15 +20,36 @@ namespace Linn.Stores2.Service.Modules
         {
             app.MapGet("/stores2/budgets", this.GetApp);
             app.MapGet("/stores2/budgets/{id:int}", this.GetById);
+            app.MapGet("/stores2/budgets/search", this.Search);
         }
 
         private async Task GetById(
             HttpRequest _, 
             HttpResponse res, 
             int id,
-            IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource> service)
+            IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource> service)
         {
             var result = await service.GetById(id);
+            await res.Negotiate(result);
+        }
+
+        private async Task Search(
+            HttpRequest req,
+            HttpResponse res,
+            string fromDate,
+            string toDate,
+            string partNumber,
+            string partNumberStartsWith,
+            IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource> service)
+        {
+            var searchResource = new StoresBudgetSearchResource
+                                     {
+                                         FromDate = fromDate,
+                                         ToDate = toDate,
+                                         PartNumber = partNumber,
+                                         PartNumberStartsWith = partNumberStartsWith
+                                     };
+            var result = await service.FilterBy(searchResource);
             await res.Negotiate(result);
         }
 

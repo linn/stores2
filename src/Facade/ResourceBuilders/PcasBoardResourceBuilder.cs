@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Pcas;
@@ -12,8 +13,6 @@
     {
         public PcasBoardResource Build(PcasBoard pcasBoard, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
-
             return new PcasBoardResource
             {
                 BoardCode = pcasBoard.BoardCode,

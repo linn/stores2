@@ -20,6 +20,7 @@
             this.action = () =>
             {
                 location.Update(
+                    "A",
                     "New Description",
                     new AccountingCompany(),
                     "Y",

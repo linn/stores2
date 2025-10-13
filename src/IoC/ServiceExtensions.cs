@@ -29,6 +29,7 @@
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
 
@@ -86,7 +87,21 @@
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}RequisitionCost.cshtml",
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()
-                .AddScoped<ISerialNumberService, SerialNumberService>();
+                .AddScoped<ISerialNumberService, SerialNumberService>()
+                .AddScoped<IStockReportService, StockReportService>()
+                .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>()
+                .AddScoped<IHtmlTemplateService<LabourHoursInStockReport>>(
+                    x => new HtmlTemplateService<LabourHoursInStockReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursInStock.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<LabourHoursSummaryReport>>(
+                    x => new HtmlTemplateService<LabourHoursSummaryReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursSummary.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<LabourHoursInLoansReport>>(
+                    x => new HtmlTemplateService<LabourHoursInLoansReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursInLoans.cshtml",
+                        x.GetService<ITemplateEngine>()));
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -95,7 +110,7 @@
                 .AddSingleton<IRazorEngine, RazorEngine>()
                 .AddScoped<IStoragePlaceAuditReportFacadeService, StoragePlaceAuditReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>, CarrierService>()
-                .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>, StoresBudgetFacadeService>()
+                .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource>, StoresBudgetFacadeService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
                 .AddScoped<IRequisitionReportFacadeService, RequisitionReportFacadeService>()
@@ -103,7 +118,7 @@
                 .AddScoped<IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>, PartsStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource>, StockPoolFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>, StorageSiteFacadeService>()
-                .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource>, StorageLocationService>()
+                .AddScoped<IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource>, StorageLocationService>()
                 .AddScoped<IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource>, StockStateFacadeService>()
                 .AddScoped<IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource>, SundryBookInDetailFacadeService>()
                 .AddScoped<IAsyncQueryFacadeService<AuditLocation, AuditLocationResource, AuditLocationResource>, AuditLocationFacadeService>()
@@ -115,7 +130,8 @@
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
                 .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
-                .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
+                .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>()
+                .AddScoped<IStockReportFacadeService, StockReportFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

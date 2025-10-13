@@ -7,6 +7,7 @@
     using Linn.Common.Service.Core.Extensions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Service.Extensions;
     using Linn.Stores2.Service.Models;
 
@@ -39,26 +40,18 @@
             string searchTerm,
             string siteCode,
             string storageAreaCode,
-            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> service)
+            bool? includeInvalid,
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service)
         {
-            if (string.IsNullOrEmpty(searchTerm) && string.IsNullOrEmpty(siteCode) && string.IsNullOrEmpty(storageAreaCode))
-            {
-                await res.Negotiate(await service.GetAll());
-            }
-            else if (string.IsNullOrEmpty(siteCode) && string.IsNullOrEmpty(storageAreaCode))
-            {
-                await res.Negotiate(await service.Search(searchTerm));
-            }
-            else
-            {
-                var searchResource = new StorageLocationResource()
-                {
-                    LocationCode = searchTerm,
-                    StorageAreaCode = storageAreaCode,
-                    SiteCode = siteCode
-                };
-                await res.Negotiate(await service.FilterBy(searchResource));
-            }
+            var searchResource = new StorageLocationSearchResource 
+                                     {
+                                         LocationCode = searchTerm,
+                                         StorageAreaCode = storageAreaCode,
+                                         SiteCode = siteCode, 
+                                         IncludeInvalid = includeInvalid
+                                     };
+
+            await res.Negotiate(await service.FilterBy(searchResource));
         }
 
         private async Task GetAuditLocations(
@@ -82,7 +75,7 @@
             HttpRequest _,
             HttpResponse res,
             int id,
-            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> service)
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service)
         {
             await res.Negotiate(await service.GetById(id));
         }
@@ -91,7 +84,7 @@
             HttpRequest req,
             HttpResponse res,
             StorageLocationResource resource,
-            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> service)
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service)
         {
             await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
         }
@@ -101,7 +94,7 @@
             HttpResponse res,
             int id,
             StorageLocationResource resource,
-            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationResource> facadeService)
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> facadeService)
         {
             await res.Negotiate(await facadeService.Update(id, resource, req.HttpContext.GetPrivileges()));
         }

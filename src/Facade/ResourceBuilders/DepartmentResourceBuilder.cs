@@ -11,8 +11,6 @@
     {
         public DepartmentResource Build(Department department, IEnumerable<string> claims)
         {
-            var storageLocationResourceBuilder = new StorageLocationResourceBuilder();
-
             if (department == null)
             {
                 return null;

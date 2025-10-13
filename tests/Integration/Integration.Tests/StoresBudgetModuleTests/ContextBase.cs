@@ -11,6 +11,7 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
+    using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Stores;
     using Linn.Stores2.Service.Modules;
 
@@ -39,7 +40,7 @@
             var transactionManager = new TransactionManager(this.DbContext);
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
 
-            IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetResource>
+            IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource>
                 storesBudgetFacadeService = new StoresBudgetFacadeService(
                     storesBudgetRepository,
                     transactionManager,

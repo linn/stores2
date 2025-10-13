@@ -16,8 +16,6 @@
 
     public class WorkStationFacadeService : AsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource>
     {
-        private readonly IRepository<WorkStation, string> repository;
-
         private readonly IRepository<Employee, int> employeeRepository;
 
         private readonly IRepository<Cit, string> citRepository;
@@ -39,7 +37,6 @@
             IBuilder<WorkStation> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
-            this.repository = repository;
             this.employeeRepository = employeeRepository;
             this.citRepository = citRepository;
             this.storageLocationRepository = storageLocationRepository;

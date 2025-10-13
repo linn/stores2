@@ -44,7 +44,20 @@ const itemTypes = {
     workStationsApplicationState: {
         url: `${config.appRoot}/stores2/work-stations/application-state`
     },
-    citCodes: { url: `${config.proxyRoot}/production/maintenance/cits` }
+    citCodes: { url: `${config.proxyRoot}/production/maintenance/cits` },
+    labourHoursInStockReport: {
+        url: `${config.appRoot}/stores2/reports/labour-hours-in-stock/report`
+    },
+    tqmsJobrefs: { url: `${config.proxyRoot}/inventory/tqms-jobrefs` },
+    labourHoursInStockTotal: {
+        url: `${config.appRoot}/stores2/reports/labour-hours-in-stock/total`
+    },
+    labourHoursSummaryReport: {
+        url: `${config.appRoot}/stores2/reports/labour-hours-summary/report`
+    },
+    labourHoursInLoansReport: {
+        url: `${config.appRoot}/stores2/reports/labour-hours-in-loans/report`
+    }
 };
 
 export default itemTypes;
