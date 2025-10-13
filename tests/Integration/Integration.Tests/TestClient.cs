@@ -4,8 +4,8 @@
     using System.Net.Http;
 
     using Linn.Common.Service;
-    using Linn.Common.Service.Core;
-    using Linn.Common.Service.Core.Extensions;
+    using Linn.Common.Service;
+    using Linn.Common.Service.Extensions;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;

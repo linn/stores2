@@ -7,7 +7,6 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
-    using MimeKit;
     using NSubstitute;
     using NUnit.Framework;
 

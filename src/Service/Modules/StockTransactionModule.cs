@@ -2,8 +2,8 @@
 {
     using System.Threading.Tasks;
 
-    using Linn.Common.Service.Core;
-    using Linn.Common.Service.Core.Extensions;
+    using Linn.Common.Service;
+    using Linn.Common.Service.Extensions;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Service.Models;
 
