@@ -111,6 +111,12 @@ Resources:
                 Action:
                   - s3:*
                 Resource: !Sub "arn:aws:s3:::auth${environmentSuffix}*-keysbucket*"
+  StackLogGroup: 
+    Type: AWS::Logs::LogGroup
+    DeletionPolicy: Delete
+    Properties:
+      LogGroupName: !Sub ${AWS::StackName}-LogGroup
+      RetentionInDays: 14
   stores2TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -134,16 +140,17 @@ Resources:
             Command:
               - "CMD-SHELL"
               - "curl -f http://localhost:5050/healthcheck || exit 1"
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref StackLogGroup
+              awslogs-stream-prefix: !Ref AWS::StackName
           DockerLabels:
             traefik.enable: true
             traefik.http.routers.stores2.entrypoints: web
             traefik.http.routers.stores2.rule: "PathPrefix(`/stores2`) || PathPrefix(`/requisitions`)"
-            traefik.http.services.stores2.loadbalancer.healthcheck.path: "/healthcheck"
-          # LogConfiguration:
-          #   LogDriver: gelf
-          #   Options:
-          #     'gelf-address': 'udp://syslog.linn.co.uk:12201'
-          #     'tag': !Sub stores2-${dockerTag}-ecs-task
+            traefik.http.services.stores2.loadbalancer.healthcheck.path: "/healthcheck"         
           Environment:
             - Name: DATABASE_HOST
               Value: !Ref databaseHost
