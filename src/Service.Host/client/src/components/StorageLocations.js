@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+import moment from 'moment';
 
 import Typography from '@mui/material/Typography';
 import List from '@mui/material/List';
@@ -65,7 +66,7 @@ function StorageLocations() {
 
     const {
         send: getStorageLocations,
-        storageLocationsLoading,
+        isLoading: storageLocationsLoading,
         result: storageLocationsResult
     } = useGet(itemTypes.storageLocations.url);
 
@@ -119,6 +120,16 @@ function StorageLocations() {
             field: 'locationId',
             headerName: 'Id',
             width: 100
+        },
+        {
+            field: 'auditInfo',
+            headerName: 'Audit status',
+            width: 350,
+            renderCell: params => (
+                <span>
+                    {`Last audited ${moment(params.row.dateLastAudited).format('DD MMM YY')} by ${params.row.auditedBy} dept ${params.row.auditedByDepartmentCode} ${params.row.auditedByDepartmentName}`}
+                </span>
+            )
         },
         {
             field: 'valid',

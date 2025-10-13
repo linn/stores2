@@ -76,6 +76,11 @@ function Root() {
                     <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/storage" element={<StorageLocations />} />
+                    <Route
+                        path="/stores2/storage/locations"
+                        element={<Navigate to="/stores2/storage" replace />}
+                    />
+
                     <Route path="/stores2/storage-types" element={<StorageTypes />} />
                     <Route path="/stores2/parts-storage-types" element={<PartsStorageTypes />} />
                     <Route path="/stores2/parts-storage-types/:id" element={<PartStorageType />} />
