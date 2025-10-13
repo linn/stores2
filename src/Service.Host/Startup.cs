@@ -18,6 +18,7 @@ namespace Linn.Stores2.Service.Host
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
 
     public class Startup
     {
@@ -29,7 +30,14 @@ namespace Linn.Stores2.Service.Host
             services.AddSingleton<IViewLoader, ViewLoader>();
             services.AddSingleton<IResponseNegotiator, HtmlNegotiator>();
             services.AddSingleton<IResponseNegotiator, UniversalResponseNegotiator>();
-
+            services.AddLogging(builder =>
+                {
+                    builder.ClearProviders();
+                    builder.AddConsole();
+                    builder.AddFilter("Microsoft", LogLevel.Warning);
+                    builder.AddFilter("System", LogLevel.Warning);
+                    builder.AddFilter("Linn", LogLevel.Information);
+                });
             services.AddLog();
 
             services.AddServices();
