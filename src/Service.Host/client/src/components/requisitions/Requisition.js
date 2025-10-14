@@ -428,7 +428,7 @@ function Requisition({ creating }) {
             if (
                 formState.req.storesFunction?.code === 'BOOKSU' &&
                 selected.partNumber &&
-                !formState.req.isReverseTransaction === 'Y'
+                formState.req.isReverseTransaction !== 'Y'
             ) {
                 getDefaultBookInLocation(null, `?partNumber=${selected.partNumber}`);
             }
