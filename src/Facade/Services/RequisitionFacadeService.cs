@@ -232,8 +232,8 @@
             return new SuccessResult<StorageLocationResource>((StorageLocationResource)this.storageLocationResourceBuilder.Build(result, new List<string>()));
         }
 
-        public async Task<IResult<RequisitionHeaderResource>> UnpickRequisitionMove(int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate,
-            IEnumerable<string> privileges)
+        public async Task<IResult<RequisitionHeaderResource>> UnpickRequisitionMove(
+            int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate, IEnumerable<string> privileges)
         {
             try
             {
