@@ -425,7 +425,11 @@ function Requisition({ creating }) {
                 setBookInPostingsDialogVisible(true);
             }
 
-            if (formState.req.storesFunction?.code === 'BOOKSU' && selected.partNumber) {
+            if (
+                formState.req.storesFunction?.code === 'BOOKSU' &&
+                selected.partNumber &&
+                !formState.req.isReverTransaction === 'Y'
+            ) {
                 getDefaultBookInLocation(null, `?partNumber=${selected.partNumber}`);
             }
 

@@ -299,8 +299,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
         }
 
-        public async Task<RequisitionHeader> UnpickRequisitionMove(int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate,
-            IEnumerable<string> privileges)
+        public async Task<RequisitionHeader> UnpickRequisitionMove(
+            int reqNumber, int lineNumber, int seq, decimal qtyToUnpick, int unpickedBy, bool reallocate, IEnumerable<string> privileges)
         {
             if (qtyToUnpick <= 0)
             {
