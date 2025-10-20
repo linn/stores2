@@ -33,16 +33,6 @@ function Pallet({ creating }) {
 
     const { isPalletLoading, result: palletResult } = useInitialise(`${itemTypes.pallets.url}`, id);
 
-    useEffect(() => {
-        if (palletResult && !creating) {
-            setPallet(palletResult);
-        } else if (createResult) {
-            setPallet(createResult);
-        } else if (updateResult) {
-            setPallet(updateResult);
-        }
-    }, [createResult, creating, palletResult, updateResult]);
-
     const { isCurrentEmployeeLoading, result: currentEmployeesResult } = useInitialise(
         `${itemTypes.currentEmployees.url}`
     );
@@ -102,6 +92,16 @@ function Pallet({ creating }) {
         postResult: createResult,
         clearPostResult: clearCreateResult
     } = usePost(itemTypes.pallets.url);
+
+    useEffect(() => {
+        if (palletResult && !creating) {
+            setPallet(palletResult);
+        } else if (createResult) {
+            setPallet(createResult);
+        } else if (updateResult) {
+            setPallet(updateResult);
+        }
+    }, [createResult, creating, palletResult, updateResult]);
 
     useEffect(() => {
         if (updateResult) {
