@@ -20,7 +20,7 @@ function DailyEuDispatchReport() {
         send: getDailyEuDespatchReport,
         isLoading,
         result
-    } = useGet(itemTypes.dailyEuDispatchReport.url, true);
+    } = useGet(itemTypes.DailyEuDispatchReport.url, true);
 
     const report = useMemo(() => {
         if (!result || !Array.isArray(result.reportResults) || !result.reportResults[0]) {

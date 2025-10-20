@@ -106,7 +106,7 @@ function Root() {
                         element={<DailyEuDispatchReport />}
                     />
                     <Route
-                        path="/stores2/despatch/ eu/import/returns/report"
+                        path="/stores2/customs/daily/eu/import/rsn/report"
                         element={<DailyEuImportRsnReport />}
                     />
                     <Route path="/stores2/pallets" element={<Pallets />} />

@@ -29,7 +29,7 @@
         public async Task<ResultsModel> GetDailyEuDespatchReport(string fromDate, string toDate)
         {
             var lines =
-                await this.dailyEuDespatchReportRepository.FilterByAsync(i => i.DateCreated>= DateTime.Parse(fromDate) && i.DateCreated <= DateTime.Parse(toDate));
+                await this.dailyEuDespatchReportRepository.FilterByAsync(i => i.DateCreated >= DateTime.Parse(fromDate) && i.DateCreated <= DateTime.Parse(toDate));
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -83,13 +83,13 @@
                             TextDisplay = line.LineNo == 0 ? line.ExbookId.ToString() : "null"
                         });
 
-                    values.Add(
-                        new CalculationValueModel
-                        {
-                            RowId = rowId.ToString(),
-                            ColumnId = "recordImporter",
-                            TextDisplay = line.LineNo == 0 ? line.i?.Addressee : "null"
-                        });
+                    //values.Add(
+                    //    new CalculationValueModel
+                    //    {
+                    //        RowId = rowId.ToString(),
+                    //        ColumnId = "recordImporter",
+                    //        TextDisplay = line.LineNo == 0 ? line.i?.Addressee : "null"
+                    //    });
                     values.Add(
                         new CalculationValueModel
                         {
@@ -102,7 +102,7 @@
                         {
                             RowId = rowId.ToString(),
                             ColumnId = "productId",
-                            TextDisplay = line?.c.ToString()
+                            TextDisplay = line?.ArticleNumber
                         });
 
                     values.Add(
@@ -275,21 +275,21 @@
                         ColumnId = "weight",
                         TextDisplay = line.GrossWeightKg.ToString()
                     });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "dims",
-                        TextDisplay = line.d
-                    });
+                //values.Add(
+                //    new CalculationValueModel
+                //    {
+                //        RowId = rowId.ToString(),
+                //        ColumnId = "dims",
+                //        TextDisplay = line.d
+                //    });
 
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "retailerDetails",
-                        TextDisplay = line.re
-                    });
+                //values.Add(
+                //    new CalculationValueModel
+                //    {
+                //        RowId = rowId.ToString(),
+                //        ColumnId = "retailerDetails",
+                //        TextDisplay = line.re
+                //    });
 
                 values.Add(
                     new CalculationValueModel
@@ -307,29 +307,29 @@
                         TextDisplay = line.PartNo
                     });
 
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "description",
-                        TextDisplay = line.d
-                    });
+                //values.Add(
+                //    new CalculationValueModel
+                //    {
+                //        RowId = rowId.ToString(),
+                //        ColumnId = "description",
+                //        TextDisplay = line.d
+                //    });
 
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "returnReason",
-                        TextDisplay = line.reason
-                    });
+                //values.Add(
+                //    new CalculationValueModel
+                //    {
+                //        RowId = rowId.ToString(),
+                //        ColumnId = "returnReason",
+                //        TextDisplay = line.reas
+                //    });
 
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "customsCpcNumber",
-                        TextDisplay = line.c
-                    });
+                //values.Add(
+                //    new CalculationValueModel
+                //    {
+                //        RowId = rowId.ToString(),
+                //        ColumnId = "customsCpcNumber",
+                //        TextDisplay = line.c
+                //    });
 
                 values.Add(
                     new CalculationValueModel

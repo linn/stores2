@@ -23,7 +23,7 @@
 
         public async Task<IResult<ReportReturnResource>> GetDailyEuDespatchReport(string fromDate, string toDate)
         {
-            var result = await this.dailyEuReportService.GetDailyEuDispatchReport(fromDate, toDate);
+            var result = await this.dailyEuReportService.GetDailyEuDespatchReport(fromDate, toDate);
 
             var a = new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
 
