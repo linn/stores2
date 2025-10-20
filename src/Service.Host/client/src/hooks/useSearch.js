@@ -16,13 +16,13 @@ function useSearch(
               ...s,
               id: s[idFieldKey],
               name: s[nameFieldKey].toString(),
-              description: s[descriptionFieldKey].toString()
+              description: s[descriptionFieldKey] != null ? s[descriptionFieldKey].toString() : ''
           })) ?? [])
         : (result?.map(s => ({
               ...s,
               id: s[idFieldKey],
               name: s[nameFieldKey].toString(),
-              description: s[descriptionFieldKey].toString()
+              description: s[descriptionFieldKey] != null ? s[descriptionFieldKey].toString() : ''
           })) ?? []);
     const search = searchTerm => send(null, `?searchTerm=${searchTerm}`);
     const loading = isLoading;
