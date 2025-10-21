@@ -17,6 +17,11 @@
         {
         }
 
+        protected override Expression<Func<SundryBookInDetail, bool>> SearchExpression(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override Expression<Func<SundryBookInDetail, bool>> FilterExpression(SundryBookInDetailResource searchResource)
         {
             return a => a.OrderNumber == searchResource.OrderNumber && a.OrderLine == searchResource.OrderLine;

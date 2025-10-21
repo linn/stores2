@@ -8,7 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Linn.Common.Authorisation" Version="1.0.0" />
-		<PackageReference Include="Linn.Common.Facade" Version="13.1.1" />
+		<PackageReference Include="Linn.Common.Facade" Version="13.3.0" />
 		<PackageReference Include="Linn.Common.Logging" Version="2.0.0" />
 		<PackageReference Include="Linn.Common.Logging.AmazonSqs" Version="3.0.0" />
 		<PackageReference Include="linn.common.pdf" Version="5.0.0" />

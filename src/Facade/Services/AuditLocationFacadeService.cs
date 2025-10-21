@@ -17,6 +17,11 @@
         {
         }
 
+        protected override Expression<Func<AuditLocation, bool>> SearchExpression(string searchTerm)
+        {
+            throw new NotImplementedException();
+        }
+
         protected override Expression<Func<AuditLocation, bool>> FilterExpression(AuditLocationResource searchResource)
         {
             return a => a.StoragePlace.Contains(searchResource.StoragePlace);
