@@ -8,7 +8,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Linn.Common.Configuration" Version="3.0.0" />
-		<PackageReference Include="linn.common.facade" Version="13.1.1" />
+		<PackageReference Include="linn.common.facade" Version="13.3.0" />
 		<PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="6.0.0" />
 		<PackageReference Include="Linn.Common.Service" Version="1.1.0" />
 	</ItemGroup>

@@ -12,7 +12,7 @@
 		<PackageReference Include="Linn.Common.Persistence" Version="5.0.1" />
 		<PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="6.0.0" />
 		<PackageReference Include="Linn.Common.Proxy.LinnApps" Version="4.1.0" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.10" />
 		<PackageReference Include="Oracle.EntityFrameworkCore" Version="7.21.13" />
 	</ItemGroup>
 
