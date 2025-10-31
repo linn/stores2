@@ -32,13 +32,6 @@ function PartStorageType({ creating }) {
     const [storageTypeSearchTerm, setStorageTypeSearchTerm] = useState('');
     const [snackbarVisible, setSnackbarVisible] = useState();
 
-    useEffect(() => {
-        if (storageTypesSearchResults) {
-            setPartStorageType(storageTypesSearchResults);
-        }
-        setPartStorageType(partStorageTypeResult);
-    }, [partStorageTypeResult, storageTypesSearchResults]);
-
     const {
         search: searchParts,
         results: partsSearchResults,
@@ -70,12 +63,18 @@ function PartStorageType({ creating }) {
     } = usePost(itemTypes.partsStorageTypes.url);
 
     useEffect(() => {
+        if (!creating) {
+            setPartStorageType(partStorageTypeResult);
+        }
+    }, [partStorageTypeResult, creating]);
+
+    useEffect(() => {
         if (updateResult || createResult) {
             setSnackbarVisible(true);
             clearCreateResult();
             clearUpdateResult();
         }
-    }, [updateResult, createResult, setPartStorageType, clearCreateResult, clearUpdateResult]);
+    }, [updateResult, createResult, clearCreateResult, clearUpdateResult]);
 
     const handlePartSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, partNumber: selected.partNumber, part: selected }));
@@ -96,7 +95,7 @@ function PartStorageType({ creating }) {
             <Grid container spacing={4}>
                 <Grid size={12}>
                     <Typography variant="h4">
-                        {creating ? 'Create a Part Storage Type' : 'Part Storage Type'}
+                        {creating ? 'Create a Part Storage Type' : partStorageType?.partNumber}
                     </Typography>
                 </Grid>
 
@@ -105,82 +104,85 @@ function PartStorageType({ creating }) {
                         <Loading />
                     </Grid>
                 )}
-                <Grid size={4}>
-                    <InputField
-                        propertyName="partNumber"
-                        label="Part Number"
-                        value={partStorageType?.partNumber}
-                        fullWidth
-                        disabled
-                    />
-                </Grid>
-                <Grid size={4}>
-                    <InputField
-                        propertyName="partDescription"
-                        label="Part Description"
-                        value={partStorageType?.part?.description}
-                        fullWidth
-                        disabled
-                    />
-                </Grid>
-                {creating && (
-                    <Grid size={3}>
-                        <Search
-                            autoFocus
-                            propertyName="part"
-                            label="Part"
-                            resultsInModal
-                            resultLimit={100}
-                            value={partSearchTerm}
-                            loading={partsSearchLoading}
-                            handleValueChange={(_, newVal) => setPartSearchTerm(newVal)}
-                            search={searchParts}
-                            searchResults={partsSearchResults}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handlePartSearchResultSelect}
-                            clearSearch={clearParts}
-                        />
-                    </Grid>
-                )}
 
-                <Grid size={4}>
-                    <InputField
-                        propertyName="storageTypeCode"
-                        label="Storage Type Code"
-                        value={partStorageType?.storageTypeCode}
-                        fullWidth
-                        onChange={handleFieldChange}
-                        disabled
-                    />
-                </Grid>
-                {creating && (
-                    <Grid size={3}>
-                        <Search
-                            autoFocus
-                            propertyName="storageType"
-                            label="Storage Type"
-                            resultsInModal
-                            resultLimit={100}
-                            value={storageTypeSearchTerm}
-                            loading={storageTypesSearchLoading}
-                            handleValueChange={(_, newVal) => setStorageTypeSearchTerm(newVal)}
-                            search={searchStorageTypes}
-                            searchResults={storageTypesSearchResults}
-                            priorityFunction="closestMatchesFirst"
-                            onResultSelect={handleStorageTypeSearchResultSelect}
-                            clearSearch={clearStorageTypes}
-                        />
-                    </Grid>
+                {creating ? (
+                    <>
+                        <Grid item xs={6}>
+                            <Search
+                                autoFocus
+                                propertyName="part"
+                                label="Part"
+                                resultsInModal
+                                resultLimit={100}
+                                value={partSearchTerm}
+                                loading={partsSearchLoading}
+                                handleValueChange={(_, newVal) => setPartSearchTerm(newVal)}
+                                search={searchParts}
+                                searchResults={partsSearchResults}
+                                priorityFunction="closestMatchesFirst"
+                                onResultSelect={handlePartSearchResultSelect}
+                                clearSearch={clearParts}
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <Search
+                                autoFocus
+                                propertyName="storageType"
+                                label="Storage Type"
+                                resultsInModal
+                                resultLimit={100}
+                                value={storageTypeSearchTerm}
+                                loading={storageTypesSearchLoading}
+                                handleValueChange={(_, newVal) => setStorageTypeSearchTerm(newVal)}
+                                search={searchStorageTypes}
+                                searchResults={storageTypesSearchResults}
+                                priorityFunction="closestMatchesFirst"
+                                onResultSelect={handleStorageTypeSearchResultSelect}
+                                clearSearch={clearStorageTypes}
+                            />
+                        </Grid>
+                    </>
+                ) : (
+                    <>
+                        <Grid item xs={6}>
+                            <InputField
+                                propertyName="partNumber"
+                                label="Part Number"
+                                value={partStorageType?.partNumber}
+                                fullWidth
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <InputField
+                                propertyName="partDescription"
+                                label="Part Description"
+                                value={partStorageType?.part?.description}
+                                fullWidth
+                                disabled
+                            />
+                        </Grid>
+
+                        <Grid item xs={6}>
+                            <InputField
+                                propertyName="storageTypeCode"
+                                label="Storage Type Code"
+                                value={partStorageType?.storageTypeCode}
+                                fullWidth
+                                disabled
+                            />
+                        </Grid>
+                        <Grid item xs={6}>
+                            <InputField
+                                propertyName="storageTypeDescription"
+                                label="Storage Type Description"
+                                value={partStorageType?.storageType?.description}
+                                fullWidth
+                                disabled
+                            />
+                        </Grid>
+                    </>
                 )}
-                <Grid size={8}>
-                    <InputField
-                        propertyName="storageTypeDescription"
-                        label="Storage Type Description"
-                        value={partStorageType?.storageType?.description}
-                        fullWidth
-                        disabled
-                    />
-                </Grid>
             </Grid>
             <Grid container spacing={3}>
                 <Grid size={3}>

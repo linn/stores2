@@ -10,7 +10,7 @@ import useInitialise from '../hooks/useInitialise';
 import Page from './Page';
 
 function PartsStorageTypes() {
-    const { isPartsStorageTypesLoading, result: partsStorageTypes } = useInitialise(
+    const { isLoading: isPartsStorageTypesLoading, result: partsStorageTypes } = useInitialise(
         itemTypes.partsStorageTypes.url
     );
 
@@ -62,7 +62,7 @@ function PartsStorageTypes() {
                             navigate(utilities.getSelfHref(clicked.row));
                         }}
                         rowHeight={34}
-                        loading={false}
+                        loading={isPartsStorageTypesLoading}
                     />
                 </Grid>
             </Grid>
