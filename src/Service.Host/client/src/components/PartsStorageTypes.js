@@ -1,18 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
-import { Loading, CreateButton, utilities } from '@linn-it/linn-form-components-library';
+import { Loading, CreateButton, utilities, Search } from '@linn-it/linn-form-components-library';
+import Button from '@mui/material/Button';
 import config from '../config';
 import itemTypes from '../itemTypes';
-import useInitialise from '../hooks/useInitialise';
+import useSearch from '../hooks/useSearch';
+import useGet from '../hooks/useGet';
 import Page from './Page';
 
 function PartsStorageTypes() {
-    const { isLoading: isPartsStorageTypesLoading, result: partsStorageTypes } = useInitialise(
-        itemTypes.partsStorageTypes.url
-    );
+    const [partSearchTerm, setPartSearchTerm] = useState('');
+    const [storageTypeSearchTerm, setStorageTypeSearchTerm] = useState('');
+
+    const {
+        send,
+        isLoading: isPartsStorageTypesLoading,
+        result: partsStorageTypes
+    } = useGet(itemTypes.partsStorageTypes.url);
+
+    const {
+        search: searchParts,
+        results: partsSearchResults,
+        loading: partsSearchLoading,
+        clear: clearParts
+    } = useSearch(itemTypes.parts.url, 'partNumber', 'partNumber', 'description');
+
+    const {
+        search: searchStorageTypes,
+        results: storageTypesSearchResults,
+        loading: storageTypesSearchLoading,
+        clear: clearStorageTypes
+    } = useSearch(itemTypes.storageTypes.url, 'storageTypeCode', 'storageTypeCode', 'description');
+
+    const handlePartSearchResultSelect = selected => {
+        setPartSearchTerm(selected.partNumber);
+    };
+
+    const handleStorageTypeSearchResultSelect = selected => {
+        setStorageTypeSearchTerm(selected.storageTypeCode);
+    };
 
     const navigate = useNavigate();
 
@@ -52,6 +81,69 @@ function PartsStorageTypes() {
                         <Loading />
                     </Grid>
                 )}
+
+                <Grid size={6}>
+                    <Search
+                        autoFocus
+                        propertyName="part"
+                        label="Part"
+                        resultsInModal
+                        resultLimit={100}
+                        value={partSearchTerm}
+                        loading={partsSearchLoading}
+                        handleValueChange={(_, newVal) => setPartSearchTerm(newVal)}
+                        search={searchParts}
+                        searchResults={partsSearchResults}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handlePartSearchResultSelect}
+                        clearSearch={clearParts}
+                    />
+                </Grid>
+                <Grid size={6}>
+                    <Search
+                        autoFocus
+                        propertyName="storageType"
+                        label="Storage Type"
+                        resultsInModal
+                        resultLimit={100}
+                        value={storageTypeSearchTerm}
+                        loading={storageTypesSearchLoading}
+                        handleValueChange={(_, newVal) => setStorageTypeSearchTerm(newVal)}
+                        search={searchStorageTypes}
+                        searchResults={storageTypesSearchResults}
+                        priorityFunction="closestMatchesFirst"
+                        onResultSelect={handleStorageTypeSearchResultSelect}
+                        clearSearch={clearStorageTypes}
+                    />
+                </Grid>
+
+                <Grid size={1}>
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        disabled={partSearchTerm.length === 0 && storageTypeSearchTerm.length === 0}
+                        onClick={() => {
+                            send(`?part=${partSearchTerm}&storageType=${storageTypeSearchTerm}`);
+                        }}
+                    >
+                        Search
+                    </Button>
+                </Grid>
+
+                <Grid size={1}>
+                    <Button
+                        variant="outlined"
+                        fullWidth
+                        disabled={partSearchTerm.length === 0 && storageTypeSearchTerm.length === 0}
+                        onClick={() => {
+                            setPartSearchTerm('');
+                            setStorageTypeSearchTerm('');
+                        }}
+                    >
+                        Clear
+                    </Button>
+                </Grid>
+
                 <Grid size={12}>
                     <DataGrid
                         getRowId={row => row.bridgeId}

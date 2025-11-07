@@ -223,7 +223,7 @@ function PartStorageType({ creating }) {
                 </Grid>
             </Grid>
             <Grid container spacing={3}>
-                <Grid size={12}>
+                <Grid size={1}>
                     <Button
                         variant="contained"
                         fullWidth
