@@ -107,7 +107,7 @@ function PartStorageType({ creating }) {
 
                 {creating ? (
                     <>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <Search
                                 autoFocus
                                 propertyName="part"
@@ -124,7 +124,7 @@ function PartStorageType({ creating }) {
                                 clearSearch={clearParts}
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <Search
                                 autoFocus
                                 propertyName="storageType"
@@ -144,7 +144,7 @@ function PartStorageType({ creating }) {
                     </>
                 ) : (
                     <>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <InputField
                                 propertyName="partNumber"
                                 label="Part Number"
@@ -153,7 +153,7 @@ function PartStorageType({ creating }) {
                                 disabled
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <InputField
                                 propertyName="partDescription"
                                 label="Part Description"
@@ -163,7 +163,7 @@ function PartStorageType({ creating }) {
                             />
                         </Grid>
 
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <InputField
                                 propertyName="storageTypeCode"
                                 label="Storage Type Code"
@@ -172,7 +172,7 @@ function PartStorageType({ creating }) {
                                 disabled
                             />
                         </Grid>
-                        <Grid item xs={6}>
+                        <Grid size={6}>
                             <InputField
                                 propertyName="storageTypeDescription"
                                 label="Storage Type Description"
