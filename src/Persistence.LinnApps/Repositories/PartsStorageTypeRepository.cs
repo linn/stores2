@@ -1,13 +1,14 @@
 ﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
-    using Linn.Common.Persistence.EntityFramework;
-    using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Persistence.LinnApps;
-    using Microsoft.EntityFrameworkCore;
     using System;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
+    using Linn.Common.Persistence.EntityFramework;
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Persistence.LinnApps;
+    using Microsoft.EntityFrameworkCore;
 
     public class PartsStorageTypeRepository : EntityFrameworkRepository<PartsStorageType, int>
     {
