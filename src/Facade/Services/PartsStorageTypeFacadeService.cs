@@ -104,7 +104,9 @@
 
         protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)
         {
-            throw new NotImplementedException();
+            return x =>
+                (string.IsNullOrEmpty(searchResource.PartNumber) || x.PartNumber == searchResource.PartNumber) &&
+                (string.IsNullOrEmpty(searchResource.StorageTypeCode) || x.StorageTypeCode == searchResource.StorageTypeCode);
         }
 
         protected override Expression<Func<PartsStorageType, bool>> FindExpression(PartsStorageTypeResource searchResource)
