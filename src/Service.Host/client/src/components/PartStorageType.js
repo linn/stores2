@@ -95,7 +95,7 @@ function PartStorageType({ creating }) {
             <Grid container spacing={4}>
                 <Grid size={12}>
                     <Typography variant="h4">
-                        {creating ? 'Create a Part Storage Type' : partStorageType?.partNumber}
+                        {creating ? 'Create a Part Storage Type' : 'Edit a Part Storage Type'}
                     </Typography>
                 </Grid>
 
