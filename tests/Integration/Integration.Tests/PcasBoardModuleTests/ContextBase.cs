@@ -2,7 +2,6 @@
 {
     using System.Net.Http;
 
-    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Pcas;
@@ -14,8 +13,6 @@
     using Linn.Stores2.Service.Modules;
 
     using Microsoft.Extensions.DependencyInjection;
-
-    using NSubstitute;
 
     using NUnit.Framework;
 

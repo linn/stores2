@@ -43,21 +43,21 @@ function StoragePlaceAudit() {
 
     const {
         send: getStoragePlaces,
-        storagePlacesLoading,
+        isLoading: storagePlacesLoading,
         result: storagePlacesResult,
         clearData: clearStoragePlaces
     } = useGet(itemTypes.storagePlaces.url);
 
     const {
         send: getAuditLocations,
-        auditLocationsLoading,
+        isLoading: auditLocationsLoading,
         result: auditLocationsResult,
         clearData: clearAuditLocations
     } = useGet(itemTypes.auditLocations.url);
 
     const {
         send: createAuditReqs,
-        createAuditReqsLoading,
+        isLoading: createAuditReqsLoading,
         errorMessage: createAuditErrorMessage,
         postResult: createAuditReqsResult,
         clearPostResult: clearCreateAuditData
@@ -145,11 +145,6 @@ function StoragePlaceAudit() {
                 <Grid size={12}>
                     <Typography variant="h4">Storage Place Audit Report</Typography>
                 </Grid>
-                {isLoading && (
-                    <Grid size={12}>
-                        <Loading />
-                    </Grid>
-                )}
                 <Grid size={3}>
                     <Search
                         propertyName="rangeSelect"
@@ -317,7 +312,12 @@ function StoragePlaceAudit() {
                 )}
                 {createAuditReqsResult && (
                     <Grid size={12}>
-                        <Typography variant="h6">{createAuditReqsResult.message}</Typography>
+                        <Typography
+                            variant="h6"
+                            color={createAuditReqsResult.success ? 'green' : 'red'}
+                        >
+                            {createAuditReqsResult.message}
+                        </Typography>
                     </Grid>
                 )}
             </Grid>

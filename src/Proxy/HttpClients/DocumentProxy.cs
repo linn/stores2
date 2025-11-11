@@ -9,7 +9,7 @@
 
     using Linn.Common.Configuration;
     using Linn.Common.Proxy;
-    using Linn.Common.Serialization.Json;
+    using Linn.Common.Serialization;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Resources.External;

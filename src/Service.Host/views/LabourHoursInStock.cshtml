@@ -1,0 +1,103 @@
+﻿@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Models.LabourHoursInStockReport>
+@{
+  <style>
+        body { font-family: Trebuchet, sans-serif; font-size: 10px; }
+
+        .title { grid-area: title; }
+        .date  { grid-area: date; }
+        .jobref {
+            grid-area: jobref;
+        }
+       
+        .grid-container {
+            column-gap: 10px;
+            display: grid;
+            grid-template-areas:
+              'title date jobref';
+            padding: 10px;
+            row-gap: 20px;
+        }
+
+        .grid-item {
+            text-align: right;
+        }
+
+        .grid-text-item {
+            text-align: left;
+            page-break-inside: avoid;
+            white-space: pre-wrap;
+        }
+
+        .grid-text-no-wrap-item {
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .grid-description-item {
+            text-align: left;
+            page-break-inside: avoid;
+            word-wrap: break-word;
+            width: 270px;
+        }
+        .column-grid-container {
+                column-gap: 10px;
+                display: grid;
+                grid-template-columns: auto auto auto auto auto auto;
+                row-gap: 10px;
+        }
+
+        .footer-grid-container {
+            column-gap: 10px;
+            row-gap: 30px;
+            padding-top: 30px;
+            display: grid;
+            grid-template-columns: auto auto auto auto auto auto;
+        }
+        .page { page-break-after: always; }
+    </style>
+    
+  <div class="page">
+      <div class="grid-container">
+          <div class="title">
+              <b>Labour Hours In Stock Report</b>
+          </div>
+          <div class="date"><b>@Model.ReportDate.ToString("dd MMM yyyy")</b></div>
+          <div class="jobref">
+	          Jobref @Model.Jobref
+          </div>
+      </div>
+
+      <div class="column-grid-container">
+          <div class="grid-text-item"><b>Part Num</b></div>
+          <div class="grid-text-item"><b>Description</b></div>
+            <div class="grid-text-item"><b>Material Price</b></div>
+          <div class="grid-text-item"><b>Labour Time Mins</b></div>
+          <div class="grid-item"><b>Total Qty</b></div>
+          <div class="grid-item"><b>Labour Hours</b></div>
+          @foreach (var line in Model.Report.Rows.OrderBy(b => b.SortOrder))
+          {
+	          <div class="grid-text-no-wrap-item">@Model.Report.GetGridTextValue(line.RowIndex, 0)</div>
+	          <div class="grid-text-no-wrap-item">@Model.Report.GetGridTextValue(line.RowIndex, 1)</div>
+	          <div class="grid-text-no-wrap-item">@Model.Report.GetGridTextValue(line.RowIndex, 2)</div>
+	          <div class="grid-description-item">@Model.Report.GetGridTextValue(line.RowIndex, 3)</div>
+                <div class="grid-item">@Model.Report.GetGridTextValue(line.RowIndex, 4)</div>
+                <div class="grid-item">@Model.Report.GetGridTextValue(line.RowIndex, 5)</div>
+          }
+      </div>
+      <div class="footer-grid-container">
+            <div class="grid-text-item">
+          </div>
+          <div class="grid-text-item">
+          </div>
+          <div class="grid-text-item">
+          </div>
+          <div class="grid-text-item">
+          </div>
+          <div class="grid-text-item">
+          </div>
+          <div class="grid-text-item">
+                @Model.HoursTotal
+          </div>
+      </div>
+</div>
+}

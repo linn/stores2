@@ -5,8 +5,8 @@ namespace Linn.Stores2.Service.Host
 
     using Linn.Common.Authentication.Host.Extensions;
     using Linn.Common.Logging;
-    using Linn.Common.Service.Core;
-    using Linn.Common.Service.Core.Extensions;
+    using Linn.Common.Service;
+    using Linn.Common.Service.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Service.Host.Negotiators;
     using Linn.Stores2.Service.Models;
@@ -18,6 +18,7 @@ namespace Linn.Stores2.Service.Host
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.FileProviders;
     using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
 
     public class Startup
     {
@@ -29,9 +30,14 @@ namespace Linn.Stores2.Service.Host
             services.AddSingleton<IViewLoader, ViewLoader>();
             services.AddSingleton<IResponseNegotiator, HtmlNegotiator>();
             services.AddSingleton<IResponseNegotiator, UniversalResponseNegotiator>();
-
-            services.AddCredentialsExtensions();
-            services.AddSqsExtensions();
+            services.AddLogging(builder =>
+                {
+                    builder.ClearProviders();
+                    builder.AddConsole();
+                    builder.AddFilter("Microsoft", LogLevel.Warning);
+                    builder.AddFilter("System", LogLevel.Warning);
+                    builder.AddFilter("Linn", LogLevel.Information);
+                });
             services.AddLog();
 
             services.AddServices();
@@ -39,7 +45,6 @@ namespace Linn.Stores2.Service.Host
             services.AddBuilders();
             services.AddPersistence();
             services.AddHandlers();
-            services.AddMessageDispatchers();
 
             services.AddLinnAuthentication(
                 options =>

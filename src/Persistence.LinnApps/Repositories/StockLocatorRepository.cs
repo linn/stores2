@@ -23,7 +23,7 @@
         {
             return this.serviceDbContext.StockLocators.Where(expression)
                 .Include(l => l.StorageLocation)
-                .Include(l => l.Part);
+                .Include(l => l.Part).ThenInclude(p => p.Bom);
         }
     }
 }

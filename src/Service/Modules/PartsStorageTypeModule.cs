@@ -3,8 +3,8 @@
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
-    using Linn.Common.Service.Core;
-    using Linn.Common.Service.Core.Extensions;
+    using Linn.Common.Service;
+    using Linn.Common.Service.Extensions;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Resources.Parts;
 
@@ -25,9 +25,24 @@
         private async Task GetAll(
             HttpRequest _,
             HttpResponse res,
+            string part,
+            string storageType,
             IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
-            await res.Negotiate(await service.GetAll());
+            if (string.IsNullOrEmpty(part) && string.IsNullOrEmpty(storageType))
+            {
+                await res.Negotiate(await service.GetAll());
+            }
+            else
+            {
+                var searchResource = new PartsStorageTypeResource
+                                         {
+                                             PartNumber = part,
+                                             StorageTypeCode = storageType,
+                                         };
+
+                await res.Negotiate(await service.FilterBy(searchResource));
+            }
         }
 
         private async Task GetById(

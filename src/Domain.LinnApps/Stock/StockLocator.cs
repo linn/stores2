@@ -37,5 +37,27 @@
         public string Category { get; set; }
 
         public string CurrentStock { get; set; }
+
+        public decimal LabourHours()
+        {
+            if (this.Part?.Bom != null && this.Quantity.HasValue)
+            {
+                return this.Part.Bom.TotalLabourTimeHours * this.Quantity.Value;
+            }
+
+            return 0;
+        }
+
+        public int? LoanNumber()
+        {
+            if (this.BatchRef.StartsWith("L"))
+            {
+                if (int.TryParse(this.BatchRef.Substring(1), out var loanNumber))
+                {
+                    return loanNumber;
+                }
+            }
+            return null;
+        }
     }
 }

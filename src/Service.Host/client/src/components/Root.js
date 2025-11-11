@@ -34,6 +34,9 @@ import StorageSites from './storageSites/StorageSites';
 import StorageSite from './storageSites/StorageSite';
 import DailyEuDispatchReport from './DailyEuDespatchReport';
 import DailyEuImportRsnReport from './DailyEuImportRsnReport';
+import LabourHoursInStockReport from './LabourHoursInStockReport';
+import LabourHoursSummaryReport from './LabourHoursSummaryReport';
+import LabourHoursInLoansReport from './LabourHoursInLoansReport';
 
 function Root() {
     useSignIn();
@@ -75,6 +78,11 @@ function Root() {
                     <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
                     <Route path="/stores2/storage" element={<StorageLocations />} />
+                    <Route
+                        path="/stores2/storage/locations"
+                        element={<Navigate to="/stores2/storage" replace />}
+                    />
+
                     <Route path="/stores2/storage-types" element={<StorageTypes />} />
                     <Route path="/stores2/parts-storage-types" element={<PartsStorageTypes />} />
                     <Route path="/stores2/parts-storage-types/:id" element={<PartStorageType />} />
@@ -128,6 +136,18 @@ function Root() {
                     <Route
                         path="/stores2/work-stations/create"
                         element={<Workstation creating />}
+                    />
+                    <Route
+                        path="/stores2/reports/labour-hours-in-stock"
+                        element={<LabourHoursInStockReport />}
+                    />
+                    <Route
+                        path="/stores2/reports/labour-hours-in-loans"
+                        element={<LabourHoursInLoansReport />}
+                    />
+                    <Route
+                        path="/stores2/reports/labour-hours-summary"
+                        element={<LabourHoursSummaryReport />}
                     />
                     <Route path="*" element={<NotFoundPage />} />
                 </Routes>

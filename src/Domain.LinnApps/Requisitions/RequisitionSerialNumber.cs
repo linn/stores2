@@ -10,8 +10,7 @@
             int reqNumber,
             int lineNumber,
             int sequence,
-            int serialNumber
-            )
+            int serialNumber)
         {
             this.ReqNumber = reqNumber;
             this.LineNumber = lineNumber;

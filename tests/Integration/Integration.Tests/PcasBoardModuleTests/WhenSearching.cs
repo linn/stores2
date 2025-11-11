@@ -51,8 +51,8 @@
         [Test]
         public void ShouldReturnCorrectlyFilteredResults()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<PcasBoardResource>>();
-            resource.Count().Should().Be(1);
+            var resource = this.Response.DeserializeBody<IEnumerable<PcasBoardResource>>().ToList();
+            resource.Count.Should().Be(1);
             resource.First().BoardCode.Should().Be("Board 1");
         }
     }

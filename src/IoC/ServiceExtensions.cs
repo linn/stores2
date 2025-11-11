@@ -40,6 +40,8 @@
     {
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
+            services.AddHttpClient<IRestClient, RestClient>();
+
             return services
                 .AddSingleton<IReportingHelper, ReportingHelper>()
                 .AddSingleton<ITemplateEngine, RazorTemplateEngine>()
@@ -56,7 +58,6 @@
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
                 .AddTransient<IDatabaseService, DatabaseService>()
-                .AddTransient<IRestClient, RestClient>()
                 .AddScoped<IDocumentProxy, DocumentProxy>()
                 .AddTransient<IStockService, StockService>()
                 .AddTransient<IStoresService, StoresService>()
@@ -87,7 +88,21 @@
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}RequisitionCost.cshtml",
                         x.GetService<ITemplateEngine>()))
                 .AddScoped<ISupplierProxy, SupplierProxy>()
-                .AddScoped<ISerialNumberService, SerialNumberService>();
+                .AddScoped<ISerialNumberService, SerialNumberService>()
+                .AddScoped<IStockReportService, StockReportService>()
+                .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>()
+                .AddScoped<IHtmlTemplateService<LabourHoursInStockReport>>(
+                    x => new HtmlTemplateService<LabourHoursInStockReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursInStock.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<LabourHoursSummaryReport>>(
+                    x => new HtmlTemplateService<LabourHoursSummaryReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursSummary.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<LabourHoursInLoansReport>>(
+                    x => new HtmlTemplateService<LabourHoursInLoansReport>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursInLoans.cshtml",
+                        x.GetService<ITemplateEngine>()));
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)
@@ -116,7 +131,8 @@
                 .AddScoped<IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>, PcasStorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
                 .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
-                .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>();
+                .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>()
+                .AddScoped<IStockReportFacadeService, StockReportFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

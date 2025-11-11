@@ -7,7 +7,7 @@
     using System.Threading.Tasks;
     using Linn.Common.Configuration;
     using Linn.Common.Proxy;
-    using Linn.Common.Serialization.Json;
+    using Linn.Common.Serialization;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Resources.External;

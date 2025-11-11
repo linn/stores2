@@ -5,9 +5,7 @@ var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
         {
             services.AddLog();
-            services.AddCredentialsExtensions();
             services.AddPersistence();
-            services.AddSqsExtensions();
             services.AddRabbitConfiguration();
             services.AddMessageHandlers();
             services.AddHostedService<Listener>();
