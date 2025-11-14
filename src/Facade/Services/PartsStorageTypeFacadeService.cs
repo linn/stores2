@@ -55,6 +55,15 @@
                 throw new PartsStorageTypeException("Part Storage Type Already Exists");
             }
 
+            var partPreferenceAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
+                                                   pst => pst.Preference == resource.Preference
+                                                          && pst.PartNumber == resource.PartNumber);
+
+            if (partPreferenceAlreadyExists != null)
+            {
+                throw new PartsStorageTypeException("Part Preference Already Exists");
+            }
+
             var bridgeId = this.databaseService.GetIdSequence("PARTS_STORAGE_TYPES_ID_SEQ");
 
             return new PartsStorageType(
@@ -67,11 +76,20 @@
                 bridgeId);
         }
 
-        protected override void UpdateFromResource(
+        protected async override void UpdateFromResource(
             PartsStorageType entity,
             PartsStorageTypeResource updateResource,
             IEnumerable<string> privileges = null)
         {
+            var partPreferenceAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
+                                                  pst => pst.Preference == updateResource.Preference
+                                                         && pst.PartNumber == updateResource.PartNumber);
+
+            if (partPreferenceAlreadyExists != null)
+            {
+                throw new PartsStorageTypeException("Part Preference Already Exists");
+            }
+
             entity.Update(
                 updateResource.Remarks,
                 updateResource.Maximum,
@@ -105,8 +123,8 @@
         protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)
         {
             return x =>
-                (string.IsNullOrEmpty(searchResource.PartNumber) || x.PartNumber == searchResource.PartNumber) &&
-                (string.IsNullOrEmpty(searchResource.StorageTypeCode) || x.StorageTypeCode == searchResource.StorageTypeCode);
+                (string.IsNullOrEmpty(searchResource.PartNumber) || x.PartNumber.ToUpper() == searchResource.PartNumber.ToUpper()) &&
+                (string.IsNullOrEmpty(searchResource.StorageTypeCode) || x.StorageTypeCode.ToUpper() == searchResource.StorageTypeCode.ToUpper());
         }
 
         protected override Expression<Func<PartsStorageType, bool>> FindExpression(PartsStorageTypeResource searchResource)

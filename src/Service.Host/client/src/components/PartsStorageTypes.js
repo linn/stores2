@@ -91,7 +91,7 @@ function PartsStorageTypes() {
                         resultLimit={100}
                         value={partSearchTerm}
                         loading={partsSearchLoading}
-                        handleValueChange={(_, newVal) => setPartSearchTerm(newVal)}
+                        handleValueChange={(_, newVal) => setPartSearchTerm(newVal.toUpperCase())}
                         search={searchParts}
                         searchResults={partsSearchResults}
                         priorityFunction="closestMatchesFirst"
@@ -108,7 +108,9 @@ function PartsStorageTypes() {
                         resultLimit={100}
                         value={storageTypeSearchTerm}
                         loading={storageTypesSearchLoading}
-                        handleValueChange={(_, newVal) => setStorageTypeSearchTerm(newVal)}
+                        handleValueChange={(_, newVal) =>
+                            setStorageTypeSearchTerm(newVal.toUpperCase())
+                        }
                         search={searchStorageTypes}
                         searchResults={storageTypesSearchResults}
                         priorityFunction="closestMatchesFirst"
