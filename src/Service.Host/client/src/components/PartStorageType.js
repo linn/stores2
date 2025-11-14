@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
-import { DataGrid } from '@mui/x-data-grid';
 import {
     Loading,
     Search,
     InputField,
-    utilities,
     ErrorCard,
     SnackbarMessage
 } from '@linn-it/linn-form-components-library';
@@ -20,12 +17,10 @@ import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
-import useGet from '../hooks/useGet';
 import Page from './Page';
 
 function PartStorageType({ creating }) {
     const { id } = useParams();
-    const navigate = useNavigate();
 
     const { isPartStorageTypesLoading, result: partStorageTypeResult } = useInitialise(
         `${itemTypes.partsStorageTypes.url}/${id}`
@@ -67,12 +62,6 @@ function PartStorageType({ creating }) {
         clearPostResult: clearCreateResult
     } = usePost(itemTypes.partsStorageTypes.url);
 
-    const {
-        send,
-        isLoading: isExistingPartsStorageTypesLoading,
-        result: existingPartsStorageTypes
-    } = useGet(itemTypes.partsStorageTypes.url);
-
     useEffect(() => {
         if (!creating) {
             setPartStorageType(partStorageTypeResult);
@@ -89,39 +78,17 @@ function PartStorageType({ creating }) {
 
     const handlePartSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, partNumber: selected.partNumber, part: selected }));
-        setPartSearchTerm(selected.partNumber);
+        setPartSearchTerm(selected.description);
     };
 
     const handleStorageTypeSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, storageTypeCode: selected.storageTypeCode }));
-        setStorageTypeSearchTerm(selected.storageTypeCode);
+        setStorageTypeSearchTerm(selected.description);
     };
 
     const handleFieldChange = (propertyName, newValue) => {
         setPartStorageType(c => ({ ...c, [propertyName]: newValue }));
     };
-
-    const storageTypeColumns = [
-        { field: 'partNumber', headerName: 'Part Number', width: 150 },
-        {
-            field: 'storageTypeCode',
-            headerName: 'Storage Type Code',
-            width: 150
-        },
-        {
-            field: 'storageType',
-            headerName: 'Storage Type Description',
-            width: 300,
-            valueGetter: value => {
-                return value?.description || '';
-            }
-        },
-        { field: 'maximum', headerName: 'Maximum', width: 100 },
-        { field: 'bridgeId', headerName: 'Bridge ID', width: 100 },
-        { field: 'incr', headerName: 'Incr', width: 100 },
-        { field: 'preference', headerName: 'Preference', width: 100 },
-        { field: 'remarks', headerName: 'Remarks', width: 100 }
-    ];
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -149,10 +116,7 @@ function PartStorageType({ creating }) {
                                 resultLimit={100}
                                 value={partSearchTerm}
                                 loading={partsSearchLoading}
-                                handleValueChange={(_, newVal) => {
-                                    setPartSearchTerm(newVal.toUpperCase());
-                                    send(`?part=${partSearchTerm}`);
-                                }}
+                                handleValueChange={(_, newVal) => setPartSearchTerm(newVal)}
                                 search={searchParts}
                                 searchResults={partsSearchResults}
                                 priorityFunction="closestMatchesFirst"
@@ -279,36 +243,13 @@ function PartStorageType({ creating }) {
                         {creating ? 'Create ' : 'Save'}
                     </Button>
                 </Grid>
-
-                {partStorageType?.part?.partNumber && (
-                    <>
-                        <Grid size={12}>
-                            <Typography variant="h4">
-                                {`Existing Parts storage Types for ${partStorageType?.partNumber}`}
-                            </Typography>
-                        </Grid>
-                        <Grid size={12}>
-                            <DataGrid
-                                getRowId={row => row.bridgeId}
-                                rows={existingPartsStorageTypes}
-                                editMode="cell"
-                                columns={storageTypeColumns}
-                                onRowClick={clicked => {
-                                    navigate(utilities.getSelfHref(clicked.row));
-                                }}
-                                rowHeight={34}
-                                loading={isExistingPartsStorageTypesLoading}
-                            />
-                        </Grid>
-                        <Grid size={12}>
-                            <SnackbarMessage
-                                visible={snackbarVisible}
-                                onClose={() => setSnackbarVisible(false)}
-                                message="Save Successful"
-                            />
-                        </Grid>
-                    </>
-                )}
+                <Grid size={12}>
+                    <SnackbarMessage
+                        visible={snackbarVisible}
+                        onClose={() => setSnackbarVisible(false)}
+                        message="Save Successful"
+                    />
+                </Grid>
                 {(updateError || createError) && (
                     <Grid size={12}>
                         <ErrorCard
