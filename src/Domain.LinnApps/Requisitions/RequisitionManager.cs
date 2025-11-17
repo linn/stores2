@@ -823,11 +823,22 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 fromCategory,
                 auditLocation);
 
-            if (!string.IsNullOrEmpty(batchRef) && batchRef.StartsWith("P") && fromLocation?.LocationCode == "E-INS-LOC"
+            // stop reqs moving P-batch stock from E-INS-LOC unless via GIST PO transaction
+            if (fromLocation?.LocationCode == "E-INS-LOC"
                                          && functionCode != "GIST PO")
             {
-                throw new CreateRequisitionException(
-                    "Cannot create a P-batch requisition from the inspection location unless it is a GIST PO");
+                // need this, otherwise the logic might just choose a P-batch anyway
+                if (string.IsNullOrEmpty(batchRef))
+                {
+                    throw new CreateRequisitionException(
+                        "Must specify a batch ref");
+                }
+
+                if (batchRef.StartsWith("P"))
+                {
+                    throw new CreateRequisitionException(
+                        "Cannot create a P-batch requisition from the inspection location unless it is a GIST PO");
+                }
             }
 
             if (functionCode == "LOAN OUT" || functionCode == "LOAN BACK")
@@ -1581,10 +1592,20 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("You must provide a to location or pallet");
                 }
 
-                if (m.FromLocation == "E-INS-LOC" && batchPrefix == 'P' && functionCode != "GIST PO")
+                // stop moves from E-INS-LOC if P-batch stock and not GIST PO
+                if (m.FromLocation == "E-INS-LOC")
                 {
-                    throw new RequisitionException(
-                        "Cannot move P-batch stock from the inspection location unless it is a GIST PO");
+                    if (!batchPrefix.HasValue)
+                    {
+                        throw new RequisitionException(
+                            "Must specify a batch.");
+                    }
+
+                    if (batchPrefix == 'P' && functionCode != "GIST PO")
+                    {
+                        throw new RequisitionException(
+                            "Cannot move P-batch stock from the inspection location unless it is a GIST PO");
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(m.FromLocation) || m.FromPallet.HasValue)
