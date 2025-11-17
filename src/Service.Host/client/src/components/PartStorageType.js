@@ -31,9 +31,12 @@ function PartStorageType({ creating }) {
         `${itemTypes.partsStorageTypes.url}/${id}`
     );
 
+    console.log(partStorageTypeResult);
+
     const [partStorageType, setPartStorageType] = useState(partStorageTypeResult);
 
     const [partSearchTerm, setPartSearchTerm] = useState('');
+    const [selectedPart, setSelectedPart] = useState('');
     const [storageTypeSearchTerm, setStorageTypeSearchTerm] = useState('');
     const [snackbarVisible, setSnackbarVisible] = useState();
 
@@ -76,8 +79,17 @@ function PartStorageType({ creating }) {
     useEffect(() => {
         if (!creating) {
             setPartStorageType(partStorageTypeResult);
+            send(`?part=${partStorageTypeResult?.partNumber}`);
         }
-    }, [partStorageTypeResult, creating]);
+    }, [partStorageTypeResult, creating, send]);
+
+    console.log(id);
+
+    useEffect(() => {
+        if (id) {
+            send(id);
+        }
+    }, [creating, id, send]);
 
     useEffect(() => {
         if (updateResult || createResult) {
@@ -91,6 +103,7 @@ function PartStorageType({ creating }) {
         setPartStorageType(c => ({ ...c, partNumber: selected.partNumber, part: selected }));
         setPartSearchTerm(selected.partNumber);
         send(`?part=${selected.partNumber}`);
+        setSelectedPart(selected.partNumber);
     };
 
     const handleStorageTypeSearchResultSelect = selected => {
@@ -150,7 +163,9 @@ function PartStorageType({ creating }) {
                                 resultLimit={100}
                                 value={partSearchTerm}
                                 loading={partsSearchLoading}
-                                handleValueChange={(_, newVal) => setPartSearchTerm(newVal)}
+                                handleValueChange={(_, newVal) => {
+                                    setPartSearchTerm(newVal.toUpperCase());
+                                }}
                                 search={searchParts}
                                 searchResults={partsSearchResults}
                                 priorityFunction="closestMatchesFirst"
@@ -167,7 +182,9 @@ function PartStorageType({ creating }) {
                                 resultLimit={100}
                                 value={storageTypeSearchTerm}
                                 loading={storageTypesSearchLoading}
-                                handleValueChange={(_, newVal) => setStorageTypeSearchTerm(newVal)}
+                                handleValueChange={(_, newVal) =>
+                                    setStorageTypeSearchTerm(newVal.toUpperCase())
+                                }
                                 search={searchStorageTypes}
                                 searchResults={storageTypesSearchResults}
                                 priorityFunction="closestMatchesFirst"
@@ -277,20 +294,27 @@ function PartStorageType({ creating }) {
                         {creating ? 'Create ' : 'Save'}
                     </Button>
                 </Grid>
-                {partStorageTypeResult && !creating && (
-                    <Grid size={12}>
-                        <DataGrid
-                            getRowId={row => row.bridgeId}
-                            rows={partsStorageTypes}
-                            editMode="cell"
-                            columns={partStorageTypeColumns}
-                            onRowClick={clicked => {
-                                navigate(utilities.getSelfHref(clicked.row));
-                            }}
-                            rowHeight={34}
-                            loading={isPartsStorageTypesLoading}
-                        />
-                    </Grid>
+                {partsStorageTypes && (
+                    <>
+                        <Grid size={12}>
+                            <Typography variant="h4">
+                                {`Part Storage Types for ${creating ? selectedPart : partStorageTypeResult?.partNumber}`}
+                            </Typography>
+                        </Grid>
+                        <Grid size={12}>
+                            <DataGrid
+                                getRowId={row => row.bridgeId}
+                                rows={partsStorageTypes}
+                                editMode="cell"
+                                columns={partStorageTypeColumns}
+                                onRowClick={clicked => {
+                                    navigate(utilities.getSelfHref(clicked.row));
+                                }}
+                                rowHeight={34}
+                                loading={isPartsStorageTypesLoading}
+                            />
+                        </Grid>
+                    </>
                 )}
                 <Grid size={12}>
                     <SnackbarMessage

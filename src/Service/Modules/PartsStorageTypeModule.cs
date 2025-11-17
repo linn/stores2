@@ -51,11 +51,6 @@
             int bridgeId,
             IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
-            var searchResource = new PartsStorageTypeResource
-                          {
-                              BridgeId = bridgeId,
-                          };
-
             await res.Negotiate(await service.GetById(bridgeId));
         }
 
