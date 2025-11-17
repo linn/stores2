@@ -277,7 +277,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public async Task AddMovesToLine(RequisitionLine line, IEnumerable<MoveSpecification> moves)
         {
             var moveSpecifications = moves.ToList();
-            await this.CheckMoves(line.Part.PartNumber, moveSpecifications, false, line.TransactionDefinition);
+            await this.CheckMoves(
+                line.Part.PartNumber,
+                moveSpecifications,
+                string.IsNullOrEmpty(line.RequisitionHeader?.BatchRef) ? null : line.RequisitionHeader.BatchRef.ElementAt(0),
+                line.RequisitionHeader?.FromLocation?.LocationCode,
+                false, 
+                line.TransactionDefinition);
             
             foreach (var moveOnto
                      in moveSpecifications.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
@@ -398,7 +404,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 var toLocationRequired = header.ReqType != "F" && header.StoresFunction.ToLocationRequiredOrOptional()
                                                                && header.StoresFunction.FunctionCode != "AUDIT";
-                await this.CheckMoves(toAdd.PartNumber, movesToAdd, toLocationRequired, transactionDefinition);
+                await this.CheckMoves(
+                    toAdd.PartNumber,
+                    movesToAdd, 
+                    string.IsNullOrEmpty(header.BatchRef) ? null : header.BatchRef.ElementAt(0),
+                    header.StoresFunction.FunctionCode,
+                    toLocationRequired, 
+                    transactionDefinition);
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
@@ -678,18 +690,27 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         continue;
                     }
 
-                    await this.CheckMoves(line.PartNumber, movesToAdd, toLocationRequired, existingLine.TransactionDefinition);
+                    await this.CheckMoves(
+                        line.PartNumber, 
+                        movesToAdd,
+                        string.IsNullOrEmpty(current.BatchRef) ? null : current.BatchRef.ElementAt(0),
+                        current.StoresFunction.FunctionCode,
+                        toLocationRequired, 
+                        existingLine.TransactionDefinition);
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
                 else
                 {
                     var transaction = await this.transactionDefinitionRepository.FindByIdAsync(line.TransactionDefinition);
+
                     // adding a new line
                     // note - this will pick stock/create ontos, create nominal postings etc
                     // might need to rethink if not all new lines need this behaviour (update strategies? some other pattern)
                     await this.CheckMoves(
                         line.PartNumber,
                         line.Moves == null ? new List<MoveSpecification>() : line.Moves.ToList(),
+                        string.IsNullOrEmpty(current.BatchRef) ? null : current.BatchRef.ElementAt(0),
+                        current.StoresFunction.FunctionCode,
                         toLocationRequired, 
                         transaction);
                     await this.AddRequisitionLine(current, line);
@@ -801,7 +822,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 dateReceived,
                 fromCategory,
                 auditLocation);
-            
+
+            if (!string.IsNullOrEmpty(batchRef) && batchRef.StartsWith("P") && fromLocation?.LocationCode == "E-INS-LOC"
+                                         && functionCode != "GIST PO")
+            {
+                throw new CreateRequisitionException(
+                    "Cannot create a P-batch requisition from the inspection location unless it is a GIST PO");
+            }
+
             if (functionCode == "LOAN OUT" || functionCode == "LOAN BACK")
             {
                 if (functionCode == "LOAN BACK" && (!document1Line.HasValue || document1Line == 0))
@@ -842,12 +870,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (lines != null)
             {   
                 // LDREQ etc works with a to location but also needs a stock pool to avoid making stock locators with no stock pool
-                var headerSpecifiesOnto = (req.ToPalletNumber.HasValue || req.ToLocation != null);
+                var headerSpecifiesOnto = req.ToPalletNumber.HasValue || req.ToLocation != null;
                 var headerSpecifiesOntoStockPool = !string.IsNullOrEmpty(req.ToStockPool);
                 foreach (var candidate in lineCandidates)
                 {
                     req.AddLine(await this.ValidateLineCandidate(
-                        candidate, 
+                        candidate,
+                        req.BatchRef,
                         req.StoresFunction, 
                         req.ReqType, 
                         headerSpecifiesOnto,
@@ -873,7 +902,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                             }
                         };
                         await this.CheckMoves(
-                            candidate.PartNumber, moves, reqType != "F" && req.StoresFunction.ToLocationRequiredOrOptional());
+                            candidate.PartNumber,
+                            moves,
+                            string.IsNullOrEmpty(req.BatchRef) ? null : req.BatchRef.ElementAt(0),
+                            req.StoresFunction.FunctionCode,
+                            reqType != "F" && req.StoresFunction.ToLocationRequiredOrOptional());
                     }
                 }
             }
@@ -981,6 +1014,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public async Task<RequisitionLine> ValidateLineCandidate(
             LineCandidate candidate,
+            string batchRef,
             StoresFunction storesFunction = null,
             string reqType = null,
             bool headerSpecifiesOntoLocation = false,
@@ -1012,6 +1046,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 await this.CheckMoves(
                     candidate.PartNumber,
                     candidate.Moves.ToList(),
+                    string.IsNullOrEmpty(batchRef) ? null : batchRef.ElementAt(0),
+                    storesFunction?.FunctionCode,
                     toLocationRequired,
                     transactionDefinition);
             }
@@ -1023,6 +1059,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new CreateRequisitionException(
                         "Must specify both header loc and stock pool for onto");
                 }
+
                 return line;
             }
             
@@ -1521,6 +1558,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         private async Task CheckMoves(
             string partNumber,
             IList<MoveSpecification> moves,
+            char? batchPrefix,
+            string functionCode,
             bool toLocationRequired = false,
             StoresTransactionDefinition transaction = null)
         {
@@ -1540,6 +1579,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (!m.ToPallet.HasValue && string.IsNullOrEmpty(m.ToLocation) && toLocationRequired)
                 {
                     throw new RequisitionException("You must provide a to location or pallet");
+                }
+
+                if (m.FromLocation == "E-INS-LOC" && batchPrefix == 'P' && functionCode != "GIST PO")
+                {
+                    throw new RequisitionException(
+                        "Cannot move P-batch stock from the inspection location unless it is a GIST PO");
                 }
 
                 if (!string.IsNullOrEmpty(m.FromLocation) || m.FromPallet.HasValue)
