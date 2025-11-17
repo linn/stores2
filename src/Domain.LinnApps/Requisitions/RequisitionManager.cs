@@ -837,7 +837,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (batchRef.StartsWith("P"))
                 {
                     throw new CreateRequisitionException(
-                        "Cannot create a P-batch requisition from the inspection location unless it is a GIST PO");
+                        "Cannot move P-batch stock from the inspection location unless it is a GIST PO");
                 }
             }
 
