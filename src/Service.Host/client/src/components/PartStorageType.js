@@ -1,26 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
+import { DataGrid } from '@mui/x-data-grid';
 import {
     Loading,
     Search,
     InputField,
+    utilities,
     ErrorCard,
     SnackbarMessage
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import config from '../config';
-import itemTypes from '../itemTypes';
 import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
+import itemTypes from '../itemTypes';
+import useGet from '../hooks/useGet';
 import Page from './Page';
 
 function PartStorageType({ creating }) {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const { isPartStorageTypesLoading, result: partStorageTypeResult } = useInitialise(
         `${itemTypes.partsStorageTypes.url}/${id}`
@@ -45,6 +50,12 @@ function PartStorageType({ creating }) {
         loading: storageTypesSearchLoading,
         clear: clearStorageTypes
     } = useSearch(itemTypes.storageTypes.url, 'storageTypeCode', 'storageTypeCode', 'description');
+
+    const {
+        send,
+        isLoading: isPartsStorageTypesLoading,
+        result: partsStorageTypes
+    } = useGet(itemTypes.partsStorageTypes.url);
 
     const {
         send: updatePartStorageType,
@@ -78,17 +89,40 @@ function PartStorageType({ creating }) {
 
     const handlePartSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, partNumber: selected.partNumber, part: selected }));
-        setPartSearchTerm(selected.description);
+        setPartSearchTerm(selected.partNumber);
+        send(`?part=${selected.partNumber}`);
     };
 
     const handleStorageTypeSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, storageTypeCode: selected.storageTypeCode }));
-        setStorageTypeSearchTerm(selected.description);
+        setStorageTypeSearchTerm(selected.storageTypeCode);
     };
 
     const handleFieldChange = (propertyName, newValue) => {
         setPartStorageType(c => ({ ...c, [propertyName]: newValue }));
     };
+
+    const partStorageTypeColumns = [
+        { field: 'partNumber', headerName: 'Part Number', width: 150 },
+        {
+            field: 'storageTypeCode',
+            headerName: 'Storage Type Code',
+            width: 150
+        },
+        {
+            field: 'storageType',
+            headerName: 'Storage Type Description',
+            width: 300,
+            valueGetter: value => {
+                return value?.description || '';
+            }
+        },
+        { field: 'maximum', headerName: 'Maximum', width: 100 },
+        { field: 'bridgeId', headerName: 'Bridge ID', width: 100 },
+        { field: 'incr', headerName: 'Incr', width: 100 },
+        { field: 'preference', headerName: 'Preference', width: 100 },
+        { field: 'remarks', headerName: 'Remarks', width: 100 }
+    ];
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -243,6 +277,21 @@ function PartStorageType({ creating }) {
                         {creating ? 'Create ' : 'Save'}
                     </Button>
                 </Grid>
+                {partStorageTypeResult && !creating && (
+                    <Grid size={12}>
+                        <DataGrid
+                            getRowId={row => row.bridgeId}
+                            rows={partsStorageTypes}
+                            editMode="cell"
+                            columns={partStorageTypeColumns}
+                            onRowClick={clicked => {
+                                navigate(utilities.getSelfHref(clicked.row));
+                            }}
+                            rowHeight={34}
+                            loading={isPartsStorageTypesLoading}
+                        />
+                    </Grid>
+                )}
                 <Grid size={12}>
                     <SnackbarMessage
                         visible={snackbarVisible}
