@@ -17,7 +17,7 @@
 
     using NUnit.Framework;
 
-    public class WhenValidatingAndHeaderSpecifiesFromInspLocationAndPoBatchAndNotGistPo : ContextBase
+    public class WhenValidatingAndMoveFromInspectionAndNotGistPoAndNoBatchRef : ContextBase
     {
         private Func<Task> act;
 
@@ -56,7 +56,7 @@
                 fromStockPool: "POOL",
                 toPalletNumber: 666,
                 fromLocationCode: "E-INS-LOC",
-                batchRef: "P1234567",
+                batchRef: string.Empty,
                 partNumber: "PART",
                 toState: "BLAH");
         }
@@ -66,7 +66,7 @@
         {
             await this.act.Should().ThrowAsync<CreateRequisitionException>()
                 .WithMessage(
-                    "Cannot move P-batch stock from the inspection location unless it is a GIST PO");
+                    "Must specify a batch ref");
         }
     }
 }
