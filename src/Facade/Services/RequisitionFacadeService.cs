@@ -365,7 +365,7 @@
 
             if (searchResource.Pending == true)
             {
-                return x => x.Cancelled != "Y" && x.DateBooked == null;
+                return x => x.Cancelled != "Y" && x.DateBooked == null && x.Document1Name != "CONS" && x.Lines.Any(l => l.Booked == "N" && l.Cancelled == "N");
             }
 
             if (!searchResource.ReqNumber.HasValue && string.IsNullOrEmpty(searchResource.Comments)
