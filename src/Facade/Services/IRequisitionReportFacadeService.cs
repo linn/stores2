@@ -12,6 +12,8 @@
 
         Task<string> GetRequisitionCostReportAsHtml(int reqNumber);
 
+        Task<Stream> GetRequisitionCostReportAsPdf(int reqNumber);
+
         Task<string> GetRequisitionAsHtml(int reqNumber);
 
         Task<Stream> GetRequisitionAsPdf(int reqNumber);
