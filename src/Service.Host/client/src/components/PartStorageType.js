@@ -15,7 +15,6 @@ import {
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import config from '../config';
-import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
@@ -27,11 +26,12 @@ function PartStorageType({ creating }) {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const { isPartStorageTypesLoading, result: partStorageTypeResult } = useInitialise(
-        `${itemTypes.partsStorageTypes.url}/${id}`
-    );
-
-    console.log(partStorageTypeResult);
+    const {
+        send: sendPartStorageType,
+        loading: isPartStorageTypesLoading,
+        result: partStorageTypeResult,
+        clearData: clearPartStorageType
+    } = useGet(`${itemTypes.partsStorageTypes.url}/${id}`);
 
     const [partStorageType, setPartStorageType] = useState(partStorageTypeResult);
 
@@ -77,19 +77,18 @@ function PartStorageType({ creating }) {
     } = usePost(itemTypes.partsStorageTypes.url);
 
     useEffect(() => {
-        if (!creating) {
+        if (id) {
+            clearPartStorageType();
+            sendPartStorageType();
+        }
+    }, [id]);
+
+    useEffect(() => {
+        if (partStorageTypeResult) {
             setPartStorageType(partStorageTypeResult);
             send(`?part=${partStorageTypeResult?.partNumber}`);
         }
-    }, [partStorageTypeResult, creating, send]);
-
-    console.log(id);
-
-    useEffect(() => {
-        if (id) {
-            send(id);
-        }
-    }, [creating, id, send]);
+    }, [partStorageTypeResult]);
 
     useEffect(() => {
         if (updateResult || createResult) {

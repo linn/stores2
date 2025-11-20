@@ -101,7 +101,6 @@ function PartsStorageTypes() {
                 </Grid>
                 <Grid size={6}>
                     <Search
-                        autoFocus
                         propertyName="storageType"
                         label="Storage Type"
                         resultsInModal

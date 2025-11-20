@@ -32,10 +32,6 @@ function PcasStorageType({ creating }) {
     const [storageTypeSearchTerm, setStorageTypeSearchTerm] = useState('');
     const [snackbarVisible, setSnackbarVisible] = useState();
 
-    useEffect(() => {
-        setPcasStorageType(pcasStorageTypeResult);
-    }, [pcasStorageTypeResult, storageTypesSearchResults]);
-
     const {
         search: searchBoard,
         results: boardSearchResults,
@@ -65,6 +61,10 @@ function PcasStorageType({ creating }) {
         postResult: createResult,
         clearPostResult: clearCreateResult
     } = usePost(itemTypes.pcasStorageTypes.url);
+
+    useEffect(() => {
+        setPcasStorageType(pcasStorageTypeResult);
+    }, [pcasStorageTypeResult, storageTypesSearchResults]);
 
     useEffect(() => {
         if (updateResult) {
@@ -147,7 +147,6 @@ function PcasStorageType({ creating }) {
                 {creating ? (
                     <Grid item size={4}>
                         <Search
-                            autoFocus
                             propertyName="storageType"
                             label="Storage Type"
                             resultsInModal
