@@ -103,6 +103,7 @@ function PartsStorageTypes() {
                     <Search
                         propertyName="storageType"
                         label="Storage Type"
+                        autoFocus={false}
                         resultsInModal
                         resultLimit={100}
                         value={storageTypeSearchTerm}
