@@ -21,6 +21,8 @@
 
         private readonly IRepository<PartsStorageType, int> partStorageTypeRepository;
 
+        private readonly ITransactionManager transactionManager;
+
         private readonly IDatabaseService databaseService;
 
         public PartsStorageTypeFacadeService(
@@ -36,6 +38,7 @@
             this.storageTypeRepository = storageTypeRepository;
             this.partStorageTypeRepository = partStorageTypeRepository;
             this.databaseService = databaseService;
+            this.transactionManager = transactionManager;
         }
 
         protected override async Task<PartsStorageType> CreateFromResourceAsync(
@@ -113,11 +116,15 @@
             throw new NotImplementedException();
         }
 
-        protected override void DeleteOrObsoleteResource(
+        protected override async void DeleteOrObsoleteResource(
             PartsStorageType entity,
             IEnumerable<string> privileges = null)
         {
-            throw new NotImplementedException();
+            var partStorageType = await this.partStorageTypeRepository.FindByIdAsync(entity.BridgeId);
+
+            this.partStorageTypeRepository.Remove(partStorageType);
+
+            this.transactionManager.Commit();
         }
 
         protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)
