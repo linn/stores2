@@ -18,6 +18,7 @@ namespace Linn.Stores2.Service.Modules
         {
             app.MapGet("/requisitions/reports/requisition-cost/report", this.RequisitionCostReport);
             app.MapGet("/requisitions/reports/requisition-cost/report/{reqNumber}/view", this.RequisitionCostReportAsHtml);
+            app.MapGet("/requisitions/reports/requisition-cost/report/{reqNumber}/pdf", this.RequisitionCostReportAsPdf);
             app.MapGet("/requisitions/reports/requisition-cost", this.GetApp);
             app.MapGet("/requisitions/{reqNumber}/view", this.GetReqAsHtml);
             app.MapGet("/requisitions/{reqNumber}/pdf", this.GetReqAsPdf);
@@ -44,6 +45,18 @@ namespace Linn.Stores2.Service.Modules
             res.StatusCode = (int)HttpStatusCode.OK;
 
             await res.WriteAsync(result);
+        }
+
+        private async Task RequisitionCostReportAsPdf(
+            HttpRequest _,
+            HttpResponse res,
+            int reqNumber,
+            IRequisitionReportFacadeService facadeService)
+        {
+            var result = await facadeService.GetRequisitionCostReportAsPdf(reqNumber);
+
+            res.ContentType = "application/pdf";
+            await res.FromStream(result, res.ContentType, new System.Net.Mime.ContentDisposition("attachment"));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
