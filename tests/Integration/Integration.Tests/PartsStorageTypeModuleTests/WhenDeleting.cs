@@ -1,14 +1,15 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
+    using System.Linq;
+    using System.Net;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using NSubstitute;
     using NUnit.Framework;
-    using System.Linq;
-    using System.Net;
+
 
     public class WhenDeleting : ContextBase
     {
@@ -40,8 +41,6 @@
                 400);
 
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partStorageType);
-
-            this.DbContext.PartsStorageTypes.Remove(this.partStorageType);
 
             this.Response = this.Client.Delete(
                 "/stores2/parts-storage-types/400",

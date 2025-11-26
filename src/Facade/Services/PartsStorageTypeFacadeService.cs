@@ -122,9 +122,16 @@
         {
             var partStorageType = await this.partStorageTypeRepository.FindByIdAsync(entity.BridgeId);
 
-            this.partStorageTypeRepository.Remove(partStorageType);
+            if (partStorageType != null)
+            {
+                this.partStorageTypeRepository.Remove(partStorageType);
 
-            this.transactionManager.Commit();
+                this.transactionManager.Commit();
+            }
+            else
+            {
+                throw new PartsStorageTypeException("Part Storage Type does not exist");
+            }
         }
 
         protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)
