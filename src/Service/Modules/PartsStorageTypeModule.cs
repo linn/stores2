@@ -20,6 +20,7 @@
             app.MapPost("/stores2/parts-storage-types", this.Create);
             app.MapGet("/stores2/parts-storage-types/{bridgeId}", this.GetById);
             app.MapPut("/stores2/parts-storage-types/{bridgeId}", this.Update);
+            app.MapDelete("/stores2/parts-storage-types/{bridgeId}", this.Delete);
         }
 
         private async Task GetAll(
@@ -52,6 +53,15 @@
             IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
         {
             await res.Negotiate(await service.GetById(bridgeId));
+        }
+
+        private async Task Delete(
+            HttpRequest _,
+            HttpResponse res,
+            int bridgeId,
+            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+        {
+            await res.Negotiate(await service.DeleteOrObsolete(bridgeId));
         }
 
         private async Task Create(

@@ -116,7 +116,9 @@ function PcasStorageType({ creating }) {
                             resultLimit={100}
                             value={boardSearchTerm}
                             loading={boardSearchLoading}
-                            handleValueChange={(_, newVal) => setBoardSearchTerm(newVal)}
+                            handleValueChange={(_, newVal) =>
+                                setBoardSearchTerm(newVal.toUpperCase())
+                            }
                             search={searchBoard}
                             searchResults={boardSearchResults}
                             priorityFunction="closestMatchesFirst"
