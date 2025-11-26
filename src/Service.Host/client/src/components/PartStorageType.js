@@ -20,6 +20,7 @@ import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
 import itemTypes from '../itemTypes';
 import useGet from '../hooks/useGet';
+import useDelete from '../hooks/useDelete';
 import Page from './Page';
 
 function PartStorageType({ creating }) {
@@ -76,6 +77,12 @@ function PartStorageType({ creating }) {
         clearPostResult: clearCreateResult
     } = usePost(itemTypes.partsStorageTypes.url);
 
+    const {
+        send: deletePartStorageType,
+        isLoading: isDeleteLoading,
+        deleteResult: deleteResult
+    } = useDelete(itemTypes.partsStorageTypes.url);
+
     useEffect(() => {
         if (id) {
             clearPartStorageType();
@@ -91,12 +98,12 @@ function PartStorageType({ creating }) {
     }, [partStorageTypeResult]);
 
     useEffect(() => {
-        if (updateResult || createResult) {
+        if (updateResult || createResult || deleteResult) {
             setSnackbarVisible(true);
             clearCreateResult();
             clearUpdateResult();
         }
-    }, [updateResult, createResult, clearCreateResult, clearUpdateResult]);
+    }, [updateResult, createResult, deleteResult, clearCreateResult, clearUpdateResult]);
 
     const handlePartSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, partNumber: selected.partNumber, part: selected }));
@@ -145,7 +152,10 @@ function PartStorageType({ creating }) {
                     </Typography>
                 </Grid>
 
-                {(isPartStorageTypesLoading || updateLoading || createStorageTypeLoading) && (
+                {(isPartStorageTypesLoading ||
+                    isDeleteLoading ||
+                    updateLoading ||
+                    createStorageTypeLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -272,7 +282,7 @@ function PartStorageType({ creating }) {
                     />
                 </Grid>
             </Grid>
-            <Grid container spacing={3}>
+            <Grid container spacing={10}>
                 <Grid size={1}>
                     <Button
                         variant="contained"
@@ -293,6 +303,19 @@ function PartStorageType({ creating }) {
                         {creating ? 'Create ' : 'Save'}
                     </Button>
                 </Grid>
+                {!creating && (
+                    <Grid size={1}>
+                        <Button
+                            variant="outlined"
+                            fullWidth
+                            onClick={() => {
+                                deletePartStorageType(partStorageType.bridgeId);
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </Grid>
+                )}
                 {partsStorageTypes && (
                     <>
                         <Grid size={12}>
