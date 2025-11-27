@@ -65,27 +65,27 @@
         {
             if (createOrUpdate == "create" && partStorageTypeAlreadyExists != null)
             {
-                throw new PartsStorageTypeException("Part Storage Type Already Exists");
+                throw new PcasStorageTypeException("Part Storage Type Already Exists");
             }
 
             if (preferenceAlreadyExists != null && (createOrUpdate == "create" || preferenceAlreadyExists.StorageTypeCode != this.StorageTypeCode))
             {
-                throw new PartsStorageTypeException("Part Preference Already Exists");
+                throw new PcasStorageTypeException("Part Preference Already Exists");
             }
 
             if (string.IsNullOrEmpty(updatePreference))
             {
-                throw new PartsStorageTypeException("Part Preference is Empty");
+                throw new PcasStorageTypeException("Part Preference is Empty");
             }
 
             if (storageType == null)
             {
-                throw new PartsStorageTypeException("Storage Type doesn't exist");
+                throw new PcasStorageTypeException("Storage Type doesn't exist");
             }
 
             if (pcasBoard == null)
             {
-                throw new PartsStorageTypeException("PCAS Board doesn't exist");
+                throw new PcasStorageTypeException("PCAS Board doesn't exist");
             }
         }
     }
