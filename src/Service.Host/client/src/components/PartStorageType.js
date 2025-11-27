@@ -80,7 +80,8 @@ function PartStorageType({ creating }) {
     const {
         send: deletePartStorageType,
         isLoading: isDeleteLoading,
-        deleteResult: deleteResult
+        deleteResult,
+        clearData: clearDeletePartStorageType
     } = useDelete(itemTypes.partsStorageTypes.url);
 
     useEffect(() => {
@@ -102,8 +103,16 @@ function PartStorageType({ creating }) {
             setSnackbarVisible(true);
             clearCreateResult();
             clearUpdateResult();
+            clearDeletePartStorageType();
         }
-    }, [updateResult, createResult, deleteResult, clearCreateResult, clearUpdateResult]);
+    }, [
+        updateResult,
+        createResult,
+        deleteResult,
+        clearCreateResult,
+        clearUpdateResult,
+        clearDeletePartStorageType
+    ]);
 
     const handlePartSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, partNumber: selected.partNumber, part: selected }));
