@@ -312,6 +312,13 @@ function PartStorageType({ creating }) {
                         {creating ? 'Create ' : 'Save'}
                     </Button>
                 </Grid>
+                {(updateError || createError) && (
+                    <Grid size={12}>
+                        <ErrorCard
+                            errorMessage={updateError ? updateError?.details : createError}
+                        />
+                    </Grid>
+                )}
                 {!creating && (
                     <Grid size={1}>
                         <Button
@@ -354,13 +361,6 @@ function PartStorageType({ creating }) {
                         message="Save Successful"
                     />
                 </Grid>
-                {(updateError || createError) && (
-                    <Grid size={12}>
-                        <ErrorCard
-                            errorMessage={updateError ? updateError?.details : createError}
-                        />
-                    </Grid>
-                )}
             </Grid>
         </Page>
     );

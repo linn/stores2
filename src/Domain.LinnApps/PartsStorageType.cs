@@ -50,8 +50,9 @@
         }
 
         public void ValidateUpdateAndCreate(
-            PartsStorageType preferenceAlreadyExists,
             PartsStorageType partStorageTypeAlreadyExists,
+            PartsStorageType preferenceAlreadyExists,
+            string updatePreference,
             string createOrUpdate)
         {
             if (createOrUpdate == "create" && partStorageTypeAlreadyExists != null)
@@ -62,6 +63,11 @@
             if (preferenceAlreadyExists != null && (createOrUpdate == "create" || preferenceAlreadyExists.BridgeId != this.BridgeId))
             {
                 throw new PartsStorageTypeException("Part Preference Already Exists");
+            }
+
+            if (string.IsNullOrEmpty(updatePreference))
+            {
+                throw new PartsStorageTypeException("Part Preference is Empty");
             }
         }
 
