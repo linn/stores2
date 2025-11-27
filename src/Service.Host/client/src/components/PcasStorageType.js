@@ -63,8 +63,10 @@ function PcasStorageType({ creating }) {
     } = usePost(itemTypes.pcasStorageTypes.url);
 
     useEffect(() => {
-        setPcasStorageType(pcasStorageTypeResult);
-    }, [pcasStorageTypeResult, storageTypesSearchResults]);
+        if (pcasStorageTypeResult) {
+            setPcasStorageType(pcasStorageTypeResult);
+        }
+    }, [pcasStorageTypeResult]);
 
     useEffect(() => {
         if (updateResult) {
