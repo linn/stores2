@@ -8,6 +8,8 @@ function useDelete(url, requiresAuth = false) {
 
     let token = '';
 
+    const clearData = () => setDeleteResult(null);
+
     const auth = useAuth();
     if (requiresAuth) {
         token = auth.user?.access_token;
@@ -37,7 +39,7 @@ function useDelete(url, requiresAuth = false) {
             setIsLoading(false);
         }
     };
-    return { send, isLoading, errorMessage, deleteResult };
+    return { send, isLoading, errorMessage, deleteResult, clearData };
 }
 
 export default useDelete;

@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps
 {
+    using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -47,6 +48,23 @@
             this.Maximum = maximum;
             this.Incr = incr;
             this.Preference = preference;
+        }
+
+        public void Validate(
+            PartsStorageType preferenceAlreadyExists,
+            PartsStorageType partStorageTypeAlreadyExists,
+            string createOrUpdate)
+        {
+            if (createOrUpdate == "create" && partStorageTypeAlreadyExists != null)
+            {
+                throw new PartsStorageTypeException("Part Storage Type Already Exists");
+            }
+
+
+            if (preferenceAlreadyExists != null && (createOrUpdate == "create" || preferenceAlreadyExists.BridgeId != this.BridgeId))
+            {
+                throw new PartsStorageTypeException("Part Preference Already Exists");
+            }
         }
     }
 }
