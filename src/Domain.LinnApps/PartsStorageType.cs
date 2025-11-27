@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps
 {
-    using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -50,7 +49,7 @@
             this.Preference = preference;
         }
 
-        public void Validate(
+        public void ValidateUpdateAndCreate(
             PartsStorageType preferenceAlreadyExists,
             PartsStorageType partStorageTypeAlreadyExists,
             string createOrUpdate)
@@ -60,10 +59,17 @@
                 throw new PartsStorageTypeException("Part Storage Type Already Exists");
             }
 
-
             if (preferenceAlreadyExists != null && (createOrUpdate == "create" || preferenceAlreadyExists.BridgeId != this.BridgeId))
             {
                 throw new PartsStorageTypeException("Part Preference Already Exists");
+            }
+        }
+
+        public void ValidateDelete()
+        {
+            if (this == null)
+            {
+                throw new PartsStorageTypeException("Part Storage Type does not exist");
             }
         }
     }

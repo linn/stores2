@@ -10,7 +10,6 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using NUnit.Framework;
 
-
     public class WhenDeleting : ContextBase
     {
         private PartsStorageType partStorageType;
@@ -68,7 +67,7 @@
         {
             this.DbContext.PartsStorageTypes
                 .Any(x => x.PartNumber == this.partStorageType.PartNumber && x.StorageTypeCode == this.partStorageType.StorageTypeCode)
-                .Should().BeFalse("the part storage type should be deleted from the repository");
+                .Should().BeFalse();
         }
     }
 }

@@ -1,7 +1,8 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
+    using System.Net.Http;
+
     using Linn.Common.Facade;
-    using Linn.Common.Persistence;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Stores2.Domain.LinnApps;
@@ -17,7 +18,6 @@
     using Microsoft.Extensions.DependencyInjection;
     using NSubstitute;
     using NUnit.Framework;
-    using System.Net.Http;
 
     public class ContextBase
     {

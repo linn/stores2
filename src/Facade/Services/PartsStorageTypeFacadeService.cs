@@ -5,7 +5,6 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
-
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Common.Proxy.LinnApps.Services;
@@ -69,7 +68,7 @@
                 resource.Preference,
                 0);
 
-            entity.Validate(partStorageTypeAlreadyExists, partPreferenceAlreadyExists, "create");
+            entity.ValidateUpdateAndCreate(partStorageTypeAlreadyExists, partPreferenceAlreadyExists, "create");
 
             var bridgeId = this.databaseService.GetIdSequence("PARTS_STORAGE_TYPES_ID_SEQ");
 
@@ -92,7 +91,7 @@
                                                   pst => pst.Preference == updateResource.Preference
                                                          && pst.PartNumber == updateResource.PartNumber);
 
-            entity.Validate(partPreferenceAlreadyExists, null, "update");
+            entity.ValidateUpdateAndCreate(partPreferenceAlreadyExists, null, "update");
 
             entity.Update(
                 updateResource.Remarks,
@@ -123,16 +122,11 @@
         {
             var partStorageType = this.partStorageTypeRepository.FindById(entity.BridgeId);
 
-            if (partStorageType != null)
-            {
-                this.partStorageTypeRepository.Remove(partStorageType);
+            partStorageType.ValidateDelete();
 
-                this.transactionManager.Commit();
-            }
-            else
-            {
-                throw new PartsStorageTypeException("Part Storage Type does not exist");
-            }
+            this.partStorageTypeRepository.Remove(partStorageType);
+
+            this.transactionManager.Commit();
         }
 
         protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)

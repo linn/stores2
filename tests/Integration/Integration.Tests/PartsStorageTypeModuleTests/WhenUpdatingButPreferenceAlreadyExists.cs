@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 {
-    using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
 
