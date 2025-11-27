@@ -57,6 +57,7 @@
                 .AddScoped<IRequisitionFactory, RequisitionFactory>()
                 .AddScoped<IRequisitionStoredProcedures, RequisitionStoredProcedures>()
                 .AddTransient<IDatabaseSequenceService, DatabaseSequenceService>()
+                .AddTransient<IStorageTypeService, StorageTypesService>()
                 .AddTransient<IDatabaseService, DatabaseService>()
                 .AddScoped<IDocumentProxy, DocumentProxy>()
                 .AddTransient<IStockService, StockService>()

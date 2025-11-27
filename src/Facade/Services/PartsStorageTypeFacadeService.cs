@@ -22,7 +22,7 @@
 
         private readonly IRepository<PartsStorageType, int> partStorageTypeRepository;
 
-        private readonly ITransactionManager transactionManager;
+        private readonly IStorageTypeService storageTypeService;
 
         private readonly IDatabaseService databaseService;
 
@@ -32,42 +32,37 @@
             IBuilder<PartsStorageType> resourceBuilder,
             IRepository<Part, string> partRepository,
             IRepository<StorageType, string> storageTypeRepository,
-            IDatabaseService databaseService)
+            IDatabaseService databaseService,
+            IStorageTypeService storageTypeService)
             : base(partStorageTypeRepository, transactionManager, resourceBuilder)
         {
             this.partRepository = partRepository;
             this.storageTypeRepository = storageTypeRepository;
             this.partStorageTypeRepository = partStorageTypeRepository;
             this.databaseService = databaseService;
-            this.transactionManager = transactionManager;
+            this.storageTypeService = storageTypeService;
         }
 
         protected override async Task<PartsStorageType> CreateFromResourceAsync(
             PartsStorageTypeResource resource,
             IEnumerable<string> privileges = null)
         {
-            var part = await this.partRepository.FindByIdAsync(resource.PartNumber);
+            var entity = new PartsStorageType(
+                new Part { PartNumber = resource.PartNumber },
+                new StorageType { StorageTypeCode = resource.StorageTypeCode },
+                resource.Remarks,
+                resource.Maximum,
+                resource.Incr,
+                resource.Preference,
+                0);
 
-            var storageType = await this.storageTypeRepository.FindByIdAsync(resource.StorageTypeCode);
-
-            var partStorageTypeAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
-                                                                pst => pst.StorageTypeCode == resource.StorageTypeCode
-                                                                       && pst.PartNumber == resource.PartNumber);
-
-
-            var partPreferenceAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
-                                                  pst => pst.Preference == resource.Preference
-                                                         && pst.PartNumber == resource.PartNumber);
-
-            var entity = new PartsStorageType();
-
-            entity.ValidateUpdateAndCreate(partStorageTypeAlreadyExists, partPreferenceAlreadyExists, resource.Preference, "create");
+            var validatePartsStorageType = await this.storageTypeService.ValidatePartsStorageType(entity);
 
             var bridgeId = this.databaseService.GetIdSequence("PARTS_STORAGE_TYPES_ID_SEQ");
 
             return new PartsStorageType(
-                part,
-                storageType,
+                validatePartsStorageType.Part,
+                validatePartsStorageType.StorageType,
                 resource.Remarks,
                 resource.Maximum,
                 resource.Incr,
@@ -80,17 +75,22 @@
             PartsStorageTypeResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            var partPreferenceAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
-                                                  pst => pst.Preference == updateResource.Preference
-                                                         && pst.PartNumber == updateResource.PartNumber);
-
-            entity.ValidateUpdateAndCreate(null, partPreferenceAlreadyExists, updateResource.Preference, "update");
-
-            entity.Update(
+            var partsStorageType = new PartsStorageType(
+                new Part { PartNumber = updateResource.PartNumber },
+                new StorageType { StorageTypeCode = updateResource.StorageTypeCode },
                 updateResource.Remarks,
                 updateResource.Maximum,
                 updateResource.Incr,
-                updateResource.Preference);
+                updateResource.Preference,
+                updateResource.BridgeId);
+
+            var validatePartsStorageType = await this.storageTypeService.ValidatePartsStorageType(partsStorageType);
+
+            entity.Update(
+                validatePartsStorageType.Remarks,
+                validatePartsStorageType.Maximum,
+                validatePartsStorageType.Incr,
+                validatePartsStorageType.Preference);
         }
 
         protected override Expression<Func<PartsStorageType, bool>> SearchExpression(string searchTerm)
@@ -115,11 +115,7 @@
         {
             var partStorageType = this.partStorageTypeRepository.FindById(entity.BridgeId);
 
-            partStorageType.ValidateDelete();
-
             this.partStorageTypeRepository.Remove(partStorageType);
-
-            this.transactionManager.Commit();
         }
 
         protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)
