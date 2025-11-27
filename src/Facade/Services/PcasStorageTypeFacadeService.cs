@@ -36,28 +36,23 @@
         protected override async Task<PcasStorageType> CreateFromResourceAsync(
             PcasStorageTypeResource resource,
             IEnumerable<string> privileges = null)
-        {
-            var alreadyExists = await this.repository.FindByIdAsync(
-                new PcasStorageTypeKey { BoardCode = resource.BoardCode, StorageTypeCode = resource.StorageTypeCode });
-
-            if (alreadyExists != null)
-            {
-                throw new PcasStorageTypeException("This PCAS Storage Type already exists");
-            }
-
+        { 
             var pcasBoard = await this.pcasBoardRepository.FindByIdAsync(resource.BoardCode);
-
-            if (pcasBoard == null)
-            {
-                throw new PcasStorageTypeException("The PCAS Board does not exist");
-            }
 
             var storageType = await this.storageTypeRepository.FindByIdAsync(resource.StorageTypeCode);
 
-            if (storageType == null)
-            {
-                throw new PcasStorageTypeException("The Storage Type does not exist");
-            }
+            var pcasStorageTypeAlreadyExists = await this.repository.FindByAsync(
+                                                   pst => pst.StorageTypeCode == resource.StorageTypeCode
+                                                          && pst.BoardCode == resource.BoardCode);
+
+
+            var pcasPreferenceAlreadyExists = await this.repository.FindByAsync(
+                                                  pst => pst.Preference == resource.Preference
+                                                         && pst.BoardCode == resource.BoardCode);
+
+            var entity = new PcasStorageType();
+
+            entity.ValidateUpdateAndCreate(pcasStorageTypeAlreadyExists, pcasPreferenceAlreadyExists, resource.Preference, "create",storageType, pcasBoard);
 
             return new PcasStorageType(
                 pcasBoard,
@@ -68,11 +63,21 @@
                 resource.Preference);
         }
 
-        protected override void UpdateFromResource(
+        protected override async Task UpdateFromResourceAsync(
             PcasStorageType entity,
             PcasStorageTypeResource updateResource,
             IEnumerable<string> privileges = null)
         {
+            var pcasBoard = await this.pcasBoardRepository.FindByIdAsync(updateResource.BoardCode);
+
+            var storageType = await this.storageTypeRepository.FindByIdAsync(updateResource.StorageTypeCode);
+
+            var pcasPreferenceAlreadyExists = await this.repository.FindByAsync(
+                                                  pst => pst.Preference == updateResource.Preference
+                                                         && pst.BoardCode == updateResource.BoardCode);
+
+            entity.ValidateUpdateAndCreate(null, pcasPreferenceAlreadyExists, updateResource.Preference, "update", storageType, pcasBoard);
+
             entity.Update(
                 updateResource.Maximum,
                 updateResource.Increment,

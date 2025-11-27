@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Pcas
 {
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     public class PcasStorageType
@@ -52,6 +53,40 @@
             this.Increment = increment;
             this.Remarks = remarks;
             this.Preference = preference;
+        }
+
+        public void ValidateUpdateAndCreate(
+            PcasStorageType partStorageTypeAlreadyExists,
+            PcasStorageType preferenceAlreadyExists,
+            string updatePreference,
+            string createOrUpdate,
+            StorageType storageType,
+            PcasBoard pcasBoard)
+        {
+            if (createOrUpdate == "create" && partStorageTypeAlreadyExists != null)
+            {
+                throw new PartsStorageTypeException("Part Storage Type Already Exists");
+            }
+
+            if (preferenceAlreadyExists != null && (createOrUpdate == "create" || preferenceAlreadyExists.StorageTypeCode != this.StorageTypeCode))
+            {
+                throw new PartsStorageTypeException("Part Preference Already Exists");
+            }
+
+            if (string.IsNullOrEmpty(updatePreference))
+            {
+                throw new PartsStorageTypeException("Part Preference is Empty");
+            }
+
+            if (storageType == null)
+            {
+                throw new PartsStorageTypeException("Storage Type doesn't exist");
+            }
+
+            if (pcasBoard == null)
+            {
+                throw new PartsStorageTypeException("PCAS Board doesn't exist");
+            }
         }
     }
 }
