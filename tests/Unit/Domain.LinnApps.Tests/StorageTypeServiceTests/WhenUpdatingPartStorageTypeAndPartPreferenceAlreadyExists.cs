@@ -13,7 +13,7 @@
 
     using NUnit.Framework;
 
-    internal class WhenUpdatingAndPartPreferenceAlreadyExists : ContextBase
+    public class WhenUpdatingPartStorageTypeAndPartPreferenceAlreadyExists : ContextBase
     {
         private PartsStorageType partsStorageType, alreadyExistPartStorageType;
 

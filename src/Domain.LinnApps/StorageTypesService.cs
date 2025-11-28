@@ -13,26 +13,39 @@
     {
         private readonly IRepository<PartsStorageType, int> partStorageTypeRepository;
 
+        private readonly IRepository<PcasStorageType, PcasStorageTypeKey> pcasStorageTypeRepository;
+
         private readonly IRepository<Part, string> partRepository;
 
         private readonly IRepository<StorageType, string> storageTypeRepository;
+
+        private readonly IRepository<PcasBoard, string> pcasBoardRepository;
 
         private readonly ITransactionManager transactionManager;
 
         public StorageTypesService(
             IRepository<PartsStorageType, int> partStorageTypeRepository,
+            IRepository<PcasStorageType, PcasStorageTypeKey> pcasStorageTypeRepository,
             ITransactionManager transactionManager,
             IRepository<Part, string> partRepository,
-            IRepository<StorageType, string> storageTypeRepository)
+            IRepository<StorageType, string> storageTypeRepository,
+            IRepository<PcasBoard, string> pcasBoardRepository)
         {
             this.partRepository = partRepository;
+            this.pcasStorageTypeRepository = pcasStorageTypeRepository;
             this.storageTypeRepository = storageTypeRepository;
             this.partStorageTypeRepository = partStorageTypeRepository;
             this.transactionManager = transactionManager;
+            this.pcasBoardRepository = pcasBoardRepository;
         }
 
         public async Task<PartsStorageType> ValidatePartsStorageType(PartsStorageType partStorageType)
         {
+            if (string.IsNullOrEmpty(partStorageType.Preference) || partStorageType.Preference == "0")
+            {
+                throw new PartsStorageTypeException("Part Preference is Empty or 0");
+            }
+
             var part = await this.partRepository.FindByIdAsync(partStorageType.PartNumber);
 
             var storageType = await this.storageTypeRepository.FindByIdAsync(partStorageType.StorageTypeCode);
@@ -55,11 +68,6 @@
                 throw new PartsStorageTypeException("Part Preference Already Exists");
             }
 
-            if (string.IsNullOrEmpty(partStorageType.Preference) || partStorageType.Preference == "0")
-            {
-                throw new PartsStorageTypeException("Part Preference is Empty or 0");
-            }
-
             return new PartsStorageType(
                 part,
                 storageType,
@@ -72,8 +80,40 @@
 
         public async Task<PcasStorageType> ValidatePcasStorageType(PcasStorageType pcasStorageType)
         {
+            if (string.IsNullOrEmpty(pcasStorageType.Preference) || pcasStorageType.Preference == "0")
+            {
+                throw new PcasStorageTypeException("Pcas Storage Type Preference is Empty or 0");
+            }
 
-            throw new NotImplementedException();
+            var pcasBoard = await this.pcasBoardRepository.FindByIdAsync(pcasStorageType?.PcasBoard?.BoardCode);
+
+            var storageType = await this.storageTypeRepository.FindByIdAsync(pcasStorageType.StorageTypeCode);
+
+            var pcasStorageTypeAlreadyExists = await this.pcasStorageTypeRepository.FindByAsync(
+                                                   pst => pst.StorageTypeCode == pcasStorageType.StorageTypeCode
+                                                          && pst.BoardCode == pcasStorageType.PcasBoard.BoardCode);
+
+            if (pcasStorageTypeAlreadyExists != null && (pcasStorageType.Key == null || pcasStorageTypeAlreadyExists.Key.Equals(pcasStorageType.Key)))
+            {
+                throw new PcasStorageTypeException("Pcas Storage Type Already Exists");
+            }
+
+            var pcasPreferenceAlreadyExists = await this.pcasStorageTypeRepository.FindByAsync(
+                                                  pst => pst.Preference == pcasStorageType.Preference
+                                                         && pst.BoardCode == pcasStorageType.PcasBoard.BoardCode);
+
+            if (pcasPreferenceAlreadyExists != null && !pcasPreferenceAlreadyExists.Key.Equals(pcasStorageType.Key))
+            {
+                throw new PcasStorageTypeException("Pcas Storage Type Preference Already Exists");
+            }
+
+            return new PcasStorageType(
+                pcasBoard,
+                storageType,
+                pcasStorageType.Maximum,
+                pcasStorageType.Increment,
+                pcasStorageType.Remarks,
+                pcasStorageType.Preference);
         }
     }
 }

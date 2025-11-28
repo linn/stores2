@@ -17,6 +17,10 @@
             string remarks,
             string preference)
         {
+            this.Key = new PcasStorageTypeKey
+                           {
+                               BoardCode = pcasBoard.BoardCode, StorageTypeCode = storageType.StorageTypeCode
+                           };
             this.BoardCode = pcasBoard.BoardCode;
             this.StorageTypeCode = storageType.StorageTypeCode;
             this.Maximum = maximum;

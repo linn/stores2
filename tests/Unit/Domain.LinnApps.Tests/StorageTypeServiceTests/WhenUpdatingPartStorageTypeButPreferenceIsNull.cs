@@ -13,15 +13,16 @@
 
     using NUnit.Framework;
 
-    public class WhenUpdatingButPreferenceIsNull : ContextBase
+    public class WhenUpdatingPartStorageTypeButPreferenceIsNull : ContextBase
     {
         private PartsStorageType partsStorageType, existingPartStorageType;
 
         private Part part;
 
-        private StorageType storageType1, storageType2;
+        private StorageType storageType;
 
         private PartsStorageTypeException result;
+
         [SetUp]
         public void SetUp()
         {
@@ -32,11 +33,11 @@
                                 Description = "Part 1"
                             };
 
-            this.storageType1 = new StorageType { StorageTypeCode = "Storage Type No 1", };
+            this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
 
             this.existingPartStorageType = new PartsStorageType(
                 this.part,
-                this.storageType1,
+                this.storageType,
                 "a",
                 100,
                 50,
@@ -45,7 +46,7 @@
 
             this.partsStorageType = new PartsStorageType(
                 this.part,
-                this.storageType1,
+                this.storageType,
                 "a",
                 100,
                 50,
@@ -54,7 +55,7 @@
 
             this.PartsRepository.FindByIdAsync(Arg.Any<string>()).Returns(this.part);
 
-            this.StorageTypeRepository.FindByIdAsync(Arg.Any<string>()).Returns(this.storageType1);
+            this.StorageTypeRepository.FindByIdAsync(Arg.Any<string>()).Returns(this.storageType);
 
             this.PartStorageTypeRepository.FindByAsync(
                 Arg.Any<Expression<Func<PartsStorageType, bool>>>()).Returns(this.partsStorageType);
