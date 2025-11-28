@@ -11,7 +11,8 @@ import {
     InputField,
     utilities,
     ErrorCard,
-    SnackbarMessage
+    SnackbarMessage,
+    useGet
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import config from '../config';
@@ -19,7 +20,6 @@ import useSearch from '../hooks/useSearch';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
 import itemTypes from '../itemTypes';
-import useGet from '../hooks/useGet';
 import useDelete from '../hooks/useDelete';
 import Page from './Page';
 
@@ -32,7 +32,7 @@ function PartStorageType({ creating }) {
         loading: isPartStorageTypesLoading,
         result: partStorageTypeResult,
         clearData: clearPartStorageType
-    } = useGet(`${itemTypes.partsStorageTypes.url}/${id}`);
+    } = useGet(itemTypes.partStorageTypes.url);
 
     const [partStorageType, setPartStorageType] = useState(partStorageTypeResult);
 
@@ -57,9 +57,9 @@ function PartStorageType({ creating }) {
 
     const {
         send,
-        isLoading: isPartsStorageTypesLoading,
-        result: partsStorageTypes
-    } = useGet(itemTypes.partsStorageTypes.url);
+        isLoading: ispartStorageTypesLoading,
+        result: partStorageTypes
+    } = useGet(itemTypes.partStorageTypes.url);
 
     const {
         send: updatePartStorageType,
@@ -67,7 +67,7 @@ function PartStorageType({ creating }) {
         errorMessage: updateError,
         putResult: updateResult,
         clearPutResult: clearUpdateResult
-    } = usePut(itemTypes.partsStorageTypes.url, true);
+    } = usePut(itemTypes.partStorageTypes.url, true);
 
     const {
         send: createPartStorageType,
@@ -75,19 +75,19 @@ function PartStorageType({ creating }) {
         errorMessage: createError,
         postResult: createResult,
         clearPostResult: clearCreateResult
-    } = usePost(itemTypes.partsStorageTypes.url);
+    } = usePost(itemTypes.partStorageTypes.url);
 
     const {
         send: deletePartStorageType,
         isLoading: isDeleteLoading,
         deleteResult,
         clearData: clearDeletePartStorageType
-    } = useDelete(itemTypes.partsStorageTypes.url);
+    } = useDelete(itemTypes.partStorageTypes.url);
 
     useEffect(() => {
         if (id) {
             clearPartStorageType();
-            sendPartStorageType();
+            sendPartStorageType(id);
         }
     }, [id]);
 
@@ -332,7 +332,7 @@ function PartStorageType({ creating }) {
                         </Button>
                     </Grid>
                 )}
-                {partsStorageTypes && (
+                {partStorageTypes && (
                     <>
                         <Grid size={12}>
                             <Typography variant="h4">
@@ -342,14 +342,14 @@ function PartStorageType({ creating }) {
                         <Grid size={12}>
                             <DataGrid
                                 getRowId={row => row.bridgeId}
-                                rows={partsStorageTypes}
+                                rows={partStorageTypes}
                                 editMode="cell"
                                 columns={partStorageTypeColumns}
                                 onRowClick={clicked => {
                                     navigate(utilities.getSelfHref(clicked.row));
                                 }}
                                 rowHeight={34}
-                                loading={isPartsStorageTypesLoading}
+                                loading={ispartStorageTypesLoading}
                             />
                         </Grid>
                     </>

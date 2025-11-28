@@ -1,12 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 {
-    internal class WhenCreatingButPreferenceIsNull
+    using System;
+    using System.Linq.Expressions;
+
+    using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Parts;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+
+    using NSubstitute;
+
+    using NUnit.Framework;
+
+    public class WhenUpdatingButPreferenceIsNull : ContextBase
     {
+        private PartsStorageType partsStorageType, existingPartStorageType;
+
+        private Part part;
+
+        private StorageType storageType1, storageType2;
+
+        private PartsStorageTypeException result;
+        [SetUp]
+        public void SetUp()
+        {
+            this.part = new Part
+                            {
+                                Id = 1,
+                                PartNumber = "Part No 1",
+                                Description = "Part 1"
+                            };
+
+            this.storageType1 = new StorageType { StorageTypeCode = "Storage Type No 1", };
+
+            this.existingPartStorageType = new PartsStorageType(
+                this.part,
+                this.storageType1,
+                "a",
+                100,
+                50,
+                "1",
+                1);
+
+            this.partsStorageType = new PartsStorageType(
+                this.part,
+                this.storageType1,
+                "a",
+                100,
+                50,
+                "0",
+                1);
+
+            this.PartsRepository.FindByIdAsync(Arg.Any<string>()).Returns(this.part);
+
+            this.StorageTypeRepository.FindByIdAsync(Arg.Any<string>()).Returns(this.storageType1);
+
+            this.PartStorageTypeRepository.FindByAsync(
+                Arg.Any<Expression<Func<PartsStorageType, bool>>>()).Returns(this.partsStorageType);
+
+            this.PartStorageTypeRepository.FindByAsync(
+                Arg.Any<Expression<Func<PartsStorageType, bool>>>()).Returns(this.existingPartStorageType);
+
+            this.result = Assert.ThrowsAsync<PartsStorageTypeException>(
+                async () => await this.Sut.ValidatePartsStorageType(this.partsStorageType));
+        }
+
+        [Test]
+        public void ShouldThrowException()
+        {
+            this.result.Should().BeOfType<PartsStorageTypeException>();
+        }
     }
 }

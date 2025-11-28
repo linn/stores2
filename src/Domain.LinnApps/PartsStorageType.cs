@@ -48,29 +48,5 @@
             this.Incr = incr;
             this.Preference = preference;
         }
-
-        public void ValidateUpdateAndCreate(
-            PartsStorageType partStorageTypeAlreadyExists,
-            PartsStorageType preferenceAlreadyExists,
-            string updatePreference)
-        {
-            if (preferenceAlreadyExists != null && (preferenceAlreadyExists.BridgeId != this.BridgeId))
-            {
-                throw new PartsStorageTypeException("Part Preference Already Exists");
-            }
-
-            if (string.IsNullOrEmpty(updatePreference))
-            {
-                throw new PartsStorageTypeException("Part Preference is Empty");
-            }
-        }
-
-        public void ValidateDelete()
-        {
-            if (this == null)
-            {
-                throw new PartsStorageTypeException("Part Storage Type does not exist");
-            }
-        }
     }
 }

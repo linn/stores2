@@ -1,12 +1,13 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps
 {
+    using System;
+    using System.Threading.Tasks;
+
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;
-    using System;
-    using System.Threading.Tasks;
 
     public class StorageTypesService : IStorageTypeService
     {
@@ -54,9 +55,9 @@
                 throw new PartsStorageTypeException("Part Preference Already Exists");
             }
 
-            if (string.IsNullOrEmpty(partStorageType.Preference))
+            if (string.IsNullOrEmpty(partStorageType.Preference) || partStorageType.Preference == "0")
             {
-                throw new PartsStorageTypeException("Part Preference is Empty");
+                throw new PartsStorageTypeException("Part Preference is Empty or 0");
             }
 
             return new PartsStorageType(

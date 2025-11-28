@@ -7,19 +7,19 @@ import { Loading, CreateButton, utilities, Search } from '@linn-it/linn-form-com
 import Button from '@mui/material/Button';
 import config from '../config';
 import itemTypes from '../itemTypes';
-import useSearch from '../hooks/useSearch';
 import useGet from '../hooks/useGet';
+import useSearch from '../hooks/useSearch';
 import Page from './Page';
 
-function PartsStorageTypes() {
+function PartStorageTypes() {
     const [partSearchTerm, setPartSearchTerm] = useState('');
     const [storageTypeSearchTerm, setStorageTypeSearchTerm] = useState('');
 
     const {
         send,
-        isLoading: isPartsStorageTypesLoading,
-        result: partsStorageTypes
-    } = useGet(itemTypes.partsStorageTypes.url);
+        isLoading: ispartStorageTypesLoading,
+        result: partStorageTypes
+    } = useGet(itemTypes.partStorageTypes.url);
 
     const {
         search: searchParts,
@@ -76,7 +76,7 @@ function PartsStorageTypes() {
                 <Grid size={1}>
                     <CreateButton createUrl="/stores2/parts-storage-types/create" />
                 </Grid>
-                {isPartsStorageTypesLoading && (
+                {ispartStorageTypesLoading && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -147,14 +147,14 @@ function PartsStorageTypes() {
                 <Grid size={12}>
                     <DataGrid
                         getRowId={row => row.bridgeId}
-                        rows={partsStorageTypes}
+                        rows={partStorageTypes}
                         editMode="cell"
                         columns={StorageTypeColumns}
                         onRowClick={clicked => {
                             navigate(utilities.getSelfHref(clicked.row));
                         }}
                         rowHeight={34}
-                        loading={isPartsStorageTypesLoading}
+                        loading={ispartStorageTypesLoading}
                     />
                 </Grid>
             </Grid>
@@ -162,4 +162,4 @@ function PartsStorageTypes() {
     );
 }
 
-export default PartsStorageTypes;
+export default PartStorageTypes;
