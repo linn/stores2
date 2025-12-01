@@ -56,17 +56,17 @@
                 resource.Preference,
                 0);
 
-            var validatePartsStorageType = await this.storageTypeService.ValidatePartsStorageType(entity);
+            var validatedPartsStorageType = await this.storageTypeService.ValidatePartsStorageType(entity);
 
             var bridgeId = this.databaseService.GetIdSequence("PARTS_STORAGE_TYPES_ID_SEQ");
 
             return new PartsStorageType(
-                validatePartsStorageType.Part,
-                validatePartsStorageType.StorageType,
-                resource.Remarks,
-                resource.Maximum,
-                resource.Incr,
-                resource.Preference,
+                validatedPartsStorageType.Part,
+                validatedPartsStorageType.StorageType,
+                validatedPartsStorageType.Remarks,
+                validatedPartsStorageType.Maximum,
+                validatedPartsStorageType.Incr,
+                validatedPartsStorageType.Preference,
                 bridgeId);
         }
 
@@ -84,13 +84,13 @@
                 updateResource.Preference,
                 updateResource.BridgeId);
 
-            var validatePartsStorageType = await this.storageTypeService.ValidatePartsStorageType(partsStorageType);
+            var validatedPartsStorageType = await this.storageTypeService.ValidatePartsStorageType(partsStorageType);
 
             entity.Update(
-                validatePartsStorageType.Remarks,
-                validatePartsStorageType.Maximum,
-                validatePartsStorageType.Incr,
-                validatePartsStorageType.Preference);
+                validatedPartsStorageType.Remarks,
+                validatedPartsStorageType.Maximum,
+                validatedPartsStorageType.Incr,
+                validatedPartsStorageType.Preference);
         }
 
         protected override Expression<Func<PartsStorageType, bool>> SearchExpression(string searchTerm)

@@ -17,10 +17,16 @@
             string remarks,
             string preference)
         {
+            if (string.IsNullOrEmpty(preference) || preference == "0")
+            {
+                throw new PcasStorageTypeException("Pcas Storage Type Preference is Empty or 0");
+            } 
+
             this.Key = new PcasStorageTypeKey
                            {
-                               BoardCode = pcasBoard.BoardCode, StorageTypeCode = storageType.StorageTypeCode
-                           };
+                               BoardCode = pcasBoard?.BoardCode ?? throw new PartsStorageTypeException("Part Number is empty or doesn't exist!"),
+                               StorageTypeCode = storageType.StorageTypeCode ?? throw new PartsStorageTypeException("Storage Type is empty or doesn't exist!")
+            };
             this.BoardCode = pcasBoard.BoardCode;
             this.StorageTypeCode = storageType.StorageTypeCode;
             this.Maximum = maximum;
@@ -57,40 +63,6 @@
             this.Increment = increment;
             this.Remarks = remarks;
             this.Preference = preference;
-        }
-
-        public void ValidateUpdateAndCreate(
-            PcasStorageType partStorageTypeAlreadyExists,
-            PcasStorageType preferenceAlreadyExists,
-            string updatePreference,
-            string createOrUpdate,
-            StorageType storageType,
-            PcasBoard pcasBoard)
-        {
-            if (createOrUpdate == "create" && partStorageTypeAlreadyExists != null)
-            {
-                throw new PcasStorageTypeException("Part Storage Type Already Exists");
-            }
-
-            if (preferenceAlreadyExists != null && (createOrUpdate == "create" || preferenceAlreadyExists.StorageTypeCode != this.StorageTypeCode))
-            {
-                throw new PcasStorageTypeException("Part Preference Already Exists");
-            }
-
-            if (string.IsNullOrEmpty(updatePreference))
-            {
-                throw new PcasStorageTypeException("Part Preference is Empty");
-            }
-
-            if (storageType == null)
-            {
-                throw new PcasStorageTypeException("Storage Type doesn't exist");
-            }
-
-            if (pcasBoard == null)
-            {
-                throw new PcasStorageTypeException("PCAS Board doesn't exist");
-            }
         }
     }
 }

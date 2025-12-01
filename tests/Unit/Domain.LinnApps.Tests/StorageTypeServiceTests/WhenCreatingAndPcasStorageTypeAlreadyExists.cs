@@ -40,7 +40,7 @@
                 .Returns(this.pcasStorageType);
 
             this.result = Assert.ThrowsAsync<PcasStorageTypeException>(
-                async () => await this.Sut.ValidatePcasStorageType(this.pcasStorageType));
+                async () => await this.Sut.ValidateCreatePcasStorageType(this.pcasStorageType));
         }
 
         [Test]

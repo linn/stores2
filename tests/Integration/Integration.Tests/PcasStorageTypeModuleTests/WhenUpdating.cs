@@ -11,11 +11,13 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Pcas;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenUpdating : ContextBase
     {
-        private PcasStorageType pcasStorageType;
+        private PcasStorageType pcasStorageType, updatedPcasStorageType;
 
         private PcasStorageTypeResource updateResource;
 
@@ -51,9 +53,9 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                                           BoardCode = "TEST-BOARD-CODE",
                                           StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
                                           Maximum = 100,
-                                          Increment = 1,
+                                          Increment = 2,
                                           Remarks = "NEW REMARKS",
-                                          Preference = "1",
+                                          Preference = "2",
                                           StorageType = new StorageTypeResource
                                                             {
                                                                 StorageTypeCode = this.storageType.StorageTypeCode,
@@ -66,9 +68,20 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                                                           }
                                       };
 
+            this.updatedPcasStorageType = new PcasStorageType(
+                this.pcasBoard,
+                this.storageType,
+                100,
+                2,
+                "NEW REMARKS",
+                "2");
+
             this.DbContext.PcasBoards.AddAndSave(this.DbContext, this.pcasBoard);
             this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
             this.DbContext.PcasStorageTypes.AddAndSave(this.DbContext, this.pcasStorageType);
+
+            this.StorageTypeService.ValidateUpdatePcasStorageType(Arg.Any<PcasStorageType>())
+                .Returns(this.updatedPcasStorageType);
 
             this.Response = this.Client.PutAsJsonAsync(
                     $"/stores2/pcas-storage-types/{this.pcasStorageType.BoardCode}/{this.pcasStorageType.StorageTypeCode}", this.updateResource).Result;

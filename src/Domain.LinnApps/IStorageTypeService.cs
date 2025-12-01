@@ -8,7 +8,9 @@
     {
         Task<PartsStorageType> ValidatePartsStorageType(PartsStorageType partsStorageType);
 
-        Task<PcasStorageType> ValidatePcasStorageType(PcasStorageType pcasStorageType);    
+        Task<PcasStorageType> ValidateCreatePcasStorageType(PcasStorageType pcasStorageType);
+
+        Task<PcasStorageType> ValidateUpdatePcasStorageType(PcasStorageType pcasStorageType);
     }
 }
 

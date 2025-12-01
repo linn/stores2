@@ -3,11 +3,16 @@ import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { DataGrid } from '@mui/x-data-grid';
-import { Loading, CreateButton, utilities, Search } from '@linn-it/linn-form-components-library';
+import {
+    Loading,
+    CreateButton,
+    utilities,
+    Search,
+    useGet
+} from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import config from '../config';
 import itemTypes from '../itemTypes';
-import useGet from '../hooks/useGet';
 import useSearch from '../hooks/useSearch';
 import Page from './Page';
 

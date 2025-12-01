@@ -78,31 +78,50 @@
                 partStorageType.BridgeId);
         }
 
-        public async Task<PcasStorageType> ValidatePcasStorageType(PcasStorageType pcasStorageType)
+        public async Task<PcasStorageType> ValidateCreatePcasStorageType(PcasStorageType pcasStorageType)
         {
-            if (string.IsNullOrEmpty(pcasStorageType.Preference) || pcasStorageType.Preference == "0")
-            {
-                throw new PcasStorageTypeException("Pcas Storage Type Preference is Empty or 0");
-            }
-
-            var pcasBoard = await this.pcasBoardRepository.FindByIdAsync(pcasStorageType?.PcasBoard?.BoardCode);
+            var pcasBoard = await this.pcasBoardRepository.FindByIdAsync(pcasStorageType?.BoardCode);
 
             var storageType = await this.storageTypeRepository.FindByIdAsync(pcasStorageType.StorageTypeCode);
 
             var pcasStorageTypeAlreadyExists = await this.pcasStorageTypeRepository.FindByAsync(
                                                    pst => pst.StorageTypeCode == pcasStorageType.StorageTypeCode
-                                                          && pst.BoardCode == pcasStorageType.PcasBoard.BoardCode);
+                                                          && pst.BoardCode == pcasStorageType.BoardCode);
 
-            if (pcasStorageTypeAlreadyExists != null && (pcasStorageType.Key == null || pcasStorageTypeAlreadyExists.Key.Equals(pcasStorageType.Key)))
+            if (pcasStorageTypeAlreadyExists != null)
             {
                 throw new PcasStorageTypeException("Pcas Storage Type Already Exists");
             }
 
             var pcasPreferenceAlreadyExists = await this.pcasStorageTypeRepository.FindByAsync(
                                                   pst => pst.Preference == pcasStorageType.Preference
-                                                         && pst.BoardCode == pcasStorageType.PcasBoard.BoardCode);
+                                                         && pst.BoardCode == pcasStorageType.BoardCode);
 
-            if (pcasPreferenceAlreadyExists != null && !pcasPreferenceAlreadyExists.Key.Equals(pcasStorageType.Key))
+            if (pcasPreferenceAlreadyExists != null && (pcasPreferenceAlreadyExists.Key?.Equals(pcasStorageType.Key) ?? false))
+            {
+                throw new PcasStorageTypeException("Pcas Storage Type Preference Already Exists");
+            }
+
+            return new PcasStorageType(
+                pcasBoard,
+                storageType,
+                pcasStorageType.Maximum,
+                pcasStorageType.Increment,
+                pcasStorageType.Remarks,
+                pcasStorageType.Preference);
+        }
+
+        public async Task<PcasStorageType> ValidateUpdatePcasStorageType(PcasStorageType pcasStorageType)
+        {
+            var pcasBoard = await this.pcasBoardRepository.FindByIdAsync(pcasStorageType?.BoardCode);
+
+            var storageType = await this.storageTypeRepository.FindByIdAsync(pcasStorageType.StorageTypeCode);
+
+            var pcasPreferenceAlreadyExists = await this.pcasStorageTypeRepository.FindByAsync(
+                                                  pst => pst.Preference == pcasStorageType.Preference
+                                                         && pst.BoardCode == pcasStorageType.BoardCode);
+
+            if (pcasPreferenceAlreadyExists != null)
             {
                 throw new PcasStorageTypeException("Pcas Storage Type Preference Already Exists");
             }

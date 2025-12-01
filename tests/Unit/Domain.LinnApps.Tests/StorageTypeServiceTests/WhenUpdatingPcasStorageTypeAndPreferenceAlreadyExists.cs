@@ -45,7 +45,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
                 .Returns(this.alreadyExistsPcasStorageType);
 
             this.result = Assert.ThrowsAsync<PcasStorageTypeException>(
-                async () => await this.Sut.ValidatePcasStorageType(this.pcasStorageType));
+                async () => await this.Sut.ValidateUpdatePcasStorageType(this.pcasStorageType));
         }
 
         [Test]
