@@ -15,11 +15,8 @@
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Service.Modules;
-
     using Microsoft.Extensions.DependencyInjection;
-
     using NSubstitute;
-
     using NUnit.Framework;
 
     public class ContextBase
@@ -31,6 +28,8 @@
         protected TestServiceDbContext DbContext { get; private set; }
 
         protected IDatabaseService DatabaseService { get; set; }
+
+        protected IStorageTypeService StorageTypeService { get; set; }
 
         [SetUp]
         public void SetUpContext()
@@ -45,6 +44,7 @@
                 = new PartsStorageTypeRepository(this.DbContext);
 
             this.DatabaseService = Substitute.For<IDatabaseService>();
+            this.StorageTypeService = Substitute.For<IStorageTypeService>();
 
             IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> partsStorageTypeFacadeService
                 = new PartsStorageTypeFacadeService(
@@ -53,7 +53,8 @@
                     new PartsStorageTypeResourceBuilder(),
                     partRepository,
                     storageTypeRepository,
-                    this.DatabaseService);
+                    this.DatabaseService,
+                    this.StorageTypeService);
 
             this.Client = TestClient.With<PartsStorageTypeModule>(
                 services =>

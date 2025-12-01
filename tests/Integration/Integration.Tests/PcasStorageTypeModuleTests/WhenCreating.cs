@@ -1,20 +1,21 @@
 namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
 {
-    using System.Linq;
-    using System.Net;
-    using System.Net.Http.Json;
-
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Pcas;
-
     using NUnit.Framework;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http.Json;
+
+    using NSubstitute;
 
     public class WhenCreating : ContextBase
     {
+        private PcasStorageType createPcasStorageType;
+
         private PcasStorageTypeResource createResource;
 
         private StorageType storageType;
@@ -45,8 +46,19 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                                           Preference = "1",
                                       };
 
+            this.createPcasStorageType = new PcasStorageType(
+                this.pcasBoard,
+                this.storageType,
+                100,
+                1,
+                "A REMARKS",
+                "2");
+
             this.DbContext.PcasBoards.AddAndSave(this.DbContext, this.pcasBoard);
             this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
+
+            this.StorageTypeService.ValidateCreatePcasStorageType(Arg.Any<PcasStorageType>())
+                .Returns(this.createPcasStorageType);
 
             this.Response = this.Client.PostAsJsonAsync("/stores2/pcas-storage-types", this.createResource).Result;
         }

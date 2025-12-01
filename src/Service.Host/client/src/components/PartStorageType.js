@@ -1,34 +1,43 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
 import { useParams } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import PropTypes from 'prop-types';
+import { DataGrid } from '@mui/x-data-grid';
 import {
     Loading,
     Search,
     InputField,
+    utilities,
     ErrorCard,
-    SnackbarMessage
+    SnackbarMessage,
+    useGet
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import config from '../config';
-import itemTypes from '../itemTypes';
-import useInitialise from '../hooks/useInitialise';
 import useSearch from '../hooks/useSearch';
 import usePut from '../hooks/usePut';
 import usePost from '../hooks/usePost';
+import itemTypes from '../itemTypes';
+import useDelete from '../hooks/useDelete';
 import Page from './Page';
 
 function PartStorageType({ creating }) {
     const { id } = useParams();
+    const navigate = useNavigate();
 
-    const { isPartStorageTypesLoading, result: partStorageTypeResult } = useInitialise(
-        `${itemTypes.partsStorageTypes.url}/${id}`
-    );
+    const {
+        send: sendPartStorageType,
+        loading: isPartStorageTypesLoading,
+        result: partStorageTypeResult,
+        clearData: clearPartStorageType
+    } = useGet(itemTypes.partStorageTypes.url);
 
     const [partStorageType, setPartStorageType] = useState(partStorageTypeResult);
 
     const [partSearchTerm, setPartSearchTerm] = useState('');
+    const [selectedPart, setSelectedPart] = useState('');
     const [storageTypeSearchTerm, setStorageTypeSearchTerm] = useState('');
     const [snackbarVisible, setSnackbarVisible] = useState();
 
@@ -47,12 +56,18 @@ function PartStorageType({ creating }) {
     } = useSearch(itemTypes.storageTypes.url, 'storageTypeCode', 'storageTypeCode', 'description');
 
     const {
+        send,
+        isLoading: ispartStorageTypesLoading,
+        result: partStorageTypes
+    } = useGet(itemTypes.partStorageTypes.url);
+
+    const {
         send: updatePartStorageType,
         isLoading: updateLoading,
         errorMessage: updateError,
         putResult: updateResult,
         clearPutResult: clearUpdateResult
-    } = usePut(itemTypes.partsStorageTypes.url, true);
+    } = usePut(itemTypes.partStorageTypes.url, true);
 
     const {
         send: createPartStorageType,
@@ -60,35 +75,82 @@ function PartStorageType({ creating }) {
         errorMessage: createError,
         postResult: createResult,
         clearPostResult: clearCreateResult
-    } = usePost(itemTypes.partsStorageTypes.url);
+    } = usePost(itemTypes.partStorageTypes.url);
+
+    const {
+        send: deletePartStorageType,
+        isLoading: isDeleteLoading,
+        deleteResult,
+        clearData: clearDeletePartStorageType
+    } = useDelete(itemTypes.partStorageTypes.url);
 
     useEffect(() => {
-        if (!creating) {
-            setPartStorageType(partStorageTypeResult);
+        if (id) {
+            clearPartStorageType();
+            sendPartStorageType(id);
         }
-    }, [partStorageTypeResult, creating]);
+    }, [id]);
 
     useEffect(() => {
-        if (updateResult || createResult) {
+        if (partStorageTypeResult) {
+            setPartStorageType(partStorageTypeResult);
+            send(`?part=${partStorageTypeResult?.partNumber}`);
+        }
+    }, [partStorageTypeResult]);
+
+    useEffect(() => {
+        if (updateResult || createResult || deleteResult) {
             setSnackbarVisible(true);
             clearCreateResult();
             clearUpdateResult();
+            clearDeletePartStorageType();
         }
-    }, [updateResult, createResult, clearCreateResult, clearUpdateResult]);
+    }, [
+        updateResult,
+        createResult,
+        deleteResult,
+        clearCreateResult,
+        clearUpdateResult,
+        clearDeletePartStorageType
+    ]);
 
     const handlePartSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, partNumber: selected.partNumber, part: selected }));
-        setPartSearchTerm(selected.description);
+        setPartSearchTerm(selected.partNumber);
+        send(`?part=${selected.partNumber}`);
+        setSelectedPart(selected.partNumber);
     };
 
     const handleStorageTypeSearchResultSelect = selected => {
         setPartStorageType(c => ({ ...c, storageTypeCode: selected.storageTypeCode }));
-        setStorageTypeSearchTerm(selected.description);
+        setStorageTypeSearchTerm(selected.storageTypeCode);
     };
 
     const handleFieldChange = (propertyName, newValue) => {
         setPartStorageType(c => ({ ...c, [propertyName]: newValue }));
     };
+
+    const partStorageTypeColumns = [
+        { field: 'partNumber', headerName: 'Part Number', width: 150 },
+        {
+            field: 'storageTypeCode',
+            headerName: 'Storage Type Code',
+            width: 150
+        },
+        {
+            field: 'storageType',
+            headerName: 'Storage Type Description',
+            width: 300,
+            valueGetter: value => {
+                return value?.description || '';
+            }
+        },
+        { field: 'maximum', headerName: 'Maximum', width: 100 },
+        { field: 'bridgeId', headerName: 'Bridge ID', width: 100 },
+        { field: 'incr', headerName: 'Incr', width: 100 },
+        { field: 'preference', headerName: 'Preference', width: 100 },
+        { field: 'remarks', headerName: 'Remarks', width: 100 }
+    ];
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
@@ -99,7 +161,10 @@ function PartStorageType({ creating }) {
                     </Typography>
                 </Grid>
 
-                {(isPartStorageTypesLoading || updateLoading || createStorageTypeLoading) && (
+                {(isPartStorageTypesLoading ||
+                    isDeleteLoading ||
+                    updateLoading ||
+                    createStorageTypeLoading) && (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -116,7 +181,9 @@ function PartStorageType({ creating }) {
                                 resultLimit={100}
                                 value={partSearchTerm}
                                 loading={partsSearchLoading}
-                                handleValueChange={(_, newVal) => setPartSearchTerm(newVal)}
+                                handleValueChange={(_, newVal) => {
+                                    setPartSearchTerm(newVal.toUpperCase());
+                                }}
                                 search={searchParts}
                                 searchResults={partsSearchResults}
                                 priorityFunction="closestMatchesFirst"
@@ -133,7 +200,9 @@ function PartStorageType({ creating }) {
                                 resultLimit={100}
                                 value={storageTypeSearchTerm}
                                 loading={storageTypesSearchLoading}
-                                handleValueChange={(_, newVal) => setStorageTypeSearchTerm(newVal)}
+                                handleValueChange={(_, newVal) =>
+                                    setStorageTypeSearchTerm(newVal.toUpperCase())
+                                }
                                 search={searchStorageTypes}
                                 searchResults={storageTypesSearchResults}
                                 priorityFunction="closestMatchesFirst"
@@ -222,7 +291,7 @@ function PartStorageType({ creating }) {
                     />
                 </Grid>
             </Grid>
-            <Grid container spacing={3}>
+            <Grid container spacing={10}>
                 <Grid size={1}>
                     <Button
                         variant="contained"
@@ -243,13 +312,6 @@ function PartStorageType({ creating }) {
                         {creating ? 'Create ' : 'Save'}
                     </Button>
                 </Grid>
-                <Grid size={12}>
-                    <SnackbarMessage
-                        visible={snackbarVisible}
-                        onClose={() => setSnackbarVisible(false)}
-                        message="Save Successful"
-                    />
-                </Grid>
                 {(updateError || createError) && (
                     <Grid size={12}>
                         <ErrorCard
@@ -257,6 +319,48 @@ function PartStorageType({ creating }) {
                         />
                     </Grid>
                 )}
+                {!creating && (
+                    <Grid size={1}>
+                        <Button
+                            variant="outlined"
+                            fullWidth
+                            onClick={() => {
+                                deletePartStorageType(partStorageType.bridgeId);
+                            }}
+                        >
+                            Delete
+                        </Button>
+                    </Grid>
+                )}
+                {partStorageTypes && (
+                    <>
+                        <Grid size={12}>
+                            <Typography variant="h4">
+                                {`Part Storage Types for ${creating ? selectedPart : partStorageTypeResult?.partNumber}`}
+                            </Typography>
+                        </Grid>
+                        <Grid size={12}>
+                            <DataGrid
+                                getRowId={row => row.bridgeId}
+                                rows={partStorageTypes}
+                                editMode="cell"
+                                columns={partStorageTypeColumns}
+                                onRowClick={clicked => {
+                                    navigate(utilities.getSelfHref(clicked.row));
+                                }}
+                                rowHeight={34}
+                                loading={ispartStorageTypesLoading}
+                            />
+                        </Grid>
+                    </>
+                )}
+                <Grid size={12}>
+                    <SnackbarMessage
+                        visible={snackbarVisible}
+                        onClose={() => setSnackbarVisible(false)}
+                        message="Save Successful"
+                    />
+                </Grid>
             </Grid>
         </Page>
     );
