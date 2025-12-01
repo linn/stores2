@@ -21,8 +21,6 @@
 
         private readonly IRepository<PcasBoard, string> pcasBoardRepository;
 
-        private readonly ITransactionManager transactionManager;
-
         public StorageTypesService(
             IRepository<PartsStorageType, int> partStorageTypeRepository,
             IRepository<PcasStorageType, PcasStorageTypeKey> pcasStorageTypeRepository,
@@ -35,7 +33,6 @@
             this.pcasStorageTypeRepository = pcasStorageTypeRepository;
             this.storageTypeRepository = storageTypeRepository;
             this.partStorageTypeRepository = partStorageTypeRepository;
-            this.transactionManager = transactionManager;
             this.pcasBoardRepository = pcasBoardRepository;
         }
 
