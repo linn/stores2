@@ -80,13 +80,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             string fromCategory = null,
             string auditLocation = null);
 
-        Task<RequisitionLine> ValidateLineCandidate(
-            LineCandidate candidate, 
-            StoresFunction storesFunction = null,
-            string reqType = null,
-            bool headerSpecifiesOntoLocation = false,
-            bool headerSpecifiesOntoStockPool = false);
-
         Task<DocumentResult> GetDocument(string docName, int docNumber, int? lineNumber);
 
         Task CheckDocumentLineForOverAndFullyBooked(RequisitionHeader header, DocumentResult document);

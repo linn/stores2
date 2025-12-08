@@ -5,6 +5,7 @@ import {
     InputField,
     LinkField,
     ErrorCard,
+    ExportButton,
     ReportDataGrids
 } from '@linn-it/linn-form-components-library';
 import Grid from '@mui/material/Grid';
@@ -77,7 +78,17 @@ function RequisitionCostReport() {
                         Run
                     </Button>
                 </Grid>
-                <Grid size={6} />
+                <Grid size={5} />
+                <Grid size={1}>
+                    <ExportButton
+                        buttonText="Pdf"
+                        disabled={!reqNumber}
+                        accept="application/pdf"
+                        fileName={`reqcost${reqNumber}.pdf`}
+                        tooltipText="Download as PDF"
+                        href={`${config.appRoot}/requisitions/reports/requisition-cost/report/${reqNumber}/pdf`}
+                    />
+                </Grid>
                 <Grid size={1}>
                     <LinkField
                         to={`${itemTypes.requisitionCostReport.url}/${reqNo}/view`}

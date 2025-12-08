@@ -52,6 +52,12 @@
             return htmlResult;
         }
 
+        public async Task<Stream> GetRequisitionCostReportAsPdf(int reqNumber)
+        {
+            var html = await this.requisitionReportService.GetRequisitionCostReportAsHtml(reqNumber);
+            return await this.pdfService.ConvertHtmlToPdf(html, false);
+        }
+
         public async Task<string> GetRequisitionAsHtml(int reqNumber)
         {
             var htmlResult = await this.requisitionReportService.GetRequisitionAsHtml(reqNumber);

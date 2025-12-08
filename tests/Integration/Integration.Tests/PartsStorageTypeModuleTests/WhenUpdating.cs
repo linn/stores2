@@ -12,11 +12,13 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenUpdating : ContextBase
     {
-        private PartsStorageType partsStorageType;
+        private PartsStorageType partsStorageType, updatedPartsStorageType;
 
         private PartsStorageTypeResource updateResource;
 
@@ -46,10 +48,6 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
                 "1",
                 400);
 
-            this.DbContext.Parts.AddAndSave(this.DbContext, this.part);
-
-            this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
-
             this.updateResource = new PartsStorageTypeResource
                                       { 
                                           Part = new PartResource
@@ -71,7 +69,19 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
                                           Remarks = "b"
                                         };
 
+            this.updatedPartsStorageType = new PartsStorageType(
+                this.part,
+                this.storageType,
+                "b",
+                100,
+                30, 
+                "2",
+                400);
+
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
+
+            this.StorageTypeService.ValidatePartsStorageType(Arg.Any<PartsStorageType>()).Returns(this.updatedPartsStorageType);
+
             this.Response = this.Client.PutAsJsonAsync(
                 $"/stores2/parts-storage-types/{this.partsStorageType.BridgeId}",
                 this.updateResource).Result;
@@ -96,14 +106,14 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
             this.DbContext.PartsStorageTypes.First(
                     x => x.PartNumber == this.partsStorageType.PartNumber
                          && x.StorageTypeCode == this.partsStorageType.StorageTypeCode)
-                .Remarks.Should().Be(this.updateResource.Remarks);
+                .Remarks.Should().Be(this.updatedPartsStorageType.Remarks);
         }
         
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {
             var resource = this.Response.DeserializeBody<PartsStorageTypeResource>();
-            resource.Remarks.Should().Be("b");
+            resource.Remarks.Should().Be(this.updatedPartsStorageType.Remarks);
         }
     }
 }

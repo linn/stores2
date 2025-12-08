@@ -49,6 +49,8 @@
 
             this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
 
+            this.StorageTypeService.ValidatePartsStorageType(Arg.Any<PartsStorageType>()).Returns(this.partsStorageType);
+
             this.DatabaseService.GetNextVal("PARTS_STORAGE_TYPES_ID_SEQ").Returns(1);
 
             this.Response = this.Client.PostAsJsonAsync($"/stores2/parts-storage-types", this.partsStorageType).Result;
