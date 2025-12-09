@@ -4,7 +4,7 @@
 
     public class DailyEuRsnImportReport
     {
-        public string RsnNumber { get; set; }
+        public int RsnNumber { get; set; }
 
         public string Addresse { get; set; }
 

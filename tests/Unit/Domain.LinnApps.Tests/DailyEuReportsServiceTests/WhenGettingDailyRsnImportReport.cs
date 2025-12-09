@@ -26,21 +26,21 @@
                                     new DailyEuRsnImportReport
                                         {
                                             InvoiceNumber = 1,
-                                            RsnNumber = "101",
+                                            RsnNumber = 101,
                                             Currency = "USD",
                                             DocumentDate = 9.December(2025)
                                         },
                                     new DailyEuRsnImportReport
                                         {
                                             InvoiceNumber = 2,
-                                            RsnNumber = "102",
+                                            RsnNumber = 102,
                                             Currency = "GBP",
                                             DocumentDate = 8.December(2025)
                                         },
                                     new DailyEuRsnImportReport
                                         {
                                             InvoiceNumber = 3,
-                                            RsnNumber = "103",
+                                            RsnNumber = 103,
                                             Currency = "EUR",
                                             DocumentDate = 15.December(2025),
                                         },
@@ -64,9 +64,9 @@
             summary.GetGridValue(1, 0).Should().Be(2);
             summary.GetGridValue(2, 0).Should().Be(3);
 
-            summary.GetGridTextValue(0, 5).Should().Be("101");
-            summary.GetGridTextValue(1, 5).Should().Be("102");
-            summary.GetGridTextValue(2, 5).Should().Be("103");
+            summary.GetGridValue(0, 5).Should().Be(101);
+            summary.GetGridValue(1, 5).Should().Be(102);
+            summary.GetGridValue(2, 5).Should().Be(103);
 
             summary.GetGridTextValue(0, 12).Should().Be("USD");
             summary.GetGridTextValue(1, 12).Should().Be("GBP");
