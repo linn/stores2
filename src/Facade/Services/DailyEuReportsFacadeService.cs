@@ -25,9 +25,7 @@
         {
             var result = await this.dailyEuReportService.GetDailyEuDespatchReport(fromDate, toDate);
 
-            var a = new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
-
-            return a;
+            return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }
 
         public async Task<IResult<ReportReturnResource>> GetDailyEuImportRsnReport(string fromDate, string toDate)

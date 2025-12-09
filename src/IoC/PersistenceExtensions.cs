@@ -92,7 +92,13 @@
                 .AddScoped<IQueryRepository<TqmsData>, TqmsDataRepository>()
                 .AddScoped<IQueryRepository<LabourHoursSummary>, EntityFrameworkQueryRepository<LabourHoursSummary>>(
                     r => new EntityFrameworkQueryRepository<LabourHoursSummary>(
-                        r.GetService<ServiceDbContext>()?.LabourHourSummaries));
+                        r.GetService<ServiceDbContext>()?.LabourHourSummaries))
+                .AddScoped<IQueryRepository<DailyEuDespatchReport>, EntityFrameworkQueryRepository<DailyEuDespatchReport>>(
+                    r => new EntityFrameworkQueryRepository<DailyEuDespatchReport>(
+                        r.GetService<ServiceDbContext>()?.DailyEuDespatchReport))
+                .AddScoped<IQueryRepository<DailyEuRsnImportReport>, EntityFrameworkQueryRepository<DailyEuRsnImportReport>>(
+                    r => new EntityFrameworkQueryRepository<DailyEuRsnImportReport>(
+                        r.GetService<ServiceDbContext>()?.DailyEuRsnImportReport));
         }
     }
 }

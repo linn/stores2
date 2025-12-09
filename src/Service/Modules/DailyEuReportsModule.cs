@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Service.Modules
 {
-    using System.Net;
     using System.Threading.Tasks;
 
     using Linn.Common.Service;
@@ -16,8 +15,8 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/customs/daily/eu/import/rsn/report", this.DailyEuImportRsnReport);
-            app.MapGet("/stores2/customs/daily/eu/dispatch/report", this.DailyEuDispatchReport);
+            app.MapGet("/stores2/reports/daily/eu/import/rsn", this.DailyEuImportRsnReport);
+            app.MapGet("/stores2/reports/daily/eu/dispatch", this.DailyEuDispatchReport);
             app.MapGet("/requisitions/reports/requisition-cost", this.GetApp);
         }
 

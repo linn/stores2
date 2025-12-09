@@ -33,7 +33,7 @@
 
             var columns = new List<AxisDetailsModel>
                               {
-                                  new AxisDetailsModel("recordExporter", "Exporter of Record", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("recordExporter", "Exporter of Record", GridDisplayType.Value, 150),
                                   new AxisDetailsModel(
                                       "recordImporter",
                                       "Importer of Record",
@@ -80,7 +80,7 @@
                         {
                             RowId = rowId.ToString(),
                             ColumnId = "recordExporter",
-                            TextDisplay = line.LineNo == 0 ? line.ExbookId.ToString() : "null"
+                            Value = line.ExbookId
                         });
 
                     //values.Add(
@@ -212,7 +212,7 @@
 
             var columns = new List<AxisDetailsModel>
                               {
-                                  new AxisDetailsModel("intercompanyInvoice", "Intercompany Invoice", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("intercompanyInvoice", "Intercompany Invoice", GridDisplayType.Value, 150),
                                   new AxisDetailsModel(
                                       "pieces",
                                       "Pieces",
@@ -241,7 +241,7 @@
                                       GridDisplayType.TextValue,
                                       150),
                                   new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 400),
-                                  new AxisDetailsModel("customsValue", "Customs value", GridDisplayType.TextValue, 400),
+                                  new AxisDetailsModel("customsValue", "Customs value", GridDisplayType.Value, 400),
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -258,7 +258,7 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "intercompanyInvoice",
-                        TextDisplay = line.InvoiceNumber.ToString()
+                        Value = line.InvoiceNumber
                     });
 
                 values.Add(
@@ -365,7 +365,7 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "customsValue",
-                        TextDisplay = line.CustomsTotal.ToString()
+                        TextDisplay = line.CustomsTotal
                     });
 
                 rowIndex++;
