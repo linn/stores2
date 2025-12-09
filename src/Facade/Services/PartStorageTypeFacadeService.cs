@@ -14,22 +14,22 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources.Parts;
 
-    public class PartsStorageTypeFacadeService : AsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>
+    public class PartStorageTypeFacadeService : AsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource>
     {
         private readonly IRepository<Part, string> partRepository;
 
         private readonly IRepository<StorageType, string> storageTypeRepository;
 
-        private readonly IRepository<PartsStorageType, int> partStorageTypeRepository;
+        private readonly IRepository<PartStorageType, int> partStorageTypeRepository;
 
         private readonly IStorageTypeService storageTypeService;
 
         private readonly IDatabaseService databaseService;
 
-        public PartsStorageTypeFacadeService(
-            IRepository<PartsStorageType, int> partStorageTypeRepository,
+        public PartStorageTypeFacadeService(
+            IRepository<PartStorageType, int> partStorageTypeRepository,
             ITransactionManager transactionManager,
-            IBuilder<PartsStorageType> resourceBuilder,
+            IBuilder<PartStorageType> resourceBuilder,
             IRepository<Part, string> partRepository,
             IRepository<StorageType, string> storageTypeRepository,
             IDatabaseService databaseService,
@@ -43,11 +43,11 @@
             this.storageTypeService = storageTypeService;
         }
 
-        protected override async Task<PartsStorageType> CreateFromResourceAsync(
-            PartsStorageTypeResource resource,
+        protected override async Task<PartStorageType> CreateFromResourceAsync(
+            PartStorageTypeResource resource,
             IEnumerable<string> privileges = null)
         {
-            var entity = new PartsStorageType(
+            var entity = new PartStorageType(
                 new Part { PartNumber = resource.PartNumber },
                 new StorageType { StorageTypeCode = resource.StorageTypeCode },
                 resource.Remarks,
@@ -60,7 +60,7 @@
 
             var bridgeId = this.databaseService.GetIdSequence("PARTS_STORAGE_TYPES_ID_SEQ");
 
-            return new PartsStorageType(
+            return new PartStorageType(
                 validatedPartsStorageType.Part,
                 validatedPartsStorageType.StorageType,
                 validatedPartsStorageType.Remarks,
@@ -71,11 +71,11 @@
         }
 
         protected override async Task UpdateFromResourceAsync(
-            PartsStorageType entity,
-            PartsStorageTypeResource updateResource,
+            PartStorageType entity,
+            PartStorageTypeResource updateResource,
             IEnumerable<string> privileges = null)
         {
-            var partsStorageType = new PartsStorageType(
+            var partsStorageType = new PartStorageType(
                 new Part { PartNumber = updateResource.PartNumber },
                 new StorageType { StorageTypeCode = updateResource.StorageTypeCode },
                 updateResource.Remarks,
@@ -93,7 +93,7 @@
                 validatedPartsStorageType.Preference);
         }
 
-        protected override Expression<Func<PartsStorageType, bool>> SearchExpression(string searchTerm)
+        protected override Expression<Func<PartStorageType, bool>> SearchExpression(string searchTerm)
         {
             throw new NotImplementedException();
         }
@@ -101,16 +101,16 @@
         protected override async Task SaveToLogTable(
             string actionType,
             int userNumber,
-            PartsStorageType entity,
-            PartsStorageTypeResource resource,
-            PartsStorageTypeResource updateResource)
+            PartStorageType entity,
+            PartStorageTypeResource resource,
+            PartStorageTypeResource updateResource)
         {
             await Task.CompletedTask;
             throw new NotImplementedException();
         }
 
         protected override void DeleteOrObsoleteResource(
-            PartsStorageType entity,
+            PartStorageType entity,
             IEnumerable<string> privileges = null)
         {
             var partStorageType = this.partStorageTypeRepository.FindById(entity.BridgeId);
@@ -118,14 +118,14 @@
             this.partStorageTypeRepository.Remove(partStorageType);
         }
 
-        protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)
+        protected override Expression<Func<PartStorageType, bool>> FilterExpression(PartStorageTypeResource searchResource)
         {
             return x =>
-                (string.IsNullOrEmpty(searchResource.PartNumber) || x.PartNumber.ToUpper() == searchResource.PartNumber.ToUpper()) &&
-                (string.IsNullOrEmpty(searchResource.StorageTypeCode) || x.StorageTypeCode.ToUpper() == searchResource.StorageTypeCode.ToUpper());
+                (string.IsNullOrEmpty(searchResource.PartNumber) || x.PartNumber.ToUpper().Contains(searchResource.PartNumber.ToUpper())) &&
+                (string.IsNullOrEmpty(searchResource.StorageTypeCode) || x.StorageTypeCode.ToUpper().Contains(searchResource.StorageTypeCode.ToUpper()));
         }
 
-        protected override Expression<Func<PartsStorageType, bool>> FindExpression(PartsStorageTypeResource searchResource)
+        protected override Expression<Func<PartStorageType, bool>> FindExpression(PartStorageTypeResource searchResource)
         {
             return x => x.PartNumber == searchResource.PartNumber && x.StorageTypeCode == searchResource.StorageTypeCode;
         }

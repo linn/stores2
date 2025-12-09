@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
@@ -39,6 +39,16 @@ function PartStorageTypes() {
         loading: storageTypesSearchLoading,
         clear: clearStorageTypes
     } = useSearch(itemTypes.storageTypes.url, 'storageTypeCode', 'storageTypeCode', 'description');
+
+    useEffect(() => {
+        const delayedSearch = setTimeout(() => {
+            if (partSearchTerm || storageTypeSearchTerm) {
+                send(`?part=${partSearchTerm}&storageType=${storageTypeSearchTerm}`);
+            }
+        }, 500);
+
+        return () => clearTimeout(delayedSearch);
+    }, [partSearchTerm, send, storageTypeSearchTerm]);
 
     const handlePartSearchResultSelect = selected => {
         setPartSearchTerm(selected.partNumber);
@@ -113,7 +123,9 @@ function PartStorageTypes() {
                         resultLimit={100}
                         value={storageTypeSearchTerm}
                         loading={storageTypesSearchLoading}
-                        handleValueChange={(_, newVal) => setStorageTypeSearchTerm(newVal)}
+                        handleValueChange={(_, newVal) =>
+                            setStorageTypeSearchTerm(newVal.toUpperCase())
+                        }
                         search={searchStorageTypes}
                         searchResults={storageTypesSearchResults}
                         priorityFunction="closestMatchesFirst"

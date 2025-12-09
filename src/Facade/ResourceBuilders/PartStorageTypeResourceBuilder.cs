@@ -9,11 +9,11 @@
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Parts;
 
-    public class PartsStorageTypeResourceBuilder : IBuilder<PartsStorageType>
+    public class PartStorageTypeResourceBuilder : IBuilder<PartStorageType>
     {
-        public PartsStorageTypeResource Build(PartsStorageType partsStorageType, IEnumerable<string> claims)
+        public PartStorageTypeResource Build(PartStorageType partsStorageType, IEnumerable<string> claims)
         {
-            return new PartsStorageTypeResource
+            return new PartStorageTypeResource
                        {
                            StorageTypeCode = partsStorageType.StorageTypeCode,
                            StorageType = new StorageTypeResource
@@ -36,15 +36,15 @@
                        };
         }
 
-        public string GetLocation(PartsStorageType model)
+        public string GetLocation(PartStorageType model)
         {
             return $"/stores2/parts-storage-types/{model.BridgeId}";
         }
 
-        object IBuilder<PartsStorageType>.Build(PartsStorageType entity, IEnumerable<string> claims) =>
+        object IBuilder<PartStorageType>.Build(PartStorageType entity, IEnumerable<string> claims) =>
             this.Build(entity, claims);
 
-        private IEnumerable<LinkResource> BuildLinks(PartsStorageType model, IEnumerable<string> claims)
+        private IEnumerable<LinkResource> BuildLinks(PartStorageType model, IEnumerable<string> claims)
         {
             if (model != null)
             {

@@ -15,13 +15,13 @@
 
     public class WhenUpdatingPartStorageTypeButPreferenceIsNull : ContextBase
     {
-        private PartsStorageType partsStorageType, existingPartStorageType;
+        private PartStorageType partsStorageType, existingPartStorageType;
 
         private Part part;
 
         private StorageType storageType;
 
-        private PartsStorageTypeException result;
+        private PartStorageTypeException result;
 
         [SetUp]
         public void SetUp()
@@ -35,7 +35,7 @@
 
             this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
 
-            this.existingPartStorageType = new PartsStorageType(
+            this.existingPartStorageType = new PartStorageType(
                 this.part,
                 this.storageType,
                 "a",
@@ -44,7 +44,7 @@
                 "1",
                 1);
 
-            this.partsStorageType = new PartsStorageType(
+            this.partsStorageType = new PartStorageType(
                 this.part,
                 this.storageType,
                 "a",
@@ -58,19 +58,19 @@
             this.StorageTypeRepository.FindByIdAsync(Arg.Any<string>()).Returns(this.storageType);
 
             this.PartStorageTypeRepository.FindByAsync(
-                Arg.Any<Expression<Func<PartsStorageType, bool>>>()).Returns(this.partsStorageType);
+                Arg.Any<Expression<Func<PartStorageType, bool>>>()).Returns(this.partsStorageType);
 
             this.PartStorageTypeRepository.FindByAsync(
-                Arg.Any<Expression<Func<PartsStorageType, bool>>>()).Returns(this.existingPartStorageType);
+                Arg.Any<Expression<Func<PartStorageType, bool>>>()).Returns(this.existingPartStorageType);
 
-            this.result = Assert.ThrowsAsync<PartsStorageTypeException>(
+            this.result = Assert.ThrowsAsync<PartStorageTypeException>(
                 async () => await this.Sut.ValidatePartsStorageType(this.partsStorageType));
         }
 
         [Test]
         public void ShouldThrowException()
         {
-            this.result.Should().BeOfType<PartsStorageTypeException>();
+            this.result.Should().BeOfType<PartStorageTypeException>();
         }
     }
 }

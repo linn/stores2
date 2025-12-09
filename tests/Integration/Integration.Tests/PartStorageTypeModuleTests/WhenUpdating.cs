@@ -18,9 +18,9 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 
     public class WhenUpdating : ContextBase
     {
-        private PartsStorageType partsStorageType, updatedPartsStorageType;
+        private PartStorageType partsStorageType, updatedPartsStorageType;
 
-        private PartsStorageTypeResource updateResource;
+        private PartStorageTypeResource updateResource;
 
         private Part part;
 
@@ -39,7 +39,7 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
             this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
 
 
-            this.partsStorageType = new PartsStorageType(
+            this.partsStorageType = new PartStorageType(
                 this.part,
                 this.storageType,
                 "a",
@@ -48,7 +48,7 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
                 "1",
                 400);
 
-            this.updateResource = new PartsStorageTypeResource
+            this.updateResource = new PartStorageTypeResource
                                       { 
                                           Part = new PartResource
                                                      {
@@ -69,7 +69,7 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
                                           Remarks = "b"
                                         };
 
-            this.updatedPartsStorageType = new PartsStorageType(
+            this.updatedPartsStorageType = new PartStorageType(
                 this.part,
                 this.storageType,
                 "b",
@@ -80,7 +80,7 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
 
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
 
-            this.StorageTypeService.ValidatePartsStorageType(Arg.Any<PartsStorageType>()).Returns(this.updatedPartsStorageType);
+            this.StorageTypeService.ValidatePartsStorageType(Arg.Any<PartStorageType>()).Returns(this.updatedPartsStorageType);
 
             this.Response = this.Client.PutAsJsonAsync(
                 $"/stores2/parts-storage-types/{this.partsStorageType.BridgeId}",
@@ -112,7 +112,7 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {
-            var resource = this.Response.DeserializeBody<PartsStorageTypeResource>();
+            var resource = this.Response.DeserializeBody<PartStorageTypeResource>();
             resource.Remarks.Should().Be(this.updatedPartsStorageType.Remarks);
         }
     }

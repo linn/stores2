@@ -18,7 +18,7 @@
 
     public class WhenCreating : ContextBase
     {
-        private PartsStorageType partsStorageType;
+        private PartStorageType partsStorageType;
 
         private Part part;
 
@@ -36,7 +36,7 @@
 
             this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
 
-            this.partsStorageType = new PartsStorageType(
+            this.partsStorageType = new PartStorageType(
                 this.part,
                 this.storageType,
                 "a",
@@ -49,7 +49,7 @@
 
             this.DbContext.StorageTypes.AddAndSave(this.DbContext, this.storageType);
 
-            this.StorageTypeService.ValidatePartsStorageType(Arg.Any<PartsStorageType>()).Returns(this.partsStorageType);
+            this.StorageTypeService.ValidatePartsStorageType(Arg.Any<PartStorageType>()).Returns(this.partsStorageType);
 
             this.DatabaseService.GetNextVal("PARTS_STORAGE_TYPES_ID_SEQ").Returns(1);
 
@@ -80,7 +80,7 @@
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {
-            var resource = this.Response.DeserializeBody<PartsStorageTypeResource>();
+            var resource = this.Response.DeserializeBody<PartStorageTypeResource>();
             resource.PartNumber.Should().Be("Part No 1");
             resource.Incr.Should().Be(50);
         }

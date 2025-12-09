@@ -24,8 +24,8 @@
 
             this.Key = new PcasStorageTypeKey
                            {
-                               BoardCode = pcasBoard?.BoardCode ?? throw new PartsStorageTypeException("Part Number is empty or doesn't exist!"),
-                               StorageTypeCode = storageType.StorageTypeCode ?? throw new PartsStorageTypeException("Storage Type is empty or doesn't exist!")
+                               BoardCode = pcasBoard?.BoardCode ?? throw new PartStorageTypeException("Part Number is empty or doesn't exist!"),
+                               StorageTypeCode = storageType.StorageTypeCode ?? throw new PartStorageTypeException("Storage Type is empty or doesn't exist!")
             };
             this.BoardCode = pcasBoard.BoardCode;
             this.StorageTypeCode = storageType.StorageTypeCode;
