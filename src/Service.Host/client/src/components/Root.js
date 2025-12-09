@@ -82,10 +82,10 @@ function Root() {
                     />
 
                     <Route path="/stores2/storage-types" element={<StorageTypes />} />
-                    <Route path="/stores2/parts-storage-types" element={<PartStorageTypes />} />
-                    <Route path="/stores2/parts-storage-types/:id" element={<PartStorageType />} />
+                    <Route path="/stores2/part-storage-types" element={<PartStorageTypes />} />
+                    <Route path="/stores2/part-storage-types/:id" element={<PartStorageType />} />
                     <Route
-                        path="/stores2/parts-storage-types/create"
+                        path="/stores2/part-storage-types/create"
                         element={<PartStorageType creating />}
                     />
                     <Route path="/stores2/pcas-storage-types" element={<PcasStorageTypes />} />

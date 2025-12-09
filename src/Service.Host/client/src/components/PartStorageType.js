@@ -167,7 +167,7 @@ function PartStorageType({ creating }) {
                 <Grid size={5}>
                     <Button
                         variant="outlined"
-                        onClick={() => navigate('/stores2/parts-storage-types')}
+                        onClick={() => navigate('/stores2/part-storage-types')}
                     >
                         Back to Part Storage Types
                     </Button>

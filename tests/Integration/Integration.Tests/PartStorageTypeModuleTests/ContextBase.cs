@@ -41,22 +41,22 @@
             var partRepository = new EntityFrameworkRepository<Part, string>(this.DbContext.Parts);
             var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
             var partsStorageTypeRepository
-                = new PartsStorageTypeRepository(this.DbContext);
+                = new PartStorageTypeRepository(this.DbContext);
 
             this.DatabaseService = Substitute.For<IDatabaseService>();
             this.StorageTypeService = Substitute.For<IStorageTypeService>();
 
-            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> partsStorageTypeFacadeService
-                = new PartsStorageTypeFacadeService(
+            IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> partsStorageTypeFacadeService
+                = new PartStorageTypeFacadeService(
                     partsStorageTypeRepository,
                     transactionManager,
-                    new PartsStorageTypeResourceBuilder(),
+                    new PartStorageTypeResourceBuilder(),
                     partRepository,
                     storageTypeRepository,
                     this.DatabaseService,
                     this.StorageTypeService);
 
-            this.Client = TestClient.With<PartsStorageTypeModule>(
+            this.Client = TestClient.With<PartStorageTypeModule>(
                 services =>
                     {
                         services.AddSingleton(partsStorageTypeFacadeService);

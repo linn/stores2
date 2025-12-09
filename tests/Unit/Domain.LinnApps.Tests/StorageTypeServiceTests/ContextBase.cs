@@ -14,7 +14,7 @@
     {
         protected StorageTypesService Sut { get; set; }
 
-        protected IRepository<PartsStorageType, int> PartStorageTypeRepository { get; private set; }
+        protected IRepository<PartStorageType, int> PartStorageTypeRepository { get; private set; }
 
         protected IRepository<PcasStorageType, PcasStorageTypeKey> PcasStorageTypeRepository { get; private set; }
 
@@ -32,7 +32,7 @@
         public void SetUpContext()
         {
 
-            this.PartStorageTypeRepository = Substitute.For<IRepository<PartsStorageType, int>>();
+            this.PartStorageTypeRepository = Substitute.For<IRepository<PartStorageType, int>>();
             this.PcasStorageTypeRepository = Substitute.For<IRepository<PcasStorageType, PcasStorageTypeKey>>();
             this.PartsRepository = Substitute.For<IRepository<Part, string>>();
             this.PcasBoardRepository = Substitute.For<IRepository<PcasBoard, string>>();

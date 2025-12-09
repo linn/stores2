@@ -17,8 +17,8 @@
         [SetUp]
         public async Task Setup()
         {
-            this.PartStorageTypeRepository.FindByAsync(Arg.Any<Expression<Func<PartsStorageType, bool>>>())
-                .Returns(new PartsStorageType { StorageTypeCode = "ANOTHER TYPE" });
+            this.PartStorageTypeRepository.FindByAsync(Arg.Any<Expression<Func<PartStorageType, bool>>>())
+                .Returns(new PartStorageType { StorageTypeCode = "ANOTHER TYPE" });
 
             this.LocationResult = await this.Sut.DefaultBookInLocation(this.Part.PartNumber);
         }

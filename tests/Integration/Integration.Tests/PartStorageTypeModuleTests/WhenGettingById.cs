@@ -14,7 +14,7 @@
 
     public class WhenGettingById : ContextBase
     {
-        private PartsStorageType partsStorageType;
+        private PartStorageType partsStorageType;
 
         private Part part;
 
@@ -33,7 +33,7 @@
             this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
 
 
-            this.partsStorageType = new PartsStorageType(
+            this.partsStorageType = new PartStorageType(
                 this.part, 
                 this.storageType, 
                 "a", 
@@ -68,7 +68,7 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<PartsStorageTypeResource>();
+            var resource = this.Response.DeserializeBody<PartStorageTypeResource>();
             resource.StorageTypeCode.Should().Be("Storage Type No 1");
             resource.PartNumber.Should().Be("Part No 1");
         }

@@ -17,8 +17,8 @@
         [SetUp]
         public async Task Setup()
         {
-            this.PartStorageTypeRepository.FindByAsync(Arg.Any<Expression<Func<PartsStorageType, bool>>>())
-                .Returns(new PartsStorageType { StorageTypeCode = "K1TYPE" });
+            this.PartStorageTypeRepository.FindByAsync(Arg.Any<Expression<Func<PartStorageType, bool>>>())
+                .Returns(new PartStorageType { StorageTypeCode = "K1TYPE" });
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(this.DefaultForK1);
 

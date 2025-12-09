@@ -10,23 +10,23 @@
     using Linn.Stores2.Persistence.LinnApps;
     using Microsoft.EntityFrameworkCore;
 
-    public class PartsStorageTypeRepository : EntityFrameworkRepository<PartsStorageType, int>
+    public class PartStorageTypeRepository : EntityFrameworkRepository<PartStorageType, int>
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public PartsStorageTypeRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.PartsStorageTypes)
+        public PartStorageTypeRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.PartsStorageTypes)
         {
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override IQueryable<PartsStorageType> FindAll()
+        public override IQueryable<PartStorageType> FindAll()
         {
             return this.serviceDbContext.PartsStorageTypes
                        .Include(pst => pst.Part)
                        .Include(pst => pst.StorageType);
         }
 
-        public override async Task<PartsStorageType> FindByIdAsync(int key)
+        public override async Task<PartStorageType> FindByIdAsync(int key)
         {
             var result = await this.serviceDbContext.PartsStorageTypes
                              .Include(pst => pst.Part)
@@ -35,7 +35,7 @@
             return result;
         }
 
-        public override IQueryable<PartsStorageType> FilterBy(Expression<Func<PartsStorageType, bool>> expression)
+        public override IQueryable<PartStorageType> FilterBy(Expression<Func<PartStorageType, bool>> expression)
         {
             return this.serviceDbContext.PartsStorageTypes.Where(expression)
                 .Include(x => x.Part)
