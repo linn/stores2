@@ -117,7 +117,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource>, StoresBudgetFacadeService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
-                .AddScoped<IDailyEuReportFacdeService, DailyEuReportsFacadeService>()
+                .AddScoped<IDailyEuReportFacadeService, DailyEuReportsFacadeService>()
                 .AddScoped<IRequisitionReportFacadeService, RequisitionReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>, StorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource>, PartsStorageTypeFacadeService>()

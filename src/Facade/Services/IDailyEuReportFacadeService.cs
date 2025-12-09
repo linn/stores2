@@ -5,7 +5,7 @@
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
 
-    public interface IDailyEuReportFacdeService
+    public interface IDailyEuReportFacadeService
     {
         Task<IResult<ReportReturnResource>> GetDailyEuImportRsnReport(string fromDate, string toDate);
 

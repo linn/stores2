@@ -25,7 +25,7 @@
             HttpResponse res,
             string fromDate,
             string toDate,
-            IDailyEuReportFacdeService facadeService)
+            IDailyEuReportFacadeService facadeService)
         {
             await res.Negotiate(await facadeService.GetDailyEuImportRsnReport(fromDate, toDate));
         }
@@ -35,7 +35,7 @@
             HttpResponse res,
             string fromDate,
             string toDate,
-            IDailyEuReportFacdeService facadeService)
+            IDailyEuReportFacadeService facadeService)
         {
             await res.Negotiate(await facadeService.GetDailyEuDespatchReport(fromDate, toDate));
         }

@@ -7,7 +7,7 @@
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps.Reports;
 
-    public class DailyEuReportsFacadeService : IDailyEuReportFacdeService
+    public class DailyEuReportsFacadeService : IDailyEuReportFacadeService
     {
         private readonly IDailyEuReportService dailyEuReportService;
 
