@@ -205,7 +205,7 @@
                 }
                 
                 this.OriginalReqNumber = isReversalOf.ReqNumber;
-                this.Quantity = isReversalOf.Quantity * -1;
+                this.Quantity = quantity.HasValue ? quantity.Value : isReversalOf.Quantity * -1;
                 this.Reference = isReversalOf.Reference;
                 this.FromState = isReversalOf.FromState;
                 this.ToStockPool = isReversalOf.ToStockPool;

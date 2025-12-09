@@ -1140,7 +1140,7 @@ function Requisition({ creating }) {
                                           }
                                         : null
                                 }
-                                disabled={!creating || formState.req.isReverseTransaction == 'Y'}
+                                disabled={!creating}
                                 shouldRender={
                                     formState.req.storesFunction &&
                                     formState.req.storesFunction?.partNumberRequired
