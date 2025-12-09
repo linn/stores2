@@ -146,15 +146,32 @@ function PartStorageType({ creating }) {
             }
         },
         { field: 'maximum', headerName: 'Maximum', width: 100 },
-        { field: 'bridgeId', headerName: 'Bridge ID', width: 100 },
         { field: 'incr', headerName: 'Incr', width: 100 },
-        { field: 'preference', headerName: 'Preference', width: 100 },
-        { field: 'remarks', headerName: 'Remarks', width: 100 }
+        { field: 'preference', headerName: 'Preference', width: 100 }
     ];
+
+    useEffect(() => {
+        const delayedSearch = setTimeout(() => {
+            if (partSearchTerm && partSearchTerm.length > 0) {
+                send(`?part=${partSearchTerm}`);
+                setSelectedPart(partSearchTerm);
+            }
+        }, 500);
+
+        return () => clearTimeout(delayedSearch);
+    }, [partSearchTerm, send]);
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={4}>
+                <Grid size={5}>
+                    <Button
+                        variant="outlined"
+                        onClick={() => navigate('/stores2/part-storage-types')}
+                    >
+                        Back to Part Storage Types
+                    </Button>
+                </Grid>
                 <Grid size={12}>
                     <Typography variant="h4">
                         {creating ? 'Create a Part Storage Type' : 'Edit a Part Storage Type'}
@@ -256,15 +273,6 @@ function PartStorageType({ creating }) {
             <Grid container spacing={3}>
                 <Grid size={3}>
                     <InputField
-                        propertyName="remarks"
-                        label="Remarks"
-                        value={partStorageType?.remarks}
-                        fullWidth
-                        onChange={handleFieldChange}
-                    />
-                </Grid>
-                <Grid size={3}>
-                    <InputField
                         propertyName="maximum"
                         label="Maximum"
                         value={partStorageType?.maximum}
@@ -281,7 +289,7 @@ function PartStorageType({ creating }) {
                         onChange={handleFieldChange}
                     />
                 </Grid>
-                <Grid size={13}>
+                <Grid size={3}>
                     <InputField
                         propertyName="preference"
                         label="Preference"
@@ -296,11 +304,6 @@ function PartStorageType({ creating }) {
                     <Button
                         variant="contained"
                         fullWidth
-                        disabled={
-                            partStorageType === partStorageTypeResult ||
-                            !partStorageType?.partNumber ||
-                            !partStorageType?.storageTypeCode
-                        }
                         onClick={() => {
                             if (creating) {
                                 createPartStorageType(null, partStorageType);

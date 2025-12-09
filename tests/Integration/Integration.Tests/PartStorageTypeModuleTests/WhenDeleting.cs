@@ -12,7 +12,7 @@
 
     public class WhenDeleting : ContextBase
     {
-        private PartsStorageType partStorageType;
+        private PartStorageType partStorageType;
 
         private Part part;
 
@@ -30,7 +30,7 @@
                                    };
 
 
-            this.partStorageType = new PartsStorageType(
+            this.partStorageType = new PartStorageType(
                 this.part,
                 this.storageType,
                 "a",

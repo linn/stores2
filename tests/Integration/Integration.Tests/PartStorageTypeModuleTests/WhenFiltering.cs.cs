@@ -14,9 +14,9 @@
 
     using NUnit.Framework;
 
-    public class WhenGettingAll : ContextBase
+    public class WhenFiltering : ContextBase
     {
-        private PartsStorageType partStorageType;
+        private PartStorageType partStorageType;
 
         private Part part;
 
@@ -28,12 +28,13 @@
             this.part = new Part { Id = 1, PartNumber = "Part No 1", Description = "Part 1" };
 
             this.storageType = new StorageType
-                                   {
-                                       StorageTypeCode = "Storage Type No 1", Description = "Storage Type 1"
-                                   };
+            {
+                StorageTypeCode = "Storage Type No 1",
+                Description = "Storage Type 1"
+            };
 
 
-            this.partStorageType = new PartsStorageType(
+            this.partStorageType = new PartStorageType(
                 this.part,
                 this.storageType,
                 "a",
@@ -45,7 +46,7 @@
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partStorageType);
 
             this.Response = this.Client.Get(
-                "/stores2/parts-storage-types",
+                $"/stores2/parts-storage-types?part={this.part.PartNumber}&storageType={this.storageType.StorageTypeCode}",
                 with =>
                 {
                     with.Accept("application/json");
@@ -68,7 +69,7 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<PartsStorageTypeResource>>().ToList();
+            var resource = this.Response.DeserializeBody<IEnumerable<PartStorageTypeResource>>().ToList();
             resource.First().StorageTypeCode.Should().Be("Storage Type No 1");
             resource.First().PartNumber.Should().Be("Part No 1");
             resource.First().BridgeId.Should().Be(400);

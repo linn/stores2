@@ -12,7 +12,7 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
 
-    public class PartsStorageTypeModule : IModule
+    public class PartStorageTypeModule : IModule
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
@@ -28,7 +28,7 @@
             HttpResponse res,
             string part,
             string storageType,
-            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
         {
             if (string.IsNullOrEmpty(part) && string.IsNullOrEmpty(storageType))
             {
@@ -36,7 +36,7 @@
             }
             else
             {
-                var searchResource = new PartsStorageTypeResource
+                var searchResource = new PartStorageTypeResource
                                          {
                                              PartNumber = part,
                                              StorageTypeCode = storageType,
@@ -50,7 +50,7 @@
             HttpRequest _,
             HttpResponse res,
             int bridgeId,
-            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
         {
             await res.Negotiate(await service.GetById(bridgeId));
         }
@@ -59,7 +59,7 @@
             HttpRequest _,
             HttpResponse res,
             int bridgeId,
-            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
         {
             await res.Negotiate(await service.DeleteOrObsolete(bridgeId));
         }
@@ -67,8 +67,8 @@
         private async Task Create(
             HttpRequest _,
             HttpResponse res,
-            PartsStorageTypeResource resource,
-            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            PartStorageTypeResource resource,
+            IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
         {
             await res.Negotiate(await service.Add(resource));
         }
@@ -77,8 +77,8 @@
             HttpRequest _,
             HttpResponse res,
             int bridgeId,
-            PartsStorageTypeResource resource,
-            IAsyncFacadeService<PartsStorageType, int, PartsStorageTypeResource, PartsStorageTypeResource, PartsStorageTypeResource> service)
+            PartStorageTypeResource resource,
+            IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
         {
             await res.Negotiate(await service.Update(bridgeId, resource));
         }

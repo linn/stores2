@@ -11,7 +11,7 @@
 
     public class StorageTypesService : IStorageTypeService
     {
-        private readonly IRepository<PartsStorageType, int> partStorageTypeRepository;
+        private readonly IRepository<PartStorageType, int> partStorageTypeRepository;
 
         private readonly IRepository<PcasStorageType, PcasStorageTypeKey> pcasStorageTypeRepository;
 
@@ -22,7 +22,7 @@
         private readonly IRepository<PcasBoard, string> pcasBoardRepository;
 
         public StorageTypesService(
-            IRepository<PartsStorageType, int> partStorageTypeRepository,
+            IRepository<PartStorageType, int> partStorageTypeRepository,
             IRepository<PcasStorageType, PcasStorageTypeKey> pcasStorageTypeRepository,
             ITransactionManager transactionManager,
             IRepository<Part, string> partRepository,
@@ -36,11 +36,11 @@
             this.pcasBoardRepository = pcasBoardRepository;
         }
 
-        public async Task<PartsStorageType> ValidatePartsStorageType(PartsStorageType partStorageType)
+        public async Task<PartStorageType> ValidatePartsStorageType(PartStorageType partStorageType)
         {
             if (string.IsNullOrEmpty(partStorageType.Preference) || partStorageType.Preference == "0")
             {
-                throw new PartsStorageTypeException("Part Preference is Empty or 0");
+                throw new PartStorageTypeException("Part Preference is Empty or 0");
             }
 
             var part = await this.partRepository.FindByIdAsync(partStorageType.PartNumber);
@@ -53,7 +53,7 @@
 
             if (partStorageTypeAlreadyExists != null && partStorageType.BridgeId == 0) 
             { 
-                throw new PartsStorageTypeException("Part Storage Type Already Exists");
+                throw new PartStorageTypeException("Part Storage Type Already Exists");
             }
 
             var partPreferenceAlreadyExists = await this.partStorageTypeRepository.FindByAsync(
@@ -62,10 +62,10 @@
 
             if (partPreferenceAlreadyExists != null && (partPreferenceAlreadyExists.BridgeId != partStorageType.BridgeId))
             {
-                throw new PartsStorageTypeException("Part Preference Already Exists");
+                throw new PartStorageTypeException("Part Preference Already Exists");
             }
 
-            return new PartsStorageType(
+            return new PartStorageType(
                 part,
                 storageType,
                 partStorageType.Remarks,

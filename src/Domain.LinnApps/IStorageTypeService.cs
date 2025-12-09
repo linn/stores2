@@ -6,7 +6,7 @@
 
     public interface IStorageTypeService
     {
-        Task<PartsStorageType> ValidatePartsStorageType(PartsStorageType partsStorageType);
+        Task<PartStorageType> ValidatePartsStorageType(PartStorageType partsStorageType);
 
         Task<PcasStorageType> ValidateCreatePcasStorageType(PcasStorageType pcasStorageType);
 

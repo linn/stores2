@@ -2,7 +2,7 @@
 {
     using Linn.Common.Resources;
 
-    public class PartsStorageTypeResource : HypermediaResource
+    public class PartStorageTypeResource : HypermediaResource
     {
         public string PartNumber { get; set; }
 

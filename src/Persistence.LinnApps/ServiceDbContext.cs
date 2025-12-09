@@ -27,7 +27,7 @@
 
         public DbSet<StorageType> StorageTypes { get; set; }
 
-        public DbSet<PartsStorageType> PartsStorageTypes { get; set; }
+        public DbSet<PartStorageType> PartsStorageTypes { get; set; }
 
         public DbSet<Part> Parts { get; set; }
 
@@ -797,7 +797,7 @@
 
         private static void BuildPartsStorageTypes(ModelBuilder builder)
         {
-            var e = builder.Entity<PartsStorageType>().ToTable("PARTS_STORAGE_TYPES");
+            var e = builder.Entity<PartStorageType>().ToTable("PARTS_STORAGE_TYPES");
             e.HasKey(l => l.BridgeId);
             e.Property(l => l.StorageTypeCode).HasColumnName("STORAGE_TYPE").HasMaxLength(4);
             e.Property(l => l.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);

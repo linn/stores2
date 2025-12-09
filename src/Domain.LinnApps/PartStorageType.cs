@@ -4,17 +4,17 @@
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
-    public class PartsStorageType
+    public class PartStorageType
     {
-        public PartsStorageType()
+        public PartStorageType()
         {
         }
 
-        public PartsStorageType(Part part, StorageType storageType, string remarks, int? maximum, int? incr, string preference, int bridgeId)
+        public PartStorageType(Part part, StorageType storageType, string remarks, int? maximum, int? incr, string preference, int bridgeId)
         {
-            this.Part = part ?? throw new PartsStorageTypeException("Part Number is empty or doesn't exist!");
+            this.Part = part ?? throw new PartStorageTypeException("Part Number is empty or doesn't exist!");
             this.PartNumber = part.PartNumber;
-            this.StorageType = storageType ?? throw new PartsStorageTypeException("Storage Type is empty or doesn't exist!");
+            this.StorageType = storageType ?? throw new PartStorageTypeException("Storage Type is empty or doesn't exist!");
             this.StorageTypeCode = storageType.StorageTypeCode;
             this.Remarks = remarks;
             this.Maximum = maximum;
