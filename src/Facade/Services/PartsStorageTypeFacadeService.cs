@@ -121,8 +121,8 @@
         protected override Expression<Func<PartsStorageType, bool>> FilterExpression(PartsStorageTypeResource searchResource)
         {
             return x =>
-                x.PartNumber.StartsWith(searchResource.PartNumber) &&
-                (string.IsNullOrEmpty(searchResource.StorageTypeCode) || x.StorageTypeCode.Contains(searchResource.StorageTypeCode));
+                (string.IsNullOrEmpty(searchResource.PartNumber) || x.PartNumber.StartsWith(searchResource.PartNumber)) &&
+                (string.IsNullOrEmpty(searchResource.StorageTypeCode) || x.StorageTypeCode.StartsWith(searchResource.StorageTypeCode));
         }
 
         protected override Expression<Func<PartsStorageType, bool>> FindExpression(PartsStorageTypeResource searchResource)

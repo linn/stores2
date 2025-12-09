@@ -123,7 +123,9 @@ function PartStorageTypes() {
                         resultLimit={100}
                         value={storageTypeSearchTerm}
                         loading={storageTypesSearchLoading}
-                        handleValueChange={(_, newVal) => setStorageTypeSearchTerm(newVal)}
+                        handleValueChange={(_, newVal) =>
+                            setStorageTypeSearchTerm(newVal.toUpperCase())
+                        }
                         search={searchStorageTypes}
                         searchResults={storageTypesSearchResults}
                         priorityFunction="closestMatchesFirst"
