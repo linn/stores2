@@ -42,7 +42,7 @@
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partStorageType);
 
             this.Response = this.Client.Delete(
-                "/stores2/parts-storage-types/400",
+                "/stores2/part-storage-types/400",
                 with =>
                     {
                         with.Accept("application/json");

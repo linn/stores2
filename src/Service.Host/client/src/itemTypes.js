@@ -28,7 +28,7 @@ const itemTypes = {
     stockPools: { url: `${config.appRoot}/stores2/stock-pools` },
     stockStates: { url: `${config.appRoot}/stores2/stock/states` },
     accountingCompany: { url: `${config.proxyRoot}/inventory/accounting-companies` },
-    partStorageTypes: { url: `${config.appRoot}/stores2/parts-storage-types` },
+    partStorageTypes: { url: `${config.appRoot}/stores2/part-storage-types` },
     storesTransViewer: { url: `${config.appRoot}/stores2/stores-trans-viewer/report` },
     purchaseOrders: { url: `${config.proxyRoot}/purchasing/purchase-orders` },
     loans: { url: `${config.proxyRoot}/sales/loans` },

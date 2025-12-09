@@ -53,7 +53,7 @@
 
             this.DatabaseService.GetNextVal("PARTS_STORAGE_TYPES_ID_SEQ").Returns(1);
 
-            this.Response = this.Client.PostAsJsonAsync($"/stores2/parts-storage-types", this.partsStorageType).Result;
+            this.Response = this.Client.PostAsJsonAsync($"/stores2/part-storage-types", this.partsStorageType).Result;
         }
 
         [Test]
