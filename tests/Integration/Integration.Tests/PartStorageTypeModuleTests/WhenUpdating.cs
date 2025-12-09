@@ -83,7 +83,7 @@ namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
             this.StorageTypeService.ValidatePartsStorageType(Arg.Any<PartStorageType>()).Returns(this.updatedPartsStorageType);
 
             this.Response = this.Client.PutAsJsonAsync(
-                $"/stores2/parts-storage-types/{this.partsStorageType.BridgeId}",
+                $"/stores2/part-storage-types/{this.partsStorageType.BridgeId}",
                 this.updateResource).Result;
         }
 
