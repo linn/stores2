@@ -205,7 +205,16 @@
                 }
                 
                 this.OriginalReqNumber = isReversalOf.ReqNumber;
+
+
                 this.Quantity = quantity.HasValue ? quantity.Value : isReversalOf.Quantity * -1;
+
+                if (Math.Abs(this.Quantity.GetValueOrDefault()) 
+                    > Math.Abs(isReversalOf.Quantity.GetValueOrDefault()))
+                {
+                    throw new CreateRequisitionException("Reversal quantity cannot be greater than original req quantity");
+                }
+
                 this.Reference = isReversalOf.Reference;
                 this.FromState = isReversalOf.FromState;
                 this.ToStockPool = isReversalOf.ToStockPool;
