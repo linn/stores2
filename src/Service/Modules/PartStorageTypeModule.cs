@@ -16,11 +16,11 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/parts-storage-types", this.GetAll);
-            app.MapPost("/stores2/parts-storage-types", this.Create);
-            app.MapGet("/stores2/parts-storage-types/{bridgeId}", this.GetById);
-            app.MapPut("/stores2/parts-storage-types/{bridgeId}", this.Update);
-            app.MapDelete("/stores2/parts-storage-types/{bridgeId}", this.Delete);
+            app.MapGet("/stores2/part-storage-types", this.GetAll);
+            app.MapPost("/stores2/part-storage-types", this.Create);
+            app.MapGet("/stores2/part-storage-types/{bridgeId}", this.GetById);
+            app.MapPut("/stores2/part-storage-types/{bridgeId}", this.Update);
+            app.MapDelete("/stores2/part-storage-types/{bridgeId}", this.Delete);
         }
 
         private async Task GetAll(
