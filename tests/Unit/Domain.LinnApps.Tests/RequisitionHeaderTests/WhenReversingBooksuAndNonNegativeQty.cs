@@ -8,7 +8,7 @@
     using Linn.Stores2.TestData.FunctionCodes;
     using NUnit.Framework;
 
-    public class WhenReversingAndCustomQtyAndGreaterThanOriginal
+    public class WhenReversingBooksuAndNonNegativeQty
     {
         private Action action;
 
@@ -35,7 +35,7 @@
                                         new Nominal("0000004710", "NOT STOCK ADJUSTMENTS"),
                                         reference: null,
                                         comments: "original",
-                                        quantity: 5,
+                                        quantity: 10,
                                         fromState: "QC",
                                         dateReceived: DateTime.UnixEpoch),
                                     quantity: 10,
@@ -47,7 +47,7 @@
         {
             this.action.Should().Throw<CreateRequisitionException>()
                 .Where(ex => ex.Message.Contains(
-                    "Reversal quantity cannot be greater than original req quantity"));
+                    "Reversal quantity must be negative"));
         }
     }
 }

@@ -207,12 +207,32 @@
                 this.OriginalReqNumber = isReversalOf.ReqNumber;
 
 
-                this.Quantity = quantity.HasValue ? quantity.Value : isReversalOf.Quantity * -1;
 
-                if (Math.Abs(this.Quantity.GetValueOrDefault()) 
-                    > Math.Abs(isReversalOf.Quantity.GetValueOrDefault()))
+                this.Quantity = quantity ?? isReversalOf.Quantity * -1;
+
+                if (this.StoresFunction.FunctionCode != "BOOKSU")
                 {
-                    throw new CreateRequisitionException("Reversal quantity cannot be greater than original req quantity");
+                    if (Math.Abs(this.Quantity.GetValueOrDefault())
+                        != Math.Abs(isReversalOf.Quantity.GetValueOrDefault()))
+                    {
+                        throw new CreateRequisitionException(
+                            "Partial reversals not available for this function code");
+                    }
+                }
+                else
+                {
+                    if (Math.Abs(this.Quantity.GetValueOrDefault())
+                        > Math.Abs(isReversalOf.Quantity.GetValueOrDefault()))
+                    {
+                        throw new CreateRequisitionException(
+                            "Reversal quantity cannot be greater than original req quantity");
+                    }
+
+                    if (this.Quantity >= 0)
+                    {
+                        throw new CreateRequisitionException(
+                            "Reversal quantity must be negative");
+                    }
                 }
 
                 this.Reference = isReversalOf.Reference;
