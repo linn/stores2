@@ -10,16 +10,16 @@
 
     public class DailyEuReportsService : IDailyEuReportService
     {
-        private readonly IRepository<DailyEuRsnImportReport, int> dailyEuRsnImportReportRepository;
+        private readonly IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository;
 
-        private readonly IRepository<DailyEuDespatchReport, int> dailyEuDespatchReportRepository;
+        private readonly IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository;
 
         private readonly IReportingHelper reportingHelper;
 
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
-            IRepository<DailyEuRsnImportReport, int> dailyEuRsnImportReportRepository,
-            IRepository<DailyEuDespatchReport, int> dailyEuDespatchReportRepository)
+            IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
+            IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository)
         {
             this.reportingHelper = reportingHelper;
             this.dailyEuRsnImportReportRepository = dailyEuRsnImportReportRepository;
