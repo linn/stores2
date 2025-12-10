@@ -206,7 +206,7 @@ function PcasStorageType({ creating }) {
                         onChange={handleFieldChange}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item size={3}>
                     <InputField
                         propertyName="preference"
                         label="Preference"
@@ -216,17 +216,8 @@ function PcasStorageType({ creating }) {
                     />
                 </Grid>
             </Grid>
-            <Grid size={12}>
-                <InputField
-                    propertyName="remarks"
-                    label="Remarks"
-                    value={pcasStorageType?.remarks}
-                    fullWidth
-                    onChange={handleFieldChange}
-                />
-            </Grid>
             <Grid>
-                <Grid size={12}>
+                <Grid size={1}>
                     <Button
                         variant="contained"
                         fullWidth
