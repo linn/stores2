@@ -14,16 +14,22 @@
 
         private readonly IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository;
 
+        private readonly IRepository<Address, int> addressRepository;
+
+        private readonly IRepository<Expbook, int> expbookRepository;
+
         private readonly IReportingHelper reportingHelper;
 
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
             IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
-            IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository)
+            IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository,
+            IRepository<Expbook, int> expbookRepository)
         {
             this.reportingHelper = reportingHelper;
             this.dailyEuRsnImportReportRepository = dailyEuRsnImportReportRepository;
             this.dailyEuDespatchReportRepository = dailyEuDespatchReportRepository;
+            this.expbookRepository = expbookRepository;
         }
 
         public async Task<ResultsModel> GetDailyEuImportRsnReport(string fromDate, string toDate)
@@ -250,12 +256,14 @@
             {
                 var rowId = rowIndex;
 
+                var expook = this.expbookRepository.FindByIdAsync(line.CommercialInvNo);
+
                 values.Add(
                     new CalculationValueModel
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordExporter",
-                        TextDisplay = line.Address.Line1
+                        TextDisplay = expook.Result.Address.Line1
                     });
 
                 values.Add(
@@ -263,7 +271,7 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordImporter",
-                        TextDisplay = line.Address.Line2
+                        TextDisplay = expook.Result.Address.Line2
                     });
                 values.Add(
                         new CalculationValueModel

@@ -16,6 +16,8 @@
 
         protected IQueryRepository<DailyEuRsnImportReport> DailyEuRsnImportRepository { get; private set; }
 
+        protected IRepository<Expbook, int> ExpbookRepository { get; private set; }
+
         protected IReportingHelper ReportingHelper { get; private set; }
 
         [SetUp]
@@ -23,12 +25,14 @@
         {
             this.DailyEuDespatchRepository = Substitute.For<IQueryRepository<DailyEuDespatchReport>>();
             this.DailyEuRsnImportRepository = Substitute.For<IQueryRepository<DailyEuRsnImportReport>>();
+            this.ExpbookRepository = Substitute.For<IRepository<Expbook, int>>();
             this.ReportingHelper = new ReportingHelper();
 
             this.Sut = new DailyEuReportsService(
                 this.ReportingHelper,
                 this.DailyEuRsnImportRepository,
-                this.DailyEuDespatchRepository);
+                this.DailyEuDespatchRepository,
+                this.ExpbookRepository);
         }
     }
 }

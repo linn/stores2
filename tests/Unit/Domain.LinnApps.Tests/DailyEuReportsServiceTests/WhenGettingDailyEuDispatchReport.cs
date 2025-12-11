@@ -18,6 +18,8 @@
     {
         private ResultsModel result;
 
+        private Expbook expbook;
+
         [SetUp]
         public async Task SetUp()
         {
@@ -25,29 +27,45 @@
                                 {
                                     new DailyEuDespatchReport
                                         {
-                                            ExbookId = 1,
-                                            ArticleNumber = "Article 1",
+                                            CommercialInvNo = 1,
+                                            ProductId = "Article 1",
                                             Currency = "USD",
                                             DateCreated = 9.December(2025)
                                         },
                                     new DailyEuDespatchReport
                                         {
-                                            ExbookId = 2,
-                                            ArticleNumber = "Article 2",
+                                            CommercialInvNo = 2,
+                                            ProductId = "Article 2",
                                             Currency = "GBP",
                                             DateCreated = 8.December(2025)
                                         },
                                     new DailyEuDespatchReport
                                         {
-                                            ExbookId = 3,
-                                            ArticleNumber = "Article 3",
+                                            CommercialInvNo = 3,
+                                            ProductId = "Article 3",
                                             Currency = "EUR",
                                             DateCreated = 15.December(2025),
                                         },
                                 };
 
+            this.expbook = new Expbook
+                               {
+                                   Id = 1,
+                                   AddressId = 2,
+                                   Address = new Address(
+                                       "addresse",
+                                       "Line 1",
+                                       "Line 2",
+                                       "Line 3",
+                                       "Line 4",
+                                       "G44 123",
+                                       new Country())
+                               };
+
             this.DailyEuDespatchRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuDespatchReport, bool>>>())
                 .Returns(values);
+
+            this.ExpbookRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.expbook);
 
             this.result = await this.Sut.GetDailyEuDespatchReport(1.December(2025).ToString("o"), 20.December(2025).ToString("o"));
         }
@@ -60,17 +78,17 @@
 
             summary.Rows.Should().HaveCount(3);
 
-            summary.GetGridValue(0, 0).Should().Be(1);
-            summary.GetGridValue(1, 0).Should().Be(2);
-            summary.GetGridValue(2, 0).Should().Be(3);
+            summary.GetGridTextValue(0, 0).Should().Be("Line 1");
+            summary.GetGridTextValue(1, 0).Should().Be("Line 1");
+            summary.GetGridTextValue(2, 0).Should().Be("Line 1");
 
             summary.GetGridTextValue(0, 3).Should().Be("Article 1");
             summary.GetGridTextValue(1, 3).Should().Be("Article 2");
             summary.GetGridTextValue(2, 3).Should().Be("Article 3");
 
-            summary.GetGridTextValue(0, 8).Should().Be("USD");
-            summary.GetGridTextValue(1, 8).Should().Be("GBP");
-            summary.GetGridTextValue(2, 8).Should().Be("EUR");
+            summary.GetGridTextValue(0, 7).Should().Be("USD");
+            summary.GetGridTextValue(1, 7).Should().Be("GBP");
+            summary.GetGridTextValue(2, 7).Should().Be("EUR");
         }
     }
 }

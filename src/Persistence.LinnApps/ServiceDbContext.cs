@@ -25,6 +25,8 @@
         
         public DbSet<Country> Countries { get; set; }
 
+        public DbSet<Address> Addresses { get; set; }
+
         public DbSet<StorageType> StorageTypes { get; set; }
 
         public DbSet<PartStorageType> PartsStorageTypes { get; set; }
@@ -97,6 +99,8 @@
 
         public DbSet<DailyEuRsnImportReport> DailyEuRsnImportReport { get; set; }
 
+        public DbSet<Expbook> Expbooks { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -155,6 +159,7 @@
             BuildLabourHourSummaries(builder);
             BuildDailyEuDespatchReport(builder);
             BuildDailyEuRsnImportReport(builder);
+            BuildExpbooks(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1067,7 +1072,6 @@
             entity.Property(e => e.PackingList).HasColumnName("CONSIGNMENT_ID");
             entity.Property(e => e.QuantityPackage).HasColumnName("QUANTITY_PACKAGE");
             entity.Property(e => e.QuantityPiecesPerPackage).HasColumnName("QUANTITY_PIECES_PER_PACKAGE");
-            entity.HasOne(l => l.Address).WithMany().HasForeignKey(l => l.Addresse);
         }
 
         private static void BuildDailyEuRsnImportReport(ModelBuilder builder)
@@ -1093,6 +1097,16 @@
             entity.Property(e => e.Qty).HasColumnName("QTY");
             entity.Property(e => e.Currency).HasColumnName("CURRENCY");
             entity.Property(e => e.CustomsValue).HasColumnName("CUSTOMSVALUE");
+        }
+
+        private static void BuildExpbooks(ModelBuilder builder)
+        {
+            var entity = builder.Entity<Expbook>().ToView("EXPBOOKS").HasNoKey();
+
+            entity.Property(e => e.Id).HasColumnName("EXPBOOK_ID");
+            entity.Property(e => e.AddressId).HasColumnName("ADDRESS_ID");
+            entity.HasOne(l => l.Address).WithMany().HasForeignKey(l => l.AddressId);
+
         }
     }
 }

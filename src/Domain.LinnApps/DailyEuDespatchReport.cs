@@ -4,13 +4,9 @@
 
     public class DailyEuDespatchReport
     {
-        public string CommercialInvNo { get; set; }
-
-        public Address Address { get; set; }
+        public int CommercialInvNo { get; set; }
 
         public DateTime DateCreated { get; set; }
-
-        public string Addresse { get; set; }
 
         public string ProductId { get; set; }
 
