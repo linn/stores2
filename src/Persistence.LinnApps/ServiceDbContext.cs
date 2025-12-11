@@ -1076,7 +1076,7 @@
 
         private static void BuildDailyEuRsnImportReport(ModelBuilder builder)
         {
-            var entity = builder.Entity<DailyEuRsnImportReport>().ToView("EXPORT_RETURNS_VIEW").HasNoKey();
+            var entity = builder.Entity<DailyEuRsnImportReport>().ToView("EXPORT_RETURN_VIEW").HasNoKey();
 
             entity.Property(e => e.RsnNumber).HasColumnName("RSN_NUMBER");
             entity.Property(e => e.Retailer).HasColumnName("ADDRESSE");
