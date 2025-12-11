@@ -30,7 +30,7 @@
 
         public int LineNo { get; set; }
 
-        public int UnitPrice { get; set; }
+        public decimal UnitPrice { get; set; }
 
         public string Terms { get; set; }
 
