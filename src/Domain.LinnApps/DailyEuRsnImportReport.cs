@@ -4,50 +4,47 @@
 
     public class DailyEuRsnImportReport
     {
-        public int RsnNumber { get; set; }
+    public int RsnNumber { get; set; }
 
-        public string Addresse { get; set; }
+    public string Retailer { get; set; }
 
-        public string Country { get; set; }
+    public string Country { get; set; }
 
-        public DateTime DocumentDate { get; set; }
+    public DateTime DocumentDate { get; set; }
 
-        public int InvoiceNumber { get; set; }
+    public int InvoiceNumber { get; set; }
 
-        public string PartNo { get; set; }
+    public string PartNo { get; set; }
 
-        public string TariffCode { get; set; }
+    public string Currency { get; set; }
 
-        public string CountryOfOrigin { get; set; }
+    public string TariffCode { get; set; }
 
-        public int Qty { get; set; }
+    public string CountryOfOrigin { get; set; }
 
-        public int QuantityPackage { get; set; }
+    public int Qty { get; set; }
 
-        public int QuantityPiecesPerPackage { get; set; }
+    public int Pieces { get; set; }
 
-        public string Currency { get; set; }
+    public int Weight { get; set; }
 
-        public int LineUnitPrice { get; set; }
+    public int Width { get; set; }
 
-        public int LineTotal { get; set; }
+    public int Height { get; set; }
 
-        public int UnitPrice { get; set; }
+    public int Depth { get; set; }
 
-        public int Total { get; set; }
+    public string Description { get; set; }
 
-        public string CustomsTotal { get; set; }
+    public string ReturnReason { get; set; }
 
-        public int NetWeightKg { get; set; }
+    public int CustomsCpcNo { get; set; }
 
-        public int GrossWeightKg { get; set; }
+    public decimal CustomsValue { get; set; }
 
-        public int PackingList { get; set; }
-
-        public string Terms { get; set; }
-
-        public int InvoiceLine { get; set; }
-
-        public string Upgrade { get; set; }
+    public string GetDims()
+    {
+        return $"{this.Width} X {this.Height} X {this.Depth}";
+    }
     }
 }
