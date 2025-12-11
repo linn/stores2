@@ -14,8 +14,6 @@
 
         private readonly IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository;
 
-        private readonly IRepository<Address, int> addressRepository;
-
         private readonly IRepository<Expbook, int> expbookRepository;
 
         private readonly IReportingHelper reportingHelper;
@@ -169,7 +167,7 @@
                     new CalculationValueModel
                     {
                         RowId = rowId.ToString(),
-                        ColumnId = "countryOFOrigin",
+                        ColumnId = "countryOfOrigin",
                         TextDisplay = line.CountryOfOrigin
                     });
 
@@ -256,14 +254,14 @@
             {
                 var rowId = rowIndex;
 
-                var expook = this.expbookRepository.FindByIdAsync(line.CommercialInvNo);
+                var expbook = this.expbookRepository.FindByIdAsync(line.CommercialInvNo);
 
                 values.Add(
                     new CalculationValueModel
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordExporter",
-                        TextDisplay = expook.Result.Address.Line1
+                        TextDisplay = expbook.Result.Address.Line1
                     });
 
                 values.Add(
@@ -271,7 +269,7 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordImporter",
-                        TextDisplay = expook.Result.Address.Line2
+                        TextDisplay = expbook.Result.Address.Line2
                     });
                 values.Add(
                         new CalculationValueModel

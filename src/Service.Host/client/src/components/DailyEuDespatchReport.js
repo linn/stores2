@@ -45,7 +45,7 @@ function DailyEuDispatchReport() {
                         Daily Eu Dispatch Report
                     </Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <DatePicker
                         label="From Date"
                         value={fromDate}
@@ -54,7 +54,7 @@ function DailyEuDispatchReport() {
                         }}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <DatePicker
                         label="To Date"
                         value={toDate}

@@ -43,7 +43,7 @@ function DailyEuImportRsnReport() {
                         Daily Eu Import RSN Report
                     </Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <DatePicker
                         label="From Date"
                         value={fromDate}
@@ -52,7 +52,7 @@ function DailyEuImportRsnReport() {
                         }}
                     />
                 </Grid>
-                <Grid item xs={3}>
+                <Grid size={3}>
                     <DatePicker
                         label="To Date"
                         value={toDate}

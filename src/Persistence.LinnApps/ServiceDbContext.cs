@@ -1085,12 +1085,11 @@
             entity.Property(e => e.PartNo).HasColumnName("PART_NO");
             entity.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE");
             entity.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN");
-            entity.Property(e => e.Qty).HasColumnName("QTY");
             entity.Property(e => e.Pieces).HasColumnName("NUM_CARTONS");
             entity.Property(e => e.Weight).HasColumnName("WEIGHT");
             entity.Property(e => e.Width).HasColumnName("WIDTH");
             entity.Property(e => e.Height).HasColumnName("HEIGHT");
-            entity.Property(e => e.Depth).HasColumnName("Depth");
+            entity.Property(e => e.Depth).HasColumnName("DEPTH");
             entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
             entity.Property(e => e.ReturnReason).HasColumnName("REASON_CATEGORY");
             entity.Property(e => e.CustomsCpcNo).HasColumnName("CUSTOMS_CPC_NO");

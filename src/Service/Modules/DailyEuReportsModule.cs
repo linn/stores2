@@ -17,7 +17,6 @@
         {
             app.MapGet("/stores2/reports/daily/eu/import/rsn", this.DailyEuImportRsnReport);
             app.MapGet("/stores2/reports/daily/eu/dispatch", this.DailyEuDispatchReport);
-            app.MapGet("/requisitions/reports/requisition-cost", this.GetApp);
         }
 
         private async Task DailyEuImportRsnReport(
@@ -27,7 +26,14 @@
             string toDate,
             IDailyEuReportFacadeService facadeService)
         {
-            await res.Negotiate(await facadeService.GetDailyEuImportRsnReport(fromDate, toDate));
+            if (string.IsNullOrEmpty(fromDate))
+            {
+                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            }
+            else
+            {
+                await res.Negotiate(await facadeService.GetDailyEuImportRsnReport(fromDate, toDate));
+            }
         }
 
         private async Task DailyEuDispatchReport(
@@ -37,12 +43,14 @@
             string toDate,
             IDailyEuReportFacadeService facadeService)
         {
-            await res.Negotiate(await facadeService.GetDailyEuDespatchReport(fromDate, toDate));
-        }
-
-        private async Task GetApp(HttpRequest req, HttpResponse res)
-        {
-            await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            if (string.IsNullOrEmpty(fromDate))
+            {
+                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            }
+            else
+            {
+                await res.Negotiate(await facadeService.GetDailyEuDespatchReport(fromDate, toDate));
+            }
         }
     }
 }
