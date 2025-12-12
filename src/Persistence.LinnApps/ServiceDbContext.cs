@@ -1079,7 +1079,7 @@
             var entity = builder.Entity<DailyEuRsnImportReport>().ToView("EXPORT_RETURN_VIEW").HasNoKey();
 
             entity.Property(e => e.RsnNumber).HasColumnName("RSN_NUMBER");
-            entity.Property(e => e.Retailer).HasColumnName("ADDRESSE");
+            entity.Property(e => e.Retailer).HasColumnName("ADDRESSEE");
             entity.Property(e => e.DocumentDate).HasColumnName("DOCUMENT_DATE");
             entity.Property(e => e.InvoiceNumber).HasColumnName("DOCUMENT_NUMBER");
             entity.Property(e => e.PartNo).HasColumnName("PART_NO");
