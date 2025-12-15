@@ -132,22 +132,13 @@ function PcasStorageType({ creating }) {
                     <Grid item size={4}>
                         <InputField
                             propertyName="boardDescription"
-                            label="Board Description"
+                            label="Pcas Board"
                             value={pcasStorageType?.pcasBoard?.boardCode}
                             fullWidth
                             disabled
                         />
                     </Grid>
                 )}
-                <Grid item size={2}>
-                    <InputField
-                        propertyName="boardCode"
-                        label="Board Code"
-                        value={pcasStorageType?.boardCode}
-                        fullWidth
-                        disabled
-                    />
-                </Grid>
                 {creating ? (
                     <Grid item size={4}>
                         <Search
@@ -169,23 +160,16 @@ function PcasStorageType({ creating }) {
                     <Grid item size={4}>
                         <InputField
                             propertyName="storageTypeDescription"
-                            label="Storage Type Description"
+                            label="Storage Type Code"
                             value={pcasStorageType?.storageType?.storageTypeCode}
                             fullWidth
                             disabled
                         />
                     </Grid>
                 )}
-                <Grid item size={2}>
-                    <InputField
-                        propertyName="storageTypeCode"
-                        label="Storage Type Code"
-                        value={pcasStorageType?.storageTypeCode}
-                        fullWidth
-                        onChange={handleFieldChange}
-                        disabled
-                    />
-                </Grid>
+            </Grid>
+
+            <Grid container spacing={3}>
                 <Grid item size={3}>
                     <InputField
                         propertyName="maximum"
@@ -216,6 +200,7 @@ function PcasStorageType({ creating }) {
                     />
                 </Grid>
             </Grid>
+
             <Grid>
                 <Grid size={1}>
                     <Button
