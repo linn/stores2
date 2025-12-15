@@ -131,7 +131,7 @@ function PcasStorageType({ creating }) {
                 ) : (
                     <Grid item size={4}>
                         <InputField
-                            propertyName="boardDescription"
+                            propertyName="boardCode"
                             label="Pcas Board"
                             value={pcasStorageType?.pcasBoard?.boardCode}
                             fullWidth
@@ -159,7 +159,7 @@ function PcasStorageType({ creating }) {
                 ) : (
                     <Grid item size={4}>
                         <InputField
-                            propertyName="storageTypeDescription"
+                            propertyName="storageTypeCode"
                             label="Storage Type Code"
                             value={pcasStorageType?.storageType?.storageTypeCode}
                             fullWidth
