@@ -41,9 +41,9 @@
                                   new AxisDetailsModel(
                                       "pieces",
                                       "Pieces",
-                                      GridDisplayType.Value,
+                                      GridDisplayType.TextValue,
                                       125),
-                                  new AxisDetailsModel("weight", "Weight", GridDisplayType.Value, 150),
+                                  new AxisDetailsModel("weight", "Weight", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("dims", "Dims", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("retailerDetails", "Retailer Details", GridDisplayType.TextValue, 300),
                                   new AxisDetailsModel("rsnNumber", "RSN Number", GridDisplayType.Value, 300),
@@ -91,14 +91,14 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "pieces",
-                        Value = line.Pieces
+                        TextDisplay = line.Pieces.ToString()
                     });
                 values.Add(
                     new CalculationValueModel
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "weight",
-                        Value = line.Weight
+                        TextDisplay = line.Weight.ToString()
                     });
                 values.Add(
                     new CalculationValueModel
@@ -208,7 +208,7 @@
         {
             var lines =
                 await this.dailyEuDespatchReportRepository.FilterByAsync(
-                    i => i.DocumentDate >= DateTime.Parse(fromDate) && i.DocumentDate <= DateTime.Parse(toDate));
+                    i => i.DateCreated >= DateTime.Parse(fromDate) && i.DateCreated <= DateTime.Parse(toDate));
 
             var columns = new List<AxisDetailsModel>
                   {
@@ -229,18 +229,18 @@
                           250),
                       new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 150),
                       new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 275),
-                      new AxisDetailsModel("unitPrice", "Pallet Number", GridDisplayType.Value, 125),
+                      new AxisDetailsModel("unitPrice", "Pallet Number", GridDisplayType.TextValue, 125),
                       new AxisDetailsModel(
                           "customsTotalValue",
                           "Customs Total Value",
-                          GridDisplayType.Value,
+                          GridDisplayType.TextValue,
                           175),
                       new AxisDetailsModel(
                           "quantityPackage",
                           "Value for Customs Purposes only",
                           GridDisplayType.Value,
                           150),
-                      new AxisDetailsModel("grossWeight", "Gross Weight KG", GridDisplayType.Value, 400),
+                      new AxisDetailsModel("grossWeight", "Gross Weight KG", GridDisplayType.TextValue, 400),
                       new AxisDetailsModel("packingList", "Packing List", GridDisplayType.TextValue, 400),
                       new AxisDetailsModel("deliveryTerms", "Delivery Terms", GridDisplayType.TextValue, 400),
                   };
@@ -261,7 +261,8 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordExporter",
-                        TextDisplay = expbook.Result.Address.Line1
+                        TextDisplay = "1"
+                            //expbook.Result.Address.Line1
                     });
 
                 values.Add(
@@ -269,7 +270,8 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordImporter",
-                        TextDisplay = expbook.Result.Address.Line2
+                        TextDisplay = "2"
+                            //expbook.Result.Address.Line2
                     });
                 values.Add(
                         new CalculationValueModel
@@ -332,7 +334,7 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "unitPrice",
-                        Value = line.UnitPrice
+                        TextDisplay = line.UnitPrice.ToString()
                     });
 
                 values.Add(
@@ -340,21 +342,21 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "customsTotalValue",
-                        Value = line.CustomsTotal
+                        TextDisplay = line.CustomsTotal.ToString()
                     });
                 values.Add(
                     new CalculationValueModel
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "grossWeight",
-                        Value = line.Weight
+                        TextDisplay = line.Weight.ToString()
                     });
                 values.Add(
                     new CalculationValueModel
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "packingList",
-                        Value = line.QuantityPackage
+                        TextDisplay = line.QuantityPackage.ToString()
                     });
                 values.Add(
                     new CalculationValueModel

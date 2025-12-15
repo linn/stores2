@@ -8,8 +8,6 @@
 
     public string Retailer { get; set; }
 
-    public string Country { get; set; }
-
     public DateTime DocumentDate { get; set; }
 
     public int InvoiceNumber { get; set; }
@@ -24,15 +22,15 @@
 
     public int Qty { get; set; }
 
-    public int Pieces { get; set; }
+    public int? Pieces { get; set; }
 
-    public int Weight { get; set; }
+    public int? Weight { get; set; }
 
-    public int Width { get; set; }
+    public int? Width { get; set; }
 
-    public int Height { get; set; }
+    public int? Height { get; set; }
 
-    public int Depth { get; set; }
+    public int? Depth { get; set; }
 
     public string Description { get; set; }
 

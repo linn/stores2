@@ -1095,7 +1095,7 @@
             entity.Property(e => e.CustomsCpcNo).HasColumnName("CUSTOMS_CPC_NO");
             entity.Property(e => e.Qty).HasColumnName("QTY");
             entity.Property(e => e.Currency).HasColumnName("CURRENCY");
-            entity.Property(e => e.CustomsValue).HasColumnName("CUSTOMSVALUE");
+            entity.Property(e => e.CustomsValue).HasColumnName("CUSTOMS_VALUE");
         }
 
         private static void BuildExpbooks(ModelBuilder builder)
