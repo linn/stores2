@@ -38,7 +38,7 @@
 
         public string GetLocation(PartStorageType model)
         {
-            return $"/stores2/parts-storage-types/{model.BridgeId}";
+            return $"/stores2/part-storage-types/{model.BridgeId}";
         }
 
         object IBuilder<PartStorageType>.Build(PartStorageType entity, IEnumerable<string> claims) =>

@@ -82,12 +82,12 @@ function PcasStorageType({ creating }) {
 
     const handleBoardTypeSearchResultSelect = selected => {
         setPcasStorageType(c => ({ ...c, boardCode: selected.boardCode }));
-        setBoardSearchTerm(selected.description);
+        setBoardSearchTerm(selected.boardCode);
     };
 
     const handleStorageTypeSearchResultSelect = selected => {
         setPcasStorageType(c => ({ ...c, storageTypeCode: selected.storageTypeCode }));
-        setStorageTypeSearchTerm(selected.description);
+        setStorageTypeSearchTerm(selected.storageTypeCode);
     };
 
     const handleFieldChange = (propertyName, newValue) => {
@@ -133,7 +133,7 @@ function PcasStorageType({ creating }) {
                         <InputField
                             propertyName="boardDescription"
                             label="Board Description"
-                            value={pcasStorageType?.pcasBoard?.description}
+                            value={pcasStorageType?.pcasBoard?.boardCode}
                             fullWidth
                             disabled
                         />
@@ -170,7 +170,7 @@ function PcasStorageType({ creating }) {
                         <InputField
                             propertyName="storageTypeDescription"
                             label="Storage Type Description"
-                            value={pcasStorageType?.storageType?.description}
+                            value={pcasStorageType?.storageType?.storageTypeCode}
                             fullWidth
                             disabled
                         />
