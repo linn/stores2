@@ -11,11 +11,11 @@
 
     public class DeliveryNoteService : IDeliveryNoteService
     {
-        private readonly IRepository<RequisitionHeader, int> repository;
+        private readonly IRequisitionRepository repository;
 
         private readonly ISupplierProxy supplierProxy;
 
-        public DeliveryNoteService(IRepository<RequisitionHeader, int> repository, ISupplierProxy supplierProxy)
+        public DeliveryNoteService(IRequisitionRepository repository, ISupplierProxy supplierProxy)
         {
             this.repository = repository;
             this.supplierProxy = supplierProxy;

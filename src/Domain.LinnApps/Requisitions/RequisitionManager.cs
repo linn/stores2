@@ -20,7 +20,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     {
         private readonly IAuthorisationService authService;
         
-        private readonly IRepository<RequisitionHeader, int> repository;
+        private readonly IRequisitionRepository repository;
 
         private readonly IRequisitionStoredProcedures requisitionStoredProcedures;
 
@@ -66,7 +66,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public RequisitionManager(
             IAuthorisationService authService,
-            IRepository<RequisitionHeader, int> repository,
+            IRequisitionRepository repository,
             IRequisitionStoredProcedures requisitionStoredProcedures,
             IRepository<Employee, int> employeeRepository,
             IRepository<Part, string> partRepository,
@@ -373,7 +373,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             move.UnpickQuantity(qtyToUnpick);
             await this.transactionManager.CommitAsync();
 
-            var unpickedReq = await this.repository.FindByIdAsync(reqNumber);
+            var unpickedReq = await this.repository.FindByIdNoTracking(reqNumber);
 
             return unpickedReq;
         }

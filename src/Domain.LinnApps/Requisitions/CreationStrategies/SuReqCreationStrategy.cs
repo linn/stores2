@@ -12,7 +12,7 @@
     {
         private readonly IAuthorisationService authService;
 
-        private readonly IRepository<RequisitionHeader, int> repository;
+        private readonly IRequisitionRepository repository;
 
         private readonly IRequisitionManager requisitionManager;
 
@@ -22,7 +22,7 @@
 
         public SuReqCreationStrategy(
             IAuthorisationService authService,
-            IRepository<RequisitionHeader, int> repository,
+            IRequisitionRepository repository,
             IRequisitionManager requisitionManager,
             IRepository<Employee, int> employeeRepository,
             IRepository<StorageLocation, int> storageLocationRepository)

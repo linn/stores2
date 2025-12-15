@@ -91,12 +91,16 @@
         {
             if (unpickQty < this.Quantity)
             {
-                this.Quantity = this.Quantity - unpickQty;
+                this.Quantity -= unpickQty;
             }
-            else if (unpickQty == this.Quantity)
+            
+            if (unpickQty == this.Quantity)
             {
                 // previous req_ut.fmb did this if unpicking full quantity in UNPICK_STOCK
                 this.Cancel(DateTime.Now);
+
+                // any reason not to do this here too?
+                this.Quantity -= unpickQty;
             }
         }
 

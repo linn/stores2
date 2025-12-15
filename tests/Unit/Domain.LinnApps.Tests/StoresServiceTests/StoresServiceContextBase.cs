@@ -34,7 +34,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
 
         protected IRepository<StockLocator, int> StockLocatorRepository { get; private set; }
 
-        protected IRepository<RequisitionHeader, int> RequisitionRepository { get; private set; }
+        protected IRequisitionRepository RequisitionRepository { get; private set; }
 
         protected IRepository<NominalAccount, int> NominalAccountRepository { get; private set; }
 
@@ -57,7 +57,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
             this.StoresTransactionStateRepository = Substitute.For<IRepository<StoresTransactionState, StoresTransactionStateKey>>();
             this.StoresBudgetRepository = Substitute.For<IRepository<StoresBudget, int>>();
             this.StockLocatorRepository = Substitute.For<IRepository<StockLocator, int>>();
-            this.RequisitionRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
+            this.RequisitionRepository = Substitute.For<IRequisitionRepository>();
             this.NominalAccountRepository = Substitute.For<IRepository<NominalAccount, int>>();
             this.PartStorageTypeRepository = Substitute.For<IRepository<PartStorageType, int>>();
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();

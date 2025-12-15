@@ -17,7 +17,7 @@
     {
         protected IAuthorisationService AuthService { get; private set; }
 
-        protected IRepository<RequisitionHeader, int> Repository { get; private set; }
+        protected IRequisitionRepository Repository { get; private set; }
 
         protected ILog Logger { get; private set; }
 
@@ -45,7 +45,7 @@
         public void SetUpContext()
         {
             this.AuthService = Substitute.For<IAuthorisationService>();
-            this.Repository = Substitute.For<IRepository<RequisitionHeader, int>>();
+            this.Repository = Substitute.For<IRequisitionRepository>();
             this.Logger = Substitute.For<ILog>();
             this.RequisitionManager = Substitute.For<IRequisitionManager>();
             this.EmployeeRepository = Substitute.For<IRepository<Employee, int>>();

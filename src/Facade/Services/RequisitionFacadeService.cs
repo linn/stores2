@@ -31,12 +31,12 @@
 
         private readonly ITransactionManager transactionManager;
 
-        private readonly IRepository<RequisitionHeader, int> reqRepository;
+        private readonly IRequisitionRepository reqRepository;
 
         private readonly IBuilder<StorageLocation> storageLocationResourceBuilder;
 
         public RequisitionFacadeService(
-            IRepository<RequisitionHeader, int> repository, 
+            IRequisitionRepository repository, 
             ITransactionManager transactionManager, 
             IBuilder<RequisitionHeader> resourceBuilder,
             IRequisitionManager requisitionManager,
