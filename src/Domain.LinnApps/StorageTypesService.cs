@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps
 {
-    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;

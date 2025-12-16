@@ -10,7 +10,14 @@
         {
         }
 
-        public PartStorageType(Part part, StorageType storageType, string remarks, int? maximum, int? incr, string preference, int bridgeId)
+        public PartStorageType(
+            Part part,
+            StorageType storageType,
+            string remarks,
+            int? maximum,
+            int? incr,
+            string preference,
+            int bridgeId)
         {
             this.Part = part ?? throw new PartStorageTypeException("Part Number is empty or doesn't exist!");
             this.PartNumber = part.PartNumber;

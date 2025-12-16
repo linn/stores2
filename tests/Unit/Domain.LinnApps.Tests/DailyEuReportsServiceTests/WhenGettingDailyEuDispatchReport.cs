@@ -45,7 +45,7 @@
                                             ProductId = "Article 3",
                                             Currency = "EUR",
                                             DateCreated = 15.December(2025),
-                                        },
+                                        }
                                 };
 
             this.expbook = new Expbook
@@ -53,7 +53,7 @@
                                    Id = 1,
                                    AddressId = 2,
                                    Address = new Address(
-                                       "addresse",
+                                       "addressee",
                                        "Line 1",
                                        "Line 2",
                                        "Line 3",
@@ -67,7 +67,7 @@
 
             this.ExpbookRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.expbook);
 
-            this.result = await this.Sut.GetDailyEuDespatchReport(1.December(2025).ToString("o"), 20.December(2025).ToString("o"));
+            this.result = await this.Sut.GetDailyEuDespatchReport(1.December(2025), 20.December(2025));
         }
 
         [Test]

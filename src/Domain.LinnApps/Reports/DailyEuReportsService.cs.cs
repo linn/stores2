@@ -212,12 +212,13 @@
             return reportLayout.GetResultsModel();
         }
 
-        public async Task<ResultsModel> GetDailyEuDespatchReport(string fromDate, string toDate)
+        public async Task<ResultsModel> GetDailyEuDespatchReport(DateTime fromDate, DateTime toDate)
         {
-            var toDateDate = DateTime.Parse(toDate).AddDays(1);
-
-            var lines = await this.dailyEuDespatchReportRepository.FilterByAsync(i =>
-                            i.DateCreated >= DateTime.Parse(fromDate).Date && i.DateCreated < toDateDate.Date);
+            var fromDateStart = fromDate.Date;
+            var toDateEnd = toDate.AddDays(1).Date;
+             
+            var lines = await this.dailyEuDespatchReportRepository
+                            .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -246,17 +247,17 @@
                                       140),
                                   new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 120) { DecimalPlaces = 0, Align = "right" },
                                   new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("unitPrice", "Unit Price", GridDisplayType.TextValue, 125)
+                                  new AxisDetailsModel("unitPrice", "Unit Price", GridDisplayType.Value, 125)
                                       {
-                                          Align = "right"
+                                          Align = "right", DecimalPlaces = 2
                                       },
                                   new AxisDetailsModel(
                                       "customsTotalValue",
                                       "Customs Total Value",
-                                      GridDisplayType.TextValue,
+                                      GridDisplayType.Value,
                                       150)
                                       {
-                                          Align = "right"
+                                          Align = "right", DecimalPlaces = 2
                                       },
                                   new AxisDetailsModel(
                                       "valueForCustomsPurposes",
@@ -264,7 +265,7 @@
                                       GridDisplayType.Value,
                                       150)
                                       {
-                                          Align = "right"
+                                          Align = "right", DecimalPlaces = 2
                                       },
                                   new AxisDetailsModel(
                                       "quantityPackage",
@@ -340,28 +341,39 @@
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "currency", TextDisplay = line.Currency });
 
-                values.Add(
-                    new CalculationValueModel
-                        {
-                            RowId = rowId,
-                            ColumnId = "unitPrice",
-                            TextDisplay = line.UnitPrice > 0 ? line.UnitPrice.ToString() : string.Empty
-                        });
+                if (line.UnitPrice > 0)
+                {
+                    values.Add(
+                        new CalculationValueModel
+                            {
+                                RowId = rowId,
+                                ColumnId = "unitPrice",
+                                Value = line.UnitPrice.Value
+                            });
+                }
 
-                values.Add(
-                    new CalculationValueModel
-                        {
-                            RowId = rowId,
-                            ColumnId = "customsTotalValue",
-                            TextDisplay = line.CustomsTotal > 0 ? line.CustomsTotal.ToString() : string.Empty
-                        });
-                values.Add(
-                    new CalculationValueModel
-                        {
-                            RowId = rowId,
-                            ColumnId = "valueForCustomsPurposes",
-                            TextDisplay = line.CustomsTotal < 0 ? line.CustomsTotal.ToString() : string.Empty
-                        });
+                if (line.CustomsTotal > 0)
+                {
+                    values.Add(
+                        new CalculationValueModel
+                            {
+                                RowId = rowId,
+                                ColumnId = "customsTotalValue",
+                                Value = line.CustomsTotal.Value
+                            });
+                }
+
+                if (line.CustomsTotal < 0)
+                {
+                    values.Add(
+                        new CalculationValueModel
+                            {
+                                RowId = rowId,
+                                ColumnId = "valueForCustomsPurposes",
+                                Value = decimal.Abs(line.CustomsTotal.Value)
+                            });
+                }
+
                 values.Add(
                     new CalculationValueModel
                         {
