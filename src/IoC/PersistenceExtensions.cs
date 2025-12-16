@@ -102,9 +102,7 @@
                 .AddScoped<IQueryRepository<DailyEuRsnImportReport>, EntityFrameworkQueryRepository<DailyEuRsnImportReport>>(
                     r => new EntityFrameworkQueryRepository<DailyEuRsnImportReport>(
                         r.GetService<ServiceDbContext>()?.DailyEuRsnImportReport))
-                .AddScoped<IRepository<Expbook, int>, EntityFrameworkRepository<Expbook, int>>(
-                    r => new EntityFrameworkRepository<Expbook, int>(
-                        r.GetService<ServiceDbContext>()?.Expbooks));
+                .AddScoped<IRepository<Expbook, int>, ExpbookRepository>();
         }
     }
 }

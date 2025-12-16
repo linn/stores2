@@ -23,13 +23,24 @@ function DailyEuDispatchReport() {
     } = useGet(itemTypes.DailyEuDispatchReport.url, true);
 
     const report = useMemo(() => {
-        <ReportDataGrid
-            report={result?.ReportResults[0]}
-            fixedRowHeight
-            showHeader={true}
-            renderZeroes
-            showTotals={false}
-        />;
+        console.log('Result:', result);
+        console.log('Report data:', result?.reportResults?.[0]);
+        console.log('Results array:', result?.reportResults?.[0]?.results);
+        console.log('Headers:', result?.reportResults?.[0]?.headers);
+        
+        if (!result?.reportResults?.[0]) {
+            return <div>No report data available</div>;
+        }
+        
+        return (
+            <ReportDataGrid
+                report={result.reportResults[0]}
+                fixedRowHeight
+                showHeader={true}
+                renderZeroes
+                showTotals={false}
+            />
+        );
     }, [result]);
 
     return (
@@ -73,7 +84,7 @@ function DailyEuDispatchReport() {
                         <Loading />
                     </Grid>
                 )}
-                {result && <Grid size={12}>{report}</Grid>}
+                {result != null && <Grid size={12}>{report}</Grid>}
             </Grid>
         </Page>
     );

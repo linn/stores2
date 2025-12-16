@@ -24,7 +24,7 @@
 
     public int? Pieces { get; set; }
 
-    public int? Weight { get; set; }
+    public decimal? Weight { get; set; }
 
     public int? Width { get; set; }
 
@@ -36,7 +36,7 @@
 
     public string ReturnReason { get; set; }
 
-    public int CustomsCpcNo { get; set; }
+    public string CustomsCpcNo { get; set; }
 
     public decimal CustomsValue { get; set; }
 
