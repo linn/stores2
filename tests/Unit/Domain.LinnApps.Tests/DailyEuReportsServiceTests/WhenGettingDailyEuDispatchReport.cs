@@ -9,7 +9,7 @@
     using FluentAssertions.Extensions;
 
     using Linn.Common.Reporting.Models;
-
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using NSubstitute;
 
     using NUnit.Framework;
@@ -78,9 +78,9 @@
 
             summary.Rows.Should().HaveCount(3);
 
-            summary.GetGridTextValue(0, 0).Should().Be("Line 1");
-            summary.GetGridTextValue(1, 0).Should().Be("Line 1");
-            summary.GetGridTextValue(2, 0).Should().Be("Line 1");
+            summary.GetGridTextValue(0, 0).Should().Be("LINN PRODUCTS LTD");
+            summary.GetGridTextValue(1, 0).Should().Be("LINN PRODUCTS LTD");
+            summary.GetGridTextValue(2, 0).Should().Be("LINN PRODUCTS LTD");
 
             summary.GetGridTextValue(0, 3).Should().Be("Article 1");
             summary.GetGridTextValue(1, 3).Should().Be("Article 2");

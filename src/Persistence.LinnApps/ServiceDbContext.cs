@@ -1105,7 +1105,6 @@
             entity.Property(e => e.Id).HasColumnName("EXPBOOK_ID");
             entity.Property(e => e.AddressId).HasColumnName("ADDRESS_ID");
             entity.HasOne(l => l.Address).WithMany().HasForeignKey(l => l.AddressId);
-
         }
     }
 }

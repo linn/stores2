@@ -49,6 +49,12 @@ function App() {
                         <ListItem component={Link} to="/stores2/reports/labour-hours-summary">
                             <Typography color="primary">Labour Hours Summary Report</Typography>
                         </ListItem>
+                        <ListItem component={Link} to="/stores2/reports/daily-eu-dispatch">
+                            <Typography color="primary">Daily EU Dispatch Report</Typography>
+                        </ListItem>
+                        <ListItem component={Link} to="/stores2/reports/daily-eu-import-rsn">
+                            <Typography color="primary">Daily EU Import Report</Typography>
+                        </ListItem>
                     </List>
                 </Grid>
             </Grid>

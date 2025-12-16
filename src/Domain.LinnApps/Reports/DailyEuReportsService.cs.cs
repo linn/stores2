@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
@@ -35,7 +36,8 @@
             var fromDateDate = DateTime.Parse(fromDate);
             var toDateDate = DateTime.Parse(toDate);
             var lines =
-                await this.dailyEuRsnImportReportRepository.FilterByAsync(i => i.DocumentDate >= fromDateDate && i.DocumentDate <= toDateDate);
+                await this.dailyEuRsnImportReportRepository
+                    .FilterByAsync(i => i.DocumentDate >= fromDateDate && i.DocumentDate <= toDateDate);
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -210,97 +212,114 @@
             return reportLayout.GetResultsModel();
         }
 
-
         public async Task<ResultsModel> GetDailyEuDespatchReport(string fromDate, string toDate)
         {
-            var lines =
-                await this.dailyEuDespatchReportRepository.FilterByAsync(
-                    i => i.DateCreated >= DateTime.Parse(fromDate) && i.DateCreated <= DateTime.Parse(toDate));
+            var toDateDate = DateTime.Parse(toDate).AddDays(1);
+
+            var lines = await this.dailyEuDespatchReportRepository.FilterByAsync(i =>
+                            i.DateCreated >= DateTime.Parse(fromDate).Date && i.DateCreated < toDateDate.Date);
 
             var columns = new List<AxisDetailsModel>
-                  {
-                      new AxisDetailsModel("recordExporter", "Exporter of Record", GridDisplayType.TextValue, 150),
-                      new AxisDetailsModel(
-                          "recordImporter",
-                          "Importer of Record",
-                          GridDisplayType.TextValue,
-                          150),
-                      new AxisDetailsModel("commercialInvNo", "Commercial Inv No", GridDisplayType.TextValue, 150),
-                      new AxisDetailsModel("productId", "Product ID", GridDisplayType.TextValue, 100),
-                      new AxisDetailsModel("hsNumber", "HS Number", GridDisplayType.TextValue, 150),
-                      //new AxisDetailsModel("serialNumber", "Serial Number", GridDisplayType.Value, 300),
-                      new AxisDetailsModel(
-                          "originCountry",
-                          "Country of Origin",
-                          GridDisplayType.TextValue,
-                          250),
-                      new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 150),
-                      new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 150),
-                      new AxisDetailsModel("unitPrice", "Pallet Number", GridDisplayType.TextValue, 125),
-                      new AxisDetailsModel(
-                          "customsTotalValue",
-                          "Customs Total Value",
-                          GridDisplayType.TextValue,
-                          175),
-                      new AxisDetailsModel(
-                          "valueForCustomsPurposes",
-                          "Value for Customs Purposes only",
-                          GridDisplayType.Value,
-                          225),
-                      new AxisDetailsModel("quantityPackage", "Quantity Package", GridDisplayType.TextValue, 150),
-                      new AxisDetailsModel("grossWeight", "Gross Weight KG", GridDisplayType.TextValue, 150),
-                      new AxisDetailsModel("packingList", "Packing List", GridDisplayType.Value, 150),
-                      new AxisDetailsModel("deliveryTerms", "Delivery Terms", GridDisplayType.TextValue, 150),
-                  };
+                              {
+                                  new AxisDetailsModel(
+                                      "recordExporter",
+                                      "Exporter of Record",
+                                      GridDisplayType.TextValue,
+                                      150),
+                                  new AxisDetailsModel(
+                                      "recordImporter",
+                                      "Importer of Record",
+                                      GridDisplayType.TextValue,
+                                      150),
+                                  new AxisDetailsModel(
+                                      "commercialInvNo",
+                                      "Commercial Inv No",
+                                      GridDisplayType.TextValue,
+                                      140),
+                                  new AxisDetailsModel("productId", "Product ID", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("hsNumber", "HS Number", GridDisplayType.TextValue, 150),
+                                  ////new AxisDetailsModel("serialNumber", "Serial Number", GridDisplayType.Value, 300),
+                                  new AxisDetailsModel(
+                                      "originCountry",
+                                      "Country of Origin",
+                                      GridDisplayType.TextValue,
+                                      140),
+                                  new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 120) { DecimalPlaces = 0, Align = "right" },
+                                  new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("unitPrice", "Unit Price", GridDisplayType.TextValue, 125)
+                                      {
+                                          Align = "right"
+                                      },
+                                  new AxisDetailsModel(
+                                      "customsTotalValue",
+                                      "Customs Total Value",
+                                      GridDisplayType.TextValue,
+                                      150)
+                                      {
+                                          Align = "right"
+                                      },
+                                  new AxisDetailsModel(
+                                      "valueForCustomsPurposes",
+                                      "Value for Customs Purposes only",
+                                      GridDisplayType.Value,
+                                      150)
+                                      {
+                                          Align = "right"
+                                      },
+                                  new AxisDetailsModel(
+                                      "quantityPackage",
+                                      "Quantity Package",
+                                      GridDisplayType.TextValue,
+                                      130) 
+                                      {
+                                          Align = "right"
+                                      },
+                                  new AxisDetailsModel("grossWeight", "Gross Weight KG", GridDisplayType.TextValue, 130)
+                                      {
+                                          Align = "right"
+                                      },
+                                  new AxisDetailsModel("packingList", "Packing List", GridDisplayType.TextValue, 125),
+                                  new AxisDetailsModel(
+                                      "deliveryTerms",
+                                      "Delivery Terms",
+                                      GridDisplayType.TextValue,
+                                      130)
+                              };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
 
             var values = new List<CalculationValueModel>();
             var rowIndex = 0;
 
-            foreach (var line in lines)
+            foreach (var line in lines
+                         .OrderBy(a => a.CommercialInvNo)
+                         .ThenBy(a => a.LineNo))
             {
-                var rowId = rowIndex;
-
-                var expbook = await this.expbookRepository.FindByIdAsync(line.CommercialInvNo);
+                var rowId = rowIndex.ToString();
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "recordExporter",
-                        TextDisplay = expbook?.Address.Line1
-                    });
-
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "recordImporter",
-                        TextDisplay = expbook?.Address.Line2
-                    });
-                values.Add(
-                        new CalculationValueModel
                         {
-                            RowId = rowId.ToString(),
-                            ColumnId = "commercialInvNo",
-                            TextDisplay = line.LineNo == 1 ? line.InvDocumentNumber.ToString() : string.Empty
+                            RowId = rowId, ColumnId = "recordExporter", TextDisplay = "LINN PRODUCTS LTD"
+                        });
+
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "recordImporter", TextDisplay = "FISCAL REPRESENTED BY GERLACH"
                         });
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "productId",
-                        TextDisplay = line?.ProductId
-                    });
+                        {
+                            RowId = rowId,
+                            ColumnId = "commercialInvNo",
+                            TextDisplay = line.LineNo == 1 ? line.CommercialInvNo.ToString() : string.Empty
+                        });
+                values.Add(
+                    new CalculationValueModel { RowId = rowId, ColumnId = "productId", TextDisplay = line.ProductId });
 
                 values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "hsNumber",
-                        TextDisplay = line?.TariffCode
-                    });
+                    new CalculationValueModel { RowId = rowId, ColumnId = "hsNumber", TextDisplay = line.TariffCode });
                 //values.Add(
                 //    new CalculationValueModel
                 //    {
@@ -312,78 +331,54 @@
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "originCountry",
-                        TextDisplay = line.CountryOfOrigin
-                    });
+                        {
+                            RowId = rowId, ColumnId = "originCountry", TextDisplay = line.CountryOfOrigin
+                        });
+
+                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Qty });
 
                 values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "quantity",
-                        Value = line.Qty
-                    });
+                    new CalculationValueModel { RowId = rowId, ColumnId = "currency", TextDisplay = line.Currency });
 
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "currency",
-                        TextDisplay = line.Currency
-                    });
-
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "unitPrice",
-                        TextDisplay = line.UnitPrice > 0 ? line.UnitPrice.ToString() : string.Empty
-                    });
-
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "customsTotalValue",
-                        TextDisplay = line.CustomsTotal > 0 ? line.CustomsTotal.ToString() : string.Empty
-                    });
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId.ToString(),
+                            RowId = rowId,
+                            ColumnId = "unitPrice",
+                            TextDisplay = line.UnitPrice > 0 ? line.UnitPrice.ToString() : string.Empty
+                        });
+
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "customsTotalValue",
+                            TextDisplay = line.CustomsTotal > 0 ? line.CustomsTotal.ToString() : string.Empty
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
                             ColumnId = "valueForCustomsPurposes",
                             TextDisplay = line.CustomsTotal < 0 ? line.CustomsTotal.ToString() : string.Empty
                         });
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "grossWeight",
-                        TextDisplay = line.Weight.ToString()
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "quantityPackage",
-                        TextDisplay = line.QuantityPackage.ToString()
-                    });
-                values.Add(
-                    new CalculationValueModel
                         {
-                            RowId = rowId.ToString(),
-                            ColumnId = "packingList",
-                            Value = line.PackingList
+                            RowId = rowId, ColumnId = "grossWeight", TextDisplay = line.Weight.ToString()
                         });
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "deliveryTerms",
-                        TextDisplay = line.Terms
-                    });
+                        {
+                            RowId = rowId, ColumnId = "quantityPackage", TextDisplay = line.QuantityPackage.ToString()
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "packingList", TextDisplay = line.PackingList.ToString()
+                        });
+                values.Add(
+                    new CalculationValueModel { RowId = rowId, ColumnId = "deliveryTerms", TextDisplay = line.Terms });
 
                 rowIndex++;
             }

@@ -9,7 +9,7 @@
     using FluentAssertions.Extensions;
 
     using Linn.Common.Reporting.Models;
-
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using NSubstitute;
 
     using NUnit.Framework;

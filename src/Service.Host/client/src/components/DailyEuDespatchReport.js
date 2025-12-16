@@ -60,7 +60,7 @@ function DailyEuDispatchReport() {
                         }}
                     />
                 </Grid>
-                <Grid size={2}>
+                <Grid size={2} sx={{ marginTop: 4 }}>
                     <Button
                         variant="contained"
                         onClick={() => {

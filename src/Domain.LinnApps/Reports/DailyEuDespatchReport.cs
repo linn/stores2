@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System;
 

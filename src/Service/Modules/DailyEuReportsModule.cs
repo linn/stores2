@@ -16,7 +16,7 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/stores2/reports/daily-eu-import-rsn", this.DailyEuImportRsnReport);
-            app.MapGet("stores2/reports/daily-eu-dispatch", this.DailyEuDispatchReport);
+            app.MapGet("/stores2/reports/daily-eu-dispatch", this.DailyEuDispatchReport);
         }
 
         private async Task DailyEuImportRsnReport(
