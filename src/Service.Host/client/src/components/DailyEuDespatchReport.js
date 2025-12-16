@@ -25,7 +25,7 @@ function DailyEuDispatchReport() {
     const report = useMemo(() => {
         return (
             <ReportDataGrid
-                report={result.reportResults[0]}
+                report={result?.reportResults[0]}
                 fixedRowHeight
                 showHeader={true}
                 renderZeroes
