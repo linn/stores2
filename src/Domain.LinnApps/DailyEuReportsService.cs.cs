@@ -32,8 +32,10 @@
 
         public async Task<ResultsModel> GetDailyEuImportRsnReport(string fromDate, string toDate)
         {
+            var fromDateDate = DateTime.Parse(fromDate);
+            var toDateDate = DateTime.Parse(toDate);
             var lines =
-                await this.dailyEuRsnImportReportRepository.FilterByAsync(i => i.DocumentDate >= DateTime.Parse(fromDate) && i.DocumentDate <= DateTime.Parse(toDate));
+                await this.dailyEuRsnImportReportRepository.FilterByAsync(i => i.DocumentDate >= fromDateDate && i.DocumentDate <= toDateDate);
 
             var columns = new List<AxisDetailsModel>
                               {
