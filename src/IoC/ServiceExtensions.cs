@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.IoC
 {
-    using System.Net.Http;
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Domain.LinnApps.Services;
@@ -32,9 +31,9 @@
     using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
-
     using Microsoft.Extensions.DependencyInjection;
     using RazorEngineCore;
+    using System.Net.Http;
 
     public static class ServiceExtensions
     {
@@ -76,6 +75,7 @@
                 .AddScoped<SuReqCreationStrategy>()
                 .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>()
                 .AddScoped<IDeliveryNoteService, DeliveryNoteService>()
+                .AddScoped<IDailyEuReportService, DailyEuReportsService>()
                 .AddScoped<IHtmlTemplateService<DeliveryNoteDocument>>(
                     x => new HtmlTemplateService<DeliveryNoteDocument>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
@@ -115,6 +115,7 @@
                 .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource>, StoresBudgetFacadeService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
+                .AddScoped<IDailyEuReportFacadeService, DailyEuReportsFacadeService>()
                 .AddScoped<IRequisitionReportFacadeService, RequisitionReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>, StorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource>, PartStorageTypeFacadeService>()

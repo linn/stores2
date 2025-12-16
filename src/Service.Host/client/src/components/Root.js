@@ -32,6 +32,8 @@ import Pallets from './Pallets';
 import Pallet from './Pallet';
 import StorageSites from './storageSites/StorageSites';
 import StorageSite from './storageSites/StorageSite';
+import DailyEuDispatchReport from './DailyEuDespatchReport';
+import DailyEuImportRsnReport from './DailyEuImportRsnReport';
 import LabourHoursInStockReport from './LabourHoursInStockReport';
 import LabourHoursSummaryReport from './LabourHoursSummaryReport';
 import LabourHoursInLoansReport from './LabourHoursInLoansReport';
@@ -106,6 +108,14 @@ function Root() {
                     <Route
                         path="/stores2/storage/locations/create"
                         element={<StorageLocation creating />}
+                    />
+                    <Route
+                        path="stores2/reports/daily-eu-dispatch"
+                        element={<DailyEuDispatchReport />}
+                    />
+                    <Route
+                        path="/stores2/reports/daily-eu-import-rsn"
+                        element={<DailyEuImportRsnReport />}
                     />
                     <Route path="/stores2/pallets" element={<Pallets />} />
                     <Route path="/stores2/pallets/:id" element={<Pallet />} />

@@ -44,6 +44,8 @@ const itemTypes = {
     workStationsApplicationState: {
         url: `${config.appRoot}/stores2/work-stations/application-state`
     },
+    dailyEuDispatchReport: { url: `${config.appRoot}/stores2/reports/daily-eu-dispatch` },
+    dailyEuImportRsnReport: { url: `${config.appRoot}/stores2/reports/daily-eu-import-rsn` },
     citCodes: { url: `${config.proxyRoot}/production/maintenance/cits` },
     labourHoursInStockReport: {
         url: `${config.appRoot}/stores2/reports/labour-hours-in-stock/report`
