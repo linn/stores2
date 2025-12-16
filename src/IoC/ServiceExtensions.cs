@@ -1,6 +1,4 @@
-﻿using Linn.Stores2.Facade.Services;
-
-namespace Linn.Stores2.IoC
+﻿namespace Linn.Stores2.IoC
 {
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;

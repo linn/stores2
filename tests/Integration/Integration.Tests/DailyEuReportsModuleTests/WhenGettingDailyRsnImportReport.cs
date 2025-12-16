@@ -27,7 +27,7 @@
                 .Returns(this.result);
 
             this.Response = this.Client.Get(
-                $"/stores2/reports/daily/eu/import/rsn?fromDate={2.December(2025).ToString("o")}&toDate={10.December(2025).ToString("o")}",
+                $"/stores2/reports/daily-eu-import-rsn?fromDate={2.December(2025).ToString("o")}&toDate={10.December(2025).ToString("o")}",
                 with =>
                     {
                         with.Accept("application/json");

@@ -18,15 +18,11 @@
 
         protected HttpResponseMessage Response { get; set; }
 
-        protected TestServiceDbContext DbContext { get; private set; }
-
         protected IDailyEuReportService DailyEuReportService { get; private set; }
 
         [SetUp]
         public void SetUpContext()
         {
-            this.DbContext = new TestServiceDbContext();
-
             this.DailyEuReportService = Substitute.For<IDailyEuReportService>();
 
             IDailyEuReportFacadeService dailyEuReportFacadeService
@@ -41,19 +37,6 @@
                     services.AddHandlers();
                     services.AddRouting();
                 });
-        }
-
-        [OneTimeTearDown]
-        public void TearDownContext()
-        {
-            this.DbContext.Dispose();
-        }
-
-        [TearDown]
-        public void Teardown()
-        {
-            this.DbContext.DailyEuDespatchReport.RemoveAllAndSave(this.DbContext);
-            this.DbContext.DailyEuRsnImportReport.RemoveAllAndSave(this.DbContext);
         }
     }
 }

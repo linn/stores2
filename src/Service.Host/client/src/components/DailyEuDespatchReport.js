@@ -20,18 +20,9 @@ function DailyEuDispatchReport() {
         send: getDailyEuDespatchReport,
         isLoading,
         result
-    } = useGet(itemTypes.DailyEuDispatchReport.url, true);
+    } = useGet(itemTypes.dailyEuDispatchReport.url, true);
 
     const report = useMemo(() => {
-        console.log('Result:', result);
-        console.log('Report data:', result?.reportResults?.[0]);
-        console.log('Results array:', result?.reportResults?.[0]?.results);
-        console.log('Headers:', result?.reportResults?.[0]?.headers);
-        
-        if (!result?.reportResults?.[0]) {
-            return <div>No report data available</div>;
-        }
-        
         return (
             <ReportDataGrid
                 report={result.reportResults[0]}

@@ -110,11 +110,11 @@ function Root() {
                         element={<StorageLocation creating />}
                     />
                     <Route
-                        path="/stores2/reports/daily/eu/dispatch"
+                        path="stores2/reports/daily-eu-dispatch"
                         element={<DailyEuDispatchReport />}
                     />
                     <Route
-                        path="/stores2/reports/daily/eu/import/rsn"
+                        path="/stores2/reports/daily-eu-import-rsn"
                         element={<DailyEuImportRsnReport />}
                     />
                     <Route path="/stores2/pallets" element={<Pallets />} />

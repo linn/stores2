@@ -20,7 +20,7 @@ function DailyEuImportRsnReport() {
         send: getDailyEuImportRsnReport,
         isLoading,
         result
-    } = useGet(itemTypes.DailyEuImportRsnReport.url, true);
+    } = useGet(itemTypes.dailyEuImportRsnReport.url, true);
 
     const report = useMemo(
         () => (
