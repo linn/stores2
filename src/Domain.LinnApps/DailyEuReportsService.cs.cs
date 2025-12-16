@@ -254,15 +254,14 @@
             {
                 var rowId = rowIndex;
 
-                var expbook = this.expbookRepository.FindByIdAsync(line.CommercialInvNo);
+                var expbook = await this.expbookRepository.FindByIdAsync(line.CommercialInvNo);
 
                 values.Add(
                     new CalculationValueModel
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordExporter",
-                        TextDisplay = "1"
-                            //expbook.Result.Address.Line1
+                        TextDisplay = expbook?.Address.Line1
                     });
 
                 values.Add(
@@ -270,8 +269,7 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordImporter",
-                        TextDisplay = "2"
-                            //expbook.Result.Address.Line2
+                        TextDisplay = expbook?.Address.Line2
                     });
                 values.Add(
                         new CalculationValueModel
