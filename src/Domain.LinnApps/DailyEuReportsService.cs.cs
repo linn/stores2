@@ -269,7 +269,7 @@
                     {
                         RowId = rowId.ToString(),
                         ColumnId = "recordImporter",
-                        TextDisplay = expbook?.Address.Line2
+                        TextDisplay =  expbook?.Address.Line2
                     });
                 values.Add(
                         new CalculationValueModel

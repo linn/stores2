@@ -23,49 +23,13 @@ function DailyEuDispatchReport() {
     } = useGet(itemTypes.DailyEuDispatchReport.url, true);
 
     const report = useMemo(() => {
-        if (!result || !Array.isArray(result.reportResults) || !result.reportResults[0]) {
-            return null;
-        }
-
-        const reportData = result.reportResults[0];
-
-        // Sanitize the data to prevent undefined/null values
-        const sanitizedReport = {
-            ...reportData,
-            rows: (reportData.rows || []).map(row => {
-                const sanitizedRow = {};
-                Object.keys(row).forEach(key => {
-                    // Replace undefined/null with empty string or 0 for numbers
-                    const value = row[key];
-                    if (value === null || value === undefined) {
-                        sanitizedRow[key] = '';
-                    } else if (typeof value === 'number' && isNaN(value)) {
-                        sanitizedRow[key] = 0;
-                    } else {
-                        sanitizedRow[key] = value;
-                    }
-                });
-                return sanitizedRow;
-            }),
-            // Also sanitize column definitions if they exist
-            columns:
-                reportData.columns?.map(col => ({
-                    ...col,
-                    valueFormatter: col.valueFormatter || (params => params?.value ?? '')
-                })) || []
-        };
-
-        console.log(sanitizedReport ?? '');
-
-        return (
-            <ReportDataGrid
-                report={sanitizedReport?.results}
-                fixedRowHeight
-                showHeader={true}
-                renderZeroes
-                showTotals={false}
-            />
-        );
+        <ReportDataGrid
+            report={result?.ReportResults[0]}
+            fixedRowHeight
+            showHeader={true}
+            renderZeroes
+            showTotals={false}
+        />;
     }, [result]);
 
     return (
