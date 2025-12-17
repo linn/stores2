@@ -279,7 +279,11 @@
                                       {
                                           Align = "right"
                                       },
-                                  new AxisDetailsModel("grossWeight", "Gross Weight KG", GridDisplayType.TextValue, 130)
+                                  new AxisDetailsModel("nettWeight", "Nett Weight KG", GridDisplayType.Value, 130)
+                                      {
+                                          Align = "right"
+                                      },
+                                  new AxisDetailsModel("grossWeight", "Gross Weight KG", GridDisplayType.Value, 130)
                                       {
                                           Align = "right"
                                       },
@@ -345,16 +349,13 @@
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "currency", TextDisplay = line.Currency });
 
-                if (line.UnitPrice > 0)
-                {
-                    values.Add(
-                        new CalculationValueModel
-                            {
-                                RowId = rowId,
-                                ColumnId = "unitPrice",
-                                Value = line.UnitPrice.Value
-                            });
-                }
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "unitPrice",
+                            Value = line.UnitPrice.GetValueOrDefault()
+                        });
 
                 if (line.Total > 0)
                 {
@@ -381,7 +382,14 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, ColumnId = "grossWeight", TextDisplay = line.Weight.ToString()
+                            RowId = rowId,
+                            ColumnId = "nettWeight",
+                            Value = line.NettWeight.GetValueOrDefault()
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "grossWeight", Value = line.GrossWeight.GetValueOrDefault()
                         });
                 values.Add(
                     new CalculationValueModel

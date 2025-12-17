@@ -1069,7 +1069,10 @@
             entity.Property(e => e.UnitPrice).HasColumnName("UNIT_PRICE");
             entity.Property(e => e.Total).HasColumnName("TOTAL");
             entity.Property(e => e.CustomsTotal).HasColumnName("CUSTOMS_TOTAL");
-            entity.Property(e => e.Weight).HasColumnName("UNIT_WEIGHT");
+            entity.Property(e => e.NettUnitWeight).HasColumnName("NETT_UNIT_WEIGHT");
+            entity.Property(e => e.NettWeight).HasColumnName("NETT_WEIGHT");
+            entity.Property(e => e.GrossUnitWeight).HasColumnName("UNIT_WEIGHT");
+            entity.Property(e => e.GrossWeight).HasColumnName("GROSS_WEIGHT");
             entity.Property(e => e.Terms).HasColumnName("TERMS");
             entity.Property(e => e.PackingList).HasColumnName("CONSIGNMENT_ID");
             entity.Property(e => e.QuantityPackage).HasColumnName("QUANTITY_PACKAGE");

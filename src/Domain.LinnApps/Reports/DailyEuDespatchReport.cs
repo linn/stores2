@@ -36,7 +36,13 @@
 
         public int PackingList { get; set; }
 
-        public decimal? Weight { get; set; }
+        public decimal? NettUnitWeight { get; set; }
+
+        public decimal? NettWeight { get; set; }
+
+        public decimal? GrossUnitWeight { get; set; }
+      
+        public decimal? GrossWeight { get; set; }
 
         public decimal? Total { get; set; }
 
