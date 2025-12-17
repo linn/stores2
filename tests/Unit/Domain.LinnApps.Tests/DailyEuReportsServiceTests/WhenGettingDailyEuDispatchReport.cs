@@ -86,9 +86,9 @@
             summary.GetGridTextValue(1, 3).Should().Be("Article 2");
             summary.GetGridTextValue(2, 3).Should().Be("Article 3");
 
-            summary.GetGridTextValue(0, 7).Should().Be("USD");
-            summary.GetGridTextValue(1, 7).Should().Be("GBP");
-            summary.GetGridTextValue(2, 7).Should().Be("EUR");
+            summary.GetGridTextValue(0, 8).Should().Be("USD");
+            summary.GetGridTextValue(1, 8).Should().Be("GBP");
+            summary.GetGridTextValue(2, 8).Should().Be("EUR");
         }
     }
 }
