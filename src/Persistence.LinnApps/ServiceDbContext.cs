@@ -1054,7 +1054,7 @@
 
         private static void BuildDailyEuDespatchReport(ModelBuilder builder)
         {
-            var entity = builder.Entity<DailyEuDespatchReport>().ToView("EXPORT_REPORT_VIEW").HasNoKey();
+            var entity = builder.Entity<DailyEuDespatchReport>().ToView("EXPBOOK_REPORT_VIEW").HasNoKey();
             entity.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");
             entity.Property(e => e.CommercialInvNo).HasColumnName("EXPBOOK_ID");
             entity.Property(e => e.LineNo).HasColumnName("LINE_NO").HasMaxLength(8);
@@ -1062,11 +1062,13 @@
             entity.Property(e => e.InvLineNo).HasColumnName("INV_LINE_NO");
             entity.Property(e => e.Currency).HasColumnName("CURRENCY").HasMaxLength(4);
             entity.Property(e => e.ProductId).HasColumnName("ARTICLE_NUMBER").HasMaxLength(14);
+            entity.Property(e => e.ProductDescription).HasColumnName("SALES_ARTICLE_DESCRIPTION").HasMaxLength(100);
             entity.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE").HasMaxLength(14);
             entity.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN").HasMaxLength(2);
             entity.Property(e => e.Qty).HasColumnName("QTY");
             entity.Property(e => e.UnitPrice).HasColumnName("UNIT_PRICE");
-            entity.Property(e => e.CustomsTotal).HasColumnName("TOTAL");
+            entity.Property(e => e.Total).HasColumnName("TOTAL");
+            entity.Property(e => e.CustomsTotal).HasColumnName("CUSTOMS_TOTAL");
             entity.Property(e => e.Weight).HasColumnName("UNIT_WEIGHT");
             entity.Property(e => e.Terms).HasColumnName("TERMS");
             entity.Property(e => e.PackingList).HasColumnName("CONSIGNMENT_ID");

@@ -238,6 +238,7 @@
                                       GridDisplayType.TextValue,
                                       140),
                                   new AxisDetailsModel("productId", "Product ID", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("productDescription", "Description", GridDisplayType.TextValue, 250),
                                   new AxisDetailsModel("hsNumber", "HS Number", GridDisplayType.TextValue, 150),
                                   ////new AxisDetailsModel("serialNumber", "Serial Number", GridDisplayType.Value, 300),
                                   new AxisDetailsModel(
@@ -245,7 +246,10 @@
                                       "Country of Origin",
                                       GridDisplayType.TextValue,
                                       140),
-                                  new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 120) { DecimalPlaces = 0, Align = "right" },
+                                  new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 120)
+                                      {
+                                          DecimalPlaces = 0, Align = "right"
+                                      },
                                   new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("unitPrice", "Unit Price", GridDisplayType.Value, 125)
                                       {
@@ -293,8 +297,7 @@
             var rowIndex = 0;
 
             foreach (var line in lines
-                         .OrderBy(a => a.CommercialInvNo)
-                         .ThenBy(a => a.LineNo))
+                         .OrderBy(a => a.CommercialInvNo))
             {
                 var rowId = rowIndex.ToString();
 
@@ -314,11 +317,12 @@
                         {
                             RowId = rowId,
                             ColumnId = "commercialInvNo",
-                            TextDisplay = line.LineNo == 1 ? line.CommercialInvNo.ToString() : string.Empty
+                            TextDisplay = line.CommercialInvNo.ToString()
                         });
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "productId", TextDisplay = line.ProductId });
-
+                values.Add(
+                    new CalculationValueModel { RowId = rowId, ColumnId = "productDescription", TextDisplay = line.ProductDescription });
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "hsNumber", TextDisplay = line.TariffCode });
                 //values.Add(
@@ -352,25 +356,25 @@
                             });
                 }
 
-                if (line.CustomsTotal > 0)
+                if (line.Total > 0)
                 {
                     values.Add(
                         new CalculationValueModel
                             {
                                 RowId = rowId,
                                 ColumnId = "customsTotalValue",
-                                Value = line.CustomsTotal.Value
+                                Value = line.Total.Value
                             });
                 }
 
-                if (line.CustomsTotal < 0)
+                if (line.CustomsTotal > 0)
                 {
                     values.Add(
                         new CalculationValueModel
                             {
                                 RowId = rowId,
                                 ColumnId = "valueForCustomsPurposes",
-                                Value = decimal.Abs(line.CustomsTotal.Value)
+                                Value = line.CustomsTotal.Value
                             });
                 }
 
@@ -398,8 +402,9 @@
             reportLayout.AddColumnComponent(null, columns);
 
             reportLayout.SetGridData(values);
-
-            return reportLayout.GetResultsModel();
+            var report = reportLayout.GetResultsModel();
+            this.reportingHelper.RemovedRepeatedValues(report, report.ColumnIndex("commercialInvNo"), new List<int> { 0, 1, 2 }.ToArray());
+            return report;
         }
     }
 }

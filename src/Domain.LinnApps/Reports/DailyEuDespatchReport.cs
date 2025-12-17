@@ -10,6 +10,8 @@
 
         public string ProductId { get; set; }
 
+        public string ProductDescription { get; set; }
+
         public string TariffCode { get; set; }
 
         public string CountryOfOrigin { get; set; }
@@ -35,6 +37,8 @@
         public int PackingList { get; set; }
 
         public decimal? Weight { get; set; }
+
+        public decimal? Total { get; set; }
 
         public decimal? CustomsTotal { get; set; }
     }
