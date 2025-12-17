@@ -91,7 +91,7 @@
         {
             if (unpickQty < this.Quantity)
             {
-                this.Quantity = this.Quantity - unpickQty;
+                this.Quantity -= unpickQty;
             }
             else if (unpickQty == this.Quantity)
             {

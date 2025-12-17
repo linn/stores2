@@ -22,7 +22,7 @@
 
         private readonly IRepository<StockLocator, int> stockLocatorRepository;
 
-        private readonly IRepository<RequisitionHeader, int> requisitionRepository;
+        private readonly IRequisitionRepository requisitionRepository;
 
         private readonly IRepository<NominalAccount, int> nominalAccountRepository;
 
@@ -41,7 +41,7 @@
             IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository,
             IRepository<StoresBudget, int> storesBudgetRepository,
             IRepository<StockLocator, int> stockLocatorRepository,
-            IRepository<RequisitionHeader, int> requisitionRepository,
+            IRequisitionRepository requisitionRepository,
             IRepository<NominalAccount, int> nominalAccountRepository,
             IRepository<PartStorageType, int> partStorageTypeRepository,
             IRepository<StorageLocation, int> storageLocationRepository,

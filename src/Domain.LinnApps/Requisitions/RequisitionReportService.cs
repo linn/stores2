@@ -13,7 +13,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
     public class RequisitionReportService : IRequisitionReportService
     {
-        private readonly IRepository<RequisitionHeader, int> requisitionRepository;
+        private readonly IRequisitionRepository requisitionRepository;
 
         private readonly IReportingHelper reportingHelper;
 
@@ -22,7 +22,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         private readonly IHtmlTemplateService<RequisitionCostReport> requisitionCostHtmlTemplateService;
 
         public RequisitionReportService(
-            IRepository<RequisitionHeader, int> requisitionRepository,
+            IRequisitionRepository requisitionRepository,
             IReportingHelper reportingHelper,
             IHtmlTemplateService<RequisitionHeader> requisitionHeaderHtmlTemplateService,
             IHtmlTemplateService<RequisitionCostReport> requisitionCostHtmlTemplateService)

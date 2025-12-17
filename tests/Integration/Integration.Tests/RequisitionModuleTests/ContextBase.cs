@@ -13,6 +13,7 @@
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
+    using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Service.Modules;
 
@@ -52,7 +53,7 @@
             this.DbContext = new TestServiceDbContext();
             var transactionManager = new TransactionManager(this.DbContext);
             var requisitionRepository
-                = new EntityFrameworkRepository<RequisitionHeader, int>(this.DbContext.RequisitionHeaders);
+                = new RequisitionRepository(this.DbContext);
             this.ReqManager = Substitute.For<IRequisitionManager>();
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
             this.RequisitionFactory = Substitute.For<IRequisitionFactory>();

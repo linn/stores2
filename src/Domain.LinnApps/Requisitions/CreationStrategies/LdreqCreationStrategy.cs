@@ -1,6 +1,5 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -17,7 +16,7 @@
     {
         private readonly IAuthorisationService authService;
 
-        private readonly IRepository<RequisitionHeader, int> repository;
+        private readonly IRequisitionRepository repository;
 
         private readonly ILog logger;
 
@@ -37,7 +36,7 @@
 
         public LdreqCreationStrategy(
             IAuthorisationService authService,
-            IRepository<RequisitionHeader, int> repository,
+            IRequisitionRepository repository,
             IRequisitionManager requisitionManager,
             ILog logger,
             IRepository<Employee, int> employeeRepository,

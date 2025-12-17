@@ -13,7 +13,7 @@
     {
         protected RequisitionReportService Sut { get; set; }
 
-        protected IRepository<RequisitionHeader, int> RequisitionRepository { get; private set; }
+        protected IRequisitionRepository RequisitionRepository { get; private set; }
 
         protected IReportingHelper ReportingHelper { get; private set; }
 
@@ -24,7 +24,7 @@
         [SetUp]
         public void SetUpContext()
         {
-            this.RequisitionRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
+            this.RequisitionRepository = Substitute.For<IRequisitionRepository>();
             this.ReportingHelper = new ReportingHelper();
             this.RequisitionHeaderHtmlTemplateService = Substitute.For<IHtmlTemplateService<RequisitionHeader>>();
             this.RequisitionCostReportHtmlTemplateService = Substitute.For<IHtmlTemplateService<RequisitionCostReport>>();

@@ -28,7 +28,7 @@
                     r => new EntityFrameworkRepository<Country, string>(r.GetService<ServiceDbContext>()?.Countries))
                 .AddScoped<IRepository<Carrier, string>, CarrierRepository>()
                 .AddScoped<IRepository<StockLocator, int>, StockLocatorRepository>()
-                .AddScoped<IRepository<RequisitionHeader, int>, RequisitionRepository>()
+                .AddScoped<IRequisitionRepository, RequisitionRepository>()
                 .AddScoped<IRepository<StorageType, string>, EntityFrameworkRepository<StorageType, string>>(
                     r => new EntityFrameworkRepository<StorageType, string>(
                         r.GetService<ServiceDbContext>()?.StorageTypes))

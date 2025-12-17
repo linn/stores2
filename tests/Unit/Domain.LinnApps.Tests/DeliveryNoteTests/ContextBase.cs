@@ -10,14 +10,14 @@
     {
         protected IDeliveryNoteService Sut { get; private set; }
 
-        protected IRepository<RequisitionHeader, int> RequisitionRepository { get; private set; }
+        protected IRequisitionRepository RequisitionRepository { get; private set; }
 
         protected ISupplierProxy SupplierProxy { get; private set; }
 
         [SetUp]
         public void Setup()
         {
-            this.RequisitionRepository = Substitute.For<IRepository<RequisitionHeader, int>>();
+            this.RequisitionRepository = Substitute.For<IRequisitionRepository>();
             this.SupplierProxy = Substitute.For<ISupplierProxy>();
 
             this.Sut = new DeliveryNoteService(

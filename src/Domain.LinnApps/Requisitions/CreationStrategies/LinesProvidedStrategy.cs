@@ -14,7 +14,7 @@
 
     public class LinesProvidedStrategy : ICreationStrategy
     {
-        private readonly IRepository<RequisitionHeader, int> repository;
+        private readonly IRequisitionRepository repository;
 
         private readonly IRequisitionManager requisitionManager;
 
@@ -33,7 +33,7 @@
         private readonly ILog logger;
 
         public LinesProvidedStrategy(
-            IRepository<RequisitionHeader, int> repository,
+            IRequisitionRepository repository,
             IRequisitionManager requisitionManager,
             IRepository<Department, string> departmentRepository,
             IRepository<Nominal, string> nominalRepository,
