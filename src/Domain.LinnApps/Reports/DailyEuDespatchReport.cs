@@ -47,5 +47,7 @@
         public decimal? Total { get; set; }
 
         public decimal? CustomsTotal { get; set; }
+
+        public string SerialNumber { get; set; }
     }
 }

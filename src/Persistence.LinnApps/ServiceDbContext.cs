@@ -1077,6 +1077,7 @@
             entity.Property(e => e.PackingList).HasColumnName("CONSIGNMENT_ID");
             entity.Property(e => e.QuantityPackage).HasColumnName("QUANTITY_PACKAGE");
             entity.Property(e => e.QuantityPiecesPerPackage).HasColumnName("QUANTITY_PIECES_PER_PACKAGE");
+            entity.Property(e => e.SerialNumber).HasColumnName("SERIAL_NUMBER");
         }
 
         private static void BuildDailyEuRsnImportReport(ModelBuilder builder)

@@ -75,7 +75,7 @@
                                       GridDisplayType.Value,
                                       150),
                                   new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("customsValue", "Customs value", GridDisplayType.Value, 150),
+                                  new AxisDetailsModel("customsValue", "Customs value", GridDisplayType.Value, 150)
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -240,7 +240,6 @@
                                   new AxisDetailsModel("productId", "Product ID", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("productDescription", "Description", GridDisplayType.TextValue, 250),
                                   new AxisDetailsModel("hsNumber", "HS Number", GridDisplayType.TextValue, 150),
-                                  ////new AxisDetailsModel("serialNumber", "Serial Number", GridDisplayType.Value, 300),
                                   new AxisDetailsModel(
                                       "originCountry",
                                       "Country of Origin",
@@ -292,7 +291,8 @@
                                       "deliveryTerms",
                                       "Delivery Terms",
                                       GridDisplayType.TextValue,
-                                      130)
+                                      130),
+                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 150)
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -329,15 +329,6 @@
                     new CalculationValueModel { RowId = rowId, ColumnId = "productDescription", TextDisplay = line.ProductDescription });
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "hsNumber", TextDisplay = line.TariffCode });
-                //values.Add(
-                //    new CalculationValueModel
-                //    {
-                //        RowId = rowId.ToString(),
-                //        ColumnId = "serialNumber",
-                //        Value = 1
-                //            //line.SerialNumber,
-                //    });
-
                 values.Add(
                     new CalculationValueModel
                         {
@@ -403,6 +394,8 @@
                         });
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "deliveryTerms", TextDisplay = line.Terms });
+                values.Add(
+                    new CalculationValueModel { RowId = rowId, ColumnId = "serialNumber", TextDisplay = line.SerialNumber });
 
                 rowIndex++;
             }
