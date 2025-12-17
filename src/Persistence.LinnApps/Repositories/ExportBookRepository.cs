@@ -7,21 +7,21 @@
 
     using Microsoft.EntityFrameworkCore;
 
-    public class ExpbookRepository : EntityFrameworkRepository<Expbook, int>
+    public class ExportBookRepository : EntityFrameworkRepository<ExportBook, int>
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public ExpbookRepository(ServiceDbContext serviceDbContext)
+        public ExportBookRepository(ServiceDbContext serviceDbContext)
             : base(serviceDbContext.Expbooks)
         {
             this.serviceDbContext = serviceDbContext;
         }
 
-        public override async Task<Expbook> FindByIdAsync(int key)
+        public override async Task<ExportBook> FindByIdAsync(int key)
         {
             return await this.serviceDbContext.Expbooks
-                       .Include((Expbook e) => e.Address)
-                       .FirstOrDefaultAsync((Expbook e) => e.Id == key);
+                       .Include((ExportBook e) => e.Address)
+                       .FirstOrDefaultAsync((ExportBook e) => e.Id == key);
         }
     }
 }

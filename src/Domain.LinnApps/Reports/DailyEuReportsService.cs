@@ -15,20 +15,16 @@
 
         private readonly IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository;
 
-        private readonly IRepository<Expbook, int> expbookRepository;
-
         private readonly IReportingHelper reportingHelper;
 
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
             IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
-            IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository,
-            IRepository<Expbook, int> expbookRepository)
+            IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository)
         {
             this.reportingHelper = reportingHelper;
             this.dailyEuRsnImportReportRepository = dailyEuRsnImportReportRepository;
             this.dailyEuDespatchReportRepository = dailyEuDespatchReportRepository;
-            this.expbookRepository = expbookRepository;
         }
 
         public async Task<ResultsModel> GetDailyEuImportRsnReport(string fromDate, string toDate)

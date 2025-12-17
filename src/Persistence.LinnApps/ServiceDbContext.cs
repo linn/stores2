@@ -99,7 +99,7 @@
 
         public DbSet<DailyEuRsnImportReport> DailyEuRsnImportReport { get; set; }
 
-        public DbSet<Expbook> Expbooks { get; set; }
+        public DbSet<ExportBook> Expbooks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -1106,7 +1106,7 @@
 
         private static void BuildExpbooks(ModelBuilder builder)
         {
-            var entity = builder.Entity<Expbook>().ToView("EXPBOOKS").HasNoKey();
+            var entity = builder.Entity<ExportBook>().ToView("EXPBOOKS").HasNoKey();
 
             entity.Property(e => e.Id).HasColumnName("EXPBOOK_ID");
             entity.Property(e => e.AddressId).HasColumnName("ADDRESS_ID");

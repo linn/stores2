@@ -18,7 +18,7 @@
     {
         private ResultsModel result;
 
-        private Expbook expbook;
+        private ExportBook exportBook;
 
         [SetUp]
         public async Task SetUp()
@@ -48,7 +48,7 @@
                                         }
                                 };
 
-            this.expbook = new Expbook
+            this.exportBook = new ExportBook
                                {
                                    Id = 1,
                                    AddressId = 2,
@@ -64,8 +64,6 @@
 
             this.DailyEuDespatchRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuDespatchReport, bool>>>())
                 .Returns(values);
-
-            this.ExpbookRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.expbook);
 
             this.result = await this.Sut.GetDailyEuDespatchReport(1.December(2025), 20.December(2025));
         }

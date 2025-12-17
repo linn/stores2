@@ -1,6 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps
 {
-    public class Expbook
+    public class ExportBook
     {
         public int Id { get; set; }
 
