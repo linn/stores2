@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
+    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
@@ -23,7 +24,9 @@
 
         public async Task<IResult<ReportReturnResource>> GetDailyEuDespatchReport(string fromDate, string toDate)
         {
-            var result = await this.dailyEuReportService.GetDailyEuDespatchReport(fromDate, toDate);
+            var fromDateForService = DateTime.Parse(fromDate);
+            var toDateForService = DateTime.Parse(toDate);
+            var result = await this.dailyEuReportService.GetDailyEuDespatchReport(fromDateForService, toDateForService);
 
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }

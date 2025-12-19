@@ -9,7 +9,7 @@
     using FluentAssertions.Extensions;
 
     using Linn.Common.Reporting.Models;
-
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using NSubstitute;
 
     using NUnit.Framework;
@@ -18,7 +18,7 @@
     {
         private ResultsModel result;
 
-        private Expbook expbook;
+        private ExportBook exportBook;
 
         [SetUp]
         public async Task SetUp()
@@ -45,15 +45,15 @@
                                             ProductId = "Article 3",
                                             Currency = "EUR",
                                             DateCreated = 15.December(2025),
-                                        },
+                                        }
                                 };
 
-            this.expbook = new Expbook
+            this.exportBook = new ExportBook
                                {
                                    Id = 1,
                                    AddressId = 2,
                                    Address = new Address(
-                                       "addresse",
+                                       "addressee",
                                        "Line 1",
                                        "Line 2",
                                        "Line 3",
@@ -65,9 +65,7 @@
             this.DailyEuDespatchRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuDespatchReport, bool>>>())
                 .Returns(values);
 
-            this.ExpbookRepository.FindByIdAsync(Arg.Any<int>()).Returns(this.expbook);
-
-            this.result = await this.Sut.GetDailyEuDespatchReport(1.December(2025).ToString("o"), 20.December(2025).ToString("o"));
+            this.result = await this.Sut.GetDailyEuDespatchReport(1.December(2025), 20.December(2025));
         }
 
         [Test]
@@ -78,17 +76,17 @@
 
             summary.Rows.Should().HaveCount(3);
 
-            summary.GetGridTextValue(0, 0).Should().Be("Line 1");
-            summary.GetGridTextValue(1, 0).Should().Be("Line 1");
-            summary.GetGridTextValue(2, 0).Should().Be("Line 1");
+            summary.GetGridTextValue(0, 0).Should().Be("LINN PRODUCTS LTD");
+            summary.GetGridTextValue(1, 0).Should().Be("LINN PRODUCTS LTD");
+            summary.GetGridTextValue(2, 0).Should().Be("LINN PRODUCTS LTD");
 
             summary.GetGridTextValue(0, 3).Should().Be("Article 1");
             summary.GetGridTextValue(1, 3).Should().Be("Article 2");
             summary.GetGridTextValue(2, 3).Should().Be("Article 3");
 
-            summary.GetGridTextValue(0, 7).Should().Be("USD");
-            summary.GetGridTextValue(1, 7).Should().Be("GBP");
-            summary.GetGridTextValue(2, 7).Should().Be("EUR");
+            summary.GetGridTextValue(0, 8).Should().Be("USD");
+            summary.GetGridTextValue(1, 8).Should().Be("GBP");
+            summary.GetGridTextValue(2, 8).Should().Be("EUR");
         }
     }
 }

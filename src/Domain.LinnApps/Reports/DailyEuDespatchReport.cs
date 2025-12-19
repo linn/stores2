@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System;
 
@@ -9,6 +9,8 @@
         public DateTime DateCreated { get; set; }
 
         public string ProductId { get; set; }
+
+        public string ProductDescription { get; set; }
 
         public string TariffCode { get; set; }
 
@@ -34,8 +36,20 @@
 
         public int PackingList { get; set; }
 
-        public decimal? Weight { get; set; }
+        public decimal? NettUnitWeight { get; set; }
+
+        public decimal? NettWeight { get; set; }
+
+        public decimal? GrossUnitWeight { get; set; }
+      
+        public decimal? GrossWeight { get; set; }
+
+        public decimal? Total { get; set; }
 
         public decimal? CustomsTotal { get; set; }
+
+        public string SerialNumber { get; set; }
+
+        public DateTime InvoiceDate { get; set; }
     }
 }

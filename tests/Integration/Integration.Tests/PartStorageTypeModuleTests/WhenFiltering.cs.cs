@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;

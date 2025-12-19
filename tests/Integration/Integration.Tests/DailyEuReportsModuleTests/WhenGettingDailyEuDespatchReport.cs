@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Integration.Tests.DailyEuReportsModuleTests
 {
+    using System;
     using System.Linq;
 
     using FluentAssertions;
@@ -18,16 +19,20 @@
         [SetUp]
         public void SetUp()
         {
-            this.result = new Common.Reporting.Models.ResultsModel { ReportTitle = new Common.Reporting.Models.NameModel("Title") };
+            this.result =
+                new Common.Reporting.Models.ResultsModel
+                    {
+                        ReportTitle = new Common.Reporting.Models.NameModel("Title")
+                    };
 
             this.DailyEuReportService
                 .GetDailyEuDespatchReport(
-                    NSubstitute.Arg.Any<string>(),
-                    NSubstitute.Arg.Any<string>())
+                    NSubstitute.Arg.Any<DateTime>(),
+                    NSubstitute.Arg.Any<DateTime>())
                 .Returns(this.result);
 
             this.Response = this.Client.Get(
-                $"stores2/reports/daily-eu-dispatch?fromDate={2.December(2025).ToString("o")}&toDate={10.December(2025).ToString("o")}",
+                $"stores2/reports/daily-eu-dispatch?fromDate={2.December(2025):o}&toDate={10.December(2025):o}",
                 with =>
                 {
                     with.Accept("application/json");

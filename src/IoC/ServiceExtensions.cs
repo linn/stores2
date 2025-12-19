@@ -1,5 +1,7 @@
 ﻿namespace Linn.Stores2.IoC
 {
+    using System.Net.Http;
+
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Domain.LinnApps.Services;
@@ -31,9 +33,10 @@
     using Linn.Stores2.Resources.RequestResources;
     using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Resources.Stores;
+
     using Microsoft.Extensions.DependencyInjection;
+
     using RazorEngineCore;
-    using System.Net.Http;
 
     public static class ServiceExtensions
     {
@@ -71,6 +74,7 @@
                 .AddScoped<IStoresTransViewerReportService, StoresTransViewerReportService>()
                 .AddScoped<IRequisitionReportService, RequisitionReportService>()
                 .AddScoped<ISalesProxy, SalesProxy>()
+                .AddScoped<IFinanceProxy, FinanceProxy>()
                 .AddScoped<IBomVerificationProxy, BomVerificationProxy>()
                 .AddScoped<SuReqCreationStrategy>()
                 .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>()

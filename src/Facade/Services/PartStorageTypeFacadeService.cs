@@ -9,17 +9,12 @@
     using Linn.Common.Persistence;
     using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Resources.Parts;
 
     public class PartStorageTypeFacadeService : AsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource>
     {
-        private readonly IRepository<Part, string> partRepository;
-
-        private readonly IRepository<StorageType, string> storageTypeRepository;
-
         private readonly IRepository<PartStorageType, int> partStorageTypeRepository;
 
         private readonly IStorageTypeService storageTypeService;
@@ -30,14 +25,10 @@
             IRepository<PartStorageType, int> partStorageTypeRepository,
             ITransactionManager transactionManager,
             IBuilder<PartStorageType> resourceBuilder,
-            IRepository<Part, string> partRepository,
-            IRepository<StorageType, string> storageTypeRepository,
             IDatabaseService databaseService,
             IStorageTypeService storageTypeService)
             : base(partStorageTypeRepository, transactionManager, resourceBuilder)
         {
-            this.partRepository = partRepository;
-            this.storageTypeRepository = storageTypeRepository;
             this.partStorageTypeRepository = partStorageTypeRepository;
             this.databaseService = databaseService;
             this.storageTypeService = storageTypeService;

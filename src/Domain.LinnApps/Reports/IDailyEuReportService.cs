@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Reports
 {
+    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Reporting.Models;
@@ -10,8 +11,6 @@
             string startDate,
             string toDate);
 
-        Task<ResultsModel> GetDailyEuDespatchReport(
-            string startDate,
-            string toDate);
+        Task<ResultsModel> GetDailyEuDespatchReport(DateTime startDate, DateTime toDate);
     }
 }
