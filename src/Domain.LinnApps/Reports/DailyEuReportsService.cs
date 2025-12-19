@@ -2,12 +2,15 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Layouts;
     using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Logistics;
 
     public class DailyEuReportsService : IDailyEuReportService
     {
@@ -15,16 +18,24 @@
 
         private readonly IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository;
 
+        private readonly IFinanceProxy financeProxy;
+
+        private readonly IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository;
+
         private readonly IReportingHelper reportingHelper;
 
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
             IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
-            IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository)
+            IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository,
+            IFinanceProxy financeProxy,
+            IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository)
         {
             this.reportingHelper = reportingHelper;
             this.dailyEuRsnImportReportRepository = dailyEuRsnImportReportRepository;
             this.dailyEuDespatchReportRepository = dailyEuDespatchReportRepository;
+            this.financeProxy = financeProxy;
+            this.importBookExchangeRateRepository = importBookExchangeRateRepository;
         }
 
         public async Task<ResultsModel> GetDailyEuImportRsnReport(string fromDate, string toDate)
@@ -212,7 +223,29 @@
         {
             var fromDateStart = fromDate.Date;
             var toDateEnd = toDate.AddDays(1).Date;
-             
+
+            var exchangeRates = new Dictionary<(string currencyCode, string monthName), ImportBookExchangeRate>();
+        
+            var current = new DateTime(fromDate.Year, fromDate.Month, 1);
+            var end = new DateTime(toDate.Year, toDate.Month, 1);
+            while (current <= end)
+            {
+                var monthName = current.ToString("MMMyyyy", CultureInfo.InvariantCulture);
+                var period = await this.financeProxy.GetLedgerPeriod(monthName);
+                if (period != null)
+                {
+                    var rates = await this.importBookExchangeRateRepository.FilterByAsync(a =>
+                                      a.BaseCurrency == "EUR" && a.PeriodNumber == period.PeriodNumber);
+                    foreach (var rate in rates)
+                    {
+                        var key = (rate.ExchangeCurrency, monthName);
+                        exchangeRates.TryAdd(key, rate);
+                    }
+                }
+
+                current = current.AddMonths(1);
+            }
+
             var lines = await this.dailyEuDespatchReportRepository
                             .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
@@ -266,6 +299,9 @@
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
+                                  new AxisDetailsModel("euroCurrency", "Currency", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("euroExchangeRate", "Euro Ex Rate", GridDisplayType.Value, 120),
+                                  new AxisDetailsModel("euroValue", "Euro Value", GridDisplayType.Value, 120) { Align = "right", DecimalPlaces = 2 },
                                   new AxisDetailsModel(
                                       "quantityPackage",
                                       "Quantity Package",
@@ -288,7 +324,8 @@
                                       "Delivery Terms",
                                       GridDisplayType.TextValue,
                                       130),
-                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 150)
+                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("invoiceDate", "Invoice Date", GridDisplayType.TextValue, 150)
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -300,11 +337,21 @@
                          .OrderBy(a => a.CommercialInvNo))
             {
                 var rowId = rowIndex.ToString();
+                decimal? exchangeRate = 1;
+                if (line.Currency != "EUR")
+                {
+                    exchangeRates.TryGetValue(
+                        (line.Currency, line.DateCreated.ToString("MMMyyyy", CultureInfo.InvariantCulture)),
+                        out var rate2);
+                    exchangeRate = rate2?.ExchangeRate;
+                }
 
                 values.Add(
-                    new CalculationValueModel
+                        new CalculationValueModel
                         {
-                            RowId = rowId, ColumnId = "recordExporter", TextDisplay = "LINN PRODUCTS LTD"
+                            RowId = rowId,
+                            ColumnId = "recordExporter",
+                            TextDisplay = "LINN PRODUCTS LTD"
                         });
 
                 values.Add(
@@ -370,6 +417,33 @@
                     new CalculationValueModel
                         {
                             RowId = rowId,
+                            ColumnId = "euroCurrency",
+                            TextDisplay = "EUR"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "euroExchangeRate",
+                            Value = exchangeRate.GetValueOrDefault()
+                    });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "euroValue",
+                            Value = exchangeRate.HasValue
+                                        ? line.Total.HasValue
+                                              ? decimal.Round(line.Total.Value / exchangeRate.Value, 2)
+                                              : decimal.Round(
+                                                  line.CustomsTotal.GetValueOrDefault() / exchangeRate.Value,
+                                                  2)
+                                        : 0
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
                             ColumnId = "nettWeight",
                             Value = line.NettWeight.GetValueOrDefault()
                         });
@@ -390,8 +464,14 @@
                         });
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "deliveryTerms", TextDisplay = line.Terms });
+                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "serialNumber", TextDisplay = line.SerialNumber });
                 values.Add(
-                    new CalculationValueModel { RowId = rowId, ColumnId = "serialNumber", TextDisplay = line.SerialNumber });
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "invoiceDate",
+                            TextDisplay = line.InvoiceDate.ToString("dd-MMM-yyyy")
+                        });
 
                 rowIndex++;
             }
@@ -400,7 +480,10 @@
 
             reportLayout.SetGridData(values);
             var report = reportLayout.GetResultsModel();
-            this.reportingHelper.RemovedRepeatedValues(report, report.ColumnIndex("commercialInvNo"), new List<int> { 0, 1, 2 }.ToArray());
+            this.reportingHelper.RemovedRepeatedValues(
+                report,
+                report.ColumnIndex("commercialInvNo"),
+                new List<int> { 0, 1, 2 }.ToArray());
             return report;
         }
     }

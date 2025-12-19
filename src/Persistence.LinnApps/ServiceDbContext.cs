@@ -5,6 +5,7 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Labels;
+    using Linn.Stores2.Domain.LinnApps.Logistics;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Reports;
@@ -99,7 +100,9 @@
 
         public DbSet<DailyEuRsnImportReport> DailyEuRsnImportReport { get; set; }
 
-        public DbSet<ExportBook> Expbooks { get; set; }
+        public DbSet<ExportBook> ExportBooks { get; set; }
+
+        public DbSet<ImportBookExchangeRate> ImportBookExchangeRates { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -159,7 +162,9 @@
             BuildLabourHourSummaries(builder);
             BuildDailyEuDespatchReport(builder);
             BuildDailyEuRsnImportReport(builder);
-            BuildExpbooks(builder);
+            BuildExportBooks(builder);
+            BuildImportBookExchangeRates(builder);
+            BuildLedgerPeriods(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1078,6 +1083,7 @@
             entity.Property(e => e.QuantityPackage).HasColumnName("QUANTITY_PACKAGE");
             entity.Property(e => e.QuantityPiecesPerPackage).HasColumnName("QUANTITY_PIECES_PER_PACKAGE");
             entity.Property(e => e.SerialNumber).HasColumnName("SERIAL_NUMBER");
+            entity.Property(e => e.InvoiceDate).HasColumnName("INVOICE_DATE");
         }
 
         private static void BuildDailyEuRsnImportReport(ModelBuilder builder)
@@ -1104,7 +1110,25 @@
             entity.Property(e => e.CustomsValue).HasColumnName("CUSTOMS_VALUE");
         }
 
-        private static void BuildExpbooks(ModelBuilder builder)
+        private static void BuildImportBookExchangeRates(ModelBuilder builder)
+        {
+            var q = builder.Entity<ImportBookExchangeRate>().ToTable("IMPBOOK_EXCHANGE_RATES");
+            q.HasKey(e => new { e.PeriodNumber, e.ExchangeCurrency, e.BaseCurrency });
+            q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
+            q.Property(e => e.ExchangeCurrency).HasColumnName("EXCHANGE_CURRENCY").HasMaxLength(4);
+            q.Property(e => e.BaseCurrency).HasColumnName("BASE_CURRENCY").HasMaxLength(4);
+            q.Property(e => e.ExchangeRate).HasColumnName("EXCHANGE_RATE");
+        }
+
+        private static void BuildLedgerPeriods(ModelBuilder builder)
+        {
+            var q = builder.Entity<LedgerPeriod>().ToTable("LEDGER_PERIODS");
+            q.HasKey(e => e.PeriodNumber);
+            q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
+            q.Property(e => e.MonthName).HasColumnName("MONTH_NAME");
+        }
+
+        private static void BuildExportBooks(ModelBuilder builder)
         {
             var entity = builder.Entity<ExportBook>().ToView("EXPBOOKS").HasNoKey();
 

@@ -12,14 +12,14 @@
         private readonly ServiceDbContext serviceDbContext;
 
         public ExportBookRepository(ServiceDbContext serviceDbContext)
-            : base(serviceDbContext.Expbooks)
+            : base(serviceDbContext.ExportBooks)
         {
             this.serviceDbContext = serviceDbContext;
         }
 
         public override async Task<ExportBook> FindByIdAsync(int key)
         {
-            return await this.serviceDbContext.Expbooks
+            return await this.serviceDbContext.ExportBooks
                        .Include((ExportBook e) => e.Address)
                        .FirstOrDefaultAsync((ExportBook e) => e.Id == key);
         }

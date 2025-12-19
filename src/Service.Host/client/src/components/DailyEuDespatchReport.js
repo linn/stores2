@@ -2,7 +2,13 @@ import React, { useState, useMemo } from 'react';
 import queryString from 'query-string';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { DatePicker, Loading, useGet, ReportDataGrid } from '@linn-it/linn-form-components-library';
+import {
+    DatePicker,
+    Loading,
+    useGet,
+    ReportDataGrid,
+    ExportButton
+} from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import itemTypes from '../itemTypes';
 import config from '../config';
@@ -38,10 +44,17 @@ function DailyEuDispatchReport() {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false} title="Daily EU Dispatch Report">
             <Grid container spacing={2}>
-                <Grid size={12}>
+                <Grid size={9}>
                     <Typography color="primary" variant="h4">
                         Daily EU Dispatch Report
                     </Typography>
+                </Grid>
+                <Grid size={3}>
+                    <ExportButton
+                        href={`${itemTypes.dailyEuDispatchReport.url}?${queryString.stringify(options())}`}
+                        fileName="dailyEuDispatchReport.csv"
+                        tooltipText="Download as CSV"
+                    />
                 </Grid>
                 <Grid size={3}>
                     <DatePicker

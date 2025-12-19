@@ -6,6 +6,7 @@
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Labels;
+    using Linn.Stores2.Domain.LinnApps.Logistics;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Reports;
@@ -102,6 +103,7 @@
                 .AddScoped<IQueryRepository<DailyEuRsnImportReport>, EntityFrameworkQueryRepository<DailyEuRsnImportReport>>(
                     r => new EntityFrameworkQueryRepository<DailyEuRsnImportReport>(
                         r.GetService<ServiceDbContext>()?.DailyEuRsnImportReport))
+                .AddScoped<IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey>, ImportBookExchangeRateRepository>()
                 .AddScoped<IRepository<ExportBook, int>, ExportBookRepository>();
         }
     }

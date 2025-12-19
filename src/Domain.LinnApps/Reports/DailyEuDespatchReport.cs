@@ -49,5 +49,7 @@
         public decimal? CustomsTotal { get; set; }
 
         public string SerialNumber { get; set; }
+
+        public DateTime InvoiceDate { get; set; }
     }
 }
