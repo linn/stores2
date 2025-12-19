@@ -274,7 +274,7 @@
                                       "Country of Origin",
                                       GridDisplayType.TextValue,
                                       140),
-                                  new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 120)
+                                  new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 100)
                                       {
                                           DecimalPlaces = 0, Align = "right"
                                       },
