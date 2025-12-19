@@ -3,7 +3,6 @@
     using System.Collections.Generic;
     using System.Linq;
 
-    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps.Pcas;

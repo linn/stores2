@@ -1,10 +1,11 @@
-namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
+namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
 {
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
 
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;

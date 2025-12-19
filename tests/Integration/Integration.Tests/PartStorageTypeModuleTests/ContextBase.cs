@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PartsStorageTypeModuleTests
+﻿namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
 {
     using System.Net.Http;
 
@@ -6,8 +6,6 @@
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Common.Proxy.LinnApps.Services;
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
@@ -15,8 +13,11 @@
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Service.Modules;
+
     using Microsoft.Extensions.DependencyInjection;
+
     using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -37,9 +38,6 @@
             this.DbContext = new TestServiceDbContext();
 
             var transactionManager = new TransactionManager(this.DbContext);
-
-            var partRepository = new EntityFrameworkRepository<Part, string>(this.DbContext.Parts);
-            var storageTypeRepository = new EntityFrameworkRepository<StorageType, string>(this.DbContext.StorageTypes);
             var partsStorageTypeRepository
                 = new PartStorageTypeRepository(this.DbContext);
 
@@ -51,8 +49,6 @@
                     partsStorageTypeRepository,
                     transactionManager,
                     new PartStorageTypeResourceBuilder(),
-                    partRepository,
-                    storageTypeRepository,
                     this.DatabaseService,
                     this.StorageTypeService);
 

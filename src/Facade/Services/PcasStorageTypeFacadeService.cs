@@ -1,39 +1,28 @@
 ﻿namespace Linn.Stores2.Facade.Services
 {
-    using Linn.Common.Facade;
-    using Linn.Common.Persistence;
-    using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using Linn.Stores2.Domain.LinnApps.Pcas;
-    using Linn.Stores2.Domain.LinnApps.Stock;
-    using Linn.Stores2.Resources.Pcas;
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Facade;
+    using Linn.Common.Persistence;
+    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.Resources.Pcas;
+
     public class PcasStorageTypeFacadeService : AsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource>
     {
-        private readonly IRepository<PcasStorageType, PcasStorageTypeKey> repository;
-
-        private readonly IRepository<StorageType, string> storageTypeRepository;
-
-        private readonly IRepository<PcasBoard, string> pcasBoardRepository;
-
         private readonly IStorageTypeService storageTypeService;
 
         public PcasStorageTypeFacadeService(
             IRepository<PcasStorageType, PcasStorageTypeKey> repository,
             ITransactionManager transactionManager,
             IBuilder<PcasStorageType> resourceBuilder,
-            IRepository<StorageType, string> storageTypeRepository,
-            IRepository<PcasBoard, string> pcasBoardRepository,
             IStorageTypeService storageTypeService)
             : base(repository, transactionManager, resourceBuilder)
         {
-            this.storageTypeRepository = storageTypeRepository;
-            this.pcasBoardRepository = pcasBoardRepository;
-            this.repository = repository;
             this.storageTypeService = storageTypeService;
         }
 
