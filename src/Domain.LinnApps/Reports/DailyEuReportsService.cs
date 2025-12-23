@@ -380,9 +380,23 @@
 
                 values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Qty });
 
-                values.Add(
-                    new CalculationValueModel { RowId = rowId, ColumnId = "currency", TextDisplay = line.Currency });
+                var currencyValue = new CalculationValueModel
+                                        {
+                                            RowId = rowId, ColumnId = "currency", TextDisplay = line.Currency
+                                        };
+                if (line.Currency != "EUR")
+                {
+                    currencyValue.Attributes = new List<ReportAttribute>
+                                                  {
+                                                      new ReportAttribute
+                                                          {
+                                                              AttributeType = ReportAttributeType.BackgroundColour,
+                                                              AttributeValue = "yellow"
+                                                          }
+                                                  };
+                }
 
+                values.Add(currencyValue);
                 values.Add(
                     new CalculationValueModel
                         {
@@ -464,7 +478,14 @@
                         });
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "deliveryTerms", TextDisplay = line.Terms });
-                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "serialNumber", TextDisplay = line.SerialNumber });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "serialNumber",
+                            TextDisplay =
+                                $"{line.SerialNumber}{(!string.IsNullOrEmpty(line.SerialNumber2) ? ", " : null)}{line.SerialNumber2}"
+                        });
                 values.Add(
                     new CalculationValueModel
                         {
@@ -480,10 +501,7 @@
 
             reportLayout.SetGridData(values);
             var report = reportLayout.GetResultsModel();
-            this.reportingHelper.RemovedRepeatedValues(
-                report,
-                report.ColumnIndex("commercialInvNo"),
-                new List<int> { 0, 1, 2 }.ToArray());
+
             return report;
         }
     }

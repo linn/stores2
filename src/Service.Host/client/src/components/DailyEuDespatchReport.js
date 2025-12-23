@@ -6,8 +6,8 @@ import {
     DatePicker,
     Loading,
     useGet,
-    ReportDataGrid,
-    ExportButton
+    ExportButton,
+    ReportDataGrid
 } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import itemTypes from '../itemTypes';

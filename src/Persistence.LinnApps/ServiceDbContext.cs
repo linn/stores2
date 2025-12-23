@@ -1083,6 +1083,7 @@
             entity.Property(e => e.QuantityPackage).HasColumnName("QUANTITY_PACKAGE");
             entity.Property(e => e.QuantityPiecesPerPackage).HasColumnName("QUANTITY_PIECES_PER_PACKAGE");
             entity.Property(e => e.SerialNumber).HasColumnName("SERIAL_NUMBER");
+            entity.Property(e => e.SerialNumber2).HasColumnName("SERIAL_NUMBER2");
             entity.Property(e => e.InvoiceDate).HasColumnName("INVOICE_DATE");
         }
 
