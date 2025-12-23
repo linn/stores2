@@ -13,7 +13,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/jest-dom": "^6.9.1",
         "@testing-library/react": "^16.3.0",
         "@vitejs/plugin-react": "^5.0.4",
         "autoprefixer": "10.4.21",
@@ -37,12 +37,12 @@
         "@date-io/moment": "3.2.0",
         "@emotion/react": "11.14.0",
         "@emotion/styled": "11.14.1",
-        "@linn-it/linn-form-components-library": "32.1.0",
-        "@mui/icons-material": "7.3.4",
-        "@mui/material": "7.3.4",
+        "@linn-it/linn-form-components-library": "32.3.0",
+        "@mui/icons-material": "7.3.5",
+        "@mui/material": "7.3.5",
         "@mui/styles": "6.4.8",
-        "@mui/x-data-grid": "8.14.0",
-        "@mui/x-date-pickers": "8.14.0",
+        "@mui/x-data-grid": "8.17.0",
+        "@mui/x-date-pickers": "8.17.0",
         "decimal.js": "10.6.0",
         "eslint-plugin-react-hooks": "7.0.0",
         "install": "0.13.0",
@@ -54,8 +54,8 @@
         "react": "19.2.0",
         "react-dom": "19.2.0",
         "react-oidc-context": "3.3.0",
-        "react-router": "7.9.4",
-        "react-router-dom": "7.9.4",
+        "react-router": "7.9.5",
+        "react-router-dom": "7.9.5",
         "typeface-roboto": "1.1.13"
     }
 }
