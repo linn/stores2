@@ -10,5 +10,7 @@
         Task<IResult<ReportReturnResource>> GetDailyEuImportRsnReport(string fromDate, string toDate);
 
         Task<IResult<ReportReturnResource>> GetDailyEuDespatchReport(string fromDate, string toDate);
+
+        Task<IResult<ReportReturnResource>> GetDailyEuDespatchRsnReport(string fromDate, string toDate);
     }
 }

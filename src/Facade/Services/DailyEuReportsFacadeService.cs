@@ -37,5 +37,15 @@
 
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }
+
+        public async Task<IResult<ReportReturnResource>> GetDailyEuDespatchRsnReport(string fromDate, string toDate)
+        {
+            var fromDateForService = DateTime.Parse(fromDate);
+            var toDateForService = DateTime.Parse(toDate);
+            var result =
+                await this.dailyEuReportService.GetDailyEuDespatchRsnReport(fromDateForService, toDateForService);
+
+            return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
+        }
     }
 }

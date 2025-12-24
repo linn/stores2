@@ -103,6 +103,9 @@
                 .AddScoped<IQueryRepository<DailyEuRsnImportReport>, EntityFrameworkQueryRepository<DailyEuRsnImportReport>>(
                     r => new EntityFrameworkQueryRepository<DailyEuRsnImportReport>(
                         r.GetService<ServiceDbContext>()?.DailyEuRsnImportReport))
+                .AddScoped<IQueryRepository<DailyEuRsnDespatch>, EntityFrameworkQueryRepository<DailyEuRsnDespatch>>(
+                    r => new EntityFrameworkQueryRepository<DailyEuRsnDespatch>(
+                        r.GetService<ServiceDbContext>()?.DailyEuRsnDespatches))
                 .AddScoped<IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey>, ImportBookExchangeRateRepository>()
                 .AddScoped<IRepository<ExportBook, int>, ExportBookRepository>();
         }
