@@ -96,7 +96,7 @@
 
         public DbSet<LabourHoursSummary> LabourHourSummaries { get; set; }
 
-        public DbSet<DailyEuDespatchReport> DailyEuDespatchReport { get; set; }
+        public DbSet<DailyEuDespatch> DailyEuDespatchReport { get; set; }
 
         public DbSet<DailyEuRsnDespatch> DailyEuRsnDespatches { get; set; }
 
@@ -1062,7 +1062,7 @@
 
         private static void BuildDailyEuDespatchReport(ModelBuilder builder)
         {
-            var entity = builder.Entity<DailyEuDespatchReport>().ToView("EXPBOOK_REPORT_VIEW").HasNoKey();
+            var entity = builder.Entity<DailyEuDespatch>().ToView("EXPBOOK_REPORT_VIEW").HasNoKey();
             entity.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");
             entity.Property(e => e.CommercialInvNo).HasColumnName("EXPBOOK_ID");
             entity.Property(e => e.LineNo).HasColumnName("LINE_NO").HasMaxLength(8);

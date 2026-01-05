@@ -97,8 +97,8 @@
                 .AddScoped<IQueryRepository<LabourHoursSummary>, EntityFrameworkQueryRepository<LabourHoursSummary>>(
                     r => new EntityFrameworkQueryRepository<LabourHoursSummary>(
                         r.GetService<ServiceDbContext>()?.LabourHourSummaries))
-                .AddScoped<IQueryRepository<DailyEuDespatchReport>, EntityFrameworkQueryRepository<DailyEuDespatchReport>>(
-                    r => new EntityFrameworkQueryRepository<DailyEuDespatchReport>(
+                .AddScoped<IQueryRepository<DailyEuDespatch>, EntityFrameworkQueryRepository<DailyEuDespatch>>(
+                    r => new EntityFrameworkQueryRepository<DailyEuDespatch>(
                         r.GetService<ServiceDbContext>()?.DailyEuDespatchReport))
                 .AddScoped<IQueryRepository<DailyEuRsnImportReport>, EntityFrameworkQueryRepository<DailyEuRsnImportReport>>(
                     r => new EntityFrameworkQueryRepository<DailyEuRsnImportReport>(

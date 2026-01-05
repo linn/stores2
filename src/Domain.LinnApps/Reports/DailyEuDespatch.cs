@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class DailyEuDespatchReport
+    public class DailyEuDespatch
     {
         public int CommercialInvNo { get; set; }
 

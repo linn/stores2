@@ -16,7 +16,7 @@
     {
         private readonly IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository;
 
-        private readonly IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository;
+        private readonly IQueryRepository<DailyEuDespatch> dailyEuDespatchReportRepository;
 
         private readonly IFinanceProxy financeProxy;
 
@@ -27,7 +27,7 @@
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
             IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
-            IQueryRepository<DailyEuDespatchReport> dailyEuDespatchReportRepository,
+            IQueryRepository<DailyEuDespatch> dailyEuDespatchReportRepository,
             IFinanceProxy financeProxy,
             IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository)
         {
