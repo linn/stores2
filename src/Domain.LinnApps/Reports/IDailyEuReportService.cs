@@ -12,5 +12,7 @@
             string toDate);
 
         Task<ResultsModel> GetDailyEuDespatchReport(DateTime startDate, DateTime toDate);
+
+        Task<ResultsModel> GetDailyEuDespatchRsnReport(DateTime startDate, DateTime toDate);
     }
 }

@@ -301,11 +301,12 @@
                                       },
                                   new AxisDetailsModel("euroCurrency", "Currency", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("euroExchangeRate", "Euro Ex Rate", GridDisplayType.Value, 120),
+                                  new AxisDetailsModel("euroUnitPrice", "Euro Unit Price", GridDisplayType.Value, 120) { Align = "right", DecimalPlaces = 2 },
                                   new AxisDetailsModel("euroValue", "Euro Value", GridDisplayType.Value, 120) { Align = "right", DecimalPlaces = 2 },
                                   new AxisDetailsModel(
                                       "quantityPackage",
                                       "Quantity Package",
-                                      GridDisplayType.TextValue,
+                                      GridDisplayType.Value,
                                       130) 
                                       {
                                           Align = "right"
@@ -369,7 +370,12 @@
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "productId", TextDisplay = line.ProductId });
                 values.Add(
-                    new CalculationValueModel { RowId = rowId, ColumnId = "productDescription", TextDisplay = line.ProductDescription });
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "productDescription",
+                            TextDisplay = line.ProductDescription?.Replace(",", string.Empty)
+                        });
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "hsNumber", TextDisplay = line.TariffCode });
                 values.Add(
@@ -445,6 +451,15 @@
                     new CalculationValueModel
                         {
                             RowId = rowId,
+                            ColumnId = "euroUnitPrice",
+                            Value = exchangeRate.HasValue
+                                        ? decimal.Round(line.UnitPrice.GetValueOrDefault() / exchangeRate.Value, 2)
+                                        : 0
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
                             ColumnId = "euroValue",
                             Value = exchangeRate.HasValue
                                         ? line.Total.HasValue
@@ -469,7 +484,7 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, ColumnId = "quantityPackage", TextDisplay = line.QuantityPackage.ToString()
+                            RowId = rowId, ColumnId = "quantityPackage", Value = line.QuantityPackage.GetValueOrDefault()
                         });
                 values.Add(
                     new CalculationValueModel
@@ -484,14 +499,14 @@
                             RowId = rowId,
                             ColumnId = "serialNumber",
                             TextDisplay =
-                                $"{line.SerialNumber}{(!string.IsNullOrEmpty(line.SerialNumber2) ? ", " : null)}{line.SerialNumber2}"
+                                $"{line.SerialNumber} {line.SerialNumber2}"
                         });
                 values.Add(
                     new CalculationValueModel
                         {
                             RowId = rowId,
                             ColumnId = "invoiceDate",
-                            TextDisplay = line.InvoiceDate.ToString("dd-MMM-yyyy")
+                            TextDisplay = line.InvoiceDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture)
                         });
 
                 rowIndex++;
@@ -503,6 +518,11 @@
             var report = reportLayout.GetResultsModel();
 
             return report;
+        }
+
+        public Task<ResultsModel> GetDailyEuDespatchRsnReport(DateTime startDate, DateTime toDate)
+        {
+            throw new NotImplementedException();
         }
     }
 }
