@@ -46,7 +46,7 @@ const itemTypes = {
     },
     dailyEuDispatchReport: { url: `${config.appRoot}/stores2/reports/daily-eu-dispatch` },
     dailyEuRsnDispatchReport: { url: `${config.appRoot}/stores2/reports/daily-eu-rsn-dispatch` },
-    dailyEuImportRsnReport: { url: `${config.appRoot}/stores2/reports/daily-eu-import-rsn` },
+    dailyEuImportRsnReport: { url: `${config.appRoot}/stores2/reports/daily-eu-rsn-import` },
     citCodes: { url: `${config.proxyRoot}/production/maintenance/cits` },
     labourHoursInStockReport: {
         url: `${config.appRoot}/stores2/reports/labour-hours-in-stock/report`

@@ -119,7 +119,7 @@ function Root() {
                         element={<DailyEuRsnDispatchReport />}
                     />
                     <Route
-                        path="/stores2/reports/daily-eu-import-rsn"
+                        path="/stores2/reports/daily-eu-rsn-import"
                         element={<DailyEuImportRsnReport />}
                     />
                     <Route path="/stores2/pallets" element={<Pallets />} />
