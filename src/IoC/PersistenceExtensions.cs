@@ -97,15 +97,15 @@
                 .AddScoped<IQueryRepository<LabourHoursSummary>, EntityFrameworkQueryRepository<LabourHoursSummary>>(
                     r => new EntityFrameworkQueryRepository<LabourHoursSummary>(
                         r.GetService<ServiceDbContext>()?.LabourHourSummaries))
-                .AddScoped<IQueryRepository<DailyEuDespatchReport>, EntityFrameworkQueryRepository<DailyEuDespatchReport>>(
-                    r => new EntityFrameworkQueryRepository<DailyEuDespatchReport>(
-                        r.GetService<ServiceDbContext>()?.DailyEuDespatchReport))
+                .AddScoped<IQueryRepository<DailyEuDispatch>, EntityFrameworkQueryRepository<DailyEuDispatch>>(
+                    r => new EntityFrameworkQueryRepository<DailyEuDispatch>(
+                        r.GetService<ServiceDbContext>()?.DailyEuDispatches))
                 .AddScoped<IQueryRepository<DailyEuRsnImportReport>, EntityFrameworkQueryRepository<DailyEuRsnImportReport>>(
                     r => new EntityFrameworkQueryRepository<DailyEuRsnImportReport>(
                         r.GetService<ServiceDbContext>()?.DailyEuRsnImportReport))
-                .AddScoped<IQueryRepository<DailyEuRsnDespatch>, EntityFrameworkQueryRepository<DailyEuRsnDespatch>>(
-                    r => new EntityFrameworkQueryRepository<DailyEuRsnDespatch>(
-                        r.GetService<ServiceDbContext>()?.DailyEuRsnDespatches))
+                .AddScoped<IQueryRepository<DailyEuRsnDispatch>, EntityFrameworkQueryRepository<DailyEuRsnDispatch>>(
+                    r => new EntityFrameworkQueryRepository<DailyEuRsnDispatch>(
+                        r.GetService<ServiceDbContext>()?.DailyEuRsnDispatches))
                 .AddScoped<IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey>, ImportBookExchangeRateRepository>()
                 .AddScoped<IRepository<ExportBook, int>, ExportBookRepository>();
         }

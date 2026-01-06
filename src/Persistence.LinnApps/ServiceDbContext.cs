@@ -96,9 +96,9 @@
 
         public DbSet<LabourHoursSummary> LabourHourSummaries { get; set; }
 
-        public DbSet<DailyEuDespatchReport> DailyEuDespatchReport { get; set; }
+        public DbSet<DailyEuDispatch> DailyEuDispatches { get; set; }
 
-        public DbSet<DailyEuRsnDespatch> DailyEuRsnDespatches { get; set; }
+        public DbSet<DailyEuRsnDispatch> DailyEuRsnDispatches { get; set; }
 
         public DbSet<DailyEuRsnImportReport> DailyEuRsnImportReport { get; set; }
 
@@ -162,12 +162,12 @@
             BuildTqmsData(builder);
             BuildBoms(builder);
             BuildLabourHourSummaries(builder);
-            BuildDailyEuDespatchReport(builder);
+            BuildDailyEuDispatch(builder);
             BuildDailyEuRsnImportReport(builder);
             BuildExportBooks(builder);
             BuildImportBookExchangeRates(builder);
             BuildLedgerPeriods(builder);
-            BuildDailyEuDespatchRsn(builder);
+            BuildDailyEuRsnDispatch(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -394,7 +394,6 @@
                 .WithOne(b => b.Part)
                 .HasForeignKey<Part>(p => p.BomId)
                 .HasPrincipalKey<Bom>(b => b.BomId);
-
         }
         
         private static void BuildStockPool(ModelBuilder builder)
@@ -1060,9 +1059,9 @@
             q.Property(e => e.OtherHours).HasColumnName("OTHER_HOURS");
         }
 
-        private static void BuildDailyEuDespatchReport(ModelBuilder builder)
+        private static void BuildDailyEuDispatch(ModelBuilder builder)
         {
-            var entity = builder.Entity<DailyEuDespatchReport>().ToView("EXPBOOK_REPORT_VIEW").HasNoKey();
+            var entity = builder.Entity<DailyEuDispatch>().ToView("EXPBOOK_REPORT_VIEW").HasNoKey();
             entity.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");
             entity.Property(e => e.CommercialInvNo).HasColumnName("EXPBOOK_ID");
             entity.Property(e => e.LineNo).HasColumnName("LINE_NO").HasMaxLength(8);
@@ -1090,9 +1089,9 @@
             entity.Property(e => e.InvoiceDate).HasColumnName("INVOICE_DATE");
         }
 
-        private static void BuildDailyEuDespatchRsn(ModelBuilder builder)
+        private static void BuildDailyEuRsnDispatch(ModelBuilder builder)
         {
-            var entity = builder.Entity<DailyEuRsnDespatch>().ToView("EXPBOOK_RSN_VIEW").HasNoKey();
+            var entity = builder.Entity<DailyEuRsnDispatch>().ToView("EXPBOOK_RSN_VIEW").HasNoKey();
             entity.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");
             entity.Property(e => e.ExportBookId).HasColumnName("EXPBOOK_ID");
             entity.Property(e => e.InvDocumentNumber).HasColumnName("INV_DOCUMENT_NUMBER");

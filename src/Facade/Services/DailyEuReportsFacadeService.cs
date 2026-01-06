@@ -22,11 +22,11 @@
             this.resourceBuilder = resourceBuilder;
         }
 
-        public async Task<IResult<ReportReturnResource>> GetDailyEuDespatchReport(string fromDate, string toDate)
+        public async Task<IResult<ReportReturnResource>> GetDailyEuDispatchReport(string fromDate, string toDate)
         {
             var fromDateForService = DateTime.Parse(fromDate);
             var toDateForService = DateTime.Parse(toDate);
-            var result = await this.dailyEuReportService.GetDailyEuDespatchReport(fromDateForService, toDateForService);
+            var result = await this.dailyEuReportService.GetDailyEuDispatchReport(fromDateForService, toDateForService);
 
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }
@@ -38,12 +38,12 @@
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }
 
-        public async Task<IResult<ReportReturnResource>> GetDailyEuDespatchRsnReport(string fromDate, string toDate)
+        public async Task<IResult<ReportReturnResource>> GetDailyEuDispatchRsnReport(string fromDate, string toDate)
         {
             var fromDateForService = DateTime.Parse(fromDate);
             var toDateForService = DateTime.Parse(toDate);
             var result =
-                await this.dailyEuReportService.GetDailyEuDespatchRsnReport(fromDateForService, toDateForService);
+                await this.dailyEuReportService.GetDailyEuRsnDispatchReport(fromDateForService, toDateForService);
 
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }
