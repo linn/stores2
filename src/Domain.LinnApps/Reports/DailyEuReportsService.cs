@@ -228,27 +228,7 @@
             var fromDateStart = fromDate.Date;
             var toDateEnd = toDate.AddDays(1).Date;
 
-            var exchangeRates = new Dictionary<(string currencyCode, string monthName), ImportBookExchangeRate>();
-        
-            var current = new DateTime(fromDate.Year, fromDate.Month, 1);
-            var end = new DateTime(toDate.Year, toDate.Month, 1);
-            while (current <= end)
-            {
-                var monthName = current.ToString("MMMyyyy", CultureInfo.InvariantCulture);
-                var period = await this.financeProxy.GetLedgerPeriod(monthName);
-                if (period != null)
-                {
-                    var rates = await this.importBookExchangeRateRepository.FilterByAsync(a =>
-                                      a.BaseCurrency == "EUR" && a.PeriodNumber == period.PeriodNumber);
-                    foreach (var rate in rates)
-                    {
-                        var key = (rate.ExchangeCurrency, monthName);
-                        exchangeRates.TryAdd(key, rate);
-                    }
-                }
-
-                current = current.AddMonths(1);
-            }
+            var exchangeRates = await this.GetExchangeRates(fromDate, toDate);
 
             var lines = await this.dailyEuDespatchRepository
                             .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
@@ -305,8 +285,14 @@
                                       },
                                   new AxisDetailsModel("euroCurrency", "Currency", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("euroExchangeRate", "Euro Ex Rate", GridDisplayType.Value, 120),
-                                  new AxisDetailsModel("euroUnitPrice", "Euro Unit Price", GridDisplayType.Value, 120) { Align = "right", DecimalPlaces = 2 },
-                                  new AxisDetailsModel("euroValue", "Euro Value", GridDisplayType.Value, 120) { Align = "right", DecimalPlaces = 2 },
+                                  new AxisDetailsModel("euroUnitPrice", "Euro Unit Price", GridDisplayType.Value, 120)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel("euroValue", "Euro Value", GridDisplayType.Value, 120)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
                                   new AxisDetailsModel(
                                       "quantityPackage",
                                       "Quantity Package",
@@ -488,7 +474,9 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, ColumnId = "quantityPackage", Value = line.QuantityPackage.GetValueOrDefault()
+                            RowId = rowId,
+                            ColumnId = "quantityPackage",
+                            Value = line.QuantityPackage.GetValueOrDefault()
                         });
                 values.Add(
                     new CalculationValueModel
@@ -528,28 +516,8 @@
         {
             var fromDateStart = fromDate.Date;
             var toDateEnd = toDate.AddDays(1).Date;
-
-            var exchangeRates = new Dictionary<(string currencyCode, string monthName), ImportBookExchangeRate>();
-
-            var current = new DateTime(fromDate.Year, fromDate.Month, 1);
-            var end = new DateTime(toDate.Year, toDate.Month, 1);
-            while (current <= end)
-            {
-                var monthName = current.ToString("MMMyyyy", CultureInfo.InvariantCulture);
-                var period = await this.financeProxy.GetLedgerPeriod(monthName);
-                if (period != null)
-                {
-                    var rates = await this.importBookExchangeRateRepository.FilterByAsync(a =>
-                                      a.BaseCurrency == "EUR" && a.PeriodNumber == period.PeriodNumber);
-                    foreach (var rate in rates)
-                    {
-                        var key = (rate.ExchangeCurrency, monthName);
-                        exchangeRates.TryAdd(key, rate);
-                    }
-                }
-
-                current = current.AddMonths(1);
-            }
+            
+            var exchangeRates = await this.GetExchangeRates(fromDate, toDate);
 
             var lines = await this.dailyEuRsnDespatchRepository
                             .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
@@ -635,7 +603,8 @@
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
-                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 150)
+                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("invoiceDate", "Invoice Date", GridDisplayType.TextValue, 150)
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -822,6 +791,34 @@
             var report = reportLayout.GetResultsModel();
 
             return report;
+        }
+
+        private async Task<Dictionary<(string currencyCode, string monthName), ImportBookExchangeRate>> GetExchangeRates(
+            DateTime fromDate, DateTime toDate)
+        {
+            var exchangeRates = new Dictionary<(string currencyCode, string monthName), ImportBookExchangeRate>();
+
+            var current = new DateTime(fromDate.Year, fromDate.Month, 1);
+            var end = new DateTime(toDate.Year, toDate.Month, 1);
+            while (current <= end)
+            {
+                var monthName = current.ToString("MMMyyyy", CultureInfo.InvariantCulture);
+                var period = await this.financeProxy.GetLedgerPeriod(monthName);
+                if (period != null)
+                {
+                    var rates = await this.importBookExchangeRateRepository.FilterByAsync(a =>
+                                    a.BaseCurrency == "EUR" && a.PeriodNumber == period.PeriodNumber);
+                    foreach (var rate in rates)
+                    {
+                        var key = (rate.ExchangeCurrency, monthName);
+                        exchangeRates.TryAdd(key, rate);
+                    }
+                }
+
+                current = current.AddMonths(1);
+            }
+
+            return exchangeRates;
         }
     }
 }
