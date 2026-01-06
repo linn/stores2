@@ -16,6 +16,8 @@
 
         protected IQueryRepository<DailyEuDespatch> DailyEuDespatchRepository { get; private set; }
 
+        protected IQueryRepository<DailyEuRsnDespatch> DailyEuRsnDespatchRepository { get; private set; }
+
         protected IQueryRepository<DailyEuRsnImportReport> DailyEuRsnImportRepository { get; private set; }
 
         protected IReportingHelper ReportingHelper { get; private set; }
@@ -28,6 +30,7 @@
         public void SetUpContext()
         {
             this.DailyEuDespatchRepository = Substitute.For<IQueryRepository<DailyEuDespatch>>();
+            this.DailyEuRsnDespatchRepository = Substitute.For<IQueryRepository<DailyEuRsnDespatch>>();
             this.DailyEuRsnImportRepository = Substitute.For<IQueryRepository<DailyEuRsnImportReport>>();
             this.ReportingHelper = new ReportingHelper();
             this.FinanceProxy = Substitute.For<IFinanceProxy>();
@@ -37,6 +40,7 @@
                 this.ReportingHelper,
                 this.DailyEuRsnImportRepository,
                 this.DailyEuDespatchRepository,
+                this.DailyEuRsnDespatchRepository,
                 this.FinanceProxy,
                 this.ImportBookExchangeRateRepository);
         }

@@ -86,7 +86,7 @@
             this.DailyEuDespatchRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuDespatch, bool>>>())
                 .Returns(values);
 
-            this.result = await this.Sut.GetDailyEuDespatchReport(1.December(2025), 20.December(2025));
+            this.result = await this.Sut.GetDailyEuDispatchReport(1.December(2025), 20.December(2025));
         }
 
         [Test]

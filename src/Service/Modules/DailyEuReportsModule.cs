@@ -17,7 +17,7 @@
         {
             app.MapGet("/stores2/reports/daily-eu-import-rsn", this.DailyEuImportRsnReport);
             app.MapGet("/stores2/reports/daily-eu-dispatch", this.DailyEuDispatchReport);
-            app.MapGet("/stores2/reports/daily-eu-dispatch-rsn", this.DailyEuDispatchRsnReport);
+            app.MapGet("/stores2/reports/daily-eu-rsn-dispatch", this.DailyEuDispatchRsnReport);
         }
 
         private async Task DailyEuImportRsnReport(
@@ -50,7 +50,7 @@
             }
             else
             {
-                await res.Negotiate(await facadeService.GetDailyEuDespatchReport(fromDate, toDate));
+                await res.Negotiate(await facadeService.GetDailyEuDispatchReport(fromDate, toDate));
             }
         }
 
@@ -67,7 +67,7 @@
             }
             else
             {
-                await res.Negotiate(await facadeService.GetDailyEuDespatchRsnReport(fromDate, toDate));
+                await res.Negotiate(await facadeService.GetDailyEuDispatchRsnReport(fromDate, toDate));
             }
         }
     }

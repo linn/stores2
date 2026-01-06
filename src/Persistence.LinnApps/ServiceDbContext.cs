@@ -96,7 +96,7 @@
 
         public DbSet<LabourHoursSummary> LabourHourSummaries { get; set; }
 
-        public DbSet<DailyEuDespatch> DailyEuDespatchReport { get; set; }
+        public DbSet<DailyEuDespatch> DailyEuDespatches { get; set; }
 
         public DbSet<DailyEuRsnDespatch> DailyEuRsnDespatches { get; set; }
 
@@ -167,7 +167,7 @@
             BuildExportBooks(builder);
             BuildImportBookExchangeRates(builder);
             BuildLedgerPeriods(builder);
-            BuildDailyEuDespatchRsn(builder);
+            BuildDailyEuRsnDespatch(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1090,7 +1090,7 @@
             entity.Property(e => e.InvoiceDate).HasColumnName("INVOICE_DATE");
         }
 
-        private static void BuildDailyEuDespatchRsn(ModelBuilder builder)
+        private static void BuildDailyEuRsnDespatch(ModelBuilder builder)
         {
             var entity = builder.Entity<DailyEuRsnDespatch>().ToView("EXPBOOK_RSN_VIEW").HasNoKey();
             entity.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");

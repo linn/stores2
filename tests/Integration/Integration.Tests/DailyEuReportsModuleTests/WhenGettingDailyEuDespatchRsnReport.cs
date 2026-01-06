@@ -26,13 +26,13 @@
                     };
 
             this.DailyEuReportService
-                .GetDailyEuDespatchRsnReport(
+                .GetDailyEuRsnDispatchReport(
                     NSubstitute.Arg.Any<DateTime>(),
                     NSubstitute.Arg.Any<DateTime>())
                 .Returns(this.result);
 
             this.Response = this.Client.Get(
-                $"/stores2/reports/daily-eu-dispatch-rsn?fromDate={2.December(2025):o}&toDate={10.December(2025):o}",
+                $"/stores2/reports/daily-eu-rsn-dispatch?fromDate={2.December(2025):o}&toDate={10.December(2025):o}",
                 with =>
                 {
                     with.Accept("application/json");

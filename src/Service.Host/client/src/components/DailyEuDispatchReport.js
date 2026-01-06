@@ -24,7 +24,7 @@ function DailyEuDispatchReport() {
     });
 
     const {
-        send: getDailyEuDespatchReport,
+        send: getDailyEuDispatchReport,
         isLoading,
         result
     } = useGet(itemTypes.dailyEuDispatchReport.url, true);
@@ -52,7 +52,7 @@ function DailyEuDispatchReport() {
                 <Grid size={3}>
                     <ExportButton
                         href={`${itemTypes.dailyEuDispatchReport.url}?${queryString.stringify(options())}`}
-                        fileName="dailyEuDispatchReport.csv"
+                        fileName="DailyEuDispatchReport.csv"
                         tooltipText="Download as CSV"
                     />
                 </Grid>
@@ -78,7 +78,7 @@ function DailyEuDispatchReport() {
                     <Button
                         variant="contained"
                         onClick={() => {
-                            getDailyEuDespatchReport(null, `?${queryString.stringify(options())}`);
+                            getDailyEuDispatchReport(null, `?${queryString.stringify(options())}`);
                         }}
                     >
                         Run

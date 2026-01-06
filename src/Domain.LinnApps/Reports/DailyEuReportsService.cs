@@ -16,7 +16,9 @@
     {
         private readonly IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository;
 
-        private readonly IQueryRepository<DailyEuDespatch> dailyEuDespatchReportRepository;
+        private readonly IQueryRepository<DailyEuDespatch> dailyEuDespatchRepository;
+
+        private readonly IQueryRepository<DailyEuRsnDespatch> dailyEuRsnDespatchRepository;
 
         private readonly IFinanceProxy financeProxy;
 
@@ -27,13 +29,15 @@
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
             IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
-            IQueryRepository<DailyEuDespatch> dailyEuDespatchReportRepository,
+            IQueryRepository<DailyEuDespatch> dailyEuDespatchRepository,
+            IQueryRepository<DailyEuRsnDespatch> dailyEuRsnDespatchRepository,
             IFinanceProxy financeProxy,
             IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository)
         {
             this.reportingHelper = reportingHelper;
             this.dailyEuRsnImportReportRepository = dailyEuRsnImportReportRepository;
-            this.dailyEuDespatchReportRepository = dailyEuDespatchReportRepository;
+            this.dailyEuDespatchRepository = dailyEuDespatchRepository;
+            this.dailyEuRsnDespatchRepository = dailyEuRsnDespatchRepository;
             this.financeProxy = financeProxy;
             this.importBookExchangeRateRepository = importBookExchangeRateRepository;
         }
@@ -219,7 +223,7 @@
             return reportLayout.GetResultsModel();
         }
 
-        public async Task<ResultsModel> GetDailyEuDespatchReport(DateTime fromDate, DateTime toDate)
+        public async Task<ResultsModel> GetDailyEuDispatchReport(DateTime fromDate, DateTime toDate)
         {
             var fromDateStart = fromDate.Date;
             var toDateEnd = toDate.AddDays(1).Date;
@@ -246,7 +250,7 @@
                 current = current.AddMonths(1);
             }
 
-            var lines = await this.dailyEuDespatchReportRepository
+            var lines = await this.dailyEuDespatchRepository
                             .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
@@ -520,9 +524,304 @@
             return report;
         }
 
-        public Task<ResultsModel> GetDailyEuDespatchRsnReport(DateTime startDate, DateTime toDate)
+        public async Task<ResultsModel> GetDailyEuRsnDispatchReport(DateTime fromDate, DateTime toDate)
         {
-            throw new NotImplementedException();
+            var fromDateStart = fromDate.Date;
+            var toDateEnd = toDate.AddDays(1).Date;
+
+            var exchangeRates = new Dictionary<(string currencyCode, string monthName), ImportBookExchangeRate>();
+
+            var current = new DateTime(fromDate.Year, fromDate.Month, 1);
+            var end = new DateTime(toDate.Year, toDate.Month, 1);
+            while (current <= end)
+            {
+                var monthName = current.ToString("MMMyyyy", CultureInfo.InvariantCulture);
+                var period = await this.financeProxy.GetLedgerPeriod(monthName);
+                if (period != null)
+                {
+                    var rates = await this.importBookExchangeRateRepository.FilterByAsync(a =>
+                                      a.BaseCurrency == "EUR" && a.PeriodNumber == period.PeriodNumber);
+                    foreach (var rate in rates)
+                    {
+                        var key = (rate.ExchangeCurrency, monthName);
+                        exchangeRates.TryAdd(key, rate);
+                    }
+                }
+
+                current = current.AddMonths(1);
+            }
+
+            var lines = await this.dailyEuRsnDespatchRepository
+                            .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
+
+            var columns = new List<AxisDetailsModel>
+                              {
+                                  new AxisDetailsModel(
+                                      "commercialInvNo",
+                                      "Commercial Inv No",
+                                      GridDisplayType.TextValue,
+                                      140),
+                                  new AxisDetailsModel("productId", "Product ID", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("productDescription", "Description", GridDisplayType.TextValue, 250),
+                                  new AxisDetailsModel("hsNumber", "HS Number", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel(
+                                      "countryOfOrigin",
+                                      "Country of Origin",
+                                      GridDisplayType.TextValue,
+                                      140),
+                                  new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 100)
+                                      {
+                                          DecimalPlaces = 0, Align = "right"
+                                      },
+                                  new AxisDetailsModel(
+                                      "quantityPerPackage",
+                                      "Quantity Per Package",
+                                      GridDisplayType.Value,
+                                      130)
+                                      {
+                                          Align = "right", DecimalPlaces = 0
+                                      },
+                                  new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("unitPrice", "Unit Price", GridDisplayType.Value, 125)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel(
+                                      "total",
+                                      "Currency Total",
+                                      GridDisplayType.Value,
+                                      150)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+
+                                  new AxisDetailsModel("euroCurrency", "Currency", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("euroExchangeRate", "Euro Ex Rate", GridDisplayType.Value, 120),
+                                  new AxisDetailsModel("euroUnitPrice", "Euro Unit Price", GridDisplayType.Value, 120)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel("euroValue", "Euro Value", GridDisplayType.Value, 120)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel("nettWeight", "Nett Weight KG", GridDisplayType.Value, 130)
+                                      {
+                                          Align = "right"
+                                      },
+                                  new AxisDetailsModel("grossWeight", "Gross Weight KG", GridDisplayType.Value, 130)
+                                      {
+                                          Align = "right"
+                                      },
+                                  new AxisDetailsModel(
+                                      "deliveryTerms",
+                                      "Delivery Terms",
+                                      GridDisplayType.TextValue,
+                                      130),
+                                  new AxisDetailsModel("rsnNumber", "RSN Number", GridDisplayType.TextValue, 125),
+                                  new AxisDetailsModel(
+                                      "upgradeTotal",
+                                      "Upgrade Total",
+                                      GridDisplayType.Value,
+                                      150)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel(
+                                      "customsTotal",
+                                      "Customs Total",
+                                      GridDisplayType.Value,
+                                      150)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 150)
+                              };
+
+            var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
+
+            var values = new List<CalculationValueModel>();
+            var rowIndex = 0;
+
+            foreach (var line in lines
+                         .OrderBy(a => a.ExportBookId))
+            {
+                var rowId = rowIndex.ToString();
+                decimal? exchangeRate = 1;
+                if (line.Currency != "EUR")
+                {
+                    exchangeRates.TryGetValue(
+                        (line.Currency, line.DateCreated.ToString("MMMyyyy", CultureInfo.InvariantCulture)),
+                        out var rate2);
+                    exchangeRate = rate2?.ExchangeRate;
+                }
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "commercialInvNo",
+                        TextDisplay = line.ExportBookId.ToString()
+                    });
+                values.Add(
+                    new CalculationValueModel { RowId = rowId, ColumnId = "productId", TextDisplay = line.ProductId });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "productDescription",
+                        TextDisplay = line.ProductDescription?.Replace(",", string.Empty)
+                    });
+                values.Add(
+                    new CalculationValueModel { RowId = rowId, ColumnId = "hsNumber", TextDisplay = line.TariffCode });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "countryOfOrigin",
+                        TextDisplay = line.CountryOfOrigin
+                    });
+
+                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Quantity });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "quantityPerPackage",
+                            Value = line.QuantityPiecesPerPackage.GetValueOrDefault()
+                        });
+
+                var currencyValue = new CalculationValueModel
+                {
+                    RowId = rowId,
+                    ColumnId = "currency",
+                    TextDisplay = line.Currency
+                };
+                if (line.Currency != "EUR")
+                {
+                    currencyValue.Attributes = new List<ReportAttribute>
+                                                  {
+                                                      new ReportAttribute
+                                                          {
+                                                              AttributeType = ReportAttributeType.BackgroundColour,
+                                                              AttributeValue = "yellow"
+                                                          }
+                                                  };
+                }
+
+                values.Add(currencyValue);
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "unitPrice",
+                        Value = line.UnitPrice.GetValueOrDefault()
+                    });
+
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "total", Value = line.Total.GetValueOrDefault()
+                        });
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "euroCurrency",
+                        TextDisplay = "EUR"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "euroExchangeRate",
+                        Value = exchangeRate.GetValueOrDefault()
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "euroUnitPrice",
+                        Value = exchangeRate.HasValue
+                                        ? decimal.Round(line.UnitPrice.GetValueOrDefault() / exchangeRate.Value, 2)
+                                        : 0
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "euroValue",
+                        Value = exchangeRate.HasValue
+                                        ? line.Total.HasValue
+                                              ? decimal.Round(line.Total.Value / exchangeRate.Value, 2)
+                                              : decimal.Round(
+                                                  line.CustomsTotal.GetValueOrDefault() / exchangeRate.Value,
+                                                  2)
+                                        : 0
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "nettWeight",
+                        Value = line.NettWeight.GetValueOrDefault()
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "grossWeight",
+                        Value = line.GrossWeight.GetValueOrDefault()
+                    });
+                values.Add(
+                    new CalculationValueModel { RowId = rowId, ColumnId = "deliveryTerms", TextDisplay = line.Terms });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId, ColumnId = "rsnNumber", TextDisplay = $"{line.RsnNumber}"
+                        });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "serialNumber",
+                        TextDisplay = $"{line.SerialNumber}"
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "invoiceDate",
+                        TextDisplay = line.InvoiceDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture)
+                    });
+                if (line.UpgradeTotal.HasValue)
+                {
+                    values.Add(
+                        new CalculationValueModel
+                            {
+                                RowId = rowId,
+                                ColumnId = "upgradeTotal",
+                                Value = line.UpgradeTotal.GetValueOrDefault()
+                            });
+                }
+
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "customsTotal",
+                            Value = line.CustomsTotal.GetValueOrDefault()
+                        });
+                rowIndex++;
+            }
+
+            reportLayout.AddColumnComponent(null, columns);
+
+            reportLayout.SetGridData(values);
+            var report = reportLayout.GetResultsModel();
+
+            return report;
         }
     }
 }

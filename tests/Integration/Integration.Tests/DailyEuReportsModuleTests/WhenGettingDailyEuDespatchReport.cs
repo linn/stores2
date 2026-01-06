@@ -26,7 +26,7 @@
                     };
 
             this.DailyEuReportService
-                .GetDailyEuDespatchReport(
+                .GetDailyEuDispatchReport(
                     NSubstitute.Arg.Any<DateTime>(),
                     NSubstitute.Arg.Any<DateTime>())
                 .Returns(this.result);
