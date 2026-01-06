@@ -24,9 +24,9 @@
         [SetUp]
         public async Task SetUp()
         {
-            var values = new List<DailyEuRsnDespatch>
+            var values = new List<DailyEuRsnDispatch>
                                 {
-                                    new DailyEuRsnDespatch
+                                    new DailyEuRsnDispatch
                                         {
                                             ExportBookId = 1,
                                             ProductId = "Article 1",
@@ -50,7 +50,7 @@
                                             ReasonCategory = "Repair",
                                             UpgradeTotal = null
                                         },
-                                    new DailyEuRsnDespatch
+                                    new DailyEuRsnDispatch
                                         {
                                             ExportBookId = 2,
                                             ProductId = "Article 2",
@@ -66,7 +66,7 @@
                                             UpgradeTotal = null,
                                             CustomsTotal = 200m
                                         },
-                                    new DailyEuRsnDespatch
+                                    new DailyEuRsnDispatch
                                         {
                                             ExportBookId = 3,
                                             ProductId = "Article 3",
@@ -97,7 +97,7 @@
                                 }
                         });
             this.DailyEuRsnDespatchRepository
-                .FilterByAsync(Arg.Any<Expression<Func<DailyEuRsnDespatch, bool>>>())
+                .FilterByAsync(Arg.Any<Expression<Func<DailyEuRsnDispatch, bool>>>())
                 .Returns(values);
 
             this.result = await this.Sut.GetDailyEuRsnDispatchReport(1.December(2025), 20.December(2025));
