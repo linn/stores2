@@ -16,9 +16,9 @@
     {
         private readonly IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository;
 
-        private readonly IQueryRepository<DailyEuDispatch> dailyEuDespatchRepository;
+        private readonly IQueryRepository<DailyEuDispatch> dailyEuDispatchRepository;
 
-        private readonly IQueryRepository<DailyEuRsnDispatch> dailyEuRsnDespatchRepository;
+        private readonly IQueryRepository<DailyEuRsnDispatch> dailyEuRsnDispatchRepository;
 
         private readonly IFinanceProxy financeProxy;
 
@@ -29,15 +29,15 @@
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
             IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
-            IQueryRepository<DailyEuDispatch> dailyEuDespatchRepository,
-            IQueryRepository<DailyEuRsnDispatch> dailyEuRsnDespatchRepository,
+            IQueryRepository<DailyEuDispatch> dailyEuDispatchRepository,
+            IQueryRepository<DailyEuRsnDispatch> dailyEuRsnDispatchRepository,
             IFinanceProxy financeProxy,
             IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository)
         {
             this.reportingHelper = reportingHelper;
             this.dailyEuRsnImportReportRepository = dailyEuRsnImportReportRepository;
-            this.dailyEuDespatchRepository = dailyEuDespatchRepository;
-            this.dailyEuRsnDespatchRepository = dailyEuRsnDespatchRepository;
+            this.dailyEuDispatchRepository = dailyEuDispatchRepository;
+            this.dailyEuRsnDispatchRepository = dailyEuRsnDispatchRepository;
             this.financeProxy = financeProxy;
             this.importBookExchangeRateRepository = importBookExchangeRateRepository;
         }
@@ -230,7 +230,7 @@
 
             var exchangeRates = await this.GetExchangeRates(fromDate, toDate);
 
-            var lines = await this.dailyEuDespatchRepository
+            var lines = await this.dailyEuDispatchRepository
                             .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
@@ -519,7 +519,7 @@
             
             var exchangeRates = await this.GetExchangeRates(fromDate, toDate);
 
-            var lines = await this.dailyEuRsnDespatchRepository
+            var lines = await this.dailyEuRsnDispatchRepository
                             .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
             var columns = new List<AxisDetailsModel>

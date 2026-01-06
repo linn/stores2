@@ -83,7 +83,7 @@
                                     PeriodNumber = 123
                                 }
                         });
-            this.DailyEuDespatchRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuDispatch, bool>>>())
+            this.DailyEuDispatchRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuDispatch, bool>>>())
                 .Returns(values);
 
             this.result = await this.Sut.GetDailyEuDispatchReport(1.December(2025), 20.December(2025));

@@ -96,7 +96,7 @@
                                     PeriodNumber = 123
                                 }
                         });
-            this.DailyEuRsnDespatchRepository
+            this.DailyEuRsnDispatchRepository
                 .FilterByAsync(Arg.Any<Expression<Func<DailyEuRsnDispatch, bool>>>())
                 .Returns(values);
 

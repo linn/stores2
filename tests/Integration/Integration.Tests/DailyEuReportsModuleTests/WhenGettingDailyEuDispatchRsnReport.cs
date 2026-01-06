@@ -12,7 +12,7 @@
 
     using NUnit.Framework;
 
-    public class WhenGettingDailyEuDespatchRsnReport : ContextBase
+    public class WhenGettingDailyEuDispatchRsnReport : ContextBase
     {
         private Common.Reporting.Models.ResultsModel result;
 
