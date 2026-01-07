@@ -234,8 +234,8 @@
 
             var exchangeRates = await this.GetExchangeRates(fromDate, toDate);
 
-            var lines = await this.dailyEuDispatchRepository
-                            .FilterByAsync((DailyEuDispatch i) => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
+            var lines = await this.dailyEuDispatchRepository.FilterByAsync(i =>
+                            i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -328,8 +328,7 @@
             var values = new List<CalculationValueModel>();
             var rowIndex = 0;
 
-            foreach (var line in lines
-                         .OrderBy((DailyEuDispatch a) => a.CommercialInvNo))
+            foreach (var line in lines.OrderBy(a => a.CommercialInvNo))
             {
                 var rowId = rowIndex.ToString();
                 decimal? exchangeRate = 1;
@@ -523,8 +522,8 @@
             
             var exchangeRates = await this.GetExchangeRates(fromDate, toDate);
 
-            var lines = await this.dailyEuRsnDispatchRepository
-                            .FilterByAsync((DailyEuRsnDispatch i) => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
+            var lines = await this.dailyEuRsnDispatchRepository.FilterByAsync(i =>
+                            i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -632,8 +631,7 @@
             var values = new List<CalculationValueModel>();
             var rowIndex = 0;
 
-            foreach (var line in lines
-                         .OrderBy((DailyEuRsnDispatch a) => a.ExportBookId))
+            foreach (var line in lines.OrderBy(a => a.ExportBookId))
             {
                 var rowId = rowIndex.ToString();
                 decimal? exchangeRate = 1;
@@ -841,7 +839,7 @@
                 var period = await this.financeProxy.GetLedgerPeriod(monthName);
                 if (period != null)
                 {
-                    var rates = await this.importBookExchangeRateRepository.FilterByAsync((ImportBookExchangeRate a) =>
+                    var rates = await this.importBookExchangeRateRepository.FilterByAsync(a =>
                                     a.BaseCurrency == "EUR" && a.PeriodNumber == period.PeriodNumber);
                     foreach (var rate in rates)
                     {
