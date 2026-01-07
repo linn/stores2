@@ -63,7 +63,7 @@
                                       },
                                   new AxisDetailsModel("weight", "Weight", GridDisplayType.Value, 90)
                                       {
-                                          Align = "right", DecimalPlaces = 0
+                                          Align = "right"
                                       },
                                   new AxisDetailsModel("dims", "Dims", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel(
