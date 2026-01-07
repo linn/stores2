@@ -40,6 +40,8 @@
 
         public int? Width { get; set; }
 
+        public int? SerialNumber { get; set; }
+
         public string GetDims()
         {
             return $"{this.Width} x {this.Height} x {this.Depth}";

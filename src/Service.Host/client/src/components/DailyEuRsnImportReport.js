@@ -5,6 +5,7 @@ import Grid from '@mui/material/Grid';
 import { DatePicker, Loading, useGet, ReportDataGrid } from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import itemTypes from '../itemTypes';
+import config from '../config';
 import Page from './Page';
 
 function DailyEuRsnImportReport() {
@@ -36,8 +37,8 @@ function DailyEuRsnImportReport() {
     );
 
     return (
-        <Page>
-            <Grid container spacing={2} showAuthUi={false} title="Daily EU RSN Imports">
+        <Page homeUrl={config.appRoot} showAuthUi={false} title="Daily EU RSN Import">
+            <Grid container spacing={2}>
                 <Grid size={12}>
                     <Typography color="primary" variant="h4">
                         Daily EU RSN Import Report

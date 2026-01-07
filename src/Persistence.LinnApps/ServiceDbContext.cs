@@ -1141,6 +1141,7 @@
             entity.Property(e => e.Qty).HasColumnName("QTY");
             entity.Property(e => e.Currency).HasColumnName("CURRENCY");
             entity.Property(e => e.CustomsValue).HasColumnName("CUSTOMS_VALUE");
+            entity.Property(e => e.SerialNumber).HasColumnName("SERIAL_NUMBER");
         }
 
         private static void BuildImportBookExchangeRates(ModelBuilder builder)

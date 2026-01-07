@@ -56,11 +56,11 @@
                                       "Intercompany Inv",
                                       GridDisplayType.TextValue,
                                       150),
-                                  new AxisDetailsModel("pieces", "Pieces", GridDisplayType.Value, 100)
+                                  new AxisDetailsModel("pieces", "Pieces", GridDisplayType.Value, 90)
                                       {
                                           Align = "right", DecimalPlaces = 0
                                       },
-                                  new AxisDetailsModel("weight", "Weight", GridDisplayType.Value, 100)
+                                  new AxisDetailsModel("weight", "Weight", GridDisplayType.Value, 90)
                                       {
                                           Align = "right", DecimalPlaces = 0
                                       },
@@ -97,7 +97,8 @@
                                   new AxisDetailsModel("customsValue", "Customs Value", GridDisplayType.Value, 130)
                                       {
                                           Align = "right", DecimalPlaces = 2
-                                      }
+                                      },
+                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 100)
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -182,15 +183,38 @@
 
                 values.Add(
                     new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Qty });
-                values.Add(
-                    new CalculationValueModel
-                        {
-                            RowId = rowId, ColumnId = "currency", TextDisplay = line.Currency
-                        });
+                var currencyValue = new CalculationValueModel
+                                        {
+                                            RowId = rowId,
+                                            ColumnId = "currency",
+                                            TextDisplay = line.Currency
+                                        };
+
+                if (line.Currency != "EUR")
+                {
+                    currencyValue.Attributes = new List<ReportAttribute>
+                                                   {
+                                                       new ReportAttribute
+                                                           {
+                                                               AttributeType = ReportAttributeType.BackgroundColour,
+                                                               AttributeValue = "yellow"
+                                                           }
+                                                   };
+                }
+
+                values.Add(currencyValue);
+
                 values.Add(
                     new CalculationValueModel
                         {
                             RowId = rowId, ColumnId = "customsValue", Value = line.CustomsValue
+                        });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "serialNumber",
+                            TextDisplay = $"{line.SerialNumber}"
                         });
 
                 rowIndex++;
