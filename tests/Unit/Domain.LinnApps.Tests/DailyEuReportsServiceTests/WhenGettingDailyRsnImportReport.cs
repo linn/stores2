@@ -28,7 +28,7 @@
                                             InvoiceNumber = 1,
                                             RsnNumber = 101,
                                             Currency = "USD",
-                                            Weight = 12m,
+                                            Weight = 12.1m,
                                             Pieces = 2,
                                             Width = 1,
                                             Height = 2,
@@ -73,7 +73,7 @@
 
             this.result.GetGridTextValue(0, this.result.ColumnIndex("intercompanyInvoice")).Should().Be("1");
             this.result.GetGridValue(0, this.result.ColumnIndex("pieces")).Should().Be(2);
-            this.result.GetGridValue(0, this.result.ColumnIndex("weight")).Should().Be(12m);
+            this.result.GetGridValue(0, this.result.ColumnIndex("weight")).Should().Be(12.1m);
             this.result.GetGridTextValue(0, this.result.ColumnIndex("dims")).Should().Be("1 x 2 x 3");
             this.result.GetGridTextValue(0, this.result.ColumnIndex("retailerDetails")).Should().Be("Ret 1");
             this.result.GetGridTextValue(0, this.result.ColumnIndex("rsnNumber")).Should().Be("101");
