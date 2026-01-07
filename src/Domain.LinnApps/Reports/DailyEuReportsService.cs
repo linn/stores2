@@ -14,7 +14,7 @@
 
     public class DailyEuReportsService : IDailyEuReportService
     {
-        private readonly IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository;
+        private readonly IQueryRepository<DailyEuRsnImport> dailyEuRsnImportRepository;
 
         private readonly IQueryRepository<DailyEuDispatch> dailyEuDispatchRepository;
 
@@ -28,65 +28,78 @@
 
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
-            IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
+            IQueryRepository<DailyEuRsnImport> dailyEuRsnImportRepository,
             IQueryRepository<DailyEuDispatch> dailyEuDispatchRepository,
             IQueryRepository<DailyEuRsnDispatch> dailyEuRsnDispatchRepository,
             IFinanceProxy financeProxy,
             IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository)
         {
             this.reportingHelper = reportingHelper;
-            this.dailyEuRsnImportReportRepository = dailyEuRsnImportReportRepository;
+            this.dailyEuRsnImportRepository = dailyEuRsnImportRepository;
             this.dailyEuDispatchRepository = dailyEuDispatchRepository;
             this.dailyEuRsnDispatchRepository = dailyEuRsnDispatchRepository;
             this.financeProxy = financeProxy;
             this.importBookExchangeRateRepository = importBookExchangeRateRepository;
         }
 
-        public async Task<ResultsModel> GetDailyEuImportRsnReport(string fromDate, string toDate)
+        public async Task<ResultsModel> GetDailyEuRsnImportReport(DateTime fromDate, DateTime toDate)
         {
-            var fromDateDate = DateTime.Parse(fromDate);
-            var toDateDate = DateTime.Parse(toDate);
-            var lines =
-                await this.dailyEuRsnImportReportRepository
-                    .FilterByAsync(i => i.DocumentDate >= fromDateDate && i.DocumentDate <= toDateDate);
+            var fromDateStart = fromDate.Date;
+            var toDateEnd = toDate.AddDays(1).Date;
+
+            var lines = await this.dailyEuRsnImportRepository.FilterByAsync(i =>
+                            i.DocumentDate >= fromDateStart && i.DocumentDate < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
                               {
-                                  new AxisDetailsModel("intercompanyInvoice", "Intercompany Invoice", GridDisplayType.Value, 200),
                                   new AxisDetailsModel(
-                                      "pieces",
-                                      "Pieces",
+                                      "intercompanyInvoice",
+                                      "Intercompany Inv",
                                       GridDisplayType.TextValue,
-                                      100),
-                                  new AxisDetailsModel("weight", "Weight", GridDisplayType.TextValue, 100),
+                                      150),
+                                  new AxisDetailsModel("pieces", "Pieces", GridDisplayType.Value, 90)
+                                      {
+                                          Align = "right", DecimalPlaces = 0
+                                      },
+                                  new AxisDetailsModel("weight", "Weight", GridDisplayType.Value, 90)
+                                      {
+                                          Align = "right", DecimalPlaces = 0
+                                      },
                                   new AxisDetailsModel("dims", "Dims", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("retailerDetails", "Retailer Details", GridDisplayType.TextValue, 300),
-                                  new AxisDetailsModel("rsnNumber", "RSN Number", GridDisplayType.Value, 150),
                                   new AxisDetailsModel(
-                                      "partNumber",
-                                      "Part Number",
+                                      "retailerDetails",
+                                      "Retailer Details",
                                       GridDisplayType.TextValue,
-                                      250),
+                                      300),
+                                  new AxisDetailsModel("rsnNumber", "RSN Number", GridDisplayType.TextValue, 120),
+                                  new AxisDetailsModel("partNumber", "Part Number", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel("description", "Description", GridDisplayType.TextValue, 300),
-                                  new AxisDetailsModel("returnReason", "Reason For Return", GridDisplayType.TextValue, 275),
-                                  new AxisDetailsModel("customsCpcNumber", "Customers CPC Number", GridDisplayType.TextValue, 225),
                                   new AxisDetailsModel(
-                                      "tariffCode",
-                                      "Tariff Code",
+                                      "returnReason",
+                                      "Reason For Return",
                                       GridDisplayType.TextValue,
                                       175),
+                                  new AxisDetailsModel(
+                                      "customsCpcNumber",
+                                      "Customs CPC No",
+                                      GridDisplayType.TextValue,
+                                      150),
+                                  new AxisDetailsModel("tariffCode", "Tariff Code", GridDisplayType.TextValue, 150),
                                   new AxisDetailsModel(
                                       "countryOfOrigin",
                                       "Country Of Origin",
                                       GridDisplayType.TextValue,
-                                      175),
-                                  new AxisDetailsModel(
-                                      "quantity",
-                                      "Quantity",
-                                      GridDisplayType.Value,
                                       150),
-                                  new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("customsValue", "Customs value", GridDisplayType.Value, 150)
+                                  new AxisDetailsModel("quantity", "Quantity", GridDisplayType.Value, 100)
+                                      {
+                                          Align = "right", DecimalPlaces = 0
+                                      },
+                                  new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("customsValue", "Customs Value", GridDisplayType.Value, 130)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 100)
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -94,124 +107,115 @@
             var values = new List<CalculationValueModel>();
             var rowIndex = 0;
 
-            foreach (var line in lines)
+            foreach (var line in lines.OrderBy(a => a.InvoiceNumber))
             {
-                var rowId = rowIndex;
+                var rowId = rowIndex.ToString();
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "intercompanyInvoice",
-                        Value = line.InvoiceNumber
-                    });
+                        {
+                            RowId = rowId,
+                            ColumnId = "intercompanyInvoice",
+                            TextDisplay = line.InvoiceNumber.ToString()
+                        });
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "pieces",
-                        TextDisplay = line.Pieces.ToString()
-                    });
+                        {
+                            RowId = rowId, ColumnId = "pieces", Value = line.Pieces.GetValueOrDefault()
+                        });
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "weight",
-                        TextDisplay = line.Weight.ToString()
-                    });
+                        {
+                            RowId = rowId, ColumnId = "weight", Value = line.Weight.GetValueOrDefault()
+                        });
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "dims",
-                        TextDisplay = line.GetDims()
-                    });
+                        {
+                            RowId = rowId, ColumnId = "dims", TextDisplay = line.GetDims()
+                        });
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "retailerDetails",
-                        TextDisplay = line.Retailer
-                    });
+                        {
+                            RowId = rowId, ColumnId = "retailerDetails", TextDisplay = line.Retailer
+                        });
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "rsnNumber",
-                        Value = line.RsnNumber
-                    });
+                        {
+                            RowId = rowId, ColumnId = "rsnNumber", TextDisplay = line.RsnNumber.ToString()
+                        });
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "partNumber",
-                        TextDisplay = line.PartNo
-                    });
+                        {
+                            RowId = rowId, ColumnId = "partNumber", TextDisplay = line.PartNumber
+                        });
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "description",
-                        TextDisplay = line.Description
-                    });
+                        {
+                            RowId = rowId, ColumnId = "description", TextDisplay = line.PartDescription
+                        });
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "returnReason",
-                        TextDisplay = line.ReturnReason
-                    });
+                        {
+                            RowId = rowId, ColumnId = "returnReason", TextDisplay = line.ReturnReason
+                        });
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "customsCpcNumber",
-                        TextDisplay = line.CustomsCpcNo
-                    });
+                        {
+                            RowId = rowId, ColumnId = "customsCpcNumber", TextDisplay = line.CustomsCpcNumber
+                        });
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "tariffCode",
-                        TextDisplay = line.TariffCode
-                    });
+                        {
+                            RowId = rowId, ColumnId = "tariffCode", TextDisplay = line.TariffCode
+                        });
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "countryOfOrigin",
-                        TextDisplay = line.CountryOfOrigin
-                    });
+                        {
+                            RowId = rowId, ColumnId = "countryOfOrigin", TextDisplay = line.CountryOfOrigin
+                        });
+
+                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Quantity });
+                var currencyValue = new CalculationValueModel
+                                        {
+                                            RowId = rowId,
+                                            ColumnId = "currency",
+                                            TextDisplay = line.Currency
+                                        };
+
+                if (line.Currency != "EUR")
+                {
+                    currencyValue.Attributes = new List<ReportAttribute>
+                                                   {
+                                                       new ReportAttribute
+                                                           {
+                                                               AttributeType = ReportAttributeType.BackgroundColour,
+                                                               AttributeValue = "yellow"
+                                                           }
+                                                   };
+                }
+
+                values.Add(currencyValue);
 
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "quantity",
-                        Value = line.Qty
-                    });
+                        {
+                            RowId = rowId, ColumnId = "customsValue", Value = line.CustomsValue
+                        });
                 values.Add(
                     new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "currency",
-                        TextDisplay = line.Currency
-                    });
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId.ToString(),
-                        ColumnId = "customsValue",
-                        Value = line.CustomsValue
-                    });
+                        {
+                            RowId = rowId,
+                            ColumnId = "serialNumber",
+                            TextDisplay = $"{line.SerialNumber}"
+                        });
 
                 rowIndex++;
             }
@@ -230,8 +234,8 @@
 
             var exchangeRates = await this.GetExchangeRates(fromDate, toDate);
 
-            var lines = await this.dailyEuDispatchRepository
-                            .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
+            var lines = await this.dailyEuDispatchRepository.FilterByAsync(i =>
+                            i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -324,8 +328,7 @@
             var values = new List<CalculationValueModel>();
             var rowIndex = 0;
 
-            foreach (var line in lines
-                         .OrderBy(a => a.CommercialInvNo))
+            foreach (var line in lines.OrderBy(a => a.CommercialInvNo))
             {
                 var rowId = rowIndex.ToString();
                 decimal? exchangeRate = 1;
@@ -519,8 +522,8 @@
             
             var exchangeRates = await this.GetExchangeRates(fromDate, toDate);
 
-            var lines = await this.dailyEuRsnDispatchRepository
-                            .FilterByAsync(i => i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
+            var lines = await this.dailyEuRsnDispatchRepository.FilterByAsync(i =>
+                            i.DateCreated >= fromDateStart && i.DateCreated < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -596,8 +599,24 @@
                                           Align = "right", DecimalPlaces = 2
                                       },
                                   new AxisDetailsModel(
+                                      "euroUpgradeTotal",
+                                      "Euro Upgrade Total",
+                                      GridDisplayType.Value,
+                                      150)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel(
                                       "customsTotal",
                                       "Customs Total",
+                                      GridDisplayType.Value,
+                                      150)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel(
+                                      "euroCustomsTotal",
+                                      "Euro Customs Total",
                                       GridDisplayType.Value,
                                       150)
                                       {
@@ -612,8 +631,7 @@
             var values = new List<CalculationValueModel>();
             var rowIndex = 0;
 
-            foreach (var line in lines
-                         .OrderBy(a => a.ExportBookId))
+            foreach (var line in lines.OrderBy(a => a.ExportBookId))
             {
                 var rowId = rowIndex.ToString();
                 decimal? exchangeRate = 1;
@@ -722,12 +740,8 @@
                         RowId = rowId,
                         ColumnId = "euroValue",
                         Value = exchangeRate.HasValue
-                                        ? line.Total.HasValue
-                                              ? decimal.Round(line.Total.Value / exchangeRate.Value, 2)
-                                              : decimal.Round(
-                                                  line.CustomsTotal.GetValueOrDefault() / exchangeRate.Value,
-                                                  2)
-                                        : 0
+                                    ? decimal.Round(line.Total.GetValueOrDefault() / exchangeRate.Value, 2)
+                                    : 0
                     });
                 values.Add(
                     new CalculationValueModel
@@ -773,6 +787,15 @@
                                 ColumnId = "upgradeTotal",
                                 Value = line.UpgradeTotal.GetValueOrDefault()
                             });
+                    values.Add(
+                        new CalculationValueModel
+                            {
+                                RowId = rowId,
+                                ColumnId = "euroUpgradeTotal",
+                                Value = exchangeRate.HasValue
+                                            ? decimal.Round(line.UpgradeTotal.GetValueOrDefault() / exchangeRate.Value, 2)
+                                            : 0
+                            });
                 }
 
                 values.Add(
@@ -782,6 +805,16 @@
                             ColumnId = "customsTotal",
                             Value = line.CustomsTotal.GetValueOrDefault()
                         });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "euroCustomsTotal",
+                            Value = exchangeRate.HasValue
+                                        ? decimal.Round(line.CustomsTotal.GetValueOrDefault() / exchangeRate.Value, 2)
+                                        : 0
+                        });
+
                 rowIndex++;
             }
 

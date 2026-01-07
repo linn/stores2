@@ -34,7 +34,7 @@ import StorageSites from './storageSites/StorageSites';
 import StorageSite from './storageSites/StorageSite';
 import DailyEuDispatchReport from './DailyEuDispatchReport';
 import DailyEuRsnDispatchReport from './DailyEuRsnDispatchReport';
-import DailyEuImportRsnReport from './DailyEuImportRsnReport';
+import DailyEuRsnImportReport from './DailyEuRsnImportReport';
 import LabourHoursInStockReport from './LabourHoursInStockReport';
 import LabourHoursSummaryReport from './LabourHoursSummaryReport';
 import LabourHoursInLoansReport from './LabourHoursInLoansReport';
@@ -120,7 +120,7 @@ function Root() {
                     />
                     <Route
                         path="/stores2/reports/daily-eu-rsn-import"
-                        element={<DailyEuImportRsnReport />}
+                        element={<DailyEuRsnImportReport />}
                     />
                     <Route path="/stores2/pallets" element={<Pallets />} />
                     <Route path="/stores2/pallets/:id" element={<Pallet />} />

@@ -2,31 +2,27 @@
 {
     using System;
 
-    public class DailyEuRsnImportReport
+    public class DailyEuRsnImport
     {
         public string CountryOfOrigin { get; set; }
 
         public string Currency { get; set; }
 
-        public string CustomsCpcNo { get; set; }
+        public string CustomsCpcNumber { get; set; }
 
         public decimal CustomsValue { get; set; }
 
-        public int? Depth { get; set; }
-
-        public string Description { get; set; }
+        public string PartDescription { get; set; }
 
         public DateTime DocumentDate { get; set; }
 
-        public int? Height { get; set; }
-
         public int InvoiceNumber { get; set; }
 
-        public string PartNo { get; set; }
+        public string PartNumber { get; set; }
 
         public int? Pieces { get; set; }
 
-        public int Qty { get; set; }
+        public int Quantity { get; set; }
 
         public string Retailer { get; set; }
 
@@ -40,9 +36,15 @@
 
         public int? Width { get; set; }
 
+        public int? Height { get; set; }
+
+        public int? Depth { get; set; }
+
+        public int? SerialNumber { get; set; }
+
         public string GetDims()
         {
-            return $"{this.Width} X {this.Height} X {this.Depth}";
+            return $"{this.Width} x {this.Height} x {this.Depth}";
         }
     }
 }

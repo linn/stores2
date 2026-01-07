@@ -80,7 +80,23 @@
                                             CustomsTotal = 369.99m,
                                             RsnNumber = 789,
                                             ReasonCategory = "Upgrade"
-                                        }
+                                        },
+                                    new DailyEuRsnDispatch
+                                        {
+                                            ExportBookId = 4,
+                                            ProductId = "Article 2",
+                                            ProductDescription = "Article 2 Description, Top",
+                                            Currency = "DKK",
+                                            Quantity = 2,
+                                            QuantityPiecesPerPackage = 1,
+                                            UnitPrice = 100m,
+                                            Total = 200m,
+                                            DateCreated = 8.December(2025),
+                                            RsnNumber = 456,
+                                            ReasonCategory = "Upgrade",
+                                            UpgradeTotal = 150m,
+                                            CustomsTotal = 250m
+                                        },
                                 };
             this.FinanceProxy.GetLedgerPeriod("Dec2025")
                 .Returns(new LedgerPeriodResult { PeriodNumber = 123 });
@@ -109,7 +125,7 @@
             this.result.Should().NotBeNull();
             var summary = this.result;
 
-            summary.Rows.Should().HaveCount(3);
+            summary.Rows.Should().HaveCount(4);
 
             summary.GetGridTextValue(0, 0).Should().Be("1");
             summary.GetGridTextValue(0, 1).Should().Be("Article 1");
@@ -130,9 +146,11 @@
             summary.GetGridTextValue(0, 16).Should().Be("D.D.P.");
             summary.GetGridTextValue(0, 17).Should().Be("123");
             summary.GetGridValue(0, 18).Should().BeNull();
-            summary.GetGridValue(0, 19).Should().Be(56.78m);
-            summary.GetGridTextValue(0, 20).Should().Be("1234");
-            summary.GetGridTextValue(0, 21).Should().Be("08-Dec-2025");
+            summary.GetGridValue(0, 19).Should().BeNull();
+            summary.GetGridValue(0, 20).Should().Be(56.78m);
+            summary.GetGridValue(0, 21).Should().Be(56.78m);
+            summary.GetGridTextValue(0, 22).Should().Be("1234");
+            summary.GetGridTextValue(0, 23).Should().Be("08-Dec-2025");
           
             summary.GetGridTextValue(1, 1).Should().Be("Article 2");
             summary.GetGridTextValue(1, 2).Should().Be("Article 2 Description Top");
@@ -144,9 +162,19 @@
             summary.GetGridValue(1, 12).Should().Be(10m);
             summary.GetGridValue(1, 13).Should().Be(20m);
             summary.GetGridValue(1, 18).Should().BeNull();
+            summary.GetGridValue(1, 19).Should().BeNull();
+            summary.GetGridValue(1, 20).Should().Be(200m);
+            summary.GetGridValue(1, 21).Should().Be(20m);
 
             summary.GetGridTextValue(2, 1).Should().Be("Article 3");
             summary.GetGridValue(2, 18).Should().Be(369.99m);
+            summary.GetGridValue(2, 19).Should().Be(369.99m);
+
+            summary.GetGridTextValue(3, 0).Should().Be("4");
+            summary.GetGridValue(3, 18).Should().Be(150m);
+            summary.GetGridValue(3, 19).Should().Be(15m);
+            summary.GetGridValue(3, 20).Should().Be(250m);
+            summary.GetGridValue(3, 21).Should().Be(25m);
         }
     }
 }

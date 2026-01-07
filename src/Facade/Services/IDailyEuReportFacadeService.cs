@@ -7,10 +7,10 @@
 
     public interface IDailyEuReportFacadeService
     {
-        Task<IResult<ReportReturnResource>> GetDailyEuImportRsnReport(string fromDate, string toDate);
+        Task<IResult<ReportReturnResource>> GetDailyEuRsnImportReport(string fromDate, string toDate);
 
         Task<IResult<ReportReturnResource>> GetDailyEuDispatchReport(string fromDate, string toDate);
 
-        Task<IResult<ReportReturnResource>> GetDailyEuDispatchRsnReport(string fromDate, string toDate);
+        Task<IResult<ReportReturnResource>> GetDailyEuRsnDispatchReport(string fromDate, string toDate);
     }
 }

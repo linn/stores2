@@ -1,6 +1,4 @@
-﻿using Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests;
-
-namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
+﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
 {
     using System;
     using System.Collections.Generic;

@@ -1,6 +1,8 @@
 ﻿namespace Linn.Stores2.Domain.LinnApps.Tests.TqmsDataTests
 {
     using FluentAssertions;
+
+    using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using NUnit.Framework;
 
@@ -14,10 +16,10 @@
             this.sut = new TqmsData
             {
                 TotalQty = 1,
-                Part = new Parts.Part
+                Part = new Part
                 {
                     PartNumber = "URIKA",
-                    Bom = new Parts.Bom
+                    Bom = new Bom
                     {
                         TotalLabourTimeMins = 9.9m
                     }

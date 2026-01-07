@@ -100,9 +100,9 @@
                 .AddScoped<IQueryRepository<DailyEuDispatch>, EntityFrameworkQueryRepository<DailyEuDispatch>>(
                     r => new EntityFrameworkQueryRepository<DailyEuDispatch>(
                         r.GetService<ServiceDbContext>()?.DailyEuDispatches))
-                .AddScoped<IQueryRepository<DailyEuRsnImportReport>, EntityFrameworkQueryRepository<DailyEuRsnImportReport>>(
-                    r => new EntityFrameworkQueryRepository<DailyEuRsnImportReport>(
-                        r.GetService<ServiceDbContext>()?.DailyEuRsnImportReport))
+                .AddScoped<IQueryRepository<DailyEuRsnImport>, EntityFrameworkQueryRepository<DailyEuRsnImport>>(
+                    r => new EntityFrameworkQueryRepository<DailyEuRsnImport>(
+                        r.GetService<ServiceDbContext>()?.DailyEuRsnImports))
                 .AddScoped<IQueryRepository<DailyEuRsnDispatch>, EntityFrameworkQueryRepository<DailyEuRsnDispatch>>(
                     r => new EntityFrameworkQueryRepository<DailyEuRsnDispatch>(
                         r.GetService<ServiceDbContext>()?.DailyEuRsnDispatches))
