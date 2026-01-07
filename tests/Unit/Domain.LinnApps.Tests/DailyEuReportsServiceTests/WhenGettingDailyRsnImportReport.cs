@@ -21,9 +21,9 @@
         [SetUp]
         public async Task SetUp()
         {
-            var values = new List<DailyEuRsnImportReport>
+            var values = new List<DailyEuRsnImport>
                                 {
-                                    new DailyEuRsnImportReport
+                                    new DailyEuRsnImport
                                         {
                                             InvoiceNumber = 1,
                                             RsnNumber = 101,
@@ -32,26 +32,26 @@
                                             Pieces = 2,
                                             Width = 1,
                                             Height = 2,
-                                            PartNo = "P1",
-                                            Description = "P1 Desc",
+                                            PartNumber = "P1",
+                                            PartDescription = "P1 Desc",
                                             Depth = 3,
                                             DocumentDate = 9.December(2025),
                                             Retailer = "Ret 1",
                                             ReturnReason = "REPAIR",
                                             TariffCode = "8518 9000 00",
-                                            CustomsCpcNo = "23 00",
+                                            CustomsCpcNumber = "23 00",
                                             CountryOfOrigin = "GB",
-                                            Qty = 2,
+                                            Quantity = 2,
                                             CustomsValue = 123.45m
                                         },
-                                    new DailyEuRsnImportReport
+                                    new DailyEuRsnImport
                                         {
                                             InvoiceNumber = 2,
                                             RsnNumber = 102,
                                             Currency = "GBP",
                                             DocumentDate = 8.December(2025)
                                         },
-                                    new DailyEuRsnImportReport
+                                    new DailyEuRsnImport
                                         {
                                             InvoiceNumber = 3,
                                             RsnNumber = 103,
@@ -60,7 +60,7 @@
                                         },
                                 };
 
-            this.DailyEuRsnImportRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuRsnImportReport, bool>>>())
+            this.DailyEuRsnImportRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuRsnImport, bool>>>())
                 .Returns(values);
 
             this.result = await this.Sut.GetDailyEuRsnImportReport(

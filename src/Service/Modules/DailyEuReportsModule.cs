@@ -33,7 +33,7 @@
             }
             else
             {
-                await res.Negotiate(await facadeService.GetDailyEuImportRsnReport(fromDate, toDate));
+                await res.Negotiate(await facadeService.GetDailyEuRsnImportReport(fromDate, toDate));
             }
         }
 
@@ -67,7 +67,7 @@
             }
             else
             {
-                await res.Negotiate(await facadeService.GetDailyEuDispatchRsnReport(fromDate, toDate));
+                await res.Negotiate(await facadeService.GetDailyEuRsnDispatchReport(fromDate, toDate));
             }
         }
     }

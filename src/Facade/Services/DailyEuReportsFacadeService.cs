@@ -31,14 +31,14 @@
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }
 
-        public async Task<IResult<ReportReturnResource>> GetDailyEuImportRsnReport(string fromDate, string toDate)
+        public async Task<IResult<ReportReturnResource>> GetDailyEuRsnImportReport(string fromDate, string toDate)
         {
             var result = await this.dailyEuReportService.GetDailyEuRsnImportReport(fromDate, toDate);
 
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }
 
-        public async Task<IResult<ReportReturnResource>> GetDailyEuDispatchRsnReport(string fromDate, string toDate)
+        public async Task<IResult<ReportReturnResource>> GetDailyEuRsnDispatchReport(string fromDate, string toDate)
         {
             var fromDateForService = DateTime.Parse(fromDate);
             var toDateForService = DateTime.Parse(toDate);

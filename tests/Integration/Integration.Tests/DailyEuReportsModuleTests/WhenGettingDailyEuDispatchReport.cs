@@ -2,10 +2,13 @@
 {
     using System;
     using System.Linq;
+    using System.Net;
 
     using FluentAssertions;
     using FluentAssertions.Extensions;
 
+    using Linn.Common.Reporting.Models;
+    using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Stores2.Integration.Tests.Extensions;
 
     using NSubstitute;
@@ -14,21 +17,21 @@
 
     public class WhenGettingDailyEuDispatchReport : ContextBase
     {
-        private Common.Reporting.Models.ResultsModel result;
+        private ResultsModel result;
 
         [SetUp]
         public void SetUp()
         {
             this.result =
-                new Common.Reporting.Models.ResultsModel
+                new ResultsModel
                     {
-                        ReportTitle = new Common.Reporting.Models.NameModel("Title")
+                        ReportTitle = new NameModel("Title")
                     };
 
             this.DailyEuReportService
                 .GetDailyEuDispatchReport(
-                    NSubstitute.Arg.Any<DateTime>(),
-                    NSubstitute.Arg.Any<DateTime>())
+                    Arg.Any<DateTime>(),
+                    Arg.Any<DateTime>())
                 .Returns(this.result);
 
             this.Response = this.Client.Get(
@@ -42,7 +45,7 @@
         [Test]
         public void ShouldReturnOk()
         {
-            this.Response.StatusCode.Should().Be(System.Net.HttpStatusCode.OK);
+            this.Response.StatusCode.Should().Be(HttpStatusCode.OK);
         }
 
         [Test]
@@ -55,7 +58,7 @@
         [Test]
         public void ShouldReturnJsonBody()
         {
-            var resource = this.Response.DeserializeBody<Common.Reporting.Resources.ReportResultResources.ReportReturnResource>();
+            var resource = this.Response.DeserializeBody<ReportReturnResource>();
             resource.ReportResults.First().title.displayString.Should().Be("Title");
         }
     }

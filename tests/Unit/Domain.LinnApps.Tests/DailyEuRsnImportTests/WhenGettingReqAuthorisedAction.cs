@@ -8,14 +8,14 @@
 
     public class WhenGettingDimensions
     {
-        private DailyEuRsnImportReport sut;
+        private DailyEuRsnImport sut;
 
         private string result;
 
         [SetUp]
         public void SetUp()
         {
-            this.sut = new DailyEuRsnImportReport { Width = 12, Height = 3, Depth = 4 };
+            this.sut = new DailyEuRsnImport { Width = 12, Height = 3, Depth = 4 };
             this.result = this.sut.GetDims();
         }
 

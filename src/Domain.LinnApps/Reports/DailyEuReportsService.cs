@@ -14,7 +14,7 @@
 
     public class DailyEuReportsService : IDailyEuReportService
     {
-        private readonly IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository;
+        private readonly IQueryRepository<DailyEuRsnImport> dailyEuRsnImportRepository;
 
         private readonly IQueryRepository<DailyEuDispatch> dailyEuDispatchRepository;
 
@@ -28,14 +28,14 @@
 
         public DailyEuReportsService(
             IReportingHelper reportingHelper,
-            IQueryRepository<DailyEuRsnImportReport> dailyEuRsnImportReportRepository,
+            IQueryRepository<DailyEuRsnImport> dailyEuRsnImportRepository,
             IQueryRepository<DailyEuDispatch> dailyEuDispatchRepository,
             IQueryRepository<DailyEuRsnDispatch> dailyEuRsnDispatchRepository,
             IFinanceProxy financeProxy,
             IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository)
         {
             this.reportingHelper = reportingHelper;
-            this.dailyEuRsnImportReportRepository = dailyEuRsnImportReportRepository;
+            this.dailyEuRsnImportRepository = dailyEuRsnImportRepository;
             this.dailyEuDispatchRepository = dailyEuDispatchRepository;
             this.dailyEuRsnDispatchRepository = dailyEuRsnDispatchRepository;
             this.financeProxy = financeProxy;
@@ -46,7 +46,7 @@
         {
             var fromDateDate = DateTime.Parse(fromDate);
             var toDateDate = DateTime.Parse(toDate);
-            var lines = await this.dailyEuRsnImportReportRepository.FilterByAsync((DailyEuRsnImportReport i) =>
+            var lines = await this.dailyEuRsnImportRepository.FilterByAsync((DailyEuRsnImport i) =>
                             i.DocumentDate >= fromDateDate && i.DocumentDate <= toDateDate);
 
             var columns = new List<AxisDetailsModel>
@@ -106,7 +106,7 @@
             var values = new List<CalculationValueModel>();
             var rowIndex = 0;
 
-            foreach (var line in lines.OrderBy((DailyEuRsnImportReport a) => a.InvoiceNumber))
+            foreach (var line in lines.OrderBy(a => a.InvoiceNumber))
             {
                 var rowId = rowIndex.ToString();
 
@@ -149,13 +149,13 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, ColumnId = "partNumber", TextDisplay = line.PartNo
+                            RowId = rowId, ColumnId = "partNumber", TextDisplay = line.PartNumber
                         });
 
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, ColumnId = "description", TextDisplay = line.Description
+                            RowId = rowId, ColumnId = "description", TextDisplay = line.PartDescription
                         });
 
                 values.Add(
@@ -167,7 +167,7 @@
                 values.Add(
                     new CalculationValueModel
                         {
-                            RowId = rowId, ColumnId = "customsCpcNumber", TextDisplay = line.CustomsCpcNo
+                            RowId = rowId, ColumnId = "customsCpcNumber", TextDisplay = line.CustomsCpcNumber
                         });
 
                 values.Add(
@@ -182,7 +182,7 @@
                         });
 
                 values.Add(
-                    new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Qty });
+                    new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Quantity });
                 var currencyValue = new CalculationValueModel
                                         {
                                             RowId = rowId,

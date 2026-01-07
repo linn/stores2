@@ -100,7 +100,7 @@
 
         public DbSet<DailyEuRsnDispatch> DailyEuRsnDispatches { get; set; }
 
-        public DbSet<DailyEuRsnImportReport> DailyEuRsnImportReport { get; set; }
+        public DbSet<DailyEuRsnImport> DailyEuRsnImports { get; set; }
 
         public DbSet<ExportBook> ExportBooks { get; set; }
 
@@ -163,7 +163,7 @@
             BuildBoms(builder);
             BuildLabourHourSummaries(builder);
             BuildDailyEuDispatch(builder);
-            BuildDailyEuRsnImportReport(builder);
+            BuildDailyEuRsnImports(builder);
             BuildExportBooks(builder);
             BuildImportBookExchangeRates(builder);
             BuildLedgerPeriods(builder);
@@ -1119,15 +1119,15 @@
             entity.Property(e => e.InvoiceDate).HasColumnName("INVOICE_DATE");
         }
 
-        private static void BuildDailyEuRsnImportReport(ModelBuilder builder)
+        private static void BuildDailyEuRsnImports(ModelBuilder builder)
         {
-            var entity = builder.Entity<DailyEuRsnImportReport>().ToView("EXPORT_RETURN_VIEW").HasNoKey();
+            var entity = builder.Entity<DailyEuRsnImport>().ToView("EXPORT_RETURN_VIEW").HasNoKey();
 
             entity.Property(e => e.RsnNumber).HasColumnName("RSN_NUMBER");
             entity.Property(e => e.Retailer).HasColumnName("ADDRESSEE");
             entity.Property(e => e.DocumentDate).HasColumnName("DOCUMENT_DATE");
             entity.Property(e => e.InvoiceNumber).HasColumnName("DOCUMENT_NUMBER");
-            entity.Property(e => e.PartNo).HasColumnName("PART_NO");
+            entity.Property(e => e.PartNumber).HasColumnName("PART_NO");
             entity.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE");
             entity.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN");
             entity.Property(e => e.Pieces).HasColumnName("NUM_CARTONS");
@@ -1135,10 +1135,10 @@
             entity.Property(e => e.Width).HasColumnName("WIDTH");
             entity.Property(e => e.Height).HasColumnName("HEIGHT");
             entity.Property(e => e.Depth).HasColumnName("DEPTH");
-            entity.Property(e => e.Description).HasColumnName("DESCRIPTION");
+            entity.Property(e => e.PartDescription).HasColumnName("DESCRIPTION");
             entity.Property(e => e.ReturnReason).HasColumnName("REASON_CATEGORY");
-            entity.Property(e => e.CustomsCpcNo).HasColumnName("CUSTOMS_CPC_NO");
-            entity.Property(e => e.Qty).HasColumnName("QTY");
+            entity.Property(e => e.CustomsCpcNumber).HasColumnName("CUSTOMS_CPC_NO");
+            entity.Property(e => e.Quantity).HasColumnName("QTY");
             entity.Property(e => e.Currency).HasColumnName("CURRENCY");
             entity.Property(e => e.CustomsValue).HasColumnName("CUSTOMS_VALUE");
             entity.Property(e => e.SerialNumber).HasColumnName("SERIAL_NUMBER");
