@@ -63,9 +63,7 @@
             this.DailyEuRsnImportRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuRsnImport, bool>>>())
                 .Returns(values);
 
-            this.result = await this.Sut.GetDailyEuRsnImportReport(
-                              1.December(2025).ToString("o"),
-                              20.December(2025).ToString("o"));
+            this.result = await this.Sut.GetDailyEuRsnImportReport(1.December(2025), 20.December(2025));
         }
 
         [Test]

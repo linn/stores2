@@ -33,7 +33,10 @@
 
         public async Task<IResult<ReportReturnResource>> GetDailyEuRsnImportReport(string fromDate, string toDate)
         {
-            var result = await this.dailyEuReportService.GetDailyEuRsnImportReport(fromDate, toDate);
+            var fromDateForService = DateTime.Parse(fromDate);
+            var toDateForService = DateTime.Parse(toDate); 
+            var result =
+                await this.dailyEuReportService.GetDailyEuRsnImportReport(fromDateForService, toDateForService);
 
             return new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
         }

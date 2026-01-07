@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Integration.Tests.DailyEuReportsModuleTests
 {
+    using System;
     using System.Linq;
     using System.Net;
 
@@ -23,7 +24,7 @@
         {
             this.result = new ResultsModel { ReportTitle = new NameModel("Title") };
 
-            this.DailyEuReportService.GetDailyEuRsnImportReport(Arg.Any<string>(), Arg.Any<string>())
+            this.DailyEuReportService.GetDailyEuRsnImportReport(Arg.Any<DateTime>(), Arg.Any<DateTime>())
                 .Returns(this.result);
 
             this.Response = this.Client.Get(

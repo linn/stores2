@@ -42,12 +42,13 @@
             this.importBookExchangeRateRepository = importBookExchangeRateRepository;
         }
 
-        public async Task<ResultsModel> GetDailyEuRsnImportReport(string fromDate, string toDate)
+        public async Task<ResultsModel> GetDailyEuRsnImportReport(DateTime fromDate, DateTime toDate)
         {
-            var fromDateDate = DateTime.Parse(fromDate);
-            var toDateDate = DateTime.Parse(toDate);
-            var lines = await this.dailyEuRsnImportRepository.FilterByAsync((DailyEuRsnImport i) =>
-                            i.DocumentDate >= fromDateDate && i.DocumentDate <= toDateDate);
+            var fromDateStart = fromDate.Date;
+            var toDateEnd = toDate.AddDays(1).Date;
+
+            var lines = await this.dailyEuRsnImportRepository.FilterByAsync(i =>
+                            i.DocumentDate >= fromDateStart && i.DocumentDate < toDateEnd);
 
             var columns = new List<AxisDetailsModel>
                               {
@@ -181,8 +182,7 @@
                             RowId = rowId, ColumnId = "countryOfOrigin", TextDisplay = line.CountryOfOrigin
                         });
 
-                values.Add(
-                    new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Quantity });
+                values.Add(new CalculationValueModel { RowId = rowId, ColumnId = "quantity", Value = line.Quantity });
                 var currencyValue = new CalculationValueModel
                                         {
                                             RowId = rowId,
