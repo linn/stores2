@@ -2,7 +2,13 @@ import React, { useState, useMemo } from 'react';
 import queryString from 'query-string';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import { DatePicker, Loading, useGet, ReportDataGrid } from '@linn-it/linn-form-components-library';
+import {
+    DatePicker,
+    Loading,
+    useGet,
+    ReportDataGrid,
+    ExportButton
+} from '@linn-it/linn-form-components-library';
 import Button from '@mui/material/Button';
 import itemTypes from '../itemTypes';
 import config from '../config';
@@ -39,10 +45,17 @@ function DailyEuRsnImportReport() {
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false} title="Daily EU RSN Import">
             <Grid container spacing={2}>
-                <Grid size={12}>
+                <Grid size={10}>
                     <Typography color="primary" variant="h4">
                         Daily EU RSN Import Report
                     </Typography>
+                </Grid>
+                <Grid size={2}>
+                    <ExportButton
+                        href={`${itemTypes.dailyEuRsnImportReport.url}?${queryString.stringify(options())}`}
+                        fileName="DailyEuRsnImportReport.csv"
+                        tooltipText="Download as CSV"
+                    />
                 </Grid>
                 <Grid size={3}>
                     <DatePicker
