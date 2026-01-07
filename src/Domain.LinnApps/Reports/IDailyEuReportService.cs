@@ -7,7 +7,7 @@
 
     public interface IDailyEuReportService
     {
-        Task<ResultsModel> GetDailyEuImportRsnReport(
+        Task<ResultsModel> GetDailyEuRsnImportReport(
             string startDate,
             string toDate);
 

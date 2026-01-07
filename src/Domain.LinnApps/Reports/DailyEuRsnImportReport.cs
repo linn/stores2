@@ -42,7 +42,7 @@
 
         public string GetDims()
         {
-            return $"{this.Width} X {this.Height} X {this.Depth}";
+            return $"{this.Width} x {this.Height} x {this.Depth}";
         }
     }
 }

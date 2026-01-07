@@ -37,10 +37,10 @@ function DailyEuRsnImportReport() {
 
     return (
         <Page>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} showAuthUi={false} title="Daily EU RSN Imports">
                 <Grid size={12}>
                     <Typography color="primary" variant="h4">
-                        Daily Eu RSN Import Report
+                        Daily EU RSN Import Report
                     </Typography>
                 </Grid>
                 <Grid size={3}>

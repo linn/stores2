@@ -21,7 +21,7 @@
             this.result = new Common.Reporting.Models.ResultsModel { ReportTitle = new Common.Reporting.Models.NameModel("Title") };
 
             this.DailyEuReportService
-                .GetDailyEuImportRsnReport(
+                .GetDailyEuRsnImportReport(
                     NSubstitute.Arg.Any<string>(),
                     NSubstitute.Arg.Any<string>())
                 .Returns(this.result);
