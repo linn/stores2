@@ -596,8 +596,24 @@
                                           Align = "right", DecimalPlaces = 2
                                       },
                                   new AxisDetailsModel(
+                                      "euroUpgradeTotal",
+                                      "Euro Upgrade Total",
+                                      GridDisplayType.Value,
+                                      150)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel(
                                       "customsTotal",
                                       "Customs Total",
+                                      GridDisplayType.Value,
+                                      150)
+                                      {
+                                          Align = "right", DecimalPlaces = 2
+                                      },
+                                  new AxisDetailsModel(
+                                      "euroCustomsTotal",
+                                      "Euro Customs Total",
                                       GridDisplayType.Value,
                                       150)
                                       {
@@ -722,12 +738,8 @@
                         RowId = rowId,
                         ColumnId = "euroValue",
                         Value = exchangeRate.HasValue
-                                        ? line.Total.HasValue
-                                              ? decimal.Round(line.Total.Value / exchangeRate.Value, 2)
-                                              : decimal.Round(
-                                                  line.CustomsTotal.GetValueOrDefault() / exchangeRate.Value,
-                                                  2)
-                                        : 0
+                                    ? decimal.Round(line.Total.GetValueOrDefault() / exchangeRate.Value, 2)
+                                    : 0
                     });
                 values.Add(
                     new CalculationValueModel
@@ -773,6 +785,15 @@
                                 ColumnId = "upgradeTotal",
                                 Value = line.UpgradeTotal.GetValueOrDefault()
                             });
+                    values.Add(
+                        new CalculationValueModel
+                            {
+                                RowId = rowId,
+                                ColumnId = "euroUpgradeTotal",
+                                Value = exchangeRate.HasValue
+                                            ? decimal.Round(line.UpgradeTotal.GetValueOrDefault() / exchangeRate.Value, 2)
+                                            : 0
+                            });
                 }
 
                 values.Add(
@@ -782,6 +803,16 @@
                             ColumnId = "customsTotal",
                             Value = line.CustomsTotal.GetValueOrDefault()
                         });
+                values.Add(
+                    new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "euroCustomsTotal",
+                            Value = exchangeRate.HasValue
+                                        ? decimal.Round(line.CustomsTotal.GetValueOrDefault() / exchangeRate.Value, 2)
+                                        : 0
+                        });
+
                 rowIndex++;
             }
 

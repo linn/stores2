@@ -186,7 +186,7 @@
 
             // can optionally Log any SQL that is ran by uncommenting:
             // optionsBuilder.UseLoggerFactory(MyLoggerFactory);
-            optionsBuilder.EnableSensitiveDataLogging(true);
+            // optionsBuilder.EnableSensitiveDataLogging(true);
             base.OnConfiguring(optionsBuilder);
         }
 

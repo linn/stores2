@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 import itemTypes from '../itemTypes';
 import Page from './Page';
 
-function DailyEuImportRsnReport() {
+function DailyEuRsnImportReport() {
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
 
@@ -17,10 +17,10 @@ function DailyEuImportRsnReport() {
     });
 
     const {
-        send: getDailyEuImportRsnReport,
+        send: getDailyEuRsnImportReport,
         isLoading,
         result
-    } = useGet(itemTypes.dailyEuImportRsnReport.url, true);
+    } = useGet(itemTypes.dailyEuRsnImportReport.url, true);
 
     const report = useMemo(
         () => (
@@ -40,7 +40,7 @@ function DailyEuImportRsnReport() {
             <Grid container spacing={2}>
                 <Grid size={12}>
                     <Typography color="primary" variant="h4">
-                        Daily Eu Import RSN Report
+                        Daily Eu RSN Import Report
                     </Typography>
                 </Grid>
                 <Grid size={3}>
@@ -61,11 +61,11 @@ function DailyEuImportRsnReport() {
                         }}
                     />
                 </Grid>
-                <Grid size={2}>
+                <Grid size={2} sx={{ marginTop: 4 }}>
                     <Button
                         variant="contained"
                         onClick={() => {
-                            getDailyEuImportRsnReport(null, `?${queryString.stringify(options())}`);
+                            getDailyEuRsnImportReport(null, `?${queryString.stringify(options())}`);
                         }}
                     >
                         Run
@@ -82,4 +82,4 @@ function DailyEuImportRsnReport() {
     );
 }
 
-export default DailyEuImportRsnReport;
+export default DailyEuRsnImportReport;
