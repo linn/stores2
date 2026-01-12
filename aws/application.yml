@@ -71,6 +71,9 @@ Parameters:
   entraLogoutUri:
     Type: String
     Description: Entra logout uri
+  legacyAuthorityUri:
+    Type: String
+    Description: legacy oidc uri
 
 Conditions:
   isTesting: !Or
@@ -191,6 +194,9 @@ Resources:
             - Name: COGNITO_DOMAIN_PREFIX
               Value: !Ref cognitoDomainPrefix
             - Name: ENTRA_LOGOUT_URI
+              Value: !Ref entraLogoutUri
+            - Name: LEGACY_AUTHORITY_URI
+              Value: !Ref legacyAuthorityUri
             - Name: BUILD_NUMBER
               Value: !Ref dockerTag
             - Name: PDF_SERVICE_ROOT
