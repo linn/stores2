@@ -36,7 +36,7 @@
 		<PackageReference Include="Linn.Common.Logging" Version="2.0.0" />
 		<PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="6.0.0" />
 		<PackageReference Include="Linn.Common.Rendering" Version="1.0.0" />
-		<PackageReference Include="Linn.Common.Service" Version="1.1.0" />
+		<PackageReference Include="Linn.Common.Service" Version="1.3.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\IoC\IoC.csproj" />

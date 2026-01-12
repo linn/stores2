@@ -1,8 +1,11 @@
-﻿import React from 'react';
-import { Route, Routes, Navigate } from 'react-router-dom';
+﻿import React, { useEffect } from 'react';
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import 'typeface-roboto';
+import { useAuth } from 'react-oidc-context';
+import { Loading } from '@linn-it/linn-form-components-library';
 import useSignIn from '../hooks/useSignIn';
 import Navigation from '../containers/Navigation';
+import LoggedOut from './LoggedOut';
 import NotFoundPage from './NotFoundPage';
 import App from './App';
 import Carriers from './Carriers';
@@ -42,121 +45,142 @@ import LabourHoursInLoansReport from './LabourHoursInLoansReport';
 function Root() {
     useSignIn();
 
+    const location = useLocation();
+    const isLoggedOutRoute = location.pathname === '/stores2/logged-out';
+    useSignIn({ disabled: isLoggedOutRoute });
+
+    const auth = useAuth();
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (auth.isAuthenticated && urlParams.has('code') && urlParams.has('state')) {
+            const cleanUrl = window.location.origin + window.location.pathname;
+            window.history.replaceState({}, document.title, cleanUrl);
+        }
+    }, [auth.isAuthenticated]);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    // More specific check for OIDC callback
+    const isOidcCallback = urlParams.has('code') && urlParams.has('state');
+    if (auth.isLoading || (isOidcCallback && !auth.isAuthenticated)) {
+        return (
+            <div>
+                <div>
+                    <Navigation />
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            height: 'calc(100vh - 80px)'
+                        }}
+                    >
+                        <Loading />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div>
-            <div>
-                <Navigation />
-                <Routes>
-                    <Route path="/" element={<Navigate to="/stores2" replace />} />
-                    <Route path="/stores2" element={<App />} />
-                    <Route path="/stores2/carriers" element={<Carriers />} />
-                    <Route path="/stores2/carriers/create" element={<Carrier creating />} />
-                    <Route path="/stores2/carriers/:code" element={<Carrier />} />
-                    <Route path="/stores2/goods-in-log" element={<GoodsInLog />} />
-                    <Route
-                        path="/stores2/reports/storage-place-audit"
-                        element={<StoragePlaceAudit />}
-                    />
-                    <Route
-                        path="/requisitions/stores-functions/view"
-                        element={<StoresFunctions />}
-                    />
-                    <Route
-                        path="/requisitions/stores-functions/:code"
-                        element={<StoresFunction />}
-                    />
-                    <Route path="/requisitions" element={<SearchRequisitions />} />
-                    <Route path="/requisitions/print-qc-labels" element={<QcLabelPrintScreen />} />
+            <Navigation />
+            <Routes>
+                <Route path="/" element={<Navigate to="/stores2" replace />} />
+                <Route path="/stores2" element={<App />} />
+                <Route path="/stores2/logged-out" element={<LoggedOut />} />
+                <Route path="/stores2/carriers" element={<Carriers />} />
+                <Route path="/stores2/carriers/create" element={<Carrier creating />} />
+                <Route path="/stores2/carriers/:code" element={<Carrier />} />
+                <Route path="/stores2/goods-in-log" element={<GoodsInLog />} />
+                <Route
+                    path="/stores2/reports/storage-place-audit"
+                    element={<StoragePlaceAudit />}
+                />
+                <Route path="/requisitions/stores-functions/view" element={<StoresFunctions />} />
+                <Route path="/requisitions/stores-functions/:code" element={<StoresFunction />} />
+                <Route path="/requisitions" element={<SearchRequisitions />} />
+                <Route path="/requisitions/print-qc-labels" element={<QcLabelPrintScreen />} />
 
-                    <Route path="/requisitions/pending" element={<PendingRequisitions />} />
-                    <Route path="/requisitions/create" element={<Requisition creating />} />
+                <Route path="/requisitions/pending" element={<PendingRequisitions />} />
+                <Route path="/requisitions/create" element={<Requisition creating />} />
 
-                    <Route
-                        path="/requisitions/:reqNumber"
-                        element={<Requisition creating={false} />}
-                    />
+                <Route path="/requisitions/:reqNumber" element={<Requisition creating={false} />} />
 
-                    <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
-                    <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
-                    <Route path="/stores2/storage" element={<StorageLocations />} />
-                    <Route
-                        path="/stores2/storage/locations"
-                        element={<Navigate to="/stores2/storage" replace />}
-                    />
+                <Route path="/stores2/budgets" element={<StoresBudgetViewer />} />
+                <Route path="/stores2/budgets/:id" element={<StoresBudgetViewer />} />
+                <Route path="/stores2/storage" element={<StorageLocations />} />
+                <Route
+                    path="/stores2/storage/locations"
+                    element={<Navigate to="/stores2/storage" replace />}
+                />
 
-                    <Route path="/stores2/storage-types" element={<StorageTypes />} />
-                    <Route path="/stores2/part-storage-types" element={<PartStorageTypes />} />
-                    <Route path="/stores2/part-storage-types/:id" element={<PartStorageType />} />
-                    <Route
-                        path="/stores2/part-storage-types/create"
-                        element={<PartStorageType creating />}
-                    />
-                    <Route path="/stores2/pcas-storage-types" element={<PcasStorageTypes />} />
-                    <Route
-                        path="/stores2/pcas-storage-types/create"
-                        element={<PcasStorageType creating />}
-                    />
-                    <Route
-                        path="/stores2/pcas-storage-types/:boardCode/:storageTypeCode"
-                        element={<PcasStorageType />}
-                    />
-                    <Route path="/stores2/storage/sites" element={<StorageSites />} />
-                    <Route
-                        path="/stores2/storage/sites/create"
-                        element={<StorageSite creating />}
-                    />
-                    <Route path="/service/storage-sites/:code" element={<StorageSite />} />
-                    <Route
-                        path="/stores2/storage/locations/create"
-                        element={<StorageLocation creating />}
-                    />
-                    <Route
-                        path="stores2/reports/daily-eu-dispatch"
-                        element={<DailyEuDispatchReport />}
-                    />
-                    <Route
-                        path="/stores2/reports/daily-eu-rsn-dispatch"
-                        element={<DailyEuRsnDispatchReport />}
-                    />
-                    <Route
-                        path="/stores2/reports/daily-eu-rsn-import"
-                        element={<DailyEuRsnImportReport />}
-                    />
-                    <Route path="/stores2/pallets" element={<Pallets />} />
-                    <Route path="/stores2/pallets/:id" element={<Pallet />} />
-                    <Route path="/stores2/pallets/create" element={<Pallet creating />} />
-                    <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
-                    <Route path="/stores2/stock-pools" element={<StockPools />} />
-                    <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />
-                    <Route
-                        path="/requisitions/reports/requisition-cost"
-                        element={<RequisitionCostReport />}
-                    />
-                    <Route
-                        path="/requisitions/reports/requisition-cost/:reqNumber"
-                        element={<RequisitionCostReport />}
-                    />
-                    <Route path="/stores2/work-stations" element={<Workstations />} />
-                    <Route path="/stores2/work-stations/detail" element={<Workstation />} />
-                    <Route
-                        path="/stores2/work-stations/create"
-                        element={<Workstation creating />}
-                    />
-                    <Route
-                        path="/stores2/reports/labour-hours-in-stock"
-                        element={<LabourHoursInStockReport />}
-                    />
-                    <Route
-                        path="/stores2/reports/labour-hours-in-loans"
-                        element={<LabourHoursInLoansReport />}
-                    />
-                    <Route
-                        path="/stores2/reports/labour-hours-summary"
-                        element={<LabourHoursSummaryReport />}
-                    />
-                    <Route path="*" element={<NotFoundPage />} />
-                </Routes>
-            </div>
+                <Route path="/stores2/storage-types" element={<StorageTypes />} />
+                <Route path="/stores2/part-storage-types" element={<PartStorageTypes />} />
+                <Route path="/stores2/part-storage-types/:id" element={<PartStorageType />} />
+                <Route
+                    path="/stores2/part-storage-types/create"
+                    element={<PartStorageType creating />}
+                />
+                <Route path="/stores2/pcas-storage-types" element={<PcasStorageTypes />} />
+                <Route
+                    path="/stores2/pcas-storage-types/create"
+                    element={<PcasStorageType creating />}
+                />
+                <Route
+                    path="/stores2/pcas-storage-types/:boardCode/:storageTypeCode"
+                    element={<PcasStorageType />}
+                />
+                <Route path="/stores2/storage/sites" element={<StorageSites />} />
+                <Route path="/stores2/storage/sites/create" element={<StorageSite creating />} />
+                <Route path="/service/storage-sites/:code" element={<StorageSite />} />
+                <Route
+                    path="/stores2/storage/locations/create"
+                    element={<StorageLocation creating />}
+                />
+                <Route
+                    path="stores2/reports/daily-eu-dispatch"
+                    element={<DailyEuDispatchReport />}
+                />
+                <Route
+                    path="/stores2/reports/daily-eu-rsn-dispatch"
+                    element={<DailyEuRsnDispatchReport />}
+                />
+                <Route
+                    path="/stores2/reports/daily-eu-rsn-import"
+                    element={<DailyEuRsnImportReport />}
+                />
+                <Route path="/stores2/pallets" element={<Pallets />} />
+                <Route path="/stores2/pallets/:id" element={<Pallet />} />
+                <Route path="/stores2/pallets/create" element={<Pallet creating />} />
+                <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
+                <Route path="/stores2/stock-pools" element={<StockPools />} />
+                <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />
+                <Route
+                    path="/requisitions/reports/requisition-cost"
+                    element={<RequisitionCostReport />}
+                />
+                <Route
+                    path="/requisitions/reports/requisition-cost/:reqNumber"
+                    element={<RequisitionCostReport />}
+                />
+                <Route path="/stores2/work-stations" element={<Workstations />} />
+                <Route path="/stores2/work-stations/detail" element={<Workstation />} />
+                <Route path="/stores2/work-stations/create" element={<Workstation creating />} />
+                <Route
+                    path="/stores2/reports/labour-hours-in-stock"
+                    element={<LabourHoursInStockReport />}
+                />
+                <Route
+                    path="/stores2/reports/labour-hours-in-loans"
+                    element={<LabourHoursInLoansReport />}
+                />
+                <Route
+                    path="/stores2/reports/labour-hours-summary"
+                    element={<LabourHoursSummaryReport />}
+                />
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
         </div>
     );
 }

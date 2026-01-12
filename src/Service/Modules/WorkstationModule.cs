@@ -13,18 +13,18 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
 
-    public class WorkstationModule : IModule
+    public class WorkStationModule : IModule
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/stores2/work-stations/application-state", this.GetWorkstationApplicationState);
+            app.MapGet("/stores2/work-stations/application-state", this.GetWorkStationApplicationState);
             app.MapGet("/stores2/work-stations", this.Search);
             app.MapPost("/stores2/work-stations", this.Create);
             app.MapGet("/stores2/work-stations/{*code}", this.GetById);
             app.MapPut("/stores2/work-stations/{*code}", this.Update);
         }
 
-        private async Task GetWorkstationApplicationState(
+        private async Task GetWorkStationApplicationState(
             HttpRequest req,
             HttpResponse res,
             IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service)

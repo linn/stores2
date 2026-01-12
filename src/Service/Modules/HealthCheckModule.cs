@@ -10,7 +10,7 @@
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
-            app.MapGet("/healthcheck", async (HttpRequest req, HttpResponse res) => await res.WriteAsync("Ok"));
+            app.MapGet("/healthcheck", () => Results.Ok("Ok"));
         }
     }
 }

@@ -66,7 +66,7 @@
                     transactionManager,
                     new WorkStationResourceBuilder(new WorkStationElementsResourceBuilder(), this.AuthorisationService));
 
-            this.Client = TestClient.With<WorkstationModule>(
+            this.Client = TestClient.With<WorkStationModule>(
                 services =>
                 {
                     services.AddSingleton(workStationFacadeService);

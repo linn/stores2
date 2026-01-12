@@ -16,6 +16,7 @@
         {
             app.MapGet("/", this.Redirect);
             app.MapGet("/stores2", this.GetApp);
+            app.MapGet("/stores2/logged-out", this.GetApp);
         }
 
         private Task Redirect(HttpRequest req, HttpResponse res)
