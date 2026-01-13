@@ -41,11 +41,14 @@ namespace Linn.Stores2.Service.Host.Negotiators
             var view = this.viewLoader.Load(viewName);
 
             var jsonAppSettings = JsonConvert.SerializeObject(
-                    new
+                new
                     {
-                        AuthorityUri = ConfigurationManager.Configuration["AUTHORITY_URI"],
+                        CognitoHost = ConfigurationManager.Configuration["COGNITO_HOST"],
+                        CognitoClientId = ConfigurationManager.Configuration["COGNITO_CLIENT_ID"],
+                        CognitoDomainPrefix = ConfigurationManager.Configuration["COGNITO_DOMAIN_PREFIX"],
                         AppRoot = ConfigurationManager.Configuration["APP_ROOT"],
-                        ProxyRoot = ConfigurationManager.Configuration["PROXY_ROOT"]
+                        ProxyRoot = ConfigurationManager.Configuration["PROXY_ROOT"],
+                        entraLogoutUri = ConfigurationManager.Configuration["ENTRA_LOGOUT_URI"]
                     },
                     Formatting.Indented,
                     new JsonSerializerSettings

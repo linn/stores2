@@ -4,6 +4,7 @@ namespace Linn.Stores2.Service.Host
     using System.IO;
 
     using Linn.Common.Authentication.Host.Extensions;
+    using Linn.Common.Configuration;
     using Linn.Common.Logging;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
@@ -11,6 +12,7 @@ namespace Linn.Stores2.Service.Host
     using Linn.Stores2.Service.Host.Negotiators;
     using Linn.Stores2.Service.Models;
 
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Hosting;
@@ -46,13 +48,50 @@ namespace Linn.Stores2.Service.Host
             services.AddPersistence();
             services.AddHandlers();
 
+            var appSettings = ApplicationSettings.Get();
+
+            const string LegacyJwtScheme = JwtBearerDefaults.AuthenticationScheme;
+
             services.AddLinnAuthentication(
                 options =>
+                {
+                    options.Authority = ConfigurationManager.Configuration["LEGACY_AUTHORITY_URI"];
+                    options.CallbackPath = new PathString("/accounts/signin-oidc");
+                    options.CookiePath = "/accounts";
+                });
+
+            services.AddAuthentication().AddJwtBearer(
+                "cognito-provider",
+                options =>
+                {
+                    options.Authority = appSettings.CognitoHost;
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
-                        options.Authority = ApplicationSettings.Get().AuthorityUri;
-                        options.CallbackPath = new PathString("/stores2/signin-oidc");
-                        options.CookiePath = "/stores2";
-                    });
+                        ValidateIssuer = true,
+                        ValidIssuer = appSettings.CognitoHost,
+                        ValidateAudience = false,
+                        ValidAudience = appSettings.CognitoClientId,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true
+                    };
+                    options.MetadataAddress = $"{appSettings.CognitoHost}/.well-known/openid-configuration";
+                });
+
+            services.AddAuthentication(
+                options =>
+                {
+                    options.DefaultScheme = "MultiAuth";
+                    options.DefaultChallengeScheme = "MultiAuth";
+                }).AddScheme<MultiAuthOptions, MultiAuthHandler>(
+                "MultiAuth",
+                opts =>
+                {
+                    opts.CognitoIssuer = appSettings.CognitoHost;
+                    opts.CognitoScheme = "cognito-provider";
+                    opts.LegacyScheme = JwtBearerDefaults.AuthenticationScheme;
+                });
+
+            services.AddAuthorization();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

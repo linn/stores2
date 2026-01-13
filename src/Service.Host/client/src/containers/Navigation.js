@@ -3,6 +3,7 @@ import { Navigation as NavigationUI } from '@linn-it/linn-form-components-librar
 import { useAuth } from 'react-oidc-context';
 import useInitialise from '../hooks/useInitialise';
 import config from '../config';
+import * as authUtils from '../helpers/authUtils';
 
 function Navigation() {
     const { isLoading: menuLoading, result: menuData } = useInitialise(
@@ -20,7 +21,9 @@ function Navigation() {
     };
 
     // instead pass a working sign out behaviour for this context
-    const handleSignOut = () => auth.signoutRedirect();
+    const handleSignOut = () => {
+        authUtils.signOut();
+    };
 
     return (
         <NavigationUI
@@ -32,7 +35,7 @@ function Navigation() {
             seenNotifications={[]}
             unseenNotifications={notifcationsData?.notifcations}
             markNotificationSeen={() => {}}
-            authRoot={config.authorityUri}
+            authRoot={config.cognitoHost}
         />
     );
 }
