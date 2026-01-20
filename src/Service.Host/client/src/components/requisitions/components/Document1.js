@@ -35,7 +35,7 @@ function Document1({
         send: fetchWorksOrder,
         result: worksOrder,
         clearData: clearWorksOrder
-    } = useGet(itemTypes.worksOrders.url, true);
+    } = useGet(itemTypes.worksOrders.url, false);
 
     const {
         send: fetchPart,
