@@ -1040,10 +1040,7 @@ function Requisition({ creating }) {
                                     fullWidth
                                     value={formState.req.reference}
                                     onChange={handleHeaderFieldChange}
-                                    disabled={
-                                        formState.req?.cancelled === 'Y' ||
-                                        formState.req?.dateBooked
-                                    }
+                                    disabled={formState.req?.cancelled === 'Y'}
                                     label="Reference"
                                     propertyName="reference"
                                 />

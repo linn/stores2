@@ -419,11 +419,6 @@
 
         public void Update(string comments, string reference)
         {
-            if (this.IsBooked())
-            {
-                throw new RequisitionException("Cannot amend a booked req");
-            }
-
             this.Comments = comments;
             this.Reference = reference;
         }
