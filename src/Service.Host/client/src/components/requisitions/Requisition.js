@@ -52,7 +52,8 @@ import AuditLocationSearch from './components/AuditLocationSearch';
 
 function Requisition({ creating }) {
     const navigate = useNavigate();
-    const { userNumber, name } = useUserProfile();
+    const { userNumber, name, userName } = useUserProfile();
+    console.log(userNumber, name, userName);
     const { reqNumber } = useParams();
 
     const {
@@ -1040,10 +1041,7 @@ function Requisition({ creating }) {
                                     fullWidth
                                     value={formState.req.reference}
                                     onChange={handleHeaderFieldChange}
-                                    disabled={
-                                        formState.req?.cancelled === 'Y' ||
-                                        formState.req?.dateBooked
-                                    }
+                                    disabled={formState.req?.cancelled === 'Y'}
                                     label="Reference"
                                     propertyName="reference"
                                 />
