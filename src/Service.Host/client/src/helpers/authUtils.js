@@ -27,6 +27,7 @@ export const oidcConfig = {
     response_type: 'code',
     scope: 'email openid profile',
     post_logout_redirect_uri: logoutUri,
+    userStore: new WebStorageStateStore({ store: window.localStorage }),
     onSigninCallback: () => {
         const redirect = sessionStorage.getItem('auth:redirect');
         if (redirect) {
