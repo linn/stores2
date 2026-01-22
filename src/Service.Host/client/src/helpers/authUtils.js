@@ -1,4 +1,5 @@
 import config from '../config';
+import { WebStorageStateStore } from 'oidc-client-ts';
 
 const authority = config.cognitoHost;
 const clientId = config.cognitoClientId;
