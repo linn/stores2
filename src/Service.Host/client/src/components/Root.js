@@ -43,8 +43,6 @@ import LabourHoursSummaryReport from './LabourHoursSummaryReport';
 import LabourHoursInLoansReport from './LabourHoursInLoansReport';
 
 function Root() {
-    useSignIn();
-
     const location = useLocation();
     const isLoggedOutRoute = location.pathname === '/stores2/logged-out';
     useSignIn({ disabled: isLoggedOutRoute });
