@@ -95,7 +95,7 @@
                                             RsnNumber = 456,
                                             ReasonCategory = "Upgrade",
                                             UpgradeTotal = 150m,
-                                            CustomsTotal = 250m
+                                            CustomsTotal = 350m
                                         },
                                 };
             this.FinanceProxy.GetLedgerPeriod("Dec2025")
@@ -145,8 +145,8 @@
             summary.GetGridValue(0, 15).Should().Be(50m);
             summary.GetGridTextValue(0, 16).Should().Be("D.D.P.");
             summary.GetGridTextValue(0, 17).Should().Be("123");
-            summary.GetGridValue(0, 18).Should().BeNull();
-            summary.GetGridValue(0, 19).Should().BeNull();
+            summary.GetGridValue(0, 18).Should().Be(0);
+            summary.GetGridValue(0, 19).Should().Be(0);
             summary.GetGridValue(0, 20).Should().Be(56.78m);
             summary.GetGridValue(0, 21).Should().Be(56.78m);
             summary.GetGridTextValue(0, 22).Should().Be("1234");
@@ -161,20 +161,25 @@
             summary.GetGridValue(1, 11).Should().Be(10m);
             summary.GetGridValue(1, 12).Should().Be(10m);
             summary.GetGridValue(1, 13).Should().Be(20m);
-            summary.GetGridValue(1, 18).Should().BeNull();
-            summary.GetGridValue(1, 19).Should().BeNull();
+            summary.GetGridValue(1, 18).Should().Be(0);
+            summary.GetGridValue(1, 19).Should().Be(0);
             summary.GetGridValue(1, 20).Should().Be(200m);
             summary.GetGridValue(1, 21).Should().Be(20m);
+
+            summary.GetGridTextValue(2, 0).Should().Be(expected: "3");
 
             summary.GetGridTextValue(2, 1).Should().Be("Article 3");
             summary.GetGridValue(2, 18).Should().Be(369.99m);
             summary.GetGridValue(2, 19).Should().Be(369.99m);
+            summary.GetGridValue(2, 20).Should().Be(739.98m);
+            summary.GetGridValue(2, 21).Should().Be(expected: 739.98m);
 
-            summary.GetGridTextValue(3, 0).Should().Be("4");
+
+            summary.GetGridTextValue(3, 0).Should().Be(expected: "4");
             summary.GetGridValue(3, 18).Should().Be(150m);
             summary.GetGridValue(3, 19).Should().Be(15m);
-            summary.GetGridValue(3, 20).Should().Be(250m);
-            summary.GetGridValue(3, 21).Should().Be(25m);
+            summary.GetGridValue(3, 20).Should().Be(350m);
+            summary.GetGridValue(3, 21).Should().Be(expected: 35m);
         }
     }
 }

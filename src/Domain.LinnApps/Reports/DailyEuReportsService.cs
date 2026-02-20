@@ -785,8 +785,8 @@
                             {
                                 RowId = rowId,
                                 ColumnId = "upgradeTotal",
-                                Value = line.UpgradeTotal.GetValueOrDefault()
-                            });
+                                Value = line.UpgradeTotal.Value
+                        });
                     values.Add(
                         new CalculationValueModel
                             {
@@ -797,21 +797,39 @@
                                             : 0
                             });
                 }
+                else
+                {
+                    values.Add(
+                        new CalculationValueModel
+                            {
+                                RowId = rowId,
+                                ColumnId = "upgradeTotal",
+                                Value = 0
+                            });
+                    values.Add(
+                        new CalculationValueModel
+                            {
+                                RowId = rowId,
+                                ColumnId = "euroUpgradeTotal",
+                                Value = 0
+                            });
+                }
 
+                var customsTotal = line.Total.GetValueOrDefault() + line.UpgradeTotal.GetValueOrDefault();
                 values.Add(
                     new CalculationValueModel
                         {
                             RowId = rowId,
                             ColumnId = "customsTotal",
-                            Value = line.CustomsTotal.GetValueOrDefault()
-                        });
+                            Value = customsTotal
+                    });
                 values.Add(
                     new CalculationValueModel
                         {
                             RowId = rowId,
                             ColumnId = "euroCustomsTotal",
                             Value = exchangeRate.HasValue
-                                        ? decimal.Round(line.CustomsTotal.GetValueOrDefault() / exchangeRate.Value, 2)
+                                        ? decimal.Round(customsTotal / exchangeRate.Value, 2)
                                         : 0
                         });
 
