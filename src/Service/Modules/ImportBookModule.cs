@@ -17,7 +17,7 @@
         public void MapEndpoints(IEndpointRouteBuilder app)
         {
             app.MapGet("/stores2/import-books", this.SearchImports);
-            app.MapGet("/stores2/import-books/{id}", this.GetById);
+            app.MapGet("/stores2/import-books/{id:int}", this.GetById);
             app.MapGet("/stores2/import-books/create", this.GetApp);
         }
 

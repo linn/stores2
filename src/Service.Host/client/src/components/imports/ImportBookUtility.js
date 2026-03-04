@@ -66,9 +66,7 @@ function ImportBookUtility({ creating }) {
 
                 {isLoading || createLoading ? (
                     <Grid size={12}>
-                        <List>
-                            <Loading />
-                        </List>
+                        <Loading />
                     </Grid>
                 ) : (
                     importBook && (
@@ -85,7 +83,7 @@ function ImportBookUtility({ creating }) {
                             </Grid>
                             <Grid size={12}>
                                 <SaveBackCancelButtons
-                                    backClick={() => navigate('/stores2/carriers')}
+                                    backClick={() => navigate('/stores2/import-books')}
                                     saveClick={() => {
                                         setChangesMade(false);
 

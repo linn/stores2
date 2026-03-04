@@ -27,13 +27,6 @@ function ImportBooksSearch() {
         navigate(`/stores2/import-books/${options.importBookId}`);
     };
 
-    const handleSubmit = event => {
-        event.preventDefault(); // Prevent page reload
-        if (options.importBookId) {
-            goToImportBook();
-        }
-    };
-
     useEffect(() => {
         if (inputRef.current) {
             inputRef.current.focus();
@@ -52,19 +45,17 @@ function ImportBooksSearch() {
             </Grid>
 
             <Grid size={3}>
-                <form onSubmit={handleSubmit}>
-                    <InputField
-                        fullWidth
-                        value={options.importBookId}
-                        type="number"
-                        onChange={handleOptionChange}
-                        label="Import Book Id"
-                        helperText="if you know the Import Book Id"
-                        propertyName="importBookId"
-                        autoFocus
-                        ref={inputRef}
-                    />
-                </form>
+                <InputField
+                    fullWidth
+                    value={options.importBookId}
+                    type="number"
+                    onChange={handleOptionChange}
+                    label="Import Book Id"
+                    helperText="if you know the Import Book Id"
+                    propertyName="importBookId"
+                    autoFocus
+                    ref={inputRef}
+                />
             </Grid>
             <Grid size={1}>
                 <Button onClick={goToImportBook} variant="outlined" style={{ marginTop: '29px' }}>
