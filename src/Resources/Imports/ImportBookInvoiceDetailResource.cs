@@ -1,7 +1,7 @@
-﻿using Linn.Common.Resources;
-
-namespace Linn.Stores2.Resources.Imports
+﻿namespace Linn.Stores2.Resources.Imports
 {
+    using Linn.Common.Resources;
+
     public class ImportBookInvoiceDetailResource : HypermediaResource
     {
         public int ImportBookId { get; set; }

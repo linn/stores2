@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
-
-namespace Linn.Stores2.Domain.LinnApps.Imports
+﻿namespace Linn.Stores2.Domain.LinnApps.Imports
 {
+    using System;
+    using System.Collections.Generic;
+
     public class ImportBook
     {
         public DateTime? ArrivalDate { get; set; }
