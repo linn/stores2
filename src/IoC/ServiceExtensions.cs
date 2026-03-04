@@ -15,6 +15,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Pcas;
@@ -28,6 +29,7 @@
     using Linn.Stores2.Proxy.HttpClients;
     using Linn.Stores2.Proxy.StoredProcedureClients;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.RequestResources;
@@ -138,7 +140,8 @@
                 .AddScoped<IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource>, PcasBoardService>()
                 .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>()
-                .AddScoped<IStockReportFacadeService, StockReportFacadeService>();
+                .AddScoped<IStockReportFacadeService, StockReportFacadeService>()
+                .AddScoped<IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource>, ImportBookFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
@@ -165,7 +168,11 @@
                 .AddScoped<IBuilder<StoresPallet>, StoresPalletResourceBuilder>()
                 .AddScoped<IBuilder<LocationType>, LocationTypeResourceBuilder>()
                 .AddScoped<IBuilder<Employee>, EmployeeResourceBuilder>()
-                .AddScoped<IBuilder<Department>, DepartmentResourceBuilder>();
+                .AddScoped<IBuilder<Department>, DepartmentResourceBuilder>()
+                .AddScoped<IBuilder<ImportBook>, ImportBookResourceBuilder>()
+                .AddScoped<IBuilder<ImportBookOrderDetail>, ImportBookOrderDetailResourceBuilder>()
+                .AddScoped<IBuilder<ImportBookInvoiceDetail>, ImportBookInvoiceDetailResourceBuilder>()
+                .AddScoped<IBuilder<ImportBookPostEntry>, ImportBookPostEntryResourceBuilder>();
         }
     }
 }

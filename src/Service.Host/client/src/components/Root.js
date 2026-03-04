@@ -41,6 +41,8 @@ import DailyEuRsnImportReport from './DailyEuRsnImportReport';
 import LabourHoursInStockReport from './LabourHoursInStockReport';
 import LabourHoursSummaryReport from './LabourHoursSummaryReport';
 import LabourHoursInLoansReport from './LabourHoursInLoansReport';
+import ImportBooksSearch from './imports/ImportBooksSearch';
+import ImportBookUtility from './imports/ImportBookUtility';
 
 function Root() {
     const location = useLocation();
@@ -176,6 +178,12 @@ function Root() {
                 <Route
                     path="/stores2/reports/labour-hours-summary"
                     element={<LabourHoursSummaryReport />}
+                />
+                <Route path="/stores2/import-books" element={<ImportBooksSearch />} />
+                <Route path="/stores2/import-books/:id" element={<ImportBookUtility />} />
+                <Route
+                    path="/stores2/import-books/create"
+                    element={<ImportBookUtility creating />}
                 />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>

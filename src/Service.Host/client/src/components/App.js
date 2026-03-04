@@ -58,6 +58,9 @@ function App() {
                         <ListItem component={Link} to="/stores2/reports/daily-eu-rsn-import">
                             <Typography color="primary">Daily EU Import Report</Typography>
                         </ListItem>
+                        <ListItem component={Link} to="/stores2/import-books">
+                            <Typography color="primary">Import Books (TEST)</Typography>
+                        </ListItem>
                     </List>
                 </Grid>
             </Grid>

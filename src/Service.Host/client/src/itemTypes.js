@@ -60,7 +60,8 @@ const itemTypes = {
     },
     labourHoursInLoansReport: {
         url: `${config.appRoot}/stores2/reports/labour-hours-in-loans/report`
-    }
+    },
+    importBooks: { url: `${config.appRoot}/stores2/import-books` }
 };
 
 export default itemTypes;
