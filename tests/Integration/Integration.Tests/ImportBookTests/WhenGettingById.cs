@@ -9,6 +9,7 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
+    using Linn.Stores2.TestData.Suppliers;
 
     using NUnit.Framework;
 
@@ -19,7 +20,7 @@
         [SetUp]
         public void SetUp()
         {
-            this.importBook = new ImportBook
+            this.importBook = new ImportBook(TestSuppliers.TaktAndTon, TestSuppliers.Fedex)
                                   {
                                       Id = 1
                                   };
