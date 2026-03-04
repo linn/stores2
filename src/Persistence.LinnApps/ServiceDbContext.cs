@@ -4,6 +4,7 @@
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
+    using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Logistics;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -106,6 +107,8 @@
 
         public DbSet<ImportBookExchangeRate> ImportBookExchangeRates { get; set; }
 
+        public DbSet<ImportBook> ImportBooks { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -168,6 +171,12 @@
             BuildImportBookExchangeRates(builder);
             BuildLedgerPeriods(builder);
             BuildDailyEuRsnDispatch(builder);
+            BuildSuppliers(builder);
+            BuildImportBooks(builder);
+            BuildImportBookInvoiceDetails(builder);
+            BuildImportBookOrderDetails(builder);
+            BuildImportBookPostEntries(builder);
+            BuildImportBookCpcNumbers(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1169,6 +1178,125 @@
             entity.Property(e => e.Id).HasColumnName("EXPBOOK_ID");
             entity.Property(e => e.AddressId).HasColumnName("ADDRESS_ID");
             entity.HasOne(l => l.Address).WithMany().HasForeignKey(l => l.AddressId);
+        }
+
+        private static void BuildSuppliers(ModelBuilder builder)
+        {
+            var q = builder.Entity<Supplier>();
+            q.HasKey(e => e.Id);
+            q.ToTable("SUPPLIERS");
+            q.Property(e => e.Id).HasColumnName("SUPPLIER_ID");
+            q.Property(e => e.Name).HasColumnName("SUPPLIER_NAME").HasMaxLength(50);
+            q.Property(e => e.CountryCode).HasColumnName("COUNTRY");
+            q.Property(e => e.DateClosed).HasColumnName("DATE_CLOSED");
+            q.Property(s => s.ApprovedCarrier).HasColumnName("APPROVED_CARRIER");
+            q.Property(s => s.AccountingCompany).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
+        }
+
+        private static void BuildImportBooks(ModelBuilder builder)
+        {
+            var q = builder.Entity<ImportBook>().ToTable("IMPBOOKS");
+            q.HasKey(e => e.Id);
+            q.Property(e => e.Id).HasColumnName("IMPBOOK_ID");
+            q.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");
+            q.Property(e => e.ParcelNumber).HasColumnName("PARCEL_NUMBER");
+            q.Property(e => e.SupplierId).HasColumnName("SUPPLIER_ID");
+            q.Property(e => e.ForeignCurrency).HasColumnName("FOREIGN_CURRENCY").HasMaxLength(1);
+            q.Property(e => e.Currency).HasColumnName("CURRENCY").HasMaxLength(4);
+            q.Property(e => e.CarrierId).HasColumnName("CARRIER_ID");
+            q.Property(e => e.TransportId).HasColumnName("TRANSPORT_ID");
+            q.Property(e => e.TransportBillNumber).HasColumnName("TRANSPORT_BILL_NUMBER").HasMaxLength(30);
+            q.Property(e => e.TransactionId).HasColumnName("TRANSACTION_ID");
+            q.Property(e => e.DeliveryTermCode).HasColumnName("DELIVERY_TERM_CODE").HasMaxLength(6);
+            q.Property(e => e.ArrivalPort).HasColumnName("ARRIVAL_PORT").HasMaxLength(16);
+            q.Property(e => e.ArrivalDate).HasColumnName("ARRIVAL_DATE");
+            q.Property(e => e.TotalImportValue).HasColumnName("TOTAL_IMPORT_VALUE");
+            q.Property(e => e.Weight).HasColumnName("WEIGHT");
+            q.Property(e => e.CustomsEntryCode).HasColumnName("CUSTOMS_ENTRY_CODE").HasMaxLength(20);
+            q.Property(e => e.CustomsEntryCodeDate).HasColumnName("CUSTOMS_ENTRY_CODE_DATE");
+            q.Property(e => e.LinnDuty).HasColumnName("LINN_DUTY");
+            q.Property(e => e.LinnVat).HasColumnName("LINN_VAT");
+            q.Property(e => e.DateCancelled).HasColumnName("DATE_CANCELLED");
+            q.Property(e => e.CancelledBy).HasColumnName("CANCELLED_BY");
+            q.Property(e => e.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(500);
+            q.Property(e => e.NumCartons).HasColumnName("NUM_CARTONS");
+            q.Property(e => e.NumPallets).HasColumnName("NUM_PALLETS");
+            q.Property(e => e.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
+            q.Property(e => e.CreatedBy).HasColumnName("CREATED_BY");
+            q.Property(e => e.CustomsEntryCodePrefix).HasColumnName("CUSTOMS_ENTRY_CODE_PREFIX").HasMaxLength(3);
+            q.Property(e => e.Pva).HasColumnName("PVA").HasMaxLength(1);
+            q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
+            q.Property(e => e.ExchangeRate).HasColumnName("EXCHANGE_RATE").HasMaxLength(20);
+            q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
+            q.Property(e => e.ExchangeCurrency).HasColumnName("EXCHANGE_CURRENCY");
+            q.Property(e => e.BaseCurrency).HasColumnName("BASE_CURRENCY");
+            q.HasMany(t => t.InvoiceDetails).WithOne()
+                .HasForeignKey(detail => detail.ImportBookId);
+            q.HasMany(t => t.OrderDetails).WithOne()
+                .HasForeignKey(detail => detail.ImportBookId);
+            q.HasMany(t => t.PostEntries).WithOne()
+                .HasForeignKey(detail => detail.ImportBookId);
+            q.HasOne(d => d.Supplier).WithOne().HasForeignKey<ImportBook>(s => s.SupplierId);
+            q.HasOne(d => d.Carrier).WithOne().HasForeignKey<ImportBook>(s => s.CarrierId);
+        }
+
+        private void BuildImportBookInvoiceDetails(ModelBuilder builder)
+        {
+            var q = builder.Entity<ImportBookInvoiceDetail>().ToTable("IMPBOOK_INV_DETAILS");
+            q.HasKey(e => new { e.ImportBookId, e.LineNumber });
+            q.Property(e => e.ImportBookId).HasColumnName("IMPBOOK_ID");
+            q.Property(e => e.LineNumber).HasColumnName("LINE_NUMBER");
+            q.Property(e => e.InvoiceNumber).HasColumnName("INVOICE_NUMBER").HasMaxLength(50);
+            q.Property(e => e.InvoiceValue).HasColumnName("INVOICE_VALUE");
+        }
+
+        private static void BuildImportBookOrderDetails(ModelBuilder builder)
+        {
+            var q = builder.Entity<ImportBookOrderDetail>().ToTable("IMPBOOK_ORDER_DETAILS");
+            q.HasKey(e => new { e.ImportBookId, e.LineNumber });
+            q.Property(e => e.ImportBookId).HasColumnName("IMPBOOK_ID");
+            q.Property(e => e.LineNumber).HasColumnName("LINE_NUMBER").HasMaxLength(4);
+            q.Property(e => e.OrderNumber).HasColumnName("ORDER_NUMBER");
+            q.Property(e => e.RsnNumber).HasColumnName("RSN_NUMBER").HasMaxLength(6);
+            q.Property(e => e.OrderDescription).HasColumnName("ORDER_DESCRIPTION").HasMaxLength(2000);
+            q.Property(e => e.Qty).HasColumnName("QTY").HasMaxLength(6);
+            q.Property(e => e.DutyValue).HasColumnName("DUTY_VALUE");
+            q.Property(e => e.FreightValue).HasColumnName("FREIGHT_VALUE");
+            q.Property(e => e.VatValue).HasColumnName("VAT_VALUE");
+            q.Property(e => e.OrderValue).HasColumnName("ORDER_VALUE");
+            q.Property(e => e.Weight).HasColumnName("WEIGHT");
+            q.Property(e => e.LoanNumber).HasColumnName("LOAN_NUMBER").HasMaxLength(6);
+            q.Property(e => e.LineType).HasColumnName("LINE_TYPE").HasMaxLength(10);
+            q.Property(e => e.CpcNumber).HasColumnName("CPC_NUMBER").HasMaxLength(2);
+            q.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE").HasMaxLength(12);
+            q.Property(e => e.InsNumber).HasColumnName("INS_NUMBER");
+            q.Property(e => e.VatRate).HasColumnName("VAT_RATE");
+            q.Property(e => e.POLineNumber).HasColumnName("PO_LINE_NUMBER").HasMaxLength(2);
+            q.Property(e => e.PostDuty).HasColumnName("POST_DUTY").HasMaxLength(1);
+            q.HasOne(e => e.ImportBookCpcNumber).WithMany().HasForeignKey(f => f.CpcNumber);
+        }
+
+        private static void BuildImportBookPostEntries(ModelBuilder builder)
+        {
+            var q = builder.Entity<ImportBookPostEntry>().ToTable("IMPBOOK_POST_ENTRIES");
+            q.HasKey(e => new { e.ImportBookId, e.LineNumber });
+            q.Property(e => e.ImportBookId).HasColumnName("IMPBOOK_ID");
+            q.Property(e => e.LineNumber).HasColumnName("LINE_NO");
+            q.Property(e => e.EntryCodePrefix).HasColumnName("ENTRY_CODE_PREFIX").HasMaxLength(3);
+            q.Property(e => e.EntryCode).HasColumnName("ENTRY_CODE").HasMaxLength(20);
+            q.Property(e => e.EntryDate).HasColumnName("ENTRY_DATE");
+            q.Property(e => e.Reference).HasColumnName("REFERENCE").HasMaxLength(50);
+            q.Property(e => e.Duty).HasColumnName("DUTY");
+            q.Property(e => e.Vat).HasColumnName("VAT");
+        }
+
+        private void BuildImportBookCpcNumbers(ModelBuilder builder)
+        {
+            var q = builder.Entity<ImportBookCpcNumber>().ToTable("IMPBOOK_CPC_NUMBERS");
+            q.HasKey(e => e.CpcNumber);
+            q.Property(e => e.CpcNumber).HasColumnName("CPC_NUMBER");
+            q.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(30);
+            q.Property(e => e.DateInvalid).HasColumnName("DATE_INVALID");
         }
     }
 }
