@@ -19,6 +19,9 @@
 
         public override async Task<ImportBook> FindByIdAsync(int key)
         {
+            var result = await this.serviceDbContext
+                                    .ImportBooks.FirstOrDefaultAsync(r => r.Id == key);
+
             return await this.serviceDbContext
                        .ImportBooks
                        .Include(r => r.OrderDetails).ThenInclude(o => o.ImportBookCpcNumber)

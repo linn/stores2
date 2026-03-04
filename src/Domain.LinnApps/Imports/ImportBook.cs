@@ -5,6 +5,16 @@
 
     public class ImportBook
     {
+        public int Id { get; set; }
+
+        public int SupplierId { get; set; }
+
+        public Supplier Supplier { get; set; }
+
+        public Supplier Carrier { get; set; }
+
+        public int CarrierId { get; set; }
+
         public DateTime? ArrivalDate { get; set; }
 
         public string ArrivalPort { get; set; }
@@ -14,10 +24,6 @@
         public int? CancelledBy { get; set; }
 
         public string CancelledReason { get; set; }
-
-        public Supplier Carrier { get; set; }
-
-        public int CarrierId { get; set; }
 
         public string Comments { get; set; }
 
@@ -43,8 +49,6 @@
 
         public string ForeignCurrency { get; set; }
 
-        public int Id { get; set; }
-
         public IList<ImportBookInvoiceDetail> InvoiceDetails { get; set; }
 
         public decimal? LinnDuty { get; set; }
@@ -65,10 +69,6 @@
 
         public string Pva { get; set; }
 
-        public Supplier Supplier { get; set; }
-
-        public int SupplierId { get; set; }
-
         public decimal TotalImportValue { get; set; }
 
         public int TransactionId { get; set; }
@@ -78,5 +78,23 @@
         public int TransportId { get; set; }
 
         public decimal? Weight { get; set; }
+
+        public ImportBook()
+        {
+            // ef
+        }
+
+        public ImportBook(
+            Supplier supplier,
+            Supplier carrier)
+        {
+            this.SupplierId = supplier.Id;
+            this.Supplier = supplier;
+            this.CarrierId = carrier.Id;
+            this.Carrier = carrier;
+            this.OrderDetails = new List<ImportBookOrderDetail>();
+            this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
+            this.PostEntries = new List<ImportBookPostEntry>();
+        }
     }
 }
