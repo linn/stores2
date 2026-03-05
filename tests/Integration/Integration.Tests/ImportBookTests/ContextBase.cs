@@ -33,11 +33,15 @@
             this.DbContext = new TestServiceDbContext();
 
             var importBookRepository = new ImportBookRepository(this.DbContext);
+            var employeeRepository
+                = new EntityFrameworkRepository<Employee, int>(this.DbContext.Employees);
             var transactionManager = new TransactionManager(this.DbContext);
+
 
             IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> importBookService
                 = new ImportBookFacadeService(
                     importBookRepository,
+                    employeeRepository,
                     transactionManager,
                     new ImportBookResourceBuilder(
                         new ImportBookPostEntryResourceBuilder(), 
@@ -63,6 +67,7 @@
         public void Teardown()
         {
             this.DbContext.ImportBooks.RemoveAllAndSave(this.DbContext);
+            this.DbContext.Employees.RemoveAllAndSave(this.DbContext);
         }
     }
 }
