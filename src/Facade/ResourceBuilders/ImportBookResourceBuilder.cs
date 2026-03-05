@@ -43,7 +43,7 @@
                                       new CountryResource
                                           {
                                               CountryCode = model.Supplier.CountryCode, 
-                                              Name = model.Supplier.Country?.Name
+                                              Name = model.Supplier.Country?.BestName
                                           } 
                                       : null,
                 CarrierId = model.CarrierId,

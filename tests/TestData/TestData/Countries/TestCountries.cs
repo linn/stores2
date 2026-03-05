@@ -2,7 +2,7 @@
 {
     using Linn.Stores2.Domain.LinnApps;
 
-    public class TestCountries
+    public static class TestCountries
     {
         public static Country UnitedKingdom => new Country("GB", "UNITED KINGDOM", "United Kingdom", "N");
 

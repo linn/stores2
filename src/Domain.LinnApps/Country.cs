@@ -29,5 +29,7 @@
         public string EuMember { get; protected set; }
 
         public bool IsEuMember => this.EuMember == "Y";
+
+        public string BestName => string.IsNullOrEmpty(this.DisplayName) ? this.Name : this.DisplayName;
     }
 }

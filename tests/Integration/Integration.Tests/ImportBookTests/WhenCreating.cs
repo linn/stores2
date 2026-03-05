@@ -63,6 +63,8 @@
             var resource = this.Response.DeserializeBody<ImportBookResource>();
             resource.Id.Should().Be(1);
             resource.SupplierId.Should().Be(TestSuppliers.TaktAndTon.Id);
+            resource.SupplierName.Should().Be(TestSuppliers.TaktAndTon.Name);
+            resource.CarrierId.Should().Be(TestSuppliers.DHLLogistics.Id);
         }
     }
 }

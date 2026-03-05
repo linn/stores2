@@ -2,7 +2,7 @@
 {
     using Linn.Stores2.Domain.LinnApps;
 
-    public class TestEmployees
+    public static class TestEmployees
     {
         // For privacy reasons these Employees are fictional and like
         // Pro Evolution football players, any resemblance to real persons,

@@ -106,7 +106,10 @@
                 throw new ImportBookException("Carrier not supplied");
             }
 
+            this.Id = candidate.Id;
             this.DateCreated = DateTime.UtcNow;
+            this.CreatedBy = candidate.CreatedBy;
+            this.CreatedById = candidate.CreatedBy.Id;
             this.SupplierId = candidate.Supplier.Id;
             this.Supplier = candidate.Supplier;
             this.CarrierId = candidate.Carrier.Id;

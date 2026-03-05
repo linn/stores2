@@ -53,6 +53,7 @@
 
             var candidate = new ImportCandidate 
                                 {
+                                    Id = await this.databaseSequenceService.NextImportBookId(),
                                     CreatedBy = createdBy,
                                     Supplier = supplier,
                                     Carrier = carrier
