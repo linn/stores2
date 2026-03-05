@@ -112,6 +112,52 @@ function ImportBookUtility({ creating }) {
                                     <Grid size={3} />
                                 </>
                             )}
+                            <Grid size={3}>
+                                <InputField
+                                    disabled
+                                    value={importBook.supplierId}
+                                    fullWidth
+                                    label="Supplier"
+                                    propertyName="supplierId"
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    disabled
+                                    value={importBook.supplierName}
+                                    fullWidth
+                                    label="Supplier Name"
+                                    propertyName="supplierName"
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    disabled
+                                    value={importBook.supplierCountry?.name}
+                                    fullWidth
+                                    label="Country"
+                                    propertyName="supplierCountry"
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    disabled
+                                    value={importBook.carrierId}
+                                    fullWidth
+                                    label="Carrier"
+                                    propertyName="carrierId"
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    disabled
+                                    value={importBook.carrierName}
+                                    fullWidth
+                                    label="Carrier Name"
+                                    propertyName="carrierName"
+                                />
+                            </Grid>
+                            <Grid size={3} />
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/import-books')}

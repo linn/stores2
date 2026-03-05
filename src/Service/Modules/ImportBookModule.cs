@@ -50,7 +50,10 @@
             ImportBookResource resource,
             IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> service)
         {
-            resource.CreatedById = req.HttpContext.User.GetEmployeeNumber();
+            if (resource.CreatedById == null)
+            {
+                resource.CreatedById = req.HttpContext.User.GetEmployeeNumber();
+            }
 
             await res.Negotiate(await service.Add(resource));
         }

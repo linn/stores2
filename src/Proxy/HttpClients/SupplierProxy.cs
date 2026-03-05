@@ -38,7 +38,7 @@
                 res.Line3,
                 res.Line4,
                 res.PostCode,
-                new Country(res.CountryCode, res.CountryName)) { AddressId = res.AddressId.GetValueOrDefault() };
+                new Country(res.CountryCode, res.CountryName, res.CountryName)) { AddressId = res.AddressId.GetValueOrDefault() };
             return address;
         }
 

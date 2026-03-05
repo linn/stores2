@@ -8,6 +8,7 @@
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Resources.Imports;
@@ -16,14 +17,22 @@
     {
         private readonly IRepository<Employee, int> employeeRepository;
 
+        private readonly IDatabaseSequenceService databaseSequenceService;
+
+        private readonly IQueryRepository<Supplier> supplierRepository;
+
         public ImportBookFacadeService(
             IRepository<ImportBook, int> repository,
+            IDatabaseSequenceService databaseSequenceService,
             IRepository<Employee, int> employeeRepository,
+            IQueryRepository<Supplier> supplierRepository,
             ITransactionManager transactionManager, 
             IBuilder<ImportBook> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
+            this.databaseSequenceService = databaseSequenceService;
             this.employeeRepository = employeeRepository;
+            this.supplierRepository = supplierRepository;
         }
 
         protected override async Task<ImportBook> CreateFromResourceAsync(
@@ -34,7 +43,20 @@
                                 ? await this.employeeRepository.FindByIdAsync(resource.CreatedById.Value)
                                 : null;
 
-            var candidate = new ImportCandidate { CreatedBy = createdBy };
+            var supplier = resource.SupplierId > 0
+                                ? await this.supplierRepository.FindByAsync(s => s.Id == resource.SupplierId)
+                                : null;
+
+            var carrier = resource.CarrierId > 0
+                               ? await this.supplierRepository.FindByAsync(s => s.Id == resource.CarrierId)
+                               : null;
+
+            var candidate = new ImportCandidate 
+                                {
+                                    CreatedBy = createdBy,
+                                    Supplier = supplier,
+                                    Carrier = carrier
+                                };
 
             return new ImportBook(candidate);
         }

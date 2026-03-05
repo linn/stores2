@@ -109,6 +109,8 @@
 
         public DbSet<ImportBook> ImportBooks { get; set; }
 
+        public DbSet<Supplier> Suppliers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -205,6 +207,8 @@
             builder.Entity<Country>().HasKey(c => c.CountryCode);
             builder.Entity<Country>().Property(c => c.CountryCode).HasColumnName("COUNTRY_CODE").HasMaxLength(2);
             builder.Entity<Country>().Property(c => c.Name).HasColumnName("NAME").HasMaxLength(50);
+            builder.Entity<Country>().Property(c => c.DisplayName).HasColumnName("DISPLAY_NAME").HasMaxLength(50);
+            builder.Entity<Country>().Property(c => c.EuMember).HasColumnName("EEC_MEMBER").HasMaxLength(1);
         }
 
         private static void BuildAddresses(ModelBuilder builder)

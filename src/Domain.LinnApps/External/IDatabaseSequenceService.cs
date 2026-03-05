@@ -5,5 +5,7 @@
     public interface IDatabaseSequenceService
     {
         public Task<int> NextStorageLocationId();
+
+        public Task<int> NextImportBookId();
     }
 }

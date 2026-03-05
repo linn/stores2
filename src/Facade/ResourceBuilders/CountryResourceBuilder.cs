@@ -15,7 +15,8 @@
             return new CountryResource
                        {
                            CountryCode = country.CountryCode,
-                           Name = country.Name,
+                           Name = country.DisplayName ?? country.Name,
+                           EuMember = country.IsEuMember,
                            Links = this.BuildLinks(country, claims).ToArray()
                        };
         }

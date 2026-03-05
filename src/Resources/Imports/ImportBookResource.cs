@@ -18,6 +18,10 @@
 
         public string SupplierName { get; set; }
 
+        public int CarrierId { get; set; }
+
+        public string CarrierName { get; set; }
+
         public CountryResource SupplierCountry { get; set; }
 
         public string ArrivalDate { get; set; }
@@ -27,8 +31,6 @@
         public int? CancelledBy { get; set; }
 
         public string CancelledReason { get; set; }
-
-        public int CarrierId { get; set; }
 
         public string Comments { get; set; }
 

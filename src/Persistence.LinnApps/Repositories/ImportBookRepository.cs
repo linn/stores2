@@ -25,6 +25,7 @@
                        .Include(i => i.InvoiceDetails)
                        .Include(i => i.PostEntries)
                        .Include(i => i.Supplier).ThenInclude(s => s.Country)
+                       .Include(i => i.Carrier)
                        .Include(i => i.CreatedBy)
                        .FirstOrDefaultAsync(r => r.Id == key);
         }

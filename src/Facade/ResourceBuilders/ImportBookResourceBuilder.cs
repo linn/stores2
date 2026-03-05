@@ -46,9 +46,10 @@
                                               Name = model.Supplier.Country?.Name
                                           } 
                                       : null,
+                CarrierId = model.CarrierId,
+                CarrierName = model.Carrier?.Name,
                 ForeignCurrency = model.ForeignCurrency,
                 Currency = model.Currency,
-                CarrierId = model.CarrierId,
                 TransportId = model.TransportId,
                 TransportBillNumber = model.TransportBillNumber,
                 TransactionId = model.TransactionId,
