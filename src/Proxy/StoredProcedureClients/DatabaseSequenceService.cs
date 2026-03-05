@@ -18,5 +18,10 @@
         {
             return await this.databaseService.GetNextValAsync("STOLO_SEQ");
         }
+
+        public async Task<int> NextImportBookId()
+        {
+            return await this.databaseService.GetNextValAsync("IMPBOOK_SEQ");
+        }
     }
 }

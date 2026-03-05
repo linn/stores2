@@ -14,6 +14,8 @@
 
         public string CountryCode { get; set; }
 
+        public Country Country { get; set; }
+
         public DateTime? DateClosed { get; set; }
     }
 }

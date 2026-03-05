@@ -8,6 +8,7 @@ import {
     Loading,
     SaveBackCancelButtons
 } from '@linn-it/linn-form-components-library';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
@@ -71,16 +72,92 @@ function ImportBookUtility({ creating }) {
                 ) : (
                     importBook && (
                         <>
+                            {!creating && (
+                                <>
+                                    <Grid size={6}>
+                                        <InputField
+                                            disabled
+                                            value={importBook.id}
+                                            fullWidth
+                                            label="Import Book Id"
+                                            propertyName="id"
+                                        />
+                                    </Grid>
+                                    <Grid size={6} />
+                                    <Grid size={3}>
+                                        <InputField
+                                            disabled
+                                            value={
+                                                importBook.dateCreated
+                                                    ? moment(importBook.dateCreated).format(
+                                                          'DD-MMM-YY HH:mm'
+                                                      )
+                                                    : ''
+                                            }
+                                            fullWidth
+                                            label="Date Created"
+                                            propertyName="dateCreated"
+                                            onChange={handleFieldChange}
+                                        />
+                                    </Grid>
+                                    <Grid size={6}>
+                                        <InputField
+                                            disabled
+                                            value={importBook.createdByName}
+                                            fullWidth
+                                            label="Created By"
+                                            propertyName="createdByName"
+                                        />
+                                    </Grid>
+                                    <Grid size={3} />
+                                </>
+                            )}
+                            <Grid size={3}>
+                                <InputField
+                                    disabled
+                                    value={importBook.supplierId}
+                                    fullWidth
+                                    label="Supplier"
+                                    propertyName="supplierId"
+                                />
+                            </Grid>
                             <Grid size={6}>
                                 <InputField
                                     disabled
-                                    value={importBook.id}
+                                    value={importBook.supplierName}
                                     fullWidth
-                                    label="Import Book Id"
-                                    propertyName="id"
-                                    onChange={handleFieldChange}
+                                    label="Supplier Name"
+                                    propertyName="supplierName"
                                 />
                             </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    disabled
+                                    value={importBook.supplierCountry?.name}
+                                    fullWidth
+                                    label="Country"
+                                    propertyName="supplierCountry"
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    disabled
+                                    value={importBook.carrierId}
+                                    fullWidth
+                                    label="Carrier"
+                                    propertyName="carrierId"
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    disabled
+                                    value={importBook.carrierName}
+                                    fullWidth
+                                    label="Carrier Name"
+                                    propertyName="carrierName"
+                                />
+                            </Grid>
+                            <Grid size={3} />
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/import-books')}

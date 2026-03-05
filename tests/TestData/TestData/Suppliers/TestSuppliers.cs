@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.TestData.Suppliers
 {
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.TestData.Countries;
 
     public static class TestSuppliers
     {
@@ -12,7 +13,8 @@
                     Id = 29407,
                     Name = "FEDERAL EXPRESS UK LTD",
                     AccountingCompany = "LINN",
-                    CountryCode = "GB",
+                    CountryCode = TestCountries.UnitedKingdom.CountryCode,
+                    Country = TestCountries.UnitedKingdom,
                     ApprovedCarrier = "Y"
             };
 
@@ -22,7 +24,8 @@
                     Id = 1054,
                     Name = "DHL LOGISTICS (UK) LTD",
                     AccountingCompany = "LINN",
-                    CountryCode = "GB",
+                    CountryCode = TestCountries.UnitedKingdom.CountryCode,
+                    Country = TestCountries.UnitedKingdom,
                     ApprovedCarrier = "Y"
                 };
 
@@ -34,7 +37,8 @@
                     Id = 54290,
                     Name = "TAKT AND TON",
                     AccountingCompany = "LINN",
-                    CountryCode = "SE",
+                    CountryCode = TestCountries.Sweden.CountryCode,
+                    Country = TestCountries.Sweden,
                     ApprovedCarrier = "N"
                 };
     }

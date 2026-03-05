@@ -6,6 +6,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.TestData.Countries;
 
     using NUnit.Framework;
 
@@ -25,7 +26,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
                 "line3",
                 "line4",
                 "postcode",
-                new Country("GB", "Great Britain"),
+                TestCountries.UnitedKingdom,
                 "012345",
                 "123456789");
 

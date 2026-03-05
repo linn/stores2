@@ -5,7 +5,9 @@
     using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
@@ -16,6 +18,8 @@
     using Linn.Stores2.Service.Modules;
 
     using Microsoft.Extensions.DependencyInjection;
+
+    using NSubstitute;
 
     using NUnit.Framework;
 
@@ -33,11 +37,21 @@
             this.DbContext = new TestServiceDbContext();
 
             var importBookRepository = new ImportBookRepository(this.DbContext);
+            var employeeRepository
+                = new EntityFrameworkRepository<Employee, int>(this.DbContext.Employees);
+            var supplierRepository
+                = new EntityFrameworkQueryRepository<Supplier>(this.DbContext.Suppliers);
+
             var transactionManager = new TransactionManager(this.DbContext);
+            var databaseSequenceService = new TestDatabaseSequenceService();
+
 
             IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> importBookService
                 = new ImportBookFacadeService(
                     importBookRepository,
+                    databaseSequenceService,
+                    employeeRepository,
+                    supplierRepository,
                     transactionManager,
                     new ImportBookResourceBuilder(
                         new ImportBookPostEntryResourceBuilder(), 
@@ -63,6 +77,7 @@
         public void Teardown()
         {
             this.DbContext.ImportBooks.RemoveAllAndSave(this.DbContext);
+            this.DbContext.Employees.RemoveAllAndSave(this.DbContext);
         }
     }
 }

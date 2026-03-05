@@ -6,9 +6,11 @@
 
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
+    using Linn.Stores2.TestData.Employees;
     using Linn.Stores2.TestData.Suppliers;
 
     using NUnit.Framework;
@@ -20,7 +22,14 @@
         [SetUp]
         public void SetUp()
         {
-            this.importBook = new ImportBook(TestSuppliers.TaktAndTon, TestSuppliers.Fedex)
+            var candidate = new ImportCandidate()
+                                {
+                                    CreatedBy = TestEmployees.SophlyBard,
+                                    Supplier = TestSuppliers.TaktAndTon,
+                                    Carrier = TestSuppliers.DHLLogistics
+                                };
+
+            this.importBook = new ImportBook(candidate)
                                   {
                                       Id = 1
                                   };

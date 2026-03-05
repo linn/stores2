@@ -6,6 +6,7 @@
     using Linn.Common.Service.Extensions;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Resources.Imports;
+    using Linn.Stores2.Service.Extensions;
     using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
@@ -19,6 +20,7 @@
             app.MapGet("/stores2/import-books", this.SearchImports);
             app.MapGet("/stores2/import-books/{id:int}", this.GetById);
             app.MapGet("/stores2/import-books/create", this.GetApp);
+            app.MapPost("/stores2/import-books", this.Create);
         }
 
         private async Task SearchImports(
@@ -40,6 +42,20 @@
         private async Task GetApp(HttpRequest req, HttpResponse res)
         {
             await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+        }
+
+        private async Task Create(
+            HttpRequest req,
+            HttpResponse res,
+            ImportBookResource resource,
+            IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> service)
+        {
+            if (resource.CreatedById == null)
+            {
+                resource.CreatedById = req.HttpContext.User.GetEmployeeNumber();
+            }
+
+            await res.Negotiate(await service.Add(resource));
         }
     }
 }

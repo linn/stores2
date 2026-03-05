@@ -7,6 +7,7 @@
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
 
     public class ImportBookResourceBuilder : IBuilder<ImportBook>
@@ -33,11 +34,22 @@
             {
                 Id = model.Id,
                 DateCreated = model.DateCreated.ToString("o"),
+                CreatedById = model.CreatedById,
+                CreatedByName = model.CreatedBy?.Name,
                 ParcelNumber = model.ParcelNumber,
                 SupplierId = model.SupplierId,
+                SupplierName = model.Supplier?.Name,
+                SupplierCountry = model.Supplier != null ? 
+                                      new CountryResource
+                                          {
+                                              CountryCode = model.Supplier.CountryCode, 
+                                              Name = model.Supplier.Country?.BestName
+                                          } 
+                                      : null,
+                CarrierId = model.CarrierId,
+                CarrierName = model.Carrier?.Name,
                 ForeignCurrency = model.ForeignCurrency,
                 Currency = model.Currency,
-                CarrierId = model.CarrierId,
                 TransportId = model.TransportId,
                 TransportBillNumber = model.TransportBillNumber,
                 TransactionId = model.TransactionId,
@@ -56,7 +68,6 @@
                 NumCartons = model.NumCartons,
                 NumPallets = model.NumPallets,
                 Comments = model.Comments,
-                CreatedBy = model.CreatedBy,
                 CustomsEntryCodePrefix = model.CustomsEntryCodePrefix,
                 Pva = model.Pva,
                 ExchangeRate = model.ExchangeRate.GetValueOrDefault(),

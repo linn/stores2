@@ -2,10 +2,18 @@
 {
     using System;
     using System.Collections.Generic;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Imports.Models;
 
     public class ImportBook
     {
         public int Id { get; set; }
+
+        public DateTime DateCreated { get; set; }
+
+        public int? CreatedById { get; set; }
+
+        public Employee CreatedBy { get; set; }
 
         public int SupplierId { get; set; }
 
@@ -27,8 +35,6 @@
 
         public string Comments { get; set; }
 
-        public int? CreatedBy { get; set; }
-
         public string Currency { get; set; }
 
         public string CustomsEntryCode { get; set; }
@@ -38,8 +44,6 @@
         public string CustomsEntryCodePrefix { get; set; }
 
         public DateTime? DateCancelled { get; set; }
-
-        public DateTime DateCreated { get; set; }
 
         public string DeliveryTermCode { get; set; }
 
@@ -85,13 +89,31 @@
         }
 
         public ImportBook(
-            Supplier supplier,
-            Supplier carrier)
+            ImportCandidate candidate)
         {
-            this.SupplierId = supplier.Id;
-            this.Supplier = supplier;
-            this.CarrierId = carrier.Id;
-            this.Carrier = carrier;
+            if (candidate.CreatedBy == null)
+            {
+                throw new ImportBookException("Created by employee not supplied");
+            }
+
+            if (candidate.Supplier == null)
+            {
+                throw new ImportBookException("Supplier not supplied");
+            }
+
+            if (candidate.Carrier == null)
+            {
+                throw new ImportBookException("Carrier not supplied");
+            }
+
+            this.Id = candidate.Id;
+            this.DateCreated = DateTime.UtcNow;
+            this.CreatedBy = candidate.CreatedBy;
+            this.CreatedById = candidate.CreatedBy.Id;
+            this.SupplierId = candidate.Supplier.Id;
+            this.Supplier = candidate.Supplier;
+            this.CarrierId = candidate.Carrier.Id;
+            this.Carrier = candidate.Carrier;
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
             this.PostEntries = new List<ImportBookPostEntry>();

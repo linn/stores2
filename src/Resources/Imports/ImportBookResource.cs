@@ -8,6 +8,22 @@
 
         public int Id { get; set; }
 
+        public string DateCreated { get; set; }
+
+        public int? CreatedById { get; set; }
+
+        public string CreatedByName { get; set; }
+
+        public int SupplierId { get; set; }
+
+        public string SupplierName { get; set; }
+
+        public int CarrierId { get; set; }
+
+        public string CarrierName { get; set; }
+
+        public CountryResource SupplierCountry { get; set; }
+
         public string ArrivalDate { get; set; }
 
         public string ArrivalPort { get; set; }
@@ -16,11 +32,7 @@
 
         public string CancelledReason { get; set; }
 
-        public int CarrierId { get; set; }
-
         public string Comments { get; set; }
-
-        public int? CreatedBy { get; set; }
 
         public string Currency { get; set; }
 
@@ -31,8 +43,6 @@
         public string CustomsEntryCodePrefix { get; set; }
 
         public string DateCancelled { get; set; }
-
-        public string DateCreated { get; set; }
 
         public string DeliveryTermCode { get; set; }
 
@@ -57,8 +67,6 @@
         public int? ParcelNumber { get; set; }
 
         public string Pva { get; set; }
-
-        public int SupplierId { get; set; }
 
         public decimal TotalImportValue { get; set; }
 

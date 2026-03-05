@@ -109,6 +109,8 @@
 
         public DbSet<ImportBook> ImportBooks { get; set; }
 
+        public DbSet<Supplier> Suppliers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -205,6 +207,8 @@
             builder.Entity<Country>().HasKey(c => c.CountryCode);
             builder.Entity<Country>().Property(c => c.CountryCode).HasColumnName("COUNTRY_CODE").HasMaxLength(2);
             builder.Entity<Country>().Property(c => c.Name).HasColumnName("NAME").HasMaxLength(50);
+            builder.Entity<Country>().Property(c => c.DisplayName).HasColumnName("DISPLAY_NAME").HasMaxLength(50);
+            builder.Entity<Country>().Property(c => c.EuMember).HasColumnName("EEC_MEMBER").HasMaxLength(1);
         }
 
         private static void BuildAddresses(ModelBuilder builder)
@@ -1191,6 +1195,7 @@
             q.Property(e => e.DateClosed).HasColumnName("DATE_CLOSED");
             q.Property(s => s.ApprovedCarrier).HasColumnName("APPROVED_CARRIER");
             q.Property(s => s.AccountingCompany).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
+            q.HasOne(s => s.Country).WithMany().HasForeignKey(s => s.CountryCode);
         }
 
         private static void BuildImportBooks(ModelBuilder builder)
@@ -1222,7 +1227,7 @@
             q.Property(e => e.NumCartons).HasColumnName("NUM_CARTONS");
             q.Property(e => e.NumPallets).HasColumnName("NUM_PALLETS");
             q.Property(e => e.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
-            q.Property(e => e.CreatedBy).HasColumnName("CREATED_BY");
+            q.Property(e => e.CreatedById).HasColumnName("CREATED_BY");
             q.Property(e => e.CustomsEntryCodePrefix).HasColumnName("CUSTOMS_ENTRY_CODE_PREFIX").HasMaxLength(3);
             q.Property(e => e.Pva).HasColumnName("PVA").HasMaxLength(1);
             q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
@@ -1238,6 +1243,7 @@
                 .HasForeignKey(detail => detail.ImportBookId);
             q.HasOne(d => d.Supplier).WithOne().HasForeignKey<ImportBook>(s => s.SupplierId);
             q.HasOne(d => d.Carrier).WithOne().HasForeignKey<ImportBook>(s => s.CarrierId);
+            q.HasOne(d => d.CreatedBy).WithOne().HasForeignKey<ImportBook>(s => s.CreatedById);
         }
 
         private void BuildImportBookInvoiceDetails(ModelBuilder builder)
