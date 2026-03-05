@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Host
+namespace Linn.Stores2.Service.Host
 {
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;

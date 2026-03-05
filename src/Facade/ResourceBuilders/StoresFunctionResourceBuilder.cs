@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -104,7 +104,7 @@
                 var unAuthFunctions = new List<string> { "LOAN OUT" };
 
                 if (this.authService.HasPermissionFor(
-                        AuthorisedActions.GetRequisitionActionByFunction(model.FunctionCode), claims) 
+                        AuthorisedActions.GetRequisitionActionByFunction(model.FunctionCode), claims)
                     || unAuthFunctions.Contains(model.FunctionCode))
                 {
                     yield return new LinkResource { Rel = "create-req", Href = "/requisitions/create" };

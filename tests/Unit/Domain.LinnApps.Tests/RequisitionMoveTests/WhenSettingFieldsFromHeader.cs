@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionMoveTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionMoveTests
 {
     using FluentAssertions;
 
@@ -17,15 +17,15 @@
         public void SetUp()
         {
             this.sut = new ReqMove(
-                1, 
                 1,
-                1, 
-                1, 
+                1,
+                1,
+                1,
                 1,
                 100,
                 null,
                 null,
-                null, 
+                null,
                 null);
 
             var req = new ReqWithReqNumber(
@@ -36,7 +36,7 @@
                 9073,
                 "L",
                 null,
-                null, 
+                null,
                 null,
                 null,
                 null,

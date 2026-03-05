@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
     using FluentAssertions;
@@ -27,7 +27,7 @@
                         new Nominal("0000004710", "STOCK ADJUSTMENTS"),
                         reference: null,
                         comments: "constructor test",
-                        fromState: "QC", 
+                        fromState: "QC",
                         toState: "QC",
                         quantity: 10,
                         fromStockPool: "LINN",

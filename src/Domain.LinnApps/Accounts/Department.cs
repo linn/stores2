@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Accounts
+namespace Linn.Stores2.Domain.LinnApps.Accounts
 {
     using System;
 

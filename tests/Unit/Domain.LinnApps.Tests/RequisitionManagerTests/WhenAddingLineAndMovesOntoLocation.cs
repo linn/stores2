@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -140,11 +140,11 @@
             this.ReqStoredProcedures.Received(1)
                 .InsertReqOntos(
                     Arg.Any<int>(),
-                    10, 
+                    10,
                     1,
                     111,
-                    null, 
-                    "LINN", 
+                    null,
+                    "LINN",
                     "STORES",
                     "FREE");
         }

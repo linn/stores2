@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -22,7 +22,7 @@
             this.PotentialMoveDetailRepository
                 .FilterByAsync(Arg.Any<Expression<Func<PotentialMoveDetail, bool>>>())
                 .Returns(new List<PotentialMoveDetail> { new PotentialMoveDetail { Sequence = 2 } });
-            
+
             this.results = await this.Sut.AddPotentialMoveDetails("WO", 1234, 1, "P1", 888, null, 567);
         }
 

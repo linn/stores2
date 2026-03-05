@@ -1,4 +1,4 @@
-﻿using Linn.Stores2.IoC;
+using Linn.Stores2.IoC;
 using Linn.Stores2.Messaging.Host.Jobs;
 
 var host = Host.CreateDefaultBuilder(args)

@@ -24,8 +24,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 .Returns(
                     new LoanResult
                     {
-                        LoanNumber = 123, 
-                        IsCancelled = false, 
+                        LoanNumber = 123,
+                        IsCancelled = false,
                         Details = new List<LoanDetail>
                         {
                             new LoanDetail

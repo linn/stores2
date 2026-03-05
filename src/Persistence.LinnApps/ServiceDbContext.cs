@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Persistence.LinnApps
+namespace Linn.Stores2.Persistence.LinnApps
 {
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
@@ -23,7 +23,7 @@
         public DbSet<AccountingCompany> AccountingCompanies { get; set; }
 
         public DbSet<Carrier> Carriers { get; set; }
-        
+
         public DbSet<Country> Countries { get; set; }
 
         public DbSet<Address> Addresses { get; set; }
@@ -41,11 +41,11 @@
         public DbSet<StorageLocation> StorageLocations { get; set; }
 
         public DbSet<RequisitionHeader> RequisitionHeaders { get; set; }
-        
+
         public DbSet<StoragePlace> StoragePlaces { get; set; }
 
         public DbSet<Employee> Employees { get; set; }
-        
+
         public DbSet<StoresBudget> StoresBudgets { get; set; }
 
         public DbSet<PotentialMoveDetail> PotentialMoveDetails { get; set; }
@@ -57,11 +57,11 @@
         public DbSet<StockState> StockStates { get; set; }
 
         public DbSet<StoresTransactionDefinition> StoresTransactionDefinition { get; protected set; }
-        
+
         public DbSet<Department> Departments { get; protected set; }
-        
+
         public DbSet<Nominal> Nominals { get; protected set; }
-        
+
         public DbSet<StoresPallet> StoresPallets { get; set; }
 
         public DbSet<GoodsInLogEntry> GoodsInLogEntries { get; set; }
@@ -73,7 +73,7 @@
         public DbSet<StockTransaction> StockTransactions { get; set; }
 
         public DbSet<LabelType> LabelTypes { get; set; }
-        
+
         public DbSet<WorkStation> WorkStations { get; set; }
 
         public DbSet<Cit> Cits { get; set; }
@@ -395,7 +395,7 @@
                 .HasForeignKey<Part>(p => p.BomId)
                 .HasPrincipalKey<Bom>(b => b.BomId);
         }
-        
+
         private static void BuildStockPool(ModelBuilder builder)
         {
             var e = builder.Entity<StockPool>().ToTable("STOCK_POOLS");
@@ -572,7 +572,7 @@
                 .HasForeignKey(p => new { p.ReqNumber, p.LineNumber });
             r.HasMany(t => t.SerialNumbers).WithOne().HasForeignKey(reqSernos => new { reqSernos.ReqNumber, reqSernos.LineNumber });
         }
-        
+
         private static void BuildStoresFunctionCodes(ModelBuilder builder)
         {
             var r = builder.Entity<StoresFunction>().ToTable("STORES_FUNCTIONS");

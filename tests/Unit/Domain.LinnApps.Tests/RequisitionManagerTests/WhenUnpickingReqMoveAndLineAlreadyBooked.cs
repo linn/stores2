@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -32,7 +32,7 @@
                 "REQ",
                 new Department(),
                 new Nominal("0000001234", "SOME NOM"));
-            
+
             var line = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.StockToLinnDept);
             line.Book(new DateTime(2025,1,1));
 

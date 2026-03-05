@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.CarrierTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.CarrierTests
 {
     using System;
 
@@ -11,14 +11,14 @@
     public class WhenCreatingAndNoNameSupplied
     {
         private Action action;
-        
+
         [SetUp]
         public void SetUp()
         {
             this.action = () =>
                 {
                     _ = new Carrier(
-                        "CODE", 
+                        "CODE",
                         string.Empty,
                         "addressee",
                         "line1",

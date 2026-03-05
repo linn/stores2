@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StockTransactionModuleTests
+namespace Linn.Stores2.Integration.Tests.StockTransactionModuleTests
 {
     using System.Net.Http;
 

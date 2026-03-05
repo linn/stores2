@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
 {
     using System;
     using System.Collections.Generic;
@@ -16,9 +16,9 @@
     public class WhenKardexLocationAndLines : ContextBase
     {
         private QcLabelPrintRequest request;
-        
+
         private LabelType specifiedPrinterLabelType;
-        
+
         private LabelType kardexLabelType;
 
         private PurchaseOrderResult purchaseOrderResult;
@@ -26,21 +26,21 @@
         private Part part;
 
         private LabelType defaultQcLabelType;
-        
+
         [SetUp]
         public async Task SetUp()
         {
             this.kardexLabelType = new LabelType
             {
-                DefaultPrinter = "KARDEX DEFAULT", 
+                DefaultPrinter = "KARDEX DEFAULT",
                 FileName = "TEMPLATE"
             };
-            
+
             this.specifiedPrinterLabelType = new LabelType
                                                  {
                                                      DefaultPrinter = "PRINTER DEFAULT", FileName = "TEMPLATE"
                                                  };
-            
+
             this.defaultQcLabelType = new LabelType
             {
                 DefaultPrinter = "PASS LABEL", FileName = "P TEMPLATE"
@@ -82,12 +82,12 @@
                                                                      }
                                                              }
                                            };
-            
+
             this.DocumentProxy.GetPurchaseOrder(this.request.OrderNumber).Returns(this.purchaseOrderResult);
-            
+
             this.EmployeeRepository.FindByIdAsync(this.request.UserNumber)
                 .Returns(new Employee { Name = "MR EMPLOYEE" });
-            
+
             this.LabelPrinter.PrintLabelsAsync(
                     $"KGI{this.request.OrderNumber}",
                     this.specifiedPrinterLabelType.DefaultPrinter,
@@ -102,14 +102,14 @@
                     this.defaultQcLabelType.FileName,
                     Arg.Any<string>())
                 .Returns((true, string.Empty));
-    
+
             this.part = new Part
             {
                 PartNumber = this.request.PartNumber,
                 Description = "A PART",
                 OurUnitOfMeasure = "ONES"
             };
-            
+
             this.PartsRepository.FindByAsync(Arg.Any<Expression<Func<Part, bool>>>())
                 .Returns(this.part);
             await this.Sut.PrintLabels(this.request);
@@ -126,11 +126,11 @@
                 2,
                 this.kardexLabelType.FileName,
                 $"\"{this.request.KardexLocation.Replace("\"", "''")}\",\"{this.request.ReqNumber}\"");
-            
+
                 this.LabelPrinter.Received(1).PrintLabelsAsync(
                 $"QC {request.OrderNumber}-1",
                 this.specifiedPrinterLabelType.DefaultPrinter,
-                this.request.Qty, 
+                this.request.Qty,
                 this.defaultQcLabelType.FileName,
                 $"\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"{today}\",\"**ROHS Compliant**\"{Environment.NewLine}");
         }

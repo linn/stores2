@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Threading.Tasks;
 
@@ -34,9 +34,9 @@
             this.DocumentProxy.GetPurchaseOrder(1234567).Returns(
                 new PurchaseOrderResult
                 {
-                    IsAuthorised = true, 
-                    IsFilCancelled = false, 
-                    OrderNumber = 1234567, 
+                    IsAuthorised = true,
+                    IsFilCancelled = false,
+                    OrderNumber = 1234567,
                     DocumentType = "PO"
                 });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "Stores"));

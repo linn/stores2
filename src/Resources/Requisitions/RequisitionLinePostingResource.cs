@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Requisitions
+namespace Linn.Stores2.Resources.Requisitions
 {
     using Linn.Stores2.Resources.Accounts;
 

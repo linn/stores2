@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
 
@@ -69,7 +69,7 @@
         public DateTime? DateBooked { get; protected set; }
 
         public DateTime? DateCancelled { get; protected set; }
-        
+
         public string State { get; protected set; }
 
         public string Category { get; protected set; }

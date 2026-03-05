@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
+namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
 {
     using System.Net.Http;
 
@@ -22,7 +22,7 @@
         protected HttpClient Client { get; set; }
 
         protected HttpResponseMessage Response { get; set; }
-        
+
         protected IStoragePlaceAuditReportFacadeService StoragePlaceAuditReportFacadeService { get; private set; }
 
         protected IStoragePlaceAuditReportService StoragePlaceAuditReportService { get; private set; }

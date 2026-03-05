@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -22,7 +22,7 @@
                                Description = partsStorageType.StorageType.Description
                            },
                            PartNumber = partsStorageType.PartNumber,
-                           Part = new PartResource 
+                           Part = new PartResource
                             {
                                PartNumber = partsStorageType.Part.PartNumber,
                                Description = partsStorageType.Part.Description

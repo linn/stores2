@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Pcas
+namespace Linn.Stores2.Resources.Pcas
 {
     using Linn.Common.Resources;
     using Linn.Stores2.Resources;

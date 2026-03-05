@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Labels
+namespace Linn.Stores2.Domain.LinnApps.Labels
 {
     using System;
     using System.Linq;
@@ -71,13 +71,13 @@
                     result.Success = false;
                 }
             }
-             
+
             var labelType = await this.labelTypeRepository.FindByAsync(x => x.Code == request.QcState);
             var employee  = await this.employeeRepository.FindByIdAsync(request.UserNumber);
             var purchaseOrder = await this.documentProxy.GetPurchaseOrder(request.OrderNumber);
             var part = await this.partsRepository.FindByAsync(x => x.PartNumber == request.PartNumber.ToUpper());
             var initials = string.Join(
-                string.Empty, 
+                string.Empty,
                 employee.Name.Split(' ')
                 .Where(name => !string.IsNullOrWhiteSpace(name))
                 .Select(name => name[0].ToString().ToUpper()));

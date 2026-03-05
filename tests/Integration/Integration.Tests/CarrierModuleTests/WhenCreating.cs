@@ -20,13 +20,13 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
         public void SetUp()
         {
             this.createResource = new CarrierResource
-                                      {
-                                          Code = "DHL",
-                                          Name = "D H L",
-                                          Addressee = "MR Dhl",
-                                          Line1 = "Line 1",
-                                          CountryCode = "GB"
-                                      };
+            {
+                Code = "DHL",
+                Name = "D H L",
+                Addressee = "MR Dhl",
+                Line1 = "Line 1",
+                CountryCode = "GB"
+            };
             this.DbContext.Countries.AddAndSave(this.DbContext, new Country("GB", "Britain"));
 
             this.Response = this.Client.PostAsJsonAsync($"/stores2/carriers", this.createResource).Result;
@@ -44,15 +44,15 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldAdd()
         {
             this.DbContext.Carriers
-                .FirstOrDefault(x => x.CarrierCode == this.createResource.Code)
+                .First(x => x.CarrierCode == this.createResource.Code)
                 .Name.Should().Be(this.createResource.Name);
         }
-        
+
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {

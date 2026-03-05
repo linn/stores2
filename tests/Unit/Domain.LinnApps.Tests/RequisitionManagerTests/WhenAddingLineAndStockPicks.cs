@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
 
@@ -32,7 +32,7 @@
         {
             this.nominal = new Nominal { NominalCode = "CODE" };
             this.department = new Department { DepartmentCode = "CODE" };
-            
+
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
                 .Returns(this.department);
             this.NominalRepository.FindByIdAsync(this.nominal.NominalCode).Returns(this.nominal);
@@ -88,8 +88,8 @@
             this.ReqStoredProcedures.CreateNominals(
                 Arg.Any<int>(),
                 1,
-                1, 
-                this.nominal.NominalCode, 
+                1,
+                this.nominal.NominalCode,
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
 
@@ -116,7 +116,7 @@
                 "LINN",
                 TestTransDefs.StockToLinnDept.TransactionCode);
         }
-        
+
         [Test]
         public void ShouldCreateNominalPostings()
         {

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -20,7 +20,7 @@
                 StorageAreas = model.StorageAreas
                     ?.Where(a => a.DateInvalid == null)
                     .OrderBy(a => a.Description)
-                    .Select(a => new StorageAreaResource 
+                    .Select(a => new StorageAreaResource
                                      {
                                          StorageAreaCode = a.StorageAreaCode,
                                          Description = a.Description,
@@ -36,5 +36,5 @@
         }
 
         object IBuilder<StorageSite>.Build(StorageSite model, IEnumerable<string> claims) => this.Build(model, claims);
-    } 
+    }
 }

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -37,8 +37,8 @@
                 toPalletNumber: 123,
                 toStockPool: "LINN",
                 partNumber: "PART",
-                lines: new List<LineCandidate> 
-                           { 
+                lines: new List<LineCandidate>
+                           {
                                new LineCandidate
                                    {
                                         PartNumber = "PART",

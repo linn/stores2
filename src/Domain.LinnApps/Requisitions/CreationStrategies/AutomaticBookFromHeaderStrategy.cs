@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
+namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -193,7 +193,7 @@
             }
 
             await this.repository.AddAsync(req);
-            
+
             await this.requisitionManager.CreateLinesAndBookAutoRequisitionHeader(req);
 
             return await this.repository.FindByIdAsync(req.ReqNumber);

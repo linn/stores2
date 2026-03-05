@@ -2,6 +2,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using Linn.Stores2.Domain.LinnApps.Accounts;
 
     public class StoresFunction
@@ -16,7 +17,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         }
 
         public string FunctionCode { get; set; }
-        
+
         public string Description { get; set; }
 
         public string FunctionType { get; set; }
@@ -38,7 +39,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public string Category { get; set; }
 
         public string ToStateRequired { get; set; }
-        
+
         public string ToStockPoolRequired { get; set; }
 
         public string ToLocationRequired { get; set; }
@@ -66,7 +67,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public string ToStockPool { get; set; }
 
         public string CanBeReversed { get; set; }
-        
+
         public string CanBeCancelled { get; set; }
 
         public int ProcessStage { get; set; }
@@ -79,13 +80,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public ICollection<StoresFunctionTransaction> TransactionsTypes { get; set; }
 
-        public string LinesRequired { get; set;  }
+        public string LinesRequired { get; set; }
 
         public bool NoLinesRequiredFunction() => this.LinesRequired == "N";
 
         public bool AuditFunction() => this.FunctionCode == "AUDIT" || this.FunctionCode == "KOUNT";
-
-
 
         public bool Document1Required() => this.Document1RequiredFlag is "Y" or "O" or "X";
 
@@ -111,6 +110,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 return this.TransactionsTypes.FirstOrDefault(t => t.TransactionDefinition?.GetNominal() != null)
                     ?.TransactionDefinition.GetNominal();
             }
+
             return null;
         }
 
@@ -129,9 +129,10 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             if (this.TransactionsTypes != null)
             {
-                // see REQ_UT FUNCTION_CODE_WVI cursor C 
+                // see REQ_UT FUNCTION_CODE_WVI cursor C
                 return this.TransactionsTypes.FirstOrDefault()?.TransactionDefinition?.DocType;
             }
+
             return string.Empty;
         }
 
@@ -139,7 +140,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         {
             if (this.TransactionsTypes != null)
             {
-                // see REQ_UT FUNCTION_CODE_WVI cursor C 
+                // see REQ_UT FUNCTION_CODE_WVI cursor C
                 return this.TransactionsTypes.FirstOrDefault()?.TransactionDefinition?.Doc2Type;
             }
             return string.Empty;
@@ -186,25 +187,25 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             return string.Empty;
         }
-        
+
         public bool IsQuantityRequiredOrOptional() =>
             this.QuantityRequired is "Y" or "O";
-        
+
         public bool ToLocationRequiredOrOptional() =>
             this.ToLocationRequired is "Y" or "O";
-        
+
         public bool ToLocationIsRequired() =>
             this.ToLocationRequired is "Y";
-        
+
         public bool ToStateRequiredOrOptional() =>
             this.ToStateRequired is "Y" or "O";
-        
+
         public bool FromStateRequiredOrOptional() =>
             this.FromStateRequired is "Y" or "O";
-        
+
         public bool FromStockPoolRequiredOrOptional() =>
             this.FromStockPoolRequired is "Y" or "O";
-        
+
         public bool FromLocationRequiredOrOptional() =>
             this.FromLocationRequired is "Y" or "O";
     }

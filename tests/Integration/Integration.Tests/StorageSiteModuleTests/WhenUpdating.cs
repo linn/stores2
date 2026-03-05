@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StorageSiteModuleTests
+namespace Linn.Stores2.Integration.Tests.StorageSiteModuleTests
 {
     using System.Net;
     using System.Net.Http.Json;

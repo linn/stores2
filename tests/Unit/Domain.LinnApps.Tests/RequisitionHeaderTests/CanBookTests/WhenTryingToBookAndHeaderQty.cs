@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests.CanBookTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests.CanBookTests
 {
     using System;
 
@@ -41,12 +41,12 @@
                 null,
                 reference: null,
                 comments: "Bought in bits",
-                manualPick: null, 
-                fromStockPool: null, 
-                toStockPool: null, 
-                fromPalletNumber: null, 
-                toPalletNumber: null, 
-                fromLocation: null, 
+                manualPick: null,
+                fromStockPool: null,
+                toStockPool: null,
+                fromPalletNumber: null,
+                toPalletNumber: null,
+                fromLocation: null,
                 toLocation: null,
                 part: TestParts.Cap003,
                 quantity: 1,

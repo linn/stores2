@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Reports
+namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System.Collections.Generic;
     using System.Linq;

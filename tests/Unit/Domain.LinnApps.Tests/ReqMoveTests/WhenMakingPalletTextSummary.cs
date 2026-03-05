@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.ReqMoveTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.ReqMoveTests
 {
     using FluentAssertions;
 

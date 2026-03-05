@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -68,7 +68,7 @@
                 null,
                 1234,
                 "C",
-                null, 
+                null,
                 null,
                 toStockPool: "LINN",
                 toPalletNumber: 666,

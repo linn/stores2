@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoragePlaceAuditReportServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoragePlaceAuditReportServiceTests
 {
     using System;
     using System.Collections.Generic;
@@ -40,7 +40,7 @@
                 .Returns(new Department(this.employeeDepartmentCode, "Employee Department"));
             this.EmployeeRepository.FindByIdAsync(this.employeeNumber)
                 .Returns(new Employee { Id = this.employeeNumber, DepartmentCode = this.employeeDepartmentCode });
-            
+
             this.StoragePlaceQueryRepository.FilterBy(Arg.Any<Expression<Func<StoragePlace, bool>>>())
                 .Returns(new List<StoragePlace> { new StoragePlace { PalletNumber = 745, Name = "P745" } }.AsQueryable());
             this.RequisitionFactory.CreateRequisition(

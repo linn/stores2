@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 {
     using System;
     using System.Linq.Expressions;

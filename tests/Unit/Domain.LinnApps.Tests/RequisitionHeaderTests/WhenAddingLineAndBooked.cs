@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
 
@@ -30,19 +30,19 @@
                 new Nominal(),
                 reference: "Goodbye Reqs");
             req.AddLine( new RequisitionLine(
-                req.ReqNumber, 
-                1, 
-                new Part(), 
-                1m, 
+                req.ReqNumber,
+                1,
+                new Part(),
+                1m,
                 TestTransDefs.StockToLinnDept));
             req.Book(new Employee());
 
             this.action = () => req.AddLine(
                 new RequisitionLine(
-                    req.ReqNumber, 
-                    2, 
-                    new Part(), 
-                    1m, 
+                    req.ReqNumber,
+                    2,
+                    new Part(),
+                    1m,
                     TestTransDefs.StockToLinnDept));
         }
 

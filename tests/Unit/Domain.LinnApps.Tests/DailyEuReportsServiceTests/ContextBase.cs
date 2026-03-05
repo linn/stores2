@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
 {
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;

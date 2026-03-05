@@ -8,7 +8,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
     public class WhenCheckingValidStockLocationAndStateNotSpecifiedAndPartIsAtLocationWithMoreThanOneState : ContextBase
     {
         private ProcessResult result;
-    
+
         [SetUp]
         public async Task SetUp()
         {

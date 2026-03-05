@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+namespace Linn.Stores2.Domain.LinnApps
 {
     public class Address
     {
@@ -30,7 +30,7 @@
             string line4,
             string postCode,
             Country country)
-        {   
+        {
             this.Addressee = addressee;
             this.Line1 = line1;
             this.Line2 = line2;

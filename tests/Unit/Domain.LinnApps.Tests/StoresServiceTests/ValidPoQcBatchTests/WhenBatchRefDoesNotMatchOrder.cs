@@ -8,7 +8,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
     public class WhenBatchRefDoesNotMatchOrder : StoresServiceContextBase
     {
         private ProcessResult result;
-        
+
         [SetUp]
         public async Task Setup()
         {

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Net;
     using System.Threading.Tasks;
@@ -43,7 +43,6 @@
         }
 
         private async Task Search(
-            HttpRequest _,
             HttpResponse res,
             string comments,
             int? reqNumber,
@@ -95,7 +94,7 @@
         {
             await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
         }
-        
+
         private async Task GetReversalPreview(
             HttpRequest req,
             HttpResponse res,
@@ -177,7 +176,7 @@
         }
 
         private async Task Create(
-            HttpResponse res, 
+            HttpResponse res,
             HttpRequest req,
             RequisitionHeaderResource resource,
             IRequisitionFacadeService service)
@@ -195,7 +194,7 @@
             resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(await service.Validate(resource));
         }
-        
+
         private async Task Update(
             HttpResponse res,
             HttpRequest req,
@@ -244,7 +243,7 @@
         }
 
         private async Task PrintQcLabels(
-            HttpResponse res, 
+            HttpResponse res,
             HttpRequest req,
             IRequisitionLabelsFacadeService service,
             QcLabelPrintRequestResource resource)

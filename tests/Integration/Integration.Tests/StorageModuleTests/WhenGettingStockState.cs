@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StorageModuleTests
+namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 {
     using System.Net;
 

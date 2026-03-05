@@ -52,7 +52,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
             this.req = this.Sut.CancelLine(
-                123, 
+                123,
                 1,
                 employee.Id,
                 new List<string>(),

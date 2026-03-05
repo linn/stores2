@@ -10,14 +10,14 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Resources;
 
-    public class CarrierService 
+    public class CarrierService
         : AsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>
     {
         private readonly IRepository<Country, string> countryRepository;
-        
+
         public CarrierService(
-            IRepository<Carrier, string> repository, 
-            ITransactionManager transactionManager, 
+            IRepository<Carrier, string> repository,
+            ITransactionManager transactionManager,
             IBuilder<Carrier> resourceBuilder,
             IRepository<Country, string> countryRepository)
             : base(repository, transactionManager, resourceBuilder)
@@ -29,7 +29,7 @@ namespace Linn.Stores2.Facade.Services
         // (to look up the country from the db) which must be await'd
         // so override the asynchronous version of CreateFromResource
         protected override async Task<Carrier> CreateFromResourceAsync(
-            CarrierResource resource, 
+            CarrierResource resource,
             IEnumerable<string> privileges = null)
         {
             var country = await this.countryRepository.FindByIdAsync(resource.CountryCode);
@@ -75,7 +75,7 @@ namespace Linn.Stores2.Facade.Services
         }
 
         protected override void DeleteOrObsoleteResource(
-            Carrier entity, 
+            Carrier entity,
             IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();

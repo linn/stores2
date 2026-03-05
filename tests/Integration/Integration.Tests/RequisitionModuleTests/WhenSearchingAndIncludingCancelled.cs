@@ -1,20 +1,17 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
 
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Requisitions;
-
+    using Linn.Stores2.TestData.Requisitions;
     using NUnit.Framework;
-
-    using TestData.Requisitions;
 
     public class WhenSearchingAndIncludingCancelled : ContextBase
     {

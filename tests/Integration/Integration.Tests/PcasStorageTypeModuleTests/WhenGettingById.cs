@@ -3,6 +3,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
     using System.Net;
 
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
@@ -18,21 +19,20 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
 
         private PcasBoard pcasBoard;
 
-
         [SetUp]
         public void SetUp()
         {
             this.storageType = new StorageType
-                                   {
-                                       StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
-                                       Description = "Storage Type Description"
-                                   };
+            {
+                StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
+                Description = "Storage Type Description"
+            };
 
             this.pcasBoard = new PcasBoard
-                                 {
-                                     BoardCode = "TEST-BOARD-CODE",
-                                     Description = "PCAS Board Description"
-                                 };
+            {
+                BoardCode = "TEST-BOARD-CODE",
+                Description = "PCAS Board Description"
+            };
 
             this.pcasStorageType = new PcasStorageType(
                 this.pcasBoard,
@@ -66,7 +66,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldReturnJsonBody()
         {

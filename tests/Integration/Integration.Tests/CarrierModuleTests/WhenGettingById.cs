@@ -18,7 +18,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
         {
             this.dhl = new Carrier(
                 "DHL",
-                "D H L", 
+                "D H L",
                 "Mr Dhl",
                 "line2",
                 "line2",
@@ -51,7 +51,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldReturnJsonBody()
         {

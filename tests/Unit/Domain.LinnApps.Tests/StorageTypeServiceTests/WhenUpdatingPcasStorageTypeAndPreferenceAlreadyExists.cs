@@ -1,4 +1,4 @@
-﻿using Linn.Stores2.Domain.LinnApps.Exceptions;
+using Linn.Stores2.Domain.LinnApps.Exceptions;
 using Linn.Stores2.Domain.LinnApps.Parts;
 using Linn.Stores2.Domain.LinnApps.Stock;
 namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
+namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
 {
     using System.Net.Http;
 

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Threading.Tasks;
@@ -34,7 +34,7 @@
         public async Task<IResult<ReportReturnResource>> GetDailyEuRsnImportReport(string fromDate, string toDate)
         {
             var fromDateForService = DateTime.Parse(fromDate);
-            var toDateForService = DateTime.Parse(toDate); 
+            var toDateForService = DateTime.Parse(toDate);
             var result =
                 await this.dailyEuReportService.GetDailyEuRsnImportReport(fromDateForService, toDateForService);
 

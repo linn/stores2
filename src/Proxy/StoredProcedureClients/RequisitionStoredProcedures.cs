@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Proxy.StoredProcedureClients
+namespace Linn.Stores2.Proxy.StoredProcedureClients
 {
     using System.Data;
     using System.Threading.Tasks;
@@ -631,9 +631,9 @@
         }
 
         public async Task<ProcessResult> UnPickStock(
-            int reqNumber, 
-            int lineNumber, 
-            int seq, 
+            int reqNumber,
+            int lineNumber,
+            int seq,
             int? orderNumber,
             int? orderLine,
             decimal qtyToUnPick,

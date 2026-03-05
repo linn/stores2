@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;

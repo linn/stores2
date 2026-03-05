@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -65,9 +65,9 @@
                                                    {
                                                        new MoveSpecification
                                                        {
-                                                           Qty = 1, 
-                                                           FromPallet = 123, 
-                                                           FromStockPool = "LINN", 
+                                                           Qty = 1,
+                                                           FromPallet = 123,
+                                                           FromStockPool = "LINN",
                                                            IsAddition = true,
                                                            ToPallet = 123
                                                        }

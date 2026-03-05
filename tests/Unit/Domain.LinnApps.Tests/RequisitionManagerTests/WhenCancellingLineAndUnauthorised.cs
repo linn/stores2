@@ -15,7 +15,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     public class WhenCancellingLineAndUnauthorised : ContextBase
     {
         private Func<Task> action;
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -24,7 +24,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 .Returns(false);
             this.action = async () => await this.Sut.CancelLine(
                                           123,
-                                          1, 
+                                          1,
                                           33087,
                                           new List<string>(),
                                           "REASON");

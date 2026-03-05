@@ -15,7 +15,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
     public class StoresServiceContextBase
     {
         protected IStoresService Sut { get; set; }
-        
+
         protected IStockService StockService { get; private set; }
 
         protected ProcessResult Result { get; set; }
@@ -29,7 +29,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
         protected StockState OnToState { get; set; }
 
         protected IRepository<StoresTransactionState, StoresTransactionStateKey> StoresTransactionStateRepository { get; private set; }
-        
+
         protected IRepository<StoresBudget, int> StoresBudgetRepository { get; private set; }
 
         protected IRepository<StockLocator, int> StockLocatorRepository { get; private set; }
@@ -65,8 +65,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests
             this.StockPoolRepository = Substitute.For<IRepository<StockPool, string>>();
 
             this.Sut = new StoresService(
-                this.StockService, 
-                this.StoresTransactionStateRepository, 
+                this.StockService,
+                this.StoresTransactionStateRepository,
                 this.StoresBudgetRepository,
                 this.StockLocatorRepository,
                 this.RequisitionRepository,

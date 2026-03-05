@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.TestData.FunctionCodes
+namespace Linn.Stores2.TestData.FunctionCodes
 {
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.Transactions;

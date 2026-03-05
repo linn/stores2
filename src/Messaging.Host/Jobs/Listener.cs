@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Messaging.Host.Jobs;
+namespace Linn.Stores2.Messaging.Host.Jobs;
 
 using System.Threading;
 using System.Threading.Tasks;

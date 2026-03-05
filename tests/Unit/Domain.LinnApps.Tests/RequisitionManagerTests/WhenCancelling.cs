@@ -27,7 +27,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 "F",
                 123,
                 "REQ",
-                new Department(), 
+                new Department(),
                 new Nominal());
 
             this.ReqRepository.FindByIdAsync(this.req.ReqNumber).Returns(this.req);
@@ -43,7 +43,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
             this.req = this.Sut.CancelHeader(
-                this.req.ReqNumber, 
+                this.req.ReqNumber,
                 employee.Id,
                 new List<string>(),
                 "REASON").Result;

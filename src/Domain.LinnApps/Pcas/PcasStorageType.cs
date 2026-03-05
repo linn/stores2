@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Pcas
+namespace Linn.Stores2.Domain.LinnApps.Pcas
 {
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -20,7 +20,7 @@
             if (string.IsNullOrEmpty(preference) || preference == "0")
             {
                 throw new PcasStorageTypeException("Pcas Storage Type Preference is Empty or 0");
-            } 
+            }
 
             this.Key = new PcasStorageTypeKey
                            {

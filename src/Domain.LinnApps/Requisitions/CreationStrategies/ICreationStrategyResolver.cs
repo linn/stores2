@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
+namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     public interface ICreationStrategyResolver
     {

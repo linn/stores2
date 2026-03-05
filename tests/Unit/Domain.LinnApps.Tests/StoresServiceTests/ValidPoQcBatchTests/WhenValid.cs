@@ -13,19 +13,19 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
     using Linn.Stores2.TestData.Transactions;
     using NSubstitute;
     using NUnit.Framework;
-    
+
     public class WhenValid : StoresServiceContextBase
     {
         private ProcessResult result;
-        
+
         [SetUp]
         public async Task Setup()
         {
             var sugiiReqLine = new RequisitionLine(123, 1, new Part(), 100, TestTransDefs.SupplierToQC);
-            
+
             sugiiReqLine.RequisitionHeader = new RequisitionHeader(
-                new Employee(), 
-                TestFunctionCodes.BookFromSupplier, 
+                new Employee(),
+                TestFunctionCodes.BookFromSupplier,
                 null,
                 123456,
                 "PO",
@@ -35,18 +35,18 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
                 toState: "QC",
                 toStockPool: "STOCK",
                 dateReceived: DateTime.Today);
-            
+
             this.StoresBudgetRepository.FilterByAsync(Arg.Any<Expression<Func<StoresBudget, bool>>>())
                 .Returns(new List<StoresBudget>
                 {
                     new StoresBudget
                     {
-                        TransactionCode = "SUGII", 
-                        Quantity = 100, 
+                        TransactionCode = "SUGII",
+                        Quantity = 100,
                         RequisitionLine = sugiiReqLine
                     }
                 });
-            
+
             this.result = await this.Sut.ValidPoQcBatch("P123456", 123456, 1);
             this.StoresBudgetRepository.FilterByAsync(Arg.Any<Expression<Func<StoresBudget, bool>>>())
                 .Returns(new List<StoresBudget>

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresTransactionDefinitionTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresTransactionDefinitionTests
 {
     using System.Collections.Generic;
     using FluentAssertions;

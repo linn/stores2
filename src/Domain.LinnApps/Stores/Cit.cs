@@ -1,5 +1,5 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stores
-{ 
+namespace Linn.Stores2.Domain.LinnApps.Stores
+{
     public class Cit
     {
         public string Code { get; set; }

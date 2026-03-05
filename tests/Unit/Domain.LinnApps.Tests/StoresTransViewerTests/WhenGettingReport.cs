@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresTransViewerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresTransViewerTests
 {
     using System;
     using System.Collections.Generic;

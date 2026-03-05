@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Pcas
+namespace Linn.Stores2.Domain.LinnApps.Pcas
 {
     public class PcasStorageTypeKey
     {

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
@@ -24,7 +24,6 @@
         }
 
         private async Task GetAll(
-            HttpRequest _,
             HttpResponse res,
             string part,
             string storageType,
@@ -47,7 +46,6 @@
         }
 
         private async Task GetById(
-            HttpRequest _,
             HttpResponse res,
             int bridgeId,
             IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
@@ -56,7 +54,6 @@
         }
 
         private async Task Delete(
-            HttpRequest _,
             HttpResponse res,
             int bridgeId,
             IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
@@ -65,7 +62,6 @@
         }
 
         private async Task Create(
-            HttpRequest _,
             HttpResponse res,
             PartStorageTypeResource resource,
             IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
@@ -74,7 +70,6 @@
         }
 
         private async Task Update(
-            HttpRequest _,
             HttpResponse res,
             int bridgeId,
             PartStorageTypeResource resource,

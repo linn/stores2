@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
     using Linn.Common.Service;
@@ -19,14 +19,13 @@
             app.MapGet("/stores2/reports/labour-hours-in-stock", this.GetApp);
             app.MapGet("/stores2/reports/labour-hours-in-loans", this.GetApp);
             app.MapGet("/stores2/reports/labour-hours-summary", this.GetApp);
-            app.MapGet("/stores2/reports/labour-hours-summary/report", this.GetLabourHourSummaries); 
+            app.MapGet("/stores2/reports/labour-hours-summary/report", this.GetLabourHourSummaries);
             app.MapGet("/stores2/reports/labour-hours-summary/report/pdf", this.GetLabourHourSummariesAsPdf);
             app.MapGet("/stores2/reports/labour-hours-in-loans/report", this.GetLabourHoursInLoans);
             app.MapGet("/stores2/reports/labour-hours-in-loans/report/pdf", this.GetLabourHoursInLoansAsPdf);
         }
 
         private async Task GetLabourHoursInStock(
-            HttpRequest _,
             HttpResponse res,
             string accountingCompany,
             string jobref,
@@ -36,7 +35,6 @@
         }
 
         private async Task GetLabourHoursInStockTotal(
-            HttpRequest _,
             HttpResponse res,
             string accountingCompany,
             string jobref,
@@ -59,7 +57,6 @@
         }
 
         private async Task GetLabourHourSummaries(
-            HttpRequest _,
             HttpResponse res,
             string accountingCompany,
             string fromDate,
@@ -85,7 +82,6 @@
         }
 
         private async Task GetLabourHoursInLoans(
-            HttpRequest _,
             HttpResponse res,
             IStockReportFacadeService facadeService)
         {

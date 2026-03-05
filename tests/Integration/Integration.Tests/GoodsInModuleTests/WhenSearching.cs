@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.GoodsInModuleTests
+namespace Linn.Stores2.Integration.Tests.GoodsInModuleTests
 {
     using System.Linq;
     using System.Net;
@@ -25,10 +25,10 @@
             this.GoodsInLogReportService
                 .GoodsInLogReport(
                     null,
-                    null, 
+                    null,
                     33156,
                     null,
-                    null, 
+                    null,
                     null,
                     null,
                     null)

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LinesProvidedStrategyTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LinesProvidedStrategyTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -43,7 +43,7 @@
                                                                   }
                                                   };
             this.AuthorisationService.HasPermissionFor(
-                    AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode), 
+                    AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode),
                     Arg.Any<List<string>>())
                 .Returns(true);
             this.EmployeeRepository.FindByIdAsync(123).Returns(new Employee());

@@ -22,7 +22,7 @@ namespace Linn.Stores2.Integration.Tests.RequisitionReportModuleTests
 
             this.stringResponse = this.Client.GetStringAsync($"/requisitions/{this.reqNumber}/view").Result;
         }
-        
+
         [Test]
         public void ShouldReturnHtml()
         {

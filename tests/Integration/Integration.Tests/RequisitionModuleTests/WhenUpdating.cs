@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Collections.Generic;
     using System.Net;
@@ -62,19 +62,18 @@
         {
             this.RequisitionHistoryRepository.Received().AddAsync(Arg.Any<RequisitionHistory>());
         }
-        
+
         [Test]
         public void ShouldCallDomain()
         {
             this.ReqManager.Received().UpdateRequisition(
-                Arg.Any<RequisitionHeader>(), 
+                Arg.Any<RequisitionHeader>(),
                 Arg.Any<string>(),
                 Arg.Any<string>(),
                 Arg.Any<string>(),
                 Arg.Any<IEnumerable<LineCandidate>>(),
                 Arg.Any<IEnumerable<string>>());
         }
-        
 
         [Test]
         public void ShouldReturnJsonContentType()

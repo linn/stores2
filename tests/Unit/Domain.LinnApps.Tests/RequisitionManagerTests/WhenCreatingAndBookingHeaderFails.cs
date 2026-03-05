@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Threading.Tasks;
@@ -24,7 +24,7 @@
         private decimal quantity;
 
         private int employeeId;
-   
+
         private Func<Task> action;
 
         [SetUp]

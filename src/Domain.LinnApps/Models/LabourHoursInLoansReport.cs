@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Models
+namespace Linn.Stores2.Domain.LinnApps.Models
 {
     using Linn.Common.Reporting.Models;
     using System;

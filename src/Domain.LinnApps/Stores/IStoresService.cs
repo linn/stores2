@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stores
+namespace Linn.Stores2.Domain.LinnApps.Stores
 {
     using System.Threading.Tasks;
     using Linn.Common.Domain;
@@ -6,7 +6,7 @@
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
-   
+
     // This service is intended for stores_oo replacement methods that are not
     // suitable to be written in the requisition class itself
     public interface IStoresService

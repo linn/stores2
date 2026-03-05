@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
+namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;

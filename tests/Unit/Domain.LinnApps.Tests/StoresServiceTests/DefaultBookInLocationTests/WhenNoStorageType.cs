@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.DefaultBookInLocationTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.DefaultBookInLocationTests
 {
     using System;
     using System.Linq.Expressions;

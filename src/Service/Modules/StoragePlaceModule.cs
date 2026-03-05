@@ -24,7 +24,7 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task StoragePlaceAuditReport(
-            HttpRequest _, 
+            HttpRequest _,
             HttpResponse res,
             string[] locationList,
             string locationRange,

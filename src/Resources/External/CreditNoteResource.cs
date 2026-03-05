@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.External
+namespace Linn.Stores2.Resources.External
 {
     using System.Collections.Generic;
 

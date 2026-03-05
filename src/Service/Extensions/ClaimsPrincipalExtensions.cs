@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Extensions
+namespace Linn.Stores2.Service.Extensions
 {
     using System;
     using System.Collections.Generic;
@@ -26,7 +26,7 @@
             var url = principal.GetEmployeeUrl();
             return string.IsNullOrEmpty(url) ? null : int.Parse(url.Split("/").Last());
         }
-            
+
         public static bool HasClaim(this ClaimsPrincipal principal, string type)
         {
             if (type == null)

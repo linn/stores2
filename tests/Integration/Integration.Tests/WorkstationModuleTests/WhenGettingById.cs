@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
+namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System.Collections.Generic;
     using System.Net;
@@ -19,17 +19,15 @@
         public void SetUp()
         {
             this.workStation = new WorkStation(
-                "Test", 
-                "description", 
+                "Test",
+                "description",
                 new Cit
-                    {
-                        Code = "R",
-                        Name = "R CODE"
-                    }, 
-                "Z", 
-                new List<WorkStationElement> 
                 {
-                });
+                    Code = "R",
+                    Name = "R CODE"
+                },
+                "Z",
+                new List<WorkStationElement>());
 
             this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workStation);
 

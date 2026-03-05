@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Models
+namespace Linn.Stores2.Domain.LinnApps.Models
 {
     using System;
     using System.Collections.Generic;

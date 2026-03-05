@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -105,18 +105,18 @@
                        resource.TypeOfStock,
                        stockPool,
                        storageType)
-                       {
-                           DefaultStockPool = resource.DefaultStockPool,
-                           StoresKittingPriority = resource.StoresKittingPriority,
-                           SalesKittingPriority = resource.SalesKittingPriority,
-                           SpecProcFlag = resource.SpecProcFlag,
-                           LocationType = resource.LocationType,
-                           StorageTypeCode = resource.StorageType,
-                           SalesAccountId = resource.SalesAccountId,
-                           OutletNumber = resource.OutletNumber,
-                           AuditedByDepartmentCode = resource?.AuditedByDepartmentCode,
-                           AuditedByDepartment = department
-                        };
+            {
+                DefaultStockPool = resource.DefaultStockPool,
+                StoresKittingPriority = resource.StoresKittingPriority,
+                SalesKittingPriority = resource.SalesKittingPriority,
+                SpecProcFlag = resource.SpecProcFlag,
+                LocationType = resource.LocationType,
+                StorageTypeCode = resource.StorageType,
+                SalesAccountId = resource.SalesAccountId,
+                OutletNumber = resource.OutletNumber,
+                AuditedByDepartmentCode = resource?.AuditedByDepartmentCode,
+                AuditedByDepartment = department
+            };
         }
 
         protected override async Task UpdateFromResourceAsync(
@@ -138,12 +138,14 @@
             var dateInvalid = string.IsNullOrEmpty(updateResource.DateInvalid)
                 ? (DateTime?)null
                 : DateTime.Parse(updateResource.DateInvalid);
-            var department = string.IsNullOrEmpty(updateResource.AuditedByDepartmentCode) ? null : await this.departmentRepository.FindByIdAsync(updateResource.AuditedByDepartmentCode);
-            
+            var department = string.IsNullOrEmpty(updateResource.AuditedByDepartmentCode)
+                ? null
+                : await this.departmentRepository.FindByIdAsync(updateResource.AuditedByDepartmentCode);
+
             entity.Update(
-                updateResource.LocationCode, 
-                updateResource.Description, 
-                company, 
+                updateResource.LocationCode,
+                updateResource.Description,
+                company,
                 updateResource.AccessibleFlag,
                 updateResource.StoresKittableFlag,
                 updateResource.SalesKittableFlag,

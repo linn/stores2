@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresTransViewerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresTransViewerTests
 {
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;

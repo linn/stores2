@@ -1,8 +1,9 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
 
     using Linn.Common.Domain;
@@ -13,6 +14,7 @@
     using Linn.Stores2.TestData.FunctionCodes;
 
     using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenValidatingBookSuAndNegativeQty : ContextBase
@@ -30,12 +32,12 @@
 
             this.DocumentProxy.GetPurchaseOrder(1234).Returns(
                 new PurchaseOrderResult
-                    {
-                        OrderNumber = 1234,
-                        IsFilCancelled = false,
-                        IsAuthorised = true,
-                        DocumentType = "PO",
-                        Details = new List<PurchaseOrderDetailResult>
+                {
+                    OrderNumber = 1234,
+                    IsFilCancelled = false,
+                    IsAuthorised = true,
+                    DocumentType = "PO",
+                    Details = new List<PurchaseOrderDetailResult>
                                       {
                                           new PurchaseOrderDetailResult
                                               {
@@ -50,7 +52,7 @@
                                                                    }
                                               }
                                       }
-                    });
+                });
             this.StoresService.ValidOntoLocation(
                 Arg.Any<Part>(),
                 Arg.Any<StorageLocation>(),

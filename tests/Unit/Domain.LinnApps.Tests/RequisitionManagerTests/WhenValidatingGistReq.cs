@@ -12,7 +12,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using Linn.Stores2.TestData.Transactions;
     using NSubstitute;
     using NUnit.Framework;
-    
+
     public class WhenValidatingGistReq : ContextBase
     {
         private RequisitionHeader result;
@@ -29,8 +29,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.PartRepository.FindByIdAsync("PART").Returns(new Part());
             this.ReqStoredProcedures.CanPutPartOnPallet("PART", 123).Returns(true);
             this.StoresService.ValidOntoLocation(
-                Arg.Any<Part>(), 
-                Arg.Any<StorageLocation>(), 
+                Arg.Any<Part>(),
+                Arg.Any<StorageLocation>(),
                 Arg.Any<StoresPallet>(),
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, string.Empty));
             this.result = await this.Sut.Validate(
@@ -54,6 +54,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
         {
             this.result.Should().NotBeNull();
         }
-    } 
+    }
 }
 

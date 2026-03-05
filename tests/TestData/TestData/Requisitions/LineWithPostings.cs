@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.TestData.Requisitions
+namespace Linn.Stores2.TestData.Requisitions
 {
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;

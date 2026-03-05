@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -29,7 +29,7 @@
                          StockPoolCode  = stockPool.StockPoolCode,
                          StockPoolDescription = stockPool.StockPoolDescription,
                          DateInvalid = stockPool.DateInvalid?.ToString("o"),
-                         AccountingCompanyCode = stockPool.AccountingCompanyCode, 
+                         AccountingCompanyCode = stockPool.AccountingCompanyCode,
                          AccountingCompany = stockPool.AccountingCompany == null ? null : new AccountingCompanyResource
                                                  {
                                                      Id = stockPool.AccountingCompany.Id,

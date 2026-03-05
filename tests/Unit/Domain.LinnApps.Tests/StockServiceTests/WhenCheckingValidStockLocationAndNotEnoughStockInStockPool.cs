@@ -7,11 +7,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
     using Linn.Stores2.Domain.LinnApps.Tests.Extensions;
 
     using NUnit.Framework;
-    
+
     public class WhenCheckingValidStockLocationAndNotEnoughStockInStockPool : ContextBase
     {
         private ProcessResult result;
-    
+
         [SetUp]
         public async Task SetUp()
         {

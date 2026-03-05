@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using System;
     using FluentAssertions;
@@ -8,7 +8,7 @@
     using Linn.Stores2.TestData.FunctionCodes;
     using NUnit.Framework;
 
-    public class WhenCreatingAndMissingNominal 
+    public class WhenCreatingAndMissingNominal
     {
         private Action action;
 

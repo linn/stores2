@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
 {
     using System;
     using System.Collections.Generic;
@@ -21,15 +21,15 @@
         private ProcessResult result;
 
         private QcLabelPrintRequest request;
-        
+
         private LabelType specifiedPrinterLabelType;
-        
+
         private PurchaseOrderResult purchaseOrderResult;
 
         private Part part;
 
         private LabelType defaultQcLabelType;
-        
+
         [SetUp]
         public async Task SetUp()
         {
@@ -37,7 +37,7 @@
                                                  {
                                                      DefaultPrinter = "PRINTER DEFAULT", FileName = "TEMPLATE"
                                                  };
-            
+
             this.defaultQcLabelType = new LabelType
             {
                 DefaultPrinter = "PASS LABEL", FileName = "P TEMPLATE"
@@ -79,9 +79,9 @@
 
                 }
             };
-            
+
             this.DocumentProxy.GetPurchaseOrder(this.request.OrderNumber).Returns(this.purchaseOrderResult);
-            
+
             this.EmployeeRepository.FindByIdAsync(this.request.UserNumber)
                 .Returns(new Employee { Name = "MR EMPLOYEE" });
 
@@ -92,14 +92,14 @@
                     this.defaultQcLabelType.FileName,
                     Arg.Any<string>())
                 .Returns((false, "LINES ERROR"));
-    
+
             this.part = new Part
             {
                 PartNumber = this.request.PartNumber,
                 Description = "A PART",
                 OurUnitOfMeasure = "ONES"
             };
-            
+
             this.PartsRepository.FindByAsync(Arg.Any<Expression<Func<Part, bool>>>())
                 .Returns(this.part);
             this.result = await this.Sut.PrintLabels(this.request);

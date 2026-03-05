@@ -1,9 +1,10 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
+
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
     using Linn.Common.Rendering;
@@ -51,7 +52,7 @@
         public async Task<IResult<ReportReturnResource>> LabourHoursInStock(
             string jobref,
             string accountingCompany = "LINN",
-        bool includeObsolete = true)
+            bool includeObsolete = true)
         {
             var result = await this.stockReportService.GetStockInLabourHours(
                              jobref,
@@ -126,7 +127,8 @@
             }
 
             var result = await this.stockReportService.GetLabourHoursSummaryReport(
-                from, to,
+                from,
+                to,
                 accountingCompany);
 
             var data = new LabourHoursSummaryReport

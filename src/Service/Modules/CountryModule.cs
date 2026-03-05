@@ -20,8 +20,8 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task GetCountries(
-            HttpRequest req, 
-            HttpResponse res, 
+            HttpRequest req,
+            HttpResponse res,
             IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource> service)
         {
             await res.Negotiate(await service.GetAll());

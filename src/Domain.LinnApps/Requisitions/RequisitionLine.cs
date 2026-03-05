@@ -1,4 +1,4 @@
-ï»¿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
     using System.Collections.Generic;
@@ -17,10 +17,10 @@
         }
 
         public RequisitionLine(
-            int reqNumber, 
-            int lineNumber, 
-            Part part, 
-            decimal qty, 
+            int reqNumber,
+            int lineNumber,
+            Part part,
+            decimal qty,
             StoresTransactionDefinition transaction,
             int? document1Number = null,
             int document1Line = 1,
@@ -54,18 +54,18 @@
             this.NominalAccountPostings = new List<RequisitionLinePosting>();
 
             this.Cancelled = "N";
-            
+
             this.Document1Number = document1Number ?? reqNumber;
             this.Document1Line = string.IsNullOrEmpty(document1Name) ? lineNumber: document1Line;
             this.Document1Type = string.IsNullOrEmpty(document1Name) ? "REQ" : document1Name;
         }
-        
+
         public int ReqNumber { get; protected init; }
 
         public int LineNumber { get; protected init; }
 
         public Part Part { get; protected set; }
-        
+
         public DateTime? DateCancelled { get; protected set; }
 
         public string CancelledReason { get; protected set; }
@@ -89,7 +89,7 @@
         public ICollection<RequisitionSerialNumber> SerialNumbers { get; protected set; }
 
         public decimal Qty { get; protected set; }
-        
+
         public StoresTransactionDefinition TransactionDefinition { get; protected set; }
 
         public string Cancelled { get; protected set; }
@@ -292,7 +292,7 @@
             if (departmentInputRule == null)
             {
                 throw new RequisitionException(
-                    $"Cannot update department of a {trans.TransactionCode} line â€“ rule does not allow input.");
+                    $"Cannot update department of a {trans.TransactionCode} line – rule does not allow input.");
             }
 
             // Determine which side (debit or credit) of the nominal posting this rule applies to.
@@ -301,7 +301,7 @@
                 var creditPosting = this.NominalAccountPostings
                     .First(x => x.DebitOrCredit == "C");
 
-                // Ensure only the department has changed â€“ updating nominal is not currently supported.
+                // Ensure only the department has changed – updating nominal is not currently supported.
                 if (creditPosting.NominalAccount.NominalCode != newNominalAccount.NominalCode)
                 {
                     throw new RequisitionException("Updating nominal code is not currently supported");

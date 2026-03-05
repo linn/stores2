@@ -5,6 +5,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
     using System.Net.Http.Json;
 
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
@@ -17,7 +18,8 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
 
     public class WhenUpdating : ContextBase
     {
-        private PcasStorageType pcasStorageType, updatedPcasStorageType;
+        private PcasStorageType pcasStorageType;
+        private PcasStorageType updatedPcasStorageType;
 
         private PcasStorageTypeResource updateResource;
 
@@ -29,16 +31,16 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
         public void SetUp()
         {
             this.storageType = new StorageType
-                                   {
-                                       StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
-                                       Description = "Storage Type Description"
-                                   };
+            {
+                StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
+                Description = "Storage Type Description"
+            };
 
             this.pcasBoard = new PcasBoard
-                                 {
-                                     BoardCode = "TEST-BOARD-CODE",
-                                     Description = "PCAS Board Description"
-                                 };
+            {
+                BoardCode = "TEST-BOARD-CODE",
+                Description = "PCAS Board Description"
+            };
 
             this.pcasStorageType = new PcasStorageType(
                 this.pcasBoard,
@@ -50,23 +52,23 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
 
             this.updateResource = new PcasStorageTypeResource
             {
-                                          BoardCode = "TEST-BOARD-CODE",
-                                          StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
-                                          Maximum = 100,
-                                          Increment = 2,
-                                          Remarks = "NEW REMARKS",
-                                          Preference = "2",
-                                          StorageType = new StorageTypeResource
-                                                            {
-                                                                StorageTypeCode = this.storageType.StorageTypeCode,
-                                                                Description = this.storageType.Description
-                                                            },
-                                          PcasBoard = new PcasBoardResource
-                                                          {
-                                                              BoardCode = this.pcasBoard.BoardCode,
-                                                              Description = this.pcasBoard.Description
-                                                          }
-                                      };
+                BoardCode = "TEST-BOARD-CODE",
+                StorageTypeCode = "TEST-STORAGE-TYPE-CODE",
+                Maximum = 100,
+                Increment = 2,
+                Remarks = "NEW REMARKS",
+                Preference = "2",
+                StorageType = new StorageTypeResource
+                {
+                    StorageTypeCode = this.storageType.StorageTypeCode,
+                    Description = this.storageType.Description
+                },
+                PcasBoard = new PcasBoardResource
+                {
+                    BoardCode = this.pcasBoard.BoardCode,
+                    Description = this.pcasBoard.Description
+                }
+            };
 
             this.updatedPcasStorageType = new PcasStorageType(
                 this.pcasBoard,
@@ -99,7 +101,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldUpdateEntity()
         {
@@ -107,7 +109,7 @@ namespace Linn.Stores2.Integration.Tests.PcasStorageTypeModuleTests
                 .First(x => x.BoardCode == this.pcasStorageType.BoardCode && x.StorageTypeCode == this.pcasStorageType.StorageTypeCode).Remarks
                 .Should().Be(this.updateResource.Remarks);
         }
-        
+
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {

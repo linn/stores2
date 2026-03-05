@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -52,7 +52,7 @@
                 AuthorisedActions.GetRequisitionActionByFunction(
                     TestFunctionCodes.LinnDeptReq.FunctionCode),
                     Arg.Any<IEnumerable<string>>()).Returns(false);
-         
+
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -92,9 +92,9 @@
 
             this.StoresService
                 .ValidOntoLocation(
-                    Arg.Any<Part>(), 
-                    loc, 
-                    null, 
+                    Arg.Any<Part>(),
+                    loc,
+                    null,
                     toState).Returns(new ProcessResult(true, string.Empty));
 
             this.ReqStoredProcedures.InsertReqOntos(

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 {
     using System.Collections.Generic;
 
@@ -33,7 +33,7 @@
                 .Returns(this.cleverStrategy);
             this.cleverStrategy.Create(Arg.Any<RequisitionCreationContext>())
                 .Returns(new ReqWithReqNumber(1, new Employee(), this.storesFunction, null, 123, null, null, null));
-       
+
             this.result = this.Sut.CreateRequisition(
                 123,
                 new List<string>(),

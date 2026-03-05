@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Parts
+namespace Linn.Stores2.Resources.Parts
 {
     using Linn.Common.Resources;
 

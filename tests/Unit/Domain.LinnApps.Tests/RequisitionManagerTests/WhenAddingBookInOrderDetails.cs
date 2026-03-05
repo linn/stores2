@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -47,7 +47,7 @@
             this.BookInOrderDetailRepository.Received()
                 .FilterByAsync(Arg.Any<Expression<Func<BookInOrderDetail, bool>>>());
         }
-        
+
         [Test]
         public void ShouldSaveBookInOrderDetails()
         {

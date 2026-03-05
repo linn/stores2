@@ -14,13 +14,13 @@ namespace Linn.Stores2.Facade.Services
     public class StoresBudgetFacadeService : AsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource>
     {
         public StoresBudgetFacadeService(
-            IRepository<StoresBudget, int> repository, 
-            ITransactionManager transactionManager, 
+            IRepository<StoresBudget, int> repository,
+            ITransactionManager transactionManager,
             IBuilder<StoresBudget> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
         }
-        
+
         protected override Expression<Func<StoresBudget, bool>> SearchExpression(string searchTerm)
         {
             throw new NotImplementedException();
@@ -37,7 +37,7 @@ namespace Linn.Stores2.Facade.Services
         }
 
         protected override void DeleteOrObsoleteResource(
-            StoresBudget entity, 
+            StoresBudget entity,
             IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Exceptions
+namespace Linn.Stores2.Domain.LinnApps.Exceptions
 {
     using System;
     using Common.Domain.Exceptions;

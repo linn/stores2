@@ -19,8 +19,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 .Returns(
                     new LoanResult
                     {
-                        LoanNumber = 123, 
-                        IsCancelled = false, 
+                        LoanNumber = 123,
+                        IsCancelled = false,
                         Details = new List<LoanDetail>
                         {
                             new LoanDetail { LineNumber = 1, ArticleNumber = "ART", IsCancelled = false, Quantity = 10 }
@@ -30,7 +30,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 .Returns(TestFunctionCodes.LoanOut);
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.result = this.Sut.Validate(
-                33087, 
+                33087,
                 TestFunctionCodes.LoanOut.FunctionCode,
                 null,
                 123,

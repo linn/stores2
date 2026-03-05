@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
 
@@ -11,7 +11,7 @@
         public string Action { get; set; }
 
         public DateTime DateChanged { get; set; }
-        
+
         public int By { get; set; }
 
         public string FunctionCode { get; set; }

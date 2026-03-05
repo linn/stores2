@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -36,8 +36,8 @@
         private readonly IBuilder<StorageLocation> storageLocationResourceBuilder;
 
         public RequisitionFacadeService(
-            IRequisitionRepository repository, 
-            ITransactionManager transactionManager, 
+            IRequisitionRepository repository,
+            ITransactionManager transactionManager,
             IBuilder<RequisitionHeader> resourceBuilder,
             IRequisitionManager requisitionManager,
             IRequisitionFactory requisitionFactory,
@@ -54,7 +54,7 @@
             this.reqRepository = repository;
             this.storageLocationResourceBuilder = storageLocationResourceBuilder;
         }
-        
+
         public async Task<IResult<RequisitionHeaderResource>> CancelHeader(
             int reqNumber, int cancelledBy, string reason, IEnumerable<string> privileges)
         {
@@ -65,7 +65,7 @@
                 var cancelled = await this.requisitionManager.CancelHeader(
                                  reqNumber,
                                  cancelledBy,
-                                 privilegeList,                               
+                                 privilegeList,
                                  reason);
                 await this.transactionManager.CommitAsync();
 
@@ -79,7 +79,7 @@
         }
 
         public async Task<IResult<RequisitionHeaderResource>> CancelLine(
-            int reqNumber, 
+            int reqNumber,
             int lineNumber,
             int cancelledBy,
             string reason,
@@ -264,25 +264,25 @@
             var result = await this.requisitionFactory.CreateRequisition(
                              resource.CreatedBy.GetValueOrDefault(),
                              privileges,
-                             resource.StoresFunction?.Code, 
+                             resource.StoresFunction?.Code,
                              resource.ReqType,
-                             resource.Document1, 
-                             resource.Document1Line, 
-                             resource.Document1Name, 
+                             resource.Document1,
+                             resource.Document1Line,
+                             resource.Document1Name,
                              resource.Document2,
                              resource.Document2Name,
-                             resource.Department?.DepartmentCode, 
-                             resource.Nominal?.NominalCode, 
-                             reference: resource.Reference, 
-                             comments: resource.Comments, 
-                             manualPick: resource.ManualPick, 
-                             fromStockPool: resource.FromStockPool, 
-                             toStockPool: resource.ToStockPool, 
-                             fromPalletNumber: resource.FromPalletNumber, 
-                             toPalletNumber: resource.ToPalletNumber, 
-                             fromLocationCode: resource.FromLocationCode, 
-                             toLocationCode: resource.ToLocationCode, 
-                             partNumber: resource.Part?.PartNumber, 
+                             resource.Department?.DepartmentCode,
+                             resource.Nominal?.NominalCode,
+                             reference: resource.Reference,
+                             comments: resource.Comments,
+                             manualPick: resource.ManualPick,
+                             fromStockPool: resource.FromStockPool,
+                             toStockPool: resource.ToStockPool,
+                             fromPalletNumber: resource.FromPalletNumber,
+                             toPalletNumber: resource.ToPalletNumber,
+                             fromLocationCode: resource.FromLocationCode,
+                             toLocationCode: resource.ToLocationCode,
+                             partNumber: resource.Part?.PartNumber,
                              newPartNumber: resource.NewPart?.PartNumber,
                              quantity: resource.Quantity,
                              fromState: resource.FromState,
@@ -305,13 +305,13 @@
             RequisitionHeaderResource updateResource,
             IEnumerable<string> privileges = null)
         {
-                await this.requisitionManager.UpdateRequisition(
-                    entity, 
-                    updateResource.Comments,
-                    updateResource.Reference,
-                    updateResource.Department?.DepartmentCode,
-                    updateResource.Lines.Select(BuildLineCandidateFromResource),
-                    privileges);
+            await this.requisitionManager.UpdateRequisition(
+                entity,
+                updateResource.Comments,
+                updateResource.Reference,
+                updateResource.Department?.DepartmentCode,
+                updateResource.Lines.Select(BuildLineCandidateFromResource),
+                privileges);
         }
 
         protected override Expression<Func<RequisitionHeader, bool>> SearchExpression(
@@ -328,13 +328,13 @@
             RequisitionHeaderResource updateResource)
         {
             var history = new RequisitionHistory
-                              {
-                                  ReqNumber = entity.ReqNumber,
-                                  Action = actionType,
-                                  DateChanged = DateTime.Now,
-                                  By = userNumber,
-                                  FunctionCode = entity.StoresFunction?.FunctionCode
-                              };
+            {
+                ReqNumber = entity.ReqNumber,
+                Action = actionType,
+                DateChanged = DateTime.Now,
+                By = userNumber,
+                FunctionCode = entity.StoresFunction?.FunctionCode
+            };
             await this.reqHistoryRepository.AddAsync(history);
         }
 
@@ -352,7 +352,7 @@
                                       ? null
                                       : DateTime.Parse(searchResource.StartDate);
             DateTime? endDate = string.IsNullOrEmpty(searchResource.EndDate) ? null : DateTime.Parse(searchResource.EndDate);
-            
+
             if (!string.IsNullOrEmpty(searchResource.DocumentName) && searchResource.DocumentNumber.HasValue)
             {
                 return x => x.Document1Name == searchResource.DocumentName &&
@@ -374,8 +374,8 @@
                 startDate = DateTime.Today.AddYears(-1);
             }
 
-            return x => (string.IsNullOrEmpty(searchResource.Comments) 
-                         || x.Comments.ToUpper().Contains(searchResource.Comments.ToUpper().Trim())) 
+            return x => (string.IsNullOrEmpty(searchResource.Comments)
+                         || x.Comments.ToUpper().Contains(searchResource.Comments.ToUpper().Trim()))
                         && (searchResource.IncludeCancelled || x.Cancelled != "Y")
                         && (!searchResource.ReqNumber.HasValue || x.ReqNumber == searchResource.ReqNumber)
                         && (!startDate.HasValue || x.DateCreated >= startDate)
@@ -392,17 +392,17 @@
         private static BookInOrderDetail BuildBookInOrderDetailFromResource(BookInOrderDetailResource resource)
         {
             return new BookInOrderDetail
-                       {
-                           OrderNumber = resource.OrderNumber,
-                           OrderLine = resource.OrderLine,
-                           Sequence = resource.Sequence,
-                           Quantity = resource.Quantity,
-                           DepartmentCode = resource.DepartmentCode,
-                           NominalCode = resource.NominalCode,
-                           PartNumber = resource.PartNumber,
-                           ReqNumber = resource.ReqNumber,
-                           IsReverse = resource.IsReverse
-                       };
+            {
+                OrderNumber = resource.OrderNumber,
+                OrderLine = resource.OrderLine,
+                Sequence = resource.Sequence,
+                Quantity = resource.Quantity,
+                DepartmentCode = resource.DepartmentCode,
+                NominalCode = resource.NominalCode,
+                PartNumber = resource.PartNumber,
+                ReqNumber = resource.ReqNumber,
+                IsReverse = resource.IsReverse
+            };
         }
 
         private static LineCandidate BuildLineCandidateFromResource(RequisitionLineResource resource)
@@ -413,35 +413,35 @@
             }
 
             return new LineCandidate
-                       {
-                           Moves = resource.Moves?.Select(
+            {
+                Moves = resource.Moves?.Select(
                                m => new MoveSpecification
-                                        {
-                                            Qty = m.Qty.GetValueOrDefault(), 
-                                            FromLocation  = m.FromLocationCode,
-                                            FromPallet = m.FromPalletNumber,
-                                            FromState = m.FromState,
-                                            FromStockPool = m.FromStockPool,
-                                            ToLocation = m.ToLocationCode,
-                                            ToPallet = m.ToPalletNumber,
-                                            ToStockPool = m.ToStockPool,
-                                            ToState = m.ToState,
-                                            IsAddition = m.IsAddition.GetValueOrDefault()
+                               {
+                                   Qty = m.Qty.GetValueOrDefault(),
+                                   FromLocation = m.FromLocationCode,
+                                   FromPallet = m.FromPalletNumber,
+                                   FromState = m.FromState,
+                                   FromStockPool = m.FromStockPool,
+                                   ToLocation = m.ToLocationCode,
+                                   ToPallet = m.ToPalletNumber,
+                                   ToStockPool = m.ToStockPool,
+                                   ToState = m.ToState,
+                                   IsAddition = m.IsAddition.GetValueOrDefault()
                                }),
-                           LineNumber = resource.LineNumber,
-                           PartNumber = resource.Part?.PartNumber,
-                           Document1 = resource.Document1Number,
-                           Document1Line = resource.Document1Line,
-                           Document1Type = resource.Document1Type,
-                           StockPicked = resource.StockPicked,
-                           Cancelled = resource.Cancelled,
-                           Qty = resource.Qty,
-                           TransactionDefinition = resource.TransactionCode,
-                           SerialNumbers = resource.SerialNumbers == null ? new List<int>() : resource.SerialNumbers
+                LineNumber = resource.LineNumber,
+                PartNumber = resource.Part?.PartNumber,
+                Document1 = resource.Document1Number,
+                Document1Line = resource.Document1Line,
+                Document1Type = resource.Document1Type,
+                StockPicked = resource.StockPicked,
+                Cancelled = resource.Cancelled,
+                Qty = resource.Qty,
+                TransactionDefinition = resource.TransactionCode,
+                SerialNumbers = resource.SerialNumbers == null ? new List<int>() : resource.SerialNumbers
                                .Where(s => s.SerialNumber.HasValue)
                                .OrderBy(s => s.Seq)
                                .Select(s => s.SerialNumber.Value).ToList()
-                       };
+            };
         }
     }
 }

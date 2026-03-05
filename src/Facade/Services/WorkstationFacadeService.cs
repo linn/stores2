@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -142,7 +142,12 @@
             throw new NotImplementedException();
         }
 
-        protected override Task SaveToLogTable(string actionType, int userNumber, WorkStation entity, WorkStationResource resource, WorkStationResource updateResource)
+        protected override Task SaveToLogTable(
+            string actionType,
+            int userNumber,
+            WorkStation entity,
+            WorkStationResource resource,
+            WorkStationResource updateResource)
         {
             throw new NotImplementedException();
         }
@@ -169,4 +174,3 @@
         }
     }
 }
-

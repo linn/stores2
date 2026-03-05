@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Extensions
+namespace Linn.Stores2.Facade.Extensions
 {
     using System.Linq;
 

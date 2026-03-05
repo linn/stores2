@@ -5,6 +5,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
     using System.Net;
 
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
@@ -14,15 +15,15 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
     public class WhenSearching : ContextBase
     {
         private Carrier dhl;
-        
+
         private Carrier fedex;
-        
+
         [SetUp]
         public void SetUp()
         {
             this.dhl = new Carrier(
                 "DHL",
-                "DHL Logistics", 
+                "DHL Logistics",
                 "Mr Dhl",
                 "line2",
                 "line2",
@@ -32,10 +33,10 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
                 new Country("GB", "Great Britain"),
                 "012345",
                 "123456789");
-            
+
             this.fedex = new Carrier(
                 "FDX",
-                "Fedex", 
+                "Fedex",
                 "Mr Fedex",
                 "line2",
                 "line2",
@@ -48,7 +49,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
 
             this.DbContext.Carriers.AddAndSave(this.DbContext, this.dhl);
             this.DbContext.Carriers.AddAndSave(this.DbContext, this.fedex);
-            
+
             this.Response = this.Client.Get(
                 "/stores2/carriers?searchTerm=dhl",
                 with =>
@@ -69,15 +70,15 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         // This wouldn't have been possible before, since IRepository's were mocked out
         // and so we couldn't test whether the correct Expression<Func<Carrier, bool>> filterExpression was passed to FilterBy
         // and subsequently applied correctly
         [Test]
         public void ShouldReturnCorrectlyFilteredResults()
         {
-            var resource = this.Response.DeserializeBody<IEnumerable<CarrierResource>>();
-            resource.Count().Should().Be(1);
+            var resource = this.Response.DeserializeBody<IEnumerable<CarrierResource>>().ToList();
+            resource.Count.Should().Be(1);
             resource.First().Code.Should().Be("DHL");
         }
     }

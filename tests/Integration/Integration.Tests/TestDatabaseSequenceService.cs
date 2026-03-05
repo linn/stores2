@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests
+namespace Linn.Stores2.Integration.Tests
 {
     using System.Threading.Tasks;
 

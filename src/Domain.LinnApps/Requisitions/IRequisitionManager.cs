@@ -28,7 +28,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             IEnumerable<string> privileges);
 
         Task<RequisitionHeader> AuthoriseRequisition(int reqNumber, int authorisedBy, IEnumerable<string> privileges);
-        
+
         Task AddRequisitionLine(RequisitionHeader header, LineCandidate toAdd);
 
         Task CreateLinesAndBookAutoRequisitionHeader(RequisitionHeader header);
@@ -40,7 +40,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         Task<RequisitionHeader> PickStockOnRequisitionLine(RequisitionHeader header, LineCandidate lineWithPicks);
 
         Task UpdateRequisition(
-            RequisitionHeader current, 
+            RequisitionHeader current,
             string updatedComments,
             string updatedReference,
             string updatedDepartment,

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -14,7 +14,7 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
-    
+
     using NSubstitute;
 
     using NUnit.Framework;

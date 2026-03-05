@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.AutomaticBookFromHeaderStrategyTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.AutomaticBookFromHeaderStrategyTests
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -37,7 +37,7 @@
             this.EmployeeRepository.FindByIdAsync(123).Returns(new Employee { Id = 123 });
             this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART" });
             this.AuthorisationService.HasPermissionFor(
-                    AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode), 
+                    AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode),
                     Arg.Any<List<string>>())
                 .Returns(true);
 
@@ -69,8 +69,8 @@
             this.RequisitionManager
                 .Received()
                 .CreateLinesAndBookAutoRequisitionHeader(
-                    Arg.Is<RequisitionHeader>(a => a.ToState == "S1" 
-                                                   && a.Document1 == this.worksOrderNumber 
+                    Arg.Is<RequisitionHeader>(a => a.ToState == "S1"
+                                                   && a.Document1 == this.worksOrderNumber
                                                    && a.WorkStationCode == "WSC"));
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Reports
+namespace Linn.Stores2.Domain.LinnApps.Reports
 {
     using System;
     using System.Collections.Generic;
@@ -33,7 +33,7 @@
         }
 
         public async Task<ResultsModel> GetStockInLabourHours(
-            string jobref,  
+            string jobref,
             string accountingCompany = "LINN",
             bool includeObsolete = true)
         {

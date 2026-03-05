@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.DailyEuReportsModuleTests
+namespace Linn.Stores2.Integration.Tests.DailyEuReportsModuleTests
 {
     using System;
     using System.Linq;

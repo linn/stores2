@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.External
+namespace Linn.Stores2.Domain.LinnApps.External
 {
     using System.Threading.Tasks;
 
@@ -28,7 +28,7 @@
             int? palletNumber,
             string stockPoolCode,
             string transactionCode);
-            
+
         Task<ProcessResult> CreateRequisitionLines(int reqNumber, int? serialNumber);
 
         Task<ProcessResult> InsertReqOntos(

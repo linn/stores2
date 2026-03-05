@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.External
+namespace Linn.Stores2.Domain.LinnApps.External
 {
     using System.Threading.Tasks;
     using Linn.Stores2.Domain.LinnApps.Requisitions;

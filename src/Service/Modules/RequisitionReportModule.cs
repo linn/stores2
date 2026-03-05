@@ -25,7 +25,7 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task RequisitionCostReport(
-            HttpRequest _, 
+            HttpRequest _,
             HttpResponse res,
             int reqNumber,
             IRequisitionReportFacadeService facadeService)
@@ -39,7 +39,7 @@ namespace Linn.Stores2.Service.Modules
             int reqNumber,
             IRequisitionReportFacadeService facadeService)
         {
-           var result = await facadeService.GetRequisitionCostReportAsHtml(reqNumber);
+            var result = await facadeService.GetRequisitionCostReportAsHtml(reqNumber);
 
             res.ContentType = "text/html";
             res.StatusCode = (int)HttpStatusCode.OK;

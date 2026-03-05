@@ -136,7 +136,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
         {
             this.DbContext.Dispose();
         }
-        
+
         [TearDown]
         public void Teardown()
         {

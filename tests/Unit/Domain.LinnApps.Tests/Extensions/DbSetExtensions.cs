@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.Extensions
+namespace Linn.Stores2.Domain.LinnApps.Tests.Extensions
 {
     using Microsoft.EntityFrameworkCore;
 

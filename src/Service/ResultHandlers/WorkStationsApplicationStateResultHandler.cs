@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.ResultHandlers
+namespace Linn.Stores2.Service.ResultHandlers
 {
     using Linn.Common.Service.Handlers;
     using Linn.Stores2.Resources.Stores;

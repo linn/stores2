@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
     using System;
 
@@ -9,7 +9,7 @@
 
     using NUnit.Framework;
 
-    public class WhenCreatingAndInvalidAccessibleSupplied 
+    public class WhenCreatingAndInvalidAccessibleSupplied
     {
         private Action action;
 

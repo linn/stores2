@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+namespace Linn.Stores2.Domain.LinnApps
 {
     using System;
 
@@ -15,11 +15,11 @@
         public DateTime? DateInvalid { get; protected set; }
 
         public Organisation Organisation { get; protected set; }
-        
+
         public Carrier()
         {
         }
-        
+
         public Carrier(
             string code,
             string name,
@@ -44,7 +44,7 @@
                 addressLine4,
                 postCode,
                 country);
-            
+
             this.Organisation = new Organisation(name, vrn, phoneNumber, address);
             this.DateCreated = DateTime.Now;
             this.Validate();

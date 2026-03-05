@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
@@ -43,13 +43,13 @@
             bool? includeInvalid,
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service)
         {
-            var searchResource = new StorageLocationSearchResource 
-                                     {
-                                         LocationCode = searchTerm,
-                                         StorageAreaCode = storageAreaCode,
-                                         SiteCode = siteCode, 
-                                         IncludeInvalid = includeInvalid
-                                     };
+            var searchResource = new StorageLocationSearchResource
+            {
+                LocationCode = searchTerm,
+                StorageAreaCode = storageAreaCode,
+                SiteCode = siteCode,
+                IncludeInvalid = includeInvalid
+            };
 
             await res.Negotiate(await service.FilterBy(searchResource));
         }
@@ -72,7 +72,6 @@
         }
 
         private async Task GetLocationById(
-            HttpRequest _,
             HttpResponse res,
             int id,
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service)

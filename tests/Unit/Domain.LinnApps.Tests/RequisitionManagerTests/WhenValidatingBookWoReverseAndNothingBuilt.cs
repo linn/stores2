@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Threading.Tasks;
@@ -35,7 +35,7 @@
             this.PartRepository.FindByIdAsync("PART").Returns(new Part { PartNumber = "PART" });
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
             this.StockPoolRepository.FindByIdAsync("LINN").Returns(new StockPool());
-            
+
             var toBeReversed = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.BookWorksOrder,
@@ -48,7 +48,7 @@
                 comments: "Uno reverse",
                 quantity: 12);
             this.ReqRepository.FindByIdAsync(42345).Returns(toBeReversed);
-            
+
             this.StockService.ValidStockLocation(null, 502, "PART", Arg.Any<decimal>(), Arg.Any<string>())
                 .Returns(new ProcessResult(true, null));
             this.DocumentProxy.GetWorksOrder(123).Returns(

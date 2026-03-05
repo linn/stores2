@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.TestData.Parts
+namespace Linn.Stores2.TestData.Parts
 {
     using Linn.Stores2.Domain.LinnApps.Parts;
 

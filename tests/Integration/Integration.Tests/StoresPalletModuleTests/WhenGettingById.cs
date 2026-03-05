@@ -1,6 +1,5 @@
-﻿namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
+namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
 {
-    using System;
     using System.Net;
 
     using FluentAssertions;
@@ -24,10 +23,10 @@
         public void SetUp()
         {
             this.storageLocation = new StorageLocation
-                                       {
-                                           LocationId = 3,
-                                           Description = "Test Location"
-                                       };
+            {
+                LocationId = 3,
+                Description = "Test Location"
+            };
 
             this.employee = new Employee { Id = 123, Name = "Pallets Pat" };
 
@@ -51,7 +50,7 @@
                 4,
                 1,
                 "State1,State2",
-                "A", 
+                "A",
                 "Y");
 
             this.DbContext.StorageLocations.AddAndSave(this.DbContext, this.storageLocation);
@@ -90,4 +89,3 @@
         }
     }
 }
-

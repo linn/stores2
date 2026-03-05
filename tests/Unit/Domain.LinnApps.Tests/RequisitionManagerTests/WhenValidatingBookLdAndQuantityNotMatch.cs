@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -52,7 +52,7 @@
                         IsAuthorised = true,
                         DocumentType = "PO"
                     });
-            
+
             this.action = () => this.Sut.Validate(
                 123,
                 TestFunctionCodes.BookToLinnDepartment.FunctionCode,
