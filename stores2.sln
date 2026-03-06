@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.3.32929.385
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "src\Domain\Domain.csproj", "{309A3AD8-4D8A-411D-9C52-D6812EB7D776}"
 EndProject
@@ -34,7 +34,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3009A116-E434-4816-A0F4-570C303DA933}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
-		.travis.yml = .travis.yml
+		CI_CD.md = CI_CD.md
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -64,6 +64,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TestData", "TestData", "{1B4655FD-E106-421E-B14C-94CC51434955}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestData", "tests\TestData\TestData\TestData.csproj", "{DC93B39F-D0CD-4495-92A9-ACF31AF98BCC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{1F06E397-3AAA-407C-904B-4FF186935E6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{47FC8A52-578C-4A9B-8D85-5E1CD75A4B96}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci-cd.yml = .github\workflows\ci-cd.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -155,6 +162,8 @@ Global
 		{E5E5B5E0-3AB8-41D3-93FA-A0C6AF68796A} = {19C8CAF7-D5D1-44CB-BE5F-23D416B667CA}
 		{1B4655FD-E106-421E-B14C-94CC51434955} = {CD5BBF56-D6D3-4BCB-8CA0-E00CE1368E34}
 		{DC93B39F-D0CD-4495-92A9-ACF31AF98BCC} = {1B4655FD-E106-421E-B14C-94CC51434955}
+		{1F06E397-3AAA-407C-904B-4FF186935E6A} = {3009A116-E434-4816-A0F4-570C303DA933}
+		{47FC8A52-578C-4A9B-8D85-5E1CD75A4B96} = {1F06E397-3AAA-407C-904B-4FF186935E6A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A61BEBB2-67FD-4B79-8ED3-83FCB7F5E5E4}

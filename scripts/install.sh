@@ -7,7 +7,7 @@ dotnet restore
 if [ "$CI" ] && [ "$TRAVIS" ]
 then 
 	source ~/.nvm/nvm.sh; 
-	nvm install 22;
-	nvm use 22;
+	nvm install 24;
+	nvm use 24;
 fi
 
