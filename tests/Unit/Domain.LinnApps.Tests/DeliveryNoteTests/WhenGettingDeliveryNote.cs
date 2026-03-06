@@ -4,6 +4,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DeliveryNoteTests
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
+    using Linn.Stores2.TestData.Countries;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.NominalAccounts;
     using Linn.Stores2.TestData.Parts;
@@ -47,7 +48,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DeliveryNoteTests
                 "Newport",
                 string.Empty,
                 "RI 20840",
-                new Country("US", "UNITED STATES OF MERICA"));
+                TestCountries.UnitedStates);
             this.SupplierProxy.GetSupplierAddress(1234).Returns(address);
 
             this.result = this.Sut.GetDeliveryNote(1234).Result;

@@ -8,6 +8,7 @@ namespace Linn.Stores2.IoC
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Accounts;
     using Linn.Stores2.Resources.External;
+    using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
     using Linn.Stores2.Resources.Requisitions;
@@ -62,7 +63,9 @@ namespace Linn.Stores2.IoC
                 .AddTransient<IHandler, WorkStationsApplicationStateResultHandler>()
                 .AddSingleton<IHandler, JsonResultHandler<StorageSiteResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageSiteResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<TotalResource>>();
+                .AddSingleton<IHandler, JsonResultHandler<TotalResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<ImportBookResource>>();
         }
     }
 }

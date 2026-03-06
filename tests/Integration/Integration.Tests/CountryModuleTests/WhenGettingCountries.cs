@@ -9,6 +9,7 @@ namespace Linn.Stores2.Integration.Tests.CountryModuleTests
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.TestData.Countries;
 
     using NUnit.Framework;
 
@@ -19,7 +20,7 @@ namespace Linn.Stores2.Integration.Tests.CountryModuleTests
         [SetUp]
         public void SetUp()
         {
-            this.greatBritain = new Country("GB", "Starmer's Britain");
+            this.greatBritain = TestCountries.UnitedKingdom;
 
             this.DbContext.Countries.AddAndSave(this.DbContext, this.greatBritain);
             this.DbContext.SaveChanges();

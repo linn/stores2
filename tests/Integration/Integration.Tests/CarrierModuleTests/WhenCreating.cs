@@ -6,9 +6,9 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.TestData.Countries;
 
     using NUnit.Framework;
 
@@ -25,9 +25,9 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
                 Name = "D H L",
                 Addressee = "MR Dhl",
                 Line1 = "Line 1",
-                CountryCode = "GB"
+                CountryCode = TestCountries.UnitedKingdom.CountryCode
             };
-            this.DbContext.Countries.AddAndSave(this.DbContext, new Country("GB", "Britain"));
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.UnitedKingdom);
 
             this.Response = this.Client.PostAsJsonAsync($"/stores2/carriers", this.createResource).Result;
         }
