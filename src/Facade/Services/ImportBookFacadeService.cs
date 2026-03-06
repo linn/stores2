@@ -5,9 +5,11 @@
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
@@ -21,24 +23,33 @@
 
         private readonly IQueryRepository<Supplier> supplierRepository;
 
+        private readonly IAuthorisationService authService;
+
         public ImportBookFacadeService(
             IRepository<ImportBook, int> repository,
             IDatabaseSequenceService databaseSequenceService,
             IRepository<Employee, int> employeeRepository,
             IQueryRepository<Supplier> supplierRepository,
-            ITransactionManager transactionManager, 
+            ITransactionManager transactionManager,
+            IAuthorisationService authService,
             IBuilder<ImportBook> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.databaseSequenceService = databaseSequenceService;
             this.employeeRepository = employeeRepository;
             this.supplierRepository = supplierRepository;
+            this.authService = authService;
         }
 
         protected override async Task<ImportBook> CreateFromResourceAsync(
             ImportBookResource resource,
             IEnumerable<string> privileges = null)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to create import books");
+            }
+
             var createdBy = resource.CreatedById.HasValue
                                 ? await this.employeeRepository.FindByIdAsync(resource.CreatedById.Value)
                                 : null;

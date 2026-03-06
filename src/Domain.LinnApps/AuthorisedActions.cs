@@ -16,6 +16,8 @@ namespace Linn.Stores2.Domain.LinnApps
 
         private const string FunctionsPrefix = "stores.requisitions.functions";
 
+        public const string ImportBookAdmin = "import-books.admin";
+
         public static string GetRequisitionActionByFunction(string functionCode)
         {
             if (string.IsNullOrWhiteSpace(functionCode))

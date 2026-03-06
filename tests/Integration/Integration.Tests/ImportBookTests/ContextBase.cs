@@ -2,6 +2,7 @@
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
@@ -31,10 +32,14 @@
 
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
+
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
 
             var importBookRepository = new ImportBookRepository(this.DbContext);
             var employeeRepository
@@ -53,6 +58,7 @@
                     employeeRepository,
                     supplierRepository,
                     transactionManager,
+                    this.AuthorisationService,
                     new ImportBookResourceBuilder(
                         new ImportBookPostEntryResourceBuilder(), 
                         new ImportBookOrderDetailResourceBuilder(), 

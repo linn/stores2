@@ -1,5 +1,6 @@
 ﻿namespace Linn.Stores2.Integration.Tests.ImportBookTests
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
@@ -13,6 +14,8 @@
     using Linn.Stores2.TestData.Employees;
     using Linn.Stores2.TestData.Suppliers;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenCreating : ContextBase
@@ -22,6 +25,9 @@
         [SetUp]
         public void SetUp()
         {
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, Arg.Any<IEnumerable<string>>())
+                .Returns(true);
+
             this.createResource = new ImportBookResource
             {
                 CreatedById = TestEmployees.SophlyBard.Id,
