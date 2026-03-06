@@ -14,7 +14,8 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public WorkStationRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.WorkStations)
+        public WorkStationRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.WorkStations)
         {
             this.serviceDbContext = serviceDbContext;
         }

@@ -2,6 +2,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Requisitions;

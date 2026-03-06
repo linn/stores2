@@ -23,7 +23,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
 
         private LabelType specifiedPrinterLabelType;
 
-
         [SetUp]
         public async Task SetUp()
         {
@@ -90,5 +89,3 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
         }
     }
 }
-
-

@@ -73,7 +73,7 @@ namespace Linn.Stores2.Domain.LinnApps.Labels
             }
 
             var labelType = await this.labelTypeRepository.FindByAsync(x => x.Code == request.QcState);
-            var employee  = await this.employeeRepository.FindByIdAsync(request.UserNumber);
+            var employee = await this.employeeRepository.FindByIdAsync(request.UserNumber);
             var purchaseOrder = await this.documentProxy.GetPurchaseOrder(request.OrderNumber);
             var part = await this.partsRepository.FindByAsync(x => x.PartNumber == request.PartNumber.ToUpper());
             var initials = string.Join(

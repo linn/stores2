@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Integration.Tests.StockReportModuleTests
 {
     using System.Net;
+
     using FluentAssertions;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;

@@ -6,11 +6,13 @@ namespace Linn.Stores2.Domain.LinnApps.Exceptions
 
     public class DocumentException : DomainException
     {
-        public DocumentException(string message) : base(message)
+        public DocumentException(string message)
+            : base(message)
         {
         }
 
-        public DocumentException(string message, Exception innerException) : base(message, innerException)
+        public DocumentException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
     }

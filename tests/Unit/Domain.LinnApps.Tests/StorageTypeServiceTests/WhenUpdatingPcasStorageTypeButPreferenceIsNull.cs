@@ -12,7 +12,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 
     public class WhenUpdatingPcasStorageTypeButPreferenceIsNull : ContextBase
     {
-        private PcasStorageType pcasStorageType, existingPcasStorageType;
+        private PcasStorageType pcasStorageType;
+
+        private PcasStorageType existingPcasStorageType;
 
         private PcasBoard pcasBoard;
 

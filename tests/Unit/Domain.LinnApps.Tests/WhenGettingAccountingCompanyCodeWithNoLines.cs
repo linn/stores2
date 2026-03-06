@@ -25,7 +25,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests
                 comments: "A Good Book");
         }
 
-
         [Test]
         public void ShouldNotGetAccountingCompany()
         {

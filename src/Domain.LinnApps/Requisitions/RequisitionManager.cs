@@ -665,7 +665,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             current.Update(updatedComments, updatedReference);
 
-
             foreach (var line in lineUpdates)
             {
                 var existingLine = current.Lines.SingleOrDefault(l => l.LineNumber == line.LineNumber);

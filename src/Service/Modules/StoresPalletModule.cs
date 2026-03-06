@@ -23,7 +23,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task Search(
-            HttpRequest _,
             HttpResponse res,
             string searchTerm,
             IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource> service)

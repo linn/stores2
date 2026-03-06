@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionMoveTests
 {
     using System;
+
     using FluentAssertions;
     using Linn.Stores2.TestData.Transactions;
     using NUnit.Framework;

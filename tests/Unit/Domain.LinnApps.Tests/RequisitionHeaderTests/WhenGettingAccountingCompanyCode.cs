@@ -37,7 +37,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
             this.sut.AddLine(line);
         }
 
-
         [Test]
         public void ShouldGetAccountingCompany()
         {

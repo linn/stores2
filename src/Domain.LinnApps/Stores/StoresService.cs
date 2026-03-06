@@ -322,7 +322,7 @@ namespace Linn.Stores2.Domain.LinnApps.Stores
 
             if (nominalAccount == null)
             {
-                throw new InvalidNominalAccountException($"Department / Nominal {departmentCode} / { nominalCode} are not a valid combination");
+                throw new InvalidNominalAccountException($"Department / Nominal {departmentCode} / {nominalCode} are not a valid combination");
             }
 
             if (nominalAccount.StoresPostsAllowed != "Y")

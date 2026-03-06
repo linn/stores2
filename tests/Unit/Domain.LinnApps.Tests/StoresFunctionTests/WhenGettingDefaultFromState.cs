@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
 {
     using System.Collections.Generic;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stores;
@@ -25,7 +26,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
                 ToStateRequired = "N",
                 PartSource = "C",
                 TransactionsTypes = new List<StoresFunctionTransaction>
-                                        {
+                {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "CUSTRET",

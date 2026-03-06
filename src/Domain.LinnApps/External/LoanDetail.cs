@@ -10,5 +10,4 @@ namespace Linn.Stores2.Domain.LinnApps.External
 
         public string ArticleNumber { get; set; }
     }
-
 }

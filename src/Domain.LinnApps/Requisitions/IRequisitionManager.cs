@@ -3,6 +3,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using Linn.Stores2.Domain.LinnApps.External;
 
     public interface IRequisitionManager

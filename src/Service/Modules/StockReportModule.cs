@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
+
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
     using Linn.Stores2.Facade.Services;

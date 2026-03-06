@@ -115,22 +115,22 @@ namespace Linn.Stores2.TestData.FunctionCodes
 
         public static readonly StoresFunction BookToLinnDepartment =
             new StoresFunction("BOOKLD")
-                {
-                    Description = "BOOK IN GOODS FROM SUPPLIER TO LINN DEPARTMENT",
-                    BatchRequired = "N",
-                    Document1RequiredFlag = "Y",
-                    Document1LineRequiredFlag = "N",
-                    Document1Text = "Purchase Order",
-                    FromStateRequired = "N",
-                    FunctionType = "A",
-                    ManualPickRequired = "X",
-                    PartSource = "PO",
-                    ProcessStage = 2,
-                    ToStateRequired = "N",
-                    CanBeReversed = "Y",
-                    UpdateSalesOrderDetQtyOutstanding = "N",
-                    ToLocationRequired = "N"
-                };
+            {
+                Description = "BOOK IN GOODS FROM SUPPLIER TO LINN DEPARTMENT",
+                BatchRequired = "N",
+                Document1RequiredFlag = "Y",
+                Document1LineRequiredFlag = "N",
+                Document1Text = "Purchase Order",
+                FromStateRequired = "N",
+                FunctionType = "A",
+                ManualPickRequired = "X",
+                PartSource = "PO",
+                ProcessStage = 2,
+                ToStateRequired = "N",
+                CanBeReversed = "Y",
+                UpdateSalesOrderDetQtyOutstanding = "N",
+                ToLocationRequired = "N"
+            };
 
         public static readonly StoresFunction BookFromSupplier =
             new StoresFunction("BOOKSU")
@@ -292,25 +292,24 @@ namespace Linn.Stores2.TestData.FunctionCodes
                 }
             };
 
-
         public static readonly StoresFunction LoanBack =
             new StoresFunction("LOAN BACK")
-                {
-                    Description = "RETURN LOAN GOODS FROM LOAN ACCOUNT TO STORES",
-                    BatchRequired = "O",
-                    Document1RequiredFlag = "Y",
-                    Document1Text = "Loan Number",
-                    Document1LineRequiredFlag = "O",
-                    DepartmentNominalRequired = "N",
-                    FromStateRequired = "N",
-                    FunctionType = "A",
-                    ManualPickRequired = "X",
-                    PartSource = "L",
-                    ProcessStage = 1,
-                    ToStateRequired = "O",
-                    ToStockPoolRequired = "O",
-                    CanBeReversed = "Y",
-                    UpdateSalesOrderDetQtyOutstanding = "N",
+            {
+                Description = "RETURN LOAN GOODS FROM LOAN ACCOUNT TO STORES",
+                BatchRequired = "O",
+                Document1RequiredFlag = "Y",
+                Document1Text = "Loan Number",
+                Document1LineRequiredFlag = "O",
+                DepartmentNominalRequired = "N",
+                FromStateRequired = "N",
+                FunctionType = "A",
+                ManualPickRequired = "X",
+                PartSource = "L",
+                ProcessStage = 1,
+                ToStateRequired = "O",
+                ToStockPoolRequired = "O",
+                CanBeReversed = "Y",
+                UpdateSalesOrderDetQtyOutstanding = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
@@ -321,7 +320,7 @@ namespace Linn.Stores2.TestData.FunctionCodes
                                                         TransactionCode = TestTransDefs.LoanToStock.TransactionCode
                                                     }
                                             }
-                };
+            };
 
         public static readonly StoresFunction Rsn =
             new StoresFunction("RSN")
@@ -431,23 +430,23 @@ namespace Linn.Stores2.TestData.FunctionCodes
 
         public static readonly StoresFunction GistPo =
             new StoresFunction("GIST PO")
-                {
-                    QuantityRequired = "Y",
-                    Description = "BOOK STOCK INTO STORES FROM QC ON A PO",
-                    BatchRequired = "Y",
-                    FromStockPoolRequired = "Y",
-                    ToStockPoolRequired = "Y",
-                    DepartmentNominalRequired = "N",
-                    ManualPickRequired = "M",
-                    PartSource = "PO",
-                    ProcessStage = 2,
-                    Document1RequiredFlag = "Y",
+            {
+                QuantityRequired = "Y",
+                Description = "BOOK STOCK INTO STORES FROM QC ON A PO",
+                BatchRequired = "Y",
+                FromStockPoolRequired = "Y",
+                ToStockPoolRequired = "Y",
+                DepartmentNominalRequired = "N",
+                ManualPickRequired = "M",
+                PartSource = "PO",
+                ProcessStage = 2,
+                Document1RequiredFlag = "Y",
 
-                    Document1LineRequiredFlag = "O",
-                    FunctionType = "A",
-                    ToStateRequired = "X",
-                    CanBeReversed = "Y",
-                    UpdateSalesOrderDetQtyOutstanding = "N",
+                Document1LineRequiredFlag = "O",
+                FunctionType = "A",
+                ToStateRequired = "X",
+                CanBeReversed = "Y",
+                UpdateSalesOrderDetQtyOutstanding = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
@@ -461,22 +460,22 @@ namespace Linn.Stores2.TestData.FunctionCodes
 
         public static readonly StoresFunction GistReq =
             new StoresFunction("GISTREQ")
-                {
-                    QuantityRequired = "O",
-                    Description = "BOOK UNINSPECTED/FAILED STOCK INTO STORES ON A REQ",
-                    BatchRequired = "O",
-                    FromStockPoolRequired = "O",
-                    ToStockPoolRequired = "O",
-                    ManualPickRequired = "M",
-                    PartSource = "IP",
-                    ProcessStage = 2,
-                    Document1RequiredFlag = "N",
+            {
+                QuantityRequired = "O",
+                Description = "BOOK UNINSPECTED/FAILED STOCK INTO STORES ON A REQ",
+                BatchRequired = "O",
+                FromStockPoolRequired = "O",
+                ToStockPoolRequired = "O",
+                ManualPickRequired = "M",
+                PartSource = "IP",
+                ProcessStage = 2,
+                Document1RequiredFlag = "N",
 
-                    Document1LineRequiredFlag = "N",
-                    FunctionType = "A",
-                    ToStateRequired = "X",
-                    CanBeReversed = "N",
-                    UpdateSalesOrderDetQtyOutstanding = "N",
+                Document1LineRequiredFlag = "N",
+                FunctionType = "A",
+                ToStateRequired = "X",
+                CanBeReversed = "N",
+                UpdateSalesOrderDetQtyOutstanding = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
@@ -486,48 +485,47 @@ namespace Linn.Stores2.TestData.FunctionCodes
                                                         TransactionCode = TestTransDefs.InspectionToStores2.TransactionCode
                                                     }
                                             }
-                };
+            };
 
         public static readonly StoresFunction AdjustLoc =
             new StoresFunction("ADJUST LOC")
-                {
-                    QuantityRequired = "N",
-                    ToLocationRequired = "N",
-                    FromLocationRequired = "Y",
-                    FunctionType = "A",
-                    ManualPickRequired = "X",
-                    ToStateRequired = "N",
-                    BatchRequired = "N",
-                    ProcessStage = 1,
-                    CanBeReversed = "N",
-                    UpdateSalesOrderDetQtyOutstanding = "N",
+            {
+                QuantityRequired = "N",
+                ToLocationRequired = "N",
+                FromLocationRequired = "Y",
+                FunctionType = "A",
+                ManualPickRequired = "X",
+                ToStateRequired = "N",
+                BatchRequired = "N",
+                ProcessStage = 1,
+                CanBeReversed = "N",
+                UpdateSalesOrderDetQtyOutstanding = "N",
             };
 
         public static readonly StoresFunction SupplierReturn =
             new StoresFunction("SURETURN")
-                {
-                    FunctionType = "A",
-                    ManualPickRequired = "M",
-                    ToStateRequired = "Y",
-                    ToStockPool = "LINN",
-                    ProcessStage = 1,
-                    UpdateSalesOrderDetQtyOutstanding = "N"
-
+            {
+                FunctionType = "A",
+                ManualPickRequired = "M",
+                ToStateRequired = "Y",
+                ToStockPool = "LINN",
+                ProcessStage = 1,
+                UpdateSalesOrderDetQtyOutstanding = "N"
             };
 
         public static readonly StoresFunction Move =
             new StoresFunction("MOVE")
-                {
-                    Description = "STOCK MOVE",
-                    FunctionType = "A",
-                    BatchRequired = "N",
-                    ManualPickRequired = "M",
-                    ToStateRequired = "O",
-                    ToStockPoolRequired = "O",
-                    CanBeReversed = "N",
-                    ProcessStage = 2,
-                    ToLocationRequired = "O",
-                    UpdateSalesOrderDetQtyOutstanding = "N",
+            {
+                Description = "STOCK MOVE",
+                FunctionType = "A",
+                BatchRequired = "N",
+                ManualPickRequired = "M",
+                ToStateRequired = "O",
+                ToStockPoolRequired = "O",
+                CanBeReversed = "N",
+                ProcessStage = 2,
+                ToLocationRequired = "O",
+                UpdateSalesOrderDetQtyOutstanding = "N",
                 TransactionsTypes = new List<StoresFunctionTransaction>
                                             {
                                                 new StoresFunctionTransaction
@@ -537,7 +535,7 @@ namespace Linn.Stores2.TestData.FunctionCodes
                                                         TransactionCode = TestTransDefs.StoresMove.TransactionCode
                                                     }
                                             }
-                };
+            };
 
         public static readonly StoresFunction MoveLocation =
             new StoresFunction("MOVELOC")

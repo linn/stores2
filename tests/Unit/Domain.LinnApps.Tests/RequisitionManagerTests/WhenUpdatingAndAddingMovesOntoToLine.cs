@@ -104,7 +104,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                                         567,
                                         null,
                                         "LINN",
-                                       "S",
+                                        "S",
                                         "FREE").Returns(new ProcessResult(true, null));
 
             await this.Sut.UpdateRequisition(

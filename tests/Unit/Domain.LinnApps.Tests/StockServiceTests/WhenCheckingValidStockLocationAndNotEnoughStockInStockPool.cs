@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
 {
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -28,7 +29,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
                         Quantity = 2,
                         QuantityAllocated = 0,
                         StockPoolCode = "OTHER STOCK POOL"
-                });
+                    });
 
             this.result = await this.Sut.ValidStockLocation(
                               this.LocationId,

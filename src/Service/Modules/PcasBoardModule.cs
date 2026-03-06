@@ -20,7 +20,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task Search(
-            HttpRequest _,
             HttpResponse res,
             string searchTerm,
             IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource> service)

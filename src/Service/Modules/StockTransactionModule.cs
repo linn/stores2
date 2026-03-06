@@ -25,7 +25,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task StoresTransViewerReport(
-            HttpRequest _,
             HttpResponse res,
             string fromDate,
             string toDate,

@@ -14,7 +14,8 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public StorageLocationRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.StorageLocations)
+        public StorageLocationRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.StorageLocations)
         {
             this.serviceDbContext = serviceDbContext;
         }

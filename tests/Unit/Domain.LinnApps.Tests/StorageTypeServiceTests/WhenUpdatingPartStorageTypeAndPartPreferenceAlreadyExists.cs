@@ -15,7 +15,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 
     public class WhenUpdatingPartStorageTypeAndPartPreferenceAlreadyExists : ContextBase
     {
-        private PartStorageType partsStorageType, alreadyExistPartStorageType;
+        private PartStorageType partsStorageType;
+
+        private PartStorageType alreadyExistPartStorageType;
 
         private Part part;
 

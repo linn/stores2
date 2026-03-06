@@ -14,7 +14,8 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public StoresPalletRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.StoresPallets)
+        public StoresPalletRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.StoresPallets)
         {
             this.serviceDbContext = serviceDbContext;
         }

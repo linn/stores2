@@ -6,7 +6,7 @@ namespace Linn.Stores2.TestData.Parts
     {
         public static readonly Part Cap003 =
             new Part
-                {
+            {
                 PartNumber = "CAP 003",
                 Description = "Test Capacitor",
                 RawOrFinished = "R",
@@ -15,7 +15,7 @@ namespace Linn.Stores2.TestData.Parts
 
         public static readonly Part SelektHub =
             new Part
-                {
+            {
                 PartNumber = "SK HUB",
                 Description = "SELEKT DSM HUB",
                 RawOrFinished = "F",

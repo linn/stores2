@@ -4,6 +4,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -51,7 +52,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTe
             this.StoresBudgetRepository.FilterByAsync(Arg.Any<Expression<Func<StoresBudget, bool>>>())
                 .Returns(new List<StoresBudget>
                 {
-                    new StoresBudget { TransactionCode = "SUGII", Quantity = 100, RequisitionLine = sugiiReqLine}
+                    new StoresBudget { TransactionCode = "SUGII", Quantity = 100, RequisitionLine = sugiiReqLine }
                 });
             this.result = await this.Sut.ValidPoQcBatch("P123456", 123456, 1);
         }

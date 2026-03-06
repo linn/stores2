@@ -23,7 +23,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
                 Document1Text = "Order Number",
                 PartSource = "PO",
                 TransactionsTypes = new List<StoresFunctionTransaction>
-                                        {
+                {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "BOOKSU",

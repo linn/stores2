@@ -489,6 +489,7 @@ namespace Linn.Stores2.Proxy.StoredProcedureClients
             cmd.Parameters.Add(new OracleParameter("p_serial_number", OracleDbType.Int32)
             {
                 Direction = ParameterDirection.Input
+
                 // todo - don't need to pass this for my use case, but might later
             });
 
@@ -548,7 +549,6 @@ namespace Linn.Stores2.Proxy.StoredProcedureClients
                 Value = palletNumber.ToString()
             };
             cmd.Parameters.Add(arg2);
-
 
             await connection.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
@@ -621,7 +621,6 @@ namespace Linn.Stores2.Proxy.StoredProcedureClients
                 Value = lineNumber
             };
             cmd.Parameters.Add(arg2);
-
 
             await connection.OpenAsync();
             await cmd.ExecuteNonQueryAsync();

@@ -16,7 +16,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
         [SetUp]
         public void SetUp()
         {
-            var site = new StorageSite ("SUPSTORES", "SUPPLIER STORES", null);
+            var site = new StorageSite("SUPSTORES", "SUPPLIER STORES", null);
             var area = new StorageArea { StorageAreaCode = "TEST" };
             var company = new AccountingCompany { Name = "TRENT" };
             this.action = () =>

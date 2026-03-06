@@ -28,7 +28,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.Lo
                 Document1Number = 100
             };
 
-
             var line = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.StockToLinnDept)
             {
                 Moves = { new ReqMove(123, 1, 1, 1, 1, null, null, null, null, null) }

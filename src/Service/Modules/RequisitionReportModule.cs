@@ -25,7 +25,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task RequisitionCostReport(
-            HttpRequest _,
             HttpResponse res,
             int reqNumber,
             IRequisitionReportFacadeService facadeService)
@@ -34,7 +33,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task RequisitionCostReportAsHtml(
-            HttpRequest _,
             HttpResponse res,
             int reqNumber,
             IRequisitionReportFacadeService facadeService)
@@ -48,7 +46,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task RequisitionCostReportAsPdf(
-            HttpRequest _,
             HttpResponse res,
             int reqNumber,
             IRequisitionReportFacadeService facadeService)

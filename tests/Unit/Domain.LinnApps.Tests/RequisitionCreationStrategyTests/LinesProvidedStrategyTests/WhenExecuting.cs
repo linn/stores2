@@ -57,7 +57,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.Li
             this.RequisitionRepository.Received().AddAsync(Arg.Is<RequisitionHeader>(r => r.StoresFunction.FunctionCode == "MOVE"));
         }
 
-
         [Test]
         public void ShouldAddLine()
         {

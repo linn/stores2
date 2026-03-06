@@ -69,7 +69,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 batchRef: "P1234567");
         }
 
-
         [Test]
         public async Task ShouldThrow()
         {

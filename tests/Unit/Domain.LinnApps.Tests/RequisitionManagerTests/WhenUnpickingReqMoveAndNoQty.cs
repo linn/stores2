@@ -3,6 +3,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using NUnit.Framework;
@@ -21,7 +22,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
         public async Task ShouldThrow()
         {
             await this.action.Should().ThrowAsync<RequisitionException>()
-                .WithMessage("Must unpick positive qty not 0"); ;
+                .WithMessage("Must unpick positive qty not 0");
         }
     }
 }

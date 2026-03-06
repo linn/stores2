@@ -38,6 +38,44 @@ end_of_line = lf
 [*.cs]
 max_line_length = 120
 
+# ReSharper Line Wrapping and Formatting Rules
+
+# Wrap invocation arguments - chop_if_long means put each argument on its own line when too long
+resharper_wrap_arguments_style = chop_if_long
+
+# Wrap method parameters in declarations
+resharper_wrap_parameters_style = chop_if_long
+
+# Wrap object and collection initializers
+resharper_wrap_object_and_collection_initializer_style = chop_if_long
+
+# Put each argument on its own line when wrapping (set to 1)
+resharper_max_invocation_arguments_on_line = 1
+
+# Place first argument on new line after opening parenthesis
+resharper_wrap_before_first_method_call_argument = true
+
+# Force line break after opening parenthesis when wrapping
+resharper_wrap_after_invocation_lpar = true
+
+# Keep existing line breaks
+resharper_keep_existing_linebreaks = false
+
+# Wrap chained method calls
+resharper_wrap_chained_method_calls = chop_if_long
+
+# Max line length for wrapping decisions
+resharper_max_attribute_length_for_same_line = 120
+
+# Align multiline constructs
+resharper_csharp_wrap_before_invocation_rpar = false
+
+# Indent wrapped lines
+resharper_continuous_indent_multiplier = 1
+
+# Place simple embedded statements on the same line
+resharper_place_simple_embedded_statement_on_same_line = false
+
 # StyleCop Rules extracted from ReSharper extension
 
 # SA0001: XML comment analysis is disabled
@@ -108,7 +146,10 @@ dotnet_style_readonly_field = true:warning
 resharper_missing_indent_highlighting = do_not_show
 
 # IDE0040 - Don't warn about missing modifiers in interface members
-dotnet_diagnostic.IDE0040.severity = silent
+dotnet_diagnostic.IDE0040.severity = none
+
+# csharp_prefer_static_local_function - Add accessibility modifiers, but not for interface members
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
 
 # Expression-level preferences
 dotnet_style_object_initializer = true:suggestion

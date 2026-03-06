@@ -76,7 +76,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
                         PartNumber = this.request.PartNumber,
                         RohsCompliant = "Y"
                     }
-
                 }
             };
 
@@ -86,7 +85,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
                 .Returns(new Employee { Name = "MR EMPLOYEE" });
 
             this.LabelPrinter.PrintLabelsAsync(
-                    $"QC {request.OrderNumber}-1",
+                    $"QC {this.request.OrderNumber}-1",
                     this.specifiedPrinterLabelType.DefaultPrinter,
                     this.request.Qty,
                     this.defaultQcLabelType.FileName,
@@ -109,7 +108,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
         public void ShouldTryPrintLabels()
         {
             this.LabelPrinter.Received().PrintLabelsAsync(
-                $"QC {request.OrderNumber}-1",
+                $"QC {this.request.OrderNumber}-1",
                 this.specifiedPrinterLabelType.DefaultPrinter,
                 this.request.Qty,
                 this.defaultQcLabelType.FileName,

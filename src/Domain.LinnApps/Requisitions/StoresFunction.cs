@@ -120,8 +120,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 return this.TransactionsTypes.SelectMany(t => t.TransactionDefinition?.GetTransactionStates(fromOrOnto) ?? Enumerable.Empty<string>())
                     .Distinct().OrderBy(s => s).ToList();
-
             }
+
             return new List<string>();
         }
 
@@ -143,6 +143,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 // see REQ_UT FUNCTION_CODE_WVI cursor C
                 return this.TransactionsTypes.FirstOrDefault()?.TransactionDefinition?.Doc2Type;
             }
+
             return string.Empty;
         }
 

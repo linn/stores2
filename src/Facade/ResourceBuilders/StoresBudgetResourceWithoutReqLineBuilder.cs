@@ -16,50 +16,50 @@ namespace Linn.Stores2.Facade.ResourceBuilders
             var claimsList = claims?.ToList();
 
             return new StoresBudgetResource
-                       {
-                           BudgetId = storesBudget.BudgetId,
-                           TransactionCode = storesBudget.TransactionCode,
-                           TransactionCodeDescription = storesBudget.Transaction?.Description,
-                           PartNumber = storesBudget.PartNumber,
-                           Part = storesBudget.Part == null
+            {
+                BudgetId = storesBudget.BudgetId,
+                TransactionCode = storesBudget.TransactionCode,
+                TransactionCodeDescription = storesBudget.Transaction?.Description,
+                PartNumber = storesBudget.PartNumber,
+                Part = storesBudget.Part == null
                                       ? null
                                       : new PartResource
-                                            {
-                                                PartNumber = storesBudget.Part.PartNumber,
-                                                Description = storesBudget.Part.Description
-                                            },
-                           Quantity = storesBudget.Quantity,
-                           Reference = storesBudget.Reference,
-                           PartPrice = storesBudget.PartPrice,
-                           RequisitionNumber = storesBudget.RequisitionNumber,
-                           LineNumber = storesBudget.LineNumber,
-                           CurrencyCode = storesBudget.CurrencyCode,
-                           MaterialPrice = storesBudget.MaterialPrice,
-                           LabourPrice = storesBudget.LabourPrice,
-                           OverheadPrice = storesBudget.OverheadPrice,
-                           MachinePrice = storesBudget.MachinePrice,
-                           SpotRate = storesBudget.SpotRate,
-                           DateBooked = storesBudget.DateBooked?.ToString("o"),
-                           StoresBudgetPostings = storesBudget.StoresBudgetPostings?.Select(a => new StoresBudgetPostingResource
-                               {
-                                   BudgetId = a.BudgetId,
-                                   Sequence = a.Sequence,
-                                   Quantity = a.Quantity,
-                                   DebitOrCredit = a.DebitOrCredit,
-                                   NominalAccount =
-                                       a.NominalAccount == null
-                                           ? null
-                                           : nominalAccountBuilder.Build(a.NominalAccount, claimsList),
-                                   Product = a.Product,
-                                   Building = a.Building,
-                                   Vehicle = a.Vehicle,
-                                   Person = a.Person
-                               }),
-                           Links = new LinkResource[1]
+                                      {
+                                          PartNumber = storesBudget.Part.PartNumber,
+                                          Description = storesBudget.Part.Description
+                                      },
+                Quantity = storesBudget.Quantity,
+                Reference = storesBudget.Reference,
+                PartPrice = storesBudget.PartPrice,
+                RequisitionNumber = storesBudget.RequisitionNumber,
+                LineNumber = storesBudget.LineNumber,
+                CurrencyCode = storesBudget.CurrencyCode,
+                MaterialPrice = storesBudget.MaterialPrice,
+                LabourPrice = storesBudget.LabourPrice,
+                OverheadPrice = storesBudget.OverheadPrice,
+                MachinePrice = storesBudget.MachinePrice,
+                SpotRate = storesBudget.SpotRate,
+                DateBooked = storesBudget.DateBooked?.ToString("o"),
+                StoresBudgetPostings = storesBudget.StoresBudgetPostings?.Select(a => new StoresBudgetPostingResource
+                {
+                    BudgetId = a.BudgetId,
+                    Sequence = a.Sequence,
+                    Quantity = a.Quantity,
+                    DebitOrCredit = a.DebitOrCredit,
+                    NominalAccount =
+                            a.NominalAccount == null
+                                ? null
+                                : nominalAccountBuilder.Build(a.NominalAccount, claimsList),
+                    Product = a.Product,
+                    Building = a.Building,
+                    Vehicle = a.Vehicle,
+                    Person = a.Person
+                }),
+                Links = new LinkResource[1]
                                        {
                                            new LinkResource("self", $"/stores2/budgets/{storesBudget.BudgetId}")
                                        }
-                        };
+            };
         }
     }
 }

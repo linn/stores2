@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
 {
     using System;
+
     using FluentAssertions;
 
     using NUnit.Framework;

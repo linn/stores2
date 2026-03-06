@@ -13,7 +13,8 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public GoodsInLogRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.GoodsInLogEntries)
+        public GoodsInLogRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.GoodsInLogEntries)
         {
             this.serviceDbContext = serviceDbContext;
         }

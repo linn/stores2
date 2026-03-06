@@ -3,6 +3,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -71,7 +72,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
         public async Task ShouldThrow()
         {
             await this.action.Should().ThrowAsync<RequisitionException>()
-                .WithMessage("Failed to unpick stock: unpick failed"); ;
+                .WithMessage("Failed to unpick stock: unpick failed");
         }
     }
 }

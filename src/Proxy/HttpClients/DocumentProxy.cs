@@ -76,7 +76,7 @@ namespace Linn.Stores2.Proxy.HttpClients
                 IsCancelled = !string.IsNullOrEmpty(loan.CancelledDate),
                 Details = loan.LoanDetails.Select(d => new LoanDetail
                 {
-                    IsCancelled   = d.CancelledFlag == "Y",
+                    IsCancelled = d.CancelledFlag == "Y",
                     Quantity = d.Quantity,
                     ArticleNumber = d.ArticleNumber,
                     LineNumber = d.LineNumber

@@ -35,7 +35,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task SearchLocations(
-            HttpRequest _,
             HttpResponse res,
             string searchTerm,
             string siteCode,
@@ -107,7 +106,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task GetStockState(
-            HttpRequest _,
             HttpResponse res,
             string id,
             IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService)

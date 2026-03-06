@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Resources.Requisitions
 {
     using System.Collections.Generic;
+
     using Linn.Common.Resources;
 
     public class StoresFunctionResource : HypermediaResource

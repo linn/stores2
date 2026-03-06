@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     using System.Threading.Tasks;
+
     using Linn.Stores2.Domain.LinnApps.Exceptions;
 
     public class LoanOutCreationStrategy : ICreationStrategy

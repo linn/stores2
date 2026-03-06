@@ -1,6 +1,6 @@
 using Linn.Stores2.Domain.LinnApps.Exceptions;
-using Linn.Stores2.Domain.LinnApps.Parts;
 using Linn.Stores2.Domain.LinnApps.Stock;
+
 namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 {
     using System;
@@ -15,7 +15,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 
     public class WhenUpdatingPcasStorageTypeAndPreferenceAlreadyExists : ContextBase
     {
-        private PcasStorageType pcasStorageType, alreadyExistsPcasStorageType;
+        private PcasStorageType pcasStorageType;
+
+        private PcasStorageType alreadyExistsPcasStorageType;
 
         private PcasBoard pcasBoard;
 

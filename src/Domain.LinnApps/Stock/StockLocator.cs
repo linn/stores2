@@ -57,6 +57,7 @@ namespace Linn.Stores2.Domain.LinnApps.Stock
                     return loanNumber;
                 }
             }
+
             return null;
         }
     }

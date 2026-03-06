@@ -3,7 +3,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -11,7 +13,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using Linn.Stores2.TestData.Parts;
     using Linn.Stores2.TestData.Requisitions;
     using Linn.Stores2.TestData.Transactions;
+
     using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenUnpickingReqMoveAndLineAlreadyBooked : ContextBase
@@ -34,7 +38,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 new Nominal("0000001234", "SOME NOM"));
 
             var line = new RequisitionLine(123, 1, TestParts.Cap003, 1, TestTransDefs.StockToLinnDept);
-            line.Book(new DateTime(2025,1,1));
+            line.Book(new DateTime(2025, 1, 1));
 
             this.req.Lines.Add(line);
 
@@ -47,7 +51,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
         public async Task ShouldThrow()
         {
             await this.action.Should().ThrowAsync<RequisitionException>()
-                .WithMessage("Line 1 on Req 123 is already booked"); ;
+                .WithMessage("Line 1 on Req 123 is already booked");
         }
     }
 }

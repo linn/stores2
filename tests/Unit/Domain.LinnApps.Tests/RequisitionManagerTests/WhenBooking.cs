@@ -30,7 +30,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 "REQ",
                 new Department(),
                 new Nominal());
-             bookedReq.Book(new Employee { Id = 1, Name = "Gabriel García Márquez" });
+            bookedReq.Book(new Employee { Id = 1, Name = "Gabriel GarcÃ­a MÃ¡rquez" });
             this.ReqRepository.FindByIdAsync(bookedReq.ReqNumber).Returns(bookedReq);
 
             this.AuthService.HasPermissionFor(

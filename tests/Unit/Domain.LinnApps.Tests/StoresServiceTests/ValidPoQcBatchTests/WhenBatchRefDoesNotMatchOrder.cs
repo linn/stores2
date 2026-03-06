@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPoQcBatchTests
 {
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using NUnit.Framework;

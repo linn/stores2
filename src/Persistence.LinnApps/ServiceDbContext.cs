@@ -1022,7 +1022,6 @@ namespace Linn.Stores2.Persistence.LinnApps
         private static void BuildTqmsData(ModelBuilder builder)
         {
             var entity = builder.Entity<TqmsData>().ToTable("V_TQMS2001_DATA").HasNoKey();
-            // entity.HasKey(e => new { e.Jobref, e.PartNumber, e.TqmsCategoryCode }); // Adjust if the key is different
             entity.Property(e => e.Jobref).HasColumnName("JOBREF").HasMaxLength(6);
             entity.Property(e => e.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
             entity.Property(e => e.TqmsCategoryCode).HasColumnName("TQMS_CATEGORY").HasMaxLength(10);

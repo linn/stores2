@@ -4,7 +4,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using FluentAssertions;
+
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -13,7 +15,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
+
     using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenValidatingAuditAndLineMoveHasBothFromAndTo : ContextBase
@@ -73,7 +77,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                                                        }
                                                    }
                                    }
-                               });
+                           });
         }
 
         [Test]

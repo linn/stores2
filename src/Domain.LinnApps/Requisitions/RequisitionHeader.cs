@@ -13,6 +13,175 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
     public class RequisitionHeader
     {
+        public RequisitionHeader(
+    Employee createdBy,
+    StoresFunction function,
+    string reqType,
+    int? document1Number,
+    string document1Type,
+    Department department,
+    Nominal nominal,
+    string reference = null,
+    string comments = null,
+    string manualPick = null,
+    string fromStockPool = null,
+    string toStockPool = null,
+    int? fromPalletNumber = null,
+    int? toPalletNumber = null,
+    StorageLocation fromLocation = null,
+    StorageLocation toLocation = null,
+    Part part = null,
+    decimal? quantity = null,
+    int? document1Line = null,
+    string toState = null,
+    string fromState = null,
+    string batchRef = null,
+    DateTime? batchDate = null,
+    string category = null,
+    int? document2Number = null,
+    string document2Type = null,
+    string isReverseTrans = "N",
+    RequisitionHeader isReversalOf = null,
+    DateTime? dateReceived = null,
+    string fromCategory = null,
+    string auditLocation = null)
+        {
+            this.ReqSource = "STORES2";
+            this.Booked = "N";
+            this.CreatedBy = createdBy;
+            this.Comments = comments;
+            this.DateCreated = DateTime.Now;
+            this.StoresFunction = function;
+            this.Document1Name = string.IsNullOrEmpty(document1Type) ? "REQ" : document1Type;
+            this.Document1Line = document1Line;
+            this.Quantity = quantity;
+            this.Part = part;
+            this.UnitOfMeasure = part?.OurUnitOfMeasure;
+            this.ToPalletNumber = toPalletNumber;
+            this.FromPalletNumber = fromPalletNumber;
+            this.ToState = toState;
+            this.FromState = fromState;
+            this.ManualPick = manualPick;
+            this.FromStockPool = fromStockPool;
+            this.ToStockPool = toStockPool;
+            this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
+            this.ToLocation = toPalletNumber.HasValue ? null : toLocation;
+            this.Cancelled = "N";
+            this.BatchRef = batchRef;
+            this.BatchDate = batchDate;
+            this.ToCategory = category ?? function?.Category;
+            this.Document1 = document1Number;
+            this.Department = department;
+            this.Nominal = nominal;
+            this.Reference = reference;
+            this.ReqType = reqType;
+            this.Document2 = document2Number;
+            this.Document2Name = document2Type;
+            this.AuditLocation = auditLocation;
+
+            // logic for creating a reversal req
+            // mostly taken from GET_REQ_FOR_REVERSAL in REQ_UT.fmb
+            if (isReversalOf != null)
+            {
+                if (this.Document1Name != isReversalOf.Document1Name)
+                {
+                    throw new CreateRequisitionException("Cannot reverse req with a different document1 type");
+                }
+
+                if (this.Document1 != isReversalOf.Document1)
+                {
+                    throw new CreateRequisitionException("Cannot reverse req with a different document1 number");
+                }
+
+                if (isReversalOf.IsReversed == "Y")
+                {
+                    throw new CreateRequisitionException($"req {isReversalOf.ReqNumber} is already reversed!");
+                }
+
+                this.OriginalReqNumber = isReversalOf.ReqNumber;
+
+                this.Quantity = quantity ?? isReversalOf.Quantity * -1;
+
+                if (this.StoresFunction.FunctionCode != "BOOKSU")
+                {
+                    if (Math.Abs(this.Quantity.GetValueOrDefault())
+                        != Math.Abs(isReversalOf.Quantity.GetValueOrDefault()))
+                    {
+                        throw new CreateRequisitionException(
+                            "Partial reversals not available for this function code");
+                    }
+                }
+                else
+                {
+                    if (Math.Abs(this.Quantity.GetValueOrDefault())
+                        > Math.Abs(isReversalOf.Quantity.GetValueOrDefault()))
+                    {
+                        throw new CreateRequisitionException(
+                            "Reversal quantity cannot be greater than original req quantity");
+                    }
+
+                    if (this.Quantity >= 0)
+                    {
+                        throw new CreateRequisitionException(
+                            "Reversal quantity must be negative");
+                    }
+                }
+
+                this.Reference = isReversalOf.Reference;
+                this.FromState = isReversalOf.FromState;
+                this.ToStockPool = isReversalOf.ToStockPool;
+                this.ToState = isReversalOf.ToState;
+                this.FromStockPool = this.StoresFunction.FromStockPoolRequired == "Y" ? isReversalOf.FromStockPool : fromStockPool;
+                this.BatchRef = this.StoresFunction.FunctionCode == "LOAN BACK"
+                    ? $"Q{isReversalOf.ReqNumber}" : batchRef;
+                this.BatchDate = this.StoresFunction.FunctionCode == "LOAN BACK"
+                    ? isReversalOf.DateBooked : batchDate;
+                this.FromLocation = isReversalOf.FromLocation;
+                this.FromPalletNumber = isReversalOf.FromPalletNumber;
+            }
+
+            this.IsReverseTransaction = isReverseTrans;
+            this.IsReversed = "N";
+            this.DateReceived = dateReceived;
+            this.Lines = new List<RequisitionLine>();
+
+            if (!string.IsNullOrEmpty(fromCategory))
+            {
+                this.FromCategory = fromCategory;
+            }
+
+            var errors = this.Validate().ToList();
+
+            if (errors.Any())
+            {
+                if (this.StoresFunction == null)
+                {
+                    throw new CreateRequisitionException($"{string.Join(", ", errors)}");
+                }
+
+                throw new CreateRequisitionException(
+                    $"{string.Join(", ", errors)}");
+            }
+
+            if (function.FunctionCode == "GIST PO")
+            {
+                if (isReverseTrans == "Y")
+                {
+                    this.BatchRef = null;
+                }
+            }
+
+            if (function.FunctionCode == "LOAN BACK")
+            {
+                this.FromState = "STORES";
+                this.LoanNumber = document1Number;
+            }
+        }
+
+        protected RequisitionHeader()
+        {
+        }
+
         public int ReqNumber { get; protected init; }
 
         public DateTime DateCreated { get; protected init; }
@@ -114,308 +283,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         public DateTime? DateReceived { get; set; }
 
         public string AuditLocation { get; set; }
-
-        protected RequisitionHeader()
-        {
-        }
-
-        public RequisitionHeader(
-            Employee createdBy,
-            StoresFunction function,
-            string reqType,
-            int? document1Number,
-            string document1Type,
-            Department department,
-            Nominal nominal,
-            string reference = null,
-            string comments = null,
-            string manualPick = null,
-            string fromStockPool = null,
-            string toStockPool = null,
-            int? fromPalletNumber = null,
-            int? toPalletNumber = null,
-            StorageLocation fromLocation = null,
-            StorageLocation toLocation = null,
-            Part part = null,
-            decimal? quantity = null,
-            int? document1Line = null,
-            string toState = null,
-            string fromState = null,
-            string batchRef = null,
-            DateTime? batchDate = null,
-            string category = null,
-            int? document2Number = null,
-            string document2Type = null,
-            string isReverseTrans = "N",
-            RequisitionHeader isReversalOf = null,
-            DateTime? dateReceived = null,
-            string fromCategory = null,
-            string auditLocation = null)
-        {
-            this.ReqSource = "STORES2";
-            this.Booked = "N";
-            this.CreatedBy = createdBy;
-            this.Comments = comments;
-            this.DateCreated = DateTime.Now;
-            this.StoresFunction = function;
-            this.Document1Name = string.IsNullOrEmpty(document1Type) ? "REQ" : document1Type;
-            this.Document1Line = document1Line;
-            this.Quantity = quantity;
-            this.Part = part;
-            this.UnitOfMeasure = part?.OurUnitOfMeasure;
-            this.ToPalletNumber = toPalletNumber;
-            this.FromPalletNumber = fromPalletNumber;
-            this.ToState = toState;
-            this.FromState = fromState;
-            this.ManualPick = manualPick;
-            this.FromStockPool = fromStockPool;
-            this.ToStockPool = toStockPool;
-            this.FromLocation = fromPalletNumber.HasValue ? null : fromLocation;
-            this.ToLocation = toPalletNumber.HasValue ? null : toLocation;
-            this.Cancelled = "N";
-            this.BatchRef = batchRef;
-            this.BatchDate = batchDate;
-            this.ToCategory = category ?? function?.Category;
-            this.Document1 = document1Number;
-            this.Department = department;
-            this.Nominal = nominal;
-            this.Reference = reference;
-            this.ReqType = reqType;
-            this.Document2 = document2Number;
-            this.Document2Name = document2Type;
-            this.AuditLocation = auditLocation;
-
-            // logic for creating a reversal req
-            // mostly taken from GET_REQ_FOR_REVERSAL in REQ_UT.fmb
-            if (isReversalOf != null)
-            {
-                if (this.Document1Name != isReversalOf.Document1Name)
-                {
-                    throw new CreateRequisitionException("Cannot reverse req with a different document1 type");
-                }
-
-                if (this.Document1 != isReversalOf.Document1)
-                {
-                    throw new CreateRequisitionException("Cannot reverse req with a different document1 number");
-                }
-
-                if (isReversalOf.IsReversed == "Y")
-                {
-                    throw new CreateRequisitionException($"req {isReversalOf.ReqNumber} is already reversed!");
-                }
-
-                this.OriginalReqNumber = isReversalOf.ReqNumber;
-
-
-
-                this.Quantity = quantity ?? isReversalOf.Quantity * -1;
-
-                if (this.StoresFunction.FunctionCode != "BOOKSU")
-                {
-                    if (Math.Abs(this.Quantity.GetValueOrDefault())
-                        != Math.Abs(isReversalOf.Quantity.GetValueOrDefault()))
-                    {
-                        throw new CreateRequisitionException(
-                            "Partial reversals not available for this function code");
-                    }
-                }
-                else
-                {
-                    if (Math.Abs(this.Quantity.GetValueOrDefault())
-                        > Math.Abs(isReversalOf.Quantity.GetValueOrDefault()))
-                    {
-                        throw new CreateRequisitionException(
-                            "Reversal quantity cannot be greater than original req quantity");
-                    }
-
-                    if (this.Quantity >= 0)
-                    {
-                        throw new CreateRequisitionException(
-                            "Reversal quantity must be negative");
-                    }
-                }
-
-                this.Reference = isReversalOf.Reference;
-                this.FromState = isReversalOf.FromState;
-                this.ToStockPool = isReversalOf.ToStockPool;
-                this.ToState = isReversalOf.ToState;
-                this.FromStockPool = this.StoresFunction.FromStockPoolRequired == "Y" ? isReversalOf.FromStockPool : fromStockPool;
-                this.BatchRef = this.StoresFunction.FunctionCode == "LOAN BACK"
-                    ? $"Q{isReversalOf.ReqNumber}" : batchRef;
-                this.BatchDate = this.StoresFunction.FunctionCode == "LOAN BACK"
-                    ? isReversalOf.DateBooked : batchDate;
-                this.FromLocation = isReversalOf.FromLocation;
-                this.FromPalletNumber = isReversalOf.FromPalletNumber;
-            }
-
-            this.IsReverseTransaction = isReverseTrans;
-            this.IsReversed = "N";
-            this.DateReceived = dateReceived;
-            this.Lines = new List<RequisitionLine>();
-
-            if (!string.IsNullOrEmpty(fromCategory))
-            {
-                this.FromCategory = fromCategory;
-            }
-
-            var errors = this.Validate().ToList();
-
-            if (errors.Any())
-            {
-                if (this.StoresFunction == null)
-                {
-                    throw new CreateRequisitionException($"{string.Join(", ", errors)}");
-                }
-
-                throw new CreateRequisitionException(
-                    $"{string.Join(", ", errors)}");
-            }
-
-            if (function.FunctionCode == "GIST PO")
-            {
-                if (isReverseTrans == "Y")
-                {
-                    this.BatchRef = null;
-                }
-            }
-
-            if (function.FunctionCode == "LOAN BACK")
-            {
-                this.FromState = "STORES";
-                this.LoanNumber = document1Number;
-            }
-        }
-
-        private IEnumerable<string> Validate()
-        {
-            if (this.StoresFunction == null)
-            {
-                yield return "Please choose a Function.";
-                yield break;  // don't even have a function, so no need to continue with function specific validation
-            }
-
-            if (this.CreatedBy == null)
-            {
-                yield return "Invalid CreatedBy Employee";
-            }
-
-            if (this.StoresFunction.Document1Required())
-            {
-                if (this.Document1 == null)
-                {
-                    yield return $"Document1 number required: {this.StoresFunction.Document1Text}";
-                }
-            }
-
-            if (this.StoresFunction.QuantityRequired == "Y")
-            {
-                if (this.Quantity.GetValueOrDefault() == 0)
-                {
-                    yield return $"Quantity required for: {this.StoresFunction.FunctionCode}";
-                }
-            }
-
-            if (this.StoresFunction.AuditLocationRequired == "Y" && string.IsNullOrEmpty(this.AuditLocation))
-            {
-                yield return $"You must specify an audit location for {this.StoresFunction.FunctionCode}.";
-            }
-
-            if (this.StoresFunction.DepartmentNominalRequired == "Y")
-            {
-                if (this.Department == null || this.Nominal == null)
-                {
-                    yield return
-                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req";
-                }
-
-                if (this.StoresFunction.GetNominal() != null)
-                {
-                    if (this.StoresFunction.GetNominal().NominalCode != this.Nominal?.NominalCode)
-                    {
-                        yield return $"Nominal must be {this.StoresFunction.GetNominal().NominalCode}";
-                    }
-                }
-            }
-
-            if (this.StoresFunction.FromLocationRequired == "Y")
-            {
-                if (this.FromLocation == null && !this.FromPalletNumber.HasValue)
-                {
-                    yield return $"From location or pallet required for: {this.StoresFunction.FunctionCode}";
-                }
-            }
-
-            if (this.StoresFunction.ToLocationRequired == "Y" && !this.IsReverseTrans())
-            {
-                if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
-                {
-                    yield return $"To location or pallet required for: {this.StoresFunction.FunctionCode}";
-                }
-            }
-
-            if (this.IsReverseTrans() && this.StoresFunction.CanBeReversed != "Y")
-            {
-                yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
-            }
-            else if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
-                                      && !this.OriginalReqNumber.HasValue)
-            {
-                yield return "You must specify a req number to reverse";
-            }
-
-            if (this.StoresFunction.ReceiptDateRequired == "Y" && !this.IsReverseTrans() && !this.DateReceived.HasValue)
-            {
-                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
-            }
-
-            // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
-            if (this.StoresFunction.FromStateRequired == "Y" && !this.IsReverseTrans())
-            {
-                if (string.IsNullOrEmpty(this.FromState))
-                {
-                    yield return $"From state must be specified for {this.StoresFunction.FunctionCode}";
-                }
-            }
-
-            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
-            {
-                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
-            }
-
-            if (!string.IsNullOrEmpty(this.FromState) && !this.IsReverseTrans())
-            {
-                var validFromStates = this.StoresFunction.GetTransactionStates("F");
-                if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
-                    && !this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
-                {
-                    yield return
-                        $"From state must be one of "
-                        + $"{string.Join(",", validFromStates)}";
-                }
-            }
-
-            if (!string.IsNullOrEmpty(this.ToState))
-            {
-                var validToStates = this.StoresFunction.GetTransactionStates("O");
-                if (validToStates.Count > 0 // does no transaction states mean anything is allowed?
-                    && !this.StoresFunction.GetTransactionStates("O").Contains(this.ToState))
-                {
-                    yield return
-                        $"To state must be one of "
-                        + $"{string.Join(",", validToStates)}";
-                }
-            }
-
-            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
-            {
-                yield return $"From stock pool must be specified for {this.StoresFunction.FunctionCode}";
-            }
-
-            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
-            {
-                yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
-            }
-        }
 
         public void Update(string comments, string reference)
         {
@@ -619,6 +486,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     var canBeBooked = this.RequisitionCanBeBooked(lineNumber);
                     return canBeBooked.Success;
                 }
+
                 // moveloc don't need no lines
                 return true;
             }
@@ -726,6 +594,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 return true;
             }
+
             return false;
         }
 
@@ -743,6 +612,137 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             return this.StoresFunction.ToLocationIsRequired();
+        }
+
+        private IEnumerable<string> Validate()
+        {
+            if (this.StoresFunction == null)
+            {
+                yield return "Please choose a Function.";
+                yield break;  // don't even have a function, so no need to continue with function specific validation
+            }
+
+            if (this.CreatedBy == null)
+            {
+                yield return "Invalid CreatedBy Employee";
+            }
+
+            if (this.StoresFunction.Document1Required())
+            {
+                if (this.Document1 == null)
+                {
+                    yield return $"Document1 number required: {this.StoresFunction.Document1Text}";
+                }
+            }
+
+            if (this.StoresFunction.QuantityRequired == "Y")
+            {
+                if (this.Quantity.GetValueOrDefault() == 0)
+                {
+                    yield return $"Quantity required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.StoresFunction.AuditLocationRequired == "Y" && string.IsNullOrEmpty(this.AuditLocation))
+            {
+                yield return $"You must specify an audit location for {this.StoresFunction.FunctionCode}.";
+            }
+
+            if (this.StoresFunction.DepartmentNominalRequired == "Y")
+            {
+                if (this.Department == null || this.Nominal == null)
+                {
+                    yield return
+                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req";
+                }
+
+                if (this.StoresFunction.GetNominal() != null)
+                {
+                    if (this.StoresFunction.GetNominal().NominalCode != this.Nominal?.NominalCode)
+                    {
+                        yield return $"Nominal must be {this.StoresFunction.GetNominal().NominalCode}";
+                    }
+                }
+            }
+
+            if (this.StoresFunction.FromLocationRequired == "Y")
+            {
+                if (this.FromLocation == null && !this.FromPalletNumber.HasValue)
+                {
+                    yield return $"From location or pallet required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.StoresFunction.ToLocationRequired == "Y" && !this.IsReverseTrans())
+            {
+                if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
+                {
+                    yield return $"To location or pallet required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.IsReverseTrans() && this.StoresFunction.CanBeReversed != "Y")
+            {
+                yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
+            }
+            else if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
+                                      && !this.OriginalReqNumber.HasValue)
+            {
+                yield return "You must specify a req number to reverse";
+            }
+
+            if (this.StoresFunction.ReceiptDateRequired == "Y" && !this.IsReverseTrans() && !this.DateReceived.HasValue)
+            {
+                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
+            }
+
+            // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
+            if (this.StoresFunction.FromStateRequired == "Y" && !this.IsReverseTrans())
+            {
+                if (string.IsNullOrEmpty(this.FromState))
+                {
+                    yield return $"From state must be specified for {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
+            {
+                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
+            }
+
+            if (!string.IsNullOrEmpty(this.FromState) && !this.IsReverseTrans())
+            {
+                var validFromStates = this.StoresFunction.GetTransactionStates("F");
+                if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
+                    && !this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
+                {
+                    yield return
+                        $"From state must be one of "
+                        + $"{string.Join(",", validFromStates)}";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(this.ToState))
+            {
+                var validToStates = this.StoresFunction.GetTransactionStates("O");
+                if (validToStates.Count > 0 // does no transaction states mean anything is allowed?
+                    && !this.StoresFunction.GetTransactionStates("O").Contains(this.ToState))
+                {
+                    yield return
+                        $"To state must be one of "
+                        + $"{string.Join(",", validToStates)}";
+                }
+            }
+
+            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
+            {
+                yield return $"From stock pool must be specified for {this.StoresFunction.FunctionCode}";
+            }
+
+            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
+            {
+                yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
+            }
         }
     }
 }

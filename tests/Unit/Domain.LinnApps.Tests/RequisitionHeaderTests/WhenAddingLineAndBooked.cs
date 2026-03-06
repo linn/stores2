@@ -29,7 +29,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 new Department(),
                 new Nominal(),
                 reference: "Goodbye Reqs");
-            req.AddLine( new RequisitionLine(
+            req.AddLine(new RequisitionLine(
                 req.ReqNumber,
                 1,
                 new Part(),

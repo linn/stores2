@@ -61,4 +61,3 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
         }
     }
 }
-

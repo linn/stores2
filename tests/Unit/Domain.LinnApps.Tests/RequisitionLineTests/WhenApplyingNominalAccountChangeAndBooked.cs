@@ -23,7 +23,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
         {
             var stockWriteOffNominal = new Nominal("4729", "STOCK WRITE OFF");
 
-            var line =  new LineWithPostings(
+            var line = new LineWithPostings(
                 1234,
                 1,
                 TestTransDefs.WriteOffUnusableStock,

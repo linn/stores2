@@ -92,11 +92,11 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
 
                 values.Add(
                     new CalculationValueModel
-                        {
-                            RowId = rowId,
-                            TextDisplay = stockTransaction.BudgetDate?.ToString("dd/MM/yyyy"),
-                            ColumnId = "BudgetDate"
-                        });
+                    {
+                        RowId = rowId,
+                        TextDisplay = stockTransaction.BudgetDate?.ToString("dd/MM/yyyy"),
+                        ColumnId = "BudgetDate"
+                    });
 
                 values.Add(
                     new CalculationValueModel
@@ -176,7 +176,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                         "Requisition",
                         $"/requisitions/{stockTransaction.ReqNumber}",
                         report.RowIndex(rowId),
-                report.ColumnIndex("Requisition")));
+                        report.ColumnIndex("Requisition")));
 
                 report.ValueDrillDownTemplates.Add(
                     new DrillDownModel(

@@ -6,16 +6,6 @@ namespace Linn.Stores2.Domain.LinnApps
 
     public class Carrier
     {
-        public string CarrierCode { get; protected init; }
-
-        public string Name { get; protected set; }
-
-        public DateTime DateCreated { get; protected set; }
-
-        public DateTime? DateInvalid { get; protected set; }
-
-        public Organisation Organisation { get; protected set; }
-
         public Carrier()
         {
         }
@@ -49,6 +39,16 @@ namespace Linn.Stores2.Domain.LinnApps
             this.DateCreated = DateTime.Now;
             this.Validate();
         }
+
+        public string CarrierCode { get; protected init; }
+
+        public string Name { get; protected set; }
+
+        public DateTime DateCreated { get; protected set; }
+
+        public DateTime? DateInvalid { get; protected set; }
+
+        public Organisation Organisation { get; protected set; }
 
         public void Update(string name)
         {

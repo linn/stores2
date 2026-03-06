@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Facade.Services
 {
     using System.Threading.Tasks;
+
     using Linn.Common.Rendering;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Requisitions;

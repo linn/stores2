@@ -5,7 +5,8 @@ namespace Linn.Stores2.Service.ResultHandlers
 
     public class WorkStationsApplicationStateResultHandler : JsonResultHandler<WorkStationResource>
     {
-        public WorkStationsApplicationStateResultHandler() : base("application/vnd.linn.application-state+json")
+        public WorkStationsApplicationStateResultHandler()
+            : base("application/vnd.linn.application-state+json")
         {
         }
     }

@@ -112,7 +112,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 "STORES",
                 "FREE").Returns(new ProcessResult(false, "no can do onto"));
 
-             this.action = () => this.Sut.AddRequisitionLine(this.header, this.line);
+            this.action = () => this.Sut.AddRequisitionLine(this.header, this.line);
         }
 
         [Test]

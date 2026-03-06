@@ -126,8 +126,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
                 context.Quantity,
                 context.Document1Line,
                 context.ToState,
-                context.FromState
-                );
+                context.FromState);
 
             await this.repository.AddAsync(req);
 
@@ -137,7 +136,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
                 // todo: for each line
                 foreach (var lineCandidate in context.Lines)
                 {
-
                     await this.requisitionManager.AddRequisitionLine(req, lineCandidate);
                 }
 

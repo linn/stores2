@@ -81,7 +81,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
                         },
                         TransactionCode = "GIADI"
                     }
-                }
+                                        }
             };
 
             this.result = this.sut.GetTransactionStates("F");

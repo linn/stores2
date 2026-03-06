@@ -67,7 +67,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                                        TransactionDefinition = TestTransDefs.StockToAdjust.TransactionCode,
                                        Moves = new List<MoveSpecification>
                                                    {
-                                                       new MoveSpecification { Qty = 1, FromPallet = 123, FromStockPool = "LINN", IsAddition = true}
+                                                       new MoveSpecification { Qty = 1, FromPallet = 123, FromStockPool = "LINN", IsAddition = true }
                                                    }
                                    },
                                new LineCandidate

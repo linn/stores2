@@ -1,10 +1,8 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 {
     using Linn.Common.Persistence;
-    using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
-    using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
     using NSubstitute;
@@ -31,7 +29,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
         [SetUp]
         public void SetUpContext()
         {
-
             this.PartStorageTypeRepository = Substitute.For<IRepository<PartStorageType, int>>();
             this.PcasStorageTypeRepository = Substitute.For<IRepository<PcasStorageType, PcasStorageTypeKey>>();
             this.PartsRepository = Substitute.For<IRepository<Part, string>>();
@@ -50,4 +47,3 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
         }
     }
 }
-

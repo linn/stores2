@@ -12,10 +12,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
     public class RequisitionLine
     {
-        protected RequisitionLine()
-        {
-        }
-
         public RequisitionLine(
             int reqNumber,
             int lineNumber,
@@ -56,8 +52,12 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.Cancelled = "N";
 
             this.Document1Number = document1Number ?? reqNumber;
-            this.Document1Line = string.IsNullOrEmpty(document1Name) ? lineNumber: document1Line;
+            this.Document1Line = string.IsNullOrEmpty(document1Name) ? lineNumber : document1Line;
             this.Document1Type = string.IsNullOrEmpty(document1Name) ? "REQ" : document1Name;
+        }
+
+        protected RequisitionLine()
+        {
         }
 
         public int ReqNumber { get; protected init; }
@@ -112,13 +112,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             this.NominalAccountPostings.Add(new RequisitionLinePosting
-                                                {
-                                                    ReqNumber = this.ReqNumber,
-                                                    LineNumber = this.LineNumber,
-                                                    DebitOrCredit = debitOrCredit,
-                                                    Qty = qty,
-                                                    NominalAccount = nominalAccount
-                                                });
+            {
+                ReqNumber = this.ReqNumber,
+                LineNumber = this.LineNumber,
+                DebitOrCredit = debitOrCredit,
+                Qty = qty,
+                NominalAccount = nominalAccount
+            });
         }
 
         public decimal GetPostingQty(string debitOrCredit)
@@ -163,7 +163,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public bool LineIsBookable()
         {
-            if (this.IsCancelled() || this.IsBooked() || this.Moves == null )
+            if (this.IsCancelled() || this.IsBooked() || this.Moves == null)
             {
                 return false;
             }
@@ -245,7 +245,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
         public void AddSerialNumber(int serialNumber)
         {
-            var nextSeq = this.SerialNumbers.Any() ? this.SerialNumbers.Max(l => l.Sequence + 1)  : 1;
+            var nextSeq = this.SerialNumbers.Any() ? this.SerialNumbers.Max(l => l.Sequence + 1) : 1;
             if (this.SerialNumbers.Any(s => s.SerialNumber == serialNumber))
             {
                 throw new RequisitionException(
@@ -263,6 +263,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     this.Moves.Where(m => m.StockLocator != null && !m.IsBooked() && !m.IsCancelled()).Sum(m => m.Quantity);
                 return this.Qty == totalQtyAllocated;
             }
+
             return false;
         }
 
@@ -292,7 +293,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             if (departmentInputRule == null)
             {
                 throw new RequisitionException(
-                    $"Cannot update department of a {trans.TransactionCode} line – rule does not allow input.");
+                    $"Cannot update department of a {trans.TransactionCode} line â€“ rule does not allow input.");
             }
 
             // Determine which side (debit or credit) of the nominal posting this rule applies to.
@@ -301,7 +302,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 var creditPosting = this.NominalAccountPostings
                     .First(x => x.DebitOrCredit == "C");
 
-                // Ensure only the department has changed – updating nominal is not currently supported.
+                // Ensure only the department has changed â€“ updating nominal is not currently supported.
                 if (creditPosting.NominalAccount.NominalCode != newNominalAccount.NominalCode)
                 {
                     throw new RequisitionException("Updating nominal code is not currently supported");

@@ -22,6 +22,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
         private StorageType storageType;
 
         private PartStorageTypeException result;
+
         [SetUp]
         public void SetUp()
         {

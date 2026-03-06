@@ -3,6 +3,7 @@ using Linn.Common.Domain;
 namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -56,4 +57,3 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
         }
     }
 }
-

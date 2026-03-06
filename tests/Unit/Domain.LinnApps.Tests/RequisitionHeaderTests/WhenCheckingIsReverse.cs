@@ -24,7 +24,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
                 comments: "Uno reverse",
                 quantity: 1,
                 fromState: "QC");
-            ;
             this.sut = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.ReturnToSupplier,

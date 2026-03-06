@@ -12,7 +12,8 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public PcasStorageTypeRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.PcasStorageTypes)
+        public PcasStorageTypeRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.PcasStorageTypes)
         {
             this.serviceDbContext = serviceDbContext;
         }

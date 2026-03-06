@@ -37,13 +37,15 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
             };
 
             this.specifiedPrinterLabelType = new LabelType
-                                                 {
-                                                     DefaultPrinter = "PRINTER DEFAULT", FileName = "TEMPLATE"
-                                                 };
+            {
+                DefaultPrinter = "PRINTER DEFAULT",
+                FileName = "TEMPLATE"
+            };
 
             this.defaultQcLabelType = new LabelType
             {
-                DefaultPrinter = "PASS LABEL", FileName = "P TEMPLATE"
+                DefaultPrinter = "PASS LABEL",
+                FileName = "P TEMPLATE"
             };
 
             this.LabelTypeRepository.FindByAsync(Arg.Any<Expression<Func<LabelType, bool>>>())
@@ -69,11 +71,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
             };
 
             this.purchaseOrderResult = new PurchaseOrderResult
-                                           {
-                                               OrderNumber = this.request.OrderNumber,
-                                               SupplierId = 666,
-                                               SupplierName = "HELL INC.",
-                                               Details = new List<PurchaseOrderDetailResult>
+            {
+                OrderNumber = this.request.OrderNumber,
+                SupplierId = 666,
+                SupplierName = "HELL INC.",
+                Details = new List<PurchaseOrderDetailResult>
                                                              {
                                                                  new()
                                                                      {
@@ -81,7 +83,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
                                                                          RohsCompliant = "Y"
                                                                      }
                                                              }
-                                           };
+            };
 
             this.DocumentProxy.GetPurchaseOrder(this.request.OrderNumber).Returns(this.purchaseOrderResult);
 
@@ -127,12 +129,12 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
                 this.kardexLabelType.FileName,
                 $"\"{this.request.KardexLocation.Replace("\"", "''")}\",\"{this.request.ReqNumber}\"");
 
-                this.LabelPrinter.Received(1).PrintLabelsAsync(
-                $"QC {request.OrderNumber}-1",
-                this.specifiedPrinterLabelType.DefaultPrinter,
-                this.request.Qty,
-                this.defaultQcLabelType.FileName,
-                $"\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"{today}\",\"**ROHS Compliant**\"{Environment.NewLine}");
+            this.LabelPrinter.Received(1).PrintLabelsAsync(
+            $"QC {request.OrderNumber}-1",
+            this.specifiedPrinterLabelType.DefaultPrinter,
+            this.request.Qty,
+            this.defaultQcLabelType.FileName,
+            $"\"12345\",\"PART\",\"1\",\"ME\",\"A PART\",\"54321\",\"{today}\",\"**ROHS Compliant**\"{Environment.NewLine}");
         }
     }
 }
