@@ -2,16 +2,8 @@
 {
     using System;
 
-    public class ImportCandidate
+    public class ImportUpdate
     {
-        public int Id { get; set; }
-
-        public Employee CreatedBy { get; set; }
-
-        public Supplier Supplier { get; set; }
-
-        public Supplier Carrier { get; set; }
-
         public string CustomsEntryCode { get; set; }
 
         public DateTime? CustomsEntryCodeDate { get; set; }

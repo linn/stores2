@@ -22,6 +22,7 @@
             app.MapGet("/stores2/import-books/{id:int}", this.GetById);
             app.MapGet("/stores2/import-books/create", this.GetApp);
             app.MapPost("/stores2/import-books", this.Create);
+            app.MapPost("/stores2/import-books/{id:int}", this.Update);
         }
 
         private async Task SearchImports(
@@ -58,6 +59,17 @@
             }
 
             await res.Negotiate(await service.Add(resource));
+        }
+
+        private async Task Update(
+            HttpResponse res,
+            HttpRequest req,
+            int id,
+            ImportBookResource resource,
+            IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> service)
+        {
+            await res.Negotiate(
+                await service.Update(id, resource, req.HttpContext.GetPrivileges()));
         }
     }
 }

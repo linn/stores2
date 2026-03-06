@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useNavigate, useParams } from 'react-router-dom';
 import List from '@mui/material/List';
@@ -34,6 +34,14 @@ function ImportBookUtility({ creating }) {
         errorMessage: createError
     } = usePost(itemTypes.importBooks.url, true, true);
 
+    const {
+        send: updateImportBook,
+        isLoading: updateLoading,
+        errorMessage: updateError,
+        postResult: updateResult,
+        clearPostResult: clearUpdateResult
+    } = usePost(itemTypes.importBooks.url, true, false);
+
     const auth = useAuth();
     const token = auth.user?.access_token;
 
@@ -55,6 +63,13 @@ function ImportBookUtility({ creating }) {
         setImportBook({});
     }
 
+    useEffect(() => {
+        if (updateResult) {
+            setImportBook(updateResult);
+            clearUpdateResult();
+        }
+    }, [updateResult, clearUpdateResult]);
+
     const canChange = () => {
         if (creating) {
             return utilities.getHref(importBookGetResult, 'create');
@@ -65,6 +80,12 @@ function ImportBookUtility({ creating }) {
     const handleFieldChange = (propertyName, newValue) => {
         setImportBook(current => ({ ...current, [propertyName]: newValue }));
         setChangesMade(true);
+    };
+
+    const totalCurrencyfields = (value1, value2) => {
+        const num1 = parseFloat(value1) || 0;
+        const num2 = parseFloat(value2) || 0;
+        return num1 + num2;
     };
 
     const handleNumberFieldChange = (propertyName, newValue) => {
@@ -87,6 +108,19 @@ function ImportBookUtility({ creating }) {
                     // Store the string value to preserve decimal point during input
                     // This allows typing "2." and continuing with "2.5" without losing the decimal
                     handleFieldChange(propertyName, cleanedValue);
+
+                    // do a bit of totalling - convert strings to numbers for proper addition
+                    if (propertyName === 'linnVat') {
+                        handleFieldChange(
+                            'totalDuty',
+                            totalCurrencyfields(importBook.linnDuty, cleanedValue)
+                        );
+                    } else if (propertyName === 'linnDuty') {
+                        handleFieldChange(
+                            'totalDuty',
+                            totalCurrencyfields(importBook.linnVat, cleanedValue)
+                        );
+                    }
                 }
             }
         }
@@ -102,8 +136,13 @@ function ImportBookUtility({ creating }) {
                         </List>
                     </Grid>
                 )}
+                {updateError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={updateError} />
+                    </Grid>
+                )}
 
-                {isLoading || createLoading ? (
+                {isLoading || createLoading || updateLoading ? (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -271,6 +310,8 @@ function ImportBookUtility({ creating }) {
 
                                         if (creating) {
                                             createImportBook(null, importBook);
+                                        } else {
+                                            updateImportBook(id, importBook);
                                         }
                                     }}
                                     saveDisabled={!changesMade}

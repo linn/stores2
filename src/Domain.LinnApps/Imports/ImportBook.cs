@@ -39,6 +39,12 @@
             this.Supplier = candidate.Supplier;
             this.CarrierId = candidate.Carrier.Id;
             this.Carrier = candidate.Carrier;
+
+            this.UpdateCustomsEntry(candidate.CustomsEntryCodePrefix, candidate.CustomsEntryCode, candidate.CustomsEntryCodeDate);
+
+            this.LinnDuty = candidate.LinnDuty;
+            this.LinnVat = candidate.LinnVat;
+
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
             this.PostEntries = new List<ImportBookPostEntry>();
@@ -121,5 +127,25 @@
         public decimal? Weight { get; set; }
 
         public decimal? TotalDuty => this.LinnDuty + this.LinnVat;
+
+        public void Update(ImportUpdate update)
+        {
+            this.UpdateCustomsEntry(update.CustomsEntryCodePrefix, update.CustomsEntryCode, update.CustomsEntryCodeDate);
+
+            this.LinnDuty = update.LinnDuty;
+            this.LinnVat = update.LinnVat;
+        }
+
+        public void UpdateCustomsEntry(string prefix, string entryCode, DateTime? entryDate)
+        {
+            if (!string.IsNullOrEmpty(prefix) && prefix.Length > 3)
+            {
+                throw new ImportBookException("Customs Entry Code Prefix must be 3 characters or less");
+            }
+
+            this.CustomsEntryCode = entryCode;
+            this.CustomsEntryCodeDate = entryDate;
+            this.CustomsEntryCodePrefix = prefix;
+        }
     }
 }

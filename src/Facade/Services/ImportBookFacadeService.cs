@@ -73,6 +73,23 @@
             return new ImportBook(candidate);
         }
 
+
+        protected override async Task UpdateFromResourceAsync(
+            ImportBook entity,
+            ImportBookResource updateResource,
+            IEnumerable<string> privileges = null)
+        {
+            var update = new ImportUpdate
+                         {
+                             CustomsEntryCode = updateResource.CustomsEntryCode,
+                             CustomsEntryCodeDate = string.IsNullOrEmpty(updateResource.CustomsEntryCodeDate) ? null : Convert.ToDateTime(updateResource.CustomsEntryCodeDate),
+                             CustomsEntryCodePrefix = updateResource.CustomsEntryCodePrefix,
+                             LinnDuty = updateResource.LinnDuty,
+                             LinnVat = updateResource.LinnVat
+                         };
+            entity.Update(update);
+        }
+
         protected override Expression<Func<ImportBook, bool>> SearchExpression(string searchTerm)
         {
             throw new NotImplementedException();
