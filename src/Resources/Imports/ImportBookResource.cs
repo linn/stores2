@@ -60,6 +60,8 @@
 
         public decimal? LinnVat { get; set; }
 
+        public decimal? TotalDuty { get; set; }
+
         public int? NumCartons { get; set; }
 
         public int? NumPallets { get; set; }

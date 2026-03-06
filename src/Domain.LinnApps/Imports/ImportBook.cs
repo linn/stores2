@@ -83,6 +83,8 @@
 
         public decimal? Weight { get; set; }
 
+        public decimal? TotalDuty => this.LinnDuty + this.LinnVat;
+
         public ImportBook()
         {
             // ef

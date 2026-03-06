@@ -62,7 +62,8 @@
                     new ImportBookResourceBuilder(
                         new ImportBookPostEntryResourceBuilder(), 
                         new ImportBookOrderDetailResourceBuilder(), 
-                        new ImportBookInvoiceDetailResourceBuilder()));
+                        new ImportBookInvoiceDetailResourceBuilder(),
+                        this.AuthorisationService));
 
             this.Client = TestClient.With<ImportBookModule>(
                 services =>

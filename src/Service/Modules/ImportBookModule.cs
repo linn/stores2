@@ -31,12 +31,14 @@
         }
 
         private async Task GetById(
-            HttpRequest _,
+            HttpRequest req,
             HttpResponse res,
             int id,
             IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> service)
         {
-            await res.Negotiate(await service.GetById(id));
+            var privs = req.HttpContext.GetPrivileges();
+
+            await res.Negotiate(await service.GetById(id, req.HttpContext.GetPrivileges()));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
