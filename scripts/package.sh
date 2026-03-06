@@ -8,7 +8,7 @@ BUILD_ENV=production npm run build
 cd ../..
 
 # build dotnet application
-dotnet publish
+dotnet publish ./src/Service.Host/ -c release
 # dotnet publish ./src/Messaging.Host/ -c release
 # dotnet publish ./src/Scheduling.Host/ -c release
 
