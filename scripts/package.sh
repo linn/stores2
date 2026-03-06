@@ -26,6 +26,7 @@ docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_PASSWORD
 
 # Use continuous build number (Travis + GitHub Actions)
 LAST_TRAVIS_BUILD_NUMBER="${LAST_TRAVIS_BUILD_NUMBER:-0}"
+echo "Last Travis Build Number: $LAST_TRAVIS_BUILD_NUMBER"
 BUILD_NUMBER=$((LAST_TRAVIS_BUILD_NUMBER + GITHUB_RUN_NUMBER))
 
 docker build --no-cache -t linn/stores2:$BUILD_NUMBER --build-arg gitBranch=$GIT_BRANCH ./src/Service.Host/

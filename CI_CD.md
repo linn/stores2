@@ -26,8 +26,8 @@ Set these in your GitHub repository settings (Settings → Secrets and variables
 
 ## Environment Files
 The deployment expects these files in S3:
-- `s3://{S3_BUCKET_NAME}/production2/production.env` - Production environment variables
-- `s3://{S3_BUCKET_NAME}/production2/sys.env` - Sys environment variables
+- `s3://{S3_BUCKET_NAME}/stores2/production.env` - Production environment variables
+- `s3://{S3_BUCKET_NAME}/stores2/sys.env` - Sys environment variables
 
 ## Compatibility
 The scripts have been updated to work with both GitHub Actions and Travis CI environment variables for a smooth transition.
