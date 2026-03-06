@@ -583,6 +583,10 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
+                                  new AxisDetailsModel("invoicePrice", "Invoice Price", GridDisplayType.Value, 125)
+                                  {
+                                      Align = "right", DecimalPlaces = 2
+                                  },
                                   new AxisDetailsModel(
                                       "upgradeTotal",
                                       "Invoice Upgrade Price",
@@ -619,6 +623,10 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
+                                  new AxisDetailsModel("euroPrice", "Customs Price", GridDisplayType.Value, 120)
+                                  {
+                                      Align = "right", DecimalPlaces = 2
+                                  },
                                   new AxisDetailsModel(
                                       "euroUpgradeTotal",
                                       "Customs Upgrade Price",
@@ -710,7 +718,13 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                         ColumnId = "unitPrice",
                         Value = line.UnitPrice.GetValueOrDefault()
                     });
-
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "invoicePrice",
+                        Value = line.Total.GetValueOrDefault()
+                    });
                 values.Add(
                     new CalculationValueModel
                     {
@@ -733,6 +747,15 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                         Value = exchangeRate.HasValue
                                         ? decimal.Round(line.UnitPrice.GetValueOrDefault() / exchangeRate.Value, 2)
                                         : 0
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "euroPrice",
+                        Value = exchangeRate.HasValue
+                            ? decimal.Round(line.Total.GetValueOrDefault() / exchangeRate.Value, 2)
+                            : 0
                     });
                 values.Add(
                     new CalculationValueModel
