@@ -1,7 +1,8 @@
-﻿namespace Linn.Stores2.Proxy.StoredProcedureClients
+namespace Linn.Stores2.Proxy.StoredProcedureClients
 {
     using System.Data;
     using System.Threading.Tasks;
+
     using Linn.Common.Proxy.LinnApps;
     using Linn.Stores2.Domain.LinnApps.External;
     using Oracle.ManagedDataAccess.Client;

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -13,10 +13,10 @@
         public StorageTypeResource Build(StorageType storageType, IEnumerable<string> claims)
         {
             return new StorageTypeResource
-                       {
-                           StorageTypeCode = storageType.StorageTypeCode,
-                           Description = storageType.Description,
-                           Links = this.BuildLinks(storageType, claims).ToArray()
+            {
+                StorageTypeCode = storageType.StorageTypeCode,
+                Description = storageType.Description,
+                Links = this.BuildLinks(storageType, claims).ToArray()
             };
         }
 

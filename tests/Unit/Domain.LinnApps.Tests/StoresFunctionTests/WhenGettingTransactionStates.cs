@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -81,7 +81,7 @@
                         },
                         TransactionCode = "GIADI"
                     }
-                }
+                                        }
             };
 
             this.result = this.sut.GetTransactionStates("F");

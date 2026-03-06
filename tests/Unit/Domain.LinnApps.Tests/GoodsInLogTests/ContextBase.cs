@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.GoodsInLogTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.GoodsInLogTests
 {
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;

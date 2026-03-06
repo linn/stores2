@@ -1,9 +1,10 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -60,7 +61,7 @@
             this.StoresService.ValidReverseQuantity(Arg.Any<int>(), -1).Returns(new ProcessResult(true, null));
 
             this.StockService.ValidStockLocation(1, null, "ADIKT", -1, null).Returns(new ProcessResult(true, null));
-            
+
             var toBeReversed = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.ReturnToSupplier,
@@ -83,7 +84,7 @@
                 null,
                 null,
                 fromLocationCode: "E-PUR-RET",
-                partNumber: "ADIKT", 
+                partNumber: "ADIKT",
                 quantity: -1,
                 document1Line: 1,
                 isReverseTransaction: "Y",

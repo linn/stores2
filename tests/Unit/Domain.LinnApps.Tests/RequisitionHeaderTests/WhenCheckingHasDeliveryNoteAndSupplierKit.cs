@@ -1,10 +1,12 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Tests.GoodsInLogTests;
     using Linn.Stores2.TestData.FunctionCodes;
+
     using NUnit.Framework;
 
     public class WhenCheckingHasDeliveryNoteAndSupplierKit : ContextBase
@@ -15,15 +17,15 @@
         public void SetUp()
         {
             var supplierLoc = new StorageLocation
-                                  {
+            {
                 LocationId = 1,
                 Description = "PRO-JECT AUDIO SYSTEMS",
                 StorageArea = new StorageArea
-                                  {
-                                     StorageAreaCode = "SUPLOC",
-                                     SiteCode = "SUPSTORES",
-                                    StorageSite = new StorageSite("SUPSTORES", "SUPPLIER STORES", null)
-                                  }
+                {
+                    StorageAreaCode = "SUPLOC",
+                    SiteCode = "SUPSTORES",
+                    StorageSite = new StorageSite("SUPSTORES", "SUPPLIER STORES", null)
+                }
             };
 
             this.sut = new RequisitionHeader(

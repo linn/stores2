@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
+namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
 {
     using System.Net.Http;
 
@@ -26,7 +26,7 @@
         protected HttpClient Client { get; set; }
 
         protected HttpResponseMessage Response { get; set; }
-        
+
         protected TestServiceDbContext DbContext { get; private set; }
 
         protected IAuthorisationService AuthorisationService { get; private set; }
@@ -45,7 +45,7 @@
                     storesBudgetRepository,
                     transactionManager,
                     new StoresBudgetResourceBuilder(this.AuthorisationService));
-            
+
             this.Client = TestClient.With<StoresBudgetModule>(
                 services =>
                     {
@@ -54,7 +54,7 @@
                         services.AddRouting();
                     });
         }
-        
+
         [OneTimeTearDown]
         public void TearDownContext()
         {
@@ -64,7 +64,7 @@
         [TearDown]
         public void Teardown()
         {
-           this.DbContext.StoresBudgets.RemoveAllAndSave(this.DbContext);
+            this.DbContext.StoresBudgets.RemoveAllAndSave(this.DbContext);
         }
     }
 }

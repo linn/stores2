@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
+namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,7 +12,8 @@
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public StockPoolRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.StockPools)
+        public StockPoolRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.StockPools)
         {
             this.serviceDbContext = serviceDbContext;
         }

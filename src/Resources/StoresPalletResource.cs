@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources
+namespace Linn.Stores2.Resources
 {
     using Linn.Common.Resources;
     using Linn.Stores2.Resources.Accounts;

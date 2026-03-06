@@ -11,7 +11,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.DefaultBookInLoc
         public StorageLocation DefaultForK2 { get; set; }
 
         public StorageLocation LocationResult { get; set; }
-        
+
         [SetUp]
         public void SetUpContext()
         {

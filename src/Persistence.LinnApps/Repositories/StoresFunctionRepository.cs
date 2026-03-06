@@ -11,7 +11,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     public class StoresFunctionRepository : EntityFrameworkRepository<StoresFunction, string>
     {
         private readonly ServiceDbContext serviceDbContext;
-        
+
         public StoresFunctionRepository(ServiceDbContext serviceDbContext)
             : base(serviceDbContext.StoresFunctionCodes)
         {

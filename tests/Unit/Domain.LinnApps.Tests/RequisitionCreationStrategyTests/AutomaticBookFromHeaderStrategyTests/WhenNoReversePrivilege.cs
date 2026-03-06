@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.AutomaticBookFromHeaderStrategyTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.AutomaticBookFromHeaderStrategyTests
 {
     using System;
     using System.Collections.Generic;
@@ -32,7 +32,7 @@
             this.AuthorisationService.HasPermissionFor(
                     AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode),
                     Arg.Any<List<string>>())
-                .Returns(true); 
+                .Returns(true);
             this.AuthorisationService.HasPermissionFor(AuthorisedActions.ReverseRequisition, Arg.Any<List<string>>())
                 .Returns(false);
 

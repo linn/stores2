@@ -26,7 +26,7 @@
             IDatabaseSequenceService databaseSequenceService,
             IRepository<Employee, int> employeeRepository,
             IQueryRepository<Supplier> supplierRepository,
-            ITransactionManager transactionManager, 
+            ITransactionManager transactionManager,
             IBuilder<ImportBook> resourceBuilder)
             : base(repository, transactionManager, resourceBuilder)
         {
@@ -51,13 +51,13 @@
                                ? await this.supplierRepository.FindByAsync(s => s.Id == resource.CarrierId)
                                : null;
 
-            var candidate = new ImportCandidate 
-                                {
-                                    Id = await this.databaseSequenceService.NextImportBookId(),
-                                    CreatedBy = createdBy,
-                                    Supplier = supplier,
-                                    Carrier = carrier
-                                };
+            var candidate = new ImportCandidate
+            {
+                Id = await this.databaseSequenceService.NextImportBookId(),
+                CreatedBy = createdBy,
+                Supplier = supplier,
+                Carrier = carrier
+            };
 
             return new ImportBook(candidate);
         }

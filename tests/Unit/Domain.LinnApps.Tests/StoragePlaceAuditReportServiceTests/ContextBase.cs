@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoragePlaceAuditReportServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoragePlaceAuditReportServiceTests
 {
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;

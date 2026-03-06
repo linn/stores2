@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
+namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System;
     using System.Linq;
@@ -25,7 +25,7 @@
             var result = await this.serviceDbContext.ImportBookExchangeRates
                              .Include(pst => pst.LedgerPeriod)
                              .FirstOrDefaultAsync(i =>
-                                 i.PeriodNumber == key.PeriodNumber 
+                                 i.PeriodNumber == key.PeriodNumber
                                  && i.BaseCurrency == key.BaseCurrency
                                  && i.ExchangeCurrency == key.ExchangeCurrency);
             return result;

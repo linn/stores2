@@ -1,7 +1,8 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.External;
@@ -54,7 +55,7 @@
                                               }
                                       }
                     });
-            
+
             this.result = await this.Sut.Validate(
                 123,
                 TestFunctionCodes.BookToLinnDepartment.FunctionCode,

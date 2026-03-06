@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -67,7 +67,7 @@
                                        TransactionDefinition = TestTransDefs.StockToAdjust.TransactionCode,
                                        Moves = new List<MoveSpecification>
                                                    {
-                                                       new MoveSpecification { Qty = 1, FromPallet = 123, FromStockPool = "LINN", IsAddition = true}
+                                                       new MoveSpecification { Qty = 1, FromPallet = 123, FromStockPool = "LINN", IsAddition = true }
                                                    }
                                    },
                                new LineCandidate

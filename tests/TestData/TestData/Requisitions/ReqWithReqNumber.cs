@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.TestData.Requisitions
+namespace Linn.Stores2.TestData.Requisitions
 {
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -34,23 +34,23 @@
             string batchRef = null,
             DateTime? batchDate = null,
             bool hasBeenReversed = false,
-            string auditLocation = null) 
+            string auditLocation = null)
             : base(
                 createdBy,
                 function,
                 reqType,
                 document1Number,
-                document1Type, 
-                department, 
+                document1Type,
+                department,
                 nominal,
                 reference: reference,
                 comments: comments,
-                manualPick: manualPick, 
-                fromStockPool: fromStockPool, 
-                toStockPool: toStockPool, 
-                fromPalletNumber: fromPalletNumber, 
+                manualPick: manualPick,
+                fromStockPool: fromStockPool,
+                toStockPool: toStockPool,
+                fromPalletNumber: fromPalletNumber,
                 toPalletNumber: toPalletNumber,
-                fromLocation: fromLocation, 
+                fromLocation: fromLocation,
                 toLocation: toLocation,
                 part: part,
                 quantity: quantity,

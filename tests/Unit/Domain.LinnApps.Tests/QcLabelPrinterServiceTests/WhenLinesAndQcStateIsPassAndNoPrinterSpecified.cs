@@ -21,15 +21,15 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
         private ProcessResult result;
 
         private QcLabelPrintRequest request;
-        
+
         private LabelType specifiedPrinterLabelType;
-        
+
         private PurchaseOrderResult purchaseOrderResult;
 
         private Part part;
 
         private LabelType defaultQcLabelType;
-        
+
         [SetUp]
         public async Task SetUp()
         {
@@ -37,7 +37,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
                                                  {
                                                      DefaultPrinter = "PRINTER DEFAULT", FileName = "TEMPLATE"
                                                  };
-            
+
             this.defaultQcLabelType = new LabelType
             {
                 DefaultPrinter = "PASS LABEL", FileName = "P TEMPLATE"
@@ -77,9 +77,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
                     }
                 }
             };
-            
+
             this.DocumentProxy.GetPurchaseOrder(this.request.OrderNumber).Returns(this.purchaseOrderResult);
-            
+
             this.EmployeeRepository.FindByIdAsync(this.request.UserNumber)
                 .Returns(new Employee { Name = "MR EMPLOYEE" });
 
@@ -90,14 +90,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
                     this.defaultQcLabelType.FileName,
                     Arg.Any<string>())
                 .Returns((true, string.Empty));
-    
+
             this.part = new Part
             {
                 PartNumber = this.request.PartNumber,
                 Description = "A PART",
                 OurUnitOfMeasure = "ONES"
             };
-            
+
             this.PartsRepository.FindByAsync(Arg.Any<Expression<Func<Part, bool>>>())
                 .Returns(this.part);
             this.result = await this.Sut.PrintLabels(this.request);

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuRsnImportTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuRsnImportTests
 {
     using FluentAssertions;
 

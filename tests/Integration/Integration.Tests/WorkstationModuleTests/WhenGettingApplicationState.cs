@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
+namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -16,7 +16,7 @@
 
     public class WhenGettingApplicationState : ContextBase
     {
-        [SetUp] 
+        [SetUp]
         public void SetUp()
         {
             this.AuthorisationService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, Arg.Any<List<string>>())

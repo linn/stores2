@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidStateTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidStateTests
 {
     using System;
     using System.Linq.Expressions;

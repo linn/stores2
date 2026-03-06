@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
@@ -35,7 +35,6 @@
         }
 
         private async Task SearchLocations(
-            HttpRequest _,
             HttpResponse res,
             string searchTerm,
             string siteCode,
@@ -43,13 +42,13 @@
             bool? includeInvalid,
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service)
         {
-            var searchResource = new StorageLocationSearchResource 
-                                     {
-                                         LocationCode = searchTerm,
-                                         StorageAreaCode = storageAreaCode,
-                                         SiteCode = siteCode, 
-                                         IncludeInvalid = includeInvalid
-                                     };
+            var searchResource = new StorageLocationSearchResource
+            {
+                LocationCode = searchTerm,
+                StorageAreaCode = storageAreaCode,
+                SiteCode = siteCode,
+                IncludeInvalid = includeInvalid
+            };
 
             await res.Negotiate(await service.FilterBy(searchResource));
         }
@@ -72,7 +71,6 @@
         }
 
         private async Task GetLocationById(
-            HttpRequest _,
             HttpResponse res,
             int id,
             IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service)
@@ -108,7 +106,6 @@
         }
 
         private async Task GetStockState(
-            HttpRequest _,
             HttpResponse res,
             string id,
             IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService)

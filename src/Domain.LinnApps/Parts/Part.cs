@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Parts
+namespace Linn.Stores2.Domain.LinnApps.Parts
 {
     using System;
 
@@ -109,9 +109,9 @@
         public DateTime? DateCreated { get; set; }
 
         public DateTime? DateLive { get; set; }
-        
+
         public DateTime? DatePhasedOut { get; set; }
-        
+
         public string ReasonPhasedOut { get; set; }
 
         public string ScrapOrConvert { get; set; }
@@ -121,7 +121,7 @@
         public string PlannerStory { get; set; }
 
         public DateTime? DateDesignObsolete { get; set; }
-        
+
         public string LibraryName { get; set; }
 
         public string LibraryRef { get; set; }

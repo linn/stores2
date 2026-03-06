@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
+namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
 {
     using System.Net.Http;
 

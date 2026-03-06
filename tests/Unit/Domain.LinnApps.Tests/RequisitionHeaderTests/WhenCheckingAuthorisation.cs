@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using FluentAssertions;
 
@@ -24,12 +24,12 @@
                     {
                         new ReqMove(
                             123,
-                            1, 
-                            1, 
                             1,
-                            1, 
-                            null, 
-                            18414, 
+                            1,
+                            1,
+                            1,
+                            null,
+                            18414,
                             "LN ON LOAN",
                             "STORES",
                             "FREE")

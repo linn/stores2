@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
@@ -23,7 +23,6 @@
         }
 
         private async Task GetAll(
-            HttpRequest _,
             HttpResponse res,
             IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource> service)
         {
@@ -31,7 +30,6 @@
         }
 
         private async Task GetById(
-            HttpRequest _,
             HttpResponse res,
             string boardCode,
             string storageTypeCode,
@@ -42,7 +40,6 @@
         }
 
         private async Task Create(
-            HttpRequest _,
             HttpResponse res,
             PcasStorageTypeResource resource,
             IAsyncFacadeService<PcasStorageType, PcasStorageTypeKey, PcasStorageTypeResource, PcasStorageTypeResource, PcasStorageTypeResource> service)
@@ -51,7 +48,6 @@
         }
 
         private async Task Update(
-            HttpRequest _,
             HttpResponse res,
             string boardCode,
             string storageTypeCode,

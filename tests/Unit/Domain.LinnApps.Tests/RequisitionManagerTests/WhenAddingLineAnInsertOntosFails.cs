@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -11,6 +11,7 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
 
@@ -18,7 +19,7 @@
 
     using NUnit.Framework;
 
-    public class WhenAddingLineAndPickStockFails : ContextBase
+    public class WhenAddingLineAnInsertOntosFails : ContextBase
     {
         private RequisitionHeader header;
 
@@ -44,11 +45,13 @@
             this.header = new RequisitionHeader(
                 new Employee { Id = 33087 },
                 TestFunctionCodes.LinnDeptReq,
-                "F",
+                "O",
                 null,
                 null,
                 this.department,
-                this.nominal);
+                this.nominal,
+                toStockPool: "LINN",
+                toState: "STATE");
             this.part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
             this.line = new LineCandidate
@@ -57,18 +60,19 @@
                 Document1 = 123,
                 Document1Line = 1,
                 Document1Type = "REQ",
-                PartNumber = this.part.PartNumber,
-                Qty = 1,
                 Moves = new List<MoveSpecification>
-                                                 {
-                                                     new MoveSpecification
-                                                         {
-                                                             FromPallet = 512,
-                                                             Qty = 1,
-                                                             FromStockPool = "LINN"
-                                                         }
-                                                 },
-                TransactionDefinition = TestTransDefs.StockToLinnDept.TransactionCode
+                                {
+                                    new MoveSpecification
+                                        {
+                                            ToPallet = 512,
+                                            Qty = 10,
+                                            ToState = "STORES",
+                                            ToStockPool = "LINN"
+                                        }
+                                },
+                PartNumber = this.part.PartNumber,
+                Qty = 10,
+                TransactionDefinition = TestTransDefs.LinnDeptToStock.TransactionCode
             };
             this.DepartmentRepository.FindByIdAsync(this.department.DepartmentCode)
                 .Returns(this.department);
@@ -79,24 +83,34 @@
                     this.part.PartNumber,
                     Arg.Any<int>(),
                     1,
-                    1,
+                    10,
                     null,
                     512,
                     "LINN",
-                    TestTransDefs.StockToLinnDept.TransactionCode)
+                    TestTransDefs.LinnDeptToStock.TransactionCode)
                 .Returns(new ProcessResult(
-                    false, "No stock to pick"));
-            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
-                .Returns(TestTransDefs.StockToLinnDept);
+                    true, string.Empty));
+            this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.LinnDeptToStock.TransactionCode)
+                .Returns(TestTransDefs.LinnDeptToStock);
             this.ReqStoredProcedures.CreateNominals(
                 Arg.Any<int>(),
-                1,
+                10,
                 1,
                 this.nominal.NominalCode,
                 this.department.DepartmentCode).Returns(
                 new ProcessResult(true, string.Empty));
-            this.StockService.ValidStockLocation(null, 512, this.part.PartNumber, 1, null, "LINN")
-                .Returns(new ProcessResult(true, "Ok"));
+            this.ReqStoredProcedures.CanPutPartOnPallet("PART", 512).Returns(true);
+            this.PalletRepository.FindByIdAsync(512)
+                .Returns(new StoresPallet());
+            this.ReqStoredProcedures.InsertReqOntos(
+                Arg.Any<int>(),
+                10,
+                1,
+                null,
+                512,
+                "LINN",
+                "STORES",
+                "FREE").Returns(new ProcessResult(false, "no can do onto"));
 
             this.action = () => this.Sut.AddRequisitionLine(this.header, this.line);
         }
@@ -104,8 +118,8 @@
         [Test]
         public async Task ShouldThrow()
         {
-            await this.action.Should().ThrowAsync<PickStockException>().WithMessage(
-                "failed in pick_stock: no stock to pick");
+            await this.action.Should().ThrowAsync<InsertReqOntosException>()
+                .WithMessage("Failed in insert_req_ontos: no can do onto");
         }
     }
 }

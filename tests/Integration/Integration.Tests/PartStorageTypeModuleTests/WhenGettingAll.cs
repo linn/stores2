@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
+namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -31,7 +31,6 @@
                                    {
                                        StorageTypeCode = "Storage Type No 1", Description = "Storage Type 1"
                                    };
-
 
             this.partStorageType = new PartStorageType(
                 this.part,

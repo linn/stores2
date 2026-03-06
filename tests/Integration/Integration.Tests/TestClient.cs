@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests
+namespace Linn.Stores2.Integration.Tests
 {
     using System;
     using System.Net.Http;
@@ -14,8 +14,9 @@
     public static class TestClient
     {
         public static HttpClient With<T>(
-            Action<IServiceCollection> serviceConfiguration, 
-            params Func<RequestDelegate, RequestDelegate>[] _) where T : IModule
+            Action<IServiceCollection> serviceConfiguration,
+            params Func<RequestDelegate, RequestDelegate>[] rd)
+            where T : IModule
         {
             var server = new TestServer(
                 new WebHostBuilder()
@@ -33,7 +34,7 @@
                                 app.UseEndpoints(
                                     builder =>
                                         {
-                                            // only map the endpoints for the module under test 
+                                            // only map the endpoints for the module under test
                                             var module
                                                 =
                                                 (T)Activator.CreateInstance(typeof(T)); // i.e. the module of type T

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Host
+namespace Linn.Stores2.Service.Host
 {
     using System;
     using System.IdentityModel.Tokens.Jwt;

@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
+
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
@@ -24,14 +25,12 @@
         }
 
         private async Task SearchImports(
-            HttpRequest _,
             HttpResponse res)
         {
             await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
         }
 
         private async Task GetById(
-            HttpRequest _,
             HttpResponse res,
             int id,
             IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> service)

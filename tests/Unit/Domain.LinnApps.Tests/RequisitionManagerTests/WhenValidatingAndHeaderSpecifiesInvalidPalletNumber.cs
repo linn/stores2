@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Threading.Tasks;
@@ -37,8 +37,8 @@
                 .Returns(TestTransDefs.StoresMove);
             this.PalletRepository.FindByIdAsync(666).Returns(new StoresPallet { DateInvalid = DateTime.Today });
             this.StoresService.ValidNominalAccount("1607", "2963")
-                .Returns(new NominalAccount()); 
-            
+                .Returns(new NominalAccount());
+
             this.act = () => this.Sut.Validate(
                 33087,
                 TestFunctionCodes.Move.FunctionCode,

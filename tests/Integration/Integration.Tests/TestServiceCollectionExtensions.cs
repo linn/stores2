@@ -1,6 +1,7 @@
-﻿namespace Linn.Stores2.Integration.Tests
+namespace Linn.Stores2.Integration.Tests
 {
     using System;
+
     using Microsoft.Extensions.DependencyInjection;
 
     public static class TestServiceCollectionExtensions

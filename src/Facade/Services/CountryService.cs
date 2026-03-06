@@ -10,8 +10,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Resources;
 
-
-    public class CountryService 
+    public class CountryService
     : AsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>
     {
         public CountryService(IRepository<Country, string> repository, ITransactionManager transactionManager, IBuilder<Country> resourceBuilder)

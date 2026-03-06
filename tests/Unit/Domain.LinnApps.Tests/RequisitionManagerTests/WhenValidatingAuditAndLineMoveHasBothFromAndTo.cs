@@ -1,10 +1,12 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using FluentAssertions;
+
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -13,7 +15,9 @@
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.FunctionCodes;
     using Linn.Stores2.TestData.Transactions;
+
     using NSubstitute;
+
     using NUnit.Framework;
 
     public class WhenValidatingAuditAndLineMoveHasBothFromAndTo : ContextBase
@@ -65,15 +69,15 @@
                                                    {
                                                        new MoveSpecification
                                                        {
-                                                           Qty = 1, 
-                                                           FromPallet = 123, 
-                                                           FromStockPool = "LINN", 
+                                                           Qty = 1,
+                                                           FromPallet = 123,
+                                                           FromStockPool = "LINN",
                                                            IsAddition = true,
                                                            ToPallet = 123
                                                        }
                                                    }
                                    }
-                               });
+                           });
         }
 
         [Test]

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Net.Http;
 
@@ -38,9 +38,9 @@
         protected IAuthorisationService AuthorisationService { get; private set; }
 
         protected IRepository<RequisitionHistory, int> RequisitionHistoryRepository { get; private set; }
-        
+
         protected IQcLabelPrinterService QcLabelPrinterService { get; private set; }
-        
+
         protected IQueryRepository<SundryBookInDetail> SundryBookInDetailRepository { get; private set; }
 
         protected IDeliveryNoteFacadeService DeliveryNoteFacadeService { get; private set; }

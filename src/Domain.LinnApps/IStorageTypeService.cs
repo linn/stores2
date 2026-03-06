@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+namespace Linn.Stores2.Domain.LinnApps
 {
     using System.Threading.Tasks;
 
@@ -13,4 +13,3 @@
         Task<PcasStorageType> ValidateUpdatePcasStorageType(PcasStorageType pcasStorageType);
     }
 }
-

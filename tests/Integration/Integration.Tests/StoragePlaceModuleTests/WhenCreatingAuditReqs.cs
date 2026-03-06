@@ -53,7 +53,7 @@ namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {

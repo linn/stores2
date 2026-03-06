@@ -1,10 +1,11 @@
-﻿namespace Linn.Stores2.Proxy.HttpClients
+namespace Linn.Stores2.Proxy.HttpClients
 {
     using System;
     using System.Collections.Generic;
     using System.Net;
     using System.Threading;
     using System.Threading.Tasks;
+
     using Linn.Common.Configuration;
     using Linn.Common.Proxy;
     using Linn.Common.Serialization;

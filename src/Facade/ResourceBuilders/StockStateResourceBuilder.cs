@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -23,7 +23,7 @@
                           Description = model.Description,
                           QCRequired = model.QCRequired,
                           Links = this.BuildLinks(model, claims).ToArray()
-            };
+                       };
         }
 
         public string GetLocation(StockState model)

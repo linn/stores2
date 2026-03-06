@@ -24,8 +24,7 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task GetById(
-            HttpRequest _, 
-            HttpResponse res, 
+            HttpResponse res,
             int id,
             IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource> service)
         {
@@ -43,12 +42,12 @@ namespace Linn.Stores2.Service.Modules
             IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource> service)
         {
             var searchResource = new StoresBudgetSearchResource
-                                     {
-                                         FromDate = fromDate,
-                                         ToDate = toDate,
-                                         PartNumber = partNumber,
-                                         PartNumberStartsWith = partNumberStartsWith
-                                     };
+            {
+                FromDate = fromDate,
+                ToDate = toDate,
+                PartNumber = partNumber,
+                PartNumberStartsWith = partNumberStartsWith
+            };
             var result = await service.FilterBy(searchResource);
             await res.Negotiate(result);
         }

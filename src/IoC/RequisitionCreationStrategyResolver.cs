@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.IoC
+namespace Linn.Stores2.IoC
 {
     using System;
     using System.Collections.Generic;
@@ -9,34 +9,27 @@
 
     using Microsoft.Extensions.DependencyInjection;
 
-    public class RequisitionCreationStrategyResolver : ICreationStrategyResolver
+    public class RequisitionCreationStrategyResolver(IServiceProvider serviceProvider) : ICreationStrategyResolver
     {
-        private readonly IServiceProvider serviceProvider;
-
         private List<string> ldreqFunctions = ["LDREQ", "ADJUST", "WOFF", "ADJUST QC", "WOFF QC", "RSN"];
 
         private List<string> movelocFunctions = ["MOVELOC", "SUREQ"];
 
-        public RequisitionCreationStrategyResolver(IServiceProvider serviceProvider)
-        {
-            this.serviceProvider = serviceProvider; 
-        }
-
         public ICreationStrategy Resolve(RequisitionCreationContext context)
         {
-            if (ldreqFunctions.Contains(context.Function.FunctionCode))
+            if (this.ldreqFunctions.Contains(context.Function.FunctionCode))
             {
-                return this.serviceProvider.GetRequiredService<LdreqCreationStrategy>();
+                return serviceProvider.GetRequiredService<LdreqCreationStrategy>();
             }
 
             if (context.Function.FunctionCode == "LOAN OUT")
             {
-                return this.serviceProvider.GetRequiredService<LoanOutCreationStrategy>();
+                return serviceProvider.GetRequiredService<LoanOutCreationStrategy>();
             }
 
             if (context.Function.FunctionCode == "GIST PO")
             {
-                return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
+                return serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }
 
             if (context.Function.FunctionCode == "GISTREQ")
@@ -49,26 +42,26 @@
                     {
                         throw new CreateRequisitionException("Cannot currently GISTREQ more than one line - Speak to IT if you need to do so.");
                     }
-                    
-                    return this.serviceProvider.GetRequiredService<LinesProvidedStrategy>();
+
+                    return serviceProvider.GetRequiredService<LinesProvidedStrategy>();
                 }
-                
-                return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
+
+                return serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }
 
             if (context.Function.FunctionCode == "SUREQ")
             {
-                return this.serviceProvider.GetRequiredService<SuReqCreationStrategy>();
+                return serviceProvider.GetRequiredService<SuReqCreationStrategy>();
             }
 
-            if ((context.PartNumber != null || context.Document1Number != null || movelocFunctions.Contains(context.Function.FunctionCode)) && context.Function.AutomaticFunctionType())
+            if ((context.PartNumber != null || context.Document1Number != null || this.movelocFunctions.Contains(context.Function.FunctionCode)) && context.Function.AutomaticFunctionType())
             {
-                return this.serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
+                return serviceProvider.GetRequiredService<AutomaticBookFromHeaderStrategy>();
             }
 
             if ((context.PartNumber == null && context.Lines?.Count() > 0) || context.Function.FunctionCode == "AUDIT")
             {
-                return this.serviceProvider.GetRequiredService<LinesProvidedStrategy>();
+                return serviceProvider.GetRequiredService<LinesProvidedStrategy>();
             }
 
             throw new CreateRequisitionException("No strategy found for given scenario");

@@ -5,17 +5,17 @@ namespace Linn.Stores2.Resources.Requisitions
     public class MoveResource : HypermediaResource
     {
         public int Seq { get; set; }
-        
+
         public string Part { get; set; }
-        
+
         public decimal? Qty { get; set; }
-        
+
         public string DateBooked { get; set; }
-        
+
         public string DateCancelled { get; set; }
-        
+
         public int ReqNumber { get; set; }
-        
+
         public int LineNumber { get; set; }
 
         public string ToLocationCode { get; set; }
@@ -51,11 +51,11 @@ namespace Linn.Stores2.Resources.Requisitions
         public decimal? QtyAllocated { get; set; }
 
         public int? StockLocatorId { get; set; }
-        
+
         public bool? IsFrom { get; set; }
-        
+
         public bool? IsTo { get; set; }
-        
+
         public bool? IsAddition { get; set; }
     }
 }

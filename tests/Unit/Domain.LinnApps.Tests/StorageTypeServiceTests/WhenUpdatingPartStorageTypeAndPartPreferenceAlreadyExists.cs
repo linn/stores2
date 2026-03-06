@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 {
     using System;
     using System.Linq.Expressions;
@@ -15,7 +15,9 @@
 
     public class WhenUpdatingPartStorageTypeAndPartPreferenceAlreadyExists : ContextBase
     {
-        private PartStorageType partsStorageType, alreadyExistPartStorageType;
+        private PartStorageType partsStorageType;
+
+        private PartStorageType alreadyExistPartStorageType;
 
         private Part part;
 

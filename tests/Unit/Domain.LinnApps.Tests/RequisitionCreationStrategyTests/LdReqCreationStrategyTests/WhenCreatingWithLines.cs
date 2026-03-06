@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LdReqCreationStrategyTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.LdReqCreationStrategyTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -79,7 +79,7 @@
                     new RequisitionHeader(
                         employee,
                         this.context.Function,
-                        "F", 
+                        "F",
                         null,
                         string.Empty,
                         dept,

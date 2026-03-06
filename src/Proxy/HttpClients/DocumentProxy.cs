@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Proxy.HttpClients
+namespace Linn.Stores2.Proxy.HttpClients
 {
     using System;
     using System.Collections.Generic;
@@ -28,7 +28,7 @@
             var uri = $"{ConfigurationManager.Configuration["PROXY_ROOT"]}/sales/credit-notes/{documentNumber}";
 
             var response = await this.restClient.Get(
-                               CancellationToken.None, 
+                               CancellationToken.None,
                                new Uri(uri, UriKind.RelativeOrAbsolute),
                                new Dictionary<string, string>(),
                                HttpHeaders.AcceptJson);
@@ -49,7 +49,7 @@
                 }
             }
 
-            return null; 
+            return null;
         }
 
         public async Task<LoanResult> GetLoan(int loanNumber)
@@ -76,7 +76,7 @@
                 IsCancelled = !string.IsNullOrEmpty(loan.CancelledDate),
                 Details = loan.LoanDetails.Select(d => new LoanDetail
                 {
-                    IsCancelled   = d.CancelledFlag == "Y",
+                    IsCancelled = d.CancelledFlag == "Y",
                     Quantity = d.Quantity,
                     ArticleNumber = d.ArticleNumber,
                     LineNumber = d.LineNumber

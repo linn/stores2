@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Stores
+namespace Linn.Stores2.Resources.Stores
 {
     using Linn.Stores2.Resources.Accounts;
 
@@ -15,9 +15,9 @@
         public NominalAccountResource NominalAccount { get; set; }
 
         public string Product { get; set; }
-        
+
         public string Building { get; set; }
-        
+
         public string Vehicle { get; set; }
 
         public int? Person { get; set; }

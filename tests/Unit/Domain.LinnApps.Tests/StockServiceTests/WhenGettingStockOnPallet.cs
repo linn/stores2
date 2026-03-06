@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
 {
     using FluentAssertions;
 

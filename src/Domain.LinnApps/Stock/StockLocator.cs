@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stock
+namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System;
 
@@ -57,6 +57,7 @@
                     return loanNumber;
                 }
             }
+
             return null;
         }
     }

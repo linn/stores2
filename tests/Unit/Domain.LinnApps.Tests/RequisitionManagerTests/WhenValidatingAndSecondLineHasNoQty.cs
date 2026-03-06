@@ -1,9 +1,10 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using FluentAssertions;
 
     using Linn.Common.Domain;
@@ -51,17 +52,17 @@
 
             this.StoresService
                 .ValidOntoLocation(TestParts.Cap003, loc, null, toState).Returns(new ProcessResult(true, string.Empty));
-            
+
             var lines = new List<LineCandidate>
             {
                 new LineCandidate
                 {
                     Moves = new[]
-                                { 
+                                {
                                     new MoveSpecification
                                       {
-                                          Qty = 1, 
-                                          ToLocation = loc.LocationCode, 
+                                          Qty = 1,
+                                          ToLocation = loc.LocationCode,
                                           ToLocationId = 1,
                                           ToState = toState.State
                                       }

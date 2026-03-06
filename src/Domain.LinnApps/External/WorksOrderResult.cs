@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.External
+namespace Linn.Stores2.Domain.LinnApps.External
 {
     public class WorksOrderResult
     {
@@ -11,11 +11,11 @@
         public string PartDescription { get; set; }
 
         public string WorkStationCode { get; set; }
-        
+
         public string Outstanding { get; set; }
-        
+
         public decimal Quantity { get; set; }
-        
+
         public decimal QuantityBuilt { get; set; }
     }
 }

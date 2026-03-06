@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Threading.Tasks;
@@ -68,7 +68,6 @@
                 toState: "STORES",
                 batchRef: "P1234567");
         }
-
 
         [Test]
         public async Task ShouldThrow()

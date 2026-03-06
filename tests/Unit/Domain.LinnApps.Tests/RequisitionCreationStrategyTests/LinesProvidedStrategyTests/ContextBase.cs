@@ -37,7 +37,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.Li
             this.StorageLocationRepository = Substitute.For<IRepository<StorageLocation, int>>();
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
             this.Sut = new LinesProvidedStrategy(
-                this.RequisitionRepository, 
+                this.RequisitionRepository,
                 this.RequisitionManager,
                 this.DepartmentRepository,
                 this.NominalRepository,

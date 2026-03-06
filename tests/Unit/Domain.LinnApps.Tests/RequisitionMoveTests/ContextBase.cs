@@ -5,7 +5,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionMoveTests
 
     using NUnit.Framework;
 
-    public class ContextBase 
+    public class ContextBase
     {
         public ReqMove Sut { get; set; }
 

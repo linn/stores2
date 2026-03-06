@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.GoodsInModuleTests
+namespace Linn.Stores2.Integration.Tests.GoodsInModuleTests
 {
     using System.Net.Http;
 
@@ -28,7 +28,7 @@
         public void SetUpContext()
         {
             this.GoodsInLogReportService = Substitute.For<IGoodsInLogReportService>();
-            
+
             this.GoodsInLogReportFacadeService = new GoodsInLogReportFacadeService(
                 this.GoodsInLogReportService,
                 new ReportReturnResourceBuilder());

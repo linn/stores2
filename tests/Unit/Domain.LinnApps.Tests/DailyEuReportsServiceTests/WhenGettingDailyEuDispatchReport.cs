@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
 {
     using System;
     using System.Collections.Generic;
@@ -120,7 +120,7 @@
             summary.GetGridTextValue(0, 20).Should().Be("D.D.P.");
             summary.GetGridTextValue(0, 21).Should().Be("1234 5678");
             summary.GetGridTextValue(0, 22).Should().Be("08-Dec-2025");
-          
+
             summary.GetGridTextValue(1, 0).Should().Be("LINN PRODUCTS LTD");
             summary.GetGridTextValue(1, 3).Should().Be("Article 2");
             summary.GetGridTextValue(1, 4).Should().Be("Article 2 Description Top");

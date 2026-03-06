@@ -18,8 +18,8 @@ namespace Linn.Stores2.Facade.Services
         private readonly IRepository<AccountingCompany, string> accountingCompanyRepository;
 
         public StockPoolFacadeService(
-            IRepository<StockPool, string> repository, 
-            ITransactionManager transactionManager, 
+            IRepository<StockPool, string> repository,
+            ITransactionManager transactionManager,
             IBuilder<StockPool> resourceBuilder,
             IRepository<StorageLocation, int> storageLocationRepository,
             IRepository<AccountingCompany, string> accountingCompanyRepository)
@@ -30,7 +30,7 @@ namespace Linn.Stores2.Facade.Services
         }
 
         protected override async Task<StockPool> CreateFromResourceAsync(
-            StockPoolResource resource, 
+            StockPoolResource resource,
             IEnumerable<string> privileges = null)
         {
             var accountingCompany = await this.accountingCompanyRepository.FindByIdAsync(resource.AccountingCompanyCode);
@@ -61,12 +61,10 @@ namespace Linn.Stores2.Facade.Services
         {
             var accountingCompany = await this.accountingCompanyRepository.FindByIdAsync(updateResource.AccountingCompanyCode);
             var storageLocation = await this.storageLocationRepository.FindByIdAsync(updateResource.DefaultLocation.GetValueOrDefault());
-                                      
 
             var dateInvalid = string.IsNullOrEmpty(updateResource.DateInvalid)
                                         ? (DateTime?)null
                                         : DateTime.Parse(updateResource.DateInvalid);
-
 
             entity.Update(
                 updateResource.StockPoolDescription,
@@ -97,7 +95,7 @@ namespace Linn.Stores2.Facade.Services
         }
 
         protected override void DeleteOrObsoleteResource(
-            StockPool entity, 
+            StockPool entity,
             IEnumerable<string> privileges = null)
         {
             throw new NotImplementedException();

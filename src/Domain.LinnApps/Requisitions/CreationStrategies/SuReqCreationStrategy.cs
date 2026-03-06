@@ -1,7 +1,8 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
+namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     using System.Linq;
     using System.Threading.Tasks;
+
     using Linn.Common.Authorisation;
     using Linn.Common.Domain.Exceptions;
     using Linn.Common.Persistence;

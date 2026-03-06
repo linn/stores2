@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
+namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System.Net.Http;
 

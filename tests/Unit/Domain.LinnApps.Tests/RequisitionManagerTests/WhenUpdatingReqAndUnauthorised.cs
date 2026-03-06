@@ -1,13 +1,11 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using FluentAssertions;
 
-    using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;
@@ -51,8 +49,8 @@
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.GetRequisitionActionByFunction(
                     TestFunctionCodes.LinnDeptReq.FunctionCode),
-                    Arg.Any<IEnumerable<string>>()).Returns(false);
-         
+                Arg.Any<IEnumerable<string>>()).Returns(false);
+
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);
             this.TransactionDefinitionRepository.FindByIdAsync(TestTransDefs.StockToLinnDept.TransactionCode)
@@ -66,8 +64,8 @@
                 req.Reference,
                 req.Department?.DepartmentCode,
                 new List<LineCandidate>
-                    {
-                    },
+                {
+                },
                 new List<string>());
         }
 

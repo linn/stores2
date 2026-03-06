@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Exceptions
+namespace Linn.Stores2.Domain.LinnApps.Exceptions
 {
     using System;
 
@@ -6,11 +6,13 @@
 
     public class InvalidNominalAccountException : DomainException
     {
-        public InvalidNominalAccountException(string message) : base(message)
+        public InvalidNominalAccountException(string message)
+            : base(message)
         {
         }
 
-        public InvalidNominalAccountException(string message, Exception innerException) : base(message, innerException)
+        public InvalidNominalAccountException(string message, Exception innerException)
+            : base(message, innerException)
         {
         }
     }

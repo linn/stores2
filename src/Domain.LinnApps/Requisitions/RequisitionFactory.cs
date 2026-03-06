@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
     using System.Collections.Generic;
@@ -61,7 +61,7 @@
             string auditLocation = null)
         {
             var function = await this.storesFunctionRepository.FindByIdAsync(functionCode.ToUpper());
-           
+
             var context = new RequisitionCreationContext
                               {
                                   Function = function,
@@ -79,7 +79,7 @@
                                   Comments = comments,
                                   ManualPick = manualPick,
                                   FromStockPool = fromStockPool?.ToUpper(),
-                                  ToStockPool = toStockPool?.ToUpper(),    
+                                  ToStockPool = toStockPool?.ToUpper(),
                                   FromLocationCode = fromLocationCode?.ToUpper(),
                                   ToLocationCode = toLocationCode?.ToUpper(),
                                   PartNumber = partNumber?.ToUpper(),

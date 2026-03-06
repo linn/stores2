@@ -67,7 +67,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 toStockPool: "LINN");
             this.part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(this.part.PartNumber).Returns(this.part);
-            
+
             this.StorageLocationRepository.FindByAsync(Arg.Any<Expression<Func<StorageLocation, bool>>>())
                 .Returns(loc);
             this.line = new LineCandidate
@@ -135,11 +135,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.ReqStoredProcedures.Received(1)
                 .InsertReqOntos(
                     Arg.Any<int>(),
-                    10, 
+                    10,
                     1,
                     111,
-                    null, 
-                    "LINN", 
+                    null,
+                    "LINN",
                     "STORES",
                     "FREE");
         }

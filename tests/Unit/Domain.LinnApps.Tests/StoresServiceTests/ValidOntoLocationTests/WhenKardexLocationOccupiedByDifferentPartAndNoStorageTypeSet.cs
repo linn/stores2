@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidOntoLocationTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidOntoLocationTests
 {
     using System;
     using System.Collections.Generic;
@@ -15,7 +15,7 @@
 
     using NUnit.Framework;
 
-    public class WhenKardexLocationOccupiedByDifferentPartAndNoStorageTypeSet 
+    public class WhenKardexLocationOccupiedByDifferentPartAndNoStorageTypeSet
         : StoresServiceContextBase
     {
         private ProcessResult result;

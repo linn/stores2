@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stores
+namespace Linn.Stores2.Domain.LinnApps.Stores
 {
     using System;
     using System.Linq;
@@ -12,12 +12,12 @@
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Stock;
 
-    public class StoresService : IStoresService 
+    public class StoresService : IStoresService
     {
         private readonly IStockService stockService;
 
         private readonly IRepository<StoresTransactionState, StoresTransactionStateKey> storesTransactionStateRepository;
-        
+
         private readonly IRepository<StoresBudget, int> storesBudgetRepository;
 
         private readonly IRepository<StockLocator, int> stockLocatorRepository;
@@ -69,7 +69,7 @@
             if (part == null || state == null || (pallet == null && location == null))
             {
                 var errorMessage = part == null ? "No valid part provided" : "No valid onto location or state provided";
-                
+
                 return new ProcessResult(false, errorMessage);
             }
 
@@ -80,7 +80,7 @@
 
             var typeOfStock = location?.TypeOfStock ?? pallet?.StockType;
             var stateAllowedAtLocation = location?.StockState ?? pallet?.StockState;
-            
+
             if (!string.IsNullOrEmpty(typeOfStock) && typeOfStock != "A")
             {
                 if (part.RawOrFinished != typeOfStock)
@@ -124,12 +124,12 @@
                 if (isKardexMove)
                 {
                     // ok to mix parts if location has no StorageType, so skip following checks if so
-                    if (location.StorageType != null) 
+                    if (location.StorageType != null)
                     {
                         var otherPartsAtLocation =
                             await this.stockLocatorRepository
                                 .FilterByAsync(
-                                x => 
+                                x =>
                                     x.Quantity > 0
                                     && x.PartNumber != part.PartNumber
                                     && x.LocationId == location.LocationId);
@@ -145,7 +145,7 @@
                     }
                 }
             }
-            
+
             return new ProcessResult(true, $"Part {part.PartNumber} is valid for this location");
         }
 
@@ -221,7 +221,7 @@
             var storesBudgets = await this.storesBudgetRepository.FilterByAsync(
                 x => x.RequisitionLine.Document1Number == orderNumber
                      && x.RequisitionLine.Document1Line == orderLine);
-            
+
             var bookedIn = storesBudgets.Where(x => x.TransactionCode == "SUGII").ToList();
 
             if (bookedIn.Count == 0 || bookedIn.Sum(x => x.Quantity) == 0)
@@ -232,15 +232,15 @@
 
             var passedForPayment = storesBudgets.Where(x => x.TransactionCode == "GISTI1");
 
-            if (bookedIn.Sum(x => 
-                    x.RequisitionLine.RequisitionHeader.IsReverseTransaction == "Y" ? -x.Quantity : x.Quantity) 
+            if (bookedIn.Sum(x =>
+                    x.RequisitionLine.RequisitionHeader.IsReverseTransaction == "Y" ? -x.Quantity : x.Quantity)
                 == passedForPayment.Sum(x =>
                     x.RequisitionLine.RequisitionHeader.IsReverseTransaction == "Y" ? -x.Quantity : x.Quantity))
             {
                 return new ProcessResult(
                     false, $"Everything on {batchRef} has already been passed for payment");
             }
-            
+
             return new ProcessResult(true, $"Order {orderNumber} is valid for part {orderLine}");
         }
 
@@ -322,7 +322,7 @@
 
             if (nominalAccount == null)
             {
-                throw new InvalidNominalAccountException($"Department / Nominal {departmentCode} / { nominalCode} are not a valid combination");
+                throw new InvalidNominalAccountException($"Department / Nominal {departmentCode} / {nominalCode} are not a valid combination");
             }
 
             if (nominalAccount.StoresPostsAllowed != "Y")
@@ -367,7 +367,7 @@
                 {
                     stockPoolResult = pallet.DefaultStockPool;
                 }
-            } 
+            }
             else if (locationId.HasValue)
             {
                 var location = await this.storageLocationRepository.FindByIdAsync(locationId.Value);

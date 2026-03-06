@@ -3,6 +3,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -24,8 +25,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
                 .Returns(
                     new LoanResult
                     {
-                        LoanNumber = 123, 
-                        IsCancelled = true, 
+                        LoanNumber = 123,
+                        IsCancelled = true,
                         Details = new List<LoanDetail>
                         {
                             new LoanDetail

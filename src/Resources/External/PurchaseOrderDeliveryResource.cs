@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.External
+namespace Linn.Stores2.Resources.External
 {
     public class PurchaseOrderDeliveryResource
     {
@@ -11,9 +11,9 @@
         public decimal OurDeliveryQty { get; set; }
 
         public decimal QuantityOutstanding { get; set; }
-        
+
         public decimal QtyNetReceived { get; set; }
-        
+
         public decimal QtyPassedForPayment { get; set; }
     }
 }

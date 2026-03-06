@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionCreationStrategyResolverTests
+namespace Linn.Stores2.Integration.Tests.RequisitionCreationStrategyResolverTests
 {
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;

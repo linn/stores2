@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -8,7 +8,7 @@
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Requisitions;
 
-    public interface IRequisitionFacadeService 
+    public interface IRequisitionFacadeService
         : IAsyncFacadeService<RequisitionHeader, int, RequisitionHeaderResource,
         RequisitionHeaderResource, RequisitionSearchResource>
     {
@@ -26,7 +26,7 @@
 
         Task<IResult<RequisitionHeaderResource>> Validate(
             RequisitionHeaderResource resource);
-        
+
         Task<IResult<RequisitionHeaderResource>> GetReversalPreview(
             int toBeReversedId);
 

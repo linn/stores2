@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionReportServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionReportServiceTests
 {
     using System;
     using System.Collections.Generic;
@@ -26,7 +26,7 @@
         private Part part;
 
         private StoresBudget budget;
-    
+
         private Func<Task> action;
 
         [SetUp]

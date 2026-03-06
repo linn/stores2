@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.GoodsIn
+namespace Linn.Stores2.Domain.LinnApps.GoodsIn
 {
     using System;
 
@@ -17,7 +17,7 @@
         public string ArticleNumber { get; set; }
 
         public decimal? Quantity { get; set; }
-        
+
         public int? SerialNumber { get; set; }
 
         public int? OrderNumber { get; set; }

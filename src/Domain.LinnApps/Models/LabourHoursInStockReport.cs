@@ -1,6 +1,7 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Models
+namespace Linn.Stores2.Domain.LinnApps.Models
 {
     using System;
+
     using Linn.Common.Reporting.Models;
 
     public class LabourHoursInStockReport

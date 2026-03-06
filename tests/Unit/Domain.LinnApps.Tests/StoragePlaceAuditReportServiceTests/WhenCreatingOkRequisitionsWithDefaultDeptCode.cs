@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoragePlaceAuditReportServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoragePlaceAuditReportServiceTests
 {
     using System;
     using System.Collections.Generic;

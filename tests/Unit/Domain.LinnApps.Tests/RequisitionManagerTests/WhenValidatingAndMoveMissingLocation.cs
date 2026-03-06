@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
@@ -46,7 +46,7 @@
                 null,
                 null,
                 "1607",
-                "2963", 
+                "2963",
                 lines: new List<LineCandidate>
                            {
                                new LineCandidate

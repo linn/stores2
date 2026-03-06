@@ -43,17 +43,17 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
             req.AddLine(new RequisitionLine(123, 1, TestParts.Cap003, 1, trans));
             this.budgetId = 234978;
             this.budget = new StoresBudget
-                              {
-                                  BudgetId = this.budgetId,
-                                  TransactionCode = "STST",
-                                  PartNumber = "P1",
-                                  RequisitionNumber = 123,
-                                  LineNumber = 1,
-                                  RequisitionLine = req.Lines.First(),
-                                  Transaction = trans,
-                                  Part = new Part { PartNumber = "P1" },
-                                  StoresBudgetPostings = new List<StoresBudgetPosting>()
-                              };
+            {
+                BudgetId = this.budgetId,
+                TransactionCode = "STST",
+                PartNumber = "P1",
+                RequisitionNumber = 123,
+                LineNumber = 1,
+                RequisitionLine = req.Lines.First(),
+                Transaction = trans,
+                Part = new Part { PartNumber = "P1" },
+                StoresBudgetPostings = new List<StoresBudgetPosting>()
+            };
             this.DbContext.StoresBudgets.AddAndSave(this.DbContext, this.budget);
 
             this.Response = this.Client.Get(
@@ -76,7 +76,7 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldReturnJsonBody()
         {

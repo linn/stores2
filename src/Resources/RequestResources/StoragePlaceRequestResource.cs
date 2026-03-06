@@ -5,7 +5,7 @@ namespace Linn.Stores2.Resources.RequestResources
         public string[] LocationList { get; set; }
 
         public string LocationRange { get; set; }
-        
+
         public int EmployeeNumber { get; set; }
 
         public string DepartmentCode { get; set; }

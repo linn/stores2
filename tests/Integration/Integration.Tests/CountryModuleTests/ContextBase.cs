@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.CountryModuleTests
+namespace Linn.Stores2.Integration.Tests.CountryModuleTests
 {
     using System.Net.Http;
 
@@ -21,21 +21,21 @@
         protected HttpClient Client { get; set; }
 
         protected HttpResponseMessage Response { get; set; }
-        
+
         protected TestServiceDbContext DbContext { get; private set; }
-        
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
 
-            var countryRepository 
+            var countryRepository
                 = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
 
-            IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource> 
+            IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>
                 countryService = new CountryService(
-                    countryRepository, 
-                    new TransactionManager(this.DbContext), 
+                    countryRepository,
+                    new TransactionManager(this.DbContext),
                     new CountryResourceBuilder());
 
             this.Client = TestClient.With<CountryModule>(
@@ -46,7 +46,7 @@
                         services.AddRouting();
                     });
         }
-        
+
         [OneTimeTearDown]
         public void TearDownContext()
         {
@@ -56,7 +56,7 @@
         [TearDown]
         public void Teardown()
         {
-           this.DbContext.Countries.RemoveAllAndSave(this.DbContext);
+            this.DbContext.Countries.RemoveAllAndSave(this.DbContext);
         }
     }
 }

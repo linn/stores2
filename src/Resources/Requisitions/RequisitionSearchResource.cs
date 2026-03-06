@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Requisitions
+namespace Linn.Stores2.Resources.Requisitions
 {
     public class RequisitionSearchResource
     {
@@ -13,7 +13,7 @@
         public string DocumentName { get; set; }
 
         public int? DocumentNumber { get; set; }
-        
+
         public bool? BookedOnly { get; set; }
 
         public string FunctionCode { get; set; }

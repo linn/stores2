@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Accounts
+namespace Linn.Stores2.Domain.LinnApps.Accounts
 {
     public class NominalAccount
     {
@@ -16,7 +16,7 @@
         }
 
         public int Id { get; set; }
-        
+
         public string DepartmentCode { get; set; }
 
         public Department Department { get; set; }

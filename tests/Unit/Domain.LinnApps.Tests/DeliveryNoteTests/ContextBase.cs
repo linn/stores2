@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.DeliveryNoteTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.DeliveryNoteTests
 {
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Requisitions;

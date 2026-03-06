@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -26,10 +26,10 @@
 
             return new StockPoolResource
             {
-                         StockPoolCode  = stockPool.StockPoolCode,
+                         StockPoolCode = stockPool.StockPoolCode,
                          StockPoolDescription = stockPool.StockPoolDescription,
                          DateInvalid = stockPool.DateInvalid?.ToString("o"),
-                         AccountingCompanyCode = stockPool.AccountingCompanyCode, 
+                         AccountingCompanyCode = stockPool.AccountingCompanyCode,
                          AccountingCompany = stockPool.AccountingCompany == null ? null : new AccountingCompanyResource
                                                  {
                                                      Id = stockPool.AccountingCompany.Id,
@@ -41,7 +41,11 @@
                          StockCategory = stockPool.StockCategory,
                          DefaultLocation = stockPool.DefaultLocation,
                          DefaultLocationName = stockPool.StorageLocation?.LocationCode,
-                         StorageLocation = stockPool.StorageLocation == null ? null : (StorageLocationResource)this.storageLocationResourceBuilder.Build(stockPool.StorageLocation, claims),
+                         StorageLocation = stockPool.StorageLocation == null
+                             ? null
+                             : (StorageLocationResource)this.storageLocationResourceBuilder.Build(
+                                 stockPool.StorageLocation,
+                                 claims),
                          BridgeId = stockPool.BridgeId,
                          AvailableToMrp = stockPool.AvailableToMrp,
                          Links = this.BuildLinks(stockPool, claims).ToArray()

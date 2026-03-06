@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -37,8 +37,8 @@
                 nom,
                 null,
                 null,
-                "Goodbye Reqs", 
-                null, 
+                "Goodbye Reqs",
+                null,
                 "LINN");
             var requisitionLine = new RequisitionLine(
                 123,

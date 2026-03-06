@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
+namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -126,8 +126,7 @@
                 context.Quantity,
                 context.Document1Line,
                 context.ToState,
-                context.FromState
-                );
+                context.FromState);
 
             await this.repository.AddAsync(req);
 
@@ -137,19 +136,18 @@
                 // todo: for each line
                 foreach (var lineCandidate in context.Lines)
                 {
-                    
                     await this.requisitionManager.AddRequisitionLine(req, lineCandidate);
                 }
-                
+
                 // all the lines have the same TransactionDefinition
                 // so just take from the first one
                 var transactionDefinition = await this.transactionDefinitionRepository
                                                 .FindByIdAsync(context.Lines.First().TransactionDefinition);
                 req.SetStateAndCategory(
-                    req.FromState ?? transactionDefinition.FromState, 
-                    req.ToState ?? transactionDefinition.InspectedState, 
+                    req.FromState ?? transactionDefinition.FromState,
+                    req.ToState ?? transactionDefinition.InspectedState,
                     transactionDefinition.OntoCategory,
-                    transactionDefinition.FromCategory); 
+                    transactionDefinition.FromCategory);
             }
             catch (DomainException ex)
             {
@@ -181,7 +179,7 @@
                     createFailedMessage,
                     ex);
             }
-           
+
             return await this.repository.FindByIdAsync(req.ReqNumber);
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
 {
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;

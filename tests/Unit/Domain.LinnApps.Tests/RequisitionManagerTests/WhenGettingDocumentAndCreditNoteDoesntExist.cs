@@ -1,7 +1,8 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
@@ -15,7 +16,7 @@
         [SetUp]
         public void SetUp()
         {
-            this.DocumentProxy.GetCreditNote(1, 1).Returns((DocumentResult) null);
+            this.DocumentProxy.GetCreditNote(1, 1).Returns((DocumentResult)null);
 
             this.action = () => this.Sut.GetDocument("C", 1, null);
         }

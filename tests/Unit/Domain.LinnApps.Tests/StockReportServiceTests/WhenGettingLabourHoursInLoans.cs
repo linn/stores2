@@ -1,9 +1,10 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StockReportServiceTests
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.Parts;

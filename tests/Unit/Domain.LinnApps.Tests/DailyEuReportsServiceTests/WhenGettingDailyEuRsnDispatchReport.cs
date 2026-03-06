@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
 {
     using System;
     using System.Collections.Generic;
@@ -133,53 +133,45 @@
             summary.GetGridTextValue(0, 3).Should().Be("8519 8900 00");
             summary.GetGridTextValue(0, 4).Should().Be("GB");
             summary.GetGridValue(0, 5).Should().Be(1);
-            summary.GetGridValue(0, 6).Should().Be(1);
-            summary.GetGridTextValue(0, 7).Should().Be("EUR");
+            summary.GetGridTextValue(0, 6).Should().Be("EUR");
+            summary.GetGridValue(0, 7).Should().Be(56.78m);
             summary.GetGridValue(0, 8).Should().Be(56.78m);
-            summary.GetGridValue(0, 9).Should().Be(56.78m);
-            summary.GetGridTextValue(0, 10).Should().Be("EUR");
-            summary.GetGridValue(0, 11).Should().Be(1m);
-            summary.GetGridValue(0, 12).Should().Be(56.78m);
-            summary.GetGridValue(0, 13).Should().Be(56.78m);
-            summary.GetGridValue(0, 14).Should().Be(45.5m);
-            summary.GetGridValue(0, 15).Should().Be(50m);
-            summary.GetGridTextValue(0, 16).Should().Be("D.D.P.");
-            summary.GetGridTextValue(0, 17).Should().Be("123");
-            summary.GetGridValue(0, 18).Should().Be(0);
+            summary.GetGridValue(0, 9).Should().Be(0);
+            summary.GetGridValue(0, 10).Should().Be(56.78m);
+            summary.GetGridValue(0, 11).Should().Be(45.5m);
+            summary.GetGridValue(0, 12).Should().Be(50m);
+            summary.GetGridTextValue(0, 13).Should().Be("D.D.P.");
+            summary.GetGridTextValue(0, 14).Should().Be("123");
+            summary.GetGridTextValue(0, 15).Should().Be("EUR");
+            summary.GetGridValue(0, 16).Should().Be(1m);
+            summary.GetGridValue(0, 17).Should().Be(56.78m);
+            summary.GetGridValue(0, 18).Should().Be(56.78m);
             summary.GetGridValue(0, 19).Should().Be(0);
             summary.GetGridValue(0, 20).Should().Be(56.78m);
-            summary.GetGridValue(0, 21).Should().Be(56.78m);
-            summary.GetGridTextValue(0, 22).Should().Be("1234");
-            summary.GetGridTextValue(0, 23).Should().Be("08-Dec-2025");
-          
+            summary.GetGridTextValue(0, 21).Should().Be("1234");
+            summary.GetGridTextValue(0, 22).Should().Be("08-Dec-2025");
+
             summary.GetGridTextValue(1, 1).Should().Be("Article 2");
             summary.GetGridTextValue(1, 2).Should().Be("Article 2 Description Top");
-            summary.GetGridTextValue(1, 7).Should().Be("DKK");
-            summary.GetGridValue(1, 8).Should().Be(100m);
-            summary.GetGridValue(1, 9).Should().Be(200m);
-            summary.GetGridTextValue(1, 10).Should().Be("EUR");
-            summary.GetGridValue(1, 11).Should().Be(10m);
-            summary.GetGridValue(1, 12).Should().Be(10m);
-            summary.GetGridValue(1, 13).Should().Be(20m);
-            summary.GetGridValue(1, 18).Should().Be(0);
-            summary.GetGridValue(1, 19).Should().Be(0);
-            summary.GetGridValue(1, 20).Should().Be(200m);
-            summary.GetGridValue(1, 21).Should().Be(20m);
+            summary.GetGridTextValue(1, 6).Should().Be("DKK");
+            summary.GetGridValue(1, 7).Should().Be(100m);
+            summary.GetGridValue(1, 8).Should().Be(200m);
+            summary.GetGridValue(1, 9).Should().Be(0);
+            summary.GetGridTextValue(1, 15).Should().Be("EUR");
+            summary.GetGridValue(1, 17).Should().Be(10m);
+            summary.GetGridValue(1, 18).Should().Be(20m);
+            summary.GetGridValue(1, 20).Should().Be(20m);
 
-            summary.GetGridTextValue(2, 0).Should().Be(expected: "3");
-
+            summary.GetGridTextValue(2, 0).Should().Be("3");
             summary.GetGridTextValue(2, 1).Should().Be("Article 3");
-            summary.GetGridValue(2, 18).Should().Be(369.99m);
-            summary.GetGridValue(2, 19).Should().Be(369.99m);
+            summary.GetGridValue(2, 7).Should().Be(369.99m);
             summary.GetGridValue(2, 20).Should().Be(739.98m);
-            summary.GetGridValue(2, 21).Should().Be(expected: 739.98m);
 
-
-            summary.GetGridTextValue(3, 0).Should().Be(expected: "4");
-            summary.GetGridValue(3, 18).Should().Be(150m);
+            summary.GetGridTextValue(3, 0).Should().Be("4");
+            summary.GetGridValue(3, 9).Should().Be(150m);
+            summary.GetGridValue(3, 10).Should().Be(350m);
             summary.GetGridValue(3, 19).Should().Be(15m);
-            summary.GetGridValue(3, 20).Should().Be(350m);
-            summary.GetGridValue(3, 21).Should().Be(expected: 35m);
+            summary.GetGridValue(3, 20).Should().Be(35m);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.AuthorisedActionTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.AuthorisedActionTests
 {
     using FluentAssertions;
 

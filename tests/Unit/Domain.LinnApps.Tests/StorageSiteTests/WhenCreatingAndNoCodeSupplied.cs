@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageSiteTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageSiteTests
 {
     using System;
 

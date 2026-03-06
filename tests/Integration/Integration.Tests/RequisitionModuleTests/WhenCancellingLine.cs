@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Collections.Generic;
     using System.Net;
@@ -54,9 +54,9 @@
         public void ShouldCancelLine()
         {
             this.ReqManager.Received(1).CancelLine(
-                this.resource.ReqNumber, 
-                this.resource.LineNumber.Value,
-                Arg.Any<int>(), 
+                this.resource.ReqNumber,
+                this.resource.LineNumber.GetValueOrDefault(),
+                Arg.Any<int>(),
                 Arg.Any<IEnumerable<string>>(),
                 this.resource.Reason);
         }

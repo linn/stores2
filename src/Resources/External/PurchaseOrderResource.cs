@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.External
+namespace Linn.Stores2.Resources.External
 {
     using System.Collections.Generic;
 
@@ -9,7 +9,7 @@
         public string DateFilCancelled { get; set; }
 
         public EmployeeResource AuthorisedBy { get; set; }
-        
+
         public PurchaseOrderTypeResource DocumentType { get; set; }
 
         public IEnumerable<PurchaseOrderDetailResource> Details { get; set; }

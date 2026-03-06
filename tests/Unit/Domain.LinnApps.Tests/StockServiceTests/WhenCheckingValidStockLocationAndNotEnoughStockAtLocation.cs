@@ -1,14 +1,15 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.StockServiceTests
 {
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using NUnit.Framework;
-    
+
     public class WhenCheckingValidStockLocationAndNotEnoughStockAtLocation : ContextBase
     {
         private ProcessResult result;
-    
+
         [SetUp]
         public async Task SetUp()
         {

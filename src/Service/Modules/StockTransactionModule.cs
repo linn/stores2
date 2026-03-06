@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
@@ -25,7 +25,6 @@
         }
 
         private async Task StoresTransViewerReport(
-            HttpRequest _,
             HttpResponse res,
             string fromDate,
             string toDate,

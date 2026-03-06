@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
@@ -23,7 +23,6 @@
         }
 
         private async Task GetAll(
-            HttpRequest _,
             HttpResponse res,
             IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource> service)
         {
@@ -31,7 +30,6 @@
         }
 
         private async Task GetById(
-            HttpRequest _,
             HttpResponse res,
             string code,
             IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource> service)
@@ -40,7 +38,6 @@
         }
 
         private async Task Create(
-            HttpRequest _,
             HttpResponse res,
             StorageTypeResource resource,
             IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource> service)
@@ -49,7 +46,6 @@
         }
 
         private async Task Update(
-            HttpRequest _,
             HttpResponse res,
             string code,
             StorageTypeResource resource,

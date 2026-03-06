@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StockReportModuleTests
+namespace Linn.Stores2.Integration.Tests.StockReportModuleTests
 {
     using System.Linq;
     using System.Net;

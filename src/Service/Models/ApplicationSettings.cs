@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Models
+namespace Linn.Stores2.Service.Models
 {
     using Linn.Common.Configuration;
 

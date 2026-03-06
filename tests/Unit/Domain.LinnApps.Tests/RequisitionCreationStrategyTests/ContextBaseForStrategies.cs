@@ -11,7 +11,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests
     public class ContextBaseForStrategies
     {
         protected IRequisitionManager RequisitionManager { get; private set; }
-        
+
         protected IRequisitionRepository RequisitionRepository { get;  private set; }
 
         protected RequisitionCreationContext RequisitionCreationContext { get; set; }

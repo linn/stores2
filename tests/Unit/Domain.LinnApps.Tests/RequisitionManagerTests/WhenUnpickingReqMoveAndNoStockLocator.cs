@@ -1,8 +1,9 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
@@ -47,7 +48,7 @@
         public async Task ShouldThrow()
         {
             await this.action.Should().ThrowAsync<RequisitionException>()
-                .WithMessage("Move 1 of Line 1 on Req 123 cannot be unpicked"); ;
+                .WithMessage("Move 1 of Line 1 on Req 123 cannot be unpicked");
         }
     }
 }

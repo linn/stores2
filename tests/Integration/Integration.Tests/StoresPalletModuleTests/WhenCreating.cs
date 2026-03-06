@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
+namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
 {
     using System;
     using System.Linq;
@@ -29,11 +29,11 @@
         [SetUp]
         public void SetUp()
         {
-            this.stockPool = new StockPool 
-                                 { 
-                                     StockPoolCode = "DEFAULT_POOL", 
-                                     StockPoolDescription = "Default Pool Description",
-                                 };
+            this.stockPool = new StockPool
+            {
+                StockPoolCode = "DEFAULT_POOL",
+                StockPoolDescription = "Default Pool Description",
+            };
 
             this.storageLocation = new StorageLocation
             {
@@ -49,46 +49,45 @@
 
             this.employee = new Employee { Id = 123, Name = "Pallets Pat" };
 
-
             this.createResource = new StoresPalletResource
             {
-                                         PalletNumber = 1,
-                                         Description = "Test-Description",
-                                         StorageLocationId = 3,
-                                         StorageLocation = new StorageLocationResource
-                                                          {
-                                                              LocationId = this.storageLocation.LocationId, 
-                                                              Description = this.storageLocation.Description
-                                         },
-                                         DateInvalid = DateTime.Today.ToString("o"),
-                                         DateLastAudited = DateTime.Today.ToString("o"),
-                                         Accessible = "Y",
-                                         StoresKittable = "Y",
-                                         StoresKittingPriority = 1,
-                                         SalesKittable = "Y",
-                                         SalesKittingPriority = 1,
-                                         AllocQueueTime = DateTime.Now.ToString("o"),
-                                         LocationType = new LocationTypeResource 
-                                                            {
-                                                                Code = this.locationType.Code,
-                                                                Description = this.locationType.Description,
-                                                            },
-                                         LocationTypeId = "LOC_TYPE",
-                                         AuditedBy = 123,
-                                         DefaultStockPoolId = "DEFAULT_POOL",
-                                         DefaultStockPool = new StockPoolResource
-                                                            {
-                                                                StockPoolCode = this.stockPool.StockPoolCode,
-                                                                StockPoolDescription = this.stockPool.StockPoolDescription,
-                                                            },
-                                         StockType = "TypeA",
-                                         StockState = "StateA",
-                                         AuditOwnerId = 456,
-                                         AuditFrequencyWeeks = 4,
-                                         AuditedByDepartmentCode = "DeptA",
-                                         MixStates = "State1,State2",
-                                         Cage = "A"
-                                      };
+                PalletNumber = 1,
+                Description = "Test-Description",
+                StorageLocationId = 3,
+                StorageLocation = new StorageLocationResource
+                {
+                    LocationId = this.storageLocation.LocationId,
+                    Description = this.storageLocation.Description
+                },
+                DateInvalid = DateTime.Today.ToString("o"),
+                DateLastAudited = DateTime.Today.ToString("o"),
+                Accessible = "Y",
+                StoresKittable = "Y",
+                StoresKittingPriority = 1,
+                SalesKittable = "Y",
+                SalesKittingPriority = 1,
+                AllocQueueTime = DateTime.Now.ToString("o"),
+                LocationType = new LocationTypeResource
+                {
+                    Code = this.locationType.Code,
+                    Description = this.locationType.Description,
+                },
+                LocationTypeId = "LOC_TYPE",
+                AuditedBy = 123,
+                DefaultStockPoolId = "DEFAULT_POOL",
+                DefaultStockPool = new StockPoolResource
+                {
+                    StockPoolCode = this.stockPool.StockPoolCode,
+                    StockPoolDescription = this.stockPool.StockPoolDescription,
+                },
+                StockType = "TypeA",
+                StockState = "StateA",
+                AuditOwnerId = 456,
+                AuditFrequencyWeeks = 4,
+                AuditedByDepartmentCode = "DeptA",
+                MixStates = "State1,State2",
+                Cage = "A"
+            };
 
             this.DbContext.LocationTypes.AddAndSave(this.DbContext, this.locationType);
 
@@ -118,7 +117,7 @@
         public void ShouldAdd()
         {
             this.DbContext.StoresPallets
-                .FirstOrDefault(x => x.PalletNumber == this.createResource.PalletNumber)
+                .First(x => x.PalletNumber == this.createResource.PalletNumber)
                 .Description.Should().Be(this.createResource.Description);
         }
 

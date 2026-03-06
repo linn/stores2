@@ -10,7 +10,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests.CanBookTests
 
     using NUnit.Framework;
 
-    public class CanBookContextBase 
+    public class CanBookContextBase
     {
         public RequisitionHeader Sut { get; set; }
 

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
+namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
 {
     using System.Net;
 
@@ -24,22 +24,20 @@
         public void SetUp()
         {
             this.part = new Part
-                            {
-                                Id = 1,
-                                PartNumber = "Part No 1",
-                                Description = "Part 1"
-                            };
+                        {
+                            Id = 1,
+                            PartNumber = "Part No 1",
+                            Description = "Part 1"
+                        };
 
             this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
-
-
             this.partsStorageType = new PartStorageType(
-                this.part, 
-                this.storageType, 
-                "a", 
+                this.part,
+                this.storageType,
+                "a",
                 100,
                 50,
-                "1", 
+                "1",
                 400);
 
             this.DbContext.PartsStorageTypes.AddAndSave(this.DbContext, this.partsStorageType);
@@ -47,7 +45,7 @@
             this.Response = this.Client.Get(
                 $"/stores2/part-storage-types/{this.partsStorageType.BridgeId}",
                 with =>
-                    { 
+                    {
                         with.Accept("application/json");
                     }).Result;
         }

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Pcas
+namespace Linn.Stores2.Domain.LinnApps.Pcas
 {
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -20,12 +20,12 @@
             if (string.IsNullOrEmpty(preference) || preference == "0")
             {
                 throw new PcasStorageTypeException("Pcas Storage Type Preference is Empty or 0");
-            } 
+            }
 
             this.Key = new PcasStorageTypeKey
-                           {
-                               BoardCode = pcasBoard?.BoardCode ?? throw new PartStorageTypeException("Part Number is empty or doesn't exist!"),
-                               StorageTypeCode = storageType.StorageTypeCode ?? throw new PartStorageTypeException("Storage Type is empty or doesn't exist!")
+            {
+                BoardCode = pcasBoard?.BoardCode ?? throw new PartStorageTypeException("Part Number is empty or doesn't exist!"),
+                StorageTypeCode = storageType.StorageTypeCode ?? throw new PartStorageTypeException("Storage Type is empty or doesn't exist!")
             };
             this.BoardCode = pcasBoard.BoardCode;
             this.StorageTypeCode = storageType.StorageTypeCode;

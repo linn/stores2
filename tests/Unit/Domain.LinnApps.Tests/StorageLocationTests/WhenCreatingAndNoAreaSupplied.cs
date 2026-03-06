@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
     using System;
 
@@ -16,7 +16,7 @@
         [SetUp]
         public void SetUp()
         {
-            var site = new StorageSite ("SUPSTORES", "SUPPLIER STORES", null);
+            var site = new StorageSite("SUPSTORES", "SUPPLIER STORES", null);
             var company = new AccountingCompany { Name = "ME" };
             this.action = () =>
             {

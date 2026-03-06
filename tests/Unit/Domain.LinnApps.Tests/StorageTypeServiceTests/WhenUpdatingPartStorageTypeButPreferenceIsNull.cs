@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 {
     using System;
     using System.Linq.Expressions;
@@ -15,7 +15,9 @@
 
     public class WhenUpdatingPartStorageTypeButPreferenceIsNull : ContextBase
     {
-        private PartStorageType partsStorageType, existingPartStorageType;
+        private PartStorageType partsStorageType;
+
+        private PartStorageType existingPartStorageType;
 
         private Part part;
 

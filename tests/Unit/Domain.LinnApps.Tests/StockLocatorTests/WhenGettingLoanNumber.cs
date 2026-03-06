@@ -1,9 +1,9 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockLocatorTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StockLocatorTests
 {
+    using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using NUnit.Framework;
-    using FluentAssertions;
 
     public class WhenGettingLoanNumber
     {

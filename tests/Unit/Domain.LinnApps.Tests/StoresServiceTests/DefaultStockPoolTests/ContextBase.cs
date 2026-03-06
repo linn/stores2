@@ -34,7 +34,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.DefaultStockPool
                                                     };
             this.PalletWithDefaultStockPool = new StoresPallet { PalletNumber = 456, DefaultStockPool = this.StockPool };
             this.PalletWithNoDefaultStockPool = new StoresPallet { PalletNumber = 789 };
-            
+
             this.PalletRepository.FindByIdAsync(this.PalletWithDefaultStockPool.PalletNumber)
                 .Returns(this.PalletWithDefaultStockPool);
             this.PalletRepository.FindByIdAsync(this.PalletWithNoDefaultStockPool.PalletNumber)

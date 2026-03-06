@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionReportModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionReportModuleTests
 {
     using FluentAssertions;
 
