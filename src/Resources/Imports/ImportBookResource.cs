@@ -1,11 +1,11 @@
 ﻿namespace Linn.Stores2.Resources.Imports
 {
     using System.Collections.Generic;
+
     using Linn.Common.Resources;
 
     public class ImportBookResource : HypermediaResource
     {
-
         public int Id { get; set; }
 
         public string DateCreated { get; set; }

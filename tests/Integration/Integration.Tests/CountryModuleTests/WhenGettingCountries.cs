@@ -1,10 +1,11 @@
-﻿namespace Linn.Stores2.Integration.Tests.CountryModuleTests
+namespace Linn.Stores2.Integration.Tests.CountryModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
 
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
@@ -44,7 +45,7 @@
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldReturnJsonBody()
         {

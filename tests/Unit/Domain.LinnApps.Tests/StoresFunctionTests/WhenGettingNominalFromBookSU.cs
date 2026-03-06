@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresFunctionTests
 {
     using System.Collections.Generic;
 
@@ -23,7 +23,7 @@
                 Document1Text = "Order Number",
                 PartSource = "PO",
                 TransactionsTypes = new List<StoresFunctionTransaction>
-                                        {
+                {
                     new StoresFunctionTransaction
                     {
                         FunctionCode = "BOOKSU",

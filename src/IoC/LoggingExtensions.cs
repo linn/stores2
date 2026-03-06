@@ -1,6 +1,5 @@
-﻿namespace Linn.Stores2.IoC
+namespace Linn.Stores2.IoC
 {
-
     using Linn.Common.Logging;
 
     using Microsoft.Extensions.DependencyInjection;

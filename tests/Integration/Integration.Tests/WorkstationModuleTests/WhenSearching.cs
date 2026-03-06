@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
+namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,7 +8,6 @@
 
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Stores;
     using NUnit.Framework;
 
@@ -48,7 +47,6 @@
 
             this.DbContext.WorkStations.AddAndSave(this.DbContext, this.workstation);
             this.DbContext.WorkStations.AddAndSave(this.DbContext, this.secondWorkstation);
-
 
             this.Response = this.Client.Get(
                 "/stores2/work-stations?workstationCode=Test",

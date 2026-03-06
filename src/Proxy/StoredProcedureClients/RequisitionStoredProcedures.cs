@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Proxy.StoredProcedureClients
+namespace Linn.Stores2.Proxy.StoredProcedureClients
 {
     using System.Data;
     using System.Threading.Tasks;
@@ -489,6 +489,7 @@
             cmd.Parameters.Add(new OracleParameter("p_serial_number", OracleDbType.Int32)
             {
                 Direction = ParameterDirection.Input
+
                 // todo - don't need to pass this for my use case, but might later
             });
 
@@ -548,7 +549,6 @@
                 Value = palletNumber.ToString()
             };
             cmd.Parameters.Add(arg2);
-
 
             await connection.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
@@ -622,7 +622,6 @@
             };
             cmd.Parameters.Add(arg2);
 
-
             await connection.OpenAsync();
             await cmd.ExecuteNonQueryAsync();
             await connection.CloseAsync();
@@ -631,9 +630,9 @@
         }
 
         public async Task<ProcessResult> UnPickStock(
-            int reqNumber, 
-            int lineNumber, 
-            int seq, 
+            int reqNumber,
+            int lineNumber,
+            int seq,
             int? orderNumber,
             int? orderLine,
             decimal qtyToUnPick,

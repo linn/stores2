@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
     using System.Collections.Generic;
@@ -13,144 +13,38 @@
 
     public class RequisitionHeader
     {
-        public int ReqNumber { get; protected init; }
-
-        public DateTime DateCreated { get; protected init; }
-        
-        public Employee CreatedBy { get; protected init; }
-
-        public int? Document1 { get; protected set; }
-
-        public ICollection<RequisitionLine> Lines { get; protected set; }
-
-        public decimal? Quantity { get; protected set; }
-
-        public string Document1Name { get; protected set; }
-        
-        public int? Document1Line { get; protected set; }
-
-        public int? Document2 { get; protected set; }
-
-        public string Document2Name { get; protected set; }
-
-        public Part Part { get; protected set; }
-
-        public StorageLocation ToLocation { get; protected set; }
-
-        public StorageLocation FromLocation { get; protected set; }
-
-        public int? FromPalletNumber { get; protected set; }
-
-        public int? ToPalletNumber { get; protected set; }
-
-        public string Cancelled { get; protected set; }
-
-        public Employee CancelledBy { get; protected set; }
-
-        public DateTime? DateCancelled { get; protected set; }
-
-        public string CancelledReason { get; protected set; }
-        
-        public StoresFunction StoresFunction { get; protected init; }
-        
-        public string Comments { get; protected set; }
-        
-        public DateTime? DateBooked { get; protected set; }
-        
-        public Employee BookedBy { get; protected set; }
-
-        public string Booked { get; protected set; }
-        
-        public string IsReversed { get; protected set; }
-
-        public string IsReverseTransaction { get; set; }
-
-        public ICollection<CancelDetails> CancelDetails { get; protected set; }
-
-        public Department Department { get; protected set; }
-
-        public Nominal Nominal { get; protected init; }
-
-        public Employee AuthorisedBy { get; protected set; }
-
-        public DateTime? DateAuthorised { get; protected set;  }
-
-        public string ManualPick { get; protected set; }
-
-        public string ReqType { get; set; }
-
-        public string Reference { get; set; }
-
-        public string FromStockPool { get; set; }
-
-        public string ToStockPool { get; protected set; }
-
-        public string FromState { get; protected set; }
-
-        public string ToState { get; protected set; }
-
-        public string FromCategory { get; set; }
-
-        public string ToCategory { get; set; }
-
-        public DateTime? BatchDate { get; set; }
-
-        public string BatchRef { get; set; }
-
-        public int? LoanNumber { get; protected set; }
-
-        public string ReqSource { get; set; }
-        
-        public string UnitOfMeasure { get; protected set; }
-
-        public string WorkStationCode { get; set; }
-
-        public Part NewPart { get; set; }
-		
-        public int? OriginalReqNumber { get; set; }
-
-        public int? Document3 { get; set; }
-
-        public DateTime? DateReceived { get; set; }
-
-        public string AuditLocation { get; set; }
-
-        protected RequisitionHeader()
-        {
-        }
-        
         public RequisitionHeader(
-            Employee createdBy,
-            StoresFunction function,
-            string reqType,
-            int? document1Number,
-            string document1Type,
-            Department department,
-            Nominal nominal,
-            string reference = null,
-            string comments = null,
-            string manualPick = null,
-            string fromStockPool = null,
-            string toStockPool = null,
-            int? fromPalletNumber = null,
-            int? toPalletNumber = null,
-            StorageLocation fromLocation = null,
-            StorageLocation toLocation = null,
-            Part part = null,
-            decimal? quantity = null,
-            int? document1Line = null,
-            string toState = null,
-            string fromState = null, 
-            string batchRef = null,
-            DateTime? batchDate = null,
-            string category = null,
-            int? document2Number = null,
-            string document2Type = null,
-            string isReverseTrans = "N",
-            RequisitionHeader isReversalOf = null,
-            DateTime? dateReceived = null,
-            string fromCategory = null,
-            string auditLocation = null)
+    Employee createdBy,
+    StoresFunction function,
+    string reqType,
+    int? document1Number,
+    string document1Type,
+    Department department,
+    Nominal nominal,
+    string reference = null,
+    string comments = null,
+    string manualPick = null,
+    string fromStockPool = null,
+    string toStockPool = null,
+    int? fromPalletNumber = null,
+    int? toPalletNumber = null,
+    StorageLocation fromLocation = null,
+    StorageLocation toLocation = null,
+    Part part = null,
+    decimal? quantity = null,
+    int? document1Line = null,
+    string toState = null,
+    string fromState = null,
+    string batchRef = null,
+    DateTime? batchDate = null,
+    string category = null,
+    int? document2Number = null,
+    string document2Type = null,
+    string isReverseTrans = "N",
+    RequisitionHeader isReversalOf = null,
+    DateTime? dateReceived = null,
+    string fromCategory = null,
+    string auditLocation = null)
         {
             this.ReqSource = "STORES2";
             this.Booked = "N";
@@ -184,7 +78,7 @@
             this.Document2 = document2Number;
             this.Document2Name = document2Type;
             this.AuditLocation = auditLocation;
-            
+
             // logic for creating a reversal req
             // mostly taken from GET_REQ_FOR_REVERSAL in REQ_UT.fmb
             if (isReversalOf != null)
@@ -203,10 +97,8 @@
                 {
                     throw new CreateRequisitionException($"req {isReversalOf.ReqNumber} is already reversed!");
                 }
-                
+
                 this.OriginalReqNumber = isReversalOf.ReqNumber;
-
-
 
                 this.Quantity = quantity ?? isReversalOf.Quantity * -1;
 
@@ -257,7 +149,7 @@
             {
                 this.FromCategory = fromCategory;
             }
-            
+
             var errors = this.Validate().ToList();
 
             if (errors.Any())
@@ -270,7 +162,7 @@
                 throw new CreateRequisitionException(
                     $"{string.Join(", ", errors)}");
             }
-            
+
             if (function.FunctionCode == "GIST PO")
             {
                 if (isReverseTrans == "Y")
@@ -286,151 +178,126 @@
             }
         }
 
-        private IEnumerable<string> Validate()
+        protected RequisitionHeader()
         {
-            if (this.StoresFunction == null)
-            {
-                yield return "Please choose a Function.";
-                yield break;  // don't even have a function, so no need to continue with function specific validation
-            }
-            
-            if (this.CreatedBy == null)
-            {
-                yield return "Invalid CreatedBy Employee";
-            }
-
-            if (this.StoresFunction.Document1Required())
-            {
-                if (this.Document1 == null)
-                {
-                    yield return $"Document1 number required: {this.StoresFunction.Document1Text}";
-                }
-            }
-
-            if (this.StoresFunction.QuantityRequired == "Y")
-            {
-                if (this.Quantity.GetValueOrDefault() == 0)
-                {
-                    yield return $"Quantity required for: {this.StoresFunction.FunctionCode}";
-                }
-            }
-
-            if (this.StoresFunction.AuditLocationRequired == "Y" && string.IsNullOrEmpty(this.AuditLocation))
-            {
-                yield return $"You must specify an audit location for {this.StoresFunction.FunctionCode}.";
-            }
-
-            if (this.StoresFunction.DepartmentNominalRequired == "Y")
-            {
-                if (this.Department == null || this.Nominal == null)
-                {
-                    yield return 
-                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req";
-                }
-
-                if (this.StoresFunction.GetNominal() != null)
-                {
-                    if (this.StoresFunction.GetNominal().NominalCode != this.Nominal?.NominalCode)
-                    {
-                        yield return $"Nominal must be {this.StoresFunction.GetNominal().NominalCode}";
-                    }
-                }
-            }
-
-            if (this.StoresFunction.FromLocationRequired == "Y")
-            {
-                if (this.FromLocation == null && !this.FromPalletNumber.HasValue)
-                {
-                    yield return $"From location or pallet required for: {this.StoresFunction.FunctionCode}";
-                }
-            }
-
-            if (this.StoresFunction.ToLocationRequired == "Y" && !this.IsReverseTrans())
-            {
-                if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
-                {
-                    yield return $"To location or pallet required for: {this.StoresFunction.FunctionCode}";
-                }
-            }
-
-            if (this.IsReverseTrans() && this.StoresFunction.CanBeReversed != "Y")
-            {
-                yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
-            }
-            else if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
-                                      && !this.OriginalReqNumber.HasValue)
-            {
-                yield return "You must specify a req number to reverse";
-            }
-            
-            if (this.StoresFunction.ReceiptDateRequired == "Y"  && !this.IsReverseTrans() && !this.DateReceived.HasValue)
-            {
-                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
-            }
-
-            // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
-            if (this.StoresFunction.FromStateRequired == "Y"  && !this.IsReverseTrans())
-            {
-                if (string.IsNullOrEmpty(this.FromState))
-                {
-                    yield return $"From state must be specified for {this.StoresFunction.FunctionCode}";
-                }
-            }
-
-            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
-            {
-                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
-            }
-
-            if (!string.IsNullOrEmpty(this.FromState) && !this.IsReverseTrans())
-            {
-                var validFromStates = this.StoresFunction.GetTransactionStates("F");
-                if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
-                    && !this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
-                {
-                    yield return 
-                        $"From state must be one of "
-                        + $"{string.Join(",", validFromStates)}";
-                }
-            }
-
-            if (!string.IsNullOrEmpty(this.ToState))
-            {
-                var validToStates = this.StoresFunction.GetTransactionStates("O");
-                if (validToStates.Count > 0 // does no transaction states mean anything is allowed?
-                    && !this.StoresFunction.GetTransactionStates("O").Contains(this.ToState))
-                {
-                    yield return
-                        $"To state must be one of "
-                        + $"{string.Join(",", validToStates)}";
-                }
-            }
-
-            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
-            {
-               yield return $"From stock pool must be specified for {this.StoresFunction.FunctionCode}";
-            }
-
-            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
-            {
-                yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
-            }
         }
+
+        public int ReqNumber { get; protected init; }
+
+        public DateTime DateCreated { get; protected init; }
+
+        public Employee CreatedBy { get; protected init; }
+
+        public int? Document1 { get; protected set; }
+
+        public ICollection<RequisitionLine> Lines { get; protected set; }
+
+        public decimal? Quantity { get; protected set; }
+
+        public string Document1Name { get; protected set; }
+
+        public int? Document1Line { get; protected set; }
+
+        public int? Document2 { get; protected set; }
+
+        public string Document2Name { get; protected set; }
+
+        public Part Part { get; protected set; }
+
+        public StorageLocation ToLocation { get; protected set; }
+
+        public StorageLocation FromLocation { get; protected set; }
+
+        public int? FromPalletNumber { get; protected set; }
+
+        public int? ToPalletNumber { get; protected set; }
+
+        public string Cancelled { get; protected set; }
+
+        public Employee CancelledBy { get; protected set; }
+
+        public DateTime? DateCancelled { get; protected set; }
+
+        public string CancelledReason { get; protected set; }
+
+        public StoresFunction StoresFunction { get; protected init; }
+
+        public string Comments { get; protected set; }
+
+        public DateTime? DateBooked { get; protected set; }
+
+        public Employee BookedBy { get; protected set; }
+
+        public string Booked { get; protected set; }
+
+        public string IsReversed { get; protected set; }
+
+        public string IsReverseTransaction { get; set; }
+
+        public ICollection<CancelDetails> CancelDetails { get; protected set; }
+
+        public Department Department { get; protected set; }
+
+        public Nominal Nominal { get; protected init; }
+
+        public Employee AuthorisedBy { get; protected set; }
+
+        public DateTime? DateAuthorised { get; protected set; }
+
+        public string ManualPick { get; protected set; }
+
+        public string ReqType { get; set; }
+
+        public string Reference { get; set; }
+
+        public string FromStockPool { get; set; }
+
+        public string ToStockPool { get; protected set; }
+
+        public string FromState { get; protected set; }
+
+        public string ToState { get; protected set; }
+
+        public string FromCategory { get; set; }
+
+        public string ToCategory { get; set; }
+
+        public DateTime? BatchDate { get; set; }
+
+        public string BatchRef { get; set; }
+
+        public int? LoanNumber { get; protected set; }
+
+        public string ReqSource { get; set; }
+
+        public string UnitOfMeasure { get; protected set; }
+
+        public string WorkStationCode { get; set; }
+
+        public Part NewPart { get; set; }
+
+        public int? OriginalReqNumber { get; set; }
+
+        public int? Document3 { get; set; }
+
+        public DateTime? DateReceived { get; set; }
+
+        public string AuditLocation { get; set; }
 
         public void Update(string comments, string reference)
         {
             this.Comments = comments;
             this.Reference = reference;
         }
-        
+
         public void ApplyNominalAccountChange(NominalAccount nominalAccount)
         {
             if (this.IsBooked())
             {
                 throw new RequisitionException("Cannot amend a booked req");
             }
-            
-            if (nominalAccount != null 
+
+            if (nominalAccount != null
                 && nominalAccount?.DepartmentCode != this.Department?.DepartmentCode)
             {
                 if (this.IsReverseTrans())
@@ -445,7 +312,7 @@
                 if (functionCodesDepartmentCanBeChangedFor.Contains(this.StoresFunction.FunctionCode))
                 {
                     this.Department = nominalAccount.Department;
-                    
+
                     foreach (var requisitionLine in this.Lines)
                     {
                         requisitionLine.ApplyNominalAccountUpdate(nominalAccount);
@@ -479,18 +346,18 @@
                 throw new RequisitionException(
                     $"Cannot add a {toAdd.TransactionDefinition?.TransactionCode} line to a req of type {this.ReqType}");
             }
-            
+
             if (toAdd.Part == null || toAdd.Qty == 0)
             {
                 throw new RequisitionException("Line must specify part number and qty");
             }
-            
+
             this.Lines ??= new List<RequisitionLine>();
             toAdd.RequisitionHeader = this;
-            
+
             this.Lines.Add(toAdd);
         }
-        
+
         public bool IsCancelled() => this.DateCancelled != null || this.Cancelled == "Y";
 
         public bool IsBooked() => this.DateBooked != null;
@@ -543,12 +410,12 @@
             this.CancelDetails ??= new List<CancelDetails>();
 
             this.CancelDetails.Add(new CancelDetails
-                                       {
-                                           ReqNumber = this.ReqNumber,
-                                           DateCancelled = now,
-                                           Reason = reason,
-                                           CancelledBy = cancelledBy.Id
-                                       });
+            {
+                ReqNumber = this.ReqNumber,
+                DateCancelled = now,
+                Reason = reason,
+                CancelledBy = cancelledBy.Id
+            });
             if (this.Lines == null)
             {
                 return;
@@ -567,12 +434,12 @@
         public void CancelLine(int lineNumber, string reason, Employee cancelledBy)
         {
             var now = DateTime.Now;
-            
+
             // cancel line
             this.Lines.First(x => x.LineNumber == lineNumber).Cancel(cancelledBy.Id, reason, now);
 
             // cancel header if all lines are now cancelled
-            if (this.Lines.All(x => x.DateCancelled.HasValue) 
+            if (this.Lines.All(x => x.DateCancelled.HasValue)
                 && !this.IsCancelled())
             {
                 this.Cancel(reason, cancelledBy);
@@ -619,6 +486,7 @@
                     var canBeBooked = this.RequisitionCanBeBooked(lineNumber);
                     return canBeBooked.Success;
                 }
+
                 // moveloc don't need no lines
                 return true;
             }
@@ -660,7 +528,7 @@
                         // no header qty to check thus true
                         return new ProcessResult(true, "No header quantity to check.");
                     }
-                    
+
                     if (this.StoresFunction.FunctionCode == "PARTNO CH" ||
                              this.StoresFunction.FunctionCode == "BOOKWO" ||
                              this.StoresFunction.FunctionCode == "SUKIT")
@@ -701,13 +569,15 @@
                 var part = this.Lines.First(l => l.Part != null)?.Part;
                 return part?.AccountingCompanyCode;
             }
+
             return null;
         }
 
-        public void SetStateAndCategory(string fromState, 
-                                        string toState, 
-                                        string toCategory = "FREE", 
-                                        string fromCategory = "FREE")
+        public void SetStateAndCategory(
+            string fromState,
+            string toState,
+            string toCategory = "FREE",
+            string fromCategory = "FREE")
         {
             this.FromState = fromState;
             this.ToState = toState;
@@ -724,6 +594,7 @@
             {
                 return true;
             }
+
             return false;
         }
 
@@ -739,8 +610,139 @@
                 // For MOVELOC
                 return false;
             }
-            
+
             return this.StoresFunction.ToLocationIsRequired();
+        }
+
+        private IEnumerable<string> Validate()
+        {
+            if (this.StoresFunction == null)
+            {
+                yield return "Please choose a Function.";
+                yield break;  // don't even have a function, so no need to continue with function specific validation
+            }
+
+            if (this.CreatedBy == null)
+            {
+                yield return "Invalid CreatedBy Employee";
+            }
+
+            if (this.StoresFunction.Document1Required())
+            {
+                if (this.Document1 == null)
+                {
+                    yield return $"Document1 number required: {this.StoresFunction.Document1Text}";
+                }
+            }
+
+            if (this.StoresFunction.QuantityRequired == "Y")
+            {
+                if (this.Quantity.GetValueOrDefault() == 0)
+                {
+                    yield return $"Quantity required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.StoresFunction.AuditLocationRequired == "Y" && string.IsNullOrEmpty(this.AuditLocation))
+            {
+                yield return $"You must specify an audit location for {this.StoresFunction.FunctionCode}.";
+            }
+
+            if (this.StoresFunction.DepartmentNominalRequired == "Y")
+            {
+                if (this.Department == null || this.Nominal == null)
+                {
+                    yield return
+                        $"Nominal and Department must be specified for a {this.StoresFunction.FunctionCode} req";
+                }
+
+                if (this.StoresFunction.GetNominal() != null)
+                {
+                    if (this.StoresFunction.GetNominal().NominalCode != this.Nominal?.NominalCode)
+                    {
+                        yield return $"Nominal must be {this.StoresFunction.GetNominal().NominalCode}";
+                    }
+                }
+            }
+
+            if (this.StoresFunction.FromLocationRequired == "Y")
+            {
+                if (this.FromLocation == null && !this.FromPalletNumber.HasValue)
+                {
+                    yield return $"From location or pallet required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.StoresFunction.ToLocationRequired == "Y" && !this.IsReverseTrans())
+            {
+                if (this.ToLocation == null && !this.ToPalletNumber.HasValue)
+                {
+                    yield return $"To location or pallet required for: {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.IsReverseTrans() && this.StoresFunction.CanBeReversed != "Y")
+            {
+                yield return $"You cannot reverse a {this.StoresFunction.FunctionCode} transaction";
+            }
+            else if (this.IsReverseTrans() && this.StoresFunction.FunctionCode != "BOOKLD"
+                                      && !this.OriginalReqNumber.HasValue)
+            {
+                yield return "You must specify a req number to reverse";
+            }
+
+            if (this.StoresFunction.ReceiptDateRequired == "Y" && !this.IsReverseTrans() && !this.DateReceived.HasValue)
+            {
+                throw new RequisitionException($"A receipt date is required for function {this.StoresFunction.FunctionCode}.");
+            }
+
+            // TODO - I noticed similar checks for valid From/To State (possible duplication) in IStoresService
+            if (this.StoresFunction.FromStateRequired == "Y" && !this.IsReverseTrans())
+            {
+                if (string.IsNullOrEmpty(this.FromState))
+                {
+                    yield return $"From state must be specified for {this.StoresFunction.FunctionCode}";
+                }
+            }
+
+            if (this.StoresFunction.ToStateRequired == "Y" && string.IsNullOrEmpty(this.ToState))
+            {
+                yield return $"To state must be specified for {this.StoresFunction.FunctionCode}";
+            }
+
+            if (!string.IsNullOrEmpty(this.FromState) && !this.IsReverseTrans())
+            {
+                var validFromStates = this.StoresFunction.GetTransactionStates("F");
+                if (validFromStates.Count > 0 // does no transaction states mean anything is allowed?
+                    && !this.StoresFunction.GetTransactionStates("F").Contains(this.FromState))
+                {
+                    yield return
+                        $"From state must be one of "
+                        + $"{string.Join(",", validFromStates)}";
+                }
+            }
+
+            if (!string.IsNullOrEmpty(this.ToState))
+            {
+                var validToStates = this.StoresFunction.GetTransactionStates("O");
+                if (validToStates.Count > 0 // does no transaction states mean anything is allowed?
+                    && !this.StoresFunction.GetTransactionStates("O").Contains(this.ToState))
+                {
+                    yield return
+                        $"To state must be one of "
+                        + $"{string.Join(",", validToStates)}";
+                }
+            }
+
+            if (this.StoresFunction.FromStockPoolRequired == "Y" && string.IsNullOrEmpty(this.FromStockPool))
+            {
+                yield return $"From stock pool must be specified for {this.StoresFunction.FunctionCode}";
+            }
+
+            if (this.StoresFunction.ToStockPoolRequired == "Y" && string.IsNullOrEmpty(this.ToStockPool))
+            {
+                yield return $"To stock pool must be specified for {this.StoresFunction.FunctionCode}";
+            }
         }
     }
 }

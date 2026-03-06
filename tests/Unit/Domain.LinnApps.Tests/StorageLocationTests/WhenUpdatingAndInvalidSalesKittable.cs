@@ -1,12 +1,13 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
     using System;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using NUnit.Framework;
 
-    public class WhenUpdatingAndInvalidSalesKittable 
+    public class WhenUpdatingAndInvalidSalesKittable
     {
         private Action action;
 

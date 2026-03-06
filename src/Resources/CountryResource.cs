@@ -5,7 +5,7 @@ namespace Linn.Stores2.Resources
     public class CountryResource : HypermediaResource
     {
         public string CountryCode { get; set; }
-        
+
         public string Name { get; set; }
 
         public bool EuMember { get; set; }

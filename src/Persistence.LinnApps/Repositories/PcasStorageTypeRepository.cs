@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
+namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System.Linq;
     using System.Threading.Tasks;
@@ -12,7 +12,8 @@
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public PcasStorageTypeRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.PcasStorageTypes)
+        public PcasStorageTypeRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.PcasStorageTypes)
         {
             this.serviceDbContext = serviceDbContext;
         }

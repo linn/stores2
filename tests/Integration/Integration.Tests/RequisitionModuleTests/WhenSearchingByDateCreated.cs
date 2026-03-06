@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System;
     using System.Collections.Generic;
@@ -46,7 +46,6 @@
                 new Nominal { NominalCode = "NOM2" },
                 reference: null,
                 comments: "Emp 456 req");
-            
             this.DbContext.RequisitionHeaders.AddAndSave(
                 this.DbContext, this.req123);
             this.DbContext.RequisitionHeaders.AddAndSave(

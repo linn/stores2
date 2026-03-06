@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageLocationTests
 {
     using System;
 
@@ -9,14 +9,14 @@
 
     using NUnit.Framework;
 
-    public class WhenCreatingAndInvalidAccessibleSupplied 
+    public class WhenCreatingAndInvalidAccessibleSupplied
     {
         private Action action;
 
         [SetUp]
         public void SetUp()
         {
-            var site = new StorageSite ("SUPSTORES", "SUPPLIER STORES", null);
+            var site = new StorageSite("SUPSTORES", "SUPPLIER STORES", null);
             var area = new StorageArea { StorageAreaCode = "TEST" };
             var company = new AccountingCompany { Name = "TRENT" };
             this.action = () =>

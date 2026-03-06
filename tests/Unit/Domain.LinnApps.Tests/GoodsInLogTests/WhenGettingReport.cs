@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.GoodsInLogTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.GoodsInLogTests
 {
     using System;
     using System.Collections.Generic;
@@ -25,29 +25,29 @@
             this.goodsInLogEntries = new List<GoodsInLogEntry>
                                          {
                                              new GoodsInLogEntry
-                                                 { 
-                                                     BookInRef = 1234, 
-                                                     ArticleNumber = "PART PARCEL", 
-                                                     Comments = "LC", 
+                                                 {
+                                                     BookInRef = 1234,
+                                                     ArticleNumber = "PART PARCEL",
+                                                     Comments = "LC",
                                                      CreatedBy = new Employee
                                                                      {
                                                                          Id = 33156,
                                                                          Name = "Ross Stewart"
-                                                                     }, 
-                                                     DateCreated = DateTime.Today, 
-                                                     DemLocation = "LC2016", 
-                                                     ErrorMessage = "EM", 
-                                                     Id = 1, 
-                                                     LoanLine = 1, 
-                                                     LoanNumber = 161, 
-                                                     StorageType = "S", 
-                                                     Quantity = 5.5m, 
-                                                     WandString = "Wand", 
-                                                     SerialNumber = 123456, 
-                                                     OrderNumber = 1234, 
-                                                     RsnNumber = 4321, 
-                                                     ReqNumber = 6789, 
-                                                     SernosTref = 3, 
+                                                                     },
+                                                     DateCreated = DateTime.Today,
+                                                     DemLocation = "LC2016",
+                                                     ErrorMessage = "EM",
+                                                     Id = 1,
+                                                     LoanLine = 1,
+                                                     LoanNumber = 161,
+                                                     StorageType = "S",
+                                                     Quantity = 5.5m,
+                                                     WandString = "Wand",
+                                                     SerialNumber = 123456,
+                                                     OrderNumber = 1234,
+                                                     RsnNumber = 4321,
+                                                     ReqNumber = 6789,
+                                                     SernosTref = 3,
                                                      ProductAnalysisCode = "PRODCODE",
                                                      StoragePlace = "AL161",
                                                      ManufacturersPartNumber = "PARTNUM",
@@ -62,18 +62,18 @@
                                          };
 
             this.GoodsInLogRepository.FilterByAsync(
-                    Arg.Any<Expression<Func<GoodsInLogEntry, bool>>>(), 
+                    Arg.Any<Expression<Func<GoodsInLogEntry, bool>>>(),
                     Arg.Any<List<(Expression<Func<GoodsInLogEntry, object>> OrderByExpression, bool? Ascending)>>())
                 .Returns(this.goodsInLogEntries);
 
             this.result = this.Sut.GoodsInLogReport(
-                null, 
-                null, 
-                33156, 
-                "PART PARCEL", 
-                null, 
-                null, 
-                null, 
+                null,
+                null,
+                33156,
+                "PART PARCEL",
+                null,
+                null,
+                null,
                 null).Result;
         }
 

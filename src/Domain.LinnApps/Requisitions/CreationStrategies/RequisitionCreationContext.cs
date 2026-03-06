@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
+namespace Linn.Stores2.Domain.LinnApps.Requisitions.CreationStrategies
 {
     using System;
     using System.Collections.Generic;
@@ -66,11 +66,11 @@
         public string IsReverseTransaction { get; set; }
 
         public int? Document3Number { get; set; }
-        
+
         public IEnumerable<BookInOrderDetail> BookInOrderDetails { get; set; }
 
         public DateTime? DateReceived { get; set; }
-        
+
         public string FromCategory { get; set; }
 
         public string AuditLocation { get; set; }

@@ -1,8 +1,9 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+
     using FluentAssertions;
     using Linn.Common.Domain;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -51,7 +52,7 @@
                 Arg.Any<StockState>()).Returns(new ProcessResult(true, null));
             this.BomVerificationProxy.GetBomVerifications("PART").Returns(
                 new List<BomVerificationHistory> { new BomVerificationHistory { DateVerified = DateTime.Today } });
-            
+
             this.result = await this.Sut.Validate(
                 123,
                 TestFunctionCodes.BookWorksOrder.FunctionCode,

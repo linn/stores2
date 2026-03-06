@@ -1,8 +1,9 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Collections.Generic;
     using System.Net;
     using System.Net.Http.Json;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -38,8 +39,8 @@
                 "REQ",
                 new Department(),
                 new Nominal());
-           
-            this.ReqManager.UnpickRequisitionMove(1, 1,1,1, Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<IEnumerable<string>>())
+
+            this.ReqManager.UnpickRequisitionMove(1, 1, 1, 1, Arg.Any<int>(), Arg.Any<bool>(), Arg.Any<IEnumerable<string>>())
                 .Returns(req);
             this.Response = this.Client.PostAsJsonAsync("/requisitions/unpick", this.resource).Result;
         }

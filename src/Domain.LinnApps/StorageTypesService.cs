@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+namespace Linn.Stores2.Domain.LinnApps
 {
     using System.Threading.Tasks;
 
@@ -50,8 +50,8 @@
                                                    pst => pst.StorageTypeCode == partStorageType.StorageTypeCode
                                                           && pst.PartNumber == partStorageType.PartNumber);
 
-            if (partStorageTypeAlreadyExists != null && partStorageType.BridgeId == 0) 
-            { 
+            if (partStorageTypeAlreadyExists != null && partStorageType.BridgeId == 0)
+            {
                 throw new PartStorageTypeException("Part Storage Type Already Exists");
             }
 

@@ -19,7 +19,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     public class WhenCancellingAndUnallocatingFails : ContextBase
     {
         private RequisitionHeader req;
-        
+
         private Func<Task> action;
 
         [SetUp]

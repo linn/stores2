@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
 {
     using Linn.Common.Domain.LinnApps.Services;
     using Linn.Common.Persistence;

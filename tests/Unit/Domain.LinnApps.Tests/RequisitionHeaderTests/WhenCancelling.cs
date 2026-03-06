@@ -44,9 +44,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
         public void ShouldCancelLines()
         {
             this.sut.Lines.All(
-                x => x.Cancelled == "Y" 
-                     && x.DateCancelled.HasValue 
-                     && x.CancelledBy != null 
+                x => x.Cancelled == "Y"
+                     && x.DateCancelled.HasValue
+                     && x.CancelledBy != null
                      && x.CancelledReason == "reason").Should().BeTrue();
         }
 

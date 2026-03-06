@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionFactoryTests
 {
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Requisitions;

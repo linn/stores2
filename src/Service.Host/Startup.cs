@@ -50,8 +50,6 @@ namespace Linn.Stores2.Service.Host
 
             var appSettings = ApplicationSettings.Get();
 
-            const string LegacyJwtScheme = JwtBearerDefaults.AuthenticationScheme;
-
             services.AddLinnAuthentication(
                 options =>
                 {

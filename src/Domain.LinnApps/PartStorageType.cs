@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+namespace Linn.Stores2.Domain.LinnApps
 {
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Parts;

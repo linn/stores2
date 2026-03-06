@@ -1,6 +1,7 @@
-﻿namespace Linn.Stores2.Integration.Tests.StockReportModuleTests
+namespace Linn.Stores2.Integration.Tests.StockReportModuleTests
 {
     using System.Net.Http;
+
     using Linn.Common.Pdf;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Resources.ResourceBuilders;

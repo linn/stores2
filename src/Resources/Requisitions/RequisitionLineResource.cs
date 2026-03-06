@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Requisitions
+namespace Linn.Stores2.Resources.Requisitions
 {
     using System.Collections.Generic;
 
@@ -13,11 +13,11 @@
         public int LineNumber { get; set; }
 
         public PartResource Part { get; set; }
-        
+
         public decimal Qty { get; set; }
 
         public string TransactionCode { get; set; }
-        
+
         public string TransactionCodeDescription { get; set; }
 
         public string DateCancelled { get; set; }
@@ -27,7 +27,7 @@
         public int? CancelledBy { get; set; }
 
         public int? Document1Line { get; set; }
-        
+
         public int? Document1Number { get; set; }
 
         public string Document1Type { get; set; }
@@ -51,7 +51,7 @@
         public IEnumerable<StoresBudgetResource> StoresBudgets { get; set; }
 
         public RequisitionHeaderResource RequisitionHeader { get; set; }
-        
+
         public IEnumerable<MoveResource> Moves { get; set; }
 
         public IEnumerable<RequisitionSerialNumberResource> SerialNumbers { get; set; }

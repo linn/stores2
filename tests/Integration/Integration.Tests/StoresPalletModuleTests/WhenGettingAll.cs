@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
+namespace Linn.Stores2.Integration.Tests.StoresPalletModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -25,10 +25,10 @@
         public void SetUp()
         {
             this.storageLocation = new StorageLocation
-                                       {
-                                           LocationId = 3,
-                                           Description = "Test Location"
-                                       };
+            {
+                LocationId = 3,
+                Description = "Test Location"
+            };
 
             this.employee = new Employee { Id = 123, Name = "Pallets Pat" };
 
@@ -91,4 +91,3 @@
         }
     }
 }
-

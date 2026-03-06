@@ -19,7 +19,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
     public class RequisitionManager : IRequisitionManager
     {
         private readonly IAuthorisationService authService;
-        
+
         private readonly IRequisitionRepository repository;
 
         private readonly IRequisitionStoredProcedures requisitionStoredProcedures;
@@ -35,7 +35,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         private readonly ITransactionManager transactionManager;
 
         private readonly IStoresService storesService;
-        
+
         private readonly IStockService stockService;
 
         private readonly ISalesProxy salesProxy;
@@ -113,7 +113,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.serialNumberService = serialNumberService;
             this.auditLocationRepository = auditLocationRepository;
         }
-        
+
         public async Task<RequisitionHeader> CancelHeader(
             int reqNumber,
             int cancelledBy,
@@ -129,7 +129,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var req = await this.repository.FindByIdAsync(reqNumber);
-            
+
             if (string.IsNullOrEmpty(req.StoresFunction.CancelFunction))
             {
                 var by = await this.employeeRepository.FindByIdAsync(cancelledBy);
@@ -166,7 +166,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         }
 
         public async Task<RequisitionHeader> CancelLine(
-            int reqNumber, 
+            int reqNumber,
             int lineNumber,
             int cancelledBy,
             IEnumerable<string> privileges,
@@ -217,7 +217,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         }
 
         public async Task<RequisitionHeader> BookRequisition(
-            int reqNumber, 
+            int reqNumber,
             int? lineNumber,
             int bookedBy,
             IEnumerable<string> privileges)
@@ -244,7 +244,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         }
 
         public async Task<RequisitionHeader> AuthoriseRequisition(
-            int reqNumber, 
+            int reqNumber,
             int authorisedBy,
             IEnumerable<string> privileges)
         {
@@ -282,9 +282,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 moveSpecifications,
                 string.IsNullOrEmpty(line.RequisitionHeader?.BatchRef) ? null : line.RequisitionHeader.BatchRef.ElementAt(0),
                 line.RequisitionHeader?.FromLocation?.LocationCode,
-                false, 
+                false,
                 line.TransactionDefinition);
-            
+
             foreach (var moveOnto
                      in moveSpecifications.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
             {
@@ -353,14 +353,14 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var result = await this.requisitionStoredProcedures.UnPickStock(
-                move.ReqNumber, 
-                move.LineNumber, 
+                move.ReqNumber,
+                move.LineNumber,
                 move.Sequence,
-                line.Document1Number, 
-                line.Document1Line, 
-                qtyToUnpick, 
-                move.StockLocator?.Id, 
-                unpickedBy, 
+                line.Document1Number,
+                line.Document1Line,
+                qtyToUnpick,
+                move.StockLocator?.Id,
+                unpickedBy,
                 reallocate,
                 req.StoresFunction.UpdateSalesOrderDetQtyOutstanding == "Y");
 
@@ -406,15 +406,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                                                && header.StoresFunction.FunctionCode != "AUDIT";
                 await this.CheckMoves(
                     toAdd.PartNumber,
-                    movesToAdd, 
+                    movesToAdd,
                     string.IsNullOrEmpty(header.BatchRef) ? null : header.BatchRef.ElementAt(0),
                     header.StoresFunction.FunctionCode,
-                    toLocationRequired, 
+                    toLocationRequired,
                     transactionDefinition);
 
                 // for now, assuming moves are either a write on or off, i.e. not a move from one place to another
                 // write offs
-                foreach (var pick in movesToAdd.Where(x => x.FromPallet.HasValue 
+                foreach (var pick in movesToAdd.Where(x => x.FromPallet.HasValue
                                                            || !string.IsNullOrEmpty(x.FromLocation)))
                 {
                     var fromLocation = string.IsNullOrEmpty(pick.FromLocation)
@@ -439,7 +439,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 }
 
                 // write ons
-                foreach (var moveOnto 
+                foreach (var moveOnto
                          in movesToAdd.Where(x => x.ToPallet.HasValue || !string.IsNullOrEmpty(x.ToLocation)))
                 {
                     var insertOntosResult = await this.requisitionStoredProcedures.InsertReqOntos(
@@ -473,7 +473,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         header.FromPalletNumber,
                         header.FromStockPool,
                         toAdd.TransactionDefinition);
-                    
+
                     insertOrUpdateMoves = "U";
 
                     if (!autopickResult.Success)
@@ -481,7 +481,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         throw new PickStockException("failed in pick_stock: " + autopickResult.Message);
                     }
                 }
-                
+
                 if (transactionDefinition.RequiresOntoTransactions)
                 {
                     var ontoResult = await this.requisitionStoredProcedures.InsertReqOntos(
@@ -638,7 +638,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
         }
 
         public async Task UpdateRequisition(
-            RequisitionHeader current, 
+            RequisitionHeader current,
             string updatedComments,
             string updatedReference,
             string updatedDepartmentNumber,
@@ -651,7 +651,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 throw new UnauthorisedActionException(
                     $"You are not authorised to make changes to {current.StoresFunction.FunctionCode} reqs");
             }
-            
+
             if (updatedDepartmentNumber != current.Department?.DepartmentCode)
             {
                 var updatedDepartment = await this.departmentRepository.FindByIdAsync(updatedDepartmentNumber);
@@ -662,9 +662,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 current.ApplyNominalAccountChange(newNomAcc); // todo - test
             }
-            
-            current.Update(updatedComments, updatedReference);
 
+            current.Update(updatedComments, updatedReference);
 
             foreach (var line in lineUpdates)
             {
@@ -681,7 +680,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         await this.PickStockOnRequisitionLine(current, line);
                     }
-                    
+
                     // adding moves for an existing line
                     var movesToAdd = line.Moves.Where(x => x.IsAddition).ToList();
 
@@ -691,11 +690,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     }
 
                     await this.CheckMoves(
-                        line.PartNumber, 
+                        line.PartNumber,
                         movesToAdd,
                         string.IsNullOrEmpty(current.BatchRef) ? null : current.BatchRef.ElementAt(0),
                         current.StoresFunction.FunctionCode,
-                        toLocationRequired, 
+                        toLocationRequired,
                         existingLine.TransactionDefinition);
                     await this.AddMovesToLine(existingLine, movesToAdd);
                 }
@@ -711,13 +710,13 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         line.Moves == null ? new List<MoveSpecification>() : line.Moves.ToList(),
                         string.IsNullOrEmpty(current.BatchRef) ? null : current.BatchRef.ElementAt(0),
                         current.StoresFunction.FunctionCode,
-                        toLocationRequired, 
+                        toLocationRequired,
                         transaction);
                     await this.AddRequisitionLine(current, line);
                 }
             }
         }
-        
+
         // This Validation method ensures reqs are created in valid states. It is called in two scenarios:
         // 1. Client-side previewing of req validation during creation to provide feedback for the UI.
         // 2. Final server-side validation before persisting the req.
@@ -852,15 +851,15 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     await this.CheckLoan(document1Number, lines, document1Line, quantity);
                 }
-                
+
                 return req;
             }
 
             if (req.Department != null && req.Nominal != null)
             {
-                    await this.storesService.ValidNominalAccount(
-                        req.Department.DepartmentCode,
-                        req.Nominal.NominalCode);
+                await this.storesService.ValidNominalAccount(
+                    req.Department.DepartmentCode,
+                    req.Nominal.NominalCode);
             }
 
             if (!string.IsNullOrEmpty(auditLocation))
@@ -879,7 +878,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             if (lines != null)
-            {   
+            {
                 // LDREQ etc works with a to location but also needs a stock pool to avoid making stock locators with no stock pool
                 var headerSpecifiesOnto = req.ToPalletNumber.HasValue || req.ToLocation != null;
                 var headerSpecifiesOntoStockPool = !string.IsNullOrEmpty(req.ToStockPool);
@@ -888,11 +887,11 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     req.AddLine(await this.ValidateLineCandidate(
                         candidate,
                         req.BatchRef,
-                        req.StoresFunction, 
-                        req.ReqType, 
+                        req.StoresFunction,
+                        req.ReqType,
                         headerSpecifiesOnto,
                         headerSpecifiesOntoStockPool));
-                    
+
                     // need to run the moves validation separately if the header specifies the onto info
                     if (headerSpecifiesOnto && !(candidate.Moves?.Count() >= 1))
                     {
@@ -921,7 +920,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     }
                 }
             }
-            
+
             switch (function.PartSource)
             {
                 case "PO":
@@ -955,7 +954,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                         await this.storesService.ValidReverseQuantity(req.OriginalReqNumber.Value, req.Quantity.Value));
                 }
             }
-            
+
             if (req.Part == null && req.Lines.Count == 0 && function.PartSource != "C" && function.LinesRequired != "N")
             {
                 throw new RequisitionException("Lines are required if header does not specify part");
@@ -991,7 +990,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     throw new RequisitionException("A from state is required");
                 }
 
-                if (isReverseTransaction != "Y" 
+                if (isReverseTransaction != "Y"
                     && req.StoresFunction.ToLocationRequiredOrOptional() && req.ToLocation == null
                     && req.ToPalletNumber == null)
                 {
@@ -1008,7 +1007,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 {
                     throw new RequisitionException("A to state is required");
                 }
-                
+
                 if (req.StoresFunction.NewPartNumberRequired())
                 {
                     var newPart = !string.IsNullOrEmpty(newPartNumber)
@@ -1073,7 +1072,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
                 return line;
             }
-            
+
             if ((candidate.Moves == null || !candidate.Moves.Any()) &&
                 line.TransactionDefinition.RequiresOntoTransactions)
             {
@@ -1175,16 +1174,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             }
 
             var potentialMove = new PotentialMoveDetail
-                                    {
-                                        PartNumber = partNumber,
-                                        Quantity = quantity,
-                                        BuiltBy = builtById,
-                                        Sequence = seq,
-                                        DocumentType = documentType,
-                                        DocumentId = documentId,
-                                        LocationId = toLocationId,
-                                        PalletNumber = toPalletNumber
-                                    };
+            {
+                PartNumber = partNumber,
+                Quantity = quantity,
+                BuiltBy = builtById,
+                Sequence = seq,
+                DocumentType = documentType,
+                DocumentId = documentId,
+                LocationId = toLocationId,
+                PalletNumber = toPalletNumber
+            };
             await this.potentialMoveRepository.AddAsync(potentialMove);
 
             return new List<PotentialMoveDetail> { potentialMove }.AsEnumerable();
@@ -1201,8 +1200,8 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 if (existing.Count > 0)
                 {
                     foreach (var existingBookInOrderDetail in existing)
-                    { 
-                       this.bookInOrderDetailRepository.Remove(existingBookInOrderDetail);
+                    {
+                        this.bookInOrderDetailRepository.Remove(existingBookInOrderDetail);
                     }
                 }
 
@@ -1250,7 +1249,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                 var qty = await this.requisitionStoredProcedures.GetQtyReturned(
                               header.Document1.Value,
                               header.Document1Line.Value);
-                
+
                 if (header.IsReverseTrans() && Math.Abs(header.Quantity.Value) > qty)
                 {
                     throw new DocumentException($"Returns Order {header.Document1}/{header.Document1Line} has not yet been booked");
@@ -1289,7 +1288,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     {
                         throw new SerialNumberException($"Serial numbers required for {line.Part.PartNumber}");
                     }
-                    
+
                     // check serial numbers on line
                     foreach (var serialNumber in line.SerialNumbers)
                     {
@@ -1450,7 +1449,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             {
                 throw new CreateRequisitionException($"Part {part.PartNumber} is stock controlled and BOOKLD must be sundry.");
             }
-            
+
             if (bookInOrderDetails == null || bookInOrderDetails.Count == 0)
             {
                 throw new CreateRequisitionException("No book in order details supplied for BOOKLD transaction");
@@ -1492,9 +1491,9 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             foreach (var bookInOrderDetail in bookInOrderDetails)
             {
-                    await this.storesService.ValidNominalAccount(
-                        bookInOrderDetail.DepartmentCode,
-                        bookInOrderDetail.NominalCode);
+                await this.storesService.ValidNominalAccount(
+                    bookInOrderDetail.DepartmentCode,
+                    bookInOrderDetail.NominalCode);
             }
         }
 
@@ -1742,7 +1741,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                     "O"));
             }
 
-            if (!string.IsNullOrEmpty(header.ToStockPool) && header.StoresFunction.PartNumberRequired()) 
+            if (!string.IsNullOrEmpty(header.ToStockPool) && header.StoresFunction.PartNumberRequired())
             {
                 DoProcessResultCheck(this.storesService.ValidStockPool(header.Part, stockPool));
             }

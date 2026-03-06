@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.TestData.NominalAccounts
+namespace Linn.Stores2.TestData.NominalAccounts
 {
     using Linn.Stores2.Domain.LinnApps.Accounts;
 

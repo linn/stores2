@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -64,7 +64,7 @@
             if (model != null)
             {
                 yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
-                
+
                 if (this.authService.HasPermissionFor(AuthorisedActions.WorkStationAdmin, claims))
                 {
                     yield return new LinkResource { Rel = "update", Href = this.GetLocation(model) };

@@ -1,11 +1,11 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.TestData.FunctionCodes;
     using NUnit.Framework;
 
-    public class WhenCheckingIsReverse 
+    public class WhenCheckingIsReverse
     {
         private RequisitionHeader sut;
 
@@ -24,7 +24,6 @@
                 comments: "Uno reverse",
                 quantity: 1,
                 fromState: "QC");
-            ;
             this.sut = new RequisitionHeader(
                 new Employee(),
                 TestFunctionCodes.ReturnToSupplier,

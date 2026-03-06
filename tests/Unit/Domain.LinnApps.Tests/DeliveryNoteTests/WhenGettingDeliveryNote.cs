@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.DeliveryNoteTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.DeliveryNoteTests
 {
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Models;

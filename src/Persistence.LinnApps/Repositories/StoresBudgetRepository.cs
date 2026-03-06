@@ -10,7 +10,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     public class StoresBudgetRepository : EntityFrameworkRepository<StoresBudget, int>
     {
         private readonly ServiceDbContext serviceDbContext;
-        
+
         public StoresBudgetRepository(ServiceDbContext serviceDbContext)
             : base(serviceDbContext.StoresBudgets)
         {

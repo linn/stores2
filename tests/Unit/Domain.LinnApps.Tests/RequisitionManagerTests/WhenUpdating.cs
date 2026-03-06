@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
 
@@ -46,7 +46,7 @@
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.GetRequisitionActionByFunction(
                     TestFunctionCodes.LinnDeptReq.FunctionCode),
-                    Arg.Any<IEnumerable<string>>()).Returns(true);
+                Arg.Any<IEnumerable<string>>()).Returns(true);
 
             var part = new Part { PartNumber = "PART" };
             this.PartRepository.FindByIdAsync(part.PartNumber).Returns(part);

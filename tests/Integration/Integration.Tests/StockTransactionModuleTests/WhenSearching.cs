@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StockTransactionModuleTests
+namespace Linn.Stores2.Integration.Tests.StockTransactionModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -8,7 +8,6 @@
 
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ReportResultResources;
-    using Linn.Stores2.Integration.Tests.CarrierModuleTests;
     using Linn.Stores2.Integration.Tests.Extensions;
 
     using NSubstitute;
@@ -35,7 +34,7 @@
             this.StoresTransViewerReportService
                 .StoresTransViewerReport(
                     null,
-                    null, 
+                    null,
                     null,
                     null,
                     Arg.Is<IEnumerable<string>>(f => f.Contains(this.functionCode1) && f.Contains(this.functionCode1)))

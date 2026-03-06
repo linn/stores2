@@ -1,6 +1,7 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stock
+namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System;
+
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
 
@@ -8,7 +9,7 @@
     {
         public StorageLocation()
         {
-            // for ef       
+            // for ef
         }
 
         public StorageLocation(
@@ -36,7 +37,7 @@
             }
 
             this.SiteCode = site.Code;
-            
+
             if (area == null)
             {
                 throw new StorageLocationException("Location needs an area");
@@ -134,24 +135,24 @@
 
         public Department AuditedByDepartment { get; set; }
 
-        public bool MixStates() => MixStatesFlag == "Y";
+        public bool MixStates() => this.MixStatesFlag == "Y";
 
-        public bool Accessible() => AccessibleFlag == "Y";
+        public bool Accessible() => this.AccessibleFlag == "Y";
 
-        public bool StoresKittable() => StoresKittableFlag == "Y";
+        public bool StoresKittable() => this.StoresKittableFlag == "Y";
 
         public void Update(
-            string locationCode, 
-            string description, 
-            AccountingCompany company, 
-            string accessible, 
-            string storesKittable, 
+            string locationCode,
+            string description,
+            AccountingCompany company,
+            string accessible,
+            string storesKittable,
             string salesKittable,
-            string mixStates, 
-            string stockState, 
-            string typeOfStock, 
-            StockPool stockPool, 
-            StorageType storageType, 
+            string mixStates,
+            string stockState,
+            string typeOfStock,
+            StockPool stockPool,
+            StorageType storageType,
             DateTime? dateInvalid)
         {
             this.LocationCode = locationCode?.ToUpper();

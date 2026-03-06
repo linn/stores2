@@ -44,12 +44,12 @@
                 ParcelNumber = model.ParcelNumber,
                 SupplierId = model.SupplierId,
                 SupplierName = model.Supplier?.Name,
-                SupplierCountry = model.Supplier != null ? 
+                SupplierCountry = model.Supplier != null ?
                                       new CountryResource
-                                          {
-                                              CountryCode = model.Supplier.CountryCode, 
-                                              Name = model.Supplier.Country?.BestName
-                                          } 
+                                      {
+                                          CountryCode = model.Supplier.CountryCode,
+                                          Name = model.Supplier.Country?.BestName
+                                      }
                                       : null,
                 CarrierId = model.CarrierId,
                 CarrierName = model.Carrier?.Name,

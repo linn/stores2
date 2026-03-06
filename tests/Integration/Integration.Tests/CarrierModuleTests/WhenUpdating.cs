@@ -5,6 +5,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
     using System.Net.Http.Json;
 
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
@@ -23,7 +24,7 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
         {
             this.dhl = new Carrier(
                 "DHL",
-                "D H L", 
+                "D H L",
                 "Mr Dhl",
                 "line2",
                 "line2",
@@ -35,9 +36,9 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
                 "123456789");
 
             this.updateResource = new CarrierUpdateResource
-                                      {
-                                          Name = "DHL 2.0",
-                                      };
+            {
+                Name = "DHL 2.0",
+            };
 
             this.DbContext.Carriers.AddAndSave(this.DbContext, this.dhl);
             this.Response = this.Client.PutAsJsonAsync($"/stores2/carriers/{this.dhl.CarrierCode}", this.updateResource).Result;
@@ -55,15 +56,15 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldUpdateEntity()
         {
             this.DbContext.Carriers
-                .FirstOrDefault(x => x.CarrierCode == this.dhl.CarrierCode)
+                .First(x => x.CarrierCode == this.dhl.CarrierCode)
                 .Name.Should().Be(this.updateResource.Name);
         }
-        
+
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stock
+namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -7,7 +7,7 @@
     using Linn.Common.Domain;
     using Linn.Common.Persistence;
 
-    public class StockService : IStockService 
+    public class StockService : IStockService
     {
         private readonly IRepository<StockLocator, int> stockLocatorRepository;
 
@@ -35,15 +35,15 @@
         }
 
         public async Task<ProcessResult> ValidStockLocation(
-            int? locationId, 
-            int? palletNumber, 
-            string partNumber, 
-            decimal qty, 
+            int? locationId,
+            int? palletNumber,
+            string partNumber,
+            decimal qty,
             string state,
             string stockPoolCode = null)
         {
             var stockData = await this.stockLocatorRepository
-                .FilterByAsync(x => x.PartNumber == partNumber 
+                .FilterByAsync(x => x.PartNumber == partNumber
                                     && (!locationId.HasValue || x.LocationId == locationId)
                                     && (!palletNumber.HasValue || x.PalletNumber == palletNumber)
                                     && (string.IsNullOrEmpty(stockPoolCode) || x.StockPoolCode == stockPoolCode));
@@ -58,7 +58,7 @@
                 .ToList();
 
             if (groups.Count == 0)
-            { 
+            {
                 var stockPoolMessage = string.Empty;
                 if (!string.IsNullOrEmpty(stockPoolCode))
                 {
@@ -91,7 +91,7 @@
             {
                 return new ProcessResult
                 {
-                    Success = false, 
+                    Success = false,
                     Message = $"Not enough stock at this location, unallocated qty: {stateQty}"
                 };
             }

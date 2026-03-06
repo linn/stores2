@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionHeaderTests
 {
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -36,7 +36,6 @@
 
             this.sut.AddLine(line);
         }
-
 
         [Test]
         public void ShouldGetAccountingCompany()

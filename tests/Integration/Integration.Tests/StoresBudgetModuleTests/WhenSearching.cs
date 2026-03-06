@@ -47,32 +47,32 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
             req.AddLine(new RequisitionLine(123, 1, TestParts.Cap003, 1, trans));
             this.budget1Id = 234978;
             this.budget1 = new StoresBudget
-                              {
-                                  BudgetId = this.budget1Id,
-                                  TransactionCode = "STST",
-                                  PartNumber = "P1",
-                                  RequisitionNumber = 123,
-                                  LineNumber = 1,
-                                  RequisitionLine = req.Lines.First(),
-                                  Transaction = trans,
-                                  Part = new Part { PartNumber = "P1" },
-                                  StoresBudgetPostings = new List<StoresBudgetPosting>()
-                              };
+            {
+                BudgetId = this.budget1Id,
+                TransactionCode = "STST",
+                PartNumber = "P1",
+                RequisitionNumber = 123,
+                LineNumber = 1,
+                RequisitionLine = req.Lines.First(),
+                Transaction = trans,
+                Part = new Part { PartNumber = "P1" },
+                StoresBudgetPostings = new List<StoresBudgetPosting>()
+            };
             this.DbContext.StoresBudgets.AddAndSave(this.DbContext, this.budget1);
-       
+
             this.budget2Id = 645463;
             this.budget2 = new StoresBudget
-                               {
-                                   BudgetId = this.budget2Id,
-                                   TransactionCode = "STST",
-                                   PartNumber = "P2",
-                                   RequisitionNumber = 123,
-                                   LineNumber = 1,
-                                   RequisitionLine = req.Lines.First(),
-                                   Transaction = trans,
-                                   Part = new Part { PartNumber = "P2" },
-                                   StoresBudgetPostings = new List<StoresBudgetPosting>()
-                               };
+            {
+                BudgetId = this.budget2Id,
+                TransactionCode = "STST",
+                PartNumber = "P2",
+                RequisitionNumber = 123,
+                LineNumber = 1,
+                RequisitionLine = req.Lines.First(),
+                Transaction = trans,
+                Part = new Part { PartNumber = "P2" },
+                StoresBudgetPostings = new List<StoresBudgetPosting>()
+            };
             this.DbContext.StoresBudgets.AddAndSave(this.DbContext, this.budget2);
 
             this.Response = this.Client.Get(
@@ -95,7 +95,7 @@ namespace Linn.Stores2.Integration.Tests.StoresBudgetModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldReturnJsonBody()
         {

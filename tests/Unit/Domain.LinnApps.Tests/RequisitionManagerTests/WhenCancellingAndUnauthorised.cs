@@ -15,7 +15,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     public class WhenCancellingAndUnauthorised : ContextBase
     {
         private Func<Task> action;
-        
+
         [SetUp]
         public void SetUp()
         {

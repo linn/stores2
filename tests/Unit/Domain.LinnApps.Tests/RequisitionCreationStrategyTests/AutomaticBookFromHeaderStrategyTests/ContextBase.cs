@@ -42,7 +42,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.Au
             this.DocumentProxy = Substitute.For<IDocumentProxy>();
 
             this.Sut = new AutomaticBookFromHeaderStrategy(
-                this.RequisitionRepository, 
+                this.RequisitionRepository,
                 this.RequisitionManager,
                 this.DepartmentRepository,
                 this.NominalRepository,

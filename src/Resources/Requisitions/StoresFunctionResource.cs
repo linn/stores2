@@ -1,6 +1,7 @@
-﻿namespace Linn.Stores2.Resources.Requisitions
+namespace Linn.Stores2.Resources.Requisitions
 {
     using System.Collections.Generic;
+
     using Linn.Common.Resources;
 
     public class StoresFunctionResource : HypermediaResource
@@ -8,7 +9,7 @@
         public string Code { get; set; }
 
         public string Description { get; set; }
-     
+
         public string FunctionType { get; set; }
 
         public string CancelFunction { get; set; }
@@ -22,7 +23,7 @@
         public string FromLocationRequired { get; set; }
 
         public string FromStockPoolRequired { get; set; }
-      
+
         public string FromCategory { get; set; }
 
         public string QuantityRequired { get; set; }
@@ -78,7 +79,7 @@
         public int ProcessStage { get; set; }
 
         public string ReceiptDateRequired { get; set; }
-        
+
         public string AuditLocationRequired { get; set; }
 
         public string UpdateSodQtyOS { get; set; }

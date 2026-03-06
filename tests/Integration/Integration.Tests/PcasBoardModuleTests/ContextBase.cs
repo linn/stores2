@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.PcasBoardModuleTests
+namespace Linn.Stores2.Integration.Tests.PcasBoardModuleTests
 {
     using System.Net.Http;
 

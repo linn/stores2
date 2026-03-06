@@ -1,10 +1,11 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
+    using System.Threading.Tasks;
+
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps.Reports;
-    using System.Threading.Tasks;
 
     public class GoodsInLogReportFacadeService : IGoodsInLogReportFacadeService
     {

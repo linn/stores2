@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Collections.Generic;
 
@@ -30,7 +30,7 @@
                 "REQ",
                 new Department(),
                 new Nominal());
-             bookedReq.Book(new Employee { Id = 1, Name = "Gabriel García Márquez" });
+            bookedReq.Book(new Employee { Id = 1, Name = "Gabriel García Márquez" });
             this.ReqRepository.FindByIdAsync(bookedReq.ReqNumber).Returns(bookedReq);
 
             this.AuthService.HasPermissionFor(

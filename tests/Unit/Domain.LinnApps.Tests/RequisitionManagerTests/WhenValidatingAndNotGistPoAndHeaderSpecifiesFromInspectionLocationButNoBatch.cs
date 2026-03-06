@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System;
     using System.Linq.Expressions;
@@ -17,7 +17,7 @@
 
     using NUnit.Framework;
 
-    public class WhenValidatingAndNotGistPoAndHeaderSpecifiesFromInspectionLocationButNoBatch 
+    public class WhenValidatingAndNotGistPoAndHeaderSpecifiesFromInspectionLocationButNoBatch
         : ContextBase
     {
         private Func<Task> act;

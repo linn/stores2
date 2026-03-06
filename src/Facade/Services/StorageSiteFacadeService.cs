@@ -1,9 +1,10 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
+
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -11,7 +12,8 @@
 
     public class StorageSiteFacadeService : AsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
     {
-        public StorageSiteFacadeService(IRepository<StorageSite, string> repository, ITransactionManager transactionManager, IBuilder<StorageSite> resourceBuilder) : base(repository, transactionManager, resourceBuilder)
+        public StorageSiteFacadeService(IRepository<StorageSite, string> repository, ITransactionManager transactionManager, IBuilder<StorageSite> resourceBuilder)
+            : base(repository, transactionManager, resourceBuilder)
         {
         }
 

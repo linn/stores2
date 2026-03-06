@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
     using System.Net;
 
@@ -61,4 +61,3 @@
         }
     }
 }
-

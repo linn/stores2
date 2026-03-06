@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Stores
+namespace Linn.Stores2.Resources.Stores
 {
     public class WorkStationSearchResource
     {

@@ -6,7 +6,6 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.TestData.Countries;
@@ -21,12 +20,12 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
         public void SetUp()
         {
             this.createResource = new CarrierResource
-                                      {
-                                          Code = "DHL",
-                                          Name = "D H L",
-                                          Addressee = "MR Dhl",
-                                          Line1 = "Line 1",
-                                          CountryCode = TestCountries.UnitedKingdom.CountryCode
+            {
+                Code = "DHL",
+                Name = "D H L",
+                Addressee = "MR Dhl",
+                Line1 = "Line 1",
+                CountryCode = TestCountries.UnitedKingdom.CountryCode
             };
             this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.UnitedKingdom);
 
@@ -45,15 +44,15 @@ namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldAdd()
         {
             this.DbContext.Carriers
-                .FirstOrDefault(x => x.CarrierCode == this.createResource.Code)
+                .First(x => x.CarrierCode == this.createResource.Code)
                 .Name.Should().Be(this.createResource.Name);
         }
-        
+
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {

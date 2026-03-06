@@ -23,7 +23,6 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task Search(
-            HttpRequest _, 
             HttpResponse res,
             string searchTerm,
             IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)
@@ -37,28 +36,25 @@ namespace Linn.Stores2.Service.Modules
                 await res.Negotiate(await service.Search(searchTerm));
             }
         }
-        
+
         private async Task GetById(
-            HttpRequest _, 
-            HttpResponse res, 
+            HttpResponse res,
             string code,
             IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)
         {
             await res.Negotiate(await service.GetById(code));
         }
-        
+
         private async Task Create(
-            HttpRequest _, 
-            HttpResponse res, 
+            HttpResponse res,
             CarrierResource resource,
             IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)
         {
             await res.Negotiate(await service.Add(resource));
         }
-        
+
         private async Task Update(
-            HttpRequest _, 
-            HttpResponse res, 
+            HttpResponse res,
             string code,
             CarrierUpdateResource resource,
             IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> service)

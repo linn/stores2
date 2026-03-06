@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Parts
+namespace Linn.Stores2.Domain.LinnApps.Parts
 {
     public class Bom
     {

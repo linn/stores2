@@ -10,7 +10,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     public class CarrierRepository : EntityFrameworkRepository<Carrier, string>
     {
         private readonly ServiceDbContext serviceDbContext;
-        
+
         public CarrierRepository(ServiceDbContext serviceDbContext)
             : base(serviceDbContext.Carriers)
         {

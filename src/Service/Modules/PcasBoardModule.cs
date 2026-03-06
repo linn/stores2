@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
@@ -20,7 +20,6 @@
         }
 
         private async Task Search(
-            HttpRequest _,
             HttpResponse res,
             string searchTerm,
             IAsyncFacadeService<PcasBoard, string, PcasBoardResource, PcasBoardResource, PcasBoardResource> service)

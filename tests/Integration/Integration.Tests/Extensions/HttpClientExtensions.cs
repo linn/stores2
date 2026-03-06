@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.Extensions
+namespace Linn.Stores2.Integration.Tests.Extensions
 {
     using System;
     using System.Net.Http;

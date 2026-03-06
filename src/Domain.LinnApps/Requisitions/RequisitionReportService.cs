@@ -56,7 +56,7 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
             this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Value, true);
             model.SetTotalValue(model.ColumnIndex("Unit Price"), null);
             model.SetTotalValue(model.ColumnIndex("Quantity"), null);
-          
+
             return model;
         }
 
@@ -89,7 +89,6 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
                                 TotalNetCost = totalNetCost,
                                 ReportLines = reportLines
                             };
-
 
             return await this.requisitionCostHtmlTemplateService.GetHtml(model);
         }

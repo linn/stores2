@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
+namespace Linn.Stores2.Integration.Tests.CarrierModuleTests
 {
     using System.Net.Http;
 
@@ -22,9 +22,9 @@
         protected HttpClient Client { get; set; }
 
         protected HttpResponseMessage Response { get; set; }
-        
+
         protected TestServiceDbContext DbContext { get; private set; }
-        
+
         [SetUp]
         public void SetUpContext()
         {
@@ -34,13 +34,13 @@
             var carrierRepository = new CarrierRepository(this.DbContext);
             var transactionManager = new TransactionManager(this.DbContext);
 
-            IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> carrierService 
+            IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource> carrierService
                 = new CarrierService(
-                    carrierRepository, 
-                    transactionManager, 
-                    new CarrierResourceBuilder(), 
+                    carrierRepository,
+                    transactionManager,
+                    new CarrierResourceBuilder(),
                     countryRepository);
-            
+
             this.Client = TestClient.With<CarrierModule>(
                 services =>
                     {
@@ -49,7 +49,7 @@
                         services.AddRouting();
                     });
         }
-        
+
         [OneTimeTearDown]
         public void TearDownContext()
         {
@@ -59,8 +59,8 @@
         [TearDown]
         public void Teardown()
         {
-           this.DbContext.Countries.RemoveAllAndSave(this.DbContext);
-           this.DbContext.Carriers.RemoveAllAndSave(this.DbContext);
+            this.DbContext.Countries.RemoveAllAndSave(this.DbContext);
+            this.DbContext.Carriers.RemoveAllAndSave(this.DbContext);
         }
     }
 }

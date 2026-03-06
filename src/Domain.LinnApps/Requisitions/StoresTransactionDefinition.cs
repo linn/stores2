@@ -1,7 +1,8 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.Stores;
 
@@ -41,9 +42,9 @@
         public string InspectedState { get; set; }
 
         public string UpdateStockBalance { get; set; }
-        
+
         public string UpdateQcBalance { get; set; }
-        
+
         public string UpdateSupplierBalance { get; set; }
 
         public ICollection<StoresTransactionPosting> StoresTransactionPostings { get; set; }

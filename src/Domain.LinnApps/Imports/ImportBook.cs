@@ -2,11 +2,48 @@
 {
     using System;
     using System.Collections.Generic;
+
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
 
     public class ImportBook
     {
+        public ImportBook()
+        {
+            // ef
+        }
+
+        public ImportBook(
+            ImportCandidate candidate)
+        {
+            if (candidate.CreatedBy == null)
+            {
+                throw new ImportBookException("Created by employee not supplied");
+            }
+
+            if (candidate.Supplier == null)
+            {
+                throw new ImportBookException("Supplier not supplied");
+            }
+
+            if (candidate.Carrier == null)
+            {
+                throw new ImportBookException("Carrier not supplied");
+            }
+
+            this.Id = candidate.Id;
+            this.DateCreated = DateTime.UtcNow;
+            this.CreatedBy = candidate.CreatedBy;
+            this.CreatedById = candidate.CreatedBy.Id;
+            this.SupplierId = candidate.Supplier.Id;
+            this.Supplier = candidate.Supplier;
+            this.CarrierId = candidate.Carrier.Id;
+            this.Carrier = candidate.Carrier;
+            this.OrderDetails = new List<ImportBookOrderDetail>();
+            this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
+            this.PostEntries = new List<ImportBookPostEntry>();
+        }
+
         public int Id { get; set; }
 
         public DateTime DateCreated { get; set; }
@@ -84,41 +121,5 @@
         public decimal? Weight { get; set; }
 
         public decimal? TotalDuty => this.LinnDuty + this.LinnVat;
-
-        public ImportBook()
-        {
-            // ef
-        }
-
-        public ImportBook(
-            ImportCandidate candidate)
-        {
-            if (candidate.CreatedBy == null)
-            {
-                throw new ImportBookException("Created by employee not supplied");
-            }
-
-            if (candidate.Supplier == null)
-            {
-                throw new ImportBookException("Supplier not supplied");
-            }
-
-            if (candidate.Carrier == null)
-            {
-                throw new ImportBookException("Carrier not supplied");
-            }
-
-            this.Id = candidate.Id;
-            this.DateCreated = DateTime.UtcNow;
-            this.CreatedBy = candidate.CreatedBy;
-            this.CreatedById = candidate.CreatedBy.Id;
-            this.SupplierId = candidate.Supplier.Id;
-            this.Supplier = candidate.Supplier;
-            this.CarrierId = candidate.Carrier.Id;
-            this.Carrier = candidate.Carrier;
-            this.OrderDetails = new List<ImportBookOrderDetail>();
-            this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
-            this.PostEntries = new List<ImportBookPostEntry>();
-        }
     }
 }

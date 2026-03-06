@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Stock
+namespace Linn.Stores2.Domain.LinnApps.Stock
 {
     public class StoragePlace
     {

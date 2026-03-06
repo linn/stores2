@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
+namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System;
     using System.Linq;
@@ -8,13 +8,15 @@
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Persistence.LinnApps;
+
     using Microsoft.EntityFrameworkCore;
 
     public class PartStorageTypeRepository : EntityFrameworkRepository<PartStorageType, int>
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public PartStorageTypeRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.PartsStorageTypes)
+        public PartStorageTypeRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.PartsStorageTypes)
         {
             this.serviceDbContext = serviceDbContext;
         }

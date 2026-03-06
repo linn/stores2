@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StorageTypeModuleTests
+namespace Linn.Stores2.Integration.Tests.StorageTypeModuleTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -12,7 +12,7 @@
 
     using NUnit.Framework;
 
-    public class WhenGettingCountries : ContextBase
+    public class WhenGettingStorageTypes : ContextBase
     {
         private StorageType storageType;
 

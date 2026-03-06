@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Service.Extensions
+namespace Linn.Stores2.Service.Extensions
 {
     using System;
     using System.Linq;

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.TestData.Employees
+namespace Linn.Stores2.TestData.Employees
 {
     using Linn.Stores2.Domain.LinnApps;
 
@@ -7,7 +7,6 @@
         // For privacy reasons these Employees are fictional and like
         // Pro Evolution football players, any resemblance to real persons,
         // living or dead, is purely coincidental.
-
         public static Employee SophlyBard => new Employee
         {
             Id = 33225,

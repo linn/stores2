@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests
+namespace Linn.Stores2.Domain.LinnApps.Tests
 {
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -24,7 +24,6 @@
                 reference: null,
                 comments: "A Good Book");
         }
-
 
         [Test]
         public void ShouldNotGetAccountingCompany()

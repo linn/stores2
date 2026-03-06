@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StockLocatorTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StockLocatorTests
 {
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Parts;

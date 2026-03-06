@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+namespace Linn.Stores2.Domain.LinnApps
 {
     using System;
 
@@ -9,9 +9,9 @@
         }
 
         public Organisation(
-            string title, 
-            string vatRegistrationNumber, 
-            string phoneNumber, 
+            string title,
+            string vatRegistrationNumber,
+            string phoneNumber,
             Address address)
         {
             this.Title = title;

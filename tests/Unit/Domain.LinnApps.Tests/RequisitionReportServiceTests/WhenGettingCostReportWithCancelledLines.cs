@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionReportServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionReportServiceTests
 {
     using System;
     using System.Collections.Generic;

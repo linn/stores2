@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.IoC
+namespace Linn.Stores2.IoC
 {
     using System.Collections.Generic;
 

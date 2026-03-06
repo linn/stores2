@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -26,93 +26,93 @@
             if (header == null)
             {
                 return new RequisitionHeaderResource
-                           { 
-                               Links = this.BuildLinks(null, claims.ToList()).ToArray()
-                           };
+                {
+                    Links = this.BuildLinks(null, claims.ToList()).ToArray()
+                };
             }
 
             var reqLineBuilder = new RequisitionLineResourceBuilder();
             var storeFunctionBuilder = new StoresFunctionResourceBuilder(this.authService);
 
             return new RequisitionHeaderResource
-                       {
-                           ReqNumber = header.ReqNumber, 
-                           DateCreated = header.DateCreated.ToString("o"), 
-                           Document1 = header.Document1,
-                           Quantity = header.Quantity,
-                           Document1Name = header.Document1Name,
-                           Part = header.Part == null
+            {
+                ReqNumber = header.ReqNumber,
+                DateCreated = header.DateCreated.ToString("o"),
+                Document1 = header.Document1,
+                Quantity = header.Quantity,
+                Document1Name = header.Document1Name,
+                Part = header.Part == null
                                       ? null
                                       : new PartResource
-                                            {
-                                                PartNumber = header.Part.PartNumber,
-                                                Description = header.Part.Description
-                                            },        
-                           ToLocationId = header.ToLocation?.LocationId,
-                           ToLocationCode = header.ToLocation?.LocationCode,
-                           FromLocationId = header.FromLocation?.LocationId,
-                           FromLocationCode = header.FromLocation?.LocationCode,
-                           Document1Line = header.Document1Line,
-                           ToPalletNumber = header.ToPalletNumber,
-                           FromPalletNumber = header.FromPalletNumber,
-                           Cancelled = header.Cancelled,
-                           CancelledBy = header.CancelledBy?.Id,
-                           CancelledByName = header.CancelledBy?.Name,
-                           DateCancelled = header.DateCancelled?.ToString("o"),
-                           CancelledReason = header.CancelledReason,
-                           StoresFunction = storeFunctionBuilder.Build(header.StoresFunction, null),
-                           Comments = header.Comments,
-                           DateBooked = header.DateBooked?.ToString("o"),
-                           BookedBy = header.BookedBy?.Id,
-                           BookedByName = header.BookedBy?.Name,
-                           CreatedBy = header.CreatedBy?.Id,
-                           CreatedByName = header.CreatedBy?.Name,
-                           IsReversed = header.IsReversed,
-                           AuditLocation = header.AuditLocation,
-                           Lines = header.Lines?.Select(l => reqLineBuilder.Build(l, null)),
-                           Nominal = new NominalResource
-                                         {
-                                             NominalCode = header.Nominal?.NominalCode, 
-                                             Description = header.Nominal?.Description
-                                         },
-                           Department = new DepartmentResource
-                                         {
-                                             DepartmentCode = header.Department?.DepartmentCode,
-                                             Description = header.Department?.Description
-                                         },
-                           ReqType = header.ReqType,
-                           ManualPick = header.ManualPick, 
-                           Reference = header.Reference,
-                           FromStockPool = header.FromStockPool,
-                           ToStockPool = header.ToStockPool,
-                           RequiresAuthorisation = header.RequiresAuthorisation(),
-                           AuthorisedBy = header.AuthorisedBy?.Id,
-                           AuthorisedByName = header.AuthorisedBy?.Name,
-                           DateAuthorised = header.DateAuthorised?.ToString("o"),
-                           BatchDate = header.BatchDate?.ToString("o"),
-                           BatchRef = header.BatchRef,
-                           FromState = header.FromState,
-                           ToState = header.ToState,    
-                           AccountingCompanyCode = header.AccountingCompanyCode(),
-                           LoanNumber = header.LoanNumber,
-                           Document2 = header.Document2,
-                           Document2Name = header.Document2Name,
-                           WorkStationCode = header.WorkStationCode,
-                           FromCategory = header.FromCategory,
-                           ToCategory = header.ToCategory,
-                           NewPart = header.NewPart == null
+                                      {
+                                          PartNumber = header.Part.PartNumber,
+                                          Description = header.Part.Description
+                                      },
+                ToLocationId = header.ToLocation?.LocationId,
+                ToLocationCode = header.ToLocation?.LocationCode,
+                FromLocationId = header.FromLocation?.LocationId,
+                FromLocationCode = header.FromLocation?.LocationCode,
+                Document1Line = header.Document1Line,
+                ToPalletNumber = header.ToPalletNumber,
+                FromPalletNumber = header.FromPalletNumber,
+                Cancelled = header.Cancelled,
+                CancelledBy = header.CancelledBy?.Id,
+                CancelledByName = header.CancelledBy?.Name,
+                DateCancelled = header.DateCancelled?.ToString("o"),
+                CancelledReason = header.CancelledReason,
+                StoresFunction = storeFunctionBuilder.Build(header.StoresFunction, null),
+                Comments = header.Comments,
+                DateBooked = header.DateBooked?.ToString("o"),
+                BookedBy = header.BookedBy?.Id,
+                BookedByName = header.BookedBy?.Name,
+                CreatedBy = header.CreatedBy?.Id,
+                CreatedByName = header.CreatedBy?.Name,
+                IsReversed = header.IsReversed,
+                AuditLocation = header.AuditLocation,
+                Lines = header.Lines?.Select(l => reqLineBuilder.Build(l, null)),
+                Nominal = new NominalResource
+                {
+                    NominalCode = header.Nominal?.NominalCode,
+                    Description = header.Nominal?.Description
+                },
+                Department = new DepartmentResource
+                {
+                    DepartmentCode = header.Department?.DepartmentCode,
+                    Description = header.Department?.Description
+                },
+                ReqType = header.ReqType,
+                ManualPick = header.ManualPick,
+                Reference = header.Reference,
+                FromStockPool = header.FromStockPool,
+                ToStockPool = header.ToStockPool,
+                RequiresAuthorisation = header.RequiresAuthorisation(),
+                AuthorisedBy = header.AuthorisedBy?.Id,
+                AuthorisedByName = header.AuthorisedBy?.Name,
+                DateAuthorised = header.DateAuthorised?.ToString("o"),
+                BatchDate = header.BatchDate?.ToString("o"),
+                BatchRef = header.BatchRef,
+                FromState = header.FromState,
+                ToState = header.ToState,
+                AccountingCompanyCode = header.AccountingCompanyCode(),
+                LoanNumber = header.LoanNumber,
+                Document2 = header.Document2,
+                Document2Name = header.Document2Name,
+                WorkStationCode = header.WorkStationCode,
+                FromCategory = header.FromCategory,
+                ToCategory = header.ToCategory,
+                NewPart = header.NewPart == null
                                          ? null
                                          : new PartResource
-                                               {
-                                                   PartNumber = header.NewPart.PartNumber,
-                                                   Description = header.NewPart.Description
-                                               },
-                           IsReverseTransaction = header.IsReverseTransaction,
-                           OriginalReqNumber = header.OriginalReqNumber,
-                           Document3 = header.Document3,
-                           DateReceived = header.DateReceived?.ToString("o"),
-                           Links = this.BuildLinks(header, claims?.ToList()).ToArray()
-                       };
+                                         {
+                                             PartNumber = header.NewPart.PartNumber,
+                                             Description = header.NewPart.Description
+                                         },
+                IsReverseTransaction = header.IsReverseTransaction,
+                OriginalReqNumber = header.OriginalReqNumber,
+                Document3 = header.Document3,
+                DateReceived = header.DateReceived?.ToString("o"),
+                Links = this.BuildLinks(header, claims?.ToList()).ToArray()
+            };
         }
 
         public string GetLocation(RequisitionHeader model)
@@ -129,7 +129,7 @@
             {
                 yield return new LinkResource { Rel = "create", Href = "/requisitions/create" };
             }
-            
+
             if (this.authService.HasPermissionFor(AuthorisedActions.ReverseRequisition, claims))
             {
                 yield return new LinkResource { Rel = "create-reverse", Href = "/requisitions/create" };
@@ -180,7 +180,7 @@
                 if (model.StoresFunction?.FunctionCode == "BOOKSU")
                 {
                     var transaction = model.Lines?.FirstOrDefault()?.TransactionDefinition;
-    
+
                     var href = "/requisitions/print-qc-labels?";
                     href += $"&reqNumber={model.ReqNumber}";
                     href += $"&docType={model.Document1Name}";

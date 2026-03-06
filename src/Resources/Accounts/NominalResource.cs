@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Accounts
+namespace Linn.Stores2.Resources.Accounts
 {
     public class NominalResource
     {

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -20,7 +20,7 @@
                 .Returns(TestFunctionCodes.LoanOut);
             this.EmployeeRepository.FindByIdAsync(33087).Returns(new Employee());
             this.result = this.Sut.Validate(
-                33087, 
+                33087,
                 TestFunctionCodes.LoanOut.FunctionCode,
                 null,
                 123,

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
 
@@ -69,7 +69,7 @@
         public DateTime? DateBooked { get; protected set; }
 
         public DateTime? DateCancelled { get; protected set; }
-        
+
         public string State { get; protected set; }
 
         public string Category { get; protected set; }
@@ -100,7 +100,7 @@
             }
         }
 
-        public bool HasValidAllocation() => (this.StockLocatorId != null);
+        public bool HasValidAllocation() => this.StockLocatorId != null;
 
         public bool HasValidOnto() => (this.PalletNumber != null || this.LocationId != null) && !string.IsNullOrEmpty(this.StockPoolCode) && !string.IsNullOrEmpty(this.State) && !string.IsNullOrEmpty(this.Category);
 
@@ -180,7 +180,8 @@
                 if (this.StockLocator.StorageLocation != null)
                 {
                     textSummary += $"From {this.StockLocator.StorageLocation.LocationCode} ";
-                } else if (this.StockLocator.PalletNumber.HasValue)
+                }
+                else if (this.StockLocator.PalletNumber.HasValue)
                 {
                     textSummary += $"From Pallet {this.StockLocator.PalletNumber.Value} ";
                 }

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.RequisitionReportModuleTests
+namespace Linn.Stores2.Integration.Tests.RequisitionReportModuleTests
 {
     using System.Net.Http;
 
@@ -20,7 +20,7 @@
         protected HttpClient Client { get; set; }
 
         protected HttpResponseMessage Response { get; set; }
-        
+
         protected IRequisitionReportFacadeService RequisitionReportFacadeService { get; private set; }
 
         protected IRequisitionReportService RequisitionReportService { get; private set; }

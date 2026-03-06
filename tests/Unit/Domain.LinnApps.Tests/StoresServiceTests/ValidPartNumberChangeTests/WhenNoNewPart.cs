@@ -1,6 +1,7 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPartNumberChangeTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidPartNumberChangeTests
 {
     using System;
+
     using FluentAssertions;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using NUnit.Framework;

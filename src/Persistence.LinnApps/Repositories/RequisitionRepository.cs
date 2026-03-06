@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Persistence.LinnApps.Repositories
+namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
     using System;
     using System.Linq;
@@ -11,7 +11,7 @@
 
     using Microsoft.EntityFrameworkCore;
 
-    public class RequisitionRepository 
+    public class RequisitionRepository
         : EntityFrameworkRepository<RequisitionHeader, int>, IRequisitionRepository
     {
         private readonly ServiceDbContext serviceDbContext;

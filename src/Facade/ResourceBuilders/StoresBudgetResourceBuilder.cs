@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -24,7 +24,7 @@
             {
                 return null;
             }
-            
+
             var reqLineBuilder = new RequisitionLineResourceBuilder();
             var reqBuilder = new RequisitionResourceBuilder(this.authService);
             var builder = new StoresBudgetResourceWithoutReqLineBuilder();

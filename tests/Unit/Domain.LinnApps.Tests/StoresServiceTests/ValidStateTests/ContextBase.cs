@@ -12,6 +12,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.StoresServiceTests.ValidStateTests
         public StoresFunction StoresFunction { get; set; }
 
         public StoresTransactionState Type { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {

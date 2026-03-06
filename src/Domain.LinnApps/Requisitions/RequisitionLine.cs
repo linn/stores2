@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Requisitions
+namespace Linn.Stores2.Domain.LinnApps.Requisitions
 {
     using System;
     using System.Collections.Generic;
@@ -12,15 +12,11 @@
 
     public class RequisitionLine
     {
-        protected RequisitionLine()
-        {
-        }
-
         public RequisitionLine(
-            int reqNumber, 
-            int lineNumber, 
-            Part part, 
-            decimal qty, 
+            int reqNumber,
+            int lineNumber,
+            Part part,
+            decimal qty,
             StoresTransactionDefinition transaction,
             int? document1Number = null,
             int document1Line = 1,
@@ -54,18 +50,22 @@
             this.NominalAccountPostings = new List<RequisitionLinePosting>();
 
             this.Cancelled = "N";
-            
+
             this.Document1Number = document1Number ?? reqNumber;
-            this.Document1Line = string.IsNullOrEmpty(document1Name) ? lineNumber: document1Line;
+            this.Document1Line = string.IsNullOrEmpty(document1Name) ? lineNumber : document1Line;
             this.Document1Type = string.IsNullOrEmpty(document1Name) ? "REQ" : document1Name;
         }
-        
+
+        protected RequisitionLine()
+        {
+        }
+
         public int ReqNumber { get; protected init; }
 
         public int LineNumber { get; protected init; }
 
         public Part Part { get; protected set; }
-        
+
         public DateTime? DateCancelled { get; protected set; }
 
         public string CancelledReason { get; protected set; }
@@ -89,7 +89,7 @@
         public ICollection<RequisitionSerialNumber> SerialNumbers { get; protected set; }
 
         public decimal Qty { get; protected set; }
-        
+
         public StoresTransactionDefinition TransactionDefinition { get; protected set; }
 
         public string Cancelled { get; protected set; }
@@ -112,13 +112,13 @@
             }
 
             this.NominalAccountPostings.Add(new RequisitionLinePosting
-                                                {
-                                                    ReqNumber = this.ReqNumber,
-                                                    LineNumber = this.LineNumber,
-                                                    DebitOrCredit = debitOrCredit,
-                                                    Qty = qty,
-                                                    NominalAccount = nominalAccount
-                                                });
+            {
+                ReqNumber = this.ReqNumber,
+                LineNumber = this.LineNumber,
+                DebitOrCredit = debitOrCredit,
+                Qty = qty,
+                NominalAccount = nominalAccount
+            });
         }
 
         public decimal GetPostingQty(string debitOrCredit)
@@ -163,7 +163,7 @@
 
         public bool LineIsBookable()
         {
-            if (this.IsCancelled() || this.IsBooked() || this.Moves == null )
+            if (this.IsCancelled() || this.IsBooked() || this.Moves == null)
             {
                 return false;
             }
@@ -245,7 +245,7 @@
 
         public void AddSerialNumber(int serialNumber)
         {
-            var nextSeq = this.SerialNumbers.Any() ? this.SerialNumbers.Max(l => l.Sequence + 1)  : 1;
+            var nextSeq = this.SerialNumbers.Any() ? this.SerialNumbers.Max(l => l.Sequence + 1) : 1;
             if (this.SerialNumbers.Any(s => s.SerialNumber == serialNumber))
             {
                 throw new RequisitionException(
@@ -263,6 +263,7 @@
                     this.Moves.Where(m => m.StockLocator != null && !m.IsBooked() && !m.IsCancelled()).Sum(m => m.Quantity);
                 return this.Qty == totalQtyAllocated;
             }
+
             return false;
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
+namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
 {
     using System.Net.Http;
 
@@ -26,7 +26,7 @@
         protected HttpClient Client { get; set; }
 
         protected HttpResponseMessage Response { get; set; }
-        
+
         protected TestServiceDbContext DbContext { get; private set; }
 
         protected IAuthorisationService AuthorisationService { get; private set; }
@@ -44,14 +44,14 @@
 
             var transactionManager = new TransactionManager(this.DbContext);
 
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> stockPoolFacadeService 
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> stockPoolFacadeService
                 = new StockPoolFacadeService(
-                    stockPoolRepository, 
-                    transactionManager, 
+                    stockPoolRepository,
+                    transactionManager,
                     new StockPoolResourceBuilder(storageLocationResourceBuilder),
                     storageLocationRepository,
                     accountingCompanyRepository);
-            
+
             this.Client = TestClient.With<StockPoolModule>(
                 services =>
                     {
@@ -60,7 +60,7 @@
                         services.AddRouting();
                     });
         }
-        
+
         [OneTimeTearDown]
         public void TearDownContext()
         {
@@ -70,9 +70,9 @@
         [TearDown]
         public void Teardown()
         {
-           this.DbContext.AccountingCompanies.RemoveAllAndSave(this.DbContext);
-           this.DbContext.StorageLocations.RemoveAllAndSave(this.DbContext);
-           this.DbContext.StockPools.RemoveAllAndSave(this.DbContext);
+            this.DbContext.AccountingCompanies.RemoveAllAndSave(this.DbContext);
+            this.DbContext.StorageLocations.RemoveAllAndSave(this.DbContext);
+            this.DbContext.StockPools.RemoveAllAndSave(this.DbContext);
         }
     }
 }

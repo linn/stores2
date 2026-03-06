@@ -4,6 +4,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
     using System.Net;
 
     using FluentAssertions;
+
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Integration.Tests.Extensions;
@@ -23,26 +24,26 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
                 "A TEST STOCKPOOL",
                 DateTime.Now.ToString("o"),
                 new AccountingCompany
-                    {
-                        Description = "LINN LTD",
-                        Id = 123,
-                        Name = "E DONN",
-                        Sequence = 56
-                    },
+                {
+                    Description = "LINN LTD",
+                    Id = 123,
+                    Name = "E DONN",
+                    Sequence = 56
+                },
                 123,
                 "C",
                 1,
                 new StorageLocation
-                    {
-                        DateInvalid = DateTime.Today,
-                        LocationCode = "HERE",
-                        DefaultStockPool = "DEFAULT",
-                        Description = "THE DEFAULT DESC",
-                        LocationId = 6,
-                        LocationType = "STANDARD",
-                        SiteCode = "LINN",
-                        StorageTypeCode = "NEW"
-                    },
+                {
+                    DateInvalid = DateTime.Today,
+                    LocationCode = "HERE",
+                    DefaultStockPool = "DEFAULT",
+                    Description = "THE DEFAULT DESC",
+                    LocationId = 6,
+                    LocationType = "STANDARD",
+                    SiteCode = "LINN",
+                    StorageTypeCode = "NEW"
+                },
                 5,
                 "Y");
 
@@ -68,7 +69,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldReturnJsonBody()
         {

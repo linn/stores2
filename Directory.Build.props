@@ -1,0 +1,13 @@
+<Project>
+  <!-- This file is automatically imported by all projects in the solution -->
+
+  <ItemGroup>
+    <!-- StyleCop.Analyzers enforces the SA* rules defined in .editorconfig -->
+    <!-- The analyzer automatically discovers and uses .editorconfig files -->
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

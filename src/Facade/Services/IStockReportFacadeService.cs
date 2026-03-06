@@ -1,7 +1,8 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System.IO;
     using System.Threading.Tasks;
+
     using Linn.Common.Facade;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Stores2.Resources;
@@ -43,7 +44,7 @@
             string fromDate,
             string toDate,
             string accountingCompany = "LINN");
-			
+
         Task<IResult<ReportReturnResource>> LabourHoursInLoans();
 
         Task<string> LabourHoursInLoansAsHtml();

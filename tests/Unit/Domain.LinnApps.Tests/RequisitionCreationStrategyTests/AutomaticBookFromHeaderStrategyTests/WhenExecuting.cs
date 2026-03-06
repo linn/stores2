@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.AutomaticBookFromHeaderStrategyTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionCreationStrategyTests.AutomaticBookFromHeaderStrategyTests
 {
     using System.Collections.Generic;
     using System.Threading.Tasks;
@@ -24,7 +24,7 @@
                                                   };
             this.EmployeeRepository.FindByIdAsync(123).Returns(new Employee());
             this.AuthorisationService.HasPermissionFor(
-                    AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode), 
+                    AuthorisedActions.GetRequisitionActionByFunction(this.RequisitionCreationContext.Function.FunctionCode),
                     Arg.Any<List<string>>())
                 .Returns(true);
 

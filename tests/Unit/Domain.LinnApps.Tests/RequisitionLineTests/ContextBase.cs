@@ -6,7 +6,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionLineTests
 
     using NUnit.Framework;
 
-    public class ContextBase 
+    public class ContextBase
     {
         public RequisitionLine Sut { get; set; }
 

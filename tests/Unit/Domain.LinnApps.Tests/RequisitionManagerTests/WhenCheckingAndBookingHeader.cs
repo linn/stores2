@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 {
     using System.Threading.Tasks;
 
@@ -77,7 +77,7 @@
         {
             this.ReqStoredProcedures.DidNotReceive().CreateRequisitionLines(123, null);
         }
-        
+
         [Test]
         public void ShouldDoReq()
         {

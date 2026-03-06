@@ -19,7 +19,8 @@ namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
 
     public class WhenUpdating : ContextBase
     {
-        private PartStorageType partsStorageType, updatedPartsStorageType;
+        private PartStorageType partsStorageType;
+        private PartStorageType updatedPartsStorageType;
 
         private PartStorageTypeResource updateResource;
 
@@ -31,14 +32,13 @@ namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
         public void SetUp()
         {
             this.part = new Part
-                            {
-                                Id = 1,
-                                PartNumber = "Part No 1",
-                                Description = "Part 1"
-                            };
+            {
+                Id = 1,
+                PartNumber = "Part No 1",
+                Description = "Part 1"
+            };
 
             this.storageType = new StorageType { StorageTypeCode = "Storage Type No 1", };
-
 
             this.partsStorageType = new PartStorageType(
                 this.part,
@@ -50,32 +50,32 @@ namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
                 400);
 
             this.updateResource = new PartStorageTypeResource
-                                      { 
-                                          Part = new PartResource
-                                                     {
-                                                         PartNumber = this.part.PartNumber,
-                                                         Description = this.part.Description,
-                                                     },
-                                          PartNumber = this.part.PartNumber,
-                                          StorageType = new StorageTypeResource
-                                                            {
-                                                                StorageTypeCode = this.storageType.StorageTypeCode,
-                                                                Description = this.storageType.Description
-                                                            },
-                                          StorageTypeCode = this.storageType.StorageTypeCode,
-                                          Preference = "2",
-                                          BridgeId = 400,
-                                          Incr = 30,
-                                          Maximum = 50,
-                                          Remarks = "b"
-                                        };
+            {
+                Part = new PartResource
+                {
+                    PartNumber = this.part.PartNumber,
+                    Description = this.part.Description,
+                },
+                PartNumber = this.part.PartNumber,
+                StorageType = new StorageTypeResource
+                {
+                    StorageTypeCode = this.storageType.StorageTypeCode,
+                    Description = this.storageType.Description
+                },
+                StorageTypeCode = this.storageType.StorageTypeCode,
+                Preference = "2",
+                BridgeId = 400,
+                Incr = 30,
+                Maximum = 50,
+                Remarks = "b"
+            };
 
             this.updatedPartsStorageType = new PartStorageType(
                 this.part,
                 this.storageType,
                 "b",
                 100,
-                30, 
+                30,
                 "2",
                 400);
 
@@ -100,7 +100,7 @@ namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
             this.Response.Content.Headers.ContentType.Should().NotBeNull();
             this.Response.Content.Headers.ContentType?.ToString().Should().Be("application/json");
         }
-        
+
         [Test]
         public void ShouldUpdateEntity()
         {
@@ -109,7 +109,7 @@ namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
                          && x.StorageTypeCode == this.partsStorageType.StorageTypeCode)
                 .Remarks.Should().Be(this.updatedPartsStorageType.Remarks);
         }
-        
+
         [Test]
         public void ShouldReturnUpdatedJsonBody()
         {

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 {
     using System;
     using System.Linq.Expressions;
@@ -12,7 +12,9 @@
 
     public class WhenUpdatingPcasStorageTypeButPreferenceIsNull : ContextBase
     {
-        private PcasStorageType pcasStorageType, existingPcasStorageType;
+        private PcasStorageType pcasStorageType;
+
+        private PcasStorageType existingPcasStorageType;
 
         private PcasBoard pcasBoard;
 

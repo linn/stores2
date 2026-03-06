@@ -22,7 +22,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
     public class WhenCancellingLineAndUnallocatingFails : ContextBase
     {
         private RequisitionHeader req;
-        
+
         private Func<Task> action;
 
         [SetUp]
@@ -52,9 +52,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.AuthService.HasPermissionFor(
                 AuthorisedActions.CancelRequisition, Arg.Any<IEnumerable<string>>()).Returns(true);
             this.action = async () => await this.Sut.CancelLine(
-                                          123, 
+                                          123,
                                           1,
-                                          33087, 
+                                          33087,
                                           new List<string>(),
                                           "REASON");
         }

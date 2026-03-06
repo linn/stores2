@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Proxy.StoredProcedureClients
+namespace Linn.Stores2.Proxy.StoredProcedureClients
 {
     using System.Threading.Tasks;
 

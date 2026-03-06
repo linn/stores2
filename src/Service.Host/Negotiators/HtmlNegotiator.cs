@@ -50,8 +50,8 @@ namespace Linn.Stores2.Service.Host.Negotiators
                         ProxyRoot = ConfigurationManager.Configuration["PROXY_ROOT"],
                         entraLogoutUri = ConfigurationManager.Configuration["ENTRA_LOGOUT_URI"]
                     },
-                    Formatting.Indented,
-                    new JsonSerializerSettings
+                Formatting.Indented,
+                new JsonSerializerSettings
                         {
                             ContractResolver = new CamelCasePropertyNamesContractResolver()
                         });

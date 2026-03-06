@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StorageTypeServiceTests
 {
     using System;
     using System.Linq.Expressions;
@@ -22,6 +22,7 @@
         private StorageType storageType;
 
         private PartStorageTypeException result;
+
         [SetUp]
         public void SetUp()
         {

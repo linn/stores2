@@ -14,16 +14,16 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
 
     using NUnit.Framework;
 
-    public class ContextBase 
+    public class ContextBase
     {
         protected IRequisitionManager Sut { get; set; }
-        
+
         protected IAuthorisationService AuthService { get; set; }
-        
+
         protected IRequisitionRepository ReqRepository { get; set; }
 
         protected IRepository<Employee, int> EmployeeRepository { get; set; }
-        
+
         protected IRequisitionStoredProcedures ReqStoredProcedures { get; set; }
 
         protected IRepository<StoresFunction, string> StoresFunctionRepository { get; set; }
@@ -103,7 +103,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.RequisitionManagerTests
             this.StateRepository.FindByIdAsync("STORES").Returns(new StockState("STORES", "LOVELY STOCK"));
 
             this.Sut = new RequisitionManager(
-                this.AuthService, 
+                this.AuthService,
                 this.ReqRepository,
                 this.ReqStoredProcedures,
                 this.EmployeeRepository,

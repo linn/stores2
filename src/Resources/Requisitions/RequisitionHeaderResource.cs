@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Requisitions
+namespace Linn.Stores2.Resources.Requisitions
 {
     using System.Collections.Generic;
 
@@ -13,7 +13,7 @@
         public string DateCreated { get; set; }
 
         public int? Document1 { get; set; }
-        
+
         public int? Document1Line { get; set; }
 
         public string Document1Name { get; set; }
@@ -25,9 +25,9 @@
         public IEnumerable<RequisitionLineResource> Lines { get; set; }
 
         public decimal? Quantity { get; set; }
-        
+
         public PartResource Part { get; set; }
-        
+
         public int? ToLocationId { get; set; }
 
         public string ToLocationCode { get; set; }
@@ -43,7 +43,7 @@
         public string Cancelled { get; set; }
 
         public int? CancelledBy { get; set; }
-        
+
         public string CancelledByName { get; set; }
 
         public string DateCancelled { get; set; }
@@ -51,19 +51,19 @@
         public string CancelledReason { get; set; }
 
         public StoresFunctionResource StoresFunction { get; set; }
-        
+
         public string Comments { get; set; }
-        
+
         public int? BookedBy { get; set; }
-        
+
         public string BookedByName { get; set; }
-        
+
         public string DateBooked { get; set; }
-        
+
         public int? CreatedBy { get; set; }
-        
+
         public string CreatedByName { get; set; }
-        
+
         public string IsReversed { get; set; }
 
         public string IsReverseTransaction { get; set; }
@@ -105,11 +105,11 @@
         public string WorkStationCode { get; set; }
 
         public string FromCategory { get; set; }
-        
+
         public string ToCategory { get; set; }
 
         public PartResource NewPart { get; set; }
-  
+
         public int? OriginalReqNumber { get; set; }
 
         public int? Document3 { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.QcLabelPrinterServiceTests
 {
     using System;
     using System.Linq.Expressions;
@@ -22,7 +22,6 @@
         private LabelType kardexLabelType;
 
         private LabelType specifiedPrinterLabelType;
-
 
         [SetUp]
         public async Task SetUp()
@@ -90,5 +89,3 @@
         }
     }
 }
-
-

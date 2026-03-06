@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.StoresTransViewerTests
+namespace Linn.Stores2.Domain.LinnApps.Tests.StoresTransViewerTests
 {
     using System;
     using System.Collections.Generic;
@@ -78,7 +78,7 @@
             this.result.GetGridTextValue(0, 7).Should().Be("19.00");
             this.result.GetGridTextValue(0, 8).Should().Be("100");
             this.result.GetGridTextValue(0, 9).Should().Be("Ross Stewart");
-            this.result.GetGridTextValue(0,10).Should().Be("Req");
+            this.result.GetGridTextValue(0, 10).Should().Be("Req");
         }
     }
 }

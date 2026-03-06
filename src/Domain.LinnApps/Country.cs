@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps
+namespace Linn.Stores2.Domain.LinnApps
 {
     public class Country
     {
@@ -7,9 +7,9 @@
         }
 
         public Country(
-            string countryCode, 
-            string name, 
-            string displayName = null, 
+            string countryCode,
+            string name,
+            string displayName = null,
             string euMember = "N")
         {
             this.CountryCode = countryCode;

@@ -1,6 +1,7 @@
 ﻿namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
+
     using Linn.Common.Facade;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Resources.Imports;
