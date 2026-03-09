@@ -33,12 +33,15 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
 
         protected IAuthorisationService AuthorisationService { get; private set; }
 
+        protected IUserPrivilegeService UserPrivilegeService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
 
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            this.UserPrivilegeService = Substitute.For<IUserPrivilegeService>();
 
             var importBookRepository = new ImportBookRepository(this.DbContext);
             var employeeRepository
@@ -70,6 +73,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 services =>
                     {
                         services.AddSingleton(importBookService);
+                        services.AddSingleton(this.UserPrivilegeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

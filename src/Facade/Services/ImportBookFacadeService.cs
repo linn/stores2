@@ -91,6 +91,11 @@ namespace Linn.Stores2.Facade.Services
             ImportBookResource updateResource,
             IEnumerable<string> privileges = null)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to update import books");
+            }
+
             var update = new ImportUpdate
                          {
                              CustomsEntryCode = updateResource.CustomsEntryCode,
