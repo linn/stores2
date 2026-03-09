@@ -1,7 +1,6 @@
 namespace Linn.Stores2.TestData.Currencies
 {
     using Linn.Stores2.Domain.LinnApps;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
 
     public static class TestCurrencies
     {
