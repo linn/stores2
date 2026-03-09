@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useAuth } from 'react-oidc-context';
 import { useNavigate, useParams } from 'react-router-dom';
 import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
 import {
+    DatePicker,
     ErrorCard,
     InputField,
     Loading,
-    SaveBackCancelButtons
+    SaveBackCancelButtons,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -23,7 +26,7 @@ function ImportBookUtility({ creating }) {
         send: getImportBook,
         isLoading,
         result: importBookGetResult
-    } = useGet(itemTypes.importBooks.url);
+    } = useGet(itemTypes.importBooks.url, true);
 
     const {
         send: createImportBook,
@@ -31,7 +34,18 @@ function ImportBookUtility({ creating }) {
         errorMessage: createError
     } = usePost(itemTypes.importBooks.url, true, true);
 
-    if (!creating && !hasFetched) {
+    const {
+        send: updateImportBook,
+        isLoading: updateLoading,
+        errorMessage: updateError,
+        postResult: updateResult,
+        clearPostResult: clearUpdateResult
+    } = usePost(itemTypes.importBooks.url, true, false);
+
+    const auth = useAuth();
+    const token = auth.user?.access_token;
+
+    if (!creating && !hasFetched && token) {
         setHasFetched(true);
         getImportBook(id);
     }
@@ -49,9 +63,67 @@ function ImportBookUtility({ creating }) {
         setImportBook({});
     }
 
+    useEffect(() => {
+        if (updateResult) {
+            setImportBook(updateResult);
+            clearUpdateResult();
+        }
+    }, [updateResult, clearUpdateResult]);
+
+    const canChange = () => {
+        if (creating) {
+            return utilities.getHref(importBookGetResult, 'create');
+        }
+        return importBookGetResult ? utilities.getHref(importBookGetResult, 'update') : false;
+    };
+
     const handleFieldChange = (propertyName, newValue) => {
         setImportBook(current => ({ ...current, [propertyName]: newValue }));
         setChangesMade(true);
+    };
+
+    const totalCurrencyfields = (value1, value2) => {
+        const num1 = parseFloat(value1) || 0;
+        const num2 = parseFloat(value2) || 0;
+        return num1 + num2;
+    };
+
+    const handleNumberFieldChange = (propertyName, newValue) => {
+        if (!newValue || newValue.toString().trim() === '') {
+            handleFieldChange(propertyName, null);
+        } else {
+            // Remove any non-numeric characters, keeping only digits and decimal point
+            const cleanedValue = newValue.toString().replace(/[^0-9.]/g, '');
+
+            // Count decimal points - should be 0 or 1
+            const decimalCount = (cleanedValue.match(/\./g) || []).length;
+
+            if (cleanedValue === '' || decimalCount > 1) {
+                handleFieldChange(propertyName, null);
+            } else {
+                // Handle cases like just "." or empty after cleaning
+                if (cleanedValue === '.') {
+                    handleFieldChange(propertyName, null);
+                } else {
+                    // Store the string value to preserve decimal point during input
+                    // This allows typing "2." and continuing with "2.5" without losing the decimal
+                    handleFieldChange(propertyName, cleanedValue);
+
+                    // do a bit of totalling - convert strings to numbers for proper addition
+                    if (propertyName === 'linnVat') {
+                        handleFieldChange(
+                            'totalDuty',
+                            totalCurrencyfields(importBook.linnDuty, cleanedValue)
+                        );
+                    } else if (propertyName === 'linnDuty') {
+                        handleFieldChange(
+                            'totalDuty',
+                            totalCurrencyfields(importBook.linnVat, cleanedValue)
+                        );
+                    }
+                }
+            }
+        }
     };
 
     return (
@@ -64,8 +136,13 @@ function ImportBookUtility({ creating }) {
                         </List>
                     </Grid>
                 )}
+                {updateError && (
+                    <Grid size={12}>
+                        <ErrorCard errorMessage={updateError} />
+                    </Grid>
+                )}
 
-                {isLoading || createLoading ? (
+                {isLoading || createLoading || updateLoading ? (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -141,6 +218,73 @@ function ImportBookUtility({ creating }) {
                             </Grid>
                             <Grid size={3}>
                                 <InputField
+                                    value={importBook.customsEntryCodePrefix}
+                                    fullWidth
+                                    label="Prefix"
+                                    propertyName="customsEntryCodePrefix"
+                                    onChange={handleFieldChange}
+                                    disabled={!canChange()}
+                                />
+                            </Grid>
+                            <Grid size={6}>
+                                <InputField
+                                    value={importBook.customsEntryCode}
+                                    fullWidth
+                                    label="Customs Entry Code"
+                                    propertyName="customsEntryCode"
+                                    onChange={handleFieldChange}
+                                    disabled={!canChange()}
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <DatePicker
+                                    value={importBook.customsEntryCodeDate}
+                                    label="Customs Entry Date"
+                                    propertyName="customsEntryCodeDate"
+                                    onChange={handleFieldChange}
+                                    disabled={!canChange()}
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    value={importBook.currency}
+                                    fullWidth
+                                    label="Currency"
+                                    propertyName="currency"
+                                    onChange={handleFieldChange}
+                                    disabled={!canChange()}
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    value={importBook.linnDuty}
+                                    fullWidth
+                                    label="Linn Duty (A00 value GBP)"
+                                    propertyName="linnDuty"
+                                    onChange={handleNumberFieldChange}
+                                    disabled={!canChange()}
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    value={importBook.linnVat}
+                                    fullWidth
+                                    label="Linn VAT (B00 value GBP)"
+                                    propertyName="linnVat"
+                                    onChange={handleNumberFieldChange}
+                                    disabled={!canChange()}
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
+                                    value={importBook.totalDuty}
+                                    disabled
+                                    label="Total Duty (GBP)"
+                                    propertyName="totalDuty"
+                                />
+                            </Grid>
+                            <Grid size={3}>
+                                <InputField
                                     disabled
                                     value={importBook.carrierId}
                                     fullWidth
@@ -166,6 +310,8 @@ function ImportBookUtility({ creating }) {
 
                                         if (creating) {
                                             createImportBook(null, importBook);
+                                        } else {
+                                            updateImportBook(id, importBook);
                                         }
                                     }}
                                     saveDisabled={!changesMade}

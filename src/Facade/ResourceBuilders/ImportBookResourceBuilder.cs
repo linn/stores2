@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Resources;
     using Linn.Stores2.Domain.LinnApps;
@@ -18,14 +19,18 @@
 
         private readonly IBuilder<ImportBookInvoiceDetail> invoiceDetailResourceBuilder;
 
+        private readonly IAuthorisationService authService;
+
         public ImportBookResourceBuilder(
                 IBuilder<ImportBookPostEntry> postEntryResourceBuilder,
                 IBuilder<ImportBookOrderDetail> orderDetailResourceBuilder,
-                IBuilder<ImportBookInvoiceDetail> invoiceDetailResourceBuilder)
+                IBuilder<ImportBookInvoiceDetail> invoiceDetailResourceBuilder,
+                IAuthorisationService authService)
         {
-            this.postEntryResourceBuilder = postEntryResourceBuilder;
-            this.orderDetailResourceBuilder = orderDetailResourceBuilder;
-            this.invoiceDetailResourceBuilder = invoiceDetailResourceBuilder;
+             this.postEntryResourceBuilder = postEntryResourceBuilder;
+             this.orderDetailResourceBuilder = orderDetailResourceBuilder;
+             this.invoiceDetailResourceBuilder = invoiceDetailResourceBuilder;
+             this.authService = authService;
         }
 
         public ImportBookResource Build(ImportBook model, IEnumerable<string> claims)
@@ -49,7 +54,9 @@
                 CarrierId = model.CarrierId,
                 CarrierName = model.Carrier?.Name,
                 ForeignCurrency = model.ForeignCurrency,
-                Currency = model.Currency,
+                Currency = model.CurrencyCode,
+                BaseCurrency = model.BaseCurrency?.Code,
+                ExchangeCurrency = model.ExchangeCurrency?.Code,
                 TransportId = model.TransportId,
                 TransportBillNumber = model.TransportBillNumber,
                 TransactionId = model.TransactionId,
@@ -62,6 +69,7 @@
                 CustomsEntryCodeDate = model.CustomsEntryCodeDate?.ToString("o"),
                 LinnDuty = model.LinnDuty,
                 LinnVat = model.LinnVat,
+                TotalDuty = model.TotalDuty,
                 DateCancelled = model.DateCancelled?.ToString("o"),
                 CancelledBy = model.CancelledBy,
                 CancelledReason = model.CancelledReason,
@@ -74,7 +82,7 @@
                 ImportBookPostEntries = model.PostEntries != null ? model.PostEntries.Select(e => (ImportBookPostEntryResource)this.postEntryResourceBuilder.Build(e, claims)) : new List<ImportBookPostEntryResource>(),
                 ImportBookOrderDetails = model.OrderDetails != null ? model.OrderDetails.Select(o => (ImportBookOrderDetailResource)this.orderDetailResourceBuilder.Build(o, claims)) : new List<ImportBookOrderDetailResource>(),
                 ImportBookInvoiceDetails = model.InvoiceDetails != null ? model.InvoiceDetails.Select(i => (ImportBookInvoiceDetailResource)this.invoiceDetailResourceBuilder.Build(i, claims)) : new List<ImportBookInvoiceDetailResource>(),
-                Links = this.BuildLinks(model).ToArray()
+                Links = this.BuildLinks(model, claims?.ToList()).ToArray()
             };
         }
 
@@ -86,9 +94,24 @@
         object IBuilder<ImportBook>.Build(ImportBook import, IEnumerable<string> claims) =>
             this.Build(import, claims);
 
-        private IEnumerable<LinkResource> BuildLinks(ImportBook importBook)
+        private IEnumerable<LinkResource> BuildLinks(ImportBook model, IList<string> claims)
         {
-            yield return new LinkResource { Rel = "self", Href = this.GetLocation(importBook) };
+            if (model != null && model.Id > 0)
+            {
+                yield return new LinkResource { Rel = "self", Href = this.GetLocation(model) };
+
+                if (this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, claims))
+                {
+                    yield return new LinkResource { Rel = "update", Href = this.GetLocation(model) };
+                }
+            }
+            else
+            {
+                if (this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, claims))
+                {
+                    yield return new LinkResource { Rel = "create", Href = "/stores2/import-books" };
+                }
+            }
         }
     }
 }

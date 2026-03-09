@@ -1,6 +1,8 @@
-﻿namespace Linn.Stores2.Service.Modules
+namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
+
+    using Common.Authorisation;
 
     using Linn.Common.Facade;
     using Linn.Common.Service;
@@ -22,6 +24,7 @@
             app.MapGet("/stores2/import-books/{id:int}", this.GetById);
             app.MapGet("/stores2/import-books/create", this.GetApp);
             app.MapPost("/stores2/import-books", this.Create);
+            app.MapPost("/stores2/import-books/{id:int}", this.Update);
         }
 
         private async Task SearchImports(
@@ -31,11 +34,16 @@
         }
 
         private async Task GetById(
+            HttpRequest req,
             HttpResponse res,
             int id,
+            IUserPrivilegeService userPrivilegeService,
             IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> service)
         {
-            await res.Negotiate(await service.GetById(id));
+            var employeeUrl = req.HttpContext.User.GetEmployeeUrl();
+            var privs = await userPrivilegeService.GetUserPrivileges(employeeUrl);
+
+            await res.Negotiate(await service.GetById(id, privs));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -47,6 +55,7 @@
             HttpRequest req,
             HttpResponse res,
             ImportBookResource resource,
+            IUserPrivilegeService userPrivilegeService,
             IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> service)
         {
             if (resource.CreatedById == null)
@@ -54,7 +63,25 @@
                 resource.CreatedById = req.HttpContext.User.GetEmployeeNumber();
             }
 
-            await res.Negotiate(await service.Add(resource));
+            var employeeUrl = req.HttpContext.User.GetEmployeeUrl();
+            var privs = await userPrivilegeService.GetUserPrivileges(employeeUrl);
+
+            await res.Negotiate(await service.Add(resource, privs));
+        }
+
+        private async Task Update(
+            HttpResponse res,
+            HttpRequest req,
+            int id,
+            ImportBookResource resource,
+            IUserPrivilegeService userPrivilegeService,
+            IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> service)
+        {
+            var employeeUrl = req.HttpContext.User.GetEmployeeUrl();
+            var privs = await userPrivilegeService.GetUserPrivileges(employeeUrl);
+
+            await res.Negotiate(
+                await service.Update(id, resource, privs));
         }
     }
 }

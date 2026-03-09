@@ -36,6 +36,10 @@
 
         public string Currency { get; set; }
 
+        public string BaseCurrency { get; set; }
+
+        public string ExchangeCurrency { get; set; }
+
         public string CustomsEntryCode { get; set; }
 
         public string CustomsEntryCodeDate { get; set; }
@@ -59,6 +63,8 @@
         public decimal? LinnDuty { get; set; }
 
         public decimal? LinnVat { get; set; }
+
+        public decimal? TotalDuty { get; set; }
 
         public int? NumCartons { get; set; }
 

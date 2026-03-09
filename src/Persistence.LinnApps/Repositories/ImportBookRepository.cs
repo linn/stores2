@@ -27,6 +27,9 @@
                        .Include(i => i.Supplier).ThenInclude(s => s.Country)
                        .Include(i => i.Carrier)
                        .Include(i => i.CreatedBy)
+                       .Include(i => i.Currency)
+                       .Include(i => i.BaseCurrency)
+                       .Include(i => i.ExchangeCurrency)
                        .FirstOrDefaultAsync(r => r.Id == key);
         }
     }

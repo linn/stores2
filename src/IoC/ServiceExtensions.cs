@@ -146,6 +146,13 @@ namespace Linn.Stores2.IoC
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)
         {
+            services.AddHttpClient<IRestClient, RestClient>();
+
+            services.AddHttpClient<IUserPrivilegeService, UserPrivilegesService>(client =>
+            {
+                client.BaseAddress = new System.Uri(ConfigurationManager.Configuration["PROXY_ROOT"]);
+            });
+
             return services.AddScoped<IBuilder<Carrier>, CarrierResourceBuilder>()
                 .AddScoped<IBuilder<Country>, CountryResourceBuilder>()
                 .AddScoped<IReportReturnResourceBuilder, ReportReturnResourceBuilder>()

@@ -53,7 +53,6 @@ import AuditLocationSearch from './components/AuditLocationSearch';
 function Requisition({ creating }) {
     const navigate = useNavigate();
     const { userNumber, name, userName } = useUserProfile();
-    console.log(userNumber, name, userName);
     const { reqNumber } = useParams();
 
     const {

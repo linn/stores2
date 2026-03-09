@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Imports
+namespace Linn.Stores2.Domain.LinnApps.Imports
 {
     using System;
     using System.Collections.Generic;
@@ -31,6 +31,16 @@
                 throw new ImportBookException("Carrier not supplied");
             }
 
+            if (candidate.Currency == null)
+            {
+                throw new ImportBookException("Currency not supplied");
+            }
+
+            if (candidate.BaseCurrency == null)
+            {
+                throw new ImportBookException("Base Currency not supplied");
+            }
+
             this.Id = candidate.Id;
             this.DateCreated = DateTime.UtcNow;
             this.CreatedBy = candidate.CreatedBy;
@@ -39,6 +49,16 @@
             this.Supplier = candidate.Supplier;
             this.CarrierId = candidate.Carrier.Id;
             this.Carrier = candidate.Carrier;
+            this.Currency = candidate.Currency;
+            this.CurrencyCode = candidate.Currency?.Code;
+            this.BaseCurrency = candidate.BaseCurrency;
+            this.ExchangeCurrency = candidate.ExchangeCurrency;
+
+            this.UpdateCustomsEntry(candidate.CustomsEntryCodePrefix, candidate.CustomsEntryCode, candidate.CustomsEntryCodeDate);
+
+            this.LinnDuty = candidate.LinnDuty;
+            this.LinnVat = candidate.LinnVat;
+
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
             this.PostEntries = new List<ImportBookPostEntry>();
@@ -60,19 +80,23 @@
 
         public int CarrierId { get; set; }
 
+        public string CurrencyCode { get; set; }
+
+        public Currency Currency { get; set; }
+
+        public Currency BaseCurrency { get; set; }
+
+        public Currency ExchangeCurrency { get; set; }
+
         public DateTime? ArrivalDate { get; set; }
 
         public string ArrivalPort { get; set; }
-
-        public string BaseCurrency { get; set; }
 
         public int? CancelledBy { get; set; }
 
         public string CancelledReason { get; set; }
 
         public string Comments { get; set; }
-
-        public string Currency { get; set; }
 
         public string CustomsEntryCode { get; set; }
 
@@ -83,8 +107,6 @@
         public DateTime? DateCancelled { get; set; }
 
         public string DeliveryTermCode { get; set; }
-
-        public string ExchangeCurrency { get; set; }
 
         public decimal? ExchangeRate { get; set; }
 
@@ -119,5 +141,27 @@
         public int TransportId { get; set; }
 
         public decimal? Weight { get; set; }
+
+        public decimal? TotalDuty => this.LinnDuty + this.LinnVat;
+
+        public void Update(ImportUpdate update)
+        {
+            this.UpdateCustomsEntry(update.CustomsEntryCodePrefix, update.CustomsEntryCode, update.CustomsEntryCodeDate);
+
+            this.LinnDuty = update.LinnDuty;
+            this.LinnVat = update.LinnVat;
+        }
+
+        public void UpdateCustomsEntry(string prefix, string entryCode, DateTime? entryDate)
+        {
+            if (!string.IsNullOrEmpty(prefix) && prefix.Length > 3)
+            {
+                throw new ImportBookException("Customs Entry Code Prefix must be 3 characters or less");
+            }
+
+            this.CustomsEntryCode = entryCode;
+            this.CustomsEntryCodeDate = entryDate;
+            this.CustomsEntryCodePrefix = prefix;
+        }
     }
 }
