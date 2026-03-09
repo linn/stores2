@@ -12,6 +12,12 @@
 
         public Supplier Carrier { get; set; }
 
+        public Currency Currency { get; set; }
+
+        public Currency BaseCurrency { get; set; }
+
+        public Currency ExchangeCurrency { get; set; }
+
         public string CustomsEntryCode { get; set; }
 
         public DateTime? CustomsEntryCodeDate { get; set; }

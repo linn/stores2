@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.ImportBookTests
+namespace Linn.Stores2.Integration.Tests.ImportBookTests
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -11,6 +11,7 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
+    using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.Employees;
     using Linn.Stores2.TestData.Suppliers;
 
@@ -33,12 +34,15 @@
                 CreatedById = TestEmployees.SophlyBard.Id,
                 SupplierId = TestSuppliers.TaktAndTon.Id,
                 CarrierId = TestSuppliers.DHLLogistics.Id,
+                Currency = TestCurrencies.SwedishKrona.Code
             };
 
             // setup data
             this.DbContext.Employees.AddAndSave(this.DbContext, TestEmployees.SophlyBard);
             this.DbContext.Suppliers.AddAndSave(this.DbContext, TestSuppliers.TaktAndTon);
             this.DbContext.Suppliers.AddAndSave(this.DbContext, TestSuppliers.DHLLogistics);
+
+            this.SetupCurrencies();
 
             this.Response = this.Client.PostAsJsonAsync($"/stores2/import-books", this.createResource).Result;
         }

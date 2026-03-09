@@ -36,6 +36,10 @@
 
         public string Currency { get; set; }
 
+        public string BaseCurrency { get; set; }
+
+        public string ExchangeCurrency { get; set; }
+
         public string CustomsEntryCode { get; set; }
 
         public string CustomsEntryCodeDate { get; set; }

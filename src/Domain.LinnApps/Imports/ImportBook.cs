@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Imports
+namespace Linn.Stores2.Domain.LinnApps.Imports
 {
     using System;
     using System.Collections.Generic;
@@ -31,6 +31,16 @@
                 throw new ImportBookException("Carrier not supplied");
             }
 
+            if (candidate.Currency == null)
+            {
+                throw new ImportBookException("Currency not supplied");
+            }
+
+            if (candidate.BaseCurrency == null)
+            {
+                throw new ImportBookException("Base Currency not supplied");
+            }
+
             this.Id = candidate.Id;
             this.DateCreated = DateTime.UtcNow;
             this.CreatedBy = candidate.CreatedBy;
@@ -39,6 +49,10 @@
             this.Supplier = candidate.Supplier;
             this.CarrierId = candidate.Carrier.Id;
             this.Carrier = candidate.Carrier;
+            this.Currency = candidate.Currency;
+            this.CurrencyCode = candidate.Currency?.Code;
+            this.BaseCurrency = candidate.BaseCurrency;
+            this.ExchangeCurrency = candidate.ExchangeCurrency;
 
             this.UpdateCustomsEntry(candidate.CustomsEntryCodePrefix, candidate.CustomsEntryCode, candidate.CustomsEntryCodeDate);
 
@@ -66,19 +80,23 @@
 
         public int CarrierId { get; set; }
 
+        public string CurrencyCode { get; set; }
+
+        public Currency Currency { get; set; }
+
+        public Currency BaseCurrency { get; set; }
+
+        public Currency ExchangeCurrency { get; set; }
+
         public DateTime? ArrivalDate { get; set; }
 
         public string ArrivalPort { get; set; }
-
-        public string BaseCurrency { get; set; }
 
         public int? CancelledBy { get; set; }
 
         public string CancelledReason { get; set; }
 
         public string Comments { get; set; }
-
-        public string Currency { get; set; }
 
         public string CustomsEntryCode { get; set; }
 
@@ -89,8 +107,6 @@
         public DateTime? DateCancelled { get; set; }
 
         public string DeliveryTermCode { get; set; }
-
-        public string ExchangeCurrency { get; set; }
 
         public decimal? ExchangeRate { get; set; }
 

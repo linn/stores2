@@ -111,6 +111,8 @@ namespace Linn.Stores2.Persistence.LinnApps
 
         public DbSet<Supplier> Suppliers { get; set; }
 
+        public DbSet<Currency> Currencies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -179,6 +181,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildImportBookOrderDetails(builder);
             BuildImportBookPostEntries(builder);
             BuildImportBookCpcNumbers(builder);
+            BuildCurrencies(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1206,7 +1209,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.ParcelNumber).HasColumnName("PARCEL_NUMBER");
             q.Property(e => e.SupplierId).HasColumnName("SUPPLIER_ID");
             q.Property(e => e.ForeignCurrency).HasColumnName("FOREIGN_CURRENCY").HasMaxLength(1);
-            q.Property(e => e.Currency).HasColumnName("CURRENCY").HasMaxLength(4);
+            q.Property(e => e.CurrencyCode).HasColumnName("CURRENCY").HasMaxLength(4);
             q.Property(e => e.CarrierId).HasColumnName("CARRIER_ID");
             q.Property(e => e.TransportId).HasColumnName("TRANSPORT_ID");
             q.Property(e => e.TransportBillNumber).HasColumnName("TRANSPORT_BILL_NUMBER").HasMaxLength(30);
@@ -1232,8 +1235,6 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
             q.Property(e => e.ExchangeRate).HasColumnName("EXCHANGE_RATE").HasMaxLength(20);
             q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
-            q.Property(e => e.ExchangeCurrency).HasColumnName("EXCHANGE_CURRENCY");
-            q.Property(e => e.BaseCurrency).HasColumnName("BASE_CURRENCY");
             q.HasMany(t => t.InvoiceDetails).WithOne()
                 .HasForeignKey(detail => detail.ImportBookId);
             q.HasMany(t => t.OrderDetails).WithOne()
@@ -1243,6 +1244,9 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasOne(d => d.Supplier).WithOne().HasForeignKey<ImportBook>(s => s.SupplierId);
             q.HasOne(d => d.Carrier).WithOne().HasForeignKey<ImportBook>(s => s.CarrierId);
             q.HasOne(d => d.CreatedBy).WithOne().HasForeignKey<ImportBook>(s => s.CreatedById);
+            q.HasOne(d => d.Currency).WithOne().HasForeignKey<ImportBook>(s => s.CurrencyCode);
+            q.HasOne(d => d.BaseCurrency).WithOne().HasForeignKey<ImportBook>("BASE_CURRENCY");
+            q.HasOne(d => d.ExchangeCurrency).WithOne().HasForeignKey<ImportBook>("EXCHANGE_CURRENCY");
         }
 
         private static void BuildImportBookInvoiceDetails(ModelBuilder builder)
@@ -1295,13 +1299,21 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.Vat).HasColumnName("VAT");
         }
 
-        private void BuildImportBookCpcNumbers(ModelBuilder builder)
+        private static void BuildImportBookCpcNumbers(ModelBuilder builder)
         {
             var q = builder.Entity<ImportBookCpcNumber>().ToTable("IMPBOOK_CPC_NUMBERS");
             q.HasKey(e => e.CpcNumber);
             q.Property(e => e.CpcNumber).HasColumnName("CPC_NUMBER");
             q.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(30);
             q.Property(e => e.DateInvalid).HasColumnName("DATE_INVALID");
+        }
+
+        private static void BuildCurrencies(ModelBuilder builder)
+        {
+            var e = builder.Entity<Currency>().ToTable("CURRENCIES");
+            e.HasKey(s => s.Code);
+            e.Property(a => a.Code).HasColumnName("CODE").HasMaxLength(4);
+            e.Property(a => a.Name).HasColumnName("NAME").HasMaxLength(50);
         }
     }
 }

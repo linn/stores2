@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Integration.Tests.ImportBookTests
+namespace Linn.Stores2.Integration.Tests.ImportBookTests
 {
     using System.Net;
 
@@ -10,6 +10,7 @@
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
+    using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.Employees;
     using Linn.Stores2.TestData.Suppliers;
 
@@ -26,7 +27,9 @@
                                 {
                                     CreatedBy = TestEmployees.SophlyBard,
                                     Supplier = TestSuppliers.TaktAndTon,
-                                    Carrier = TestSuppliers.DHLLogistics
+                                    Carrier = TestSuppliers.DHLLogistics,
+                                    Currency = TestCurrencies.SwedishKrona,
+                                    BaseCurrency = TestCurrencies.UKPound
                                 };
 
             this.importBook = new ImportBook(candidate)

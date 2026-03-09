@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.Services
+namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
@@ -23,6 +23,8 @@
 
         private readonly IQueryRepository<Supplier> supplierRepository;
 
+        private readonly IQueryRepository<Currency> currencyRepository;
+
         private readonly IAuthorisationService authService;
 
         public ImportBookFacadeService(
@@ -30,6 +32,7 @@
             IDatabaseSequenceService databaseSequenceService,
             IRepository<Employee, int> employeeRepository,
             IQueryRepository<Supplier> supplierRepository,
+            IQueryRepository<Currency> currencyRepository,
             ITransactionManager transactionManager,
             IAuthorisationService authService,
             IBuilder<ImportBook> resourceBuilder)
@@ -38,6 +41,7 @@
             this.databaseSequenceService = databaseSequenceService;
             this.employeeRepository = employeeRepository;
             this.supplierRepository = supplierRepository;
+            this.currencyRepository = currencyRepository;
             this.authService = authService;
         }
 
@@ -62,12 +66,20 @@
                                ? await this.supplierRepository.FindByAsync(s => s.Id == resource.CarrierId)
                                : null;
 
+            var currency = string.IsNullOrEmpty(resource.Currency)
+                               ? null
+                               : await this.currencyRepository.FindByAsync(c => c.Code == resource.Currency);
+
+            var baseCurrency = await this.currencyRepository.FindByAsync(c => c.Code == "GBP");
+
             var candidate = new ImportCandidate
             {
                 Id = await this.databaseSequenceService.NextImportBookId(),
                 CreatedBy = createdBy,
                 Supplier = supplier,
-                Carrier = carrier
+                Carrier = carrier,
+                Currency = currency,
+                BaseCurrency = baseCurrency
             };
 
             return new ImportBook(candidate);

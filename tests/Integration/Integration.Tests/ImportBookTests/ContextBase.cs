@@ -14,6 +14,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Service.Modules;
+    using Linn.Stores2.TestData.Currencies;
+    using Linn.Stores2.TestData.Employees;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -43,6 +45,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 = new EntityFrameworkRepository<Employee, int>(this.DbContext.Employees);
             var supplierRepository
                 = new EntityFrameworkQueryRepository<Supplier>(this.DbContext.Suppliers);
+            var currencyRepository
+                = new EntityFrameworkQueryRepository<Currency>(this.DbContext.Currencies);
 
             var transactionManager = new TransactionManager(this.DbContext);
             var databaseSequenceService = new TestDatabaseSequenceService();
@@ -53,6 +57,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     databaseSequenceService,
                     employeeRepository,
                     supplierRepository,
+                    currencyRepository,
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(
@@ -81,6 +86,13 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
         {
             this.DbContext.ImportBooks.RemoveAllAndSave(this.DbContext);
             this.DbContext.Employees.RemoveAllAndSave(this.DbContext);
+        }
+
+        public void SetupCurrencies()
+        {
+            this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.UKPound);
+            this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.SwedishKrona);
+            this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.USDollar);
         }
     }
 }
