@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
 
@@ -29,7 +29,8 @@
                            TariffCode = model.TariffCode,
                            InsNumber = model.InsNumber,
                            VatRate = model.VatRate,
-                           PostDuty = model.PostDuty
+                           PostDuty = model.PostDuty,
+                           LineDocument = model.LineDocument()
                        };
         }
 

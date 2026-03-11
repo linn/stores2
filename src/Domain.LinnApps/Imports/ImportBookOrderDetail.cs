@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Imports
+namespace Linn.Stores2.Domain.LinnApps.Imports
 {
     public class ImportBookOrderDetail
     {
@@ -41,5 +41,25 @@
         public string PostDuty { get; set; }
 
         public ImportBookCpcNumber ImportBookCpcNumber { get; set; }
+
+        public int? LineDocument()
+        {
+            if (this.LineType == "RSN")
+            {
+                return this.RsnNumber;
+            }
+
+            if (this.LineType == "PO" || this.LineType == "RO")
+            {
+                return this.OrderNumber;
+            }
+
+            if (this.LineType == "LOAN")
+            {
+                return this.LoanNumber;
+            }
+
+            return null;
+        }
     }
 }

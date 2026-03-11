@@ -72,6 +72,12 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public Employee CreatedBy { get; set; }
 
+        public DateTime? DateReceived { get; set; }
+
+        public DateTime? DateInstructionSent { get; set; }
+
+        public Employee ContactEmployee { get; set; }
+
         public int SupplierId { get; set; }
 
         public Supplier Supplier { get; set; }
@@ -141,8 +147,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public int TransportId { get; set; }
 
         public decimal? Weight { get; set; }
-
-        public decimal? TotalDuty => this.LinnDuty + this.LinnVat;
 
         public void Update(ImportUpdate update)
         {

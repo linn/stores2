@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Imports
+namespace Linn.Stores2.Resources.Imports
 {
     using System.Collections.Generic;
 
@@ -13,6 +13,14 @@
         public int? CreatedById { get; set; }
 
         public string CreatedByName { get; set; }
+
+        public string DateReceived { get; set; }
+
+        public string DateInstructionSent { get; set; }
+
+        public int? ContactEmployeeId { get; set; }
+
+        public string ContactEmployeeName { get; set; }
 
         public int SupplierId { get; set; }
 
@@ -63,8 +71,6 @@
         public decimal? LinnDuty { get; set; }
 
         public decimal? LinnVat { get; set; }
-
-        public decimal? TotalDuty { get; set; }
 
         public int? NumCartons { get; set; }
 
