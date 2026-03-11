@@ -61,7 +61,8 @@ const itemTypes = {
     labourHoursInLoansReport: {
         url: `${config.appRoot}/stores2/reports/labour-hours-in-loans/report`
     },
-    importBooks: { url: `${config.appRoot}/stores2/import-books` }
+    importBooks: { url: `${config.appRoot}/stores2/import-books` },
+    rsns: { url: `${config.proxyRoot}/service/rsns` }
 };
 
 export default itemTypes;

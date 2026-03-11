@@ -182,6 +182,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildImportBookPostEntries(builder);
             BuildImportBookCpcNumbers(builder);
             BuildCurrencies(builder);
+            BuildImportMaster(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1206,6 +1207,8 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasKey(e => e.Id);
             q.Property(e => e.Id).HasColumnName("IMPBOOK_ID");
             q.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");
+            q.Property(e => e.DateReceived).HasColumnName("DATE_RECEIVED");
+            q.Property(e => e.DateInstructionSent).HasColumnName("DATE_INSTRUCTION_SENT");
             q.Property(e => e.ParcelNumber).HasColumnName("PARCEL_NUMBER");
             q.Property(e => e.SupplierId).HasColumnName("SUPPLIER_ID");
             q.Property(e => e.ForeignCurrency).HasColumnName("FOREIGN_CURRENCY").HasMaxLength(1);
@@ -1247,6 +1250,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasOne(d => d.Currency).WithOne().HasForeignKey<ImportBook>(s => s.CurrencyCode);
             q.HasOne(d => d.BaseCurrency).WithOne().HasForeignKey<ImportBook>("BASE_CURRENCY");
             q.HasOne(d => d.ExchangeCurrency).WithOne().HasForeignKey<ImportBook>("EXCHANGE_CURRENCY");
+            q.HasOne(d => d.ContactEmployee).WithOne().HasForeignKey<ImportBook>("CONTACT_EMPLOYEE");
         }
 
         private static void BuildImportBookInvoiceDetails(ModelBuilder builder)
@@ -1314,6 +1318,17 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.HasKey(s => s.Code);
             e.Property(a => a.Code).HasColumnName("CODE").HasMaxLength(4);
             e.Property(a => a.Name).HasColumnName("NAME").HasMaxLength(50);
+        }
+
+        private static void BuildImportMaster(ModelBuilder builder)
+        {
+            var e = builder.Entity<ImportMaster>().ToTable("IMPORT_MASTER");
+            e.HasNoKey();
+            e.Property(a => a.TelephoneNumber).HasColumnName("TELEPHONE_NUMBER").HasMaxLength(50);
+            e.Property(a => a.EmailAddress).HasColumnName("EMAIL_ADDRESS").HasMaxLength(50);
+            e.Property(a => a.VatRegistrationNumber).HasColumnName("VAT_REGISTRATION_NUMBER").HasMaxLength(20);
+            e.Property(a => a.EORINumber).HasColumnName("EORI_NUMBER").HasMaxLength(50);
+            e.HasOne(e => e.Address).WithMany().HasForeignKey("ADDRESS_ID");
         }
     }
 }

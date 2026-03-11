@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Resources.Imports
+namespace Linn.Stores2.Resources.Imports
 {
     using Linn.Common.Resources;
 
@@ -39,5 +39,7 @@
         public int? VatRate { get; set; }
 
         public string PostDuty { get; set; }
+
+        public int? LineDocument { get; set; }
     }
 }

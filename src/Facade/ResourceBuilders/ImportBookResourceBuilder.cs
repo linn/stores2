@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Facade.ResourceBuilders
+namespace Linn.Stores2.Facade.ResourceBuilders
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -41,6 +41,10 @@
                 DateCreated = model.DateCreated.ToString("o"),
                 CreatedById = model.CreatedById,
                 CreatedByName = model.CreatedBy?.Name,
+                DateReceived = model.DateReceived?.ToString("o"),
+                DateInstructionSent = model.DateInstructionSent?.ToString("o"),
+                ContactEmployeeId = model.ContactEmployee?.Id,
+                ContactEmployeeName = model.ContactEmployee?.Name,
                 ParcelNumber = model.ParcelNumber,
                 SupplierId = model.SupplierId,
                 SupplierName = model.Supplier?.Name,
@@ -69,7 +73,6 @@
                 CustomsEntryCodeDate = model.CustomsEntryCodeDate?.ToString("o"),
                 LinnDuty = model.LinnDuty,
                 LinnVat = model.LinnVat,
-                TotalDuty = model.TotalDuty,
                 DateCancelled = model.DateCancelled?.ToString("o"),
                 CancelledBy = model.CancelledBy,
                 CancelledReason = model.CancelledReason,

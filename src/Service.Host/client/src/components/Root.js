@@ -41,7 +41,7 @@ import DailyEuRsnImportReport from './DailyEuRsnImportReport';
 import LabourHoursInStockReport from './LabourHoursInStockReport';
 import LabourHoursSummaryReport from './LabourHoursSummaryReport';
 import LabourHoursInLoansReport from './LabourHoursInLoansReport';
-import ImportBooksSearch from './imports/ImportBooksSearch';
+import ImportBookHome from './imports/ImportBookHome';
 import ImportBookUtility from './imports/ImportBookUtility';
 
 function Root() {
@@ -179,7 +179,7 @@ function Root() {
                     path="/stores2/reports/labour-hours-summary"
                     element={<LabourHoursSummaryReport />}
                 />
-                <Route path="/stores2/import-books" element={<ImportBooksSearch />} />
+                <Route path="/stores2/import-books" element={<ImportBookHome />} />
                 <Route path="/stores2/import-books/:id" element={<ImportBookUtility />} />
                 <Route
                     path="/stores2/import-books/create"

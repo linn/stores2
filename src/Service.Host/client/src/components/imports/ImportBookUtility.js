@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useNavigate, useParams } from 'react-router-dom';
-import List from '@mui/material/List';
 import Grid from '@mui/material/Grid';
 import {
     DatePicker,
@@ -18,6 +17,7 @@ import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 import usePost from '../../hooks/usePost';
 import Page from '../Page';
+import OrderDetails from './OrderDetails';
 
 function ImportBookUtility({ creating }) {
     const [hasFetched, setHasFetched] = useState(false);
@@ -82,12 +82,6 @@ function ImportBookUtility({ creating }) {
         setChangesMade(true);
     };
 
-    const totalCurrencyfields = (value1, value2) => {
-        const num1 = parseFloat(value1) || 0;
-        const num2 = parseFloat(value2) || 0;
-        return num1 + num2;
-    };
-
     const handleNumberFieldChange = (propertyName, newValue) => {
         if (!newValue || newValue.toString().trim() === '') {
             handleFieldChange(propertyName, null);
@@ -108,19 +102,6 @@ function ImportBookUtility({ creating }) {
                     // Store the string value to preserve decimal point during input
                     // This allows typing "2." and continuing with "2.5" without losing the decimal
                     handleFieldChange(propertyName, cleanedValue);
-
-                    // do a bit of totalling - convert strings to numbers for proper addition
-                    if (propertyName === 'linnVat') {
-                        handleFieldChange(
-                            'totalDuty',
-                            totalCurrencyfields(importBook.linnDuty, cleanedValue)
-                        );
-                    } else if (propertyName === 'linnDuty') {
-                        handleFieldChange(
-                            'totalDuty',
-                            totalCurrencyfields(importBook.linnVat, cleanedValue)
-                        );
-                    }
                 }
             }
         }
@@ -131,9 +112,7 @@ function ImportBookUtility({ creating }) {
             <Grid container spacing={3}>
                 {createError && (
                     <Grid size={12}>
-                        <List>
-                            <ErrorCard errorMessage={createError} />
-                        </List>
+                        <ErrorCard errorMessage={createError} />
                     </Grid>
                 )}
                 {updateError && (
@@ -275,14 +254,7 @@ function ImportBookUtility({ creating }) {
                                     disabled={!canChange()}
                                 />
                             </Grid>
-                            <Grid size={3}>
-                                <InputField
-                                    value={importBook.totalDuty}
-                                    disabled
-                                    label="Total Duty (GBP)"
-                                    propertyName="totalDuty"
-                                />
-                            </Grid>
+                            <Grid size={3} />
                             <Grid size={3}>
                                 <InputField
                                     disabled
@@ -302,6 +274,7 @@ function ImportBookUtility({ creating }) {
                                 />
                             </Grid>
                             <Grid size={3} />
+                            <OrderDetails orderDetails={importBook.importBookOrderDetails} />
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/import-books')}
