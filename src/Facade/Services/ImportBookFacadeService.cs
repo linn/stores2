@@ -15,7 +15,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Resources.Imports;
 
-    public class ImportBookFacadeService : AsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource>
+    public class ImportBookFacadeService : AsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource>, IImportBookFacadeService
     {
         private readonly IRepository<Employee, int> employeeRepository;
 
@@ -25,7 +25,11 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IQueryRepository<Currency> currencyRepository;
 
+        private readonly IQueryRepository<Rsn> rsnRepository;
+
         private readonly IAuthorisationService authService;
+
+        private readonly IBuilder<ImportBook> resourceBuilder;
 
         public ImportBookFacadeService(
             IRepository<ImportBook, int> repository,
@@ -33,6 +37,7 @@ namespace Linn.Stores2.Facade.Services
             IRepository<Employee, int> employeeRepository,
             IQueryRepository<Supplier> supplierRepository,
             IQueryRepository<Currency> currencyRepository,
+            IQueryRepository<Rsn> rsnRepository,
             ITransactionManager transactionManager,
             IAuthorisationService authService,
             IBuilder<ImportBook> resourceBuilder)
@@ -42,6 +47,8 @@ namespace Linn.Stores2.Facade.Services
             this.employeeRepository = employeeRepository;
             this.supplierRepository = supplierRepository;
             this.currencyRepository = currencyRepository;
+            this.rsnRepository = rsnRepository;
+            this.resourceBuilder = resourceBuilder;
             this.authService = authService;
         }
 
@@ -135,6 +142,33 @@ namespace Linn.Stores2.Facade.Services
         protected override Expression<Func<ImportBook, bool>> FindExpression(ImportBookResource searchResource)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IResult<ImportBookResource>> InitialiseImportBook(string rsnNumbers, IEnumerable<string> privileges)
+        {
+            var setup = new ImportSetup();
+
+            if (!string.IsNullOrEmpty(rsnNumbers))
+            {
+                foreach (var rsnStringId in rsnNumbers.Split(','))
+                {
+                    if (!int.TryParse(rsnStringId, out var rsnNumber))
+                    {
+                        return new BadRequestResult<ImportBookResource>($"Invalid RSN number: {rsnStringId}");
+                    }
+
+                    var rsn = await this.rsnRepository.FindByAsync(r => r.RsnNumber == rsnNumber);
+                    if (rsn == null)
+                    {
+                        throw new NotFoundException($"Rsn not found: {rsnStringId}");
+                    }
+
+                    setup.AddRsn(rsn);
+                }
+            }
+
+            var importBook = new ImportBook(setup);
+            return new SuccessResult<ImportBookResource>((ImportBookResource)this.resourceBuilder.Build(importBook, privileges));
         }
     }
 }

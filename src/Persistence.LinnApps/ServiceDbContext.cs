@@ -113,6 +113,8 @@ namespace Linn.Stores2.Persistence.LinnApps
 
         public DbSet<Currency> Currencies { get; set; }
 
+        public DbSet<Rsn> Rsns { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -183,6 +185,10 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildImportBookCpcNumbers(builder);
             BuildCurrencies(builder);
             BuildImportMaster(builder);
+            BuildTariffs(builder);
+            BuildSalesArticles(builder);
+            BuildRsns(builder);
+            BuildSalesOutlets(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1287,6 +1293,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.POLineNumber).HasColumnName("PO_LINE_NUMBER").HasMaxLength(2);
             q.Property(e => e.PostDuty).HasColumnName("POST_DUTY").HasMaxLength(1);
             q.HasOne(e => e.ImportBookCpcNumber).WithMany().HasForeignKey(f => f.CpcNumber);
+            q.HasOne(e => e.Rsn).WithMany().HasForeignKey(f => f.RsnNumber);
         }
 
         private static void BuildImportBookPostEntries(ModelBuilder builder)
@@ -1329,6 +1336,55 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.Property(a => a.VatRegistrationNumber).HasColumnName("VAT_REGISTRATION_NUMBER").HasMaxLength(20);
             e.Property(a => a.EORINumber).HasColumnName("EORI_NUMBER").HasMaxLength(50);
             e.HasOne(e => e.Address).WithMany().HasForeignKey("ADDRESS_ID");
+        }
+
+        private static void BuildTariffs(ModelBuilder builder)
+        {
+            var q = builder.Entity<Tariff>().ToTable("TARIFFS");
+            q.HasKey(e => e.TariffId);
+            q.Property(e => e.TariffId).HasColumnName("TARIFF_ID").HasMaxLength(3);
+            q.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE").HasMaxLength(14);
+            q.Property(e => e.ValidForIPR).HasColumnName("VALID_FOR_IPR").HasMaxLength(1);
+            q.Property(e => e.DateInvalid).HasColumnName("DATE_INVALID");
+        }
+
+        private void BuildSalesArticles(ModelBuilder builder)
+        {
+            var e = builder.Entity<SalesArticle>().ToTable("SALES_ARTICLES");
+            e.HasKey(a => a.ArticleNumber);
+            e.Property(a => a.ArticleNumber).HasColumnName("ARTICLE_NUMBER");
+            e.Property(a => a.PhaseOutDate).HasColumnName("PHASE_OUT_DATE");
+            e.Property(a => a.Description).HasColumnName("INVOICE_DESCRIPTION");
+            e.Property(a => a.TariffId).HasColumnName("TARIFF_ID").HasMaxLength(3);
+            e.Property(a => a.Weight).HasColumnName("WEIGHT").HasMaxLength(10);
+            e.HasOne(a => a.Tariff).WithOne().HasForeignKey<SalesArticle>(x => x.TariffId);
+        }
+
+        private void BuildRsns(ModelBuilder builder)
+        {
+            var q = builder.Entity<Rsn>().ToTable("RSNS");
+            q.HasKey(e => e.RsnNumber);
+            q.Property(e => e.RsnNumber).HasColumnName("RSN_NUMBER");
+            q.Property(e => e.ArticleNumber).HasColumnName("ARTICLE_NUMBER").HasMaxLength(14);
+            q.Property(e => e.Quantity).HasColumnName("QUANTITY").HasMaxLength(5);
+            q.Property(e => e.AccountId).HasColumnName("ACCOUNT_ID");
+            q.Property(e => e.OutletNumber).HasColumnName("OUTLET_NUMBER");
+            q.Property(e => e.Ipr).HasColumnName("IPR");
+            q.HasOne(a => a.SalesArticle).WithMany().HasForeignKey(z => z.ArticleNumber);
+            q.HasOne(s => s.SalesOutlet).WithMany().HasForeignKey(a => new { a.AccountId, a.OutletNumber });
+        }
+
+        private static void BuildSalesOutlets(ModelBuilder builder)
+        {
+            var e = builder.Entity<SalesOutlet>().ToTable("SALES_OUTLETS");
+            e.HasKey(s => new { s.AccountId, s.OutletNumber });
+            e.Property(a => a.AccountId).HasColumnName("ACCOUNT_ID");
+            e.Property(a => a.OutletNumber).HasColumnName("OUTLET_NUMBER");
+            e.Property(a => a.Name).HasColumnName("NAME").HasMaxLength(50);
+            e.Property(a => a.DateInvalid).HasColumnName("DATE_INVALID");
+            e.HasOne(r => r.OutletAddress).WithMany().HasForeignKey("OUTLET_ADDRESS");
+            e.Property(a => a.CarrierCode).HasColumnName("CARRIER_CODE").HasMaxLength(10);
+            e.Property(a => a.Terms).HasColumnName("DISPATCH_TERMS").HasMaxLength(10);
         }
     }
 }

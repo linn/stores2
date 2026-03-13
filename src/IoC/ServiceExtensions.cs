@@ -141,7 +141,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>()
                 .AddScoped<IStockReportFacadeService, StockReportFacadeService>()
-                .AddScoped<IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource>, ImportBookFacadeService>();
+                .AddScoped<IImportBookFacadeService, ImportBookFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

@@ -64,6 +64,18 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.PostEntries = new List<ImportBookPostEntry>();
         }
 
+        public ImportBook(ImportSetup setup)
+        {
+            this.OrderDetails = new List<ImportBookOrderDetail>();
+            this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
+            this.PostEntries = new List<ImportBookPostEntry>();
+
+            foreach (var candidate in setup.OrderDetailCandidates())
+            {
+                this.AddOrderDetail(new ImportBookOrderDetail(candidate));
+            }
+        }
+
         public int Id { get; set; }
 
         public DateTime DateCreated { get; set; }
@@ -166,6 +178,13 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.CustomsEntryCode = entryCode;
             this.CustomsEntryCodeDate = entryDate;
             this.CustomsEntryCodePrefix = prefix;
+        }
+
+        public void AddOrderDetail(ImportBookOrderDetail orderDetail)
+        {
+            orderDetail.ImportBookId = this.Id;
+            orderDetail.LineNumber = this.OrderDetails.Count + 1;
+            this.OrderDetails.Add(orderDetail);
         }
     }
 }
