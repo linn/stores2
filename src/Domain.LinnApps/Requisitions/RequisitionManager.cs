@@ -857,6 +857,16 @@ namespace Linn.Stores2.Domain.LinnApps.Requisitions
 
             if (req.Department != null && req.Nominal != null)
             {
+                if (req.Department.DateClosed.HasValue)
+                {
+                    throw new CreateRequisitionException($"Department {req.Department.DepartmentCode} was closed on {req.Department.DateClosed.Value:dd MMM yyyy}");
+                }
+
+                if (req.Nominal.DateClosed.HasValue)
+                {
+                    throw new CreateRequisitionException($"Nominal {req.Nominal.NominalCode} was closed on {req.Nominal.DateClosed.Value:dd MMM yyyy}");
+                }
+
                 await this.storesService.ValidNominalAccount(
                     req.Department.DepartmentCode,
                     req.Nominal.NominalCode);
