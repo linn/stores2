@@ -15,7 +15,6 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Service.Modules;
     using Linn.Stores2.TestData.Currencies;
-    using Linn.Stores2.TestData.Employees;
 
     using Microsoft.Extensions.DependencyInjection;
 
@@ -64,8 +63,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(
-                        new ImportBookPostEntryResourceBuilder(), 
-                        new ImportBookOrderDetailResourceBuilder(), 
+                        new ImportBookPostEntryResourceBuilder(),
+                        new ImportBookOrderDetailResourceBuilder(),
                         new ImportBookInvoiceDetailResourceBuilder(),
                         this.AuthorisationService));
 

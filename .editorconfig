@@ -46,6 +46,9 @@ resharper_wrap_arguments_style = chop_if_long
 # Wrap method parameters in declarations
 resharper_wrap_parameters_style = chop_if_long
 
+# Place first parameter on new line after opening parenthesis when wrapping
+resharper_wrap_before_first_method_declaration_parameter = true
+
 # Wrap object and collection initializers
 resharper_wrap_object_and_collection_initializer_style = chop_if_long
 
@@ -116,6 +119,9 @@ dotnet_diagnostic.SA1633.severity = none
 
 # SA1652: Enable XML documentation output
 dotnet_diagnostic.SA1652.severity = none
+
+# SA1116: Split parameters should start on line after declaration
+dotnet_diagnostic.SA1116.severity = warning
 
 # .NET Code Style Settings
 

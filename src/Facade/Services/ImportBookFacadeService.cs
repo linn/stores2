@@ -85,7 +85,6 @@ namespace Linn.Stores2.Facade.Services
             return new ImportBook(candidate);
         }
 
-
         protected override async Task UpdateFromResourceAsync(
             ImportBook entity,
             ImportBookResource updateResource,
