@@ -14,9 +14,9 @@ namespace Linn.Stores2.Domain.LinnApps
 
         public const string StorageLocationAdmin = "stores.storage-locations.admin";
 
-        private const string FunctionsPrefix = "stores.requisitions.functions";
-
         public const string ImportBookAdmin = "import-books.admin";
+
+        private const string FunctionsPrefix = "stores.requisitions.functions";
 
         public static string GetRequisitionActionByFunction(string functionCode)
         {
