@@ -3,7 +3,6 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using System.Net.Http;
 
     using Linn.Common.Authorisation;
-    using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
@@ -12,7 +11,6 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
-    using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Service.Modules;
     using Linn.Stores2.TestData.Currencies;
 
@@ -49,17 +47,19 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 = new EntityFrameworkQueryRepository<Supplier>(this.DbContext.Suppliers);
             var currencyRepository
                 = new EntityFrameworkQueryRepository<Currency>(this.DbContext.Currencies);
+            var rsnRepository = new EntityFrameworkQueryRepository<Rsn>(this.DbContext.Rsns);
 
             var transactionManager = new TransactionManager(this.DbContext);
             var databaseSequenceService = new TestDatabaseSequenceService();
 
-            IAsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource> importBookService
+            IImportBookFacadeService importBookService
                 = new ImportBookFacadeService(
                     importBookRepository,
                     databaseSequenceService,
                     employeeRepository,
                     supplierRepository,
                     currencyRepository,
+                    rsnRepository,
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(

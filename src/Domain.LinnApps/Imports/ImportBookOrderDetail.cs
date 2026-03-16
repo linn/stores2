@@ -1,7 +1,48 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports
 {
+    using System.Linq;
+
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
+
+    using Linn.Stores2.Domain.LinnApps.Imports.Models;
+
     public class ImportBookOrderDetail
     {
+        public ImportBookOrderDetail()
+        {
+            // for ef
+        }
+
+        public ImportBookOrderDetail(ImportOrderDetailCandidate candidate)
+        {
+            this.ImportBookId = candidate.ImportBookId;
+
+            if (candidate.LineType == "RSN")
+            {
+                if (candidate.Rsn == null)
+                {
+                    throw new ImportBookException("RSN order detail has no RSN supplied");
+                }
+
+                if (!candidate.Rsn.ExportRsn)
+                {
+                    throw new ImportBookException("RSN order detail is not for an export RSN");
+                }
+
+                if (candidate.Rsn.ImportBookOrderDetails.Any(d => d.ImportBookId != this.ImportBookId))
+                {
+                    throw new ImportBookException("RSN order detail is already associated with a different import book");
+                }
+            }
+
+            this.LineType = candidate.LineType;
+            this.Qty = candidate.Qty;
+            this.OrderDescription = candidate.OrderDescription;
+            this.TariffCode = candidate.TariffCode;
+            this.Rsn = candidate.Rsn;
+            this.RsnNumber = candidate.Rsn?.RsnNumber;
+        }
+
         public int? CpcNumber { get; set; }
 
         public decimal DutyValue { get; set; }
@@ -29,6 +70,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public int Qty { get; set; }
 
         public int? RsnNumber { get; set; }
+
+        public Rsn Rsn { get; set; }
 
         public string TariffCode { get; set; }
 

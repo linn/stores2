@@ -22,6 +22,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
             return await this.serviceDbContext
                        .ImportBooks
                        .Include(r => r.OrderDetails).ThenInclude(o => o.ImportBookCpcNumber)
+                       .Include(r => r.OrderDetails).ThenInclude(o => o.Rsn)
                        .Include(i => i.InvoiceDetails)
                        .Include(i => i.PostEntries)
                        .Include(i => i.Supplier).ThenInclude(s => s.Country)

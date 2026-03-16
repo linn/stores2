@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
 import {
     DatePicker,
@@ -22,6 +22,7 @@ import OrderDetails from './OrderDetails';
 function ImportBookUtility({ creating }) {
     const [hasFetched, setHasFetched] = useState(false);
     const { id } = useParams();
+    const [searchParams] = useSearchParams();
     const {
         send: getImportBook,
         isLoading,
@@ -50,6 +51,13 @@ function ImportBookUtility({ creating }) {
         getImportBook(id);
     }
 
+    if (creating && !hasFetched && token) {
+        setHasFetched(true);
+        const queryString = searchParams.toString();
+        const path = queryString ? `initialise?${queryString}` : 'initialise';
+        getImportBook(path);
+    }
+
     const navigate = useNavigate();
 
     const [importBook, setImportBook] = useState();
@@ -57,10 +65,6 @@ function ImportBookUtility({ creating }) {
 
     if (importBookGetResult && !importBook) {
         setImportBook(importBookGetResult);
-    }
-
-    if (creating && !importBook) {
-        setImportBook({});
     }
 
     useEffect(() => {
@@ -274,7 +278,11 @@ function ImportBookUtility({ creating }) {
                                 />
                             </Grid>
                             <Grid size={3} />
-                            <OrderDetails orderDetails={importBook.importBookOrderDetails} />
+                            <OrderDetails
+                                orderDetails={importBook.importBookOrderDetails}
+                                canChange={canChange()}
+                                handleFieldChange={handleFieldChange}
+                            />
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/import-books')}

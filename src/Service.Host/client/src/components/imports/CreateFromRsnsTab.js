@@ -46,7 +46,7 @@ function CreateFromRsnsTab() {
 
     if (rsnResult && !rsns.some(r => r.rsnNumber === rsnNumber)) {
         if (rsnResult.salesOutlet) {
-            if (rsnResult.salesOutlet.countryCode == 'GB') {
+            if (rsnResult.salesOutlet.countryCode === 'GB') {
                 setError('Not an import');
                 clearData();
             } else if (rsns.length > 0 && rsnResult.salesOutlet != rsns[0].salesOutlet) {

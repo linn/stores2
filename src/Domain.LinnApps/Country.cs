@@ -30,6 +30,9 @@ namespace Linn.Stores2.Domain.LinnApps
 
         public bool IsEuMember => this.EuMember == "Y";
 
+        // greatest country in the world not matter what the beavers and haters say
+        public bool IsGreatBritain => this.CountryCode == "GB";
+
         public string BestName => string.IsNullOrEmpty(this.DisplayName) ? this.Name : this.DisplayName;
     }
 }
