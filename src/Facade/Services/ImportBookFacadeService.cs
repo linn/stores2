@@ -145,6 +145,11 @@ namespace Linn.Stores2.Facade.Services
 
         public async Task<IResult<ImportBookResource>> InitialiseImportBook(string rsnNumbers, IEnumerable<string> privileges)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to create import books");
+            }
+
             var setup = new ImportSetup();
 
             if (!string.IsNullOrEmpty(rsnNumbers))

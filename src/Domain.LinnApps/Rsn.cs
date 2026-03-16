@@ -26,7 +26,7 @@ namespace Linn.Stores2.Domain.LinnApps
 
         public SalesArticle SalesArticle { get; set; }
 
-        public IEnumerable<ImportBookOrderDetail> ImportBookOrderDetails { get; set; }
+        public ICollection<ImportBookOrderDetail> ImportBookOrderDetails { get; set; }
 
         public bool ExportRsn => this.SalesOutlet != null && this.SalesOutlet.ExportOutlet;
     }

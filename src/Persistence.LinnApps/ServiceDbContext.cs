@@ -1373,7 +1373,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasOne(a => a.SalesArticle).WithMany().HasForeignKey(z => z.ArticleNumber);
             q.HasOne(s => s.SalesOutlet).WithMany().HasForeignKey(a => new { a.AccountId, a.OutletNumber });
             q.HasMany(r => r.ImportBookOrderDetails).WithOne(d => d.Rsn)
-                .HasForeignKey(detail => detail.ImportBookId);
+                .HasForeignKey(detail => detail.RsnNumber);
         }
 
         private static void BuildSalesOutlets(ModelBuilder builder)

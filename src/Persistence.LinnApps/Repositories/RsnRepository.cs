@@ -24,12 +24,12 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
 
         public override async Task<Rsn> FindByAsync(Expression<Func<Rsn, bool>> expression)
         {
-            return this.serviceDbContext.Rsns
+            return await this.serviceDbContext.Rsns
                 .Include(r => r.SalesOutlet).ThenInclude(o => o.OutletAddress).ThenInclude(a => a.Country)
                 .Include(r => r.SalesArticle).ThenInclude(a => a.Tariff)
                 .Include(r => r.ImportBookOrderDetails)
                 .Where(expression)
-                .SingleOrDefault();
+                .SingleOrDefaultAsync();
         }
     }
 }
