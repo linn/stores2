@@ -1293,7 +1293,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.POLineNumber).HasColumnName("PO_LINE_NUMBER").HasMaxLength(2);
             q.Property(e => e.PostDuty).HasColumnName("POST_DUTY").HasMaxLength(1);
             q.HasOne(e => e.ImportBookCpcNumber).WithMany().HasForeignKey(f => f.CpcNumber);
-            q.HasOne(e => e.Rsn).WithMany().HasForeignKey(f => f.RsnNumber);
+            q.HasOne(e => e.Rsn).WithMany(i => i.ImportBookOrderDetails).HasForeignKey(f => f.RsnNumber);
         }
 
         private static void BuildImportBookPostEntries(ModelBuilder builder)
@@ -1372,6 +1372,8 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.Ipr).HasColumnName("IPR");
             q.HasOne(a => a.SalesArticle).WithMany().HasForeignKey(z => z.ArticleNumber);
             q.HasOne(s => s.SalesOutlet).WithMany().HasForeignKey(a => new { a.AccountId, a.OutletNumber });
+            q.HasMany(r => r.ImportBookOrderDetails).WithOne(d => d.Rsn)
+                .HasForeignKey(detail => detail.ImportBookId);
         }
 
         private static void BuildSalesOutlets(ModelBuilder builder)

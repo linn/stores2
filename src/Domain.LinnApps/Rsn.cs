@@ -6,6 +6,8 @@ namespace Linn.Stores2.Domain.LinnApps
     using System.Text;
     using System.Threading.Tasks;
 
+    using Imports;
+
     public class Rsn
     {
         public int RsnNumber { get; set; }
@@ -23,6 +25,8 @@ namespace Linn.Stores2.Domain.LinnApps
         public string ArticleNumber { get; set; }
 
         public SalesArticle SalesArticle { get; set; }
+
+        public IEnumerable<ImportBookOrderDetail> ImportBookOrderDetails { get; set; }
 
         public bool ExportRsn => this.SalesOutlet != null && this.SalesOutlet.ExportOutlet;
     }

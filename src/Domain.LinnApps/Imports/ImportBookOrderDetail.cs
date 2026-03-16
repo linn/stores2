@@ -1,5 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports
 {
+    using System.Linq;
+
     using Linn.Stores2.Domain.LinnApps.Exceptions;
 
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
@@ -13,6 +15,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public ImportBookOrderDetail(ImportOrderDetailCandidate candidate)
         {
+            this.ImportBookId = candidate.ImportBookId;
+
             if (candidate.LineType == "RSN")
             {
                 if (candidate.Rsn == null)
@@ -23,6 +27,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 if (!candidate.Rsn.ExportRsn)
                 {
                     throw new ImportBookException("RSN order detail is not for an export RSN");
+                }
+
+                if (candidate.Rsn.ImportBookOrderDetails.Any(d => d.ImportBookId != this.ImportBookId))
+                {
+                    throw new ImportBookException("RSN order detail is already associated with a different import book");
                 }
             }
 

@@ -27,6 +27,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
             return this.serviceDbContext.Rsns
                 .Include(r => r.SalesOutlet).ThenInclude(o => o.OutletAddress).ThenInclude(a => a.Country)
                 .Include(r => r.SalesArticle).ThenInclude(a => a.Tariff)
+                .Include(r => r.ImportBookOrderDetails)
                 .Where(expression)
                 .SingleOrDefault();
         }

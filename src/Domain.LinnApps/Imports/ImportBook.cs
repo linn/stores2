@@ -2,6 +2,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;

@@ -22,6 +22,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.TariffCode = rsn.SalesArticle?.Tariff?.TariffCode;
         }
 
+        public int ImportBookId { get; set; }
+
         public string LineType { get; set; }
 
         public int Qty { get; set; }
