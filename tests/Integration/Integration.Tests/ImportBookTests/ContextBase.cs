@@ -63,8 +63,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(
-                        new ImportBookPostEntryResourceBuilder(), 
-                        new ImportBookOrderDetailResourceBuilder(), 
+                        new ImportBookPostEntryResourceBuilder(),
+                        new ImportBookOrderDetailResourceBuilder(),
                         new ImportBookInvoiceDetailResourceBuilder(),
                         this.AuthorisationService));
 

@@ -3,16 +3,13 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
     using System;
 
     using FluentAssertions;
-
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
+    using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.Employees;
     using Linn.Stores2.TestData.Suppliers;
-
     using NUnit.Framework;
-
-    using Linn.Stores2.TestData.Currencies;
 
     public class WhenCustomsEntryPrefixTooLong
     {

@@ -64,7 +64,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                     if (loc.StartsWith("P"))
                     {
                         stockLocators.AddRange(this.stockLocatorRepository
-                            .FilterBy(s => s.CurrentStock == "Y" && int.Parse(loc.Substring(1)) == s.PalletNumber));
+                            .FilterBy(s => s.Quantity > 0 && int.Parse(loc.Substring(1)) == s.PalletNumber));
                     }
                     else
                     {
