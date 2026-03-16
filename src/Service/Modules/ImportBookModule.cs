@@ -3,11 +3,8 @@ namespace Linn.Stores2.Service.Modules
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
-    using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
-    using Linn.Stores2.Domain.LinnApps.Imports;
-	using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Service.Extensions;
