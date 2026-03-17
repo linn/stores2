@@ -20,6 +20,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
 
     using NUnit.Framework;
 
+    using TestData.Countries;
+
     public class ContextBase
     {
         protected HttpClient Client { get; set; }
@@ -48,6 +50,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             var currencyRepository
                 = new EntityFrameworkQueryRepository<Currency>(this.DbContext.Currencies);
             var rsnRepository = new EntityFrameworkQueryRepository<Rsn>(this.DbContext.Rsns);
+            var countryRepository
+                = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
 
             var transactionManager = new TransactionManager(this.DbContext);
             var databaseSequenceService = new TestDatabaseSequenceService();
@@ -60,6 +64,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     supplierRepository,
                     currencyRepository,
                     rsnRepository,
+                    countryRepository,
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(
@@ -96,6 +101,14 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.UKPound);
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.SwedishKrona);
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.USDollar);
+        }
+
+        public void SetupCountries()
+        {
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.China);
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.UnitedStates);
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.Japan);
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.Norway);
         }
     }
 }

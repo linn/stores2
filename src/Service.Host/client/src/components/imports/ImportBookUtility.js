@@ -2,27 +2,33 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
 import {
-    DatePicker,
     ErrorCard,
-    InputField,
     Loading,
     SaveBackCancelButtons,
     utilities
 } from '@linn-it/linn-form-components-library';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
+import useInitialise from '../../hooks/useInitialise';
 import useGet from '../../hooks/useGet';
 import usePost from '../../hooks/usePost';
 import Page from '../Page';
-import OrderDetails from './OrderDetails';
+import MainTab from './MainTab';
+import HistoryTab from './HistoryTab';
 
 function ImportBookUtility({ creating }) {
+    const [tab, setTab] = useState(0);
     const [hasFetched, setHasFetched] = useState(false);
     const { id } = useParams();
     const [searchParams] = useSearchParams();
+
+    const { result: countries, loading: countriesLoading } = useInitialise(itemTypes.countries.url);
+
     const {
         send: getImportBook,
         isLoading,
@@ -75,10 +81,15 @@ function ImportBookUtility({ creating }) {
     }, [updateResult, clearUpdateResult]);
 
     const canChange = () => {
-        if (creating) {
-            return utilities.getHref(importBookGetResult, 'create');
+        if (importBookGetResult) {
+            if (creating && utilities.getHref(importBookGetResult, 'create')) {
+                return true;
+            } else if (!creating && utilities.getHref(importBookGetResult, 'update')) {
+                return true;
+            }
         }
-        return importBookGetResult ? utilities.getHref(importBookGetResult, 'update') : false;
+
+        return false;
     };
 
     const handleFieldChange = (propertyName, newValue) => {
@@ -125,164 +136,57 @@ function ImportBookUtility({ creating }) {
                     </Grid>
                 )}
 
-                {isLoading || createLoading || updateLoading ? (
+                {isLoading || createLoading || updateLoading || countriesLoading ? (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
                 ) : (
                     importBook && (
                         <>
-                            {!creating && (
-                                <>
-                                    <Grid size={6}>
-                                        <InputField
-                                            disabled
-                                            value={importBook.id}
-                                            fullWidth
-                                            label="Import Book Id"
-                                            propertyName="id"
-                                        />
-                                    </Grid>
-                                    <Grid size={6} />
-                                    <Grid size={3}>
-                                        <InputField
-                                            disabled
-                                            value={
-                                                importBook.dateCreated
-                                                    ? moment(importBook.dateCreated).format(
-                                                          'DD-MMM-YY HH:mm'
-                                                      )
-                                                    : ''
+                            <Box sx={{ width: '100%' }}>
+                                <Box
+                                    sx={{
+                                        borderBottom: 0,
+                                        borderColor: 'divider',
+                                        marginBottom: '20px'
+                                    }}
+                                >
+                                    <Tabs
+                                        value={tab}
+                                        onChange={(_, newValue) => {
+                                            setTab(newValue);
+                                        }}
+                                        sx={{
+                                            '& .MuiTabs-flexContainer': {
+                                                flexWrap: 'wrap'
+                                            },
+                                            '& .MuiTab-root': {
+                                                minWidth: 'auto',
+                                                flex: '0 0 auto'
                                             }
-                                            fullWidth
-                                            label="Date Created"
-                                            propertyName="dateCreated"
-                                            onChange={handleFieldChange}
+                                        }}
+                                    >
+                                        <Tab
+                                            label={
+                                                creating ? 'New Import' : `Import ${importBook.id}`
+                                            }
                                         />
-                                    </Grid>
-                                    <Grid size={6}>
-                                        <InputField
-                                            disabled
-                                            value={importBook.createdByName}
-                                            fullWidth
-                                            label="Created By"
-                                            propertyName="createdByName"
-                                        />
-                                    </Grid>
-                                    <Grid size={3} />
-                                </>
-                            )}
-                            <Grid size={3}>
-                                <InputField
-                                    disabled
-                                    value={importBook.supplierId}
-                                    fullWidth
-                                    label="Supplier"
-                                    propertyName="supplierId"
-                                />
-                            </Grid>
-                            <Grid size={6}>
-                                <InputField
-                                    disabled
-                                    value={importBook.supplierName}
-                                    fullWidth
-                                    label="Supplier Name"
-                                    propertyName="supplierName"
-                                />
-                            </Grid>
-                            <Grid size={3}>
-                                <InputField
-                                    disabled
-                                    value={importBook.supplierCountry?.name}
-                                    fullWidth
-                                    label="Country"
-                                    propertyName="supplierCountry"
-                                />
-                            </Grid>
-                            <Grid size={3}>
-                                <InputField
-                                    value={importBook.customsEntryCodePrefix}
-                                    fullWidth
-                                    label="Prefix"
-                                    propertyName="customsEntryCodePrefix"
-                                    onChange={handleFieldChange}
-                                    disabled={!canChange()}
-                                />
-                            </Grid>
-                            <Grid size={6}>
-                                <InputField
-                                    value={importBook.customsEntryCode}
-                                    fullWidth
-                                    label="Customs Entry Code"
-                                    propertyName="customsEntryCode"
-                                    onChange={handleFieldChange}
-                                    disabled={!canChange()}
-                                />
-                            </Grid>
-                            <Grid size={3}>
-                                <DatePicker
-                                    value={importBook.customsEntryCodeDate}
-                                    label="Customs Entry Date"
-                                    propertyName="customsEntryCodeDate"
-                                    onChange={handleFieldChange}
-                                    disabled={!canChange()}
-                                />
-                            </Grid>
-                            <Grid size={3}>
-                                <InputField
-                                    value={importBook.currency}
-                                    fullWidth
-                                    label="Currency"
-                                    propertyName="currency"
-                                    onChange={handleFieldChange}
-                                    disabled={!canChange()}
-                                />
-                            </Grid>
-                            <Grid size={3}>
-                                <InputField
-                                    value={importBook.linnDuty}
-                                    fullWidth
-                                    label="Linn Duty (A00 value GBP)"
-                                    propertyName="linnDuty"
-                                    onChange={handleNumberFieldChange}
-                                    disabled={!canChange()}
-                                />
-                            </Grid>
-                            <Grid size={3}>
-                                <InputField
-                                    value={importBook.linnVat}
-                                    fullWidth
-                                    label="Linn VAT (B00 value GBP)"
-                                    propertyName="linnVat"
-                                    onChange={handleNumberFieldChange}
-                                    disabled={!canChange()}
-                                />
-                            </Grid>
-                            <Grid size={3} />
-                            <Grid size={3}>
-                                <InputField
-                                    disabled
-                                    value={importBook.carrierId}
-                                    fullWidth
-                                    label="Carrier"
-                                    propertyName="carrierId"
-                                />
-                            </Grid>
-                            <Grid size={6}>
-                                <InputField
-                                    disabled
-                                    value={importBook.carrierName}
-                                    fullWidth
-                                    label="Carrier Name"
-                                    propertyName="carrierName"
-                                />
-                            </Grid>
-                            <Grid size={3} />
-                            <OrderDetails
-                                orderDetails={importBook.importBookOrderDetails}
-                                canChange={canChange()}
-                                handleFieldChange={handleFieldChange}
-                            />
+                                        <Tab label="History" />
+                                    </Tabs>
+                                </Box>
+
+                                {tab === 0 && (
+                                    <MainTab
+                                        importBook={importBook}
+                                        countries={countries}
+                                        canChange={canChange()}
+                                        handleFieldChange={handleFieldChange}
+                                        handleNumberFieldChange={handleNumberFieldChange}
+                                    />
+                                )}
+                                {tab === 1 && <HistoryTab importBook={importBook} />}
+                            </Box>
+
                             <Grid size={12}>
                                 <SaveBackCancelButtons
                                     backClick={() => navigate('/stores2/import-books')}
@@ -298,11 +202,7 @@ function ImportBookUtility({ creating }) {
                                     saveDisabled={!changesMade}
                                     cancelClick={() => {
                                         setChangesMade(false);
-                                        if (creating) {
-                                            setImportBook({});
-                                        } else {
-                                            setImportBook(importBookGetResult);
-                                        }
+                                        setImportBook(importBookGetResult);
                                     }}
                                 />
                             </Grid>

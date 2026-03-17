@@ -11,6 +11,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.Rsns = new List<Rsn>();
         }
 
+        public Employee CreatedBy { get; set; }
+
         public IList<Rsn> Rsns { get; private set; }
 
         public void AddRsn(Rsn rsn)

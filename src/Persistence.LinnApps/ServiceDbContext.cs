@@ -1292,6 +1292,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.VatRate).HasColumnName("VAT_RATE");
             q.Property(e => e.POLineNumber).HasColumnName("PO_LINE_NUMBER").HasMaxLength(2);
             q.Property(e => e.PostDuty).HasColumnName("POST_DUTY").HasMaxLength(1);
+            q.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN").HasMaxLength(1);
             q.HasOne(e => e.ImportBookCpcNumber).WithMany().HasForeignKey(f => f.CpcNumber);
             q.HasOne(e => e.Rsn).WithMany(i => i.ImportBookOrderDetails).HasForeignKey(f => f.RsnNumber);
         }
@@ -1358,6 +1359,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.Property(a => a.TariffId).HasColumnName("TARIFF_ID").HasMaxLength(3);
             e.Property(a => a.Weight).HasColumnName("WEIGHT").HasMaxLength(10);
             e.HasOne(a => a.Tariff).WithOne().HasForeignKey<SalesArticle>(x => x.TariffId);
+            e.HasOne(a => a.CountryOfOrigin).WithMany().HasForeignKey("COUNTRY_CODE");
         }
 
         private void BuildRsns(ModelBuilder builder)

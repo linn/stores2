@@ -7,6 +7,7 @@ namespace Linn.Stores2.TestData.SalesArticles
     using System.Threading.Tasks;
 
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.TestData.Countries;
     using Linn.Stores2.TestData.Tariffs;
 
     public static class TestSalesArticles
@@ -19,6 +20,7 @@ namespace Linn.Stores2.TestData.SalesArticles
                 Tariff = TestTariffs.SoundReproduction,
                 TariffId = TestTariffs.SoundReproduction.TariffId,
                 Weight = 9.4m,
+                CountryOfOrigin = TestCountries.UnitedKingdom
             };
 
         public static readonly SalesArticle Akiva =
@@ -28,7 +30,8 @@ namespace Linn.Stores2.TestData.SalesArticles
                 Description = "AKIVA Moving-coil cartridge",
                 Tariff = TestTariffs.SoundReproduction,
                 TariffId = TestTariffs.SoundReproduction.TariffId,
-                Weight = 0.06m
+                Weight = 0.06m,
+                CountryOfOrigin = TestCountries.Japan
             };
 
         public static readonly SalesArticle RadikalMachined =
@@ -38,7 +41,8 @@ namespace Linn.Stores2.TestData.SalesArticles
                 Description = "RADIKAL - POWER SUPPLY FOR LP12 TURNTABLE MACHINED FROM SOLID",
                 Tariff = TestTariffs.SoundReproduction,
                 TariffId = TestTariffs.SoundReproduction.TariffId,
-                Weight = 13.2m
+                Weight = 13.2m,
+                CountryOfOrigin = TestCountries.UnitedKingdom
             };
 
         public static readonly SalesArticle RadikalUpg =
@@ -48,7 +52,8 @@ namespace Linn.Stores2.TestData.SalesArticles
                 Description = "UPGRADE FOR RADIKAL",
                 Tariff = TestTariffs.SoundReproduction,
                 TariffId = TestTariffs.SoundReproduction.TariffId,
-                Weight = 0.9m
+                Weight = 0.9m,
+                CountryOfOrigin = TestCountries.UnitedKingdom
             };
 
         public static readonly SalesArticle K60Drum =
@@ -57,7 +62,8 @@ namespace Linn.Stores2.TestData.SalesArticles
                 ArticleNumber = "K60/DRUM",
                 Description = "K60 TRI-WIRE SPEAKER CABLE (25M DRUM)",
                 Tariff = TestTariffs.InsulatedWire,
-                TariffId = TestTariffs.InsulatedWire.TariffId
+                TariffId = TestTariffs.InsulatedWire.TariffId,
+                CountryOfOrigin = TestCountries.China
             };
 
         public static readonly SalesArticle Spkr105 =
@@ -66,7 +72,8 @@ namespace Linn.Stores2.TestData.SalesArticles
                 ArticleNumber = "SPKR 105",
                 Description = "Bass driver for the 119 loudspeaker",
                 Tariff = TestTariffs.SingleSpeaker,
-                TariffId = TestTariffs.SingleSpeaker.TariffId
+                TariffId = TestTariffs.SingleSpeaker.TariffId,
+                CountryOfOrigin = TestCountries.Norway
             };
     }
 }

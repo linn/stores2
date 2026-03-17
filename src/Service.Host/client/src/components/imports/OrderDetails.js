@@ -15,7 +15,7 @@ import { Dropdown, InputField } from '@linn-it/linn-form-components-library';
 import useGet from '../../hooks/useGet';
 import itemTypes from '../../itemTypes';
 
-function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
+function OrderDetails({ orderDetails, countries, canChange, handleFieldChange }) {
     const [dialogOpen, setDialogOpen] = useState({
         forRow: null
     });
@@ -156,11 +156,12 @@ function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
     };
 
     const columns = [
-        { field: 'lineNumber', headerName: 'Line', width: 60 },
-        { field: 'lineType', headerName: 'Line Type', width: 140 },
-        { field: 'lineDocument', headerName: 'Document', width: 140 },
+        { field: 'lineNumber', headerName: 'Line', width: 50 },
+        { field: 'lineType', headerName: 'Line Type', width: 100 },
+        { field: 'lineDocument', headerName: 'Document', width: 110 },
         { field: 'orderDescription', headerName: 'Description', width: 240 },
-        { field: 'tariffCode', headerName: 'Tariff no', width: 100 },
+        { field: 'tariffCode', headerName: 'Tariff no', width: 140 },
+        { field: 'countryOfOrigin', headerName: 'COO', width: 100 },
         { field: 'orderValue', headerName: 'Customs Value', width: 140 },
         { field: 'dutyValue', headerName: 'Duty Value', width: 120 },
         { field: 'qty', headerName: 'Qty', width: 100 },
@@ -189,10 +190,6 @@ function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
             : [])
     ];
 
-    if (!orderDetails || orderDetails.length === 0) {
-        return null;
-    }
-
     return (
         <>
             {dialogOpen.forRow && orderDetail && (
@@ -219,12 +216,14 @@ function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
                                     propertyName="lineType"
                                     allowNoValue
                                     items={['RSN', 'PO', 'RETURNS', 'SUNDRY', 'SAMPLES']}
+                                    disabled={!canChange}
                                     onChange={handleOrderChange}
                                 />
                             </Grid>
                             <Grid size={6}>
                                 <InputField
                                     value={orderDetail?.qty}
+                                    disabled={!canChange}
                                     type="number"
                                     label="Qty"
                                     propertyName="qty"
@@ -235,6 +234,7 @@ function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
                             <Grid size={12}>
                                 <InputField
                                     value={orderDetail?.orderDescription}
+                                    disabled={!canChange}
                                     fullWidth
                                     label="Order Description"
                                     propertyName="orderDescription"
@@ -244,6 +244,7 @@ function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
                             <Grid size={6}>
                                 <InputField
                                     value={orderDetail?.tariffCode}
+                                    disabled={!canChange}
                                     fullWidth
                                     label="Tariff Code"
                                     propertyName="tariffCode"
@@ -251,8 +252,26 @@ function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
                                 />
                             </Grid>
                             <Grid size={6}>
+                                <Dropdown
+                                    value={orderDetail?.countryOfOrigin}
+                                    fullWidth
+                                    disabled={!canChange}
+                                    label="Country of Origin"
+                                    propertyName="countryOfOrigin"
+                                    allowNoValue
+                                    items={countries
+                                        .sort((a, b) => a.name.localeCompare(b.name))
+                                        .map(c => ({
+                                            id: c.countryCode,
+                                            displayText: c.name
+                                        }))}
+                                    onChange={handleOrderChange}
+                                />
+                            </Grid>
+                            <Grid size={4}>
                                 <InputField
                                     value={orderDetail?.orderValue}
+                                    disabled={!canChange}
                                     fullWidth
                                     type="number"
                                     label="Customs Value"
@@ -260,9 +279,10 @@ function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
                                     onChange={handleOrderChange}
                                 />
                             </Grid>
-                            <Grid size={6}>
+                            <Grid size={4}>
                                 <InputField
                                     value={orderDetail?.dutyValue}
+                                    disabled={!canChange}
                                     fullWidth
                                     type="number"
                                     label="Duty Value"
@@ -270,9 +290,10 @@ function OrderDetails({ orderDetails, canChange, handleFieldChange }) {
                                     onChange={handleOrderChange}
                                 />
                             </Grid>
-                            <Grid size={6}>
+                            <Grid size={4}>
                                 <InputField
                                     value={orderDetail?.vatValue}
+                                    disabled={!canChange}
                                     fullWidth
                                     type="number"
                                     label="VAT Value"

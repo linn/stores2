@@ -27,6 +27,8 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IQueryRepository<Rsn> rsnRepository;
 
+        private readonly IRepository<Country, string> countryRepository;
+
         private readonly IAuthorisationService authService;
 
         private readonly IBuilder<ImportBook> resourceBuilder;
@@ -38,6 +40,7 @@ namespace Linn.Stores2.Facade.Services
             IQueryRepository<Supplier> supplierRepository,
             IQueryRepository<Currency> currencyRepository,
             IQueryRepository<Rsn> rsnRepository,
+            IRepository<Country, string> countryRepository,
             ITransactionManager transactionManager,
             IAuthorisationService authService,
             IBuilder<ImportBook> resourceBuilder)
@@ -48,6 +51,7 @@ namespace Linn.Stores2.Facade.Services
             this.supplierRepository = supplierRepository;
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
+            this.countryRepository = countryRepository;
             this.resourceBuilder = resourceBuilder;
             this.authService = authService;
         }
@@ -79,6 +83,29 @@ namespace Linn.Stores2.Facade.Services
 
             var baseCurrency = await this.currencyRepository.FindByAsync(c => c.Code == "GBP");
 
+            var orderDetails = new List<ImportOrderDetailCandidate>();
+
+            foreach (var orderDetailResource in resource.ImportBookOrderDetails)
+            {
+                var country = string.IsNullOrEmpty(orderDetailResource.CountryOfOrigin)
+                                  ? null
+                                  : await this.countryRepository.FindByIdAsync(orderDetailResource.CountryOfOrigin);
+
+                var rsn = orderDetailResource.RsnNumber.HasValue
+                              ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
+                              : null;
+
+                orderDetails.Add(new ImportOrderDetailCandidate
+                {
+                    LineType = orderDetailResource.LineType,
+                    Qty = orderDetailResource.Qty,
+                    OrderDescription = orderDetailResource.OrderDescription,
+                    TariffCode = orderDetailResource.TariffCode,
+                    CountryOfOrigin = country,
+                    Rsn = rsn
+                });
+            }
+
             var candidate = new ImportCandidate
             {
                 Id = await this.databaseSequenceService.NextImportBookId(),
@@ -86,7 +113,8 @@ namespace Linn.Stores2.Facade.Services
                 Supplier = supplier,
                 Carrier = carrier,
                 Currency = currency,
-                BaseCurrency = baseCurrency
+                BaseCurrency = baseCurrency,
+                OrderDetailCandidates = orderDetails
             };
 
             return new ImportBook(candidate);

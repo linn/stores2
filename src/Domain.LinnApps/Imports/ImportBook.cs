@@ -63,10 +63,18 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
             this.PostEntries = new List<ImportBookPostEntry>();
+
+            foreach (var orderDetailCandidate in candidate.OrderDetailCandidates)
+            {
+                this.AddOrderDetail(new ImportBookOrderDetail(orderDetailCandidate));
+            }
         }
 
         public ImportBook(ImportSetup setup)
         {
+            this.DateCreated = DateTime.UtcNow;
+            this.CreatedBy = setup.CreatedBy;
+            this.ContactEmployee = setup.CreatedBy;
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
             this.PostEntries = new List<ImportBookPostEntry>();

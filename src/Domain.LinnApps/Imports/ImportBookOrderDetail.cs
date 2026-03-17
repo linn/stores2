@@ -39,6 +39,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.Qty = candidate.Qty;
             this.OrderDescription = candidate.OrderDescription;
             this.TariffCode = candidate.TariffCode;
+            this.CountryOfOrigin = candidate.CountryOfOrigin?.CountryCode;
             this.Rsn = candidate.Rsn;
             this.RsnNumber = candidate.Rsn?.RsnNumber;
         }
@@ -82,6 +83,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public decimal Weight { get; set; }
 
         public string PostDuty { get; set; }
+
+        public string CountryOfOrigin { get; set; }
 
         public ImportBookCpcNumber ImportBookCpcNumber { get; set; }
 
