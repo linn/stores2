@@ -12,6 +12,8 @@ namespace Linn.Stores2.Service.Modules
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
 
+    using Models;
+
     public class PartStorageTypeModule : IModule
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
@@ -31,7 +33,8 @@ namespace Linn.Stores2.Service.Modules
         {
             if (string.IsNullOrEmpty(part) && string.IsNullOrEmpty(storageType))
             {
-                await res.Negotiate(await service.GetAll());
+                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+                return;
             }
             else
             {
