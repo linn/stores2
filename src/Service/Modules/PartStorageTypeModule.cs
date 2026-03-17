@@ -13,7 +13,6 @@ namespace Linn.Stores2.Service.Modules
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Routing;
 
-
     public class PartStorageTypeModule : IModule
     {
         public void MapEndpoints(IEndpointRouteBuilder app)
@@ -32,7 +31,7 @@ namespace Linn.Stores2.Service.Modules
             string storageType,
             IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
         {
-            if (req.Headers.Accept == "text/html")
+            if (req.Headers.Accept.ToString().Contains("text/html"))
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
                 return;
