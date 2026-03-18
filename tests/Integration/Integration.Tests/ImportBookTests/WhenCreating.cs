@@ -42,7 +42,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 SupplierId = TestSuppliers.TaktAndTon.Id,
                 CarrierId = TestSuppliers.DHLLogistics.Id,
                 Currency = TestCurrencies.SwedishKrona.Code,
-                ImportBookOrderDetails = new List<ImportBookOrderDetailResource>()
+                TotalImportValue = 100,
+                ImportBookOrderDetails = new List<ImportBookOrderDetailResource>
                 {
                     new ImportBookOrderDetailResource()
                     {
@@ -50,7 +51,16 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                         LineType = "RSN",
                         LineDocument = 12345,
                         RsnNumber = 12345,
-                        CountryOfOrigin = "China"
+                        CountryOfOrigin = "CN"
+                    }
+                },
+                ImportBookInvoiceDetails = new List<ImportBookInvoiceDetailResource>
+                {
+                    new ImportBookInvoiceDetailResource
+                    {
+                        LineNumber = 1,
+                        InvoiceNumber = "1",
+                        InvoiceValue = 100
                     }
                 }
             };
