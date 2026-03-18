@@ -28,9 +28,10 @@ namespace Linn.Stores2.Integration.Tests.PartStorageTypeModuleTests
             this.part = new Part { Id = 1, PartNumber = "Part No 1", Description = "Part 1" };
 
             this.storageType = new StorageType
-                                   {
-                                       StorageTypeCode = "Storage Type No 1", Description = "Storage Type 1"
-                                   };
+            {
+                StorageTypeCode = "Storage Type No 1",
+                Description = "Storage Type 1"
+            };
 
             this.partStorageType = new PartStorageType(
                 this.part,

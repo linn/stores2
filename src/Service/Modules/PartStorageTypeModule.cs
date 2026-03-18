@@ -7,6 +7,7 @@ namespace Linn.Stores2.Service.Modules
     using Linn.Common.Service.Extensions;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Resources.Parts;
+    using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Http;
@@ -25,10 +26,17 @@ namespace Linn.Stores2.Service.Modules
 
         private async Task GetAll(
             HttpResponse res,
+            HttpRequest req,
             string part,
             string storageType,
             IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource> service)
         {
+            if (req.Headers.Accept.ToString().Contains("text/html"))
+            {
+                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+                return;
+            }
+
             if (string.IsNullOrEmpty(part) && string.IsNullOrEmpty(storageType))
             {
                 await res.Negotiate(await service.GetAll());
