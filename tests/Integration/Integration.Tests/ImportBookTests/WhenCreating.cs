@@ -5,18 +5,16 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using System.Net;
     using System.Net.Http.Json;
 
-    using Domain.LinnApps.Imports;
-
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.Employees;
     using Linn.Stores2.TestData.SalesArticles;
-    using Linn.Stores2.TestData.SalesOutlets;
     using Linn.Stores2.TestData.Suppliers;
 
     using NSubstitute;

@@ -1,13 +1,20 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { DatePicker, InputField, Search } from '@linn-it/linn-form-components-library';
+import { DatePicker, Dropdown, InputField, Search } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../itemTypes';
 import useSearch from '../../hooks/useSearch';
 
 import InvoiceDetails from './InvoiceDetails';
 import OrderDetails from './OrderDetails';
 
-function MainTab({ importBook, countries, canChange, handleFieldChange, handleNumberFieldChange }) {
+function MainTab({
+    importBook,
+    countries,
+    currencies,
+    canChange,
+    handleFieldChange,
+    handleNumberFieldChange
+}) {
     const {
         search: searchSuppliers,
         results: supplierSearchResults,
@@ -114,14 +121,23 @@ function MainTab({ importBook, countries, canChange, handleFieldChange, handleNu
                 />
             </Grid>
             <Grid size={3}>
-                <InputField
-                    value={importBook.currency}
-                    fullWidth
-                    label="Currency"
-                    propertyName="currency"
-                    onChange={handleFieldChange}
-                    disabled={!canChange}
-                />
+                {currencies && (
+                    <Dropdown
+                        value={importBook.currency}
+                        fullWidth
+                        disabled={!canChange}
+                        label="Currency"
+                        propertyName="currency"
+                        allowNoValue
+                        items={currencies
+                            .sort((a, b) => a.name.localeCompare(b.name))
+                            .map(c => ({
+                                id: c.code,
+                                displayText: c.name
+                            }))}
+                        onChange={handleFieldChange}
+                    />
+                )}
             </Grid>
             <Grid size={3}>
                 {canChange ? (

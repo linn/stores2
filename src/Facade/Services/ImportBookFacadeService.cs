@@ -13,6 +13,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
+    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Resources.Imports;
 
     public class ImportBookFacadeService : AsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource>, IImportBookFacadeService

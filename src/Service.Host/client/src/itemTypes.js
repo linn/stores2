@@ -64,7 +64,8 @@ const itemTypes = {
     importBooks: { url: `${config.appRoot}/stores2/import-books` },
     suppliers: { url: `${config.proxyRoot}/inventory/suppliers` },
     approvedCarriers: { url: `${config.proxyRoot}/inventory/suppliers-approved-carrier` },
-    rsns: { url: `${config.proxyRoot}/service/rsns` }
+    rsns: { url: `${config.proxyRoot}/service/rsns` },
+    currencies: { url: `${config.proxyRoot}/logistics/currencies` }
 };
 
 export default itemTypes;

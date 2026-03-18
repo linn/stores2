@@ -81,7 +81,7 @@ function InvoiceDetails({ invoiceDetails, canChange, handleFieldChange }) {
     const columns = [
         { field: 'lineNumber', headerName: 'Line', width: 50 },
         { field: 'invoiceNumber', headerName: 'Invoice Number', width: 150 },
-        { field: 'invoiceValue', headerName: 'Invoice Value', width: 140 },
+        { field: 'invoiceValue', headerName: 'Invoice Value (Currency)', width: 180 },
         ...(canChange
             ? [
                   {

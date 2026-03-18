@@ -6,6 +6,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
     using System.Text;
     using System.Threading.Tasks;
 
+    using Linn.Stores2.Domain.LinnApps.Returns;
+
     public class ImportOrderDetailCandidate
     {
         public ImportOrderDetailCandidate()

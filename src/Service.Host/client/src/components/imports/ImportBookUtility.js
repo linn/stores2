@@ -28,6 +28,9 @@ function ImportBookUtility({ creating }) {
     const [searchParams] = useSearchParams();
 
     const { result: countries, loading: countriesLoading } = useInitialise(itemTypes.countries.url);
+    const { result: currencies, loading: currenciesLoading } = useInitialise(
+        itemTypes.currencies.url
+    );
 
     const {
         send: getImportBook,
@@ -136,7 +139,11 @@ function ImportBookUtility({ creating }) {
                     </Grid>
                 )}
 
-                {isLoading || createLoading || updateLoading || countriesLoading ? (
+                {isLoading ||
+                createLoading ||
+                updateLoading ||
+                countriesLoading ||
+                currenciesLoading ? (
                     <Grid size={12}>
                         <Loading />
                     </Grid>
@@ -179,6 +186,7 @@ function ImportBookUtility({ creating }) {
                                     <MainTab
                                         importBook={importBook}
                                         countries={countries}
+                                        currencies={currencies}
                                         canChange={canChange()}
                                         handleFieldChange={handleFieldChange}
                                         handleNumberFieldChange={handleNumberFieldChange}

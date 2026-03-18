@@ -8,7 +8,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence.EntityFramework;
-    using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Returns;
 
     using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +29,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                 .Include(r => r.SalesArticle).ThenInclude(a => a.Tariff)
                 .Include(r => r.SalesArticle).ThenInclude(a => a.CountryOfOrigin)
                 .Include(r => r.ImportBookOrderDetails)
+                .Include(r => r.ExportReturnDetails).ThenInclude(d => d.ExportReturn).ThenInclude(r => r.Currency)
                 .Where(expression)
                 .SingleOrDefaultAsync();
         }
