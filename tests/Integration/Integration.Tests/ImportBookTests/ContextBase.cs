@@ -13,6 +13,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Service.Modules;
+    using Linn.Stores2.TestData.Countries;
     using Linn.Stores2.TestData.Currencies;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -20,8 +21,6 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using NSubstitute;
 
     using NUnit.Framework;
-
-    using TestData.Countries;
 
     public class ContextBase
     {

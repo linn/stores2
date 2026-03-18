@@ -86,25 +86,37 @@ namespace Linn.Stores2.Facade.Services
 
             var orderDetails = new List<ImportOrderDetailCandidate>();
 
-            foreach (var orderDetailResource in resource.ImportBookOrderDetails)
+            if (resource.ImportBookOrderDetails != null)
             {
-                var country = string.IsNullOrEmpty(orderDetailResource.CountryOfOrigin)
-                                  ? null
-                                  : await this.countryRepository.FindByIdAsync(orderDetailResource.CountryOfOrigin);
-
-                var rsn = orderDetailResource.RsnNumber.HasValue
-                              ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
-                              : null;
-
-                orderDetails.Add(new ImportOrderDetailCandidate
+                foreach (var orderDetailResource in resource.ImportBookOrderDetails)
                 {
-                    LineType = orderDetailResource.LineType,
-                    Qty = orderDetailResource.Qty,
-                    OrderDescription = orderDetailResource.OrderDescription,
-                    TariffCode = orderDetailResource.TariffCode,
-                    CountryOfOrigin = country,
-                    Rsn = rsn
-                });
+                    var country = string.IsNullOrEmpty(orderDetailResource.CountryOfOrigin)
+                                      ? null
+                                      : await this.countryRepository.FindByIdAsync(orderDetailResource.CountryOfOrigin);
+
+                    var rsn = orderDetailResource.RsnNumber.HasValue
+                                  ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
+                                  : null;
+
+                    orderDetails.Add(new ImportOrderDetailCandidate
+                                     {
+                                         LineType = orderDetailResource.LineType,
+                                         Qty = orderDetailResource.Qty,
+                                         OrderDescription = orderDetailResource.OrderDescription,
+                                         TariffCode = orderDetailResource.TariffCode,
+                                         CountryOfOrigin = country,
+                                         Rsn = rsn
+                                     });
+                }
+            }
+
+            var invoiceDetails = new List<ImportInvoiceDetailCandidate>();
+            if (resource.ImportBookInvoiceDetails != null)
+            {
+                foreach (var invoice in resource.ImportBookInvoiceDetails)
+                {
+                    invoiceDetails.Add(new ImportInvoiceDetailCandidate(invoice.InvoiceNumber, invoice.InvoiceValue));
+                }
             }
 
             var candidate = new ImportCandidate
@@ -115,7 +127,8 @@ namespace Linn.Stores2.Facade.Services
                 Carrier = carrier,
                 Currency = currency,
                 BaseCurrency = baseCurrency,
-                OrderDetailCandidates = orderDetails
+                OrderDetailCandidates = orderDetails,
+                InvoiceDetailCandidates = invoiceDetails
             };
 
             return new ImportBook(candidate);
