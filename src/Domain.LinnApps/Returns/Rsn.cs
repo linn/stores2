@@ -6,7 +6,7 @@ namespace Linn.Stores2.Domain.LinnApps.Returns
     using System.Text;
     using System.Threading.Tasks;
 
-    using Imports;
+    using Linn.Stores2.Domain.LinnApps.Imports;
 
     public class Rsn
     {
