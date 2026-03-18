@@ -69,6 +69,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.PostEntries = new List<ImportBookPostEntry>();
 
             this.ForeignCurrency = this.CurrencyCode != this.BaseCurrency.Code ? "Y" : "N";
+            this.Pva = "Y";
 
             foreach (var orderDetailCandidate in candidate.OrderDetailCandidates)
             {
@@ -177,11 +178,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public decimal TotalImportValue { get; set; }
 
-        public int TransactionId { get; set; }
+        public int? TransactionId { get; set; }
 
         public string TransportBillNumber { get; set; }
 
-        public int TransportId { get; set; }
+        public int? TransportId { get; set; }
 
         public decimal? Weight { get; set; }
 
