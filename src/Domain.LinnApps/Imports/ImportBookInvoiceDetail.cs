@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Imports
+namespace Linn.Stores2.Domain.LinnApps.Imports
 {
     public class ImportBookInvoiceDetail
     {

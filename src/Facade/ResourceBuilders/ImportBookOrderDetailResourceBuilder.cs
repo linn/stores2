@@ -30,6 +30,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                            InsNumber = model.InsNumber,
                            VatRate = model.VatRate,
                            PostDuty = model.PostDuty,
+                           CountryOfOrigin = model.CountryOfOrigin,
                            LineDocument = model.LineDocument()
                        };
         }

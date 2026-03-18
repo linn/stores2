@@ -8,11 +8,13 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps;
+    using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.Employees;
+    using Linn.Stores2.TestData.SalesArticles;
     using Linn.Stores2.TestData.Suppliers;
 
     using NSubstitute;
@@ -29,18 +31,54 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             this.AuthorisationService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, Arg.Any<IEnumerable<string>>())
                 .Returns(true);
 
+            // setup data
+            this.DbContext.Employees.AddAndSave(this.DbContext, TestEmployees.SophlyBard);
+            this.DbContext.Suppliers.AddAndSave(this.DbContext, TestSuppliers.TaktAndTon);
+            this.DbContext.Suppliers.AddAndSave(this.DbContext, TestSuppliers.DHLLogistics);
+
             this.createResource = new ImportBookResource
             {
                 CreatedById = TestEmployees.SophlyBard.Id,
                 SupplierId = TestSuppliers.TaktAndTon.Id,
                 CarrierId = TestSuppliers.DHLLogistics.Id,
-                Currency = TestCurrencies.SwedishKrona.Code
+                Currency = TestCurrencies.SwedishKrona.Code,
+                TotalImportValue = 100,
+                ImportBookOrderDetails = new List<ImportBookOrderDetailResource>
+                {
+                    new ImportBookOrderDetailResource()
+                    {
+                        LineNumber = 1,
+                        LineType = "RSN",
+                        LineDocument = 12345,
+                        RsnNumber = 12345,
+                        CountryOfOrigin = "CN"
+                    }
+                },
+                ImportBookInvoiceDetails = new List<ImportBookInvoiceDetailResource>
+                {
+                    new ImportBookInvoiceDetailResource
+                    {
+                        LineNumber = 1,
+                        InvoiceNumber = "1",
+                        InvoiceValue = 100
+                    }
+                }
             };
 
-            // setup data
-            this.DbContext.Employees.AddAndSave(this.DbContext, TestEmployees.SophlyBard);
-            this.DbContext.Suppliers.AddAndSave(this.DbContext, TestSuppliers.TaktAndTon);
-            this.DbContext.Suppliers.AddAndSave(this.DbContext, TestSuppliers.DHLLogistics);
+            var rsn = new Rsn()
+            {
+                RsnNumber = 12345,
+                SalesOutlet = new SalesOutlet
+                {
+                    AccountId = 1234,
+                    OutletNumber = 56,
+                    OutletAddress = new Address("Neverland Hifi", "Never Street", null, null, null, "NE1", new Country("NE", "Neverland"))
+                },
+                SalesArticle = TestSalesArticles.Akiva,
+                ImportBookOrderDetails = new List<ImportBookOrderDetail>()
+            };
+
+            this.DbContext.Rsns.AddAndSave(this.DbContext, rsn);
 
             this.SetupCurrencies();
 

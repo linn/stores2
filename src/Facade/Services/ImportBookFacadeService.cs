@@ -13,6 +13,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
+    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Resources.Imports;
 
     public class ImportBookFacadeService : AsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource>, IImportBookFacadeService
@@ -27,6 +28,8 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IQueryRepository<Rsn> rsnRepository;
 
+        private readonly IRepository<Country, string> countryRepository;
+
         private readonly IAuthorisationService authService;
 
         private readonly IBuilder<ImportBook> resourceBuilder;
@@ -38,6 +41,7 @@ namespace Linn.Stores2.Facade.Services
             IQueryRepository<Supplier> supplierRepository,
             IQueryRepository<Currency> currencyRepository,
             IQueryRepository<Rsn> rsnRepository,
+            IRepository<Country, string> countryRepository,
             ITransactionManager transactionManager,
             IAuthorisationService authService,
             IBuilder<ImportBook> resourceBuilder)
@@ -48,6 +52,7 @@ namespace Linn.Stores2.Facade.Services
             this.supplierRepository = supplierRepository;
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
+            this.countryRepository = countryRepository;
             this.resourceBuilder = resourceBuilder;
             this.authService = authService;
         }
@@ -79,6 +84,41 @@ namespace Linn.Stores2.Facade.Services
 
             var baseCurrency = await this.currencyRepository.FindByAsync(c => c.Code == "GBP");
 
+            var orderDetails = new List<ImportOrderDetailCandidate>();
+
+            if (resource.ImportBookOrderDetails != null)
+            {
+                foreach (var orderDetailResource in resource.ImportBookOrderDetails)
+                {
+                    var country = string.IsNullOrEmpty(orderDetailResource.CountryOfOrigin)
+                                      ? null
+                                      : await this.countryRepository.FindByIdAsync(orderDetailResource.CountryOfOrigin);
+
+                    var rsn = orderDetailResource.RsnNumber.HasValue
+                                  ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
+                                  : null;
+
+                    orderDetails.Add(new ImportOrderDetailCandidate
+                                     {
+                                         LineType = orderDetailResource.LineType,
+                                         Qty = orderDetailResource.Qty,
+                                         OrderDescription = orderDetailResource.OrderDescription,
+                                         TariffCode = orderDetailResource.TariffCode,
+                                         CountryOfOrigin = country,
+                                         Rsn = rsn
+                                     });
+                }
+            }
+
+            var invoiceDetails = new List<ImportInvoiceDetailCandidate>();
+            if (resource.ImportBookInvoiceDetails != null)
+            {
+                foreach (var invoice in resource.ImportBookInvoiceDetails)
+                {
+                    invoiceDetails.Add(new ImportInvoiceDetailCandidate(invoice.InvoiceNumber, invoice.InvoiceValue));
+                }
+            }
+
             var candidate = new ImportCandidate
             {
                 Id = await this.databaseSequenceService.NextImportBookId(),
@@ -86,7 +126,9 @@ namespace Linn.Stores2.Facade.Services
                 Supplier = supplier,
                 Carrier = carrier,
                 Currency = currency,
-                BaseCurrency = baseCurrency
+                BaseCurrency = baseCurrency,
+                OrderDetailCandidates = orderDetails,
+                InvoiceDetailCandidates = invoiceDetails
             };
 
             return new ImportBook(candidate);

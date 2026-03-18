@@ -6,6 +6,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
     using System.Text;
     using System.Threading.Tasks;
 
+    using Linn.Stores2.Domain.LinnApps.Returns;
+
     public class ImportOrderDetailCandidate
     {
         public ImportOrderDetailCandidate()
@@ -20,6 +22,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.Qty = rsn.Quantity;
             this.OrderDescription = rsn.SalesArticle?.Description;
             this.TariffCode = rsn.SalesArticle?.Tariff?.TariffCode;
+            this.CountryOfOrigin = rsn.SalesArticle?.CountryOfOrigin;
         }
 
         public int ImportBookId { get; set; }
@@ -31,6 +34,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
         public string OrderDescription { get; set; }
 
         public string TariffCode { get; set; }
+
+        public Country CountryOfOrigin { get; set; }
 
         public Rsn Rsn { get; set; }
     }

@@ -82,11 +82,7 @@ namespace Linn.Stores2.Resources.Imports
 
         public decimal TotalImportValue { get; set; }
 
-        public int TransactionId { get; set; }
-
         public string TransportBillNumber { get; set; }
-
-        public int TransportId { get; set; }
 
         public decimal? Weight { get; set; }
     }

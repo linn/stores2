@@ -21,5 +21,7 @@ namespace Linn.Stores2.Domain.LinnApps
         public int TariffId { get; set; }
 
         public decimal? Weight { get; set; }
+
+        public Country CountryOfOrigin { get; set; }
     }
 }

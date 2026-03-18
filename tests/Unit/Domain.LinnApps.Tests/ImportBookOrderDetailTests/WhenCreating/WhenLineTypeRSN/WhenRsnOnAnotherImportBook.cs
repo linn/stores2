@@ -2,16 +2,13 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookOrderDetailTests.WhenCrea
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
-    using Linn.Stores2.TestData.Countries;
+    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.TestData.SalesOutlets;
 
     using NUnit.Framework;

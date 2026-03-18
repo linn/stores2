@@ -12,6 +12,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public ImportBook()
         {
             // ef
+            this.TotalImportValue = 0;
+            this.OrderDetails = new List<ImportBookOrderDetail>();
+            this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
         }
 
         public ImportBook(
@@ -60,13 +63,30 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.LinnDuty = candidate.LinnDuty;
             this.LinnVat = candidate.LinnVat;
 
+            this.TotalImportValue = 0;
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
             this.PostEntries = new List<ImportBookPostEntry>();
+
+            this.ForeignCurrency = this.CurrencyCode != this.BaseCurrency.Code ? "Y" : "N";
+            this.Pva = "Y";
+
+            foreach (var orderDetailCandidate in candidate.OrderDetailCandidates)
+            {
+                this.AddOrderDetail(new ImportBookOrderDetail(orderDetailCandidate));
+            }
+
+            foreach (var invoiceDetailCandidate in candidate.InvoiceDetailCandidates)
+            {
+                this.AddInvoiceDetail(invoiceDetailCandidate);
+            }
         }
 
         public ImportBook(ImportSetup setup)
         {
+            this.DateCreated = DateTime.UtcNow;
+            this.CreatedBy = setup.CreatedBy;
+            this.ContactEmployee = setup.CreatedBy;
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
             this.PostEntries = new List<ImportBookPostEntry>();
@@ -74,6 +94,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             foreach (var candidate in setup.OrderDetailCandidates())
             {
                 this.AddOrderDetail(new ImportBookOrderDetail(candidate));
+            }
+
+            foreach (var candidate in setup.InvoiceDetailCandidates())
+            {
+                this.AddInvoiceDetail(candidate);
             }
         }
 
@@ -153,11 +178,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public decimal TotalImportValue { get; set; }
 
-        public int TransactionId { get; set; }
+        public int? TransactionId { get; set; }
 
         public string TransportBillNumber { get; set; }
 
-        public int TransportId { get; set; }
+        public int? TransportId { get; set; }
 
         public decimal? Weight { get; set; }
 
@@ -186,6 +211,33 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             orderDetail.ImportBookId = this.Id;
             orderDetail.LineNumber = this.OrderDetails.Count + 1;
             this.OrderDetails.Add(orderDetail);
+        }
+
+        public void AddInvoiceDetail(ImportInvoiceDetailCandidate candidate)
+        {
+            var invoiceDetail = new ImportBookInvoiceDetail
+            {
+                ImportBookId = this.Id,
+                LineNumber = this.InvoiceDetails.Count + 1,
+                InvoiceNumber = candidate.InvoiceNumber,
+                InvoiceValue = candidate.InvoiceValue
+            };
+            this.InvoiceDetails.Add(invoiceDetail);
+
+            if (candidate.Currency != null)
+            {
+                if (this.Currency == null)
+                {
+                    this.Currency = candidate.Currency;
+                    this.CurrencyCode = candidate.Currency.Code;
+                }
+                else if (this.Currency.Code != candidate.Currency.Code)
+                {
+                    throw new ImportBookException($"Invoice detail currency {candidate.Currency.Code} does not match import book currency {this.Currency.Code}");
+                }
+
+                this.TotalImportValue += candidate.InvoiceValue;
+            }
         }
     }
 }

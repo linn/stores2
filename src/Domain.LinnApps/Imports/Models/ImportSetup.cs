@@ -4,12 +4,16 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Stores2.Domain.LinnApps.Returns;
+
     public class ImportSetup
     {
         public ImportSetup()
         {
             this.Rsns = new List<Rsn>();
         }
+
+        public Employee CreatedBy { get; set; }
 
         public IList<Rsn> Rsns { get; private set; }
 
@@ -26,6 +30,16 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             }
 
             return new List<ImportOrderDetailCandidate>();
+        }
+
+        public IList<ImportInvoiceDetailCandidate> InvoiceDetailCandidates()
+        {
+            if (this.Rsns.Any(r => r.HasCustomsInformation()))
+            {
+                return this.Rsns.Where(r => r.HasCustomsInformation()).Select(rsn => new ImportInvoiceDetailCandidate(rsn)).ToList();
+            }
+
+            return new List<ImportInvoiceDetailCandidate>();
         }
     }
 }

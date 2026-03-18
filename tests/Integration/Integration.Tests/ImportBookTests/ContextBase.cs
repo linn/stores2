@@ -6,12 +6,14 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Service.Modules;
+    using Linn.Stores2.TestData.Countries;
     using Linn.Stores2.TestData.Currencies;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -48,6 +50,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             var currencyRepository
                 = new EntityFrameworkQueryRepository<Currency>(this.DbContext.Currencies);
             var rsnRepository = new EntityFrameworkQueryRepository<Rsn>(this.DbContext.Rsns);
+            var countryRepository
+                = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
 
             var transactionManager = new TransactionManager(this.DbContext);
             var databaseSequenceService = new TestDatabaseSequenceService();
@@ -60,6 +64,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     supplierRepository,
                     currencyRepository,
                     rsnRepository,
+                    countryRepository,
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(
@@ -96,6 +101,14 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.UKPound);
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.SwedishKrona);
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.USDollar);
+        }
+
+        public void SetupCountries()
+        {
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.China);
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.UnitedStates);
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.Japan);
+            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.Norway);
         }
     }
 }

@@ -11,6 +11,7 @@ namespace Linn.Stores2.Persistence.LinnApps
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
     using Microsoft.EntityFrameworkCore;
@@ -189,6 +190,8 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildSalesArticles(builder);
             BuildRsns(builder);
             BuildSalesOutlets(builder);
+            BuildExportReturn(builder);
+            BuildExportReturnDetails(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1292,6 +1295,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.VatRate).HasColumnName("VAT_RATE");
             q.Property(e => e.POLineNumber).HasColumnName("PO_LINE_NUMBER").HasMaxLength(2);
             q.Property(e => e.PostDuty).HasColumnName("POST_DUTY").HasMaxLength(1);
+            q.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN").HasMaxLength(1);
             q.HasOne(e => e.ImportBookCpcNumber).WithMany().HasForeignKey(f => f.CpcNumber);
             q.HasOne(e => e.Rsn).WithMany(i => i.ImportBookOrderDetails).HasForeignKey(f => f.RsnNumber);
         }
@@ -1348,7 +1352,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.DateInvalid).HasColumnName("DATE_INVALID");
         }
 
-        private void BuildSalesArticles(ModelBuilder builder)
+        private static void BuildSalesArticles(ModelBuilder builder)
         {
             var e = builder.Entity<SalesArticle>().ToTable("SALES_ARTICLES");
             e.HasKey(a => a.ArticleNumber);
@@ -1358,9 +1362,10 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.Property(a => a.TariffId).HasColumnName("TARIFF_ID").HasMaxLength(3);
             e.Property(a => a.Weight).HasColumnName("WEIGHT").HasMaxLength(10);
             e.HasOne(a => a.Tariff).WithOne().HasForeignKey<SalesArticle>(x => x.TariffId);
+            e.HasOne(a => a.CountryOfOrigin).WithMany().HasForeignKey("COUNTRY_CODE");
         }
 
-        private void BuildRsns(ModelBuilder builder)
+        private static void BuildRsns(ModelBuilder builder)
         {
             var q = builder.Entity<Rsn>().ToTable("RSNS");
             q.HasKey(e => e.RsnNumber);
@@ -1374,6 +1379,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasOne(s => s.SalesOutlet).WithMany().HasForeignKey(a => new { a.AccountId, a.OutletNumber });
             q.HasMany(r => r.ImportBookOrderDetails).WithOne(d => d.Rsn)
                 .HasForeignKey(detail => detail.RsnNumber);
+            q.HasMany(r => r.ExportReturnDetails).WithOne().HasForeignKey(d => d.RsnNumber);
         }
 
         private static void BuildSalesOutlets(ModelBuilder builder)
@@ -1387,6 +1393,35 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.HasOne(r => r.OutletAddress).WithMany().HasForeignKey("OUTLET_ADDRESS");
             e.Property(a => a.CarrierCode).HasColumnName("CARRIER_CODE").HasMaxLength(10);
             e.Property(a => a.Terms).HasColumnName("DISPATCH_TERMS").HasMaxLength(10);
+        }
+
+        private static void BuildExportReturn(ModelBuilder builder)
+        {
+            var q = builder.Entity<ExportReturn>().ToTable("EXPORT_RETURNS");
+            q.HasKey(e => e.ReturnId);
+            q.Property(e => e.ReturnId).HasColumnName("RETURN_ID");
+            q.Property(e => e.DateCreated).HasColumnName("DATE_CREATED");
+            q.HasOne(d => d.Currency).WithMany().HasForeignKey("CURRENCY");
+        }
+
+        private static void BuildExportReturnDetails(ModelBuilder builder)
+        {
+            var q = builder.Entity<ExportReturnDetail>().ToTable("EXP_RETURN_DETAILS");
+            q.HasKey(e => new { e.ReturnId, e.RsnNumber });
+            q.Property(e => e.ReturnId).HasColumnName("RETURN_ID");
+            q.Property(e => e.RsnNumber).HasColumnName("RSN_NUMBER");
+            q.Property(e => e.ArticleNumber).HasColumnName("ARTICLE_NUMBER").HasMaxLength(14);
+            q.Property(e => e.LineNo).HasColumnName("LINE_NO");
+            q.Property(e => e.Qty).HasColumnName("QTY");
+            q.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(200);
+            q.Property(e => e.CustomsValue).HasColumnName("CUSTOMS_VALUE");
+            q.Property(e => e.BaseCustomsValue).HasColumnName("BASE_CUSTOMS_VALUE");
+            q.Property(e => e.NumCartons).HasColumnName("NUM_CARTONS");
+            q.Property(e => e.Weight).HasColumnName("WEIGHT");
+            q.Property(e => e.Width).HasColumnName("WIDTH");
+            q.Property(e => e.Height).HasColumnName("HEIGHT");
+            q.Property(e => e.Depth).HasColumnName("DEPTH");
+            q.HasOne(r => r.ExportReturn).WithMany().HasForeignKey(r => r.ReturnId);
         }
     }
 }

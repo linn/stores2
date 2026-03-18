@@ -41,5 +41,7 @@ namespace Linn.Stores2.Resources.Imports
         public string PostDuty { get; set; }
 
         public int? LineDocument { get; set; }
+
+        public string CountryOfOrigin { get; set; }
     }
 }
