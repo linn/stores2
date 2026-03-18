@@ -185,7 +185,7 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IResult<ImportBookResource>> InitialiseImportBook(string rsnNumbers, IEnumerable<string> privileges)
+        public async Task<IResult<ImportBookResource>> InitialiseImportBook(string rsnNumbers, string purchaseOrderNumbers, int? supplierId, IEnumerable<string> privileges)
         {
             if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
             {

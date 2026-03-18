@@ -17,6 +17,6 @@ namespace Linn.Stores2.Facade.Services
         ImportBookResource, ImportBookResource>
     {
         Task<IResult<ImportBookResource>> InitialiseImportBook(
-            string rsnNumbers, IEnumerable<string> privileges);
+            string rsnNumbers, string purchaseOrderNumbers, int? supplierId, IEnumerable<string> privileges);
     }
 }
