@@ -18,26 +18,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         }
 
         public ImportBook(
-            ImportCandidate candidate)
+            ImportCandidate candidate, bool initialise = false)
         {
             if (candidate.CreatedBy == null)
             {
                 throw new ImportBookException("Created by employee not supplied");
-            }
-
-            if (candidate.Supplier == null)
-            {
-                throw new ImportBookException("Supplier not supplied");
-            }
-
-            if (candidate.Carrier == null)
-            {
-                throw new ImportBookException("Carrier not supplied");
-            }
-
-            if (candidate.Currency == null)
-            {
-                throw new ImportBookException("Currency not supplied");
             }
 
             if (candidate.BaseCurrency == null)
@@ -45,18 +30,45 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 throw new ImportBookException("Base Currency not supplied");
             }
 
+            if (candidate.Supplier == null && !initialise)
+            {
+                throw new ImportBookException("Supplier not supplied");
+            }
+
+            if (candidate.Carrier == null && !initialise)
+            {
+                throw new ImportBookException("Carrier not supplied");
+            }
+
+            if (candidate.Currency == null && !initialise)
+            {
+                throw new ImportBookException("Currency not supplied");
+            }
+
             this.Id = candidate.Id;
             this.DateCreated = DateTime.UtcNow;
             this.CreatedBy = candidate.CreatedBy;
             this.CreatedById = candidate.CreatedBy.Id;
-            this.SupplierId = candidate.Supplier.Id;
-            this.Supplier = candidate.Supplier;
-            this.CarrierId = candidate.Carrier.Id;
-            this.Carrier = candidate.Carrier;
-            this.Currency = candidate.Currency;
-            this.CurrencyCode = candidate.Currency?.Code;
             this.BaseCurrency = candidate.BaseCurrency;
             this.ExchangeCurrency = candidate.ExchangeCurrency;
+
+            if (candidate.Supplier != null)
+            {
+                this.SupplierId = candidate.Supplier.Id;
+                this.Supplier = candidate.Supplier;
+            }
+
+            if (candidate.Carrier != null)
+            {
+                this.CarrierId = candidate.Carrier.Id;
+                this.Carrier = candidate.Carrier;
+            }
+
+            if (candidate.Currency != null)
+            {
+                this.Currency = candidate.Currency;
+                this.CurrencyCode = candidate.Currency.Code;
+            }
 
             this.UpdateCustomsEntry(candidate.CustomsEntryCodePrefix, candidate.CustomsEntryCode, candidate.CustomsEntryCodeDate);
 
@@ -79,26 +91,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             foreach (var invoiceDetailCandidate in candidate.InvoiceDetailCandidates)
             {
                 this.AddInvoiceDetail(invoiceDetailCandidate);
-            }
-        }
-
-        public ImportBook(ImportSetup setup)
-        {
-            this.DateCreated = DateTime.UtcNow;
-            this.CreatedBy = setup.CreatedBy;
-            this.ContactEmployee = setup.CreatedBy;
-            this.OrderDetails = new List<ImportBookOrderDetail>();
-            this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
-            this.PostEntries = new List<ImportBookPostEntry>();
-
-            foreach (var candidate in setup.OrderDetailCandidates())
-            {
-                this.AddOrderDetail(new ImportBookOrderDetail(candidate));
-            }
-
-            foreach (var candidate in setup.InvoiceDetailCandidates())
-            {
-                this.AddInvoiceDetail(candidate);
             }
         }
 

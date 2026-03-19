@@ -95,7 +95,7 @@ namespace Linn.Stores2.Service.Modules
             var employeeUrl = req.HttpContext.User.GetEmployeeUrl();
             var privs = await userPrivilegeService.GetUserPrivileges(employeeUrl);
 
-            await res.Negotiate(await service.InitialiseImportBook(rsnNumbers, purchaseOrderNumbers, supplierId, privs));
+            await res.Negotiate(await service.InitialiseImportBook(rsnNumbers, purchaseOrderNumbers, supplierId, req.HttpContext.User.GetEmployeeNumber(), privs));
         }
     }
 }

@@ -53,6 +53,11 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             var countryRepository
                 = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
 
+            var importFactory = new ImportFactory(
+                supplierRepository,
+                currencyRepository,
+                rsnRepository);
+
             var transactionManager = new TransactionManager(this.DbContext);
             var databaseSequenceService = new TestDatabaseSequenceService();
 
@@ -65,6 +70,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     currencyRepository,
                     rsnRepository,
                     countryRepository,
+                    importFactory,
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(

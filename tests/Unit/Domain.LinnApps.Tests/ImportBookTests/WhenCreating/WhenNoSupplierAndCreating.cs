@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
+namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
 {
     using System;
 
@@ -7,12 +7,13 @@
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
+    using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.Employees;
     using Linn.Stores2.TestData.Suppliers;
 
     using NUnit.Framework;
 
-    public class WhenNoSupplier
+    public class WhenNoSupplierAndCreating
     {
         private Action action;
 
@@ -22,7 +23,8 @@
             var candidate = new ImportCandidate
             {
                 CreatedBy = TestEmployees.SophlyBard,
-                Carrier = TestSuppliers.Fedex
+                Carrier = TestSuppliers.Fedex,
+                BaseCurrency = TestCurrencies.UKPound
             };
 
             this.action = () => _ = new ImportBook(candidate);

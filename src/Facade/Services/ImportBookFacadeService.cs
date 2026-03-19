@@ -2,6 +2,7 @@ namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
@@ -30,6 +31,8 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IRepository<Country, string> countryRepository;
 
+        private readonly IImportFactory importFactory;
+
         private readonly IAuthorisationService authService;
 
         private readonly IBuilder<ImportBook> resourceBuilder;
@@ -42,6 +45,7 @@ namespace Linn.Stores2.Facade.Services
             IQueryRepository<Currency> currencyRepository,
             IQueryRepository<Rsn> rsnRepository,
             IRepository<Country, string> countryRepository,
+            IImportFactory importFactory,
             ITransactionManager transactionManager,
             IAuthorisationService authService,
             IBuilder<ImportBook> resourceBuilder)
@@ -53,6 +57,7 @@ namespace Linn.Stores2.Facade.Services
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
             this.countryRepository = countryRepository;
+            this.importFactory = importFactory;
             this.resourceBuilder = resourceBuilder;
             this.authService = authService;
         }
@@ -185,15 +190,25 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        public async Task<IResult<ImportBookResource>> InitialiseImportBook(string rsnNumbers, string purchaseOrderNumbers, int? supplierId, IEnumerable<string> privileges)
+        public async Task<IResult<ImportBookResource>> InitialiseImportBook(string rsnNumbers, string purchaseOrderNumbers, int? supplierId, int? employeeNumber, IEnumerable<string> privileges)
         {
+            if (employeeNumber == null)
+            {
+                return new BadRequestResult<ImportBookResource>($"Employee not supplied");
+            }
+
+            var employee = await this.employeeRepository.FindByIdAsync(employeeNumber.Value);
+            if (employee == null)
+            {
+                return new BadRequestResult<ImportBookResource>($"Employee not found: {employeeNumber.Value}");
+            }
+
             if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
             {
                 throw new UnauthorisedActionException("You are not authorised to create import books");
             }
 
-            var setup = new ImportSetup();
-
+            /*
             if (!string.IsNullOrEmpty(rsnNumbers))
             {
                 foreach (var rsnStringId in rsnNumbers.Split(','))
@@ -212,9 +227,32 @@ namespace Linn.Stores2.Facade.Services
                     setup.AddRsn(rsn);
                 }
             }
+            */
 
-            var importBook = new ImportBook(setup);
-            return new SuccessResult<ImportBookResource>((ImportBookResource)this.resourceBuilder.Build(importBook, privileges));
+            try
+            {
+                var candidate = await this.importFactory.CreateImportBook(this.ParseNumbers(rsnNumbers), this.ParseNumbers(purchaseOrderNumbers), supplierId, employee);
+
+                var importBook = new ImportBook(candidate, true);
+                return new SuccessResult<ImportBookResource>((ImportBookResource)this.resourceBuilder.Build(importBook, privileges));
+            }
+            catch (NotFoundException e)
+            {
+                return new BadRequestResult<ImportBookResource>(e.Message);
+            }
+        }
+
+        private IEnumerable<int> ParseNumbers(string numbers)
+        {
+            if (string.IsNullOrEmpty(numbers))
+            {
+                return new List<int>();
+            }
+
+            return numbers.Split(',')
+                .Select(n => n.Trim())
+                .Where(n => int.TryParse(n, out _))
+                .Select(int.Parse);
         }
     }
 }
