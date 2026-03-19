@@ -19,7 +19,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
 
     using NUnit.Framework;
 
-    public class WhenPassingEuropeanRsns : ContextBase
+    public class WhenEuropeanRsns : ContextBase
     {
         private ImportCandidate result;
 

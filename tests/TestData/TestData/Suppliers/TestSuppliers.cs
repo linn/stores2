@@ -39,5 +39,29 @@ namespace Linn.Stores2.TestData.Suppliers
                     Country = TestCountries.Sweden,
                     ApprovedCarrier = "N"
                 };
+
+        // Suppliers for PO imports
+        public static readonly Supplier SeasFabrikker =
+            new Supplier
+            {
+                Id = 121628,
+                Name = "SEAS FABRIKKER AS (EURO ACCOUNT)",
+                AccountingCompany = "LINN",
+                CountryCode = TestCountries.Norway.CountryCode,
+                Country = TestCountries.Norway,
+                ApprovedCarrier = "N"
+            };
+
+        // Suppliers for SUNDRY, SAMPLES type imports
+        public static readonly Supplier AcmeIncorporated =
+            new Supplier
+            {
+                Id = 146737,
+                Name = "ACME INCORPORATED (IMPORT ONLY)",
+                AccountingCompany = "LINN",
+                CountryCode = TestCountries.China.CountryCode,
+                Country = TestCountries.China,
+                ApprovedCarrier = "N"
+            };
     }
 }

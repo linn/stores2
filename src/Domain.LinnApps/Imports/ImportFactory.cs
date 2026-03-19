@@ -8,6 +8,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
+    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
 
     public class ImportFactory : IImportFactory
@@ -18,16 +19,20 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private readonly IQueryRepository<Rsn> rsnRepository;
 
+        private readonly IRepository<PurchaseOrder, int> purchaseOrderRepository;
+
         private ImportCandidate candidate;
 
         public ImportFactory(
             IQueryRepository<Supplier> supplierRepository,
             IQueryRepository<Currency> currencyRepository,
-            IQueryRepository<Rsn> rsnRepository)
+            IQueryRepository<Rsn> rsnRepository,
+            IRepository<PurchaseOrder, int> purchaseOrderRepository)
         {
             this.supplierRepository = supplierRepository;
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
+            this.purchaseOrderRepository = purchaseOrderRepository;
         }
 
         public async Task<ImportCandidate> CreateImportBook(IEnumerable<int> rsnNumbers,
@@ -78,11 +83,41 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private async Task<ImportCandidate> CreateImportBookFromPoNumbers(IEnumerable<int> poNumbers)
         {
+            foreach (var poNumber in poNumbers)
+            {
+                var purchaseOrder = await this.purchaseOrderRepository.FindByIdAsync(poNumber);
+                if (purchaseOrder == null)
+                {
+                    throw new NotFoundException($"Purchase order {poNumber} not found");
+                }
+
+                if (this.candidate.Supplier == null)
+                {
+                    this.candidate.Supplier = purchaseOrder.Supplier;
+                }
+                else if (this.candidate.Supplier.Id != purchaseOrder.Supplier.Id)
+                {
+                    throw new ImportBookException($"Cannot mix suppliers");
+                }
+
+                this.candidate.OrderDetailCandidates.Add(new ImportOrderDetailCandidate(purchaseOrder));
+
+                // do not setup invoiceDetails as cannot easily be derived
+            }
+
             return this.candidate;
         }
 
         private async Task<ImportCandidate> CreateImportBookFromSupplierId(int supplierId)
         {
+            var supplier = await this.supplierRepository.FindByAsync(s => s.Id == supplierId);
+            if (supplier == null)
+            {
+               throw new NotFoundException($"Supplier {supplierId} not found");
+            }
+
+            this.candidate.Supplier = supplier;
+
             return this.candidate;
         }
     }

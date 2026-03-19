@@ -240,6 +240,10 @@ namespace Linn.Stores2.Facade.Services
             {
                 return new BadRequestResult<ImportBookResource>(e.Message);
             }
+            catch (ImportBookException e)
+            {
+                return new BadRequestResult<ImportBookResource>(e.Message);
+            }
         }
 
         private IEnumerable<int> ParseNumbers(string numbers)

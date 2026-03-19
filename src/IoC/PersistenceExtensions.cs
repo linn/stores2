@@ -10,6 +10,7 @@ namespace Linn.Stores2.IoC
     using Linn.Stores2.Domain.LinnApps.Logistics;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Returns;
@@ -117,7 +118,8 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IQueryRepository<Currency>, EntityFrameworkQueryRepository<Currency>>(
                 r => new EntityFrameworkQueryRepository<Currency>(
                     r.GetService<ServiceDbContext>()?.Currencies))
-                .AddScoped<IQueryRepository<Rsn>, RsnRepository>();
+                .AddScoped<IQueryRepository<Rsn>, RsnRepository>()
+                .AddScoped<IRepository<PurchaseOrder, int>, PurchaseOrderRepository>();
         }
     }
 }

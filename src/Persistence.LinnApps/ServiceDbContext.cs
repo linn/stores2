@@ -1,5 +1,7 @@
 namespace Linn.Stores2.Persistence.LinnApps
 {
+    using Domain.LinnApps.PurchaseOrders;
+
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
@@ -116,6 +118,8 @@ namespace Linn.Stores2.Persistence.LinnApps
 
         public DbSet<Rsn> Rsns { get; set; }
 
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -192,6 +196,8 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildSalesOutlets(builder);
             BuildExportReturn(builder);
             BuildExportReturnDetails(builder);
+            BuildPurchaseOrders(builder);
+            BuildPurchaseOrderDetails(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1422,6 +1428,30 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.Height).HasColumnName("HEIGHT");
             q.Property(e => e.Depth).HasColumnName("DEPTH");
             q.HasOne(r => r.ExportReturn).WithMany().HasForeignKey(r => r.ReturnId);
+        }
+
+        private static void BuildPurchaseOrders(ModelBuilder builder)
+        {
+            var q = builder.Entity<PurchaseOrder>().ToTable("PL_ORDERS");
+            q.HasKey(o => o.OrderNumber);
+            q.Property(o => o.OrderNumber).HasColumnName("ORDER_NUMBER");
+            q.Property(o => o.SupplierId).HasColumnName("SUPP_SUPPLIER_ID");
+            q.HasOne(o => o.Supplier).WithMany().HasForeignKey(o => o.SupplierId);
+            q.HasMany(o => o.Details).WithOne().HasForeignKey(o => o.OrderNumber);
+            q.Property(o => o.DocumentType).HasColumnName("DOCUMENT_TYPE");
+        }
+
+        private static void BuildPurchaseOrderDetails(ModelBuilder builder)
+        {
+            var q = builder.Entity<PurchaseOrderDetail>().ToTable("PL_ORDER_DETAILS");
+            q.HasKey(a => new { a.OrderNumber, a.Line });
+            q.Property(o => o.OrderNumber).HasColumnName("ORDER_NUMBER");
+            q.Property(o => o.Line).HasColumnName("ORDER_LINE");
+            q.Property(o => o.RohsCompliant).HasColumnName("ROHS_COMPLIANT");
+            q.Property(o => o.OurQty).HasColumnName("OUR_QTY");
+            q.Property(o => o.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            q.Property(o => o.SuppliersDesignation).HasColumnName("SUPPLIERS_DESIGNATION").HasMaxLength(2000);
+            q.HasOne(a => a.SalesArticle).WithMany().HasForeignKey(z => z.PartNumber);
         }
     }
 }
