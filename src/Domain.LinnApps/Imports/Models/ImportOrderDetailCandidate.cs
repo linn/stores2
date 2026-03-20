@@ -1,11 +1,9 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 {
     using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
+    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
 
     public class ImportOrderDetailCandidate
@@ -25,6 +23,16 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.CountryOfOrigin = rsn.SalesArticle?.CountryOfOrigin;
         }
 
+        public ImportOrderDetailCandidate(PurchaseOrder po)
+        {
+            this.LineType = "PO";
+            this.Qty = 1; // why does everyone make this always 1?
+            this.PurchaseOrder = po;
+            this.OrderDescription = po.Details?.FirstOrDefault()?.SuppliersDesignation;
+            this.TariffCode = po.Details?.FirstOrDefault()?.SalesArticle?.Tariff?.TariffCode;
+            this.CountryOfOrigin = po.Details?.FirstOrDefault()?.SalesArticle?.CountryOfOrigin;
+        }
+
         public int ImportBookId { get; set; }
 
         public string LineType { get; set; }
@@ -38,5 +46,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
         public Country CountryOfOrigin { get; set; }
 
         public Rsn Rsn { get; set; }
+
+        public PurchaseOrder PurchaseOrder { get; set; }
     }
 }

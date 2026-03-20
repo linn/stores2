@@ -30,6 +30,8 @@ namespace Linn.Stores2.Domain.LinnApps.Returns
 
         public ICollection<ExportReturnDetail> ExportReturnDetails { get; set; }
 
+        public ICollection<RsnReturnInformation> RsnReturns { get; set; }
+
         public bool ExportRsn => this.SalesOutlet != null && this.SalesOutlet.ExportOutlet;
 
         public ExportReturnDetail LastExportReturn()
@@ -42,9 +44,19 @@ namespace Linn.Stores2.Domain.LinnApps.Returns
             return null;
         }
 
+        public RsnReturnInformation LastRsnReturn()
+        {
+            if (this.RsnReturns != null && this.RsnReturns.Any())
+            {
+                return this.RsnReturns.First();
+            }
+
+            return null;
+        }
+
         public bool HasCustomsInformation()
         {
-            return this.LastExportReturn() != null;
+            return this.LastExportReturn() != null || this.LastRsnReturn() != null;
         }
 
         public Currency CustomsCurrency()
@@ -53,6 +65,12 @@ namespace Linn.Stores2.Domain.LinnApps.Returns
             if (exportReturn != null)
             {
                 return exportReturn.ExportReturn.Currency;
+            }
+
+            var rsnReturn = this.LastRsnReturn();
+            if (rsnReturn != null)
+            {
+                return rsnReturn.Currency;
             }
 
             return null;
@@ -66,7 +84,8 @@ namespace Linn.Stores2.Domain.LinnApps.Returns
                 return exportReturn.CustomsValue;
             }
 
-            return null;
+            var rsnReturn = this.LastRsnReturn();
+            return rsnReturn?.CustomsValue;
         }
     }
 }

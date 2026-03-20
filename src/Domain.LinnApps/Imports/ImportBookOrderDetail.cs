@@ -34,6 +34,18 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 {
                     throw new ImportBookException("RSN order detail is already associated with a different import book");
                 }
+
+                this.Rsn = candidate.Rsn;
+                this.RsnNumber = candidate.Rsn?.RsnNumber;
+            }
+            else if (candidate.LineType == "PO")
+            {
+                if (candidate.PurchaseOrder == null)
+                {
+                    throw new ImportBookException("PO order detail has no Purchase Order supplied");
+                }
+
+                this.OrderNumber = candidate.PurchaseOrder?.OrderNumber;
             }
 
             this.LineType = candidate.LineType;
@@ -41,8 +53,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.OrderDescription = candidate.OrderDescription;
             this.TariffCode = candidate.TariffCode;
             this.CountryOfOrigin = candidate.CountryOfOrigin?.CountryCode;
-            this.Rsn = candidate.Rsn;
-            this.RsnNumber = candidate.Rsn?.RsnNumber;
         }
 
         public int? CpcNumber { get; set; }

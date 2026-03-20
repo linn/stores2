@@ -27,6 +27,13 @@ function OrderDetails({ orderDetails, countries, canChange, handleFieldChange })
         clearData: clearRsnData
     } = useGet(itemTypes.rsns.url, true);
 
+    const {
+        send: getOrder,
+        isLoading: isOrderLoading,
+        result: orderResult,
+        clearData: clearOrderData
+    } = useGet(itemTypes.purchaseOrders.url, true);
+
     const handleOrderChange = useCallback(
         (propertyName, newValue) => {
             if (!dialogOpen.forRow) {
@@ -80,6 +87,35 @@ function OrderDetails({ orderDetails, countries, canChange, handleFieldChange })
         handleFieldChange
     ]);
 
+    useEffect(() => {
+        if (orderResult && orderDetail?.orderNumber) {
+            // Batch all updates into a single call to prevent race conditions
+            const updatedOrderDetails = orderDetails?.map(detail =>
+                detail.lineNumber === dialogOpen.forRow
+                    ? {
+                          ...detail,
+                          lineDocument: orderResult.orderNumber,
+                          orderDescription: orderResult.details[0].suppliersDesignation
+                      }
+                    : detail
+            );
+
+            if (updatedOrderDetails) {
+                handleFieldChange('importBookOrderDetails', updatedOrderDetails);
+            }
+
+            clearOrderData();
+        }
+    }, [
+        orderResult,
+        orderDetail?.orderNumber,
+        clearOrderData,
+        dialogOpen.forRow,
+        orderDetail,
+        orderDetails,
+        handleFieldChange
+    ]);
+
     const addOrderDetail = () => {
         const lineNumber =
             orderDetails?.length > 0 ? orderDetails[orderDetails.length - 1].lineNumber + 1 : 1;
@@ -124,6 +160,12 @@ function OrderDetails({ orderDetails, countries, canChange, handleFieldChange })
         }
     };
 
+    const handleOrderSelect = () => {
+        if (orderDetail.orderNumber && !isOrderLoading) {
+            getOrder(orderDetail.orderNumber);
+        }
+    };
+
     const documentSearch = () => {
         if (orderDetail.lineType === 'RSN') {
             return (
@@ -146,6 +188,33 @@ function OrderDetails({ orderDetails, countries, canChange, handleFieldChange })
                             disabled={!orderDetail.rsnNumber || isRsnLoading}
                         >
                             Add RSN
+                        </Button>
+                    </Grid>
+                </>
+            );
+        }
+
+        if (orderDetail.lineType === 'PO') {
+            return (
+                <>
+                    <Grid size={3}>
+                        <InputField
+                            fullWidth
+                            value={orderDetail.orderNumber}
+                            type="number"
+                            onChange={handleOrderChange}
+                            label="Order Number"
+                            propertyName="orderNumber"
+                        />
+                    </Grid>
+                    <Grid size={9}>
+                        <Button
+                            onClick={handleOrderSelect}
+                            variant="outlined"
+                            style={{ marginTop: '29px' }}
+                            disabled={!orderDetail.orderNumber || isOrderLoading}
+                        >
+                            Add Purchase Order
                         </Button>
                     </Grid>
                 </>

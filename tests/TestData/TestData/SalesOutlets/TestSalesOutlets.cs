@@ -54,5 +54,15 @@ namespace Linn.Stores2.TestData.SalesOutlets
                 OutletAddress = new Address("Accent on Music", "175 Main Street", "Mount Kisco", null, null, "NY 10549", TestCountries.UnitedStates)
             };
 
+        public static readonly SalesOutlet LinnJapan =
+            new SalesOutlet
+            {
+                AccountId = 65140,
+                OutletNumber = 1,
+                Name = "Linn Japan",
+                CarrierCode = "FEDEX",
+                Terms = "D.D.P.",
+                OutletAddress = new Address("Linn Japan Ltd", "795-3 Minami-Nagai", "Tokorozawa-Shi", "Saitama-Ken", null, "359-001", TestCountries.Japan)
+            };
     }
 }

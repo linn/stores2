@@ -6,6 +6,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -52,6 +53,13 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             var rsnRepository = new EntityFrameworkQueryRepository<Rsn>(this.DbContext.Rsns);
             var countryRepository
                 = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
+            var purchaseOrderRepository = new PurchaseOrderRepository(this.DbContext);
+
+            var importFactory = new ImportFactory(
+                supplierRepository,
+                currencyRepository,
+                rsnRepository,
+                purchaseOrderRepository);
 
             var transactionManager = new TransactionManager(this.DbContext);
             var databaseSequenceService = new TestDatabaseSequenceService();
@@ -65,6 +73,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     currencyRepository,
                     rsnRepository,
                     countryRepository,
+                    importFactory,
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(

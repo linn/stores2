@@ -86,6 +86,8 @@ namespace Linn.Stores2.Service.Modules
         private async Task Initialise(
             HttpRequest req,
             string rsnNumbers,
+            string purchaseOrderNumbers,
+            int? supplierId,
             HttpResponse res,
             IUserPrivilegeService userPrivilegeService,
             IImportBookFacadeService service)
@@ -93,7 +95,7 @@ namespace Linn.Stores2.Service.Modules
             var employeeUrl = req.HttpContext.User.GetEmployeeUrl();
             var privs = await userPrivilegeService.GetUserPrivileges(employeeUrl);
 
-            await res.Negotiate(await service.InitialiseImportBook(rsnNumbers, privs));
+            await res.Negotiate(await service.InitialiseImportBook(rsnNumbers, purchaseOrderNumbers, supplierId, req.HttpContext.User.GetEmployeeNumber(), privs));
         }
     }
 }

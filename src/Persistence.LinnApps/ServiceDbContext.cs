@@ -9,6 +9,7 @@ namespace Linn.Stores2.Persistence.LinnApps
     using Linn.Stores2.Domain.LinnApps.Logistics;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
+    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
     using Linn.Stores2.Domain.LinnApps.Returns;
@@ -116,6 +117,8 @@ namespace Linn.Stores2.Persistence.LinnApps
 
         public DbSet<Rsn> Rsns { get; set; }
 
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -192,6 +195,9 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildSalesOutlets(builder);
             BuildExportReturn(builder);
             BuildExportReturnDetails(builder);
+            BuildPurchaseOrders(builder);
+            BuildPurchaseOrderDetails(builder);
+            BuildRsnReturnInformation(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1380,6 +1386,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasMany(r => r.ImportBookOrderDetails).WithOne(d => d.Rsn)
                 .HasForeignKey(detail => detail.RsnNumber);
             q.HasMany(r => r.ExportReturnDetails).WithOne().HasForeignKey(d => d.RsnNumber);
+            q.HasMany(r => r.RsnReturns).WithOne().HasForeignKey(d => d.RsnNumber);
         }
 
         private static void BuildSalesOutlets(ModelBuilder builder)
@@ -1422,6 +1429,43 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.Height).HasColumnName("HEIGHT");
             q.Property(e => e.Depth).HasColumnName("DEPTH");
             q.HasOne(r => r.ExportReturn).WithMany().HasForeignKey(r => r.ReturnId);
+        }
+
+        private static void BuildPurchaseOrders(ModelBuilder builder)
+        {
+            var q = builder.Entity<PurchaseOrder>().ToTable("PL_ORDERS");
+            q.HasKey(o => o.OrderNumber);
+            q.Property(o => o.OrderNumber).HasColumnName("ORDER_NUMBER");
+            q.Property(o => o.SupplierId).HasColumnName("SUPP_SUPPLIER_ID");
+            q.HasOne(o => o.Supplier).WithMany().HasForeignKey(o => o.SupplierId);
+            q.HasMany(o => o.Details).WithOne().HasForeignKey(o => o.OrderNumber);
+            q.Property(o => o.DocumentType).HasColumnName("DOCUMENT_TYPE");
+        }
+
+        private static void BuildPurchaseOrderDetails(ModelBuilder builder)
+        {
+            var q = builder.Entity<PurchaseOrderDetail>().ToTable("PL_ORDER_DETAILS");
+            q.HasKey(a => new { a.OrderNumber, a.Line });
+            q.Property(o => o.OrderNumber).HasColumnName("ORDER_NUMBER");
+            q.Property(o => o.Line).HasColumnName("ORDER_LINE");
+            q.Property(o => o.RohsCompliant).HasColumnName("ROHS_COMPLIANT");
+            q.Property(o => o.OurQty).HasColumnName("OUR_QTY");
+            q.Property(o => o.PartNumber).HasColumnName("PART_NUMBER").HasMaxLength(14);
+            q.Property(o => o.SuppliersDesignation).HasColumnName("SUPPLIERS_DESIGNATION").HasMaxLength(2000);
+            q.HasOne(a => a.SalesArticle).WithMany().HasForeignKey(z => z.PartNumber);
+        }
+
+        private static void BuildRsnReturnInformation(ModelBuilder builder)
+        {
+            var q = builder.Entity<RsnReturnInformation>().ToTable("RSN_RETURN_INFO");
+            q.HasKey(e => e.RsnNumber);
+            q.Property(e => e.RsnNumber).HasColumnName("RSN_NUMBER");
+            q.Property(e => e.AccountId).HasColumnName("ACCOUNT_ID");
+            q.Property(e => e.DateGenerated).HasColumnName("DATE_GENERATED");
+            q.Property(e => e.CustomsValue).HasColumnName("CUSTOMS_VALUE");
+            q.Property(e => e.ExchangeRate).HasColumnName("EXCHANGE_RATE");
+            q.Property(e => e.ArticleNumber).HasColumnName("ARTICLE_NUMBER").HasMaxLength(14);
+            q.HasOne(d => d.Currency).WithMany().HasForeignKey("CURRENCY");
         }
     }
 }

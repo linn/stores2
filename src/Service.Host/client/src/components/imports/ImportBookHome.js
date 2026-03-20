@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import config from '../../config';
 import Page from '../Page';
 import SearchTab from './SearchTab';
-import CreateFromRsnsTab from './CreateFromRsnsTab';
+import CreateTab from './CreateTab';
 
 function ImportBookHome() {
     const [tab, setTab] = useState(0);
@@ -32,13 +32,12 @@ function ImportBookHome() {
                             }}
                         >
                             <Tab label="Search Import Books" />
-                            <Tab label="Create from RSNs" />
-                            <Tab label="Create from POs" />
+                            <Tab label="Create Import Book" />
                         </Tabs>
                     </Box>
 
                     {tab === 0 && <SearchTab />}
-                    {tab === 1 && <CreateFromRsnsTab />}
+                    {tab === 1 && <CreateTab />}
                 </Box>
             </Grid>
         </Page>

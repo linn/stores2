@@ -30,6 +30,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                 .Include(r => r.SalesArticle).ThenInclude(a => a.CountryOfOrigin)
                 .Include(r => r.ImportBookOrderDetails)
                 .Include(r => r.ExportReturnDetails).ThenInclude(d => d.ExportReturn).ThenInclude(r => r.Currency)
+                .Include(r => r.RsnReturns).ThenInclude(rr => rr.Currency)
                 .Where(expression)
                 .SingleOrDefaultAsync();
         }

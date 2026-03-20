@@ -1,31 +1,32 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
+namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookOrderDetailTests.WhenCreating.WhenLineTypePO
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
-    using Linn.Stores2.TestData.Employees;
-    using Linn.Stores2.TestData.Suppliers;
 
     using NUnit.Framework;
 
-    public class WhenNoSupplier
+    public class WhenNoPurchaseOrder
     {
         private Action action;
 
         [SetUp]
         public void SetUp()
         {
-            var candidate = new ImportCandidate
+            var candidate = new ImportOrderDetailCandidate
             {
-                CreatedBy = TestEmployees.SophlyBard,
-                Carrier = TestSuppliers.Fedex
+                LineType = "PO"
             };
 
-            this.action = () => _ = new ImportBook(candidate);
+            this.action = () => _ = new ImportBookOrderDetail(candidate);
         }
 
         [Test]
@@ -33,7 +34,7 @@
         {
             this.action.Should().Throw<ImportBookException>()
                 .WithMessage(
-                    "Supplier not supplied");
+                    "PO order detail has no Purchase Order supplied");
         }
     }
 }
