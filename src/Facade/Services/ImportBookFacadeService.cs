@@ -208,27 +208,6 @@ namespace Linn.Stores2.Facade.Services
                 throw new UnauthorisedActionException("You are not authorised to create import books");
             }
 
-            /*
-            if (!string.IsNullOrEmpty(rsnNumbers))
-            {
-                foreach (var rsnStringId in rsnNumbers.Split(','))
-                {
-                    if (!int.TryParse(rsnStringId, out var rsnNumber))
-                    {
-                        return new BadRequestResult<ImportBookResource>($"Invalid RSN number: {rsnStringId}");
-                    }
-
-                    var rsn = await this.rsnRepository.FindByAsync(r => r.RsnNumber == rsnNumber);
-                    if (rsn == null)
-                    {
-                        throw new NotFoundException($"Rsn not found: {rsnStringId}");
-                    }
-
-                    setup.AddRsn(rsn);
-                }
-            }
-            */
-
             try
             {
                 var candidate = await this.importFactory.CreateImportBook(this.ParseNumbers(rsnNumbers), this.ParseNumbers(purchaseOrderNumbers), supplierId, employee);
