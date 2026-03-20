@@ -65,7 +65,8 @@ const itemTypes = {
     suppliers: { url: `${config.proxyRoot}/inventory/suppliers` },
     approvedCarriers: { url: `${config.proxyRoot}/inventory/suppliers-approved-carrier` },
     rsns: { url: `${config.proxyRoot}/service/rsns` },
-    currencies: { url: `${config.proxyRoot}/logistics/currencies` }
+    currencies: { url: `${config.proxyRoot}/logistics/currencies` },
+    consignments: { url: `${config.proxyRoot}/logistics/consignments` }
 };
 
 export default itemTypes;

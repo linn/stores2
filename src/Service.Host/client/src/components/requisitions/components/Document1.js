@@ -146,7 +146,10 @@ function Document1({
     const href = () => {
         if (document1Text === 'Loan Number') {
             return itemTypes.loans.url;
-        }
+        }  
+        if (document1Text === 'Consignment Id') {
+            return itemTypes.consignments.url;
+        }   
 
         switch (partSource) {
             case 'C':
