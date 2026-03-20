@@ -3,9 +3,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
     using System;
     using System.Linq;
 
+    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
-
-    using PurchaseOrders;
 
     public class ImportOrderDetailCandidate
     {
