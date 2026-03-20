@@ -42,8 +42,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
                 }
             };
 
-            this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>()).Returns(x => Task.FromResult(TestCurrencies.UKPound));
-            this.RsnRepository.FindByAsync(Arg.Any<Expression<Func<Rsn, bool>>>()).Returns(x => Task.FromResult(rsn));
+            this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>()).Returns(TestCurrencies.UKPound);
+            this.RsnRepository.FindByAsync(Arg.Any<Expression<Func<Rsn, bool>>>()).Returns(rsn);
             this.result = await this.Sut.CreateImportBook(new List<int> { 12 }, null, null, new Employee());
         }
 

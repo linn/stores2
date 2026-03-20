@@ -42,7 +42,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
                 }
             };
 
-            this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>()).Returns(x => Task.FromResult(TestCurrencies.UKPound));
+            this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>()).Returns(TestCurrencies.UKPound);
             this.PurchaseOrderRepository.FindByIdAsync(12).Returns(purchaseOrder);
             this.result = await this.Sut.CreateImportBook(null, new List<int> { 12 },  null, new Employee());
         }
