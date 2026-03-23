@@ -14,5 +14,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         // EORI = Economic Operators Registration and Identification number
         public string EORINumber { get; set; }
+
+        public string DefermentAcct { get; set; }
+
+        public string PVAText { get; set; }
+
+        public string IPRDeclaration { get; set; }
     }
 }

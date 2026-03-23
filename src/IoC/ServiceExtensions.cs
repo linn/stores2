@@ -2,6 +2,8 @@ namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
+    using Domain.LinnApps.Imports.Models;
+
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Domain.LinnApps.Services;
@@ -98,6 +100,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<ISerialNumberService, SerialNumberService>()
                 .AddScoped<IStockReportService, StockReportService>()
                 .AddScoped<IImportFactory, ImportFactory>()
+                .AddScoped<IImportReportService, ImportReportService>()
                 .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>()
                 .AddScoped<IHtmlTemplateService<LabourHoursInStockReport>>(
                     x => new HtmlTemplateService<LabourHoursInStockReport>(
@@ -110,6 +113,10 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IHtmlTemplateService<LabourHoursInLoansReport>>(
                     x => new HtmlTemplateService<LabourHoursInLoansReport>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}LabourHoursInLoans.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<ImportClearanceInstruction>>(
+                    x => new HtmlTemplateService<ImportClearanceInstruction>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}ImportClearanceInstruction.cshtml",
                         x.GetService<ITemplateEngine>()));
         }
 
@@ -142,7 +149,8 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IAsyncFacadeService<StoresPallet, int, StoresPalletResource, StoresPalletResource, StoresPalletResource>, StoresPalletFacadeService>()
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>()
                 .AddScoped<IStockReportFacadeService, StockReportFacadeService>()
-                .AddScoped<IImportBookFacadeService, ImportBookFacadeService>();
+                .AddScoped<IImportBookFacadeService, ImportBookFacadeService>()
+                .AddScoped<IImportReportFacadeService, ImportReportFacadeService>();
         }
 
         public static IServiceCollection AddBuilders(this IServiceCollection services)

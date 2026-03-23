@@ -1,6 +1,12 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
-import { DatePicker, Dropdown, InputField, Search } from '@linn-it/linn-form-components-library';
+import {
+    DatePicker,
+    ExportButton,
+    Dropdown,
+    InputField,
+    Search
+} from '@linn-it/linn-form-components-library';
 import itemTypes from '../../itemTypes';
 import useSearch from '../../hooks/useSearch';
 
@@ -236,6 +242,18 @@ function MainTab({
                 canChange={canChange}
                 handleFieldChange={handleFieldChange}
             />
+
+            {importBook.id && (
+                <Grid size={6}>
+                    <ExportButton
+                        buttonText="Download Instruction as PDF"
+                        accept="application/pdf"
+                        fileName={`ClearanceInstructions${importBook.id}.pdf`}
+                        tooltipText="Download Import Customs Clearance Instructions as PDF"
+                        href={`${itemTypes.importBooks.url}/${importBook.id}/instruction/pdf`}
+                    />
+                </Grid>
+            )}
         </Grid>
     );
 }

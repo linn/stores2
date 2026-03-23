@@ -119,7 +119,8 @@ namespace Linn.Stores2.IoC
                 r => new EntityFrameworkQueryRepository<Currency>(
                     r.GetService<ServiceDbContext>()?.Currencies))
                 .AddScoped<IQueryRepository<Rsn>, RsnRepository>()
-                .AddScoped<IRepository<PurchaseOrder, int>, PurchaseOrderRepository>();
+                .AddScoped<IRepository<PurchaseOrder, int>, PurchaseOrderRepository>()
+                .AddScoped<ISingleRecordRepository<ImportMaster>, ImportMasterRepository>();
         }
     }
 }

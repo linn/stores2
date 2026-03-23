@@ -99,6 +99,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public ImportBookCpcNumber ImportBookCpcNumber { get; set; }
 
+        public bool IsIPR => this.ImportBookCpcNumber != null && this.ImportBookCpcNumber.IsIPR;
+
         public int? LineDocument()
         {
             if (this.LineType == "RSN")
