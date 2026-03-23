@@ -10,7 +10,8 @@ namespace Linn.Stores2.Domain.LinnApps
         {
         }
 
-        public Address(string addressee,
+        public Address(
+            string addressee,
             string line1,
             string line2,
             string line3,

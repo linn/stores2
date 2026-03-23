@@ -2,8 +2,6 @@ namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
-    using Domain.LinnApps.Imports.Models;
-
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Domain.LinnApps.Services;
@@ -18,6 +16,7 @@ namespace Linn.Stores2.IoC
     using Linn.Stores2.Domain.LinnApps.Accounts;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.Labels;
     using Linn.Stores2.Domain.LinnApps.Models;
     using Linn.Stores2.Domain.LinnApps.Pcas;

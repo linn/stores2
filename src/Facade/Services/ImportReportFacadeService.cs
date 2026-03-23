@@ -8,7 +8,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Common.Pdf;
     using Linn.Stores2.Domain.LinnApps.Imports;
 
-    public class ImportReportFacadeService : IImportReportFacadeService 
+    public class ImportReportFacadeService : IImportReportFacadeService
     {
         private readonly IImportReportService importReportService;
 

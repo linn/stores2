@@ -4,7 +4,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
     using System.Collections.Generic;
     using System.Linq;
 
-    using Exceptions;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
 
     public class ImportClearanceInstruction
     {

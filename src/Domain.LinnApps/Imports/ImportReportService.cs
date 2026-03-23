@@ -19,7 +19,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public ImportReportService(IRepository<ImportBook, int> importBookRepository, ISingleRecordRepository<ImportMaster> importMasterRepository, IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService)
         {
             this.importBookRepository = importBookRepository;
-            this.importMasterRepository = importMasterRepository;   
+            this.importMasterRepository = importMasterRepository;
             this.clearanceHtmlTemplateService = clearanceHtmlTemplateService;
         }
 
