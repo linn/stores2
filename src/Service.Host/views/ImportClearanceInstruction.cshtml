@@ -151,10 +151,6 @@
 			grid-area: vatNo;
 		}
 
-		.contactEmailPrompt {
-			grid-area: contactEmailPrompt;
-		}
-
 		.eori {
 			grid-area: eori;
 		}
@@ -283,7 +279,7 @@
                                 @Model.TelephoneNumber
                             </div>
                             
-                            <div class="EmailPrompt">
+                            <div class="emailPrompt">
                                 <b>Email:</b>
                             </div>
                             
@@ -343,7 +339,7 @@
                             </div>
 
                             <div class="sender">
-                                @Model.EORINumber
+                                @Model.Supplier?.Name
                             </div>
                             
                             <div class="awbPrompt">
@@ -367,7 +363,13 @@
                             </div>
 
                             <div class="value">
-                                @Model.Currency?.Code @Model.TotalValue?.ToString("N2")
+                                @Model.Currency?.Code @(
+                                                      Model.TotalValue.HasValue
+                                                          ? (Model.Currency?.Code == "JPY"
+                                                              ? Model.TotalValue.Value.ToString("N0")
+                                                              : Model.TotalValue.Value.ToString("N2"))
+                                                          : string.Empty
+                                                      )
                             </div>
                             
                             @if (!string.IsNullOrEmpty(Model.PVAText))
