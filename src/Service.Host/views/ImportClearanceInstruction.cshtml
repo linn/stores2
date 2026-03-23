@@ -1,0 +1,442 @@
+@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Imports.Models.ImportClearanceInstruction>
+@{
+    <style>
+        @@media print {
+            @@page {
+                size: A4 portrait;
+                margin: 25px;
+                margin-bottom: 20px;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+        }
+
+        @@media screen {
+            @@page {
+                size: A4 portrait;
+                margin: 50px;
+            }
+
+            thead {
+                display: block;
+                margin-left: 50px;
+                margin-right: 600px;
+                margin-top: 20px;
+            }
+
+            tbody {
+                display: block;
+                margin-top: 30px;
+                margin-left: 50px;
+                margin-right: 50px;
+                margin-bottom: 20px;
+            }
+        }
+
+		.header-grid-container {
+			row-gap: 4px;
+			column-gap: 10px;
+			display: grid;
+			grid-template-areas:
+				'logo title title title .'
+				'logo titleDescription titleDescription titleDescription titleDescription'
+				'. . . . .'
+				'fromPrompt address toPrompt carrier .'
+				'telPrompt telephone . . .'
+				'emailPrompt fromEmail . . .'
+				'contactPrompt contactName . . .'
+				'ddPrompt ddNumber . . .'
+				'contactEmailPrompt contactEmail . . .'
+				'vatNoPrompt vatNo . . .'
+				'eoriPrompt eori . . .'
+				'shippingDetsPrompt divider divider divider divider'
+				'senderPrompt sender . . .'
+				'awbPrompt awb . . .'
+				'invoicesPrompt invoices . . .'
+				'valuePrompt value . . .'
+				'pvaText pvaText pvaText pvaText pvaText'
+				'iprHeader iprHeader iprHeader iprHeader iprHeader'
+				'iprDeclaration iprDeclaration iprDeclaration iprDeclaration iprDeclaration'
+		}
+
+        thead {
+            font-size: 0.8em;
+            font-family: Arial, sans-serif;
+        }
+
+        tbody {
+            font-size: 0.8em;
+            font-family: Arial, sans-serif;
+        }
+
+		.logo {
+			grid-area: logo;
+		}
+
+		.title {
+			grid-area: title;
+		}
+
+		.titleDescription {
+			grid-area: titleDescription;
+			border-bottom: 1px solid #000;
+			padding-bottom: 10px;
+        }
+
+		.fromPrompt {
+			grid-area: fromPrompt;
+		}
+
+		.address {
+			white-space: pre-line;
+			font-size: 0.9em;
+			grid-area: address;
+		}
+
+		.toPrompt {
+			grid-area: toPrompt;
+		}
+
+		.carrier {
+			grid-area: carrier;
+		}
+
+		.emailPrompt {
+			grid-area: emailPrompt;
+		}
+
+		.fromEmail {
+			grid-area: fromEmail;
+		}
+
+		.telPrompt {
+			grid-area: telPrompt;
+		}
+
+		.telephone {
+			grid-area: telephone;
+		}
+
+		.contactPrompt {
+			grid-area: contactPrompt;
+		}
+
+		.contactName {
+			grid-area: contactName;
+		}
+
+		.ddPrompt {
+			grid-area: ddPrompt;
+		}
+
+		.ddNumber {
+			grid-area: ddNumber;
+		}
+
+		.contactEmailPrompt {
+			grid-area: contactEmailPrompt;
+		}
+
+		.contactEmail {
+			grid-area: contactEmail;
+		}
+
+		.vatNoPrompt {
+			grid-area: vatNoPrompt;
+		}
+
+		.vatNo {
+			grid-area: vatNo;
+		}
+
+		.eori {
+			grid-area: eori;
+		}
+
+		.eoriPrompt {
+			grid-area: eoriPrompt;
+		}
+
+		.shippingDetsPrompt {
+			grid-area: shippingDetsPrompt;
+			padding-top: 20px;
+		}
+
+		.divider {
+			grid-area: divider;
+			border-bottom: 1px solid #000;
+			padding-bottom: 10px;
+			margin: 10px;
+		}
+
+		.sender {
+			grid-area: sender;
+		}
+
+		.senderPrompt {
+			grid-area: senderPrompt;
+		}
+
+		.awb {
+			grid-area: awb;
+		}
+
+		.awbPrompt {
+			grid-area: awbPrompt;
+		}
+
+		.invoices {
+			grid-area: invoices;
+		}
+
+		.invoicesPrompt {
+			grid-area: invoicesPrompt;
+		}
+
+		.value {
+			grid-area: value;
+			margin-bottom: 10px;
+		}
+
+		.valuePrompt {
+			grid-area: valuePrompt;
+			margin-bottom: 10px;
+		}
+
+		.pvaText {
+			grid-area: pvaText;
+			margin-bottom: 10px;
+			font-size: 0.8em;
+			color: red;
+		}
+
+		.iprHeader {
+			grid-area: iprHeader;
+			margin-bottom: 10px;
+		}
+
+		.iprDeclaration {
+			grid-area: iprDeclaration;
+			margin-bottom: 10px;
+			font-size: 0.9em;
+			white-space: pre-line;
+			color: dodgerblue;
+		}
+
+        .auto {
+            grid: auto;
+        }
+
+        .line-grid-container {
+            column-gap: 10px;
+            display: grid;
+            grid-template-columns: auto auto auto auto auto;
+            row-gap: 5px;
+        }
+
+        #tcb-extension-uk-wrapper {
+            display: none !important;
+        }
+    </style>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="header-grid-container">
+                            <div class="logo">
+                                <img src="@("https://app.linn.co.uk/Content/images/linn-logo.png")" />
+                            </div>
+							<div class="title"> <h2>IMPORT CUSTOMS CLEARANCE INSTRUCTIONS</h2></div>
+
+							<div class="titleDescription">
+                                <b>AWB No.:</b> @Model.TransportBillNumber
+                            </div>
+                            
+                            <div class="fromPrompt">
+                                <b>From:</b>
+                            </div>
+
+                            <div class="address">
+								@Model.Address
+                            </div>
+
+                            <div class="toPrompt">
+                                <b>To:</b>
+                            </div>
+                            
+                            <div class="carrier">
+                                @Model.Carrier.Name<br />@Model.ToEmailAddress
+                            </div>
+                            
+                            <div class="telPrompt">
+                                <b>Tel:</b>
+                            </div>
+                            
+                            <div class="telephone">
+                                @Model.TelephoneNumber
+                            </div>
+                            
+                            <div class="emailPrompt">
+                                <b>Email:</b>
+                            </div>
+                            
+                            <div class="fromEmail">
+                                @Model.FromEmailAddress
+                            </div>
+                            
+                            <div class="contactPrompt">
+                                <b>Contact:</b>
+                            </div>
+                            
+                            <div class="contactName">
+                                Sophie Baird
+                            </div>
+                            
+                            <div class="ddPrompt">
+                                <b>DD:</b>
+                            </div>
+                            
+                            <div class="ddNumber">
+                                0141 303 5077
+                            </div>
+                            
+                            <div class="contactEmailPrompt">
+                                <b>Email:</b>
+                            </div>
+                            
+                            <div class="contactEmail">
+                                sophie.baird@linn.co.uk
+                            </div>
+                            
+                            <div class="vatNoPrompt">
+                                <b>VAT No:</b>
+                            </div>
+                            
+                            <div class="vatNo">
+                                @Model.VatRegistrationNumber
+                            </div>
+                            
+                            <div class="eoriPrompt">
+                                <b>EORI:</b>
+                            </div>
+                            
+                            <div class="eori">
+                                @Model.EORINumber
+                            </div>
+                            
+                            <div class="shippingDetsPrompt">
+                                <b>Shipping Details:</b>
+                            </div>
+                            
+                            <div class="divider">
+                            </div>
+                            
+                            <div class="senderPrompt">
+								<b>Sender:</b>
+                            </div>
+
+                            <div class="sender">
+                                @Model.Supplier?.Name
+                            </div>
+                            
+                            <div class="awbPrompt">
+                                <b>AWB:</b>
+                            </div>
+
+                            <div class="awb">
+                                @Model.TransportBillNumber
+                            </div>
+                            
+                            <div class="invoicesPrompt">
+                                <b>Invoice Nos:</b>
+                            </div>
+
+                            <div class="invoices">
+                                @Model.Invoices
+                            </div>
+                            
+                            <div class="valuePrompt">
+                                <b>Value:</b>
+                            </div>
+
+                            <div class="value">
+                                @Model.Currency?.Code @(
+                                                      Model.TotalValue.HasValue
+                                                          ? (Model.Currency?.Code == "JPY"
+                                                              ? Model.TotalValue.Value.ToString("N0")
+                                                              : Model.TotalValue.Value.ToString("N2"))
+                                                          : string.Empty
+                                                      )
+                            </div>
+                            
+                            @if (!string.IsNullOrEmpty(Model.PVAText))
+                            {
+                                <div class="pvaText">
+                                    <b>@Model.PVAText</b>
+                                </div>
+                            }
+                            
+                            @if (Model.IPR)
+                            {
+                                <div class="iprHeader">
+                                    <i>
+                                        Linn Products Ltd authorises this shipment to be cleared through CDS<br/>
+                                        EORI - @Model.EORINumber <br />
+                                        Deferment acct - @Model.DefermentAcct <br />
+                                    </i>
+                                </div>
+                                <div class="iprDeclaration">
+									@Model.IPRDeclaration
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="line-grid-container">
+                            <div>
+                                <b>Invoice/RSN No</b>
+                            </div>
+                            <div>
+                                <b>Description</b>
+                            </div>
+                            <div>
+                                <b>Tariff No</b>
+                            </div>
+                            <div>
+                                <b>CoO</b>
+                            </div>
+                            <div>
+                                <b>Customs Value</b>
+                            </div>
+                            @foreach (var line in Model.Details)
+                            {
+                                <div>
+                                    @line.InvoiceNumber
+                                </div>
+                                <div>
+                                    @line.Description
+                                </div>
+                                <div>
+                                    @line.TariffCode
+                                </div>
+                                <div>
+                                    @line.CountryOfOrigin
+                                </div>
+                                <div>
+									@line.CustomsValueString()
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+}

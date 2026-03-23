@@ -119,6 +119,8 @@ namespace Linn.Stores2.Persistence.LinnApps
 
         public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
 
+        public DbSet<ImportMaster> ImportMaster { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -1343,9 +1345,12 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.HasNoKey();
             e.Property(a => a.TelephoneNumber).HasColumnName("TELEPHONE_NUMBER").HasMaxLength(50);
             e.Property(a => a.EmailAddress).HasColumnName("EMAIL_ADDRESS").HasMaxLength(50);
-            e.Property(a => a.VatRegistrationNumber).HasColumnName("VAT_REGISTRATION_NUMBER").HasMaxLength(20);
+            e.Property(a => a.VatRegistrationNumber).HasColumnName("VAT_REG_NO").HasMaxLength(20);
             e.Property(a => a.EORINumber).HasColumnName("EORI_NUMBER").HasMaxLength(50);
-            e.HasOne(e => e.Address).WithMany().HasForeignKey("ADDRESS_ID");
+            e.Property(a => a.DefermentAcct).HasColumnName("DEFERMENT_ACCT").HasMaxLength(50);
+            e.Property(a => a.PVAText).HasColumnName("PVA_TEXT").HasMaxLength(2000);
+            e.Property(a => a.IPRDeclaration).HasColumnName("IPR_DECLARATION").HasMaxLength(2000);
+            e.HasOne(a => a.Address).WithMany().HasForeignKey("ADDRESS_ID");
         }
 
         private static void BuildTariffs(ModelBuilder builder)
