@@ -21,7 +21,9 @@ namespace Linn.Stores2.IoC
     {
         public static IServiceCollection AddHandlers(this IServiceCollection services)
         {
-            return services.AddSingleton<IHandler, JsonResultHandler<IEnumerable<CountryResource>>>()
+            return services
+                .AddSingleton<IHandler, StreamCopyingResultHandler>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CountryResource>>>()
                 .AddTransient<IHandler, JsonResultHandler<ReportReturnResource>>()
                 .AddTransient<IHandler, CsvResultHandler<ReportReturnResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>()

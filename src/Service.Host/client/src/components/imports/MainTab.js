@@ -1,11 +1,13 @@
 import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
 import {
     DatePicker,
-    ExportButton,
     Dropdown,
     InputField,
-    Search
+    Search,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../itemTypes';
 import useSearch from '../../hooks/useSearch';
@@ -47,6 +49,8 @@ function MainTab({
         const country = countries.find(c => c.countryCode === selected.countryCode);
         handleFieldChange('supplierCountry', country);
     };
+
+    const clearanceInstructionLink = utilities.getHref(importBook, 'clearance-instruction');
 
     return (
         <Grid container spacing={1}>
@@ -247,13 +251,9 @@ function MainTab({
 
             {importBook.id && (
                 <Grid size={6}>
-                    <ExportButton
-                        buttonText="Download Instruction as PDF"
-                        accept="application/pdf"
-                        fileName={`ClearanceInstructions${importBook.id}.pdf`}
-                        tooltipText="Download Import Customs Clearance Instructions as PDF"
-                        href={`${itemTypes.importBooks.url}/${importBook.id}/instruction/pdf`}
-                    />
+                    <Link component={RouterLink} variant="body2" to={clearanceInstructionLink}>
+                        Clearance Instruction
+                    </Link>
                 </Grid>
             )}
         </Grid>

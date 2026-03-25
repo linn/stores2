@@ -61,6 +61,9 @@ function App() {
                         <ListItem component={Link} to="/stores2/import-books">
                             <Typography color="primary">Import Books (TEST)</Typography>
                         </ListItem>
+                        <ListItem component={Link} to="/stores2/import-books/clearance-instruction">
+                            <Typography color="primary">Clearance Instruction</Typography>
+                        </ListItem>
                     </List>
                 </Grid>
             </Grid>

@@ -43,6 +43,7 @@ import LabourHoursSummaryReport from './LabourHoursSummaryReport';
 import LabourHoursInLoansReport from './LabourHoursInLoansReport';
 import ImportBookHome from './imports/ImportBookHome';
 import ImportBookUtility from './imports/ImportBookUtility';
+import ClearanceInstruction from './imports/ClearanceInstruction';
 
 function Root() {
     const location = useLocation();
@@ -184,6 +185,10 @@ function Root() {
                 <Route
                     path="/stores2/import-books/create"
                     element={<ImportBookUtility creating />}
+                />
+                <Route
+                    path="/stores2/import-books/clearance-instruction"
+                    element={<ClearanceInstruction />}
                 />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
