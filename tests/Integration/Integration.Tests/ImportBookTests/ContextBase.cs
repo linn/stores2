@@ -3,6 +3,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using System.Net.Http;
 
     using Linn.Common.Authorisation;
+    using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
@@ -13,6 +14,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.IoC;
     using Linn.Stores2.Persistence.LinnApps.Repositories;
+    using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Service.Modules;
     using Linn.Stores2.TestData.Countries;
     using Linn.Stores2.TestData.Currencies;
@@ -54,12 +56,15 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             var countryRepository
                 = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
             var purchaseOrderRepository = new PurchaseOrderRepository(this.DbContext);
+            var cpcNumberRepository =
+                new EntityFrameworkRepository<ImportBookCpcNumber, int>(this.DbContext.ImportBookCpcNumbers);
 
             var importFactory = new ImportFactory(
                 supplierRepository,
                 currencyRepository,
                 rsnRepository,
-                purchaseOrderRepository);
+                purchaseOrderRepository,
+                cpcNumberRepository);
 
             var transactionManager = new TransactionManager(this.DbContext);
             var databaseSequenceService = new TestDatabaseSequenceService();
@@ -73,6 +78,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     currencyRepository,
                     rsnRepository,
                     countryRepository,
+                    cpcNumberRepository,
                     importFactory,
                     transactionManager,
                     this.AuthorisationService,
@@ -82,10 +88,20 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                         new ImportBookInvoiceDetailResourceBuilder(),
                         this.AuthorisationService));
 
+            var importBookCpcNumberRepository
+                = new EntityFrameworkRepository<ImportBookCpcNumber, int>(this.DbContext.ImportBookCpcNumbers);
+
+            IAsyncFacadeService<ImportBookCpcNumber, int, ImportBookCpcNumberResource, ImportBookCpcNumberResource, ImportBookCpcNumberResource> importBookCpcNumberService
+                = new ImportBookCpcNumberFacadeService(
+                    importBookCpcNumberRepository,
+                    transactionManager,
+                    new ImportBookCpcNumberResourceBuilder());
+
             this.Client = TestClient.With<ImportBookModule>(
                 services =>
                     {
                         services.AddSingleton(importBookService);
+                        services.AddSingleton(importBookCpcNumberService);
                         services.AddSingleton(this.UserPrivilegeService);
                         services.AddHandlers();
                         services.AddRouting();

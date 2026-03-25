@@ -21,21 +21,26 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private readonly IRepository<PurchaseOrder, int> purchaseOrderRepository;
 
+        private readonly IRepository<ImportBookCpcNumber, int> importBookCpcRepository;
+
         private ImportCandidate candidate;
 
         public ImportFactory(
             IQueryRepository<Supplier> supplierRepository,
             IQueryRepository<Currency> currencyRepository,
             IQueryRepository<Rsn> rsnRepository,
-            IRepository<PurchaseOrder, int> purchaseOrderRepository)
+            IRepository<PurchaseOrder, int> purchaseOrderRepository,
+            IRepository<ImportBookCpcNumber, int> importBookCpcRepository)
         {
             this.supplierRepository = supplierRepository;
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
             this.purchaseOrderRepository = purchaseOrderRepository;
+            this.importBookCpcRepository = importBookCpcRepository;
         }
 
-        public async Task<ImportCandidate> CreateImportBook(IEnumerable<int> rsnNumbers,
+        public async Task<ImportCandidate> CreateImportBook(
+            IEnumerable<int> rsnNumbers,
             IEnumerable<int> poNumbers,
             int? supplierId,
             Employee createdEmployee)
@@ -66,6 +71,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private async Task<ImportCandidate> CreateImportBookFromRsnNumbers(IEnumerable<int> rsnNumbers)
         {
+            var cpcNumbers = await this.importBookCpcRepository.FilterByAsync(i => i.DateInvalid == null);
+
             foreach (var rsnNumber in rsnNumbers)
             {
                 var rsn = await this.rsnRepository.FindByAsync(r => r.RsnNumber == rsnNumber);
@@ -74,7 +81,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                     throw new NotFoundException($"RSN {rsnNumber} not found");
                 }
 
-                this.candidate.OrderDetailCandidates.Add(new ImportOrderDetailCandidate(rsn));
+                var cpc = cpcNumbers.FirstOrDefault(c => c.ReasonForImport == rsn.ImportScheme());
+
+                this.candidate.OrderDetailCandidates.Add(new ImportOrderDetailCandidate(rsn, cpc));
                 this.candidate.InvoiceDetailCandidates.Add(new ImportInvoiceDetailCandidate(rsn));
             }
 
@@ -83,6 +92,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private async Task<ImportCandidate> CreateImportBookFromPoNumbers(IEnumerable<int> poNumbers)
         {
+            var cpcNumber = await this.importBookCpcRepository.FindByAsync(i => i.DateInvalid == null && i.ReasonForImport == "Material");
+
             foreach (var poNumber in poNumbers)
             {
                 var purchaseOrder = await this.purchaseOrderRepository.FindByIdAsync(poNumber);
@@ -100,7 +111,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                     throw new ImportBookException($"Cannot mix suppliers");
                 }
 
-                this.candidate.OrderDetailCandidates.Add(new ImportOrderDetailCandidate(purchaseOrder));
+                this.candidate.OrderDetailCandidates.Add(new ImportOrderDetailCandidate(purchaseOrder, cpcNumber));
 
                 // do not setup invoiceDetails as cannot easily be derived
             }

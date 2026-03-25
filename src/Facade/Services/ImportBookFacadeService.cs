@@ -31,6 +31,8 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IRepository<Country, string> countryRepository;
 
+        private readonly IRepository<ImportBookCpcNumber, int> importBookCpcRepository;
+
         private readonly IImportFactory importFactory;
 
         private readonly IAuthorisationService authService;
@@ -45,6 +47,7 @@ namespace Linn.Stores2.Facade.Services
             IQueryRepository<Currency> currencyRepository,
             IQueryRepository<Rsn> rsnRepository,
             IRepository<Country, string> countryRepository,
+            IRepository<ImportBookCpcNumber, int> importBookCpcRepository,
             IImportFactory importFactory,
             ITransactionManager transactionManager,
             IAuthorisationService authService,
@@ -57,6 +60,7 @@ namespace Linn.Stores2.Facade.Services
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
             this.countryRepository = countryRepository;
+            this.importBookCpcRepository = importBookCpcRepository;
             this.importFactory = importFactory;
             this.resourceBuilder = resourceBuilder;
             this.authService = authService;
@@ -99,6 +103,10 @@ namespace Linn.Stores2.Facade.Services
                                       ? null
                                       : await this.countryRepository.FindByIdAsync(orderDetailResource.CountryOfOrigin);
 
+                    var cpcNumber = orderDetailResource.CpcNumberId.HasValue
+                                        ? await this.importBookCpcRepository.FindByIdAsync(orderDetailResource.CpcNumberId.Value)
+                                        : null;
+
                     var rsn = orderDetailResource.RsnNumber.HasValue
                                   ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
                                   : null;
@@ -110,7 +118,8 @@ namespace Linn.Stores2.Facade.Services
                                          OrderDescription = orderDetailResource.OrderDescription,
                                          TariffCode = orderDetailResource.TariffCode,
                                          CountryOfOrigin = country,
-                                         Rsn = rsn
+                                         Rsn = rsn,
+                                         CpcNumber = cpcNumber
                                      });
                 }
             }

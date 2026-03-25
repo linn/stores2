@@ -38,7 +38,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookOrderDetailTests.WhenCrea
                 }
             };
 
-            var candidate = new ImportOrderDetailCandidate(rsn);
+            var candidate = new ImportOrderDetailCandidate(rsn, null);
 
             this.action = () => _ = new ImportBookOrderDetail(candidate);
         }

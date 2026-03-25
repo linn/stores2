@@ -53,9 +53,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.OrderDescription = candidate.OrderDescription;
             this.TariffCode = candidate.TariffCode;
             this.CountryOfOrigin = candidate.CountryOfOrigin?.CountryCode;
+            this.ImportBookCpcNumber = candidate.CpcNumber;
+            this.CpcNumberId = candidate.CpcNumber?.CpcNumber;
         }
 
-        public int? CpcNumber { get; set; }
+        public int? CpcNumberId { get; set; }
 
         public decimal DutyValue { get; set; }
 

@@ -23,6 +23,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
 
         protected IRepository<PurchaseOrder, int> PurchaseOrderRepository { get; set; }
 
+        protected IRepository<ImportBookCpcNumber, int> ImportBookCpcNumberRepository { get; set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -30,12 +32,14 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
             this.CurrencyRepository = Substitute.For<IQueryRepository<Currency>>();
             this.RsnRepository = Substitute.For<IQueryRepository<Rsn>>();
             this.PurchaseOrderRepository = Substitute.For<IRepository<PurchaseOrder, int>>();
+            this.ImportBookCpcNumberRepository = Substitute.For<IRepository<ImportBookCpcNumber, int>>();
 
             this.Sut = new ImportFactory(
                 this.SupplierRepository,
                 this.CurrencyRepository,
                 this.RsnRepository,
-                this.PurchaseOrderRepository);
+                this.PurchaseOrderRepository,
+                this.ImportBookCpcNumberRepository);
         }
     }
 }

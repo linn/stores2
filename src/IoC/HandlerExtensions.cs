@@ -65,7 +65,8 @@ namespace Linn.Stores2.IoC
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<StorageSiteResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<TotalResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookResource>>>()
-                .AddSingleton<IHandler, JsonResultHandler<ImportBookResource>>();
+                .AddSingleton<IHandler, JsonResultHandler<ImportBookResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookCpcNumberResource>>>();
         }
     }
 }

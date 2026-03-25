@@ -31,6 +31,9 @@ function ImportBookUtility({ creating }) {
     const { result: currencies, loading: currenciesLoading } = useInitialise(
         itemTypes.currencies.url
     );
+    const { result: cpcNumbers, loading: cpcNumbersLoading } = useInitialise(
+        itemTypes.cpcNumbers.url
+    );
 
     const {
         send: getImportBook,
@@ -95,6 +98,9 @@ function ImportBookUtility({ creating }) {
         return false;
     };
 
+    const validImportBook = () =>
+        importBook && importBook.carrierId && importBook.supplierId && importBook.currency;
+
     const handleFieldChange = (propertyName, newValue) => {
         setImportBook(current => ({ ...current, [propertyName]: newValue }));
         setChangesMade(true);
@@ -143,6 +149,7 @@ function ImportBookUtility({ creating }) {
                 createLoading ||
                 updateLoading ||
                 countriesLoading ||
+                cpcNumbersLoading ||
                 currenciesLoading ? (
                     <Grid size={12}>
                         <Loading />
@@ -187,6 +194,7 @@ function ImportBookUtility({ creating }) {
                                         importBook={importBook}
                                         countries={countries}
                                         currencies={currencies}
+                                        cpcNumbers={cpcNumbers}
                                         canChange={canChange()}
                                         handleFieldChange={handleFieldChange}
                                         handleNumberFieldChange={handleNumberFieldChange}
@@ -207,7 +215,7 @@ function ImportBookUtility({ creating }) {
                                             updateImportBook(id, importBook);
                                         }
                                     }}
-                                    saveDisabled={!changesMade}
+                                    saveDisabled={!changesMade || !validImportBook()}
                                     cancelClick={() => {
                                         setChangesMade(false);
                                         setImportBook(importBookGetResult);

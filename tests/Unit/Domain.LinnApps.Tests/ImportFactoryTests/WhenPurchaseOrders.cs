@@ -9,6 +9,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
 
     using FluentAssertions;
 
+    using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
@@ -20,6 +21,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
     using NSubstitute;
 
     using NUnit.Framework;
+
+    using TestData.CpcNumbers;
 
     public class WhenPurchaseOrders : ContextBase
     {
@@ -43,6 +46,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
             };
 
             this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>()).Returns(TestCurrencies.UKPound);
+
+            this.ImportBookCpcNumberRepository.FindByAsync(Arg.Any<Expression<Func<ImportBookCpcNumber, bool>>>()).Returns(TestCpcNumbers.MaterialCpc);
+
             this.PurchaseOrderRepository.FindByIdAsync(12).Returns(purchaseOrder);
             this.result = await this.Sut.CreateImportBook(null, new List<int> { 12 },  null, new Employee());
         }
@@ -64,6 +70,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
             candidate.OrderDescription.Should().Be("Bespoke bass driver for the 119 loudspeaker");
             candidate.TariffCode.Should().Be(TestSalesArticles.Spkr105.Tariff.TariffCode);
             candidate.CountryOfOrigin.Should().Be(TestSalesArticles.Spkr105.CountryOfOrigin);
+            candidate.CpcNumber.Should().NotBeNull();
+            candidate.CpcNumber.CpcNumber.Should().Be(TestCpcNumbers.MaterialCpc.CpcNumber);
         }
 
         [Test]

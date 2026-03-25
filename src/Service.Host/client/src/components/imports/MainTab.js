@@ -17,6 +17,7 @@ function MainTab({
     importBook,
     countries,
     currencies,
+    cpcNumbers,
     canChange,
     handleFieldChange,
     handleNumberFieldChange
@@ -239,6 +240,7 @@ function MainTab({
             <OrderDetails
                 orderDetails={importBook.importBookOrderDetails}
                 countries={countries}
+                cpcNumbers={cpcNumbers}
                 canChange={canChange}
                 handleFieldChange={handleFieldChange}
             />

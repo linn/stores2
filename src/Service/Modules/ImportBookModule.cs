@@ -3,8 +3,10 @@ namespace Linn.Stores2.Service.Modules
     using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
+    using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
+    using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Facade.Services;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Service.Extensions;
@@ -24,6 +26,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapPost("/stores2/import-books", this.Create);
             app.MapPost("/stores2/import-books/{id:int}", this.Update);
             app.MapGet("/stores2/import-books/initialise", this.Initialise);
+            app.MapGet("/stores2/import-books/cpc-numbers", this.GetCpcNumbers);
         }
 
         private async Task SearchImports(
@@ -96,6 +99,14 @@ namespace Linn.Stores2.Service.Modules
             var privs = await userPrivilegeService.GetUserPrivileges(employeeUrl);
 
             await res.Negotiate(await service.InitialiseImportBook(rsnNumbers, purchaseOrderNumbers, supplierId, req.HttpContext.User.GetEmployeeNumber(), privs));
+        }
+
+        private async Task GetCpcNumbers(
+            HttpRequest req,
+            HttpResponse res,
+            IAsyncFacadeService<ImportBookCpcNumber, int, ImportBookCpcNumberResource, ImportBookCpcNumberResource, ImportBookCpcNumberResource> service)
+        {
+            await res.Negotiate(await service.GetAll());
         }
     }
 }

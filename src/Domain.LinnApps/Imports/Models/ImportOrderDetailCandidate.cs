@@ -13,7 +13,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.Qty = 1;
         }
 
-        public ImportOrderDetailCandidate(Rsn rsn)
+        public ImportOrderDetailCandidate(Rsn rsn, ImportBookCpcNumber cpc)
         {
             this.LineType = "RSN";
             this.Rsn = rsn;
@@ -21,9 +21,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.OrderDescription = rsn.SalesArticle?.Description;
             this.TariffCode = rsn.SalesArticle?.Tariff?.TariffCode;
             this.CountryOfOrigin = rsn.SalesArticle?.CountryOfOrigin;
+            this.CpcNumber = cpc;
         }
 
-        public ImportOrderDetailCandidate(PurchaseOrder po)
+        public ImportOrderDetailCandidate(PurchaseOrder po, ImportBookCpcNumber cpc)
         {
             this.LineType = "PO";
             this.Qty = 1; // why does everyone make this always 1?
@@ -31,6 +32,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.OrderDescription = po.Details?.FirstOrDefault()?.SuppliersDesignation;
             this.TariffCode = po.Details?.FirstOrDefault()?.SalesArticle?.Tariff?.TariffCode;
             this.CountryOfOrigin = po.Details?.FirstOrDefault()?.SalesArticle?.CountryOfOrigin;
+            this.CpcNumber = cpc;
         }
 
         public int ImportBookId { get; set; }
@@ -48,5 +50,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
         public Rsn Rsn { get; set; }
 
         public PurchaseOrder PurchaseOrder { get; set; }
+
+        public ImportBookCpcNumber CpcNumber { get; set; }
     }
 }
