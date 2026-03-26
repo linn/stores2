@@ -35,6 +35,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public decimal? LinnVat { get; set; }
 
+        public string TransportBillNumber { get; set; }
+
         public IList<ImportOrderDetailCandidate> OrderDetailCandidates { get; set; }
 
         public IList<ImportInvoiceDetailCandidate> InvoiceDetailCandidates { get; set; }

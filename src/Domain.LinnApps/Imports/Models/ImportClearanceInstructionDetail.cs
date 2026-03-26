@@ -4,6 +4,16 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
     public class ImportClearanceInstructionDetail
     {
+        public ImportClearanceInstructionDetail(ImportBookOrderDetail order, ImportBookInvoiceDetail invoice, Currency currency)
+        {
+            this.InvoiceNumber = invoice?.InvoiceNumber;
+            this.Description = order?.OrderDescription;
+            this.TariffCode = order?.TariffCode;
+            this.CountryOfOrigin = order?.CountryOfOrigin;
+            this.CustomsValue = invoice?.InvoiceValue;
+            this.Currency = currency;
+        }
+
         public string InvoiceNumber { get; set; }
 
         public string Description { get; set; }

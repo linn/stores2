@@ -1,0 +1,24 @@
+namespace Linn.Stores2.Domain.LinnApps.Imports.Models
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    public class ImportClearanceInstructionTotal
+    {
+        public Currency Currency { get; set; }
+
+        public decimal TotalValue { get; set; }
+
+        public override string ToString()
+        {
+            var formattedValue = this.Currency?.Code == "JPY"
+                ? this.TotalValue.ToString("N0")
+                : this.TotalValue.ToString("N2");
+
+            return $"{this.Currency?.Code} {formattedValue}";
+        }
+    }
+}

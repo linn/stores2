@@ -142,7 +142,8 @@ namespace Linn.Stores2.Facade.Services
                 Currency = currency,
                 BaseCurrency = baseCurrency,
                 OrderDetailCandidates = orderDetails,
-                InvoiceDetailCandidates = invoiceDetails
+                InvoiceDetailCandidates = invoiceDetails,
+                TransportBillNumber = resource.TransportBillNumber
             };
 
             return new ImportBook(candidate);

@@ -51,6 +51,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.CreatedById = candidate.CreatedBy.Id;
             this.BaseCurrency = candidate.BaseCurrency;
             this.ExchangeCurrency = candidate.ExchangeCurrency;
+            this.TransportBillNumber = candidate.TransportBillNumber;
 
             if (candidate.Supplier != null)
             {
