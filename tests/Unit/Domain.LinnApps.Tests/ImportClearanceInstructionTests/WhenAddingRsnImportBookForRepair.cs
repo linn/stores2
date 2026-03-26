@@ -21,8 +21,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 
     public class WhenAddingRsnImportBookForRepair : ContextBase
     {
-        protected ImportBook ImportBook;
-
         [SetUp]
         public void SetUp()
         {
@@ -74,8 +72,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 
             this.Sut = new ImportClearanceInstruction(this.Master, "Marvin@tnt.com");
 
-            this.ImportBook = new ImportBook(candidate);
-            this.Sut.AddImportBook(this.ImportBook);
+            this.Sut.AddImportBook(new ImportBook(candidate));
         }
 
         [Test]
@@ -92,6 +89,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             this.Sut.Supplier.Should().NotBeNull();
             this.Sut.Supplier.Name.Should().Be(TestSuppliers.TaktAndTon.Name);
             this.Sut.Carrier.Should().NotBeNull();
+            this.Sut.Invoices.Should().Be("1234");
         }
 
 

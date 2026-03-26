@@ -12,7 +12,7 @@ namespace Linn.Stores2.TestData.CpcNumbers
     {
         public static ImportBookCpcNumber MaterialCpc => new ImportBookCpcNumber
         {
-            CpcNumber = 12,
+            CpcNumber = 4,
             Description = "40 00 000",
             ReasonForImport = "Material"
         };

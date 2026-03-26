@@ -129,6 +129,15 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
                         var detail = new ImportClearanceInstructionDetail(orderDetail, invoice, importBook.Currency);
                         section.Details.Add(detail);
                     }
+
+                    if (string.IsNullOrEmpty(this.Invoices))
+                    {
+                        this.Invoices = invoice.InvoiceNumber;
+                    }
+                    else if (!this.Invoices.Split(',').Contains(invoice.InvoiceNumber))
+                    {
+                        this.Invoices += "," + invoice.InvoiceNumber;
+                    }
                 }
             }
         }

@@ -13,6 +13,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
+    using Linn.Stores2.TestData.CpcNumbers;
     using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.SalesArticles;
     using Linn.Stores2.TestData.SalesOutlets;
@@ -21,8 +22,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
     using NSubstitute;
 
     using NUnit.Framework;
-
-    using TestData.CpcNumbers;
 
     public class WhenPurchaseOrders : ContextBase
     {

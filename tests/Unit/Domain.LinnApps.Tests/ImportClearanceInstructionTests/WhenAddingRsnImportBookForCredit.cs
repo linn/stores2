@@ -22,7 +22,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 
     public class WhenAddingRsnImportBookForCredit : ContextBase
     {
-        protected ImportBook ImportBook;
+        private ImportBook importBook;
 
         [SetUp]
         public void SetUp()
@@ -75,8 +75,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 
             this.Sut = new ImportClearanceInstruction(this.Master, "Marvin@tnt.com");
 
-            this.ImportBook = new ImportBook(candidate);
-            this.Sut.AddImportBook(this.ImportBook);
+            this.importBook = new ImportBook(candidate);
+            this.Sut.AddImportBook(this.importBook);
         }
 
 
