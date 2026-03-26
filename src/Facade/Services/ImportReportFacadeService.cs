@@ -2,7 +2,6 @@ namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
@@ -16,13 +15,15 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IPdfService pdfService;
 
-        public ImportReportFacadeService(IImportReportService importReportService, IPdfService pdfService)
+        public ImportReportFacadeService(
+            IImportReportService importReportService, IPdfService pdfService)
         {
             this.importReportService = importReportService;
             this.pdfService = pdfService;
         }
 
-        public async Task<IResult<StreamResponse>> GetClearanceInstructionAsPdf(IEnumerable<int> impbookIds, string toEmailAddress)
+        public async Task<IResult<StreamResponse>> GetClearanceInstructionAsPdf(
+            IEnumerable<int> impbookIds, string toEmailAddress)
         {
             var html = await this.importReportService.GetClearanceInstructionAsHtml(impbookIds, toEmailAddress);
 
