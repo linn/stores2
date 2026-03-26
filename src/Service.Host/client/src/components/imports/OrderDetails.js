@@ -15,7 +15,7 @@ import { Dropdown, InputField } from '@linn-it/linn-form-components-library';
 import useGet from '../../hooks/useGet';
 import itemTypes from '../../itemTypes';
 
-function OrderDetails({ orderDetails, countries, canChange, handleFieldChange }) {
+function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFieldChange }) {
     const [dialogOpen, setDialogOpen] = useState({
         forRow: null
     });
@@ -230,10 +230,11 @@ function OrderDetails({ orderDetails, countries, canChange, handleFieldChange })
         { field: 'lineDocument', headerName: 'Document', width: 110 },
         { field: 'orderDescription', headerName: 'Description', width: 240 },
         { field: 'tariffCode', headerName: 'Tariff no', width: 140 },
-        { field: 'countryOfOrigin', headerName: 'COO', width: 100 },
+        { field: 'cpcNumber', headerName: 'CPC', width: 120 },
+        { field: 'countryOfOrigin', headerName: 'CoO', width: 60 },
         { field: 'orderValue', headerName: 'Customs Value', width: 140 },
         { field: 'dutyValue', headerName: 'Duty Value', width: 120 },
-        { field: 'qty', headerName: 'Qty', width: 100 },
+        { field: 'qty', headerName: 'Qty', width: 60 },
         ...(canChange
             ? [
                   {
@@ -310,7 +311,7 @@ function OrderDetails({ orderDetails, countries, canChange, handleFieldChange })
                                     onChange={handleOrderChange}
                                 />
                             </Grid>
-                            <Grid size={6}>
+                            <Grid size={4}>
                                 <InputField
                                     value={orderDetail?.tariffCode}
                                     disabled={!canChange}
@@ -320,7 +321,29 @@ function OrderDetails({ orderDetails, countries, canChange, handleFieldChange })
                                     onChange={handleOrderChange}
                                 />
                             </Grid>
-                            <Grid size={6}>
+                            <Grid size={4}>
+                                <Dropdown
+                                    value={orderDetail?.cpcNumberId}
+                                    fullWidth
+                                    disabled={!canChange}
+                                    label="CPC Number"
+                                    propertyName="cpcNumberId"
+                                    allowNoValue
+                                    items={cpcNumbers
+                                        .filter(
+                                            c =>
+                                                !c.dateInvalid ||
+                                                c.cpcNumber === orderDetail.cpcNumberId
+                                        )
+                                        .sort((a, b) => a.description.localeCompare(b.description))
+                                        .map(c => ({
+                                            id: c.cpcNumber,
+                                            displayText: c.description
+                                        }))}
+                                    onChange={handleOrderChange}
+                                />
+                            </Grid>
+                            <Grid size={4}>
                                 <Dropdown
                                     value={orderDetail?.countryOfOrigin}
                                     fullWidth

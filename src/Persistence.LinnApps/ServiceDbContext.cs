@@ -121,6 +121,8 @@ namespace Linn.Stores2.Persistence.LinnApps
 
         public DbSet<ImportMaster> ImportMaster { get; set; }
 
+        public DbSet<ImportBookCpcNumber> ImportBookCpcNumbers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -200,6 +202,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildPurchaseOrders(builder);
             BuildPurchaseOrderDetails(builder);
             BuildRsnReturnInformation(builder);
+            BuildRsnReturnReasons(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1297,14 +1300,14 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.Weight).HasColumnName("WEIGHT");
             q.Property(e => e.LoanNumber).HasColumnName("LOAN_NUMBER").HasMaxLength(6);
             q.Property(e => e.LineType).HasColumnName("LINE_TYPE").HasMaxLength(10);
-            q.Property(e => e.CpcNumber).HasColumnName("CPC_NUMBER").HasMaxLength(2);
+            q.Property(e => e.CpcNumberId).HasColumnName("CPC_NUMBER").HasMaxLength(2);
             q.Property(e => e.TariffCode).HasColumnName("TARIFF_CODE").HasMaxLength(12);
             q.Property(e => e.InsNumber).HasColumnName("INS_NUMBER");
             q.Property(e => e.VatRate).HasColumnName("VAT_RATE");
             q.Property(e => e.POLineNumber).HasColumnName("PO_LINE_NUMBER").HasMaxLength(2);
             q.Property(e => e.PostDuty).HasColumnName("POST_DUTY").HasMaxLength(1);
             q.Property(e => e.CountryOfOrigin).HasColumnName("COUNTRY_OF_ORIGIN").HasMaxLength(1);
-            q.HasOne(e => e.ImportBookCpcNumber).WithMany().HasForeignKey(f => f.CpcNumber);
+            q.HasOne(e => e.ImportBookCpcNumber).WithMany().HasForeignKey(f => f.CpcNumberId);
             q.HasOne(e => e.Rsn).WithMany(i => i.ImportBookOrderDetails).HasForeignKey(f => f.RsnNumber);
         }
 
@@ -1328,6 +1331,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasKey(e => e.CpcNumber);
             q.Property(e => e.CpcNumber).HasColumnName("CPC_NUMBER");
             q.Property(e => e.Description).HasColumnName("DESCRIPTION").HasMaxLength(30);
+            q.Property(e => e.ReasonForImport).HasColumnName("REASON_FOR_IMPORT").HasMaxLength(20);
             q.Property(e => e.DateInvalid).HasColumnName("DATE_INVALID");
         }
 
@@ -1392,6 +1396,7 @@ namespace Linn.Stores2.Persistence.LinnApps
                 .HasForeignKey(detail => detail.RsnNumber);
             q.HasMany(r => r.ExportReturnDetails).WithOne().HasForeignKey(d => d.RsnNumber);
             q.HasMany(r => r.RsnReturns).WithOne().HasForeignKey(d => d.RsnNumber);
+            q.HasOne(a => a.AllegedReason).WithMany().HasForeignKey("REASON_CODE_ALLEGED");
         }
 
         private static void BuildSalesOutlets(ModelBuilder builder)
@@ -1471,6 +1476,17 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.ExchangeRate).HasColumnName("EXCHANGE_RATE");
             q.Property(e => e.ArticleNumber).HasColumnName("ARTICLE_NUMBER").HasMaxLength(14);
             q.HasOne(d => d.Currency).WithMany().HasForeignKey("CURRENCY");
+        }
+
+        private static void BuildRsnReturnReasons(ModelBuilder builder)
+        {
+            var e = builder.Entity<RsnReturnReason>().ToTable("RSN_RETURN_REASONS");
+            e.HasKey(a => a.ReasonCode);
+            e.Property(a => a.ReasonCode).HasColumnName("REASON_CODE").HasMaxLength(10);
+            e.Property(a => a.Description).HasColumnName("DESCRIPTION").HasMaxLength(50);
+            e.Property(a => a.DateInvalid).HasColumnName("DATE_INVALID");
+            e.Property(a => a.ReasonCategory).HasColumnName("REASON_CATEGORY").HasMaxLength(10);
+            e.Property(a => a.RealReasonFlag).HasColumnName("REAL_REASON").HasMaxLength(1);
         }
     }
 }

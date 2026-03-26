@@ -153,6 +153,12 @@ function CreateTab() {
             renderCell: params => (params.row.ipr ? <CheckIcon /> : null)
         },
         {
+            field: 'returnReason',
+            headerName: 'Return Reason',
+            width: 180,
+            renderCell: params => params.row.allegedReason?.reasonCategory
+        },
+        {
             field: 'delete',
             headerName: '',
             width: 120,

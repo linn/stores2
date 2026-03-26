@@ -31,6 +31,8 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IRepository<Country, string> countryRepository;
 
+        private readonly IRepository<ImportBookCpcNumber, int> importBookCpcRepository;
+
         private readonly IImportFactory importFactory;
 
         private readonly IAuthorisationService authService;
@@ -45,6 +47,7 @@ namespace Linn.Stores2.Facade.Services
             IQueryRepository<Currency> currencyRepository,
             IQueryRepository<Rsn> rsnRepository,
             IRepository<Country, string> countryRepository,
+            IRepository<ImportBookCpcNumber, int> importBookCpcRepository,
             IImportFactory importFactory,
             ITransactionManager transactionManager,
             IAuthorisationService authService,
@@ -57,9 +60,45 @@ namespace Linn.Stores2.Facade.Services
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
             this.countryRepository = countryRepository;
+            this.importBookCpcRepository = importBookCpcRepository;
             this.importFactory = importFactory;
             this.resourceBuilder = resourceBuilder;
             this.authService = authService;
+        }
+
+        public async Task<IResult<ImportBookResource>> InitialiseImportBook(string rsnNumbers, string purchaseOrderNumbers, int? supplierId, int? employeeNumber, IEnumerable<string> privileges)
+        {
+            if (employeeNumber == null)
+            {
+                return new BadRequestResult<ImportBookResource>($"Employee not supplied");
+            }
+
+            var employee = await this.employeeRepository.FindByIdAsync(employeeNumber.Value);
+            if (employee == null)
+            {
+                return new BadRequestResult<ImportBookResource>($"Employee not found: {employeeNumber.Value}");
+            }
+
+            if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to create import books");
+            }
+
+            try
+            {
+                var candidate = await this.importFactory.CreateImportBook(this.ParseNumbers(rsnNumbers), this.ParseNumbers(purchaseOrderNumbers), supplierId, employee);
+
+                var importBook = new ImportBook(candidate, true);
+                return new SuccessResult<ImportBookResource>((ImportBookResource)this.resourceBuilder.Build(importBook, privileges));
+            }
+            catch (NotFoundException e)
+            {
+                return new BadRequestResult<ImportBookResource>(e.Message);
+            }
+            catch (ImportBookException e)
+            {
+                return new BadRequestResult<ImportBookResource>(e.Message);
+            }
         }
 
         protected override async Task<ImportBook> CreateFromResourceAsync(
@@ -99,6 +138,10 @@ namespace Linn.Stores2.Facade.Services
                                       ? null
                                       : await this.countryRepository.FindByIdAsync(orderDetailResource.CountryOfOrigin);
 
+                    var cpcNumber = orderDetailResource.CpcNumberId.HasValue
+                                        ? await this.importBookCpcRepository.FindByIdAsync(orderDetailResource.CpcNumberId.Value)
+                                        : null;
+
                     var rsn = orderDetailResource.RsnNumber.HasValue
                                   ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
                                   : null;
@@ -110,7 +153,8 @@ namespace Linn.Stores2.Facade.Services
                                          OrderDescription = orderDetailResource.OrderDescription,
                                          TariffCode = orderDetailResource.TariffCode,
                                          CountryOfOrigin = country,
-                                         Rsn = rsn
+                                         Rsn = rsn,
+                                         CpcNumber = cpcNumber
                                      });
                 }
             }
@@ -133,7 +177,8 @@ namespace Linn.Stores2.Facade.Services
                 Currency = currency,
                 BaseCurrency = baseCurrency,
                 OrderDetailCandidates = orderDetails,
-                InvoiceDetailCandidates = invoiceDetails
+                InvoiceDetailCandidates = invoiceDetails,
+                TransportBillNumber = resource.TransportBillNumber
             };
 
             return new ImportBook(candidate);
@@ -188,41 +233,6 @@ namespace Linn.Stores2.Facade.Services
         protected override Expression<Func<ImportBook, bool>> FindExpression(ImportBookResource searchResource)
         {
             throw new NotImplementedException();
-        }
-
-        public async Task<IResult<ImportBookResource>> InitialiseImportBook(string rsnNumbers, string purchaseOrderNumbers, int? supplierId, int? employeeNumber, IEnumerable<string> privileges)
-        {
-            if (employeeNumber == null)
-            {
-                return new BadRequestResult<ImportBookResource>($"Employee not supplied");
-            }
-
-            var employee = await this.employeeRepository.FindByIdAsync(employeeNumber.Value);
-            if (employee == null)
-            {
-                return new BadRequestResult<ImportBookResource>($"Employee not found: {employeeNumber.Value}");
-            }
-
-            if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
-            {
-                throw new UnauthorisedActionException("You are not authorised to create import books");
-            }
-
-            try
-            {
-                var candidate = await this.importFactory.CreateImportBook(this.ParseNumbers(rsnNumbers), this.ParseNumbers(purchaseOrderNumbers), supplierId, employee);
-
-                var importBook = new ImportBook(candidate, true);
-                return new SuccessResult<ImportBookResource>((ImportBookResource)this.resourceBuilder.Build(importBook, privileges));
-            }
-            catch (NotFoundException e)
-            {
-                return new BadRequestResult<ImportBookResource>(e.Message);
-            }
-            catch (ImportBookException e)
-            {
-                return new BadRequestResult<ImportBookResource>(e.Message);
-            }
         }
 
         private IEnumerable<int> ParseNumbers(string numbers)

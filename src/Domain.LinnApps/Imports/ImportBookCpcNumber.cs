@@ -10,6 +10,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public DateTime? DateInvalid { get; set; }
 
-        public bool IsIPR => this.Description == "51 00 00";
+        // new field to identify purpose of CPC either IPR/BRG/Material
+        public string ReasonForImport { get; set; }
+
+        public bool IsIPR => this.ReasonForImport == "IPR";
     }
 }

@@ -30,7 +30,9 @@ namespace Linn.Stores2.Resources.Imports
 
         public string LineType { get; set; }
 
-        public int? CpcNumber { get; set; }
+        public int? CpcNumberId { get; set; }
+
+        public string CpcNumber { get; set; }
 
         public string TariffCode { get; set; }
 

@@ -105,6 +105,8 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                 {
                     yield return new LinkResource { Rel = "update", Href = this.GetLocation(model) };
                 }
+
+                yield return new LinkResource { Rel = "clearance-instruction", Href = $"/stores2/import-books/clearance-instruction?impBookId={model.Id}" };
             }
             else
             {

@@ -16,13 +16,15 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.VatRegistrationNumber = master.VatRegistrationNumber;
             this.EORINumber = master.EORINumber;
             this.ToEmailAddress = toEmailAddress;
-            this.Details = new List<ImportClearanceInstructionDetail>();
-            this.TotalValue = 0;
-            this.IPR = true;
+            this.Sections = new List<ImportClearanceInstructionSection>();
+            this.Totals = new List<ImportClearanceInstructionTotal>();
             this.PVAText = master.PVAText;
             this.DefermentAcct = master.DefermentAcct;
-            this.IPRDeclaration = master.IPRDeclaration;
+            this.InstructionDate = DateTime.UtcNow;
+            this.Master = master;
         }
+
+        public DateTime InstructionDate { get; set; }
 
         public string TransportBillNumber { get; set; }
 
@@ -44,22 +46,16 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public Supplier Carrier { get; set; }
 
-        // TODO for Euro ones what do they do for multiple currencies
-        public Currency Currency { get; set; }
-
-        public decimal? TotalValue { get; set; }
+        // Exists mainly for Linn Belgium instruction which may have EUR + SEK, DKK etc totals
+        public ICollection<ImportClearanceInstructionTotal> Totals { get; set; }
 
         public string DefermentAcct { get; set; }
 
         public string PVAText { get; set; }
 
-        public string IPRDeclaration { get; set; }
+        public ImportMaster Master { get; set; }
 
-        public bool IPR { get; set; }
-
-        public ICollection<string> CpcNumbers { get; set; }
-
-        public ICollection<ImportClearanceInstructionDetail> Details { get; set; }
+        public ICollection<ImportClearanceInstructionSection> Sections { get; set; }
 
         public void AddImportBook(ImportBook importBook)
         {
@@ -90,15 +86,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
                 throw new ImportBookException("All import books in a clearance instruction must have the same supplier");
             }
 
-            if (this.Currency == null)
-            {
-                this.Currency = importBook.Currency;
-            }
-            else if (this.Currency != importBook.Currency)
-            {
-                throw new ImportBookException("All import books in a clearance instruction must have the same currency");
-            }
-
             if (importBook.Pva != "Y")
             {
                 this.PVAText = string.Empty;
@@ -106,36 +93,50 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
             foreach (var orderDetail in importBook.OrderDetails)
             {
-                if (orderDetail.LineType == "RSN")
+                var invoice = orderDetail.RsnNumber != null
+                    ? importBook.InvoiceDetails.FirstOrDefault(i => i.InvoiceNumber == orderDetail.RsnNumber.ToString())
+                    : importBook.InvoiceDetails.FirstOrDefault(i => i.LineNumber == orderDetail.LineNumber);
+
+                if (invoice != null)
                 {
-                    var invoice = importBook.InvoiceDetails.FirstOrDefault(i => i.InvoiceNumber == orderDetail.RsnNumber.ToString());
-                    if (invoice != null)
+                    var total = this.Totals.FirstOrDefault(t => t.Currency.Code == importBook.Currency.Code);
+                    if (total == null)
                     {
-                        this.Details.Add(new ImportClearanceInstructionDetail
+                        total = new ImportClearanceInstructionTotal
                         {
-                            InvoiceNumber = invoice.InvoiceNumber,
-                            Description = orderDetail.OrderDescription,
-                            CountryOfOrigin = orderDetail.CountryOfOrigin,
-                            CustomsValue = invoice.InvoiceValue,
-                            TariffCode = orderDetail.TariffCode,
-                            Currency = importBook.Currency
-                        });
-
-                        if (string.IsNullOrEmpty(this.Invoices))
-                        {
-                            this.Invoices = invoice.InvoiceNumber;
-                        }
-                        else if (!this.Invoices.Contains(invoice.InvoiceNumber))
-                        {
-                            this.Invoices = $"{this.Invoices}, {invoice.InvoiceNumber}";
-                        }
-
-                        this.TotalValue += invoice.InvoiceValue;
+                            Currency = importBook.Currency,
+                            TotalValue = invoice.InvoiceValue
+                        };
+                        this.Totals.Add(total);
+                    }
+                    else
+                    {
+                        total.TotalValue += invoice.InvoiceValue;
                     }
 
-                    if (!orderDetail.IsIPR)
+                    if (orderDetail.ImportBookCpcNumber != null)
                     {
-                        this.IPR = false;
+                        var section = this.Sections.FirstOrDefault(s => s.CpcNumber == orderDetail.ImportBookCpcNumber.Description);
+
+                        if (section == null)
+                        {
+                            section = new ImportClearanceInstructionSection(
+                                orderDetail,
+                                this.Master);
+                            this.Sections.Add(section);
+                        }
+
+                        var detail = new ImportClearanceInstructionDetail(orderDetail, invoice, importBook.Currency);
+                        section.Details.Add(detail);
+                    }
+
+                    if (string.IsNullOrEmpty(this.Invoices))
+                    {
+                        this.Invoices = invoice.InvoiceNumber;
+                    }
+                    else if (!this.Invoices.Split(',').Contains(invoice.InvoiceNumber))
+                    {
+                        this.Invoices += "," + invoice.InvoiceNumber;
                     }
                 }
             }

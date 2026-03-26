@@ -26,6 +26,8 @@ namespace Linn.Stores2.Domain.LinnApps.Returns
 
         public SalesArticle SalesArticle { get; set; }
 
+        public RsnReturnReason AllegedReason { get; set; }
+
         public ICollection<ImportBookOrderDetail> ImportBookOrderDetails { get; set; }
 
         public ICollection<ExportReturnDetail> ExportReturnDetails { get; set; }
@@ -33,6 +35,10 @@ namespace Linn.Stores2.Domain.LinnApps.Returns
         public ICollection<RsnReturnInformation> RsnReturns { get; set; }
 
         public bool ExportRsn => this.SalesOutlet != null && this.SalesOutlet.ExportOutlet;
+
+        public bool IsIpr => this.Ipr == "Y";
+
+        public bool IsReturnForCredit => this.AllegedReason?.IsCredit() ?? false;
 
         public ExportReturnDetail LastExportReturn()
         {
@@ -86,6 +92,17 @@ namespace Linn.Stores2.Domain.LinnApps.Returns
 
             var rsnReturn = this.LastRsnReturn();
             return rsnReturn?.CustomsValue;
+        }
+
+        // help find which CPC number is should be using
+        public string ImportScheme()
+        {
+            if (this.IsIpr && !this.IsReturnForCredit)
+            {
+                return "IPR";
+            }
+
+            return "BRG";
         }
     }
 }
