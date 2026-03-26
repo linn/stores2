@@ -79,7 +79,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             this.Sut.AddImportBook(this.importBook);
         }
 
-
         [Test]
         public void ShouldHaveCorrectTotals()
         {

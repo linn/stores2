@@ -17,19 +17,20 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
     using Linn.Stores2.TestData.SalesArticles;
     using Linn.Stores2.TestData.SalesOutlets;
     using Linn.Stores2.TestData.Suppliers;
+
     using NUnit.Framework;
 
-    public class WhenAddingRsnImportBookForRepair : ContextBase
+    public class WhenAddingJapaneseImportBooksForRepair : ContextBase
     {
         [SetUp]
         public void SetUp()
         {
-            var rsn = new Rsn
+            var rsn1 = new Rsn
             {
                 RsnNumber = 1234,
-                SalesOutlet = TestSalesOutlets.TonlagetHifi,
-                AccountId = TestSalesOutlets.TonlagetHifi.AccountId,
-                OutletNumber = TestSalesOutlets.TonlagetHifi.OutletNumber,
+                SalesOutlet = TestSalesOutlets.LinnJapan,
+                AccountId = TestSalesOutlets.LinnJapan.AccountId,
+                OutletNumber = TestSalesOutlets.LinnJapan.OutletNumber,
                 Quantity = 1,
                 Ipr = "Y",
                 SalesArticle = TestSalesArticles.Akiva,
@@ -39,34 +40,60 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                     ReasonCategory = "Repair"
                 },
                 ImportBookOrderDetails = new List<ImportBookOrderDetail>(),
-                ExportReturnDetails = new List<ExportReturnDetail>
+                ExportReturnDetails = new List<ExportReturnDetail>(),
+                RsnReturns = new List<RsnReturnInformation>()
                 {
-                    new ExportReturnDetail
+                    new RsnReturnInformation
                     {
-                        CustomsValue = 100,
-                        ExportReturn = new ExportReturn
-                        {
-                            Currency = TestCurrencies.SwedishKrona
-                        }
+                        CustomsValue = 100000000,
+                        Currency = TestCurrencies.JapaneseYen
                     }
                 }
             };
 
-            var orderDetail = new ImportOrderDetailCandidate(rsn, TestCpcNumbers.IPRCpc);
+            var rsn2 = new Rsn
+            {
+                RsnNumber = 12345,
+                SalesOutlet = TestSalesOutlets.LinnJapan,
+                AccountId = TestSalesOutlets.LinnJapan.AccountId,
+                OutletNumber = TestSalesOutlets.LinnJapan.OutletNumber,
+                Quantity = 1,
+                Ipr = "Y",
+                SalesArticle = TestSalesArticles.Akiva,
+                AllegedReason = new RsnReturnReason
+                {
+                    ReasonCode = "RFR",
+                    ReasonCategory = "Repair"
+                },
+                ImportBookOrderDetails = new List<ImportBookOrderDetail>(),
+                ExportReturnDetails = new List<ExportReturnDetail>(),
+                RsnReturns = new List<RsnReturnInformation>()
+                {
+                    new RsnReturnInformation
+                    {
+                        CustomsValue = 200000000,
+                        Currency = TestCurrencies.JapaneseYen
+                    }
+                }
+            };
+
+            var orderDetail1 = new ImportOrderDetailCandidate(rsn1, TestCpcNumbers.IPRCpc);
+            var orderDetail2 = new ImportOrderDetailCandidate(rsn2, TestCpcNumbers.IPRCpc);
 
             var candidate = new ImportCandidate
             {
                 Id = 1,
                 TransportBillNumber = "12345",
-                Supplier = TestSuppliers.TaktAndTon,
+                Supplier = TestSuppliers.LinnJapan,
                 Carrier = TestSuppliers.Fedex,
-                Currency = TestCurrencies.SwedishKrona,
+                Currency = TestCurrencies.JapaneseYen,
                 BaseCurrency = TestCurrencies.UKPound,
                 CreatedBy = TestEmployees.SophlyBard,
-                OrderDetailCandidates = new List<ImportOrderDetailCandidate> { orderDetail },
+                OrderDetailCandidates = new List<ImportOrderDetailCandidate> { orderDetail1, orderDetail2 },
                 InvoiceDetailCandidates = new List<ImportInvoiceDetailCandidate>
                 {
-                    new ImportInvoiceDetailCandidate(rsn)
+                    new ImportInvoiceDetailCandidate(rsn1),
+                    new ImportInvoiceDetailCandidate(rsn2)
                 }
             };
 
@@ -87,9 +114,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         public void ShouldHaveShippingDetails()
         {
             this.Sut.Supplier.Should().NotBeNull();
-            this.Sut.Supplier.Name.Should().Be(TestSuppliers.TaktAndTon.Name);
+            this.Sut.Supplier.Name.Should().Be(TestSuppliers.LinnJapan.Name);
             this.Sut.Carrier.Should().NotBeNull();
-            this.Sut.Invoices.Should().Be("1234");
+            this.Sut.Invoices.Should().Be("1234,12345");
         }
 
         [Test]
@@ -97,7 +124,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         {
             this.Sut.Totals.Should().NotBeNull();
             this.Sut.Totals.Count().Should().Be(1);
-            this.Sut.Totals.First().ToString().Should().Be("SEK 100.00");
+            this.Sut.Totals.First().ToString().Should().Be("JPY 300,000,000");
         }
 
         [Test]
@@ -115,17 +142,27 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section.IPR.Should().BeTrue();
 
             section.Details.Should().NotBeNull();
-            section.Details.Should().HaveCount(1);
+            section.Details.Should().HaveCount(2);
 
             var detail = section.Details.FirstOrDefault();
             detail.Should().NotBeNull();
 
-            detail.Currency.Code.Should().Be("SEK");
-            detail.CustomsValue.Should().Be(100);
+            detail.Currency.Code.Should().Be("JPY");
+            detail.CustomsValue.Should().Be(100000000);
             detail.Description.Should().Be(TestSalesArticles.Akiva.Description);
             detail.InvoiceNumber.Should().Be("1234");
             detail.CountryOfOrigin.Should().Be("JP");
-            detail.CustomsValueString().Should().Be("SEK 100.00");
+            detail.CustomsValueString().Should().Be("JPY 100,000,000");
+
+            var detail2 = section.Details.LastOrDefault();
+            detail2.Should().NotBeNull();
+
+            detail2.Currency.Code.Should().Be("JPY");
+            detail2.CustomsValue.Should().Be(200000000);
+            detail2.Description.Should().Be(TestSalesArticles.Akiva.Description);
+            detail2.InvoiceNumber.Should().Be("12345");
+            detail2.CountryOfOrigin.Should().Be("JP");
+            detail2.CustomsValueString().Should().Be("JPY 200,000,000");
         }
     }
 }

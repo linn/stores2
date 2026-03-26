@@ -92,7 +92,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             this.Sut.Carrier.Should().NotBeNull();
         }
 
-
         [Test]
         public void ShouldHaveCorrectTotals()
         {

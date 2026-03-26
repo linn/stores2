@@ -24,7 +24,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             }
             else if (orderDetail.LineType == "PO" && orderDetail.OrderNumber != null)
             {
-                this.ReasonForImport = "Material";
+                this.ReasonForImport = "Raw Materials";
             }
 
             if (this.IPR)

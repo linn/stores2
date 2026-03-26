@@ -80,7 +80,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             this.Sut.Invoices.Should().Be("SPKR-123");
         }
 
-
         [Test]
         public void ShouldHaveCorrectTotals()
         {
@@ -98,7 +97,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 
             section.Should().NotBeNull();
 
-            section.ReasonForImport.Should().Be("Material");
+            section.ReasonForImport.Should().Be("Raw Materials");
             section.CpcNumber.Should().Be("40 00 000");
             section.CpcScheme.Should().BeNull();
             section.IPR.Should().BeFalse();

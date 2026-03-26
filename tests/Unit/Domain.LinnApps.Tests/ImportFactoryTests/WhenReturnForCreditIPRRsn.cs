@@ -9,8 +9,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.TestData.CpcNumbers;
     using Linn.Stores2.TestData.Currencies;

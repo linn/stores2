@@ -14,9 +14,11 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Resources.Imports;
 
-    public class ImportBookCpcNumberFacadeService : AsyncFacadeService<ImportBookCpcNumber, int, ImportBookCpcNumberResource, ImportBookCpcNumberResource, ImportBookCpcNumberResource>
+    public class ImportBookCpcNumberFacadeService :
+        AsyncFacadeService<ImportBookCpcNumber, int, ImportBookCpcNumberResource, ImportBookCpcNumberResource, ImportBookCpcNumberResource>
     {
-        public ImportBookCpcNumberFacadeService(IRepository<ImportBookCpcNumber, int> repository, ITransactionManager transactionManager, IBuilder<ImportBookCpcNumber> resourceBuilder) : base(repository, transactionManager, resourceBuilder)
+        public ImportBookCpcNumberFacadeService(IRepository<ImportBookCpcNumber, int> repository, ITransactionManager transactionManager, IBuilder<ImportBookCpcNumber> resourceBuilder)
+            : base(repository, transactionManager, resourceBuilder)
         {
         }
 

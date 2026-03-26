@@ -40,6 +40,17 @@ namespace Linn.Stores2.TestData.Suppliers
                     ApprovedCarrier = "N"
                 };
 
+        public static readonly Supplier LinnJapan =
+            new Supplier
+            {
+                Id = 104164,
+                Name = "LINN JAPAN",
+                AccountingCompany = "LINN",
+                CountryCode = TestCountries.Japan.CountryCode,
+                Country = TestCountries.Japan,
+                ApprovedCarrier = "N"
+            };
+
         // Suppliers for PO imports
         public static readonly Supplier SeasFabrikker =
             new Supplier
