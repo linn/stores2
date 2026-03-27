@@ -123,7 +123,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
                         }
 
                         var detail = new ImportClearanceInstructionDetail(orderDetail, invoice, importBook.Currency);
-                        section.Details.Add(detail);
+                        section.AddDetail(detail, orderDetail.Rsn);
 
                         var total = this.Totals.FirstOrDefault(t => t.Currency.Code == importBook.Currency.Code && t.CpcScheme == section.CpcScheme);
                         if (total == null)

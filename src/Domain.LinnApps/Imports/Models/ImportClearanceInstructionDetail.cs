@@ -26,6 +26,12 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public Currency Currency { get; set; }
 
+        public string ExportInvoice { get; set; }
+
+        public string ExportEntryNumber { get; set; }
+
+        public string ExportEntryDate { get; set; }
+
         public string CustomsValueString()
         {
             if (this.Currency != null && this.CustomsValue.HasValue)

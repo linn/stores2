@@ -3,6 +3,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection.PortableExecutable;
     using System.Text;
     using System.Threading.Tasks;
 
@@ -59,6 +60,19 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
         public ICollection<ImportClearanceInstructionDetail> Details { get; set; }
 
         public bool HasDeclaration => !string.IsNullOrEmpty(this.Declaration);
+
+        public bool ShowExportDetails => this.ReasonForImport == "Return for Credit";
+
+        public void AddDetail(ImportClearanceInstructionDetail detail, Rsn rsn)
+        {
+            this.Details.Add(detail);
+
+            if ((this.ReasonForImport == "Return for Repair" && rsn.AllegedReason?.ReasonCategory == "Upgrade") ||
+                (this.ReasonForImport == "Return for Upgrade" && rsn.AllegedReason?.ReasonCategory == "Repair"))
+            {
+                this.ReasonForImport = "Return for Repair / Upgrade";
+            }
+        }
 
         private string GetAuthNumber(string authType, IEnumerable<ImportAuthNumber> importAuthNumbers)
         {
