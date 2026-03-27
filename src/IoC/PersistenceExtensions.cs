@@ -122,7 +122,10 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IRepository<PurchaseOrder, int>, PurchaseOrderRepository>()
                 .AddScoped<ISingleRecordRepository<ImportMaster>, ImportMasterRepository>()
                 .AddScoped<IRepository<ImportBookCpcNumber, int>, EntityFrameworkRepository<ImportBookCpcNumber, int>>(
-                    r => new EntityFrameworkRepository<ImportBookCpcNumber, int>(r.GetService<ServiceDbContext>()?.ImportBookCpcNumbers));
+                    r => new EntityFrameworkRepository<ImportBookCpcNumber, int>(r.GetService<ServiceDbContext>()?.ImportBookCpcNumbers))
+                .AddScoped<IQueryRepository<ImportAuthNumber>, EntityFrameworkQueryRepository<ImportAuthNumber>>(
+                    r => new EntityFrameworkQueryRepository<ImportAuthNumber>(
+                        r.GetService<ServiceDbContext>()?.ImportAuthNumbers));
         }
     }
 }

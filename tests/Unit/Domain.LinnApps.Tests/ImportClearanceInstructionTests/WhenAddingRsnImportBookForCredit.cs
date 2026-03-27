@@ -76,7 +76,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             this.Sut = new ImportClearanceInstruction(this.Master, "Marvin@tnt.com");
 
             this.importBook = new ImportBook(candidate);
-            this.Sut.AddImportBook(this.importBook);
+            this.Sut.AddImportBook(this.importBook, this.AuthNumbers);
         }
 
         [Test]
@@ -84,7 +84,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         {
             this.Sut.Totals.Should().NotBeNull();
             this.Sut.Totals.Count().Should().Be(1);
-            this.Sut.Totals.First().ToString().Should().Be("SEK 100.00");
+            this.Sut.BRGTotals.First().ToString().Should().Be("SEK 100.00");
+            this.Sut.HasIPRAndBRG.Should().BeFalse();
+            this.Sut.IPRTotals.Should().BeEmpty();
+            this.Sut.ValuePrompt("BRG").Should().Be("Value:");
         }
 
         [Test]
@@ -99,7 +102,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section.ReasonForImport.Should().Be("Return for Credit");
             section.CpcNumber.Should().Be("61 10 F05 - BRG");
             section.CpcScheme.Should().Be("BRG");
-            section.IPR.Should().BeTrue();
+            section.IPR.Should().BeFalse();
+            section.Declaration.Should().StartWith("NIRU / RGR / 336 / 0325");
 
             section.Details.Should().NotBeNull();
             section.Details.Should().HaveCount(1);

@@ -46,9 +46,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public Supplier Carrier { get; set; }
 
-        // Exists mainly for Linn Belgium instruction which may have EUR + SEK, DKK etc totals
-        public ICollection<ImportClearanceInstructionTotal> Totals { get; set; }
-
         public string DefermentAcct { get; set; }
 
         public string PVAText { get; set; }
@@ -57,7 +54,18 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public ICollection<ImportClearanceInstructionSection> Sections { get; set; }
 
-        public void AddImportBook(ImportBook importBook)
+        // Exists mainly for Linn Belgium instruction which may have EUR + SEK, DKK etc totals
+        public ICollection<ImportClearanceInstructionTotal> Totals { get; set; }
+
+        public bool HasIPRAndBRG => this.Sections.Any(s => s.CpcScheme == "IPR") && this.Sections.Any(s => s.CpcScheme == "BRG");
+
+        public ICollection<ImportClearanceInstructionTotal> IPRTotals => this.Totals.Where(t => t.CpcScheme == "IPR").ToList();
+
+        public ICollection<ImportClearanceInstructionTotal> BRGTotals => this.Totals.Where(t => t.CpcScheme == "BRG").ToList();
+
+        public string ValuePrompt(string scheme) => this.HasIPRAndBRG ? $"{scheme} Value:" : "Value:";
+
+        public void AddImportBook(ImportBook importBook, IEnumerable<ImportAuthNumber> importAuthNumbers)
         {
             if (string.IsNullOrEmpty(this.TransportBillNumber))
             {
@@ -99,21 +107,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
                 if (invoice != null)
                 {
-                    var total = this.Totals.FirstOrDefault(t => t.Currency.Code == importBook.Currency.Code);
-                    if (total == null)
-                    {
-                        total = new ImportClearanceInstructionTotal
-                        {
-                            Currency = importBook.Currency,
-                            TotalValue = invoice.InvoiceValue
-                        };
-                        this.Totals.Add(total);
-                    }
-                    else
-                    {
-                        total.TotalValue += invoice.InvoiceValue;
-                    }
-
                     if (orderDetail.ImportBookCpcNumber != null)
                     {
                         var section = this.Sections.FirstOrDefault(s => s.CpcNumber == orderDetail.ImportBookCpcNumber.Description);
@@ -122,12 +115,29 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
                         {
                             section = new ImportClearanceInstructionSection(
                                 orderDetail,
-                                this.Master);
+                                this.Master,
+                                importAuthNumbers);
                             this.Sections.Add(section);
                         }
 
                         var detail = new ImportClearanceInstructionDetail(orderDetail, invoice, importBook.Currency);
-                        section.Details.Add(detail);
+                        section.AddDetail(detail, orderDetail.Rsn);
+
+                        var total = this.Totals.FirstOrDefault(t => t.Currency.Code == importBook.Currency.Code && t.CpcScheme == section.CpcScheme);
+                        if (total == null)
+                        {
+                            total = new ImportClearanceInstructionTotal
+                            {
+                                Currency = importBook.Currency,
+                                TotalValue = invoice.InvoiceValue,
+                                CpcScheme = section.CpcScheme
+                            };
+                            this.Totals.Add(total);
+                        }
+                        else
+                        {
+                            total.TotalValue += invoice.InvoiceValue;
+                        }
                     }
 
                     if (string.IsNullOrEmpty(this.Invoices))

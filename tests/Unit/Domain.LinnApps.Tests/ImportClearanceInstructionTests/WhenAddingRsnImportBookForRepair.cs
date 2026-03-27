@@ -72,7 +72,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 
             this.Sut = new ImportClearanceInstruction(this.Master, "Marvin@tnt.com");
 
-            this.Sut.AddImportBook(new ImportBook(candidate));
+            this.Sut.AddImportBook(new ImportBook(candidate), this.AuthNumbers);
         }
 
         [Test]
@@ -97,7 +97,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         {
             this.Sut.Totals.Should().NotBeNull();
             this.Sut.Totals.Count().Should().Be(1);
-            this.Sut.Totals.First().ToString().Should().Be("SEK 100.00");
+            this.Sut.IPRTotals.First().ToString().Should().Be("SEK 100.00");
+            this.Sut.HasIPRAndBRG.Should().BeFalse();
+            this.Sut.BRGTotals.Should().BeEmpty();
+            this.Sut.ValuePrompt("IPR").Should().Be("Value:");
         }
 
         [Test]
@@ -113,6 +116,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section.CpcNumber.Should().Be("51 00 000");
             section.CpcScheme.Should().Be("IPR");
             section.IPR.Should().BeTrue();
+            section.Declaration.Should().StartWith("CDS IPR Reference - GBIPO3830942440020210510102146");
 
             section.Details.Should().NotBeNull();
             section.Details.Should().HaveCount(1);
