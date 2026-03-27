@@ -97,9 +97,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                 }
             };
 
-            this.Sut = new ImportClearanceInstruction(this.Master, "Marvin@tnt.com");
+            this.Sut = new ImportClearanceInstruction(this.Master, "Marvin@fedex.com");
 
-            this.Sut.AddImportBook(new ImportBook(candidate));
+            this.Sut.AddImportBook(new ImportBook(candidate), this.AuthNumbers);
         }
 
         [Test]

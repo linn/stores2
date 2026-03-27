@@ -54,6 +54,14 @@ function ClearanceInstruction() {
             ) {
                 setError('Cannot mix AWBs');
                 clearData();
+            } else if (
+                importBooks.length > 0 &&
+                importBook.supplierId != importBooks[0].supplierId
+            ) {
+                setError(
+                    `Cannot mix supplier ${importBook.supplierId} with ${importBooks[0].supplierId}`
+                );
+                clearData();
             } else {
                 setImportBooks([...importBooks, importBook]);
                 if (!options.filename) {
@@ -123,7 +131,7 @@ function ClearanceInstruction() {
 
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
                 <Grid size={12}>
                     <Typography variant="h4">Import Customs Clearance Instruction</Typography>
                 </Grid>
@@ -167,6 +175,24 @@ function ClearanceInstruction() {
                                 columns={columns}
                                 density="compact"
                                 hideFooter
+                            />
+                        </Grid>
+                        <Grid size={6}>
+                            <InputField
+                                disabled
+                                value={`${importBooks[0].supplierName}(${importBooks[0].supplierId})`}
+                                fullWidth
+                                label="Supplier"
+                                propertyName="supplier"
+                            />
+                        </Grid>
+                        <Grid size={6}>
+                            <InputField
+                                disabled
+                                value={importBooks[0].supplierCountry.name}
+                                fullWidth
+                                label="Country"
+                                propertyName="country"
                             />
                         </Grid>
                         <Grid size={6}>

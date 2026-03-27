@@ -8,6 +8,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public decimal TotalValue { get; set; }
 
+        public string CpcScheme { get; set; }
+
         public override string ToString()
         {
             var formattedValue = this.Currency?.Code == "JPY"

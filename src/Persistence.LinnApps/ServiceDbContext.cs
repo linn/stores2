@@ -123,6 +123,8 @@ namespace Linn.Stores2.Persistence.LinnApps
 
         public DbSet<ImportBookCpcNumber> ImportBookCpcNumbers { get; set; }
 
+        public DbSet<ImportAuthNumber> ImportAuthNumbers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -203,6 +205,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildPurchaseOrderDetails(builder);
             BuildRsnReturnInformation(builder);
             BuildRsnReturnReasons(builder);
+            BuildImportAuthNumbers(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -1354,6 +1357,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.Property(a => a.DefermentAcct).HasColumnName("DEFERMENT_ACCT").HasMaxLength(50);
             e.Property(a => a.PVAText).HasColumnName("PVA_TEXT").HasMaxLength(2000);
             e.Property(a => a.IPRDeclaration).HasColumnName("IPR_DECLARATION").HasMaxLength(2000);
+            e.Property(a => a.BRGDeclaration).HasColumnName("BRG_DECLARATION").HasMaxLength(2000);
             e.HasOne(a => a.Address).WithMany().HasForeignKey("ADDRESS_ID");
         }
 
@@ -1487,6 +1491,17 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.Property(a => a.DateInvalid).HasColumnName("DATE_INVALID");
             e.Property(a => a.ReasonCategory).HasColumnName("REASON_CATEGORY").HasMaxLength(10);
             e.Property(a => a.RealReasonFlag).HasColumnName("REAL_REASON").HasMaxLength(1);
+        }
+
+        private static void BuildImportAuthNumbers(ModelBuilder builder)
+        {
+            var e = builder.Entity<ImportAuthNumber>().ToTable("IMPORT_AUTH_NUMBERS");
+            e.HasKey(a => a.Id);
+            e.Property(a => a.Id).HasColumnName("ID");
+            e.Property(a => a.AuthorisationType).HasColumnName("AUTH_TYPE").HasMaxLength(20);
+            e.Property(a => a.AuthorisationNumber).HasColumnName("AUTH_NUMBER").HasMaxLength(50);
+            e.Property(a => a.FromDate).HasColumnName("FROM_DATE");
+            e.Property(a => a.ToDate).HasColumnName("TO_DATE");
         }
     }
 }

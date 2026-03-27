@@ -20,5 +20,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public string PVAText { get; set; }
 
         public string IPRDeclaration { get; set; }
+
+        public string BRGDeclaration { get; set; }
     }
 }

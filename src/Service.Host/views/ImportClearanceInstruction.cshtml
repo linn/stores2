@@ -55,7 +55,9 @@
 				'senderPrompt sender . . .'
 				'awbPrompt awb . . .'
 				'invoicesPrompt invoices . . .'
-				'valuePrompt value . . .'
+				'iprValuePrompt iprValue . . .'
+				'brgValuePrompt brgValue . . .'
+				'iprBrgWarning iprBrgWarning iprBrgWarning iprBrgWarning iprBrgWarning'
 				'pvaText pvaText pvaText pvaText pvaText'
 		}
 
@@ -204,13 +206,23 @@
 			grid-area: invoicesPrompt;
 		}
 
-		.value {
-			grid-area: value;
+		.iprValue {
+			grid-area: iprValue;
 			margin-bottom: 10px;
 		}
 
-		.valuePrompt {
-			grid-area: valuePrompt;
+		.iprValuePrompt {
+			grid-area: iprValuePrompt;
+			margin-bottom: 10px;
+		}
+
+		.brgValue {
+			grid-area: brgValue;
+			margin-bottom: 10px;
+		}
+
+		.brgValuePrompt {
+			grid-area: brgValuePrompt;
 			margin-bottom: 10px;
 		}
 
@@ -219,6 +231,12 @@
 			margin-bottom: 10px;
 			font-size: 0.8em;
 			color: red;
+		}
+
+		.iprBrgWarning {
+			grid-area: iprBrgWarning;
+			margin-bottom: 10px;
+			font-size: 0.8em;
 		}
 
 		.reasonPrompt {
@@ -262,11 +280,11 @@
 
         .line-grid-container {
 			margin-top: 10px;
-			margin-bottom: 10px;
+			margin-bottom: 30px;
             column-gap: 10px;
             display: grid;
             grid-template-columns: auto auto auto auto auto;
-            row-gap: 5px;
+            row-gap: 4px;
         }
 
         #tcb-extension-uk-wrapper {
@@ -390,18 +408,42 @@
                         <div class="invoices">
                             @Model.Invoices
                         </div>
-                            
-                        <div class="valuePrompt">
-                            <b>Value:</b>
-                        </div>
+                        
+                        @if (Model.IPRTotals.Any())
+                        {
+                            <div class="iprValuePrompt">
+                                <b>@Model.ValuePrompt("IPR")</b>
+                            </div>
 
-                        <div class="value">
-                            @foreach (var total in Model.Totals)
-                            {
-                                @total.ToString()
-                            }
-							</div>
-                            
+                            <div class="iprValue">
+                                @foreach (var total in Model.IPRTotals)
+                                {
+                                    @total.ToString()
+                                }
+                            </div>
+                        }
+                        
+                        @if (Model.BRGTotals.Any())
+                        {
+                            <div class="brgValuePrompt">
+                                <b>@Model.ValuePrompt("BRG")</b>
+                            </div>
+
+                            <div class="brgValue">
+                                @foreach (var total in Model.BRGTotals)
+                                {
+                                    @total.ToString()<br/>
+                                }
+                            </div>
+                        }
+                        
+                        @if (Model.HasIPRAndBRG)
+                        {
+                            <div class="iprBrgWarning">
+								<b>This shipment contains items being returned under both IPR and RGR - see below for detailed listings</b>
+                            </div>
+                        }
+
                         @if (!string.IsNullOrEmpty(Model.PVAText))
                         {
                             <div class="pvaText">
