@@ -56,7 +56,7 @@ function ClearanceInstruction() {
                 clearData();
             } else if (
                 importBooks.length > 0 &&
-                importBook.supplierId != importBooks[0].supplierId
+                importBook.supplierId !== importBooks[0].supplierId
             ) {
                 setError(
                     `Cannot mix supplier ${importBook.supplierId} with ${importBooks[0].supplierId}`

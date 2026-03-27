@@ -6,8 +6,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
     using Linn.Stores2.Domain.LinnApps.Exceptions;
 
-    using Microsoft.CodeAnalysis.CSharp.Syntax;
-
     public class ImportClearanceInstruction
     {
         public ImportClearanceInstruction(ImportMaster master, string toEmailAddress)

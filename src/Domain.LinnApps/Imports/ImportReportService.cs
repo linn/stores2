@@ -38,7 +38,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             {
                 var impbook = await this.importBookRepository.FindByIdAsync(id);
                 var matchingAuthNumbers = importAuthNumbers.Where(a => a.Matches(impbook.DateInstructionSent ?? DateTime.UtcNow)).ToList();
-                model.AddImportBook(impbook, importAuthNumbers);
+                model.AddImportBook(impbook, matchingAuthNumbers);
             }
 
             return await this.clearanceHtmlTemplateService.GetHtml(model);

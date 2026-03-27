@@ -20,8 +20,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 
     using NUnit.Framework;
 
-    using static System.Collections.Specialized.BitVector32;
-
     public class WhenAddingBothIPRReturnForRepairAndUpgrade : ContextBase
     {
         [SetUp]
