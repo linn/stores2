@@ -23,6 +23,5 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         {
             return matchDate >= this.FromDate && (this.ToDate == null || matchDate <= this.ToDate);
         }
-
     }
 }
