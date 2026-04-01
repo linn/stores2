@@ -105,10 +105,6 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                       },
                                   new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("euroExchangeRate", "Euro Ex Rate", GridDisplayType.Value, 120),
-                                  new AxisDetailsModel("euroValue", "Customs Total", GridDisplayType.Value, 120)
-                                  {
-                                      Align = "right", DecimalPlaces = 2
-                                  },
                                   new AxisDetailsModel("euroCurrency", "Customs Currency", GridDisplayType.TextValue, 100)
                               };
 
