@@ -271,20 +271,6 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                     new CalculationValueModel
                     {
                         RowId = rowId,
-                        ColumnId = "euroValue",
-                        Value = exchangeRate.HasValue
-                                    ? line.Total.HasValue
-                                          ? decimal.Round(line.Total.Value / exchangeRate.Value, 2)
-                                          : decimal.Round(
-                                              line.CustomsValue / exchangeRate.Value,
-                                              2)
-                                    : 0
-                    });
-
-                values.Add(
-                    new CalculationValueModel
-                    {
-                        RowId = rowId,
                         ColumnId = "euroCurrency",
                         TextDisplay = "EUR"
                     });
