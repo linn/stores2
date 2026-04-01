@@ -47,6 +47,10 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
             var fromDateStart = fromDate.Date;
             var toDateEnd = toDate.AddDays(1).Date;
 
+            var exchangeRates = await this.GetExchangeRates(
+                                    fromDate,
+                                    toDate);
+
             var lines = await this.dailyEuRsnImportRepository.FilterByAsync(i =>
                             i.DocumentDate >= fromDateStart && i.DocumentDate < toDateEnd);
 
@@ -94,12 +98,14 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                       {
                                           Align = "right", DecimalPlaces = 0
                                       },
-                                  new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("customsValue", "Customs Value", GridDisplayType.Value, 130)
+                                  new AxisDetailsModel("currency", "Invoice Currency", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("customsValue", "Invoice Value", GridDisplayType.Value, 130)
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
-                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 100)
+                                  new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("euroExchangeRate", "Euro Ex Rate", GridDisplayType.Value, 120),
+                                  new AxisDetailsModel("euroCurrency", "Customs Currency", GridDisplayType.TextValue, 100)
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -110,6 +116,14 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
             foreach (var line in lines.OrderBy(a => a.InvoiceNumber))
             {
                 var rowId = rowIndex.ToString();
+                decimal? exchangeRate = 1;
+                if (line.Currency != "EUR")
+                {
+                    exchangeRates.TryGetValue(
+                        (line.Currency, line.DocumentDate.ToString("MMMyyyy", CultureInfo.InvariantCulture)),
+                        out var rate2);
+                    exchangeRate = rate2?.ExchangeRate;
+                }
 
                 values.Add(
                     new CalculationValueModel
@@ -241,6 +255,22 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                         TextDisplay = $"{line.SerialNumber}"
                     });
 
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "euroExchangeRate",
+                        Value = exchangeRate.GetValueOrDefault()
+                    });
+
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "euroCurrency",
+                        TextDisplay = "EUR"
+                    });
+
                 rowIndex++;
             }
 
@@ -290,14 +320,14 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                       {
                                           DecimalPlaces = 0, Align = "right"
                                       },
-                                  new AxisDetailsModel("currency", "Currency", GridDisplayType.TextValue, 100),
-                                  new AxisDetailsModel("unitPrice", "Unit Price", GridDisplayType.Value, 125)
+                                  new AxisDetailsModel("currency", "Invoice Currency", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("unitPrice", "Invoice Unit Price", GridDisplayType.Value, 125)
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
                                   new AxisDetailsModel(
                                       "customsTotalValue",
-                                      "Customs Total Value",
+                                      "Invoice Total",
                                       GridDisplayType.Value,
                                       150)
                                       {
@@ -305,19 +335,19 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                       },
                                   new AxisDetailsModel(
                                       "valueForCustomsPurposes",
-                                      "Value for Customs Purposes only",
+                                      "Invoice Value For Customs",
                                       GridDisplayType.Value,
                                       150)
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
-                                  new AxisDetailsModel("euroCurrency", "Currency", GridDisplayType.TextValue, 100),
+                                  new AxisDetailsModel("euroCurrency", "Customs Currency", GridDisplayType.TextValue, 100),
                                   new AxisDetailsModel("euroExchangeRate", "Euro Ex Rate", GridDisplayType.Value, 120),
-                                  new AxisDetailsModel("euroUnitPrice", "Euro Unit Price", GridDisplayType.Value, 120)
+                                  new AxisDetailsModel("euroUnitPrice", "Customs Unit Price", GridDisplayType.Value, 120)
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
-                                  new AxisDetailsModel("euroValue", "Euro Value", GridDisplayType.Value, 120)
+                                  new AxisDetailsModel("euroValue", "Customs Total", GridDisplayType.Value, 120)
                                       {
                                           Align = "right", DecimalPlaces = 2
                                       },
