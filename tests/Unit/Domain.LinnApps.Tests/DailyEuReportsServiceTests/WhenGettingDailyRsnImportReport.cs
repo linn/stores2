@@ -9,6 +9,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
     using FluentAssertions.Extensions;
 
     using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps.External;
+    using Linn.Stores2.Domain.LinnApps.Logistics;
     using Linn.Stores2.Domain.LinnApps.Reports;
     using NSubstitute;
 
@@ -59,6 +61,20 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
                                             DocumentDate = 15.December(2025),
                                         },
                                 };
+            this.FinanceProxy.GetLedgerPeriod("Dec2025")
+                .Returns(new LedgerPeriodResult { PeriodNumber = 123 });
+            this.ImportBookExchangeRateRepository
+                .FilterByAsync(Arg.Any<Expression<Func<ImportBookExchangeRate, bool>>>()).Returns(
+                    new List<ImportBookExchangeRate>
+                    {
+                        new ImportBookExchangeRate
+                        {
+                            BaseCurrency = "EUR",
+                            ExchangeCurrency = "USD",
+                            ExchangeRate = 10m,
+                            PeriodNumber = 123
+                        }
+                    });
 
             this.DailyEuRsnImportRepository.FilterByAsync(Arg.Any<Expression<Func<DailyEuRsnImport, bool>>>())
                 .Returns(values);
@@ -86,6 +102,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
             this.result.GetGridValue(0, this.result.ColumnIndex("quantity")).Should().Be(2m);
             this.result.GetGridTextValue(0, this.result.ColumnIndex("currency")).Should().Be("USD");
             this.result.GetGridValue(0, this.result.ColumnIndex("customsValue")).Should().Be(123.45m);
+            this.result.GetGridTextValue(0, this.result.ColumnIndex("euroCurrency")).Should().Be("EUR");
+            this.result.GetGridValue(0, this.result.ColumnIndex("euroExchangeRate")).Should().Be(10m);
 
             this.result.GetGridTextValue(1, this.result.ColumnIndex("intercompanyInvoice")).Should().Be("2");
             this.result.GetGridTextValue(1, 5).Should().Be("102");
