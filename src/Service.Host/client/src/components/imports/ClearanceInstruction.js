@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link as RouterLink } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Link from '@mui/material/Link';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import { DataGrid } from '@mui/x-data-grid';
@@ -12,7 +13,8 @@ import {
     ErrorCard,
     ExportButton,
     InputField,
-    Loading
+    Loading,
+    utilities
 } from '@linn-it/linn-form-components-library';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
@@ -99,7 +101,16 @@ function ClearanceInstruction() {
     };
 
     const columns = [
-        { field: 'id', headerName: 'ImpBook#', width: 100 },
+        {
+            field: 'id',
+            headerName: 'ImpBook#',
+            width: 100,
+            renderCell: params => (
+                <Link component={RouterLink} variant="body2" to={utilities.getSelfHref(params.row)}>
+                    {params.value}
+                </Link>
+            )
+        },
         { field: 'currency', headerName: 'Currency', width: 110 },
         { field: 'totalImportValue', headerName: 'Total Value', width: 130 },
         {

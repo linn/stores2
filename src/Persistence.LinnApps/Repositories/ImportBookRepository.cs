@@ -1,6 +1,11 @@
 namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
+    using System;
+    using System.Linq;
+    using System.Linq.Expressions;
     using System.Threading.Tasks;
+
+    using Domain.LinnApps.Requisitions;
 
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Imports;
@@ -33,6 +38,15 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                        .Include(i => i.BaseCurrency)
                        .Include(i => i.ExchangeCurrency)
                        .FirstOrDefaultAsync(r => r.Id == key);
+        }
+
+        public override IQueryable<ImportBook> FilterBy(
+            Expression<Func<ImportBook, bool>> filterExpression)
+        {
+            return this.serviceDbContext.ImportBooks.Where(filterExpression)
+                .Include(i => i.InvoiceDetails)
+                .Include(i => i.Supplier).ThenInclude(s => s.Country)
+                .Include(i => i.CreatedBy);
         }
     }
 }

@@ -1,14 +1,19 @@
 namespace Linn.Stores2.Service.Modules
 {
+    using System.Security.Cryptography;
     using System.Threading.Tasks;
+    using System.Xml.Linq;
 
     using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Facade.Services;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
+    using Linn.Stores2.Resources.Requisitions;
     using Linn.Stores2.Service.Extensions;
     using Linn.Stores2.Service.Models;
 
@@ -30,9 +35,26 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task SearchImports(
-            HttpResponse res)
+            HttpResponse res,
+            string transportBillNumber,
+            string customsEntryCode,
+            IImportBookFacadeService service)
         {
-            await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            if (string.IsNullOrEmpty(transportBillNumber) && string.IsNullOrEmpty(customsEntryCode))
+            {
+                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            }
+            else
+            {
+                var searchResource = new ImportBookSearchResource
+                {
+                    TransportBillNumber = transportBillNumber,
+                    CustomsEntryCode = customsEntryCode
+                };
+                var importBooks = await service.FilterBy(
+                    searchResource);
+                await res.Negotiate(importBooks);
+            }
         }
 
         private async Task GetById(
