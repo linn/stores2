@@ -6,10 +6,10 @@ namespace Linn.Stores2.Integration.Tests
     using Linn.Common.Service;
 
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.TestHost;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
 
     public static class TestClient
     {
@@ -18,37 +18,31 @@ namespace Linn.Stores2.Integration.Tests
             params Func<RequestDelegate, RequestDelegate>[] rd)
             where T : IModule
         {
-            var server = new TestServer(
-                new WebHostBuilder()
-                    .ConfigureServices(
-                        services =>
-                        {
-                            services.AddRouting();
-                            services.Apply(serviceConfiguration);
-                            services.AddSingleton<IResponseNegotiator, UniversalResponseNegotiator>();
-                        })
-                    .Configure(
-                        app =>
-                            {
-                                app.UseRouting();
-                                app.UseEndpoints(
-                                    builder =>
-                                        {
-                                            // only map the endpoints for the module under test
-                                            var module
-                                                =
-                                                (T)Activator.CreateInstance(typeof(T)); // i.e. the module of type T
-                                            module.MapEndpoints(builder);
+            var builder = WebApplication.CreateBuilder();
 
-                                            // we have to do the above since our testing context only
-                                            // injects the dependencies for the module under test...
-                                            // so if we try to MapEndpoints() for all modules like we do in the
-                                            // real/non-testing scenario the framework complains since other module's
-                                            // dependencies are missing.
-                                        });
-                            }));
+            builder.Services.AddRouting();
+            builder.Services.Apply(serviceConfiguration);
+            builder.Services.AddSingleton<IResponseNegotiator, UniversalResponseNegotiator>();
 
-            return server.CreateClient();
+            builder.WebHost.UseTestServer();
+
+            var app = builder.Build();
+
+            // only map the endpoints for the module under test
+            var module = (T)Activator.CreateInstance(typeof(T)); // i.e. the module of type T
+            if (module != null)
+            {
+                module.MapEndpoints(app);
+            }
+
+            // we have to do the above since our testing context only
+            // injects the dependencies for the module under test...
+            // so if we try to MapEndpoints() for all modules like we do in the
+            // real/non-testing scenario the framework complains since other module's
+            // dependencies are missing.
+            app.Start();
+
+            return app.GetTestClient();
         }
     }
 }

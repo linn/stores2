@@ -2,14 +2,11 @@ namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
-    using System.Text;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
-    using Linn.Common.Resources;
 
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Resources.Imports;
@@ -27,7 +24,8 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        protected override Task SaveToLogTable(string actionType,
+        protected override Task SaveToLogTable(
+            string actionType,
             int userNumber,
             ImportBookCpcNumber entity,
             ImportBookCpcNumberResource resource,

@@ -1,22 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
 		<AssemblyName>Linn.Stores2.Facade.Tests</AssemblyName>
 		<RootNamespace>Linn.Stores2.Facade.Tests</RootNamespace>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="7.2.2" />
-		<PackageReference Include="Linn.Common.Facade" Version="13.4.2" />
+		<PackageReference Include="Linn.Common.Facade" Version="13.4.3" />
 		<PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="6.0.0" />
 		<PackageReference Include="Linn.Common.Proxy.LinnApps" Version="4.1.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.0" />
-		<PackageReference Include="MSTest.TestAdapter" Version="4.1.0" />
-		<PackageReference Include="MSTest.TestFramework" Version="4.1.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
+		<PackageReference Include="MSTest.TestAdapter" Version="4.2.1" />
+		<PackageReference Include="MSTest.TestFramework" Version="4.2.1" />
 		<PackageReference Include="NSubstitute" Version="5.3.0" />
-		<PackageReference Include="NUnit" Version="4.5.0" />
-		<PackageReference Include="NUnit3TestAdapter" Version="6.1.0" />
+		<PackageReference Include="NUnit" Version="4.5.1" />
+		<PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
