@@ -2,18 +2,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
-    using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
-    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
-    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.TestData.Countries;
-
-    using NSubstitute;
 
     using NUnit.Framework;
 
@@ -59,7 +51,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                 {
                     AuthorisationType = "BRG",
                     AuthorisationNumber = "NIRU / RGR / 336 / 0325",
-                    FromDate = new DateTime(2022,1,1)
+                    FromDate = new DateTime(2022, 1, 1)
                 }
             };
         }

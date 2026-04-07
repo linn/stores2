@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Persistence.LinnApps.Repositories
 {
-    using System;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence.EntityFramework;
@@ -12,7 +11,8 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     {
         private readonly ServiceDbContext serviceDbContext;
 
-        public PurchaseOrderRepository(ServiceDbContext serviceDbContext) : base(serviceDbContext.PurchaseOrders)
+        public PurchaseOrderRepository(ServiceDbContext serviceDbContext)
+            : base(serviceDbContext.PurchaseOrders)
         {
             this.serviceDbContext = serviceDbContext;
         }
