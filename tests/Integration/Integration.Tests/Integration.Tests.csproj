@@ -8,7 +8,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" Version="7.2.0" />
+		<PackageReference Include="FluentAssertions" Version="7.2.2" />
 		<PackageReference Include="Linn.Common.Persistence" Version="5.0.1" />
 		<PackageReference Include="Linn.Common.Persistence.EntityFramework" Version="6.0.0" />
 		<PackageReference Include="Linn.Common.Reporting.Resources" Version="2.0.2" />
