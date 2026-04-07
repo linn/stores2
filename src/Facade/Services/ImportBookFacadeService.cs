@@ -239,6 +239,11 @@ namespace Linn.Stores2.Facade.Services
                 return ib => ib.CustomsEntryCode == searchResource.CustomsEntryCode;
             }
 
+            if (searchResource.RsnNumber.HasValue)
+            {
+                return ib => ib.OrderDetails.Any(od => od.Rsn != null && od.Rsn.RsnNumber == searchResource.RsnNumber.Value);
+            }
+
             return null;
         }
 

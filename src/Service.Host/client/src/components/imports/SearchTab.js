@@ -33,7 +33,12 @@ function SearchTab() {
 
     const doSearch = () => {
         const query = queryString.stringify(options);
-        if (options.transportBillNumber || options.customsEntryCode) {
+        if (
+            options.transportBillNumber ||
+            options.customsEntryCode ||
+            options.rsnNumber ||
+            options.poNumber
+        ) {
             send(null, `?${query}`);
         }
     };
@@ -58,7 +63,7 @@ function SearchTab() {
 
     return (
         <>
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
                 <Grid size={3}>
                     <InputField
                         fullWidth
@@ -82,7 +87,7 @@ function SearchTab() {
                     </Button>
                 </Grid>
                 <Grid size={8} />
-                <Grid size={4}>
+                <Grid size={3}>
                     <InputField
                         fullWidth
                         value={options.transportBillNumber}
@@ -92,7 +97,7 @@ function SearchTab() {
                         disabled={options.customsEntryCode}
                     />
                 </Grid>
-                <Grid size={4}>
+                <Grid size={3}>
                     <InputField
                         fullWidth
                         value={options.customsEntryCode}
@@ -102,7 +107,29 @@ function SearchTab() {
                         disabled={options.transportBillNumber}
                     />
                 </Grid>
-                <Grid size={4}>
+                <Grid size={3}>
+                    <InputField
+                        fullWidth
+                        type="number"
+                        value={options.rsnNumber}
+                        onChange={handleOptionChange}
+                        label="RSN Number"
+                        propertyName="rsnNumber"
+                        disabled={options.customsEntryCode}
+                    />
+                </Grid>
+                <Grid size={3}>
+                    <InputField
+                        fullWidth
+                        type="number"
+                        value={options.poNumber}
+                        onChange={handleOptionChange}
+                        label="PO Number"
+                        propertyName="poNumber"
+                        disabled={options.transportBillNumber}
+                    />
+                </Grid>
+                <Grid size={12}>
                     <Button onClick={doSearch} variant="outlined" style={{ marginTop: '29px' }}>
                         Search
                     </Button>

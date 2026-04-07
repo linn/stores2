@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Resources
+namespace Linn.Stores2.Resources.Imports
 {
     using System;
     using System.Collections.Generic;
@@ -11,5 +11,9 @@ namespace Linn.Stores2.Resources
         public string TransportBillNumber { get; set; }
 
         public string CustomsEntryCode { get; set; }
+
+        public int? RsnNumber { get; set; }
+
+        public int? PONumber { get; set; }
     }
 }

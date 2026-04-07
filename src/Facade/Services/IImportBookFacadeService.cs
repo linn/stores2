@@ -6,7 +6,6 @@ namespace Linn.Stores2.Facade.Services
 
     using Linn.Common.Facade;
     using Linn.Stores2.Domain.LinnApps.Imports;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
 
     public interface IImportBookFacadeService : IAsyncFacadeService<ImportBook, int, ImportBookResource,
