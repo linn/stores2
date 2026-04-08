@@ -112,6 +112,7 @@ function DailyEuDispatchReport() {
                         buttonText="Download Invoices"
                     />
                 </Grid>
+                <Grid size={2} />
                 {isLoading && (
                     <Grid size={12}>
                         <Loading />
