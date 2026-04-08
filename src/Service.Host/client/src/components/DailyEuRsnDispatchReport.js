@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import queryString from 'query-string';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
@@ -17,6 +17,7 @@ import Page from './Page';
 function DailyEuRsnDispatchReport() {
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
+    const [exportBookIds, setExportBookIds] = useState([]);
 
     const options = () => ({
         fromDate: fromDate.toISOString(),
@@ -28,6 +29,23 @@ function DailyEuRsnDispatchReport() {
         isLoading,
         result
     } = useGet(itemTypes.dailyEuRsnDispatchReport.url, true);
+
+    useEffect(() => {
+        if (!result || !result.reportResults || result.reportResults.length === 0) {
+            setExportBookIds([]);
+        } else {
+            var resultValues = result.reportResults[0].results
+                .map(a => a.values)
+                .map(row => row[0]?.textDisplayValue);
+
+            if (!resultValues || resultValues.length === 0) {
+                setExportBookIds([]);
+                return;
+            }
+
+            setExportBookIds([...new Set(resultValues)]);
+        }
+    }, [result]);
 
     const report = useMemo(() => {
         return (
@@ -87,6 +105,17 @@ function DailyEuRsnDispatchReport() {
                         Run
                     </Button>
                 </Grid>
+                <Grid size={2} sx={{ marginTop: 4 }}>
+                    <ExportButton
+                        href={`${itemTypes.downloadExpbookInvoices.url}?documentType=E&${exportBookIds.map(id => `documentNumber=${id}`).join('&')}`}
+                        fileName="DailyInvoices.pdf"
+                        accept="application/pdf"
+                        tooltipText="Download as PDF"
+                        disabled={!exportBookIds?.length}
+                        buttonText="Download Invoices"
+                    />
+                </Grid>
+                <Grid size={2} />
                 {isLoading && (
                     <Grid size={12}>
                         <Loading />
