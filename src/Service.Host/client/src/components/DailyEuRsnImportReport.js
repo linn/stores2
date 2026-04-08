@@ -17,7 +17,7 @@ import Page from './Page';
 function DailyEuRsnImportReport() {
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
-    const [exportBookIds, setExportBookIds] = useState([]);
+    const [returnIds, setReturnIds] = useState([]);
 
     const options = () => ({
         fromDate: fromDate.toISOString(),
@@ -32,18 +32,18 @@ function DailyEuRsnImportReport() {
 
     useEffect(() => {
         if (!result || !result.reportResults || result.reportResults.length === 0) {
-            setExportBookIds([]);
+            setReturnIds([]);
         } else {
             var resultValues = result.reportResults[0].results
                 .map(a => a.values)
                 .map(row => row[0]?.textDisplayValue);
 
             if (!resultValues || resultValues.length === 0) {
-                setExportBookIds([]);
+                setReturnIds([]);
                 return;
             }
 
-            setExportBookIds([...new Set(resultValues)]);
+            setReturnIds([...new Set(resultValues)]);
         }
     }, [result]);
 
@@ -105,11 +105,11 @@ function DailyEuRsnImportReport() {
                 </Grid>
                 <Grid size={2} sx={{ marginTop: 4 }}>
                     <ExportButton
-                        href={`${itemTypes.downloadExpbookInvoices.url}?documentType=R&${exportBookIds.map(id => `documentNumber=${id}`).join('&')}`}
+                        href={`${itemTypes.downloadExpbookInvoices.url}?documentType=R&${returnIds.map(id => `documentNumber=${id}`).join('&')}`}
                         fileName="DailyInvoices.pdf"
                         accept="application/pdf"
                         tooltipText="Download as PDF"
-                        disabled={!exportBookIds?.length}
+                        disabled={!returnIds?.length}
                         buttonText="Download Invoices"
                     />
                 </Grid>
