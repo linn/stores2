@@ -33,7 +33,7 @@ function ClearanceInstruction() {
     const [error, setError] = useState();
     const [importBooks, setImportBooks] = useState([]);
     const [options, setOptions] = useState({
-        importBookId: null,
+        impbookId: null,
         toEmailAddress: '',
         filename: ''
     });

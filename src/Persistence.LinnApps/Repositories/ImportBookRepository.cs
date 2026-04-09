@@ -5,10 +5,9 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
-    using Domain.LinnApps.Requisitions;
-
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.Requisitions;
 
     using Microsoft.EntityFrameworkCore;
 
