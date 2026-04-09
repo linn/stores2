@@ -6,7 +6,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence.EntityFramework;
-    using Linn.Stores2.Domain.LinnApps.Logistics;
+    using Linn.Stores2.Domain.LinnApps.Imports;
 
     using Microsoft.EntityFrameworkCore;
 
