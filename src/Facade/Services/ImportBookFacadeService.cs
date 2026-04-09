@@ -15,9 +15,10 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.Returns;
+    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
 
-    public class ImportBookFacadeService : AsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookResource>, IImportBookFacadeService
+    public class ImportBookFacadeService : AsyncFacadeService<ImportBook, int, ImportBookResource, ImportBookResource, ImportBookSearchResource>, IImportBookFacadeService
     {
         private readonly IRepository<Employee, int> employeeRepository;
 
@@ -225,12 +226,27 @@ namespace Linn.Stores2.Facade.Services
             throw new NotImplementedException();
         }
 
-        protected override Expression<Func<ImportBook, bool>> FilterExpression(ImportBookResource searchResource)
+        protected override Expression<Func<ImportBook, bool>> FilterExpression(ImportBookSearchResource searchResource)
         {
-            throw new NotImplementedException();
+            if (!string.IsNullOrEmpty(searchResource.TransportBillNumber))
+            {
+                return ib => ib.TransportBillNumber == searchResource.TransportBillNumber;
+            }
+
+            if (!string.IsNullOrEmpty(searchResource.CustomsEntryCode))
+            {
+                return ib => ib.CustomsEntryCode == searchResource.CustomsEntryCode;
+            }
+
+            if (searchResource.RsnNumber.HasValue)
+            {
+                return ib => ib.OrderDetails.Any(od => od.Rsn != null && od.Rsn.RsnNumber == searchResource.RsnNumber.Value);
+            }
+
+            return null;
         }
 
-        protected override Expression<Func<ImportBook, bool>> FindExpression(ImportBookResource searchResource)
+        protected override Expression<Func<ImportBook, bool>> FindExpression(ImportBookSearchResource searchResource)
         {
             throw new NotImplementedException();
         }

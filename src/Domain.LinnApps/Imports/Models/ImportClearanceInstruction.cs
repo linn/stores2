@@ -21,6 +21,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.PVAText = master.PVAText;
             this.DefermentAcct = master.DefermentAcct;
             this.InstructionDate = DateTime.UtcNow;
+            this.Footer = master.ClearanceFooter.Split("\n");
             this.Master = master;
         }
 
@@ -49,6 +50,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
         public string DefermentAcct { get; set; }
 
         public string PVAText { get; set; }
+
+        public string[] Footer { get; set; }
 
         public ImportMaster Master { get; set; }
 

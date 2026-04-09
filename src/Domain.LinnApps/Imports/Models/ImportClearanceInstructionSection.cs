@@ -34,6 +34,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
                 if (this.IPR)
                 {
                     this.Declaration = master.IPRDeclaration.Replace("$IPR", this.GetAuthNumber("IPR", importAuthNumbers));
+                    this.CDSDeclaration = true;
                 }
                 else
                 {
@@ -43,6 +44,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             else if (orderDetail.LineType == "PO" && orderDetail.OrderNumber != null)
             {
                 this.ReasonForImport = "Raw Materials";
+                this.CDSDeclaration = true;
             }
         }
 
@@ -55,6 +57,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
         public string Declaration { get; set; }
 
         public bool IPR { get; set; }
+
+        public bool CDSDeclaration { get; set; }
 
         public ICollection<ImportClearanceInstructionDetail> Details { get; set; }
 

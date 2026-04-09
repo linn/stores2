@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
-import { InputField } from '@linn-it/linn-form-components-library';
+import { InputField, utilities } from '@linn-it/linn-form-components-library';
+import FindImport from './FindImport';
 
 function SearchTab() {
     const navigate = useNavigate();
@@ -24,6 +25,10 @@ function SearchTab() {
         navigate(`/stores2/import-books/${options.importBookId}`);
     };
 
+    const handleFindRowClick = row => {
+        navigate(utilities.getSelfHref(row));
+    };
+
     useEffect(() => {
         if (inputRef.current) {
             inputRef.current.focus();
@@ -32,7 +37,7 @@ function SearchTab() {
 
     return (
         <>
-            <Grid container spacing={3}>
+            <Grid container spacing={1}>
                 <Grid size={3}>
                     <InputField
                         fullWidth
@@ -55,6 +60,8 @@ function SearchTab() {
                         Go
                     </Button>
                 </Grid>
+                <Grid size={8} />
+                <FindImport handleRowClick={handleFindRowClick} />
             </Grid>
         </>
     );

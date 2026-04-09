@@ -6,7 +6,6 @@ namespace Linn.Stores2.Persistence.LinnApps
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Labels;
-    using Linn.Stores2.Domain.LinnApps.Logistics;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
@@ -15,6 +14,7 @@ namespace Linn.Stores2.Persistence.LinnApps
     using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.Domain.LinnApps.Stores;
+
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 
@@ -1358,6 +1358,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.Property(a => a.PVAText).HasColumnName("PVA_TEXT").HasMaxLength(2000);
             e.Property(a => a.IPRDeclaration).HasColumnName("IPR_DECLARATION").HasMaxLength(2000);
             e.Property(a => a.BRGDeclaration).HasColumnName("BRG_DECLARATION").HasMaxLength(2000);
+            e.Property(a => a.ClearanceFooter).HasColumnName("CLEARANCE_FOOTER").HasMaxLength(2000);
             e.HasOne(a => a.Address).WithMany().HasForeignKey("ADDRESS_ID");
         }
 

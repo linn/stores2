@@ -30,9 +30,30 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task SearchImports(
-            HttpResponse res)
+            HttpResponse res,
+            string transportBillNumber,
+            string customsEntryCode,
+            int? rsnNumber,
+            int? poNumber,
+            IImportBookFacadeService service)
         {
-            await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            if (string.IsNullOrEmpty(transportBillNumber) && string.IsNullOrEmpty(customsEntryCode) && !rsnNumber.HasValue && !poNumber.HasValue)
+            {
+                await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
+            }
+            else
+            {
+                var searchResource = new ImportBookSearchResource
+                {
+                    TransportBillNumber = transportBillNumber,
+                    CustomsEntryCode = customsEntryCode,
+                    RsnNumber = rsnNumber,
+                    PONumber = poNumber
+                };
+                var importBooks = await service.FilterBy(
+                    searchResource);
+                await res.Negotiate(importBooks);
+            }
         }
 
         private async Task GetById(

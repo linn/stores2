@@ -1,4 +1,4 @@
-﻿namespace Linn.Stores2.Domain.LinnApps.Imports.Models
+namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 {
     using System;
 
@@ -13,5 +13,9 @@
         public decimal? LinnDuty { get; set; }
 
         public decimal? LinnVat { get; set; }
+
+        public string TransportBillNumber { get; set; }
+
+        public DateTime? DateReceived { get; set; }
     }
 }

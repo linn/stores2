@@ -11,6 +11,10 @@
             thead {
                 display: table-header-group;
             }
+
+			tfoot {
+				display: table-footer-group;
+			}
         }
 
         @@media screen {
@@ -33,6 +37,13 @@
                 margin-right: 50px;
                 margin-bottom: 20px;
             }
+
+			tfoot {
+				display: block;
+				margin-left: 50px;
+				margin-right: 50px;
+				margin-top: 20px;
+			}
         }
 
 		.header-grid-container {
@@ -72,6 +83,16 @@
 				'declaration declaration declaration declaration declaration'
 		}
 
+		.footer-grid-container {
+			row-gap: 2px;
+			column-gap: 10px;
+			display: grid;
+			grid-template-areas:
+				'footer';
+			border-top: 2px solid #000;
+			padding-top: 10px;
+		}
+
         thead {
             font-size: 0.8em;
             font-family: Arial, sans-serif;
@@ -81,6 +102,11 @@
             font-size: 0.8em;
             font-family: Arial, sans-serif;
         }
+
+		tfoot {
+			font-size: 0.8em;
+			font-family: Arial, sans-serif;
+		}
 
 		.logo {
 			grid-area: logo;
@@ -272,6 +298,14 @@
 			font-size: 0.9em;
 			white-space: pre-line;
 			color: dodgerblue;
+		}
+
+		.footer {
+			grid-area: footer;
+			margin-top: 20px;
+			text-align: center;
+			font-style: italic;
+			font-size: 0.8em;
 		}
 
         .auto {
@@ -467,7 +501,7 @@
                             </div>
                             
                             <div class="reason">
-								<b>@importSection.ReasonForImport</b>
+                                <b>@importSection.ReasonForImport</b>
                             </div>
                             <div class="cpcPrompt">
                                 <b>CPC:</b>
@@ -479,7 +513,7 @@
                                 @importSection.CpcScheme
                             </div>
 
-                            @if (importSection.IPR)
+                            @if (importSection.CDSDeclaration)
                             {
                                 <div class="iprHeader">
                                     <i>
@@ -493,7 +527,7 @@
                             @if (importSection.HasDeclaration)
                             {
                                 <div class="declaration">
-										@importSection.Declaration
+                                    @importSection.Declaration
                                 </div>
                             }
                         </div>
@@ -514,7 +548,7 @@
                             <div>
                                 <b>Customs Value</b>
                             </div>
-								@foreach (var line in importSection.Details)
+                            @foreach (var line in importSection.Details)
                             {
                                 <div>
                                     @line.InvoiceNumber
@@ -537,6 +571,19 @@
                 </tr>
             }
             </tbody>
+            <tfoot>
+            <tr>
+                <td>
+                    <div class="footer-grid-container">
+                        <div class="footer">
+                            @Model.Footer[0]<br/>
+                            @Model.Footer[1]<br />
+                            @Model.Footer[2]
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
             </table>
         </div>
 }

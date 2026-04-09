@@ -10,7 +10,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
     using Linn.Common.Reporting.Layouts;
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.External;
-    using Linn.Stores2.Domain.LinnApps.Logistics;
+    using Linn.Stores2.Domain.LinnApps.Imports;
 
     public class DailyEuReportsService : IDailyEuReportService
     {

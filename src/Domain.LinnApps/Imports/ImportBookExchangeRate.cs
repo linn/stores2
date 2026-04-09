@@ -1,4 +1,4 @@
-namespace Linn.Stores2.Domain.LinnApps.Logistics
+namespace Linn.Stores2.Domain.LinnApps.Imports
 {
     public class ImportBookExchangeRate
     {

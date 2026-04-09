@@ -10,8 +10,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
 
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.External;
-    using Linn.Stores2.Domain.LinnApps.Logistics;
+    using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Reports;
+
     using NSubstitute;
 
     using NUnit.Framework;

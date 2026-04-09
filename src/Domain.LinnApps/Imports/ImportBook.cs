@@ -185,6 +185,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
             this.LinnDuty = update.LinnDuty;
             this.LinnVat = update.LinnVat;
+            this.TransportBillNumber = update.TransportBillNumber;
+            this.DateReceived = update.DateReceived;
         }
 
         public void UpdateCustomsEntry(string prefix, string entryCode, DateTime? entryDate)

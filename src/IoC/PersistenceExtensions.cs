@@ -7,7 +7,6 @@ namespace Linn.Stores2.IoC
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Labels;
-    using Linn.Stores2.Domain.LinnApps.Logistics;
     using Linn.Stores2.Domain.LinnApps.Parts;
     using Linn.Stores2.Domain.LinnApps.Pcas;
     using Linn.Stores2.Domain.LinnApps.PurchaseOrders;

@@ -111,6 +111,16 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         }
 
         [Test]
+        public void ShouldHaveFooter()
+        {
+            this.Sut.Footer.Should().NotBeNull();
+            this.Sut.Footer.Length.Should().Be(3);
+            this.Sut.Footer[0].Should().StartWith("Registered Office: Glasgow Road");
+            this.Sut.Footer[1].Should().StartWith("Registered in Scotland");
+            this.Sut.Footer[2].Should().StartWith("Linn and the Linn logo are trademarks");
+        }
+
+        [Test]
         public void ShouldHaveShippingDetails()
         {
             this.Sut.Supplier.Should().NotBeNull();
@@ -140,6 +150,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section.CpcNumber.Should().Be("51 00 000");
             section.CpcScheme.Should().Be("IPR");
             section.IPR.Should().BeTrue();
+            section.CDSDeclaration.Should().BeTrue();
 
             section.Details.Should().NotBeNull();
             section.Details.Should().HaveCount(2);
