@@ -22,5 +22,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public string IPRDeclaration { get; set; }
 
         public string BRGDeclaration { get; set; }
+
+        public string ClearanceFooter { get; set; }
     }
 }

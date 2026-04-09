@@ -44,7 +44,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                 VatRegistrationNumber = "383 094 244",
                 EORINumber = "GB383094244000",
                 IPRDeclaration = "CDS IPR Reference - $IPR\r\nEconomic Code - 02\r\nLocal office: HMRC-S1756, IP-OP Customs Liverpool, India Buildings, Group 5, Floor 5, Central Mail Unit, Newcastle, NE98 1ZZ",
-                BRGDeclaration = "$BRG"
+                BRGDeclaration = "$BRG",
+                ClearanceFooter = "Registered Office: Glasgow Road, Waterfoot, Eaglesham, Glasgow G76 0EQ, UK\r\nRegistered in Scotland Number: SC052366\r\nLinn and the Linn logo are trademarks of Linn Products Ltd"
             };
 
             this.AuthNumbers = new List<ImportAuthNumber>

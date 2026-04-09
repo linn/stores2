@@ -101,6 +101,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section.CpcNumber.Should().Be("40 00 000");
             section.CpcScheme.Should().BeNull();
             section.IPR.Should().BeFalse();
+            section.CDSDeclaration.Should().BeTrue();
 
             section.Details.Should().NotBeNull();
             section.Details.Should().HaveCount(1);

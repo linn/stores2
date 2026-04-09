@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useAuth } from 'react-oidc-context';
 import { useSearchParams, Link as RouterLink } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -20,6 +24,7 @@ import config from '../../config';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 import Page from '../Page';
+import FindImport from './FindImport';
 
 function ClearanceInstruction() {
     const [searchParams] = useSearchParams();
@@ -32,6 +37,7 @@ function ClearanceInstruction() {
         toEmailAddress: '',
         filename: ''
     });
+    const [dialogOpen, setDialogOpen] = useState(false);
 
     const {
         send: getImportBook,
@@ -140,6 +146,11 @@ function ClearanceInstruction() {
         }
     ];
 
+    const handleFindRowClick = row => {
+        handleOptionChange('impbookId', row.id);
+        setDialogOpen(false);
+    };
+
     return (
         <Page homeUrl={config.appRoot} showAuthUi={false}>
             <Grid container spacing={1}>
@@ -150,6 +161,31 @@ function ClearanceInstruction() {
                     <Loading />
                 ) : (
                     <>
+                        {dialogOpen && (
+                            <Dialog
+                                open={dialogOpen}
+                                maxWidth="lg"
+                                onClose={() => setDialogOpen(false)}
+                                sx={{
+                                    '& .MuiDialog-paper': {
+                                        width: '80%',
+                                        maxWidth: '800px',
+                                        minWidth: '400px'
+                                    }
+                                }}
+                            >
+                                <DialogTitle>Find Import</DialogTitle>
+                                <DialogContent>
+                                    <Grid container spacing={1}>
+                                        <FindImport handleRowClick={handleFindRowClick} />
+                                    </Grid>
+                                </DialogContent>
+                                <DialogActions>
+                                    <Button onClick={() => setDialogOpen(false)}>Close</Button>
+                                </DialogActions>
+                            </Dialog>
+                        )}
+
                         <Grid size={3}>
                             <InputField
                                 fullWidth
@@ -170,7 +206,16 @@ function ClearanceInstruction() {
                                 Add
                             </Button>
                         </Grid>
-                        <Grid size={7} />
+                        <Grid size={2}>
+                            <Button
+                                onClick={() => setDialogOpen(true)}
+                                variant="outlined"
+                                style={{ marginTop: '29px' }}
+                            >
+                                Find
+                            </Button>
+                        </Grid>
+                        <Grid size={5} />
                         {error && (
                             <Grid size={12}>
                                 <ErrorCard errorMessage={error} />
