@@ -8,6 +8,10 @@ namespace Linn.Stores2.TestData.Currencies
 
         public static readonly Currency USDollar = new Currency { Code = "USD", Name = "American Dollars" };
 
+        public static readonly Currency Euro = new Currency { Code = "EUR", Name = "Euro" };
+
+        public static readonly Currency DanishKrona = new Currency { Code = "DKK", Name = "Danish Krona" };
+
         public static readonly Currency SwedishKrona = new Currency { Code = "SEK", Name = "Swedish Krona" };
 
         public static readonly Currency JapaneseYen = new Currency { Code = "JPY", Name = "Japanese Yen" };

@@ -125,6 +125,8 @@ namespace Linn.Stores2.Persistence.LinnApps
 
         public DbSet<ImportAuthNumber> ImportAuthNumbers { get; set; }
 
+        public DbSet<LedgerPeriod> LedgerPeriods { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Model.AddAnnotation("MaxIdentifierLength", 30);
@@ -1186,9 +1188,9 @@ namespace Linn.Stores2.Persistence.LinnApps
         private static void BuildImportBookExchangeRates(ModelBuilder builder)
         {
             var q = builder.Entity<ImportBookExchangeRate>().ToTable("IMPBOOK_EXCHANGE_RATES");
-            q.HasKey(e => new { e.PeriodNumber, e.ExchangeCurrency, e.BaseCurrency });
+            q.HasKey(e => new { e.PeriodNumber, ExchangeCurrency = e.ExchangeCurrencyCode, e.BaseCurrency });
             q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
-            q.Property(e => e.ExchangeCurrency).HasColumnName("EXCHANGE_CURRENCY").HasMaxLength(4);
+            q.Property(e => e.ExchangeCurrencyCode).HasColumnName("EXCHANGE_CURRENCY").HasMaxLength(4);
             q.Property(e => e.BaseCurrency).HasColumnName("BASE_CURRENCY").HasMaxLength(4);
             q.Property(e => e.ExchangeRate).HasColumnName("EXCHANGE_RATE");
         }
@@ -1271,6 +1273,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasOne(d => d.Carrier).WithOne().HasForeignKey<ImportBook>(s => s.CarrierId);
             q.HasOne(d => d.CreatedBy).WithOne().HasForeignKey<ImportBook>(s => s.CreatedById);
             q.HasOne(d => d.Currency).WithOne().HasForeignKey<ImportBook>(s => s.CurrencyCode);
+            q.HasOne(d => d.Period).WithOne().HasForeignKey<ImportBook>(s => s.PeriodNumber);
             q.HasOne(d => d.BaseCurrency).WithOne().HasForeignKey<ImportBook>("BASE_CURRENCY");
             q.HasOne(d => d.ExchangeCurrency).WithOne().HasForeignKey<ImportBook>("EXCHANGE_CURRENCY");
             q.HasOne(d => d.ContactEmployee).WithOne().HasForeignKey<ImportBook>("CONTACT_EMPLOYEE");

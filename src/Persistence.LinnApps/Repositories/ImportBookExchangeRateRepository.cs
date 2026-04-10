@@ -24,10 +24,11 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
         {
             var result = await this.serviceDbContext.ImportBookExchangeRates
                              .Include(pst => pst.LedgerPeriod)
+                             .Include(pst => pst.ExchangeCurrency)
                              .FirstOrDefaultAsync(i =>
                                  i.PeriodNumber == key.PeriodNumber
                                  && i.BaseCurrency == key.BaseCurrency
-                                 && i.ExchangeCurrency == key.ExchangeCurrency);
+                                 && i.ExchangeCurrencyCode == key.ExchangeCurrency);
             return result;
         }
 

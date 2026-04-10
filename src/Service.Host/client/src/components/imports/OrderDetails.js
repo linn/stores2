@@ -127,7 +127,12 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
         if (orderDetails?.length > 0) {
             handleFieldChange('importBookOrderDetails', [
                 ...orderDetails,
-                { lineNumber: lineNumber, qty: 1, lineType: orderDetails[0].lineType }
+                {
+                    lineNumber: lineNumber,
+                    qty: 1,
+                    lineType: orderDetails[0].lineType,
+                    countryOfOrigin: 'GB'
+                }
             ]);
         } else {
             handleFieldChange('importBookOrderDetails', [
@@ -137,7 +142,8 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
                     lineType: 'SUNDRY',
                     orderValue: 0,
                     dutyValue: 0,
-                    vatValue: 0
+                    vatValue: 0,
+                    countryOfOrigin: 'GB'
                 }
             ]);
         }

@@ -100,6 +100,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IStockReportService, StockReportService>()
                 .AddScoped<IImportFactory, ImportFactory>()
                 .AddScoped<IImportReportService, ImportReportService>()
+                .AddScoped<IImportCurrencyService, ImportCurrencyService>()
                 .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>()
                 .AddScoped<IHtmlTemplateService<LabourHoursInStockReport>>(
                     x => new HtmlTemplateService<LabourHoursInStockReport>(

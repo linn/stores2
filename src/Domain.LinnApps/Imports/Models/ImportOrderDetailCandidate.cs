@@ -37,6 +37,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public int ImportBookId { get; set; }
 
+        public int? LineNumber { get; set; }
+
         public string LineType { get; set; }
 
         public int Qty { get; set; }
@@ -46,6 +48,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
         public string TariffCode { get; set; }
 
         public Country CountryOfOrigin { get; set; }
+
+        public decimal DutyValue { get; set; }
+
+        public decimal VatValue { get; set; }
 
         public Rsn Rsn { get; set; }
 

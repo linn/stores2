@@ -907,7 +907,7 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                     a.BaseCurrency == "EUR" && a.PeriodNumber == period.PeriodNumber);
                     foreach (var rate in rates)
                     {
-                        var key = (rate.ExchangeCurrency, monthName);
+                        var key = (ExchangeCurrency: rate.ExchangeCurrencyCode, monthName);
                         exchangeRates.TryAdd(key, rate);
                     }
                 }

@@ -36,6 +36,8 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IImportFactory importFactory;
 
+        private readonly IImportCurrencyService importCurrencyService;
+
         private readonly IAuthorisationService authService;
 
         private readonly IBuilder<ImportBook> resourceBuilder;
@@ -50,6 +52,7 @@ namespace Linn.Stores2.Facade.Services
             IRepository<Country, string> countryRepository,
             IRepository<ImportBookCpcNumber, int> importBookCpcRepository,
             IImportFactory importFactory,
+            IImportCurrencyService importCurrencyService,
             ITransactionManager transactionManager,
             IAuthorisationService authService,
             IBuilder<ImportBook> resourceBuilder)
@@ -63,6 +66,7 @@ namespace Linn.Stores2.Facade.Services
             this.countryRepository = countryRepository;
             this.importBookCpcRepository = importBookCpcRepository;
             this.importFactory = importFactory;
+            this.importCurrencyService = importCurrencyService;
             this.resourceBuilder = resourceBuilder;
             this.authService = authService;
         }
@@ -129,36 +133,7 @@ namespace Linn.Stores2.Facade.Services
 
             var baseCurrency = await this.currencyRepository.FindByAsync(c => c.Code == "GBP");
 
-            var orderDetails = new List<ImportOrderDetailCandidate>();
-
-            if (resource.ImportBookOrderDetails != null)
-            {
-                foreach (var orderDetailResource in resource.ImportBookOrderDetails)
-                {
-                    var country = string.IsNullOrEmpty(orderDetailResource.CountryOfOrigin)
-                                      ? null
-                                      : await this.countryRepository.FindByIdAsync(orderDetailResource.CountryOfOrigin);
-
-                    var cpcNumber = orderDetailResource.CpcNumberId.HasValue
-                                        ? await this.importBookCpcRepository.FindByIdAsync(orderDetailResource.CpcNumberId.Value)
-                                        : null;
-
-                    var rsn = orderDetailResource.RsnNumber.HasValue
-                                  ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
-                                  : null;
-
-                    orderDetails.Add(new ImportOrderDetailCandidate
-                                     {
-                                         LineType = orderDetailResource.LineType,
-                                         Qty = orderDetailResource.Qty,
-                                         OrderDescription = orderDetailResource.OrderDescription,
-                                         TariffCode = orderDetailResource.TariffCode,
-                                         CountryOfOrigin = country,
-                                         Rsn = rsn,
-                                         CpcNumber = cpcNumber
-                                     });
-                }
-            }
+            var orderDetails = resource.ImportBookOrderDetails != null ? await this.GetOrderDetailCandidates(resource.ImportBookOrderDetails) : null;
 
             var invoiceDetails = new List<ImportInvoiceDetailCandidate>();
             if (resource.ImportBookInvoiceDetails != null)
@@ -195,14 +170,35 @@ namespace Linn.Stores2.Facade.Services
                 throw new UnauthorisedActionException("You are not authorised to update import books");
             }
 
+            var currency = string.IsNullOrEmpty(updateResource.Currency)
+                ? null
+                : await this.currencyRepository.FindByAsync(c => c.Code == updateResource.Currency);
+
+            var orderDetails = updateResource.ImportBookOrderDetails != null ? await this.GetOrderDetailCandidates(updateResource.ImportBookOrderDetails) : null;
+
             var update = new ImportUpdate
                          {
                              CustomsEntryCode = updateResource.CustomsEntryCode,
                              CustomsEntryCodeDate = string.IsNullOrEmpty(updateResource.CustomsEntryCodeDate) ? null : Convert.ToDateTime(updateResource.CustomsEntryCodeDate),
                              CustomsEntryCodePrefix = updateResource.CustomsEntryCodePrefix,
                              LinnDuty = updateResource.LinnDuty,
-                             LinnVat = updateResource.LinnVat
+                             LinnVat = updateResource.LinnVat,
+                             Period = entity.Period,
+                             Currency = currency,
+                             OrderDetailCandidates = orderDetails
                          };
+
+            if (update.Period == null && update.CustomsEntryCodeDate.HasValue)
+            {
+                // work out period from date
+                update.Period = await this.importCurrencyService.GetImportPeriod(update.CustomsEntryCodeDate.Value);
+
+                if (update.Period == null && entity.BaseCurrency != null && currency != null)
+                {
+                    update.ExchangeRate = await this.importCurrencyService.GetExchangeRate(update.Period, entity.BaseCurrency, currency);
+                }
+            }
+
             entity.Update(update);
         }
 
@@ -262,6 +258,39 @@ namespace Linn.Stores2.Facade.Services
                 .Select(n => n.Trim())
                 .Where(n => int.TryParse(n, out _))
                 .Select(int.Parse);
+        }
+
+        private async Task<IList<ImportOrderDetailCandidate>> GetOrderDetailCandidates(IEnumerable<ImportBookOrderDetailResource> candidates)
+        {
+            var orderDetails = new List<ImportOrderDetailCandidate>();
+            foreach (var orderDetailResource in candidates)
+            {
+                var country = string.IsNullOrEmpty(orderDetailResource.CountryOfOrigin)
+                    ? null
+                    : await this.countryRepository.FindByIdAsync(orderDetailResource.CountryOfOrigin);
+
+                var cpcNumber = orderDetailResource.CpcNumberId.HasValue
+                    ? await this.importBookCpcRepository.FindByIdAsync(orderDetailResource.CpcNumberId.Value)
+                    : null;
+
+                var rsn = orderDetailResource.RsnNumber.HasValue
+                    ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
+                    : null;
+
+                orderDetails.Add(new ImportOrderDetailCandidate
+                {
+                    LineType = orderDetailResource.LineType,
+                    LineNumber = orderDetailResource.LineNumber,
+                    Qty = orderDetailResource.Qty,
+                    OrderDescription = orderDetailResource.OrderDescription,
+                    TariffCode = orderDetailResource.TariffCode,
+                    CountryOfOrigin = country,
+                    Rsn = rsn,
+                    CpcNumber = cpcNumber
+                });
+            }
+
+            return orderDetails;
         }
     }
 }

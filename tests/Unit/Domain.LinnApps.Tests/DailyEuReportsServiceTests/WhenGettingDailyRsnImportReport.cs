@@ -12,6 +12,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Reports;
+    using Linn.Stores2.TestData.Currencies;
 
     using NSubstitute;
 
@@ -70,8 +71,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
                     {
                         new ImportBookExchangeRate
                         {
-                            BaseCurrency = "EUR",
-                            ExchangeCurrency = "USD",
+                            BaseCurrency = TestCurrencies.Euro.Code,
+                            ExchangeCurrencyCode = TestCurrencies.USDollar.Code,
                             ExchangeRate = 10m,
                             PeriodNumber = 123
                         }
