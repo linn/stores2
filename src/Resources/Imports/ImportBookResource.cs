@@ -80,7 +80,7 @@ namespace Linn.Stores2.Resources.Imports
 
         public string Pva { get; set; }
 
-        public decimal TotalImportValue { get; set; }
+        public decimal? TotalImportValue { get; set; }
 
         public string TransportBillNumber { get; set; }
 

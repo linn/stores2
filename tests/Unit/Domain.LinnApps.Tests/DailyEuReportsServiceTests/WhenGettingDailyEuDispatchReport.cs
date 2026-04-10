@@ -12,6 +12,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Reports;
+    using Linn.Stores2.TestData.Currencies;
 
     using NSubstitute;
 
@@ -31,7 +32,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
                                             CommercialInvNo = 1,
                                             ProductId = "Article 1",
                                             ProductDescription = "Article 1 Description",
-                                            Currency = "EUR",
+                                            Currency = TestCurrencies.Euro.Code,
                                             UnitPrice = 56.78m,
                                             Total = 56.78m,
                                             CustomsTotal = null,
@@ -53,7 +54,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
                                             CommercialInvNo = 2,
                                             ProductId = "Article 2",
                                             ProductDescription = "Article 2 Description, Top",
-                                            Currency = "DKK",
+                                            Currency = TestCurrencies.DanishKrona.Code,
                                             Qty = 2,
                                             UnitPrice = 100m,
                                             Total = 200m,
@@ -63,7 +64,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
                                         {
                                             CommercialInvNo = 3,
                                             ProductId = "Article 3",
-                                            Currency = "EUR",
+                                            Currency = TestCurrencies.Euro.Code,
                                             DateCreated = 15.December(2025),
                                             UnitPrice = 369.99m,
                                             Total = null,
@@ -77,8 +78,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
                         {
                             new ImportBookExchangeRate
                                 {
-                                    BaseCurrency = "EUR",
-                                    ExchangeCurrency = "DKK",
+                                    BaseCurrency = TestCurrencies.Euro.Code,
+                                    ExchangeCurrencyCode = TestCurrencies.DanishKrona.Code,
+                                    ExchangeCurrency = TestCurrencies.DanishKrona,
                                     ExchangeRate = 10m,
                                     PeriodNumber = 123
                                 }

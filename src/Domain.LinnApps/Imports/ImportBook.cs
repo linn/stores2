@@ -12,7 +12,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public ImportBook()
         {
             // ef
-            this.TotalImportValue = 0;
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
         }
@@ -76,7 +75,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.LinnDuty = candidate.LinnDuty;
             this.LinnVat = candidate.LinnVat;
 
-            this.TotalImportValue = 0;
             this.OrderDetails = new List<ImportBookOrderDetail>();
             this.InvoiceDetails = new List<ImportBookInvoiceDetail>();
             this.PostEntries = new List<ImportBookPostEntry>();
@@ -92,6 +90,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             foreach (var invoiceDetailCandidate in candidate.InvoiceDetailCandidates)
             {
                 this.AddInvoiceDetail(invoiceDetailCandidate);
+            }
+
+            if (candidate.ExchangeRate != null)
+            {
+                this.ApplyExchangeRate(candidate.ExchangeRate);
             }
         }
 
@@ -165,11 +168,14 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public int? PeriodNumber { get; set; }
 
+        public LedgerPeriod Period { get; set; }
+
         public IList<ImportBookPostEntry> PostEntries { get; set; }
 
         public string Pva { get; set; }
 
-        public decimal TotalImportValue { get; set; }
+        // in Base Currency cannot calculate until have exchange rate
+        public decimal? TotalImportValue { get; set; }
 
         public int? TransactionId { get; set; }
 
@@ -187,6 +193,39 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.LinnVat = update.LinnVat;
             this.TransportBillNumber = update.TransportBillNumber;
             this.DateReceived = update.DateReceived;
+
+            if (update.Period != null && this.Period == null)
+            {
+                this.PeriodNumber = update.Period.PeriodNumber;
+                this.Period = update.Period;
+            }
+
+            if (update.ExchangeRate != null && this.ExchangeRate == null)
+            {
+                this.ApplyExchangeRate(update.ExchangeRate);
+            }
+
+            if (update.OrderDetailCandidates != null)
+            {
+                foreach (var orderDetailCandidate in update.OrderDetailCandidates)
+                {
+                    var orderDetail = this.OrderDetails.FirstOrDefault(d => d.LineNumber == orderDetailCandidate.LineNumber);
+                    if (orderDetail == null)
+                    {
+                        this.AddOrderDetail(new ImportBookOrderDetail(orderDetailCandidate));
+                    }
+                    else
+                    {
+                        orderDetail.DutyValue = orderDetailCandidate.DutyValue;
+                        orderDetail.VatValue = orderDetailCandidate.VatValue;
+                    }
+                }
+
+                var dutyTotal = this.OrderDetails.Sum(d => d.DutyValue);
+                var vatTotal = this.OrderDetails.Sum(d => d.VatValue);
+                this.LinnDuty = dutyTotal;
+                this.LinnVat = vatTotal;
+            }
         }
 
         public void UpdateCustomsEntry(string prefix, string entryCode, DateTime? entryDate)
@@ -199,6 +238,22 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.CustomsEntryCode = entryCode;
             this.CustomsEntryCodeDate = entryDate;
             this.CustomsEntryCodePrefix = prefix;
+        }
+
+        public void ApplyExchangeRate(ImportBookExchangeRate exchangeRate)
+        {
+            if (exchangeRate != null)
+            {
+                // check if we have already applied this exchange rate
+                if (this.ExchangeCurrency != null || this.ExchangeRate != exchangeRate.ExchangeRate)
+                {
+                    this.ExchangeRate = exchangeRate.ExchangeRate;
+                    this.ExchangeCurrency = exchangeRate.ExchangeCurrency;
+                }
+
+                var currencyTotal = this.InvoiceDetails.Sum(d => d.InvoiceValue);
+                this.TotalImportValue = exchangeRate.ConvertToBaseValue(currencyTotal);
+            }
         }
 
         public void AddOrderDetail(ImportBookOrderDetail orderDetail)
@@ -230,8 +285,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 {
                     throw new ImportBookException($"Invoice detail currency {candidate.Currency.Code} does not match import book currency {this.Currency.Code}");
                 }
-
-                this.TotalImportValue += candidate.InvoiceValue;
             }
         }
     }

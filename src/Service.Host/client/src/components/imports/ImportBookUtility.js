@@ -44,7 +44,8 @@ function ImportBookUtility({ creating }) {
     const {
         send: createImportBook,
         isLoading: createLoading,
-        errorMessage: createError
+        errorMessage: createError,
+        clearPostResult: clearCreateResult
     } = usePost(itemTypes.importBooks.url, true, true);
 
     const {
@@ -104,6 +105,9 @@ function ImportBookUtility({ creating }) {
     const handleFieldChange = (propertyName, newValue) => {
         setImportBook(current => ({ ...current, [propertyName]: newValue }));
         setChangesMade(true);
+        if (createError) {
+            clearCreateResult();
+        }
     };
 
     const handleNumberFieldChange = (propertyName, newValue) => {

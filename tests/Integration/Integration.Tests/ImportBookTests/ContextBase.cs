@@ -58,6 +58,9 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             var purchaseOrderRepository = new PurchaseOrderRepository(this.DbContext);
             var cpcNumberRepository =
                 new EntityFrameworkRepository<ImportBookCpcNumber, int>(this.DbContext.ImportBookCpcNumbers);
+            var periodRepository
+                = new EntityFrameworkQueryRepository<LedgerPeriod>(this.DbContext.LedgerPeriods);
+            var exchangeRateRepository = new EntityFrameworkRepository<ImportBookExchangeRate, ImportBookExchangeRateKey>(this.DbContext.ImportBookExchangeRates);
 
             var importFactory = new ImportFactory(
                 supplierRepository,
@@ -65,6 +68,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 rsnRepository,
                 purchaseOrderRepository,
                 cpcNumberRepository);
+
+            var importCurrencyService = new ImportCurrencyService(periodRepository, exchangeRateRepository);
 
             var transactionManager = new TransactionManager(this.DbContext);
             var databaseSequenceService = new TestDatabaseSequenceService();
@@ -80,6 +85,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     countryRepository,
                     cpcNumberRepository,
                     importFactory,
+                    importCurrencyService,
                     transactionManager,
                     this.AuthorisationService,
                     new ImportBookResourceBuilder(

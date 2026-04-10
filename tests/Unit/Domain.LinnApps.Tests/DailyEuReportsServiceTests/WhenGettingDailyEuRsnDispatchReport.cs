@@ -107,7 +107,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.DailyEuReportsServiceTests
                             new ImportBookExchangeRate
                                 {
                                     BaseCurrency = "EUR",
-                                    ExchangeCurrency = "DKK",
+                                    ExchangeCurrencyCode = "DKK",
                                     ExchangeRate = 10m,
                                     PeriodNumber = 123
                                 }

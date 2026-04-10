@@ -52,7 +52,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenAddingInvoiceDe
             this.sut.Currency.Should().NotBeNull();
             this.sut.Currency.Should().Be(TestCurrencies.SwedishKrona);
             this.sut.CurrencyCode.Should().Be(TestCurrencies.SwedishKrona.Code);
-            this.sut.TotalImportValue.Should().Be(100);
         }
     }
 }
