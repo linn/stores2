@@ -4,14 +4,17 @@ import Grid from '@mui/material/Grid';
 import moment from 'moment';
 import queryString from 'query-string';
 import { DataGrid } from '@mui/x-data-grid';
-import { InputField, } from '@linn-it/linn-form-components-library';
+import { DatePicker, Dropdown, InputField } from '@linn-it/linn-form-components-library';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 
-function FindImport({ handleRowClick }) {
+function SearchParams({ handleRowClick }) {
     const inputRef = useRef(null);
 
-    const [options, setOptions] = useState({});
+    const [options, setOptions] = useState({
+        fromDate: moment().subtract(1, 'months'),
+        toDate: new Date()
+    });
 
     const { send, isLoading, result } = useGet(itemTypes.importBooks.url);
 
@@ -26,13 +29,24 @@ function FindImport({ handleRowClick }) {
     };
 
     const doSearch = () => {
-        const query = queryString.stringify(options);
         if (
             options.transportBillNumber ||
             options.customsEntryCode ||
             options.rsnNumber ||
-            options.poNumber
+            options.poNumber ||
+            options.dateField
         ) {
+            const searchParams = { ...options };
+
+            if (searchParams.fromDate) {
+                searchParams.fromDate = searchParams.fromDate.toISOString();
+            }
+            if (searchParams.toDate) {
+                searchParams.toDate = searchParams.toDate.toISOString();
+            }
+
+            const query = queryString.stringify(searchParams);
+
             send(null, `?${query}`);
         }
     };
@@ -99,6 +113,38 @@ function FindImport({ handleRowClick }) {
                     disabled={options.transportBillNumber}
                 />
             </Grid>
+            <Grid size={3}>
+                <Dropdown
+                    value={options.dateField}
+                    fullWidth
+                    label="Date Filter"
+                    propertyName="dateField"
+                    allowNoValue
+                    items={['Date Created', 'Date Received', 'Customs Date']}
+                    onChange={handleOptionChange}
+                />
+            </Grid>
+            <Grid size={3}>
+                {options.dateField && (
+                    <DatePicker
+                        value={options.fromDate}
+                        label="From Date"
+                        propertyName="fromDate"
+                        onChange={date => handleOptionChange('fromDate', date)}
+                    />
+                )}
+            </Grid>
+            <Grid size={3}>
+                {options.dateField && (
+                    <DatePicker
+                        value={options.toDate}
+                        label="To Date"
+                        propertyName="toDate"
+                        onChange={date => handleOptionChange('toDate', date)}
+                    />
+                )}
+            </Grid>
+            <Grid size={3} />
             <Grid size={12}>
                 <Button onClick={doSearch} variant="outlined" style={{ marginTop: '29px' }}>
                     Search
@@ -128,4 +174,4 @@ function FindImport({ handleRowClick }) {
     );
 }
 
-export default FindImport;
+export default SearchParams;

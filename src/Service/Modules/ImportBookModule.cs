@@ -35,9 +35,12 @@ namespace Linn.Stores2.Service.Modules
             string customsEntryCode,
             int? rsnNumber,
             int? poNumber,
+            string dateField,
+            string fromDate,
+            string toDate,
             IImportBookFacadeService service)
         {
-            if (string.IsNullOrEmpty(transportBillNumber) && string.IsNullOrEmpty(customsEntryCode) && !rsnNumber.HasValue && !poNumber.HasValue)
+            if (string.IsNullOrEmpty(transportBillNumber) && string.IsNullOrEmpty(customsEntryCode) && !rsnNumber.HasValue && !poNumber.HasValue && string.IsNullOrEmpty(dateField))
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
             }
@@ -48,7 +51,10 @@ namespace Linn.Stores2.Service.Modules
                     TransportBillNumber = transportBillNumber,
                     CustomsEntryCode = customsEntryCode,
                     RsnNumber = rsnNumber,
-                    PONumber = poNumber
+                    PONumber = poNumber,
+                    DateField = dateField,
+                    FromDate = fromDate,
+                    ToDate = toDate
                 };
                 var importBooks = await service.FilterBy(
                     searchResource);

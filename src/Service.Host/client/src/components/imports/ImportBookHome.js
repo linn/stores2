@@ -31,8 +31,8 @@ function ImportBookHome() {
                                 }
                             }}
                         >
-                            <Tab label="Search Import Books" />
-                            <Tab label="Create Import Book" />
+                            <Tab label="Search" />
+                            <Tab label="Create" />
                         </Tabs>
                     </Box>
 

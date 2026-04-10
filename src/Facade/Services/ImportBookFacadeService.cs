@@ -15,6 +15,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.Returns;
+    using Linn.Stores2.Facade.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
 
@@ -224,27 +225,94 @@ namespace Linn.Stores2.Facade.Services
 
         protected override Expression<Func<ImportBook, bool>> FilterExpression(ImportBookSearchResource searchResource)
         {
-            if (!string.IsNullOrEmpty(searchResource.TransportBillNumber))
-            {
-                return ib => ib.TransportBillNumber == searchResource.TransportBillNumber;
-            }
-
-            if (!string.IsNullOrEmpty(searchResource.CustomsEntryCode))
-            {
-                return ib => ib.CustomsEntryCode == searchResource.CustomsEntryCode;
-            }
-
-            if (searchResource.RsnNumber.HasValue)
-            {
-                return ib => ib.OrderDetails.Any(od => od.Rsn != null && od.Rsn.RsnNumber == searchResource.RsnNumber.Value);
-            }
-
-            return null;
+            return this.GetExpression(searchResource);
         }
 
         protected override Expression<Func<ImportBook, bool>> FindExpression(ImportBookSearchResource searchResource)
         {
-            throw new NotImplementedException();
+            return this.GetExpression(searchResource);
+        }
+
+        private Expression<Func<ImportBook, bool>> GetExpression(ImportBookSearchResource searchResource)
+        {
+            Expression<Func<ImportBook, bool>> filter = ib => true;
+
+            // build expression
+            if (!string.IsNullOrEmpty(searchResource.TransportBillNumber))
+            {
+                filter = filter.And(ib => ib.TransportBillNumber == searchResource.TransportBillNumber);
+            }
+
+            if (!string.IsNullOrEmpty(searchResource.CustomsEntryCode))
+            {
+                filter = filter.And(ib => ib.CustomsEntryCode == searchResource.CustomsEntryCode);
+            }
+
+            if (searchResource.RsnNumber.HasValue)
+            {
+                filter = filter.And(ib => ib.OrderDetails.Any(od => od.Rsn != null && od.Rsn.RsnNumber == searchResource.RsnNumber.Value));
+            }
+
+            if (searchResource.PONumber.HasValue)
+            {
+                filter = filter.And(ib => ib.OrderDetails.Any(od => od.OrderNumber == searchResource.PONumber.Value));
+            }
+
+            if (!string.IsNullOrEmpty(searchResource.DateField))
+            {
+                DateTime? fromDate = string.IsNullOrEmpty(searchResource.FromDate) ? null : DateTime.Parse(searchResource.FromDate);
+                DateTime? toDate = string.IsNullOrEmpty(searchResource.ToDate) ? null : DateTime.Parse(searchResource.ToDate);
+
+                if (searchResource.DateField == "Date Created")
+                {
+                    if (fromDate != null && toDate != null)
+                    {
+                        filter = filter.And(ib => ib.DateCreated >= fromDate && ib.DateCreated <= toDate);
+                    }
+                    else if (fromDate != null)
+                    {
+                        filter = filter.And(ib => ib.DateCreated >= fromDate);
+                    }
+                    else if (toDate != null)
+                    {
+                        filter = filter.And(ib => ib.DateCreated <= toDate);
+                    }
+                }
+
+                if (searchResource.DateField == "Date Received")
+                {
+                    if (fromDate != null && toDate != null)
+                    {
+                        filter = filter.And(ib => ib.DateReceived >= fromDate && ib.DateReceived <= toDate);
+                    }
+                    else if (fromDate != null)
+                    {
+                        filter = filter.And(ib => ib.DateReceived >= fromDate);
+                    }
+                    else if (toDate != null)
+                    {
+                        filter = filter.And(ib => ib.DateReceived <= toDate);
+                    }
+                }
+
+                if (searchResource.DateField == "Customs Date")
+                {
+                    if (fromDate != null && toDate != null)
+                    {
+                        filter = filter.And(ib => ib.CustomsEntryCodeDate >= fromDate && ib.CustomsEntryCodeDate <= toDate);
+                    }
+                    else if (fromDate != null)
+                    {
+                        filter = filter.And(ib => ib.CustomsEntryCodeDate >= fromDate);
+                    }
+                    else if (toDate != null)
+                    {
+                        filter = filter.And(ib => ib.CustomsEntryCodeDate <= toDate);
+                    }
+                }
+            }
+
+            return filter;
         }
 
         private IEnumerable<int> ParseNumbers(string numbers)

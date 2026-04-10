@@ -14,7 +14,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
 
     using NUnit.Framework;
 
-    public class WhenExchangeRateSupplied
+    public class WhenExchangeRateAndPeriodSupplied
     {
         private ImportBook sut;
 
@@ -38,10 +38,19 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
                     ExchangeCurrency = TestCurrencies.SwedishKrona,
                     ExchangeCurrencyCode = TestCurrencies.SwedishKrona.Code,
                     ExchangeRate = 12.34m
-                }
+                },
+                Period = new LedgerPeriod { PeriodNumber = 1, MonthName = "Jan2026" }
             };
 
             this.sut = new ImportBook(candidate);
+        }
+
+        [Test]
+        public void ShouldSetPeriod()
+        {
+            this.sut.Period.Should().NotBeNull();
+            this.sut.Period.PeriodNumber.Should().Be(1);
+            this.sut.Period.MonthName.Should().Be("Jan2026");
         }
 
         [Test]

@@ -92,6 +92,12 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 this.AddInvoiceDetail(invoiceDetailCandidate);
             }
 
+            if (candidate.Period != null)
+            {
+                this.PeriodNumber = candidate.Period.PeriodNumber;
+                this.Period = candidate.Period;
+            }
+
             if (candidate.ExchangeRate != null)
             {
                 this.ApplyExchangeRate(candidate.ExchangeRate);
