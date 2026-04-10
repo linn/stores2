@@ -35,21 +35,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
             };
 
             this.sut = new ImportBook(candidate);
-
-            var update = new ImportUpdate
-            {
-                ExchangeRate = new ImportBookExchangeRate
-                {
-                    BaseCurrency = TestCurrencies.UKPound.Code,
-                    ExchangeCurrency = TestCurrencies.SwedishKrona,
-                    ExchangeCurrencyCode = TestCurrencies.SwedishKrona.Code,
-                    ExchangeRate = 12.34m
-                },
-                Period = new LedgerPeriod { PeriodNumber = 1 },
-                Currency = TestCurrencies.SwedishKrona
-            };
-
-            this.sut.Update(update);
         }
 
         [Test]
