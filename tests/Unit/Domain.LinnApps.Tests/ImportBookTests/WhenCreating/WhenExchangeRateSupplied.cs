@@ -31,6 +31,13 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
                 InvoiceDetailCandidates = new List<ImportInvoiceDetailCandidate>()
                 {
                     new ImportInvoiceDetailCandidate("TEST", 100)
+                },
+                ExchangeRate = new ImportBookExchangeRate
+                {
+                    BaseCurrency = TestCurrencies.UKPound.Code,
+                    ExchangeCurrency = TestCurrencies.SwedishKrona,
+                    ExchangeCurrencyCode = TestCurrencies.SwedishKrona.Code,
+                    ExchangeRate = 12.34m
                 }
             };
 
