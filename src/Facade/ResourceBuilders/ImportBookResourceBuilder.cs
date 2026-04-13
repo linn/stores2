@@ -38,6 +38,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
             return new ImportBookResource
             {
                 Id = model.Id,
+                Status = model.Status(),
                 DateCreated = model.DateCreated.ToString("o"),
                 CreatedById = model.CreatedById,
                 CreatedByName = model.CreatedBy?.Name,

@@ -85,5 +85,7 @@ namespace Linn.Stores2.Resources.Imports
         public string TransportBillNumber { get; set; }
 
         public decimal? Weight { get; set; }
+
+        public string Status { get; set; }
     }
 }

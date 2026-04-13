@@ -293,5 +293,27 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 }
             }
         }
+
+        public string Status()
+        {
+            if (this.DateCancelled.HasValue)
+            {
+                return "Cancelled";
+            }
+            else if (this.DateReceived.HasValue)
+            {
+                return "Received";
+            }
+            else if (this.CustomsEntryCodeDate.HasValue)
+            {
+                return "Cleared";
+            }
+            else if (this.DateInstructionSent.HasValue) 
+            {
+                return "Instruction Sent";
+            }
+
+            return "Raised";
+        }
     }
 }

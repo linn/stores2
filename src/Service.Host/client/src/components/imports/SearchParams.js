@@ -4,11 +4,16 @@ import Grid from '@mui/material/Grid';
 import moment from 'moment';
 import queryString from 'query-string';
 import { DataGrid } from '@mui/x-data-grid';
-import { DatePicker, Dropdown, InputField } from '@linn-it/linn-form-components-library';
+import {
+    DatePicker,
+    Dropdown,
+    ExportButton,
+    InputField
+} from '@linn-it/linn-form-components-library';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 
-function SearchParams({ handleRowClick }) {
+function SearchParams({ handleRowClick, table = true, exportUri, runReport }) {
     const inputRef = useRef(null);
 
     const [options, setOptions] = useState({
@@ -28,6 +33,19 @@ function SearchParams({ handleRowClick }) {
         }
     };
 
+    const queryUri = () => {
+        const searchParams = { ...options };
+
+        if (searchParams.fromDate) {
+            searchParams.fromDate = searchParams.fromDate.toISOString();
+        }
+        if (searchParams.toDate) {
+            searchParams.toDate = searchParams.toDate.toISOString();
+        }
+
+        return queryString.stringify(searchParams);
+    };
+
     const doSearch = () => {
         if (
             options.transportBillNumber ||
@@ -36,18 +54,19 @@ function SearchParams({ handleRowClick }) {
             options.poNumber ||
             options.dateField
         ) {
-            const searchParams = { ...options };
+            send(null, `?${queryUri()}`);
+        }
+    };
 
-            if (searchParams.fromDate) {
-                searchParams.fromDate = searchParams.fromDate.toISOString();
-            }
-            if (searchParams.toDate) {
-                searchParams.toDate = searchParams.toDate.toISOString();
-            }
-
-            const query = queryString.stringify(searchParams);
-
-            send(null, `?${query}`);
+    const doReport = () => {
+        if (
+            options.transportBillNumber ||
+            options.customsEntryCode ||
+            options.rsnNumber ||
+            options.poNumber ||
+            options.dateField
+        ) {
+            runReport(null, `?${queryUri()}`);
         }
     };
 
@@ -115,6 +134,17 @@ function SearchParams({ handleRowClick }) {
             </Grid>
             <Grid size={3}>
                 <Dropdown
+                    value={options.status}
+                    fullWidth
+                    label="Status"
+                    propertyName="status"
+                    allowNoValue
+                    items={['Cleared', 'Instruction Cleared', 'Raised', 'Cancelled', 'Received']}
+                    onChange={handleOptionChange}
+                />
+            </Grid>
+            <Grid size={3}>
+                <Dropdown
                     value={options.dateField}
                     fullWidth
                     label="Date Filter"
@@ -144,13 +174,28 @@ function SearchParams({ handleRowClick }) {
                     />
                 )}
             </Grid>
-            <Grid size={3} />
-            <Grid size={12}>
-                <Button onClick={doSearch} variant="outlined" style={{ marginTop: '29px' }}>
-                    Search
-                </Button>
+            <Grid size={9}>
+                {table && (
+                    <Button onClick={doSearch} variant="outlined" style={{ marginTop: '29px' }}>
+                        Search
+                    </Button>
+                )}
+                {runReport && (
+                    <Button onClick={doReport} variant="outlined" style={{ marginTop: '29px' }}>
+                        Run Report
+                    </Button>
+                )}
             </Grid>
-            {result && (
+            <Grid size={3}>
+                {exportUri && (
+                    <ExportButton
+                        href={`${exportUri}?${queryUri()}`}
+                        fileName="ImportReport.csv"
+                        tooltipText="Download as CSV"
+                    />
+                )}
+            </Grid>
+            {result && table && (
                 <Grid size={12}>
                     <DataGrid
                         rows={

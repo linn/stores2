@@ -7,6 +7,7 @@ import config from '../../config';
 import Page from '../Page';
 import SearchTab from './SearchTab';
 import CreateTab from './CreateTab';
+import ExportTab from './ExportTab';
 
 function ImportBookHome() {
     const [tab, setTab] = useState(0);
@@ -33,11 +34,13 @@ function ImportBookHome() {
                         >
                             <Tab label="Search" />
                             <Tab label="Create" />
+                            <Tab label="Export" />
                         </Tabs>
                     </Box>
 
                     {tab === 0 && <SearchTab />}
                     {tab === 1 && <CreateTab />}
+                    {tab === 2 && <ExportTab />}
                 </Box>
             </Grid>
         </Page>

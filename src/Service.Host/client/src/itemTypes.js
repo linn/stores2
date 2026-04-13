@@ -62,6 +62,7 @@ const itemTypes = {
         url: `${config.appRoot}/stores2/reports/labour-hours-in-loans/report`
     },
     importBooks: { url: `${config.appRoot}/stores2/import-books` },
+    importBooksReport: { url: `${config.appRoot}/stores2/import-books/report` },
     suppliers: { url: `${config.proxyRoot}/inventory/suppliers` },
     approvedCarriers: { url: `${config.proxyRoot}/inventory/suppliers-approved-carrier` },
     rsns: { url: `${config.proxyRoot}/service/rsns` },

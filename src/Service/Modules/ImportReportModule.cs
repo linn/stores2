@@ -8,6 +8,7 @@ namespace Linn.Stores2.Service.Modules
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
     using Linn.Stores2.Facade.Services;
+    using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/import-books/clearance-instruction/pdf", this.ClearanceInstructionAsPdf);
             app.MapGet("/stores2/import-books/{id:int}/instruction/view", this.ImportClearanceInstructionAsHtml);
             app.MapGet("/stores2/import-books/{id:int}/instruction/pdf", this.ImportClearanceInstructionAsPdf);
+            app.MapGet("/stores2/import-books/report", this.ImportReport);
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -78,6 +80,31 @@ namespace Linn.Stores2.Service.Modules
         {
             var result = await facadeService.GetClearanceInstructionAsPdf(new List<int> { id }, toEmailAddress);
             await res.Negotiate(result);
+        }
+
+        private async Task ImportReport(
+            HttpResponse res,
+            string transportBillNumber,
+            string customsEntryCode,
+            int? rsnNumber,
+            int? poNumber,
+            string dateField,
+            string fromDate,
+            string toDate,
+            IImportReportFacadeService facadeService)
+        {
+            var searchResource = new ImportBookSearchResource
+            {
+                TransportBillNumber = transportBillNumber,
+                CustomsEntryCode = customsEntryCode,
+                RsnNumber = rsnNumber,
+                PONumber = poNumber,
+                DateField = dateField,
+                FromDate = fromDate,
+                ToDate = toDate
+            };
+
+            await res.Negotiate(await facadeService.GetImportBookReport(searchResource));
         }
     }
 }
