@@ -52,7 +52,8 @@ function SearchParams({ handleRowClick, table = true, exportUri, runReport }) {
             options.customsEntryCode ||
             options.rsnNumber ||
             options.poNumber ||
-            options.dateField
+            options.dateField ||
+            options.status
         ) {
             send(null, `?${queryUri()}`);
         }
@@ -64,7 +65,8 @@ function SearchParams({ handleRowClick, table = true, exportUri, runReport }) {
             options.customsEntryCode ||
             options.rsnNumber ||
             options.poNumber ||
-            options.dateField
+            options.dateField ||
+            options.status
         ) {
             runReport(null, `?${queryUri()}`);
         }
@@ -139,7 +141,7 @@ function SearchParams({ handleRowClick, table = true, exportUri, runReport }) {
                     label="Status"
                     propertyName="status"
                     allowNoValue
-                    items={['Cleared', 'Instruction Cleared', 'Raised', 'Cancelled', 'Received']}
+                    items={['Cleared', 'Instruction Sent', 'Raised', 'Cancelled', 'Received']}
                     onChange={handleOptionChange}
                 />
             </Grid>
@@ -188,11 +190,13 @@ function SearchParams({ handleRowClick, table = true, exportUri, runReport }) {
             </Grid>
             <Grid size={3}>
                 {exportUri && (
-                    <ExportButton
-                        href={`${exportUri}?${queryUri()}`}
-                        fileName="ImportReport.csv"
-                        tooltipText="Download as CSV"
-                    />
+                    <div style={{ marginTop: '25px' }}>
+                        <ExportButton
+                            href={`${exportUri}?${queryUri()}`}
+                            fileName="ImportReport.csv"
+                            tooltipText="Download as CSV"
+                        />
+                    </div>
                 )}
             </Grid>
             {result && table && (

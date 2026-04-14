@@ -38,9 +38,10 @@ namespace Linn.Stores2.Service.Modules
             string dateField,
             string fromDate,
             string toDate,
+            string status,
             IImportBookFacadeService service)
         {
-            if (string.IsNullOrEmpty(transportBillNumber) && string.IsNullOrEmpty(customsEntryCode) && !rsnNumber.HasValue && !poNumber.HasValue && string.IsNullOrEmpty(dateField))
+            if (string.IsNullOrEmpty(transportBillNumber) && string.IsNullOrEmpty(customsEntryCode) && !rsnNumber.HasValue && !poNumber.HasValue && string.IsNullOrEmpty(dateField) && string.IsNullOrEmpty(status))
             {
                 await res.Negotiate(new ViewResponse { ViewName = "Index.cshtml" });
             }
@@ -54,7 +55,8 @@ namespace Linn.Stores2.Service.Modules
                     PONumber = poNumber,
                     DateField = dateField,
                     FromDate = fromDate,
-                    ToDate = toDate
+                    ToDate = toDate,
+                    Status = status
                 };
                 var importBooks = await service.FilterBy(
                     searchResource);

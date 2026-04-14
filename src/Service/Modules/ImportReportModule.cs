@@ -91,6 +91,7 @@ namespace Linn.Stores2.Service.Modules
             string dateField,
             string fromDate,
             string toDate,
+            string status,
             IImportReportFacadeService facadeService)
         {
             var searchResource = new ImportBookSearchResource
@@ -101,7 +102,8 @@ namespace Linn.Stores2.Service.Modules
                 PONumber = poNumber,
                 DateField = dateField,
                 FromDate = fromDate,
-                ToDate = toDate
+                ToDate = toDate,
+                Status = status
             };
 
             await res.Negotiate(await facadeService.GetImportBookReport(searchResource));

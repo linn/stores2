@@ -24,6 +24,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private readonly IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService;
 
+        private ResultsModel model;
+
         public ImportReportService(
             IRepository<ImportBook, int> importBookRepository,
             ISingleRecordRepository<ImportMaster> importMasterRepository,
@@ -59,16 +61,18 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         {
             var imports = await this.importBookRepository.FilterByAsync(expression);
 
-            var model = new ResultsModel { ReportTitle = new NameModel($"Import Report") };
+            this.model = new ResultsModel { ReportTitle = new NameModel($"Import Report") };
 
             var columns = this.ImportReportModelColumns();
-            model.AddSortedColumns(columns);
+            this.model.AddSortedColumns(columns);
 
             var values = this.SetImportReportModelRows(imports);
 
-            this.reportingHelper.AddResultsToModel(model, values, CalculationValueModelType.Value, true);
+            this.reportingHelper.AddResultsToModel(this.model, values, CalculationValueModelType.Value, true);
 
-            return model;
+            this.AddDrillDowns(imports);
+
+            return this.model;
         }
 
         private List<AxisDetailsModel> ImportReportModelColumns()
@@ -293,7 +297,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                         {
                             RowId = rowId,
                             ColumnId = "Clearance Date",
-                            TextDisplay = import.CustomsEntryCode == null ? null : import.CustomsEntryCodeDate.Value.ToString("dd/MM/yyyy")
+                            TextDisplay = import.CustomsEntryCodeDate?.ToString("dd/MM/yyyy")
                         });
                     values.Add(
                         new CalculationValueModel
@@ -327,6 +331,24 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             }
 
             return values;
+        }
+
+        private void AddDrillDowns(IEnumerable<ImportBook> imports)
+        {
+            foreach (var import in imports.OrderBy(a => a.Id))
+            {
+                foreach (var line in import.OrderDetails)
+                {
+                    var rowId = $"{import.Id}/{line.LineNumber}";
+
+                    this.model.ValueDrillDownTemplates.Add(
+                        new DrillDownModel(
+                            "Import Book",
+                            $"/stores2/import-books/{import.Id}",
+                            this.model.RowIndex(rowId),
+                            this.model.ColumnIndex("Import Book")));
+                }
+            }
         }
     }
 }
