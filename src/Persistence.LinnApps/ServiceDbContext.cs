@@ -311,6 +311,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasOne(c => c.ClosedBy).WithMany().HasForeignKey(s => s.ClosedById);
             q.HasOne(c => c.Carrier).WithMany().HasForeignKey(s => s.CarrierCode);
             q.HasMany(c => c.Items).WithOne().HasForeignKey(ci => ci.ConsignmentId);
+            q.HasMany(c => c.Pallets).WithOne().HasForeignKey(cp => cp.ConsignmentId);
         }
 
         private static void BuildConsignmentItems(ModelBuilder builder)

@@ -13,5 +13,9 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
         public int? Width { get; set; }
 
         public int? Depth { get; set; }
+
+        public int? Volume => this.Height * this.Width * this.Depth;
+
+        public string PalletDimensions => $"{this.Height} x {this.Width} x {this.Depth} cm";
     }
 }

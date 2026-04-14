@@ -20,6 +20,8 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
 
         public IList<ConsignmentItem> Items { get; set; }
 
+        public IList<ConsignmentPallet> Pallets { get; set; }
+
         public Address Address { get; set; }
 
         public string CarrierCode { get; set; }
