@@ -4,6 +4,8 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
     using System.Collections.Generic;
     using System.Linq;
 
+    using Linn.Stores2.Domain.LinnApps.Consignments.Models;
+
     public class Consignment
     {
         public int ConsignmentId { get; set; }
@@ -102,6 +104,105 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
             }
 
             return string.Join(", ", descriptions);
+        }
+
+        public IEnumerable<ConsignmentPrintLine> GetPrintableLines()
+        {
+            if (this.Items == null || !this.Items.Any())
+            {
+                yield break;
+            }
+
+            var ordered = this.Items
+                .Where(item => (item.ItemType == "I" && item.ContainerNumber == null && item.PalletNumber == null)
+                    || (item.ItemType == "C" && item.PalletNumber == null)
+                    || (item.ItemType == "S" && item.PalletNumber == null))
+                .OrderBy(i => i.ContainerNumber)
+                .ToList();
+
+            if (!ordered.Any())
+            {
+                yield break;
+            }
+
+            string cpDescription = null;
+            decimal? cpWeight = null;
+            int? cpHeight = null;
+            int? cpDepth = null;
+            int? cpWidth = null;
+            int? cpLowValue = null;
+            int? cpHighValue = null;
+            var cpCount = 0;
+            var initialized = false;
+
+            foreach (var item in ordered)
+            {
+                var description = item.ContainerNumber.HasValue
+                    ? this.GetContainerDescription(item.ContainerNumber.Value)
+                    : item.ItemDescription;
+
+                if (!initialized)
+                {
+                    cpDescription = description;
+                    cpWeight = item.Weight;
+                    cpHeight = item.Height;
+                    cpDepth = item.Depth;
+                    cpWidth = item.Width;
+                    cpLowValue = item.ContainerNumber;
+                    cpHighValue = item.ContainerNumber;
+                    cpCount = 0;
+                    initialized = true;
+                }
+
+                if (description == cpDescription
+                    && item.Weight == cpWeight
+                    && item.Height == cpHeight
+                    && item.Depth == cpDepth
+                    && item.Width == cpWidth)
+                {
+                    cpCount++;
+                    cpHighValue = item.ContainerNumber;
+                }
+                else
+                {
+                    yield return new ConsignmentPrintLine
+                    {
+                        ItemDescription = cpDescription,
+                        LowValue = cpLowValue,
+                        HighValue = cpHighValue,
+                        Count = cpCount,
+                        Weight = cpWeight,
+                        Dims = FormatDims(cpHeight, cpDepth, cpWidth)
+                    };
+
+                    cpDescription = description;
+                    cpWeight = item.Weight;
+                    cpHeight = item.Height;
+                    cpDepth = item.Depth;
+                    cpWidth = item.Width;
+                    cpLowValue = item.ContainerNumber;
+                    cpHighValue = item.ContainerNumber;
+                    cpCount = 1;
+                }
+            }
+
+            if (initialized)
+            {
+                yield return new ConsignmentPrintLine
+                {
+                    ItemDescription = cpDescription,
+                    LowValue = cpLowValue,
+                    HighValue = cpHighValue,
+                    Count = cpCount,
+                    Weight = cpWeight,
+                    Dims = FormatDims(cpHeight, cpDepth, cpWidth)
+                };
+            }
+        }
+
+        private static string FormatDims(int? height, int? depth, int? width)
+        {
+            return $"{height} x {width} x {depth} cm";
         }
     }
 }

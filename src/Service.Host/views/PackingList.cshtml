@@ -174,9 +174,10 @@
         }
 
         .line-grid-container {
-            column-gap: 10px;
+            margin-top: 40px;
+            column-gap: 20px;
             display: grid;
-            grid-template-columns: auto ;
+            grid-template-columns: auto auto auto auto auto auto;
             row-gap: 10px;
         }
 
@@ -234,14 +235,20 @@
                 <tr>
                     <td>
                         <div class="line-grid-container">
-                            <div>
-                                <b>Line</b>
-                            </div>
-                            @foreach (var consignmentItem in Model.Consignment.Items)
+                            <div><b>Box</b></div>
+                            <div><b>To</b></div>
+                            <div><b>Count</b></div>
+                            <div><b>Description</b></div>
+                            <div><b>Weight</b></div>
+                            <div><b>Dimensions</b></div>
+                            @foreach (var consignmentItem in Model.Consignment.GetPrintableLines())
                             {
-                                <div>
-                                    <span>@consignmentItem.ItemNumber</span>
-                                </div>
+                                <div>@consignmentItem.LowValue</div>
+                                <div>@consignmentItem.HighValue</div>
+                                <div>@consignmentItem.Count</div>
+                                <div>@consignmentItem.ItemDescription</div>
+                                <div>@consignmentItem.Weight Kgs</div>
+                                <div>@consignmentItem.Dims</div>
                             }
                         </div>
                     </td>
