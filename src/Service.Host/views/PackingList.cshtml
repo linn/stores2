@@ -103,11 +103,6 @@
             grid-area: customerRef;
         }
 
-        .currency-amount {
-            text-align: right;
-            width: 110px
-        }
-
         .table-item {
             width: 110px
         }
@@ -116,40 +111,12 @@
             width: 60px
         }
 
-        .centre-message {
-            page-break-inside: avoid;
-            text-align: center;
-            white-space: pre-wrap;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-
-        .centre-small-message {
-            font-size: 0.6em;
-            font-weight: bold;
-            page-break-inside: avoid;
-            text-align: center;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-
         .text-align-right {
             text-align: right;
         }
 
         .text-align-left {
             text-align: left;
-        }
-
-        .line-note {
-            font-size: smaller;
-            margin-top: -20px;
-            white-space: pre-line;
-            page-break-inside: avoid;
-        }
-
-        .no-split {
-            page-break-inside: avoid;
         }
 
         .header-grid-container {
@@ -167,10 +134,6 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
-        }
-
-        span {
-            page-break-inside: avoid;
         }
 
         .line-grid-container {
@@ -191,6 +154,11 @@
 
         #tcb-extension-uk-wrapper {
             display: none !important;
+        }
+
+        .pallet-header {
+            grid-column: 1 / -1;
+            margin-top: 10px;
         }
     </style>
     <div>
@@ -232,27 +200,58 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                        <div class="line-grid-container">
-                            <div><b>Box</b></div>
-                            <div><b>To</b></div>
-                            <div><b>Count</b></div>
-                            <div><b>Description</b></div>
-                            <div><b>Weight</b></div>
-                            <div><b>Dimensions</b></div>
-                            @foreach (var consignmentItem in Model.Consignment.GetPrintableLines())
-                            {
-                                <div>@consignmentItem.LowValue</div>
-                                <div>@consignmentItem.HighValue</div>
-                                <div>@consignmentItem.Count</div>
-                                <div>@consignmentItem.ItemDescription</div>
-                                <div>@consignmentItem.Weight Kgs</div>
-                                <div>@consignmentItem.Dims</div>
+            @if (Model.Consignment.GetPrintableLines().Any())
+            {
+            <tr>
+                <td>
+                    <div class="line-grid-container">
+                        <div><b>Box</b></div>
+                        <div><b>To</b></div>
+                        <div><b>Count</b></div>
+                        <div><b>Description</b></div>
+                        <div><b>Weight</b></div>
+                        <div><b>Dimensions</b></div>
+                        @foreach (var consignmentItem in Model.Consignment.GetPrintableLines())
+                        {
+                            <div>@consignmentItem.LowValue</div>
+                            <div>@consignmentItem.HighValue</div>
+                            <div>@consignmentItem.Count</div>
+                            <div>@consignmentItem.ItemDescription</div>
+                            <div>@consignmentItem.Weight Kgs</div>
+                            <div>@consignmentItem.Dims</div>
+                        }
+                    </div>
+                </td>
+            </tr>
+            }
+            @if (Model.Consignment.Pallets != null && Model.Consignment.Pallets.Any())
+            {
+            <tr>
+                <td>
+                    <div class="line-grid-container">
+                            @foreach (var pallet in Model.Consignment.Pallets)
+                                {
+                                <div class="pallet-header"><b>Pallet:</b> @pallet.PalletNumber &nbsp; <b>Dimensions:</b> @pallet.PalletDimensions &nbsp; <b>Weight:</b> @pallet.Weight Kgs</div>
+                                <div><b>Box</b></div>
+                                <div><b>To</b></div>
+                                <div><b>Count</b></div>
+                                <div><b>Description</b></div>
+                                <div><b>Weight</b></div>
+                                <div><b>Dimensions</b></div>
+                                @foreach (var consignmentItem in Model.Consignment.GetPrintablePalletLines(pallet.PalletNumber))
+                                    {
+                                        <div>@consignmentItem.LowValue</div>
+                                        <div>@consignmentItem.HighValue</div>
+                                        <div>@consignmentItem.Count</div>
+                                        <div>@consignmentItem.ItemDescription</div>
+                                        <div>@consignmentItem.Weight Kgs</div>
+                                        <div>@consignmentItem.Dims</div>
+                                    }
                             }
-                        </div>
-                    </td>
-                </tr>
+                    </div>
+                </td>
+            </tr>
+            }
             </tbody>
             <tfoot>
                 <tr>
