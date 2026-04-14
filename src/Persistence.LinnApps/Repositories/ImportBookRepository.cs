@@ -47,6 +47,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                 .Include(i => i.InvoiceDetails)
                 .Include(r => r.OrderDetails).ThenInclude(o => o.ImportBookCpcNumber)
                 .Include(i => i.Supplier).ThenInclude(s => s.Country)
+                .Include(i => i.Carrier)
                 .Include(i => i.CreatedBy);
         }
     }

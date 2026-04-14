@@ -271,7 +271,10 @@ namespace Linn.Stores2.Facade.Services
                     TariffCode = orderDetailResource.TariffCode,
                     CountryOfOrigin = country,
                     Rsn = rsn,
-                    CpcNumber = cpcNumber
+                    CpcNumber = cpcNumber,
+                    OrderValue = orderDetailResource.OrderValue,
+                    DutyValue = orderDetailResource.DutyValue,
+                    VatValue = orderDetailResource.VatValue,
                 });
             }
 

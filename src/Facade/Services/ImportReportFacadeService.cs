@@ -2,7 +2,6 @@ namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
-    using System.Security.Cryptography;
     using System.Threading.Tasks;
 
     using Linn.Common.Domain.Exceptions;

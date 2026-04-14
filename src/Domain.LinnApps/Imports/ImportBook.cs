@@ -222,6 +222,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                     {
                         orderDetail.DutyValue = orderDetailCandidate.DutyValue;
                         orderDetail.VatValue = orderDetailCandidate.VatValue;
+                        orderDetail.OrderValue = orderDetailCandidate.OrderValue;
+                        orderDetail.OrderDescription = orderDetailCandidate.OrderDescription;
                     }
                 }
 
