@@ -2,9 +2,6 @@ namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
-    using Domain.LinnApps.Consignments.Models;
-    using Domain.LinnApps.Consignments.Services;
-
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Domain.LinnApps.Services;
@@ -17,6 +14,8 @@ namespace Linn.Stores2.IoC
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Consignments.Models;
+    using Linn.Stores2.Domain.LinnApps.Consignments.Services;
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
