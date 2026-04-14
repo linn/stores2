@@ -4,11 +4,9 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
 
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Integration.Tests.Extensions;
-    using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.Employees;
@@ -23,7 +21,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
         [SetUp]
         public void SetUp()
         {
-            var candidate = new ImportCandidate()
+            var candidate = new ImportCandidate
                                 {
                                     CreatedBy = TestEmployees.SophlyBard,
                                     Supplier = TestSuppliers.TaktAndTon,

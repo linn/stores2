@@ -2,6 +2,7 @@ namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
@@ -82,9 +83,12 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             StorageLocationResource resource,
-            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service)
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+
+            await res.Negotiate(await service.Add(resource, privileges));
         }
 
         private async Task UpdateLocation(
@@ -92,9 +96,12 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res,
             int id,
             StorageLocationResource resource,
-            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> facadeService)
+            IAsyncFacadeService<StorageLocation, int, StorageLocationResource, StorageLocationResource, StorageLocationSearchResource> facadeService,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await facadeService.Update(id, resource, req.HttpContext.GetPrivileges()));
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+
+            await res.Negotiate(await facadeService.Update(id, resource, privileges));
         }
 
         private async Task GetStockStates(

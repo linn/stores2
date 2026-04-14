@@ -2,6 +2,7 @@ namespace Linn.Stores2.Integration.Tests.StorageSiteModuleTests
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Stock;
@@ -27,11 +28,15 @@ namespace Linn.Stores2.Integration.Tests.StorageSiteModuleTests
 
         protected ITransactionManager TransactionManager { get; set; }
 
+        protected IUserPrivilegeService UserPrivilegeService { get; set; }
+
         [SetUp]
         public void EstablishContext()
         {
             this.Repository = Substitute.For<IRepository<StorageSite, string>>();
             this.TransactionManager = Substitute.For<ITransactionManager>();
+            this.UserPrivilegeService = Substitute.For<IUserPrivilegeService>();
+
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource> service
                 = new StorageSiteFacadeService(
                 this.Repository,
@@ -42,6 +47,7 @@ namespace Linn.Stores2.Integration.Tests.StorageSiteModuleTests
                 services =>
                     {
                         services.AddSingleton(service);
+                        services.AddSingleton(this.UserPrivilegeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

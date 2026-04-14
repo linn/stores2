@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -8,6 +7,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
     public interface IImportFactory
     {
-        Task<ImportCandidate> CreateImportBook(IEnumerable<int> rsnNumbers, IEnumerable<int> poNumbers, int? supplierId, Employee createdEmployee);
+        Task<ImportCandidate> CreateImportBook(
+            IEnumerable<int> rsnNumbers,
+            IEnumerable<int> poNumbers,
+            int? supplierId,
+            Employee createdEmployee);
     }
 }

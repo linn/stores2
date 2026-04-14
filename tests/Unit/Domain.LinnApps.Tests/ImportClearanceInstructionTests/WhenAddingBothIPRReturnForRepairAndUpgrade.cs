@@ -1,10 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
@@ -71,7 +68,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                 },
                 ImportBookOrderDetails = new List<ImportBookOrderDetail>(),
                 ExportReturnDetails = new List<ExportReturnDetail>(),
-                RsnReturns = new List<RsnReturnInformation>()
+                RsnReturns = new List<RsnReturnInformation>
                 {
                     new RsnReturnInformation
                     {
@@ -122,7 +119,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             this.Sut.Sections.Should().NotBeNull();
             this.Sut.Sections.Count.Should().Be(1);
 
-            var section1 = this.Sut.Sections.FirstOrDefault();
+            var section1 = this.Sut.Sections.First();
             section1.Should().NotBeNull();
 
             section1.ReasonForImport.Should().Be("Return for Repair / Upgrade");
@@ -133,7 +130,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section1.Details.Should().NotBeNull();
             section1.Details.Should().HaveCount(2);
 
-            var detail1 = section1.Details.FirstOrDefault();
+            var detail1 = section1.Details.First();
             detail1.Should().NotBeNull();
 
             detail1.Currency.Code.Should().Be("SEK");
@@ -143,7 +140,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             detail1.CountryOfOrigin.Should().Be("JP");
             detail1.CustomsValueString().Should().Be("SEK 100.00");
 
-            var detail2 = section1.Details.LastOrDefault();
+            var detail2 = section1.Details.Last();
             detail2.Should().NotBeNull();
 
             detail2.Currency.Code.Should().Be("SEK");

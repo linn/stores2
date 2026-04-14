@@ -4,7 +4,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
-    using System.Text;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -12,11 +11,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
-    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.TestData.CpcNumbers;
     using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.SalesArticles;
-    using Linn.Stores2.TestData.SalesOutlets;
     using Linn.Stores2.TestData.Suppliers;
 
     using NSubstitute;
@@ -46,7 +43,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
 
             this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>()).Returns(TestCurrencies.UKPound);
 
-            this.ImportBookCpcNumberRepository.FindByAsync(Arg.Any<Expression<Func<ImportBookCpcNumber, bool>>>()).Returns(TestCpcNumbers.MaterialCpc);
+            this.ImportBookCpcNumberRepository.FindByAsync(Arg.Any<Expression<Func<ImportBookCpcNumber, bool>>>())
+                .Returns(TestCpcNumbers.MaterialCpc);
 
             this.PurchaseOrderRepository.FindByIdAsync(12).Returns(purchaseOrder);
             this.result = await this.Sut.CreateImportBook(null, new List<int> { 12 },  null, new Employee());

@@ -19,7 +19,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private readonly IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService;
 
-        public ImportReportService(IRepository<ImportBook, int> importBookRepository, ISingleRecordRepository<ImportMaster> importMasterRepository, IQueryRepository<ImportAuthNumber> importAuthNumberRepository, IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService)
+        public ImportReportService(
+            IRepository<ImportBook, int> importBookRepository,
+            ISingleRecordRepository<ImportMaster> importMasterRepository,
+            IQueryRepository<ImportAuthNumber> importAuthNumberRepository,
+            IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService)
         {
             this.importBookRepository = importBookRepository;
             this.importMasterRepository = importMasterRepository;
@@ -31,14 +35,20 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         {
             var importMaster = await this.importMasterRepository.GetRecordAsync();
 
-            var model = new ImportClearanceInstruction(importMaster, toEmailAddress);
+            var model = new ImportClearanceInstruction(
+                importMaster,
+                toEmailAddress);
             var importAuthNumbers = await this.importAuthNumberRepository.FindAllAsync();
 
             foreach (var id in impbookIds)
             {
-                var impbook = await this.importBookRepository.FindByIdAsync(id);
-                var matchingAuthNumbers = importAuthNumbers.Where(a => a.Matches(impbook.DateInstructionSent ?? DateTime.UtcNow)).ToList();
-                model.AddImportBook(impbook, matchingAuthNumbers);
+                var importBook = await this.importBookRepository.FindByIdAsync(id);
+                var matchingAuthNumbers = importAuthNumbers
+                    .Where(a => a.Matches(importBook.DateInstructionSent ?? DateTime.UtcNow))
+                    .ToList();
+                model.AddImportBook(
+                    importBook,
+                    matchingAuthNumbers);
             }
 
             return await this.clearanceHtmlTemplateService.GetHtml(model);

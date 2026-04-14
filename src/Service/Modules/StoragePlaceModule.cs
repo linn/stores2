@@ -2,6 +2,7 @@ namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
     using Linn.Stores2.Facade.Services;
@@ -54,14 +55,18 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             StoragePlaceRequestResource resource,
-            IStoragePlaceAuditReportFacadeService facadeService)
+            IStoragePlaceAuditReportFacadeService facadeService,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
             var result = await facadeService.CreateCheckedAuditReqs(
                 resource.LocationList,
                 resource.LocationRange,
                 resource.EmployeeNumber,
                 resource.DepartmentCode,
-                req.HttpContext.GetPrivileges());
+                privileges);
             await res.Negotiate(result);
         }
     }

@@ -1,10 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
@@ -83,7 +80,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         public void ShouldHaveCorrectTotals()
         {
             this.Sut.Totals.Should().NotBeNull();
-            this.Sut.Totals.Count().Should().Be(1);
+            this.Sut.Totals.Count.Should().Be(1);
+            this.Sut.Totals.Count.Should().Be(1);
             this.Sut.BRGTotals.First().ToString().Should().Be("SEK 100.00");
             this.Sut.HasIPRAndBRG.Should().BeFalse();
             this.Sut.IPRTotals.Should().BeEmpty();
@@ -95,7 +93,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         {
             this.Sut.Sections.Should().NotBeNull();
             this.Sut.Sections.Count.Should().Be(1);
-            var section = this.Sut.Sections.FirstOrDefault();
+            var section = this.Sut.Sections.First();
 
             section.Should().NotBeNull();
 
@@ -108,7 +106,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section.Details.Should().NotBeNull();
             section.Details.Should().HaveCount(1);
 
-            var detail = section.Details.FirstOrDefault();
+            var detail = section.Details.First();
             detail.Should().NotBeNull();
 
             detail.Currency.Code.Should().Be("SEK");

@@ -7,7 +7,6 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
-    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Facade.ResourceBuilders;
     using Linn.Stores2.Facade.Services;
@@ -16,7 +15,6 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
     using Linn.Stores2.Persistence.LinnApps.Repositories;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Service.Modules;
-    using Linn.Stores2.TestData.Countries;
     using Linn.Stores2.TestData.Currencies;
 
     using Microsoft.Extensions.DependencyInjection;
@@ -132,14 +130,6 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.UKPound);
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.SwedishKrona);
             this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.USDollar);
-        }
-
-        public void SetupCountries()
-        {
-            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.China);
-            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.UnitedStates);
-            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.Japan);
-            this.DbContext.Countries.AddAndSave(this.DbContext, TestCountries.Norway);
         }
     }
 }

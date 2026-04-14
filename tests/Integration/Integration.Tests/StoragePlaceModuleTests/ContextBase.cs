@@ -2,6 +2,7 @@ namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
 {
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Pdf;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
@@ -29,6 +30,8 @@ namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
 
         protected IPdfService PdfService { get; private set; }
 
+        protected IUserPrivilegeService UserPrivilegeService { get; private set; }
+
         protected IHtmlTemplateService<StoragePlaceAuditReport> HtmlTemplateServiceForStorageAudit { get; private set; }
 
         [SetUp]
@@ -37,6 +40,7 @@ namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
             this.StoragePlaceAuditReportService = Substitute.For<IStoragePlaceAuditReportService>();
             this.HtmlTemplateServiceForStorageAudit = Substitute.For<IHtmlTemplateService<StoragePlaceAuditReport>>();
             this.PdfService = Substitute.For<IPdfService>();
+            this.UserPrivilegeService = Substitute.For<IUserPrivilegeService>();
 
             this.StoragePlaceAuditReportFacadeService = new StoragePlaceAuditReportFacadeService(
                 this.StoragePlaceAuditReportService,
@@ -48,6 +52,7 @@ namespace Linn.Stores2.Integration.Tests.StoragePlaceModuleTests
                 services =>
                     {
                         services.AddSingleton(this.StoragePlaceAuditReportFacadeService);
+                        services.AddSingleton(this.UserPrivilegeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });
