@@ -2,6 +2,9 @@ namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
+    using Domain.LinnApps.Consignments.Models;
+    using Domain.LinnApps.Consignments.Services;
+
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Domain.LinnApps.Services;
@@ -83,6 +86,7 @@ namespace Linn.Stores2.IoC
                 .AddTransient<IQcLabelPrinterService, QcLabelPrinterService>()
                 .AddScoped<IDeliveryNoteService, DeliveryNoteService>()
                 .AddScoped<IDailyEuReportService, DailyEuReportsService>()
+                .AddScoped<IPackingListService, PackingListService>()
                 .AddScoped<IHtmlTemplateService<DeliveryNoteDocument>>(
                     x => new HtmlTemplateService<DeliveryNoteDocument>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}DeliveryNoteDocument.cshtml",
@@ -117,6 +121,10 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IHtmlTemplateService<ImportClearanceInstruction>>(
                     x => new HtmlTemplateService<ImportClearanceInstruction>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}ImportClearanceInstruction.cshtml",
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IHtmlTemplateService<PackingListDocument>>(
+                    x => new HtmlTemplateService<PackingListDocument>(
+                        $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}PackingList.cshtml",
                         x.GetService<ITemplateEngine>()));
         }
 
@@ -130,6 +138,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
                 .AddScoped<IDailyEuReportFacadeService, DailyEuReportsFacadeService>()
+                .AddScoped<IPackingListFacadeService, PackingListFacadeService>()
                 .AddScoped<IRequisitionReportFacadeService, RequisitionReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<StorageType, string, StorageTypeResource, StorageTypeResource, StorageTypeResource>, StorageTypeFacadeService>()
                 .AddScoped<IAsyncFacadeService<PartStorageType, int, PartStorageTypeResource, PartStorageTypeResource, PartStorageTypeResource>, PartStorageTypeFacadeService>()

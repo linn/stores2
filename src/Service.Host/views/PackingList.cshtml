@@ -1,0 +1,258 @@
+@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Consignments.Models.PackingListDocument>
+@{
+    <style>
+
+        @@media print {
+            @@page {
+                size: A4 landscape;
+                margin: 25px;
+                margin-bottom: 60px;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+        }
+
+        @@media screen {
+            @@page {
+                size: A4 landscape;
+                margin: 50px;
+            }
+
+            thead {
+                display: block;
+                margin-left: 50px;
+                margin-right: 600px;
+            }
+
+            tbody {
+                display: block;
+                margin-left: 50px;
+                margin-right: 50px;
+                margin-bottom: 60px;
+            }
+
+            tfoot {
+                display: block;
+                margin-left: 50px;
+                margin-right: 50px;
+            }
+        }
+
+        thead {
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+        }
+
+
+        tbody {
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+        }
+
+        tfoot {
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+        }
+
+        pre {
+            font-family: Arial, sans-serif;
+        }
+
+        .auto {
+            grid-area: auto;
+        }
+
+        .logo {
+            grid-area: logo;
+        }
+
+        .item1 {
+            grid-area: item1;
+            font-size: 1.4em;
+            margin-top: 15px
+        }
+
+        .consignmentNumber {
+            font-weight: bold;
+            grid-area: consignmentNumber;
+        }
+
+        .deliveryAddress {
+            grid-area: deliveryAddress;
+        }
+
+        .senderAddress {
+            grid-area: senderAddress;
+        }
+
+        .dateOfDispatch {
+            grid-area: dateOfDispatch;
+        }
+
+        .carrier {
+            grid-area: carrier;
+        }
+
+        .customerRef {
+            grid-area: customerRef;
+        }
+
+        .currency-amount {
+            text-align: right;
+            width: 110px
+        }
+
+        .table-item {
+            width: 110px
+        }
+
+        .short-table-item {
+            width: 60px
+        }
+
+        .centre-message {
+            page-break-inside: avoid;
+            text-align: center;
+            white-space: pre-wrap;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .centre-small-message {
+            font-size: 0.6em;
+            font-weight: bold;
+            page-break-inside: avoid;
+            text-align: center;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .text-align-right {
+            text-align: right;
+        }
+
+        .text-align-left {
+            text-align: left;
+        }
+
+        .line-note {
+            font-size: smaller;
+            margin-top: -20px;
+            white-space: pre-line;
+            page-break-inside: avoid;
+        }
+
+        .no-split {
+            page-break-inside: avoid;
+        }
+
+        .header-grid-container {
+            row-gap: 10px;
+            column-gap: 60px;
+            display: grid;
+            grid-template-areas:
+                'logo item1 item1 item1 item1 item1'
+                'logo leftDetails . . deliveryAddress senderAddress';
+            align-items: start;
+        }
+
+        .leftDetails {
+            grid-area: leftDetails;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        span {
+            page-break-inside: avoid;
+        }
+
+        .line-grid-container {
+            column-gap: 10px;
+            display: grid;
+            grid-template-columns: auto ;
+            row-gap: 10px;
+        }
+
+        .footer-grid-container {
+            row-gap: 10px;
+            column-gap: 10px;
+            display: grid;
+            grid-template-areas:
+                '. . . goodsTotal vatTotal total'
+        }
+
+        #tcb-extension-uk-wrapper {
+            display: none !important;
+        }
+    </style>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="header-grid-container">
+                            <div class="logo">
+                                <img src="@("https://app.linn.co.uk/Content/images/linn-logo.png")" />
+                            </div>
+                            <div class="item1"> <b>Linn Products Ltd - Packing List</b></div>
+
+                            <div class="leftDetails">
+                                <div class="consignmentNumber">
+                                    Consignment number: @Model.Consignment.ConsignmentId
+                                </div>
+                                <div class="dateOfDispatch">
+                                    Date Dispatched: @Model.Consignment.DateClosed?.ToString("dd-MMM-yyyy")
+                                </div>
+                                <div class="carrier">
+                                    Carrier: @Model.Consignment.Carrier?.Name
+                                </div>
+                                <div class="carrier">
+                                    Carrier Ref: @Model.CarrierReference
+                                </div>
+                                <div class="customerRef">
+                                    Customer Ref Numbers: @Model.Consignment.GetCustomerReferences()
+                                </div>
+                            </div>
+                            <div class="deliveryAddress">
+                                <b>Consignee:</b><br />@Model.Consignment.Address.FullAddress().Replace("\r\n", "<br />").Replace("\n", "<br />")
+                            </div>
+                            <div class="senderAddress">
+                                <b>Sender:</b><br />@Model.SenderAddress.Replace("\r\n", "<br />").Replace("\n", "<br />")
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="line-grid-container">
+                            <div>
+                                <b>Line</b>
+                            </div>
+                            @foreach (var consignmentItem in Model.Consignment.Items)
+                            {
+                                <div>
+                                    <span>@consignmentItem.ItemNumber</span>
+                                </div>
+                            }
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
