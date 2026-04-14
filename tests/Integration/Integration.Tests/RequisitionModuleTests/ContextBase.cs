@@ -1,6 +1,8 @@
 namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 {
+    using System.Collections.Generic;
     using System.Net.Http;
+    using System.Threading.Tasks;
 
     using Linn.Common.Authorisation;
     using Linn.Common.Facade;
@@ -37,6 +39,8 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 
         protected IAuthorisationService AuthorisationService { get; private set; }
 
+        protected IUserPrivilegeService UserPrivilegeService { get; private set; }
+
         protected IRepository<RequisitionHistory, int> RequisitionHistoryRepository { get; private set; }
 
         protected IQcLabelPrinterService QcLabelPrinterService { get; private set; }
@@ -56,6 +60,7 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                 = new RequisitionRepository(this.DbContext);
             this.ReqManager = Substitute.For<IRequisitionManager>();
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            this.UserPrivilegeService = Substitute.For<IUserPrivilegeService>();
             this.RequisitionFactory = Substitute.For<IRequisitionFactory>();
             this.RequisitionHistoryRepository = Substitute.For<IRepository<RequisitionHistory, int>>();
             this.SundryBookInDetailRepository = Substitute.For<IQueryRepository<SundryBookInDetail>>();
@@ -87,6 +92,8 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
 
             this.DeliveryNoteFacadeService = Substitute.For<IDeliveryNoteFacadeService>();
 
+            this.UserPrivilegeService.GetUserPrivileges(Arg.Any<string>()).Returns(new List<string>());
+
             this.Client = TestClient.With<RequisitionModule>(
                 services =>
                     {
@@ -95,6 +102,7 @@ namespace Linn.Stores2.Integration.Tests.RequisitionModuleTests
                         services.AddSingleton(requisitionLabelsFacadeService);
                         services.AddSingleton(sundryBookInDetailFacadeService);
                         services.AddSingleton(this.DeliveryNoteFacadeService);
+                        services.AddSingleton(this.UserPrivilegeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

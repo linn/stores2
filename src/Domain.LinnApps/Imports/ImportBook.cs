@@ -308,7 +308,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             {
                 return "Cleared";
             }
-            else if (this.DateInstructionSent.HasValue) 
+            else if (this.DateInstructionSent.HasValue)
             {
                 return "Instruction Sent";
             }

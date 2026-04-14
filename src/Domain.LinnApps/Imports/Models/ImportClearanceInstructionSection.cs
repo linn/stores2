@@ -1,16 +1,16 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using Linn.Stores2.Domain.LinnApps.Returns;
 
     public class ImportClearanceInstructionSection
     {
-        public ImportClearanceInstructionSection(ImportBookOrderDetail orderDetail, ImportMaster master, IEnumerable<ImportAuthNumber> importAuthNumbers)
+        public ImportClearanceInstructionSection(
+            ImportBookOrderDetail orderDetail,
+            ImportMaster master,
+            IEnumerable<ImportAuthNumber> importAuthNumbers)
         {
             this.CpcNumber = orderDetail.ImportBookCpcNumber.Description;
             this.Details = new List<ImportClearanceInstructionDetail>();

@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -45,11 +44,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             int? supplierId,
             Employee createdEmployee)
         {
-            this.candidate = new ImportCandidate();
-            this.candidate.CreatedBy = createdEmployee;
-
-            // default some fields
-            this.candidate.BaseCurrency = await this.currencyRepository.FindByAsync(c => c.Code == "GBP");
+            this.candidate = new ImportCandidate
+            {
+                CreatedBy = createdEmployee, // default some fields
+                BaseCurrency = await this.currencyRepository.FindByAsync(c => c.Code == "GBP")
+            };
 
             if (rsnNumbers != null && rsnNumbers.Any())
             {
@@ -92,7 +91,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private async Task<ImportCandidate> CreateImportBookFromPoNumbers(IEnumerable<int> poNumbers)
         {
-            var cpcNumber = await this.importBookCpcRepository.FindByAsync(i => i.DateInvalid == null && i.ReasonForImport == "Material");
+            var cpcNumber =
+                await this.importBookCpcRepository.FindByAsync(i =>
+                    i.DateInvalid == null && i.ReasonForImport == "Material");
 
             foreach (var poNumber in poNumbers)
             {

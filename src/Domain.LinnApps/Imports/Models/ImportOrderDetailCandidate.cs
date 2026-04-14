@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 {
-    using System;
     using System.Linq;
 
     using Linn.Stores2.Domain.LinnApps.PurchaseOrders;

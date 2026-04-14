@@ -2,6 +2,7 @@ namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
@@ -27,9 +28,11 @@ namespace Linn.Stores2.Service.Modules
         private async Task GetWorkStationApplicationState(
             HttpRequest req,
             HttpResponse res,
-            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service)
+            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            var privileges = req.HttpContext.GetPrivileges();
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
 
             var result = service.GetApplicationState(privileges);
 
@@ -41,15 +44,19 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res,
             string workStationCode,
             string citCode,
-            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service)
+            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
             var workStations = await service.FilterBy(
                                    new WorkStationSearchResource
-                                       {
-                                           WorkStationCode = workStationCode,
-                                           CitCode = citCode
-                                       },
-                                   req.HttpContext.GetPrivileges());
+                                   {
+                                       WorkStationCode = workStationCode,
+                                       CitCode = citCode
+                                   },
+                                   privileges);
             await res.Negotiate(workStations);
         }
 
@@ -57,18 +64,28 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             string code,
-            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service)
+            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.GetById(code, req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
+            var result = await service.GetById(code, privileges);
+            await res.Negotiate(result);
         }
 
         private async Task Create(
             HttpRequest req,
             HttpResponse res,
             WorkStationResource resource,
-            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service)
+            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
+            var result = await service.Add(resource, privileges);
+            await res.Negotiate(result);
         }
 
         private async Task Update(
@@ -76,9 +93,14 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res,
             string code,
             WorkStationResource resource,
-            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service)
+            IAsyncFacadeService<WorkStation, string, WorkStationResource, WorkStationResource, WorkStationSearchResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.Update(code, resource, req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
+            var result = await service.Update(code, resource, privileges);
+            await res.Negotiate(result);
         }
     }
 }

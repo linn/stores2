@@ -1,8 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
 
     using FluentAssertions;
 
@@ -28,7 +26,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
                 Carrier = TestSuppliers.Fedex,
                 BaseCurrency = TestCurrencies.UKPound,
                 Currency = TestCurrencies.SwedishKrona,
-                InvoiceDetailCandidates = new List<ImportInvoiceDetailCandidate>()
+                InvoiceDetailCandidates = new List<ImportInvoiceDetailCandidate>
                 {
                     new ImportInvoiceDetailCandidate("TEST", 100)
                 }

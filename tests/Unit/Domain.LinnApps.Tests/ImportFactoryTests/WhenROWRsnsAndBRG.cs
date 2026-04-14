@@ -4,7 +4,6 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
-    using System.Text;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -45,9 +44,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
                 }
             };
 
-            this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>()).Returns(TestCurrencies.UKPound);
+            this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>())
+                .Returns(TestCurrencies.UKPound);
 
-            this.ImportBookCpcNumberRepository.FilterByAsync(Arg.Any<Expression<Func<ImportBookCpcNumber, bool>>>()).Returns(Task.FromResult(TestCpcNumbers.CpcNumbers));
+            this.ImportBookCpcNumberRepository.FilterByAsync(Arg.Any<Expression<Func<ImportBookCpcNumber, bool>>>())
+                .Returns(TestCpcNumbers.CpcNumbers);
 
             this.RsnRepository.FindByAsync(Arg.Any<Expression<Func<Rsn, bool>>>()).Returns(rsn);
             this.result = await this.Sut.CreateImportBook(new List<int> { 12 }, null, null, new Employee());

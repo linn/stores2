@@ -2,6 +2,7 @@ namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
@@ -26,9 +27,11 @@ namespace Linn.Stores2.Service.Modules
         private async Task GetStockPools(
             HttpRequest req,
             HttpResponse res,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService,
+            IUserPrivilegeService userPrivilegeService)
         {
-            var results = await facadeService.GetAll(req.HttpContext.GetPrivileges());
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+            var results = await facadeService.GetAll(privileges);
             await res.Negotiate(results);
         }
 
@@ -36,9 +39,11 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             string code,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService,
+            IUserPrivilegeService userPrivilegeService)
         {
-            var results = await facadeService.GetById(code, req.HttpContext.GetPrivileges());
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+            var results = await facadeService.GetById(code, privileges);
             await res.Negotiate(results);
         }
 
@@ -46,9 +51,11 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             StockPoolResource resource,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await facadeService.Add(resource, req.HttpContext.GetPrivileges()));
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+            await res.Negotiate(await facadeService.Add(resource, privileges));
         }
 
         private async Task UpdateStockPool(
@@ -56,9 +63,12 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res,
             string code,
             StockPoolUpdateResource resource,
-            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService)
+            IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await facadeService.Update(code, resource, req.HttpContext.GetPrivileges()));
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+
+            await res.Negotiate(await facadeService.Update(code, resource, privileges));
         }
     }
 }

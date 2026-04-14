@@ -1,19 +1,13 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Linq.Expressions;
-    using System.Text;
     using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
-    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.TestData.Currencies;
-    using Linn.Stores2.TestData.SalesArticles;
-    using Linn.Stores2.TestData.SalesOutlets;
     using Linn.Stores2.TestData.Suppliers;
 
     using NSubstitute;
@@ -27,9 +21,16 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
         [SetUp]
         public async Task SetUp()
         {
-            this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>()).Returns(x => Task.FromResult(TestCurrencies.UKPound));
-            this.SupplierRepository.FindByAsync(Arg.Any<Expression<Func<Supplier, bool>>>()).Returns(x => Task.FromResult(TestSuppliers.AcmeIncorporated));
-            this.result = await this.Sut.CreateImportBook(null, null, TestSuppliers.AcmeIncorporated.Id, new Employee());
+            this.CurrencyRepository.FindByAsync(Arg.Any<Expression<Func<Currency, bool>>>())
+                .Returns(TestCurrencies.UKPound);
+            this.SupplierRepository.FindByAsync(Arg.Any<Expression<Func<Supplier, bool>>>())
+                .Returns(TestSuppliers.AcmeIncorporated);
+
+            this.result = await this.Sut.CreateImportBook(
+                null,
+                null,
+                TestSuppliers.AcmeIncorporated.Id,
+                new Employee());
         }
 
         [Test]

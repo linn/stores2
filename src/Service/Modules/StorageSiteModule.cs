@@ -2,6 +2,7 @@ namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
@@ -34,9 +35,13 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             string siteCode,
-            IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource> service)
+            IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.GetById(siteCode, req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
+            await res.Negotiate(await service.GetById(siteCode, privileges));
         }
 
         private static async Task Update(
@@ -44,18 +49,26 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res,
             string siteCode,
             StorageSiteResource resource,
-            IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource> service)
+            IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.Update(siteCode, resource, req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
+            await res.Negotiate(await service.Update(siteCode, resource, privileges));
         }
 
         private static async Task Create(
             HttpRequest req,
             HttpResponse res,
             StorageSiteResource resource,
-            IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource> service)
+            IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
+            await res.Negotiate(await service.Add(resource, privileges));
         }
     }
 }

@@ -75,7 +75,10 @@ namespace Linn.Stores2.Facade.Services
             return new SuccessResult<TotalResource>(new TotalResource(total));
         }
 
-        public async Task<string> LabourHoursInStockAsHtml(string jobref, string accountingCompany = "LINN", bool includeObsolete = true)
+        public async Task<string> LabourHoursInStockAsHtml(
+            string jobref,
+            string accountingCompany = "LINN",
+            bool includeObsolete = true)
         {
             var result = await this.stockReportService.GetStockInLabourHours(
                 jobref,
@@ -92,7 +95,10 @@ namespace Linn.Stores2.Facade.Services
             return await this.htmlTemplateForLabourHoursInStock.GetHtml(data);
         }
 
-        public async Task<Stream> LabourHoursInStockAsPdf(string jobref, string accountingCompany = "LINN", bool includeObsolete = true)
+        public async Task<Stream> LabourHoursInStockAsPdf(
+            string jobref,
+            string accountingCompany = "LINN",
+            bool includeObsolete = true)
         {
             var html = await this.LabourHoursInStockAsHtml(jobref, accountingCompany, includeObsolete);
 
@@ -119,7 +125,10 @@ namespace Linn.Stores2.Facade.Services
             return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(result));
         }
 
-        public async Task<string> LabourHourSummaryAsHtml(string fromDate, string toDate, string accountingCompany = "LINN")
+        public async Task<string> LabourHourSummaryAsHtml(
+            string fromDate,
+            string toDate,
+            string accountingCompany = "LINN")
         {
             if (!DateTime.TryParse(fromDate, out var from) || !DateTime.TryParse(toDate, out var to))
             {
@@ -144,7 +153,10 @@ namespace Linn.Stores2.Facade.Services
             return await this.htmlTemplateForLabourHoursSummary.GetHtml(data);
         }
 
-        public async Task<Stream> LabourHourSummaryAsPdf(string fromDate, string toDate, string accountingCompany = "LINN")
+        public async Task<Stream> LabourHourSummaryAsPdf(
+            string fromDate,
+            string toDate,
+            string accountingCompany = "LINN")
         {
             var html = await this.LabourHourSummaryAsHtml(fromDate, toDate, accountingCompany);
 

@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Facade.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -8,7 +7,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Service.Handlers;
 
-    using Resources.Imports;
+    using Linn.Stores2.Resources.Imports;
 
     public interface IImportReportFacadeService
     {

@@ -1,7 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports
 {
-    using System;
-
     public class ImportMaster
     {
         public Address Address { get; set; }

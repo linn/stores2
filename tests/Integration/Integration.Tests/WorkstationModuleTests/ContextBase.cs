@@ -31,12 +31,15 @@ namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
 
         protected IAuthorisationService AuthorisationService { get; private set; }
 
+        protected IUserPrivilegeService UserPrivilegeService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
 
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            this.UserPrivilegeService = Substitute.For<IUserPrivilegeService>();
 
             var transactionManager = new TransactionManager(this.DbContext);
 
@@ -70,6 +73,7 @@ namespace Linn.Stores2.Integration.Tests.WorkStationModuleTests
                 services =>
                 {
                     services.AddSingleton(workStationFacadeService);
+                    services.AddSingleton(this.UserPrivilegeService);
                     services.AddHandlers();
                     services.AddRouting();
                 });

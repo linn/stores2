@@ -1,7 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
 {
-    using System;
-
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.PurchaseOrders;

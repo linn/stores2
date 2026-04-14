@@ -1,7 +1,5 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 {
-    using System;
-
     public class ImportClearanceInstructionTotal
     {
         public Currency Currency { get; set; }

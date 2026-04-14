@@ -1,8 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
 {
-    using System;
     using System.Collections.Generic;
-    using System.Text;
 
     using FluentAssertions;
 

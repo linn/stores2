@@ -3,6 +3,7 @@ namespace Linn.Stores2.Service.Modules
     using System.Net;
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
@@ -90,9 +91,13 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             int reqNumber,
-            IRequisitionFacadeService service)
+            IRequisitionFacadeService service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.GetById(reqNumber, req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
+            await res.Negotiate(await service.GetById(reqNumber, privileges));
         }
 
         private async Task GetReversalPreview(
@@ -117,8 +122,11 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             CancelRequisitionResource resource,
-            IRequisitionFacadeService service)
+            IRequisitionFacadeService service,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
             if (resource.LineNumber.HasValue)
             {
                 await res.Negotiate(await service.CancelLine(
@@ -126,7 +134,7 @@ namespace Linn.Stores2.Service.Modules
                                         resource.LineNumber.Value,
                                         req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
                                         resource.Reason,
-                                        req.HttpContext.GetPrivileges()));
+                                        privileges));
             }
             else
             {
@@ -134,7 +142,7 @@ namespace Linn.Stores2.Service.Modules
                                         resource.ReqNumber,
                                         req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
                                         resource.Reason,
-                                        req.HttpContext.GetPrivileges()));
+                                        privileges));
             }
         }
 
@@ -142,33 +150,42 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             BookRequisitionResource resource,
-            IRequisitionFacadeService service)
+            IRequisitionFacadeService service,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
             await res.Negotiate(await service.BookRequisition(
                 resource.ReqNumber,
                 resource.LineNumber,
                 req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
-                req.HttpContext.GetPrivileges()));
+                privileges));
         }
 
         private async Task Authorise(
             HttpRequest req,
             HttpResponse res,
             AuthoriseRequisitionResource resource,
-            IRequisitionFacadeService service)
+            IRequisitionFacadeService service,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
             await res.Negotiate(await service.AuthoriseRequisition(
                 resource.ReqNumber,
                 req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
-                req.HttpContext.GetPrivileges()));
+                privileges));
         }
 
         private async Task GetRequisitionApplicationState(
             HttpRequest req,
             HttpResponse res,
-            IRequisitionFacadeService service)
+            IRequisitionFacadeService service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            var privileges = req.HttpContext.GetPrivileges();
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
 
             var result = service.GetApplicationState(privileges);
 
@@ -179,10 +196,13 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res,
             HttpRequest req,
             RequisitionHeaderResource resource,
-            IRequisitionFacadeService service)
+            IRequisitionFacadeService service,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
             resource.CreatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
-            await res.Negotiate(await service.Add(resource, req.HttpContext.GetPrivileges(), resource.CreatedBy, false, true));
+            await res.Negotiate(await service.Add(resource, privileges, resource.CreatedBy, false, true));
         }
 
         private async Task Validate(
@@ -200,28 +220,38 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             int reqNumber,
             RequisitionHeaderResource resource,
-            IRequisitionFacadeService service)
+            IRequisitionFacadeService service,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
             var updatedBy = req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault();
             await res.Negotiate(
-                await service.Update(reqNumber, resource, req.HttpContext.GetPrivileges(), updatedBy, true));
+                await service.Update(reqNumber, resource, privileges, updatedBy, true));
         }
 
         private async Task GetFunctionCodes(
             HttpRequest req,
             HttpResponse res,
-            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.GetAll(req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+            await res.Negotiate(await service.GetAll(privileges));
         }
 
         private async Task GetStoresFunction(
             HttpRequest req,
             HttpResponse res,
             string code,
-            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service)
+            IAsyncFacadeService<StoresFunction, string, StoresFunctionResource, StoresFunctionResource, StoresFunctionResource> service,
+            IUserPrivilegeService userPrivilegeService)
         {
-            await res.Negotiate(await service.GetById(code, req.HttpContext.GetPrivileges()));
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
+
+            await res.Negotiate(await service.GetById(code, privileges));
         }
 
         private async Task GetSundryBookIns(
@@ -229,12 +259,15 @@ namespace Linn.Stores2.Service.Modules
             HttpResponse res,
             int orderNumber,
             int orderLine,
-            IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource> facadeService)
+            IAsyncQueryFacadeService<SundryBookInDetail, SundryBookInDetailResource, SundryBookInDetailResource> facadeService,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
             await res.Negotiate(
                 await facadeService.FilterBy(
                     new SundryBookInDetailResource { OrderNumber = orderNumber, OrderLine = orderLine },
-                    req.HttpContext.GetPrivileges()));
+                    privileges));
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -270,8 +303,11 @@ namespace Linn.Stores2.Service.Modules
             HttpRequest req,
             HttpResponse res,
             UnpickRequisitionResource resource,
-            IRequisitionFacadeService service)
+            IRequisitionFacadeService service,
+            IUserPrivilegeService userPrivilegeService)
         {
+            var user = req.HttpContext.User.GetEmployeeUrl();
+            var privileges = await userPrivilegeService.GetUserPrivileges(user);
             await res.Negotiate(await service.UnpickRequisitionMove(
                 resource.ReqNumber,
                 resource.LineNumber,
@@ -279,7 +315,7 @@ namespace Linn.Stores2.Service.Modules
                 resource.QtyToUnpick,
                 req.HttpContext.User.GetEmployeeNumber().GetValueOrDefault(),
                 resource.Reallocate ?? false,
-                req.HttpContext.GetPrivileges()));
+                privileges));
         }
     }
 }

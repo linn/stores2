@@ -13,7 +13,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
 
     using NUnit.Framework;
 
-    public class WhenNoCarrierAnddCreating
+    public class WhenNoCarrierAndCreating
     {
         private Action action;
 

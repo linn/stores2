@@ -1,17 +1,11 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenAddingInvoiceDetail
 {
-    using System;
-    using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
-    using Linn.Stores2.Domain.LinnApps.Parts;
-    using Linn.Stores2.Domain.LinnApps.Stock;
     using Linn.Stores2.TestData.Currencies;
 
     using NUnit.Framework;
@@ -23,14 +17,15 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenAddingInvoiceDe
         [SetUp]
         public void SetUp()
         {
-            this.sut = new ImportBook()
-                       {
-                           Id = 1
-                       };
+            this.sut = new ImportBook
+            {
+                Id = 1
+            };
 
             var candidate = new ImportInvoiceDetailCandidate(
                               "1",
-                              100) { Currency = TestCurrencies.SwedishKrona };
+                              100)
+            { Currency = TestCurrencies.SwedishKrona };
 
             this.sut.AddInvoiceDetail(candidate);
         }

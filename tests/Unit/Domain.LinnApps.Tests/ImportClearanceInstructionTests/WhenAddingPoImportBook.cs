@@ -1,22 +1,17 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
-    using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.TestData.CpcNumbers;
     using Linn.Stores2.TestData.Currencies;
     using Linn.Stores2.TestData.Employees;
     using Linn.Stores2.TestData.SalesArticles;
-    using Linn.Stores2.TestData.SalesOutlets;
     using Linn.Stores2.TestData.Suppliers;
 
     using NUnit.Framework;
@@ -93,7 +88,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         {
             this.Sut.Sections.Should().NotBeNull();
             this.Sut.Sections.Count.Should().Be(1);
-            var section = this.Sut.Sections.FirstOrDefault();
+            var section = this.Sut.Sections.First();
 
             section.Should().NotBeNull();
 
@@ -106,7 +101,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section.Details.Should().NotBeNull();
             section.Details.Should().HaveCount(1);
 
-            var detail = section.Details.FirstOrDefault();
+            var detail = section.Details.First();
             detail.Should().NotBeNull();
 
             detail.Currency.Code.Should().Be("USD");
