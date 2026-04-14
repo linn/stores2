@@ -27,7 +27,8 @@ namespace Linn.Stores2.Integration.Tests.StorageModuleTests
         [SetUp]
         public void SetUp()
         {
-            this.AuthorisationService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, Arg.Any<IEnumerable<string>>()).Returns(true);
+            this.AuthorisationService.HasPermissionFor(AuthorisedActions.StorageLocationAdmin, Arg.Any<IEnumerable<string>>())
+                .Returns(true);
 
             this.eaglesham = new StorageSite("EAGLESHAM", "SUPPLIER STORES", null)
                                  {

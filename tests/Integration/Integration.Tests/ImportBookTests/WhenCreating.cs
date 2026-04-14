@@ -45,7 +45,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 TotalImportValue = 100,
                 ImportBookOrderDetails = new List<ImportBookOrderDetailResource>
                 {
-                    new ImportBookOrderDetailResource()
+                    new ImportBookOrderDetailResource
                     {
                         LineNumber = 1,
                         LineType = "RSN",
@@ -65,14 +65,23 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 }
             };
 
-            var rsn = new Rsn()
+            var rsn = new Rsn
             {
                 RsnNumber = 12345,
                 SalesOutlet = new SalesOutlet
                 {
                     AccountId = 1234,
                     OutletNumber = 56,
-                    OutletAddress = new Address("Neverland Hifi", "Never Street", null, null, null, "NE1", new Country("NE", "Neverland"))
+                    OutletAddress = new Address(
+                        "Neverland Hifi",
+                        "Never Street",
+                        null,
+                        null,
+                        null,
+                        "NE1",
+                        new Country(
+                            "NE",
+                            "Neverland"))
                 },
                 SalesArticle = TestSalesArticles.Akiva,
                 ImportBookOrderDetails = new List<ImportBookOrderDetail>()
@@ -82,7 +91,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
 
             this.SetupCurrencies();
 
-            this.Response = this.Client.PostAsJsonAsync($"/stores2/import-books", this.createResource).Result;
+            this.Response = this.Client.PostAsJsonAsync("/stores2/import-books", this.createResource).Result;
         }
 
         [Test]

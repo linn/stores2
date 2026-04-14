@@ -31,11 +31,14 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
 
         protected IAuthorisationService AuthorisationService { get; private set; }
 
+        protected IUserPrivilegeService UserPrivilegeService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            this.UserPrivilegeService = Substitute.For<IUserPrivilegeService>();
 
             var accountingCompanyRepository = new EntityFrameworkRepository<AccountingCompany, string>(this.DbContext.AccountingCompanies);
             var storageLocationRepository = new EntityFrameworkRepository<StorageLocation, int>(this.DbContext.StorageLocations);
@@ -56,6 +59,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
                 services =>
                     {
                         services.AddSingleton(stockPoolFacadeService);
+                        services.AddSingleton(this.UserPrivilegeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

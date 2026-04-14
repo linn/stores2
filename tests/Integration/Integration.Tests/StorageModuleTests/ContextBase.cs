@@ -33,6 +33,8 @@ namespace Linn.Stores2.Integration.Tests.StorageModuleTests
 
         protected IAuthorisationService AuthorisationService { get; private set; }
 
+        protected IUserPrivilegeService UserPrivilegeService { get; private set; }
+
         protected IQueryRepository<AuditLocation> AuditLocationRepository { get; private set; }
 
         [SetUp]
@@ -49,6 +51,7 @@ namespace Linn.Stores2.Integration.Tests.StorageModuleTests
             var stockStateRepository = new EntityFrameworkRepository<StockState, string>(this.DbContext.StockStates);
             var departmentRepository = new EntityFrameworkRepository<Department, string>(this.DbContext.Departments);
             this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            this.UserPrivilegeService = Substitute.For<IUserPrivilegeService>();
 
             IAsyncFacadeService<StorageSite, string, StorageSiteResource, StorageSiteResource, StorageSiteResource>
                 storageSiteService = new StorageSiteFacadeService(
@@ -90,6 +93,7 @@ namespace Linn.Stores2.Integration.Tests.StorageModuleTests
                     services.AddSingleton(storageLocationService);
                     services.AddSingleton(stockStateFacadeService);
                     services.AddSingleton(auditLocationFacadeService);
+                    services.AddSingleton(this.UserPrivilegeService);
                     services.AddHandlers();
                     services.AddRouting();
                 });
