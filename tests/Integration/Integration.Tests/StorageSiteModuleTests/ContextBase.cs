@@ -2,8 +2,7 @@ namespace Linn.Stores2.Integration.Tests.StorageSiteModuleTests
 {
     using System.Net.Http;
 
-    using Common.Authorisation;
-
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps.Stock;

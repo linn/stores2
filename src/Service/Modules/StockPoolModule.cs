@@ -2,8 +2,7 @@ namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
-    using Common.Authorisation;
-
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;

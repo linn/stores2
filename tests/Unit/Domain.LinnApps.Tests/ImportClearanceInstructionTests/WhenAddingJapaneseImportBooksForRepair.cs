@@ -1,10 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
@@ -41,7 +38,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                 },
                 ImportBookOrderDetails = new List<ImportBookOrderDetail>(),
                 ExportReturnDetails = new List<ExportReturnDetail>(),
-                RsnReturns = new List<RsnReturnInformation>()
+                RsnReturns = new List<RsnReturnInformation>
                 {
                     new RsnReturnInformation
                     {
@@ -67,7 +64,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                 },
                 ImportBookOrderDetails = new List<ImportBookOrderDetail>(),
                 ExportReturnDetails = new List<ExportReturnDetail>(),
-                RsnReturns = new List<RsnReturnInformation>()
+                RsnReturns = new List<RsnReturnInformation>
                 {
                     new RsnReturnInformation
                     {
@@ -133,7 +130,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         public void ShouldHaveCorrectTotals()
         {
             this.Sut.Totals.Should().NotBeNull();
-            this.Sut.Totals.Count().Should().Be(1);
+            this.Sut.Totals.Count.Should().Be(1);
             this.Sut.Totals.First().ToString().Should().Be("JPY 300,000,000");
         }
 
@@ -142,7 +139,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         {
             this.Sut.Sections.Should().NotBeNull();
             this.Sut.Sections.Count.Should().Be(1);
-            var section = this.Sut.Sections.FirstOrDefault();
+            var section = this.Sut.Sections.First();
 
             section.Should().NotBeNull();
 
@@ -155,7 +152,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section.Details.Should().NotBeNull();
             section.Details.Should().HaveCount(2);
 
-            var detail = section.Details.FirstOrDefault();
+            var detail = section.Details.First();
             detail.Should().NotBeNull();
 
             detail.Currency.Code.Should().Be("JPY");
@@ -165,7 +162,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             detail.CountryOfOrigin.Should().Be("JP");
             detail.CustomsValueString().Should().Be("JPY 100,000,000");
 
-            var detail2 = section.Details.LastOrDefault();
+            var detail2 = section.Details.Last();
             detail2.Should().NotBeNull();
 
             detail2.Currency.Code.Should().Be("JPY");

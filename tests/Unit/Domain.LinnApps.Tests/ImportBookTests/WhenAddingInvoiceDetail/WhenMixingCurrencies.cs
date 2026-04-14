@@ -45,7 +45,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenAddingInvoiceDe
         {
             this.action.Should().Throw<ImportBookException>()
                 .WithMessage(
-                    $"Invoice detail currency USD does not match import book currency SEK");
+                    "Invoice detail currency USD does not match import book currency SEK");
         }
     }
 }

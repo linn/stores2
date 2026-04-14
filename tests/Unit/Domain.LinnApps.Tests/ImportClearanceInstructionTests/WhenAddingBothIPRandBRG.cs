@@ -1,10 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
 
     using FluentAssertions;
 
@@ -71,7 +68,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                 },
                 ImportBookOrderDetails = new List<ImportBookOrderDetail>(),
                 ExportReturnDetails = new List<ExportReturnDetail>(),
-                RsnReturns = new List<RsnReturnInformation>()
+                RsnReturns = new List<RsnReturnInformation>
                 {
                     new RsnReturnInformation
                     {
@@ -140,7 +137,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             this.Sut.Sections.Should().NotBeNull();
             this.Sut.Sections.Count.Should().Be(2);
 
-            var section1 = this.Sut.Sections.FirstOrDefault();
+            var section1 = this.Sut.Sections.First();
             section1.Should().NotBeNull();
 
             section1.ReasonForImport.Should().Be("Return for Repair");
@@ -151,7 +148,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section1.Details.Should().NotBeNull();
             section1.Details.Should().HaveCount(1);
 
-            var detail1 = section1.Details.FirstOrDefault();
+            var detail1 = section1.Details.First();
             detail1.Should().NotBeNull();
 
             detail1.Currency.Code.Should().Be("SEK");
@@ -165,7 +162,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         [Test]
         public void ShouldHaveBRGSection()
         {
-            var section2 = this.Sut.Sections.FirstOrDefault(s => s.CpcScheme == "BRG");
+            var section2 = this.Sut.Sections.First(s => s.CpcScheme == "BRG");
 
             section2.Should().NotBeNull();
 
@@ -177,7 +174,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
             section2.Details.Should().NotBeNull();
             section2.Details.Should().HaveCount(1);
 
-            var detail2 = section2.Details.FirstOrDefault();
+            var detail2 = section2.Details.First();
             detail2.Should().NotBeNull();
 
             detail2.Currency.Code.Should().Be("SEK");

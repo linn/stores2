@@ -1,20 +1,20 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
-    using System.Text;
     using System.Threading.Tasks;
 
     using Linn.Common.Persistence;
 
-    public class ImportCurrencyService : IImportCurrencyService 
+    public class ImportCurrencyService : IImportCurrencyService
     {
         private readonly IQueryRepository<LedgerPeriod> ledgerPeriodRepository;
 
         private readonly IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository;
 
-        public ImportCurrencyService(IQueryRepository<LedgerPeriod> ledgerPeriodRepository, IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository)
+        public ImportCurrencyService(
+            IQueryRepository<LedgerPeriod> ledgerPeriodRepository,
+            IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> importBookExchangeRateRepository)
         {
             this.ledgerPeriodRepository = ledgerPeriodRepository;
             this.importBookExchangeRateRepository = importBookExchangeRateRepository;
@@ -22,17 +22,15 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public async Task<LedgerPeriod> GetImportPeriod(DateTime customsDate)
         {
-            if (customsDate == null)
-            {
-                return null;
-            }
-
             var monthName = customsDate.ToString("MMMyyyy", CultureInfo.InvariantCulture);
 
             return await this.ledgerPeriodRepository.FindByAsync(p => p.MonthName == monthName);
         }
 
-        public async Task<ImportBookExchangeRate> GetExchangeRate(LedgerPeriod ledgerPeriod, Currency baseCurrency, Currency exchangeCurrency)
+        public async Task<ImportBookExchangeRate> GetExchangeRate(
+            LedgerPeriod ledgerPeriod,
+            Currency baseCurrency,
+            Currency exchangeCurrency)
         {
             if (baseCurrency == null || exchangeCurrency == null || ledgerPeriod == null)
             {

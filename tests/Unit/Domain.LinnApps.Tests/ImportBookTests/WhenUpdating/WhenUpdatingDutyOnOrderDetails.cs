@@ -1,9 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
 
     using FluentAssertions;
 
@@ -29,11 +27,11 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
                 Carrier = TestSuppliers.Fedex,
                 BaseCurrency = TestCurrencies.UKPound,
                 Currency = TestCurrencies.SwedishKrona,
-                InvoiceDetailCandidates = new List<ImportInvoiceDetailCandidate>()
+                InvoiceDetailCandidates = new List<ImportInvoiceDetailCandidate>
                 {
                     new ImportInvoiceDetailCandidate("TEST", 100)
                 },
-                OrderDetailCandidates = new List<ImportOrderDetailCandidate>()
+                OrderDetailCandidates = new List<ImportOrderDetailCandidate>
                 {
                     new ImportOrderDetailCandidate
                     {
@@ -56,7 +54,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
                 },
                 Period = new LedgerPeriod { PeriodNumber = 1 },
                 Currency = TestCurrencies.SwedishKrona,
-                OrderDetailCandidates = new List<ImportOrderDetailCandidate>()
+                OrderDetailCandidates = new List<ImportOrderDetailCandidate>
                 {
                     new ImportOrderDetailCandidate
                     {

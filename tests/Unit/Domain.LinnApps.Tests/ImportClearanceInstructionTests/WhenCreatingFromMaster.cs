@@ -1,14 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-
     using FluentAssertions;
 
-    using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
 
     using NUnit.Framework;
