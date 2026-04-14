@@ -4,14 +4,22 @@ import Grid from '@mui/material/Grid';
 import moment from 'moment';
 import queryString from 'query-string';
 import { DataGrid } from '@mui/x-data-grid';
-import { InputField, } from '@linn-it/linn-form-components-library';
+import {
+    DatePicker,
+    Dropdown,
+    ExportButton,
+    InputField
+} from '@linn-it/linn-form-components-library';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 
-function FindImport({ handleRowClick }) {
+function SearchParams({ handleRowClick, table = true, exportUri, runReport }) {
     const inputRef = useRef(null);
 
-    const [options, setOptions] = useState({});
+    const [options, setOptions] = useState({
+        fromDate: moment().subtract(1, 'months'),
+        toDate: new Date()
+    });
 
     const { send, isLoading, result } = useGet(itemTypes.importBooks.url);
 
@@ -25,15 +33,42 @@ function FindImport({ handleRowClick }) {
         }
     };
 
+    const queryUri = () => {
+        const searchParams = { ...options };
+
+        if (searchParams.fromDate) {
+            searchParams.fromDate = searchParams.fromDate.toISOString();
+        }
+        if (searchParams.toDate) {
+            searchParams.toDate = searchParams.toDate.toISOString();
+        }
+
+        return queryString.stringify(searchParams);
+    };
+
     const doSearch = () => {
-        const query = queryString.stringify(options);
         if (
             options.transportBillNumber ||
             options.customsEntryCode ||
             options.rsnNumber ||
-            options.poNumber
+            options.poNumber ||
+            options.dateField ||
+            options.status
         ) {
-            send(null, `?${query}`);
+            send(null, `?${queryUri()}`);
+        }
+    };
+
+    const doReport = () => {
+        if (
+            options.transportBillNumber ||
+            options.customsEntryCode ||
+            options.rsnNumber ||
+            options.poNumber ||
+            options.dateField ||
+            options.status
+        ) {
+            runReport(null, `?${queryUri()}`);
         }
     };
 
@@ -99,12 +134,72 @@ function FindImport({ handleRowClick }) {
                     disabled={options.transportBillNumber}
                 />
             </Grid>
-            <Grid size={12}>
-                <Button onClick={doSearch} variant="outlined" style={{ marginTop: '29px' }}>
-                    Search
-                </Button>
+            <Grid size={3}>
+                <Dropdown
+                    value={options.status}
+                    fullWidth
+                    label="Status"
+                    propertyName="status"
+                    allowNoValue
+                    items={['Cleared', 'Instruction Sent', 'Raised', 'Cancelled', 'Received']}
+                    onChange={handleOptionChange}
+                />
             </Grid>
-            {result && (
+            <Grid size={3}>
+                <Dropdown
+                    value={options.dateField}
+                    fullWidth
+                    label="Date Filter"
+                    propertyName="dateField"
+                    allowNoValue
+                    items={['Date Created', 'Date Received', 'Customs Date']}
+                    onChange={handleOptionChange}
+                />
+            </Grid>
+            <Grid size={3}>
+                {options.dateField && (
+                    <DatePicker
+                        value={options.fromDate}
+                        label="From Date"
+                        propertyName="fromDate"
+                        onChange={date => handleOptionChange('fromDate', date)}
+                    />
+                )}
+            </Grid>
+            <Grid size={3}>
+                {options.dateField && (
+                    <DatePicker
+                        value={options.toDate}
+                        label="To Date"
+                        propertyName="toDate"
+                        onChange={date => handleOptionChange('toDate', date)}
+                    />
+                )}
+            </Grid>
+            <Grid size={9}>
+                {table && (
+                    <Button onClick={doSearch} variant="outlined" style={{ marginTop: '29px' }}>
+                        Search
+                    </Button>
+                )}
+                {runReport && (
+                    <Button onClick={doReport} variant="outlined" style={{ marginTop: '29px' }}>
+                        Run Report
+                    </Button>
+                )}
+            </Grid>
+            <Grid size={3}>
+                {exportUri && (
+                    <div style={{ marginTop: '25px' }}>
+                        <ExportButton
+                            href={`${exportUri}?${queryUri()}`}
+                            fileName="ImportReport.csv"
+                            tooltipText="Download as CSV"
+                        />
+                    </div>
+                )}
+            </Grid>
+            {result && table && (
                 <Grid size={12}>
                     <DataGrid
                         rows={
@@ -128,4 +223,4 @@ function FindImport({ handleRowClick }) {
     );
 }
 
-export default FindImport;
+export default SearchParams;

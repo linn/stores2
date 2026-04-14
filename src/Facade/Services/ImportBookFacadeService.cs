@@ -15,6 +15,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.Returns;
+    using Linn.Stores2.Facade.Extensions;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Imports;
 
@@ -181,8 +182,7 @@ namespace Linn.Stores2.Facade.Services
                              CustomsEntryCode = updateResource.CustomsEntryCode,
                              CustomsEntryCodeDate = string.IsNullOrEmpty(updateResource.CustomsEntryCodeDate) ? null : Convert.ToDateTime(updateResource.CustomsEntryCodeDate),
                              CustomsEntryCodePrefix = updateResource.CustomsEntryCodePrefix,
-                             LinnDuty = updateResource.LinnDuty,
-                             LinnVat = updateResource.LinnVat,
+                             TransportBillNumber = updateResource.TransportBillNumber,
                              Period = entity.Period,
                              Currency = currency,
                              OrderDetailCandidates = orderDetails
@@ -224,27 +224,12 @@ namespace Linn.Stores2.Facade.Services
 
         protected override Expression<Func<ImportBook, bool>> FilterExpression(ImportBookSearchResource searchResource)
         {
-            if (!string.IsNullOrEmpty(searchResource.TransportBillNumber))
-            {
-                return ib => ib.TransportBillNumber == searchResource.TransportBillNumber;
-            }
-
-            if (!string.IsNullOrEmpty(searchResource.CustomsEntryCode))
-            {
-                return ib => ib.CustomsEntryCode == searchResource.CustomsEntryCode;
-            }
-
-            if (searchResource.RsnNumber.HasValue)
-            {
-                return ib => ib.OrderDetails.Any(od => od.Rsn != null && od.Rsn.RsnNumber == searchResource.RsnNumber.Value);
-            }
-
-            return null;
+            return searchResource.ToExpression();
         }
 
         protected override Expression<Func<ImportBook, bool>> FindExpression(ImportBookSearchResource searchResource)
         {
-            throw new NotImplementedException();
+            return searchResource.ToExpression();
         }
 
         private IEnumerable<int> ParseNumbers(string numbers)
@@ -286,7 +271,10 @@ namespace Linn.Stores2.Facade.Services
                     TariffCode = orderDetailResource.TariffCode,
                     CountryOfOrigin = country,
                     Rsn = rsn,
-                    CpcNumber = cpcNumber
+                    CpcNumber = cpcNumber,
+                    OrderValue = orderDetailResource.OrderValue,
+                    DutyValue = orderDetailResource.DutyValue,
+                    VatValue = orderDetailResource.VatValue,
                 });
             }
 

@@ -48,6 +48,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public Country CountryOfOrigin { get; set; }
 
+        public decimal OrderValue { get; set; }
+
         public decimal DutyValue { get; set; }
 
         public decimal VatValue { get; set; }

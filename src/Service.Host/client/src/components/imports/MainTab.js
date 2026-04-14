@@ -91,7 +91,7 @@ function MainTab({
                     value={importBook.customsEntryCodeDate}
                     label="Customs Entry Date"
                     propertyName="customsEntryCodeDate"
-                    onChange={handleFieldChange}
+                    onChange={date => handleFieldChange('customsEntryCodeDate', date)}
                     disabled={!canChange}
                 />
             </Grid>
@@ -210,8 +210,7 @@ function MainTab({
                     fullWidth
                     label="Linn Duty (A00 value GBP)"
                     propertyName="linnDuty"
-                    onChange={handleNumberFieldChange}
-                    disabled={!canChange}
+                    disabled
                 />
             </Grid>
             <Grid size={3}>
@@ -220,8 +219,7 @@ function MainTab({
                     fullWidth
                     label="Linn VAT (B00 value GBP)"
                     propertyName="linnVat"
-                    onChange={handleNumberFieldChange}
-                    disabled={!canChange}
+                    disabled
                 />
             </Grid>
             <Grid size={3}>
@@ -230,8 +228,7 @@ function MainTab({
                     fullWidth
                     label="Total Import Value (GBP)"
                     propertyName="totalImportValue"
-                    onChange={handleNumberFieldChange}
-                    disabled={!canChange}
+                    disabled
                 />
             </Grid>
 

@@ -92,6 +92,12 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 this.AddInvoiceDetail(invoiceDetailCandidate);
             }
 
+            if (candidate.Period != null)
+            {
+                this.PeriodNumber = candidate.Period.PeriodNumber;
+                this.Period = candidate.Period;
+            }
+
             if (candidate.ExchangeRate != null)
             {
                 this.ApplyExchangeRate(candidate.ExchangeRate);
@@ -189,8 +195,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         {
             this.UpdateCustomsEntry(update.CustomsEntryCodePrefix, update.CustomsEntryCode, update.CustomsEntryCodeDate);
 
-            this.LinnDuty = update.LinnDuty;
-            this.LinnVat = update.LinnVat;
             this.TransportBillNumber = update.TransportBillNumber;
             this.DateReceived = update.DateReceived;
 
@@ -218,6 +222,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                     {
                         orderDetail.DutyValue = orderDetailCandidate.DutyValue;
                         orderDetail.VatValue = orderDetailCandidate.VatValue;
+                        orderDetail.OrderValue = orderDetailCandidate.OrderValue;
+                        orderDetail.OrderDescription = orderDetailCandidate.OrderDescription;
                     }
                 }
 
@@ -286,6 +292,28 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                     throw new ImportBookException($"Invoice detail currency {candidate.Currency.Code} does not match import book currency {this.Currency.Code}");
                 }
             }
+        }
+
+        public string Status()
+        {
+            if (this.DateCancelled.HasValue)
+            {
+                return "Cancelled";
+            }
+            else if (this.DateReceived.HasValue)
+            {
+                return "Received";
+            }
+            else if (this.CustomsEntryCodeDate.HasValue)
+            {
+                return "Cleared";
+            }
+            else if (this.DateInstructionSent.HasValue)
+            {
+                return "Instruction Sent";
+            }
+
+            return "Raised";
         }
     }
 }

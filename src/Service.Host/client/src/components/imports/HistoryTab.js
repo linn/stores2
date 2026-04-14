@@ -1,13 +1,13 @@
 import React from 'react';
 import Grid from '@mui/material/Grid';
 import moment from 'moment';
-import { InputField } from '@linn-it/linn-form-components-library';
+import { DatePicker, InputField } from '@linn-it/linn-form-components-library';
 
-function HistoryTab({ importBook }) {
+function HistoryTab({ importBook, canChange, handleFieldChange }) {
     return (
         <>
             <Grid container spacing={1}>
-                <Grid size={6}>
+                <Grid size={4}>
                     <InputField
                         disabled
                         value={
@@ -20,7 +20,7 @@ function HistoryTab({ importBook }) {
                         propertyName="dateCreated"
                     />
                 </Grid>
-                <Grid size={6}>
+                <Grid size={4}>
                     <InputField
                         disabled
                         value={importBook.createdByName}
@@ -29,17 +29,61 @@ function HistoryTab({ importBook }) {
                         propertyName="createdByName"
                     />
                 </Grid>
-                <Grid size={6}>
+                <Grid size={4}>
+                    <InputField
+                        disabled
+                        value={importBook.status}
+                        fullWidth
+                        label="Status"
+                        propertyName="status"
+                    />
+                </Grid>
+                <Grid size={4}>
                     <InputField
                         disabled
                         value={
-                            importBook.dateReceived
-                                ? moment(importBook.dateReceived).format('DD-MMM-YY HH:mm')
+                            importBook.dateInstructionSent
+                                ? moment(importBook.dateInstructionSent).format('DD-MMM-YY HH:mm')
                                 : ''
                         }
                         fullWidth
+                        label="Date Instruction Sent"
+                        propertyName="dateInstructionSent"
+                    />
+                </Grid>
+                <Grid size={4}>
+                    <InputField
+                        disabled
+                        value={
+                            importBook.customsEntryCodeDate
+                                ? moment(importBook.customsEntryCodeDate).format('DD-MMM-YY HH:mm')
+                                : ''
+                        }
+                        fullWidth
+                        label="Customs Entry Date"
+                        propertyName="customsEntryCodeDate"
+                    />
+                </Grid>
+                <Grid size={4}>
+                    <DatePicker
+                        value={importBook.dateReceived}
                         label="Date Received"
                         propertyName="dateReceived"
+                        onChange={date => handleFieldChange('dateReceived', date)}
+                        disabled={!canChange}
+                    />
+                </Grid>
+                <Grid size={4}>
+                    <InputField
+                        disabled
+                        value={
+                            importBook.dateCancelled
+                                ? moment(importBook.dateCancelled).format('DD-MMM-YY HH:mm')
+                                : ''
+                        }
+                        fullWidth
+                        label="Date Cancelled"
+                        propertyName="dateCancelled"
                     />
                 </Grid>
             </Grid>

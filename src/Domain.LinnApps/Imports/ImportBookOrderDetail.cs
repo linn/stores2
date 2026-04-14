@@ -57,6 +57,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.CpcNumberId = candidate.CpcNumber?.CpcNumber;
             this.DutyValue = candidate.DutyValue;
             this.VatValue = candidate.VatValue;
+            this.OrderValue = candidate.OrderValue;
         }
 
         public int? CpcNumberId { get; set; }

@@ -204,7 +204,13 @@ function ImportBookUtility({ creating }) {
                                         handleNumberFieldChange={handleNumberFieldChange}
                                     />
                                 )}
-                                {tab === 1 && <HistoryTab importBook={importBook} />}
+                                {tab === 1 && (
+                                    <HistoryTab
+                                        importBook={importBook}
+                                        canChange={canChange()}
+                                        handleFieldChange={handleFieldChange}
+                                    />
+                                )}
                             </Box>
 
                             <Grid size={12}>

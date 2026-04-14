@@ -11,5 +11,13 @@ namespace Linn.Stores2.Resources.Imports
         public int? RsnNumber { get; set; }
 
         public int? PONumber { get; set; }
+
+        public string DateField { get; set; }
+
+        public string FromDate { get; set; }
+
+        public string ToDate { get; set; }
+
+        public string Status { get; set; }
     }
 }

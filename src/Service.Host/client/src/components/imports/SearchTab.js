@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { useNavigate } from 'react-router-dom';
 import { InputField, utilities } from '@linn-it/linn-form-components-library';
-import FindImport from './FindImport';
+import SearchParams from './SearchParams';
 
 function SearchTab() {
     const navigate = useNavigate();
@@ -61,7 +61,7 @@ function SearchTab() {
                     </Button>
                 </Grid>
                 <Grid size={8} />
-                <FindImport handleRowClick={handleFindRowClick} />
+                <SearchParams handleRowClick={handleFindRowClick} />
             </Grid>
         </>
     );

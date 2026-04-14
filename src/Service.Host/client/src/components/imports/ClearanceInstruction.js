@@ -24,7 +24,7 @@ import config from '../../config';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
 import Page from '../Page';
-import FindImport from './FindImport';
+import SearchParams from './SearchParams';
 
 function ClearanceInstruction() {
     const [searchParams] = useSearchParams();
@@ -177,7 +177,7 @@ function ClearanceInstruction() {
                                 <DialogTitle>Find Import</DialogTitle>
                                 <DialogContent>
                                     <Grid container spacing={1}>
-                                        <FindImport handleRowClick={handleFindRowClick} />
+                                        <SearchParams handleRowClick={handleFindRowClick} />
                                     </Grid>
                                 </DialogContent>
                                 <DialogActions>
