@@ -52,7 +52,8 @@
 			display: grid;
 			grid-template-areas:
 				'logo title title title .'
-				'logo titleDescription titleDescription titleDescription titleDescription'
+				'logo titleDescription titleDescription titleDescription titleDate'
+				'logo titleDivider titleDivider titleDivider titleDivider'
 				'. . . . .'
 				'fromPrompt address toPrompt carrier .'
 				'telPrompt telephone . . .'
@@ -118,9 +119,17 @@
 
 		.titleDescription {
 			grid-area: titleDescription;
+        }
+
+		.titleDate {
+			grid-area: titleDate;
+		}
+
+		.titleDivider {
+			grid-area: titleDivider;
 			border-bottom: 1px solid #000;
 			padding-bottom: 10px;
-        }
+		}
 
 		.fromPrompt {
 			grid-area: fromPrompt;
@@ -338,6 +347,13 @@
 
                         <div class="titleDescription">
                             <b>AWB No.:</b> @Model.TransportBillNumber
+                        </div>
+
+                        <div class="titleDate">
+                            <b>Date:</b> @Model.InstructionDate.ToString("dd/MM/yyyy")
+                        </div>
+                        
+                        <div class="titleDivider">
                         </div>
                             
                         <div class="fromPrompt">

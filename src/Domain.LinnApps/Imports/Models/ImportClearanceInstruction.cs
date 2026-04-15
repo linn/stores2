@@ -102,6 +102,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
                 this.PVAText = string.Empty;
             }
 
+            if (importBook.DateInstructionSent != null)
+            {
+                this.InstructionDate = importBook.DateInstructionSent.Value;
+            }
+
             foreach (var orderDetail in importBook.OrderDetails)
             {
                 var invoice = orderDetail.RsnNumber != null

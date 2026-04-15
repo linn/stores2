@@ -39,16 +39,12 @@ function HistoryTab({ importBook, canChange, handleFieldChange }) {
                     />
                 </Grid>
                 <Grid size={4}>
-                    <InputField
-                        disabled
-                        value={
-                            importBook.dateInstructionSent
-                                ? moment(importBook.dateInstructionSent).format('DD-MMM-YY HH:mm')
-                                : ''
-                        }
-                        fullWidth
+                    <DatePicker
+                        value={importBook.dateInstructionSent}
                         label="Date Instruction Sent"
                         propertyName="dateInstructionSent"
+                        onChange={date => handleFieldChange('dateInstructionSent', date)}
+                        disabled={!canChange}
                     />
                 </Grid>
                 <Grid size={4}>

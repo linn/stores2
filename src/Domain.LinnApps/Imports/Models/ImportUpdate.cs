@@ -21,6 +21,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public DateTime? DateReceived { get; set; }
 
+        public DateTime? DateInstructionSent { get; set; }
+
         public IList<ImportOrderDetailCandidate> OrderDetailCandidates { get; set; }
     }
 }
