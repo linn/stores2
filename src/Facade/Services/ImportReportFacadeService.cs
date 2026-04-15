@@ -1,6 +1,5 @@
 namespace Linn.Stores2.Facade.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -44,7 +43,7 @@ namespace Linn.Stores2.Facade.Services
             {
                 Stream = pdf,
                 ContentType = "application/pdf",
-                FileName = $"ImportClearanceInstruction.pdf"
+                FileName = "ImportClearanceInstruction.pdf"
             });
         }
 

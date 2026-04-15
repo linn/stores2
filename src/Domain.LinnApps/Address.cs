@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
@@ -57,5 +58,7 @@ namespace Linn.Stores2.Domain.LinnApps
             };
             return elements.Where(e => !string.IsNullOrEmpty(e)).ToList();
         }
+
+        public string FullAddress() => string.Join(Environment.NewLine, this.AddressElements());
     }
 }

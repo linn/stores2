@@ -3,6 +3,7 @@ namespace Linn.Stores2.Persistence.LinnApps
     using Linn.Common.Configuration;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Consignments;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Labels;
@@ -80,6 +81,8 @@ namespace Linn.Stores2.Persistence.LinnApps
         public DbSet<WorkStation> WorkStations { get; set; }
 
         public DbSet<Cit> Cits { get; set; }
+
+        public DbSet<Consignment> Consignments { get; set; }
 
         public DbSet<NominalAccount> NominalAccounts { get; set; }
 
@@ -208,6 +211,10 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildRsnReturnInformation(builder);
             BuildRsnReturnReasons(builder);
             BuildImportAuthNumbers(builder);
+            BuildConsignments(builder);
+            BuildConsignmentPallets(builder);
+            BuildConsignmentItems(builder);
+            BuildSalesOrders(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -275,6 +282,83 @@ namespace Linn.Stores2.Persistence.LinnApps
             builder.Entity<Carrier>().Property(c => c.DateCreated).HasColumnName("DATE_CREATED");
             builder.Entity<Carrier>().Property(c => c.DateInvalid).HasColumnName("DATE_INVALID");
             builder.Entity<Carrier>().HasOne(o => o.Organisation).WithMany().HasForeignKey("ORG_ID");
+        }
+
+        private static void BuildConsignments(ModelBuilder builder)
+        {
+            var q = builder.Entity<Consignment>().ToTable("CONSIGNMENTS");
+            q.HasKey(c => c.ConsignmentId);
+            q.Property(c => c.ConsignmentId).HasColumnName("CONSIGNMENT_ID");
+            q.Property(c => c.AddressId).HasColumnName("ADDRESS_ID");
+            q.Property(c => c.SalesAccountId).HasColumnName("SALES_ACCOUNT_ID");
+            q.Property(c => c.DateClosed).HasColumnName("DATE_CLOSED");
+            q.Property(c => c.CustomerName).HasColumnName("CUSTOMER_NAME").HasMaxLength(50);
+            q.HasOne(c => c.Address).WithMany().HasForeignKey(o => o.AddressId);
+            q.Property(c => c.CarrierCode).HasColumnName("CARRIER").HasMaxLength(10);
+            q.Property(c => c.ShippingMethod).HasColumnName("SHIPPING_METHOD").HasMaxLength(1);
+            q.Property(c => c.Terms).HasColumnName("TERMS").HasMaxLength(30);
+            q.Property(c => c.Status).HasColumnName("STATUS").HasMaxLength(1);
+            q.Property(c => c.DateOpened).HasColumnName("DATE_OPENED");
+            q.Property(c => c.DespatchLocationCode).HasColumnName("DESPATCH_LOCATION_CODE").HasMaxLength(10);
+            q.Property(c => c.Warehouse).HasColumnName("WAREHOUSE").HasMaxLength(1);
+            q.Property(c => c.HubId).HasColumnName("HUB_ID");
+            q.Property(c => c.ClosedById).HasColumnName("CLOSED_BY");
+            q.Property(c => c.CustomsEntryCodePrefix).HasColumnName("CUSTOMS_ENTRY_CODE_PREFIX").HasMaxLength(3);
+            q.Property(c => c.CustomsEntryCode).HasColumnName("CUSTOMS_ENTRY_CODE").HasMaxLength(20);
+            q.Property(c => c.CustomsEntryCodeDate).HasColumnName("CUSTOMS_ENTRY_CODE_DATE");
+            q.Property(c => c.CarrierRef).HasColumnName("CARRIER_REF").HasMaxLength(32);
+            q.Property(c => c.MasterCarrierRef).HasColumnName("MASTER_CARRIER_REF").HasMaxLength(32);
+            q.HasOne(c => c.ClosedBy).WithMany().HasForeignKey(s => s.ClosedById);
+            q.HasOne(c => c.Carrier).WithMany().HasForeignKey(s => s.CarrierCode);
+            q.HasMany(c => c.Items).WithOne().HasForeignKey(ci => ci.ConsignmentId);
+            q.HasMany(c => c.Pallets).WithOne().HasForeignKey(cp => cp.ConsignmentId);
+        }
+
+        private static void BuildConsignmentItems(ModelBuilder builder)
+        {
+            var entity = builder.Entity<ConsignmentItem>().ToTable("CONSIGNMENT_ITEMS");
+            entity.HasKey(i => new { i.ConsignmentId, i.ItemNumber });
+            entity.Property(i => i.ConsignmentId).HasColumnName("CONSIGNMENT_ID");
+            entity.Property(i => i.ItemNumber).HasColumnName("ITEM_NO");
+            entity.Property(i => i.ItemType).HasColumnName("ITEM_TYPE").HasMaxLength(1);
+            entity.Property(i => i.SerialNumber).HasColumnName("SERIAL_NUMBER");
+            entity.Property(i => i.Quantity).HasColumnName("QTY");
+            entity.Property(i => i.MaybeHalfAPair).HasColumnName("MAY_BE_HALF_A_PAIR").HasMaxLength(1);
+            entity.Property(i => i.Weight).HasColumnName("WEIGHT");
+            entity.Property(i => i.Height).HasColumnName("HEIGHT");
+            entity.Property(i => i.Depth).HasColumnName("DEPTH");
+            entity.Property(i => i.Width).HasColumnName("WIDTH");
+            entity.Property(i => i.ContainerType).HasColumnName("CONTAINER_TYPE").HasMaxLength(8);
+            entity.Property(i => i.ContainerNumber).HasColumnName("CONTAINER_NO");
+            entity.Property(i => i.PalletNumber).HasColumnName("PALLET_NO");
+            entity.Property(i => i.ItemBaseWeight).HasColumnName("ITEM_BASE_WEIGHT");
+            entity.Property(i => i.ItemDescription).HasColumnName("ITEM_DESCRIPTION").HasMaxLength(50);
+            entity.Property(i => i.RsnNumber).HasColumnName("RSN_NUMBER");
+            entity.Property(i => i.OrderNumber).HasColumnName("ORDER_NUMBER");
+            entity.Property(i => i.OrderLine).HasColumnName("ORDER_LINE");
+            entity.HasOne(c => c.SalesOrder).WithMany().HasForeignKey(s => s.OrderNumber);
+        }
+
+        private static void BuildSalesOrders(ModelBuilder builder)
+        {
+            var entity = builder.Entity<SalesOrder>().ToTable("SALES_ORDERS");
+            entity.HasKey(i => i.OrderNumber);
+            entity.Property(i => i.OrderNumber).HasColumnName("ORDER_NUMBER");
+            entity.Property(i => i.AccountId).HasColumnName("ACCOUNT_ID");
+            entity.Property(i => i.OutletNumber).HasColumnName("OUTLET_NUMBER");
+            entity.Property(i => i.CustomerOrderNumber).HasColumnName("CUSTOMERS_ORDER_NO").HasMaxLength(12);
+        }
+
+        private static void BuildConsignmentPallets(ModelBuilder builder)
+        {
+            var table = builder.Entity<ConsignmentPallet>().ToTable("CONSIGNMENT_PALLETS");
+            table.HasKey(a => new { a.ConsignmentId, a.PalletNumber });
+            table.Property(a => a.ConsignmentId).HasColumnName("CONSIGNMENT_ID");
+            table.Property(a => a.PalletNumber).HasColumnName("PALLET_NO");
+            table.Property(a => a.Weight).HasColumnName("WEIGHT");
+            table.Property(a => a.Height).HasColumnName("HEIGHT");
+            table.Property(a => a.Width).HasColumnName("WIDTH");
+            table.Property(a => a.Depth).HasColumnName("DEPTH");
         }
 
         private static void BuildStoragePlaces(ModelBuilder builder)

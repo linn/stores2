@@ -1,0 +1,264 @@
+@inherits RazorEngineCore.RazorEngineTemplateBase<Linn.Stores2.Domain.LinnApps.Consignments.Models.PackingListDocument>
+@{
+    <style>
+
+        @@media print {
+            @@page {
+                size: A4 portrait;
+                margin: 25px;
+                margin-bottom: 60px;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tfoot {
+                display: table-footer-group;
+            }
+        }
+
+        @@media screen {
+            @@page {
+                size: A4 portrait;
+                margin: 50px;
+            }
+
+            thead {
+                display: block;
+                margin-left: 50px;
+                margin-right: 600px;
+            }
+
+            tbody {
+                display: block;
+                margin-left: 50px;
+                margin-right: 50px;
+                margin-bottom: 60px;
+            }
+
+            tfoot {
+                display: block;
+                margin-left: 50px;
+                margin-right: 50px;
+            }
+        }
+
+        thead {
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+        }
+
+
+        tbody {
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+        }
+
+        tfoot {
+            font-size: 1em;
+            font-family: Arial, sans-serif;
+        }
+
+        .auto {
+            grid-area: auto;
+        }
+
+        .logo {
+            grid-area: logo;
+        }
+
+        .item1 {
+            grid-area: item1;
+            font-size: 1.4em;
+            margin-top: 15px
+        }
+
+        .consignmentNumber {
+            font-weight: bold;
+            grid-area: consignmentNumber;
+        }
+
+        .deliveryAddress {
+            grid-area: deliveryAddress;
+        }
+
+        .senderAddress {
+            grid-area: senderAddress;
+        }
+
+        .dateOfDispatch {
+            grid-area: dateOfDispatch;
+        }
+
+        .carrier {
+            grid-area: carrier;
+        }
+
+        .customerRef {
+            grid-area: customerRef;
+        }
+
+        .text-align-right {
+            text-align: right;
+        }
+
+        .text-align-left {
+            text-align: left;
+        }
+
+        .header-grid-container {
+            row-gap: 10px;
+            column-gap: 30px;
+            display: grid;
+            margin-bottom: 40px;
+            grid-template-areas:
+                'logo item1 item1 item1 item1 item1'
+                'logo leftDetails leftDetails leftDetails deliveryAddress senderAddress';
+            align-items: start;
+        }
+
+        .leftDetails {
+            grid-area: leftDetails;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .line-grid-container {
+            column-gap: 20px;
+            margin-bottom: 40px;
+            display: grid;
+            grid-template-columns: auto auto auto auto auto auto;
+            row-gap: 10px;
+        }
+
+        .footer-grid-container {
+            row-gap: 10px;
+            column-gap: 40px;
+            display: grid;
+            grid-template-columns: auto auto auto;
+        }
+
+        #tcb-extension-uk-wrapper {
+            display: none !important;
+        }
+
+        .pallet-header {
+            grid-column: 1 / -1;
+            margin-top: 10px;
+        }
+    </style>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        <div class="header-grid-container">
+                            <div class="logo">
+                                <img src="@("https://app.linn.co.uk/Content/images/linn-logo.png")" />
+                            </div>
+                            <div class="item1"> <b>Linn Products Ltd - Packing List</b></div>
+
+                            <div class="leftDetails">
+                                <div class="consignmentNumber">
+                                    Consignment number: @Model.Consignment.ConsignmentId
+                                </div>
+                                <div class="dateOfDispatch">
+                                    Date Dispatched: @Model.Consignment.DateClosed?.ToString("dd-MMM-yyyy")
+                                </div>
+                                <div class="carrier">
+                                    Carrier: @Model.Consignment.Carrier?.Name
+                                </div>
+                                <div class="carrier">
+                                    Carrier Ref: @Model.CarrierReference
+                                </div>
+                                <div class="customerRef">
+                                    Customer Ref Numbers: @Model.Consignment.GetCustomerReferences()
+                                </div>
+                            </div>
+                            <div class="deliveryAddress">
+                                <b>Consignee:</b><br />@Model.Consignment.Address.FullAddress().Replace("\r\n", "<br />").Replace("\n", "<br />")
+                            </div>
+                            <div class="senderAddress">
+                                <b>Sender:</b><br />@Model.SenderAddress.Replace("\r\n", "<br />").Replace("\n", "<br />")
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+            @if (Model.Consignment.GetPrintableLines().Any())
+            {
+            <tr>
+                <td>
+                    <div class="line-grid-container">
+                        <div><b>Box</b></div>
+                        <div><b>To</b></div>
+                        <div><b>Count</b></div>
+                        <div><b>Description</b></div>
+                        <div><b>Weight</b></div>
+                        <div><b>Dimensions</b></div>
+                        @foreach (var consignmentItem in Model.Consignment.GetPrintableLines())
+                        {
+                            <div>@consignmentItem.LowValue</div>
+                            <div>@consignmentItem.HighValue</div>
+                            <div>@consignmentItem.Count</div>
+                            <div>@consignmentItem.ItemDescription</div>
+                            <div>@consignmentItem.Weight Kgs</div>
+                            <div>@consignmentItem.Dims</div>
+                        }
+                    </div>
+                </td>
+            </tr>
+            }
+            @if (Model.Consignment.Pallets != null && Model.Consignment.Pallets.Any())
+            {
+            <tr>
+                <td>
+                    <div class="line-grid-container">
+                            @foreach (var pallet in Model.Consignment.Pallets)
+                                {
+                                <div class="pallet-header"><b>Pallet:</b> @pallet.PalletNumber &nbsp; <b>Dimensions:</b> @pallet.PalletDimensions &nbsp; <b>Weight:</b> @pallet.Weight Kgs</div>
+                                <div><b>Box</b></div>
+                                <div><b>To</b></div>
+                                <div><b>Count</b></div>
+                                <div><b>Description</b></div>
+                                <div><b>Weight</b></div>
+                                <div><b>Dimensions</b></div>
+                                @foreach (var consignmentItem in Model.Consignment.GetPrintablePalletLines(pallet.PalletNumber))
+                                    {
+                                        <div>@consignmentItem.LowValue</div>
+                                        <div>@consignmentItem.HighValue</div>
+                                        <div>@consignmentItem.Count</div>
+                                        <div>@consignmentItem.ItemDescription</div>
+                                        <div>@consignmentItem.Weight Kgs</div>
+                                        <div>@consignmentItem.Dims</div>
+                                    }
+                            }
+                    </div>
+                </td>
+            </tr>
+            }
+            <tr>
+                <td>
+                    <div class="footer-grid-container">
+                        <div></div>
+                        <div>Total Pallets: @Model.Consignment.TotalNumberOfPallets()</div>
+                        <div>Total Boxes: @Model.Consignment.TotalNumberOfBoxes()</div>
+                        <div></div>
+                        <div>Total Gross Weight: @Model.Consignment.TotalWeight() Kgs</div>
+                        <div>Total Volume: @Model.Consignment.TotalVolume().ToString("N3") m&sup3;</div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}

@@ -4,6 +4,7 @@ namespace Linn.Stores2.IoC
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Consignments;
     using Linn.Stores2.Domain.LinnApps.GoodsIn;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Labels;
@@ -75,6 +76,7 @@ namespace Linn.Stores2.IoC
                     new EntityFrameworkRepository<Nominal, string>(r.GetService<ServiceDbContext>()?.Nominals))
                 .AddScoped<IRepository<GoodsInLogEntry, int>, GoodsInLogRepository>()
                 .AddScoped<IRepository<StockTransaction, int>, StockTransactionRepository>()
+                .AddScoped<IRepository<Consignment, int>, ConsignmentRepository>()
                 .AddScoped<IRepository<RequisitionHistory, int>,
                     EntityFrameworkRepository<RequisitionHistory, int>>(r =>
                     new EntityFrameworkRepository<RequisitionHistory, int>(
