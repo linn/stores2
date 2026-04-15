@@ -197,6 +197,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
             this.TransportBillNumber = update.TransportBillNumber;
             this.DateReceived = update.DateReceived;
+            this.DateInstructionSent = update.DateInstructionSent;
 
             if (update.Period != null && this.Period == null)
             {

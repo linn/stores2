@@ -208,7 +208,7 @@ function MainTab({
                 <InputField
                     value={importBook.linnDuty}
                     fullWidth
-                    label="Linn Duty (A00 value GBP)"
+                    label="Linn Duty"
                     propertyName="linnDuty"
                     disabled
                 />
@@ -217,7 +217,7 @@ function MainTab({
                 <InputField
                     value={importBook.linnVat}
                     fullWidth
-                    label="Linn VAT (B00 value GBP)"
+                    label="Linn VAT"
                     propertyName="linnVat"
                     disabled
                 />
