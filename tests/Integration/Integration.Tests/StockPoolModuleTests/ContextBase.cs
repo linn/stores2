@@ -55,8 +55,7 @@ namespace Linn.Stores2.Integration.Tests.StockPoolModuleTests
                     storageLocationRepository,
                     accountingCompanyRepository);
 
-            this.Client = TestClient.With<StockPoolModule>(
-                services =>
+            this.Client = TestClient.With<StockPoolModule>(services =>
                     {
                         services.AddSingleton(stockPoolFacadeService);
                         services.AddSingleton(this.UserPrivilegeService);

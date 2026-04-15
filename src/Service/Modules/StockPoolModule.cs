@@ -30,8 +30,7 @@ namespace Linn.Stores2.Service.Modules
             IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService,
             IUserPrivilegeService userPrivilegeService)
         {
-            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
-            var results = await facadeService.GetAll(privileges);
+            var results = await facadeService.GetAll();
             await res.Negotiate(results);
         }
 
@@ -42,8 +41,7 @@ namespace Linn.Stores2.Service.Modules
             IAsyncFacadeService<StockPool, string, StockPoolResource, StockPoolUpdateResource, StockPoolResource> facadeService,
             IUserPrivilegeService userPrivilegeService)
         {
-            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
-            var results = await facadeService.GetById(code, privileges);
+            var results = await facadeService.GetById(code);
             await res.Negotiate(results);
         }
 
