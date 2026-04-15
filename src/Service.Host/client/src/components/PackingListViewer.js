@@ -52,7 +52,9 @@ function PackingListViewer() {
                     {isLoading && <Loading />}
                     {errorMessage && <ErrorCard errorMessage={errorMessage} />}
                     {consignment && (
-                        <Typography variant="h6">{consignment.customerName}</Typography>
+                        <Typography variant="h6">
+                            Found consignment {consignmentNumber} for {consignment.salesAccountName}
+                        </Typography>
                     )}
                 </Grid>
                 <Grid size={1} style={{ marginTop: '8px' }}>

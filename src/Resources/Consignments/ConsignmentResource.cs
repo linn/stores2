@@ -8,6 +8,8 @@ namespace Linn.Stores2.Resources.Consignments
 
         public int? SalesAccountId { get; set; }
 
+        public string SalesAccountName { get; set; }
+
         public int? AddressId { get; set; }
 
         public string DateOpened { get; set; }

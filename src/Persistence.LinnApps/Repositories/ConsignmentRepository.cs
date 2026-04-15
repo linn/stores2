@@ -22,6 +22,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
             var result = await this.serviceDbContext.Consignments
                              .Include(x => x.Items)
                              .ThenInclude(b => b.SalesOrder)
+                             .Include(x => x.SalesAccount)
                              .Include(x => x.Pallets)
                              .Include(x => x.Address)
                              .Include(x => x.Carrier)

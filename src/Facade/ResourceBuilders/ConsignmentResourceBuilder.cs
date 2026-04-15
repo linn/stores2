@@ -17,6 +17,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                 Links = this.BuildLinks(model, claims).ToArray(),
                 ConsignmentId = model.ConsignmentId,
                 SalesAccountId = model.SalesAccountId,
+                SalesAccountName = model.SalesAccount?.AccountName,
                 AddressId = model.AddressId,
                 DateOpened = model.DateOpened.ToString("o"),
                 DateClosed = model.DateClosed?.ToString("o"),

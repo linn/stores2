@@ -215,6 +215,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             BuildConsignmentPallets(builder);
             BuildConsignmentItems(builder);
             BuildSalesOrders(builder);
+            BuildSalesAccounts(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -291,6 +292,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(c => c.ConsignmentId).HasColumnName("CONSIGNMENT_ID");
             q.Property(c => c.AddressId).HasColumnName("ADDRESS_ID");
             q.Property(c => c.SalesAccountId).HasColumnName("SALES_ACCOUNT_ID");
+            q.HasOne(c => c.SalesAccount).WithMany().HasForeignKey(s => s.SalesAccountId);
             q.Property(c => c.DateClosed).HasColumnName("DATE_CLOSED");
             q.Property(c => c.CustomerName).HasColumnName("CUSTOMER_NAME").HasMaxLength(50);
             q.HasOne(c => c.Address).WithMany().HasForeignKey(o => o.AddressId);
@@ -347,6 +349,14 @@ namespace Linn.Stores2.Persistence.LinnApps
             entity.Property(i => i.AccountId).HasColumnName("ACCOUNT_ID");
             entity.Property(i => i.OutletNumber).HasColumnName("OUTLET_NUMBER");
             entity.Property(i => i.CustomerOrderNumber).HasColumnName("CUSTOMERS_ORDER_NO").HasMaxLength(12);
+        }
+
+        private static void BuildSalesAccounts(ModelBuilder builder)
+        {
+            var q = builder.Entity<SalesAccount>().ToTable("SALES_ACCOUNTS");
+            q.HasKey(e => e.AccountId);
+            q.Property(e => e.AccountId).HasColumnName("ACCOUNT_ID");
+            q.Property(e => e.AccountName).HasColumnName("ACCOUNT_NAME").HasMaxLength(50);
         }
 
         private static void BuildConsignmentPallets(ModelBuilder builder)
