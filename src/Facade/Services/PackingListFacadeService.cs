@@ -1,5 +1,7 @@
 namespace Linn.Stores2.Facade.Services;
 
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using Linn.Common.Facade;
@@ -30,6 +32,24 @@ public class PackingListFacadeService : IPackingListFacadeService
             new StreamResponse
             {
                 ContentType = "application/pdf", FileName = $"PackingList_{consignmentNumber}.pdf", Stream = result
+            });
+    }
+
+    public async Task<string> GetPackingListsAsHtml(IEnumerable<int> consignmentNumbers)
+    {
+        return await this.packingListService.GetPackingListsAsHtml(consignmentNumbers);
+    }
+
+    public async Task<IResult<StreamResponse>> GetPackingListsAsPdf(IEnumerable<int> consignmentNumbers)
+    {
+        var result = await this.packingListService.GetPackingListsAsPdf(consignmentNumbers);
+
+        return new SuccessResult<StreamResponse>(
+            new StreamResponse
+            {
+                ContentType = "application/pdf",
+                FileName = $"PackingLists_{DateTime.Now:yyyyMMdd}.pdf",
+                Stream = result
             });
     }
 }

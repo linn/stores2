@@ -17,6 +17,8 @@ namespace Linn.Stores2.Service.Modules
         {
             app.MapGet("/stores2/consignments/{consignmentNumber}/packing-list/view", this.GetPackingListHtml);
             app.MapGet("/stores2/consignments/{consignmentNumber}/packing-list/pdf", this.GetPackingListPdf);
+            app.MapGet("/stores2/consignments/multiple-packing-lists/view", this.GetPackingListsHtml);
+            app.MapGet("/stores2/consignments/multiple-packing-lists/pdf", this.GetPackingListsPdf);
         }
 
         private async Task GetPackingListHtml(
@@ -38,6 +40,29 @@ namespace Linn.Stores2.Service.Modules
             IPackingListFacadeService facadeService)
         {
             var result = await facadeService.GetPackingListAsPdf(consignmentNumber);
+
+            await res.Negotiate(result);
+        }
+
+        private async Task GetPackingListsHtml(
+            HttpResponse res,
+            int[] consignmentNumber,
+            IPackingListFacadeService facadeService)
+        {
+            var result = await facadeService.GetPackingListsAsHtml(consignmentNumber);
+
+            res.ContentType = "text/html";
+            res.StatusCode = (int)HttpStatusCode.OK;
+
+            await res.WriteAsync(result);
+        }
+
+        private async Task GetPackingListsPdf(
+            HttpResponse res,
+            int[] consignmentNumber,
+            IPackingListFacadeService facadeService)
+        {
+            var result = await facadeService.GetPackingListsAsPdf(consignmentNumber);
 
             await res.Negotiate(result);
         }

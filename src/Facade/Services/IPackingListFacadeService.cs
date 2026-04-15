@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Facade.Services
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
@@ -10,5 +11,9 @@ namespace Linn.Stores2.Facade.Services
         Task<string> GetPackingListAsHtml(int consignmentNumber);
 
         Task<IResult<StreamResponse>> GetPackingListAsPdf(int consignmentNumber);
+
+        Task<string> GetPackingListsAsHtml(IEnumerable<int> consignmentNumbers);
+
+        Task<IResult<StreamResponse>> GetPackingListsAsPdf(IEnumerable<int> consignmentNumbers);
     }
 }
