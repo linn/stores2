@@ -37,7 +37,7 @@ function SearchParams({ handleRowClick, table = true, exportUri, runReport }) {
         const searchParams = { ...options };
 
         if (searchParams.fromDate) {
-            searchParams.fromDate = searchParams.fromDate.toISOString();
+            searchParams.fromDate = searchParams.fromDate.toISOString().split('T')[0];
         }
         if (searchParams.toDate) {
             searchParams.toDate = searchParams.toDate.toISOString();

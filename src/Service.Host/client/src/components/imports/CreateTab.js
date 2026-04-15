@@ -299,17 +299,19 @@ function CreateTab() {
                 )}
             </Grid>
             <Grid size={2}>
-                <Button
-                    onClick={addClick}
-                    variant="outlined"
-                    style={{ marginTop: '29px' }}
-                    disabled={
-                        (importType === 'RSN' && (!rsnNumber || rsnLoading)) ||
-                        (importType === 'PO' && (!purchaseOrderNumber || purchaseOrderLoading))
-                    }
-                >
-                    Add
-                </Button>
+                {(importType === 'RSN' || importType === 'PO') && (
+                    <Button
+                        onClick={addClick}
+                        variant="outlined"
+                        style={{ marginTop: '29px' }}
+                        disabled={
+                            (importType === 'RSN' && (!rsnNumber || rsnLoading)) ||
+                            (importType === 'PO' && (!purchaseOrderNumber || purchaseOrderLoading))
+                        }
+                    >
+                        Add
+                    </Button>
+                )}
             </Grid>
             <Grid size={4}></Grid>
             {(rsnLoading || purchaseOrderLoading) && (

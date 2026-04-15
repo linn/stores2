@@ -22,7 +22,7 @@ function MainTab({
     cpcNumbers,
     canChange,
     handleFieldChange,
-    handleNumberFieldChange
+    creating
 }) {
     const {
         search: searchSuppliers,
@@ -195,42 +195,46 @@ function MainTab({
                     propertyName="supplierCountry"
                 />
             </Grid>
-            <Grid size={3}>
-                <InputField
-                    value={importBook.exchangeRate}
-                    fullWidth
-                    label="Exchange Rate"
-                    propertyName="exchangeRate"
-                    disabled
-                />
-            </Grid>
-            <Grid size={3}>
-                <InputField
-                    value={importBook.linnDuty}
-                    fullWidth
-                    label="Linn Duty"
-                    propertyName="linnDuty"
-                    disabled
-                />
-            </Grid>
-            <Grid size={3}>
-                <InputField
-                    value={importBook.linnVat}
-                    fullWidth
-                    label="Linn VAT"
-                    propertyName="linnVat"
-                    disabled
-                />
-            </Grid>
-            <Grid size={3}>
-                <InputField
-                    value={importBook.totalImportValue}
-                    fullWidth
-                    label="Total Import Value (GBP)"
-                    propertyName="totalImportValue"
-                    disabled
-                />
-            </Grid>
+            {!creating && (
+                <>
+                    <Grid size={3}>
+                        <InputField
+                            value={importBook.exchangeRate}
+                            fullWidth
+                            label="Exchange Rate"
+                            propertyName="exchangeRate"
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={3}>
+                        <InputField
+                            value={importBook.linnDuty}
+                            fullWidth
+                            label="Linn Duty"
+                            propertyName="linnDuty"
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={3}>
+                        <InputField
+                            value={importBook.linnVat}
+                            fullWidth
+                            label="Linn VAT"
+                            propertyName="linnVat"
+                            disabled
+                        />
+                    </Grid>
+                    <Grid size={3}>
+                        <InputField
+                            value={importBook.totalImportValue}
+                            fullWidth
+                            label="Total Import Value (GBP)"
+                            propertyName="totalImportValue"
+                            disabled
+                        />
+                    </Grid>
+                </>
+            )}
 
             <InvoiceDetails
                 invoiceDetails={importBook.importBookInvoiceDetails}
