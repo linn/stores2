@@ -36,6 +36,13 @@ function PackingListViewer() {
                         onChange={(_, value) => setConsignmentNumber(value)}
                         label="Consignment Number"
                         propertyName="consignmentNumber"
+                        textFieldProps={{
+                            onKeyDown: data => {
+                                if (data.keyCode === 9 || data.keyCode === 13) {
+                                    getConsignment(consignmentNumber);
+                                }
+                            }
+                        }}
                     />
                 </Grid>
                 <Grid size={1}>
