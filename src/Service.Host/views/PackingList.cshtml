@@ -5,7 +5,6 @@
         @@media print {
             @@page {
                 size: A4 portrait;
-                margin: 25px;
                 margin-bottom: 60px;
             }
 
@@ -25,12 +24,14 @@
             }
 
             thead {
+                font-size: 1em;
                 display: block;
                 margin-left: 50px;
                 margin-right: 600px;
             }
 
             tbody {
+                font-size: 0.9em;
                 display: block;
                 margin-left: 50px;
                 margin-right: 50px;
@@ -51,7 +52,7 @@
 
 
         tbody {
-            font-size: 1em;
+            font-size: 0.9em;
             font-family: Arial, sans-serif;
         }
 
@@ -103,10 +104,6 @@
             text-align: right;
         }
 
-        .text-align-left {
-            text-align: left;
-        }
-
         .header-grid-container {
             row-gap: 10px;
             column-gap: 30px;
@@ -130,7 +127,7 @@
             margin-bottom: 40px;
             display: grid;
             grid-template-columns: auto auto auto auto auto auto;
-            row-gap: 10px;
+            row-gap: 5px;
         }
 
         .footer-grid-container {
@@ -193,17 +190,17 @@
             <tr>
                 <td>
                     <div class="line-grid-container">
-                        <div><b>Box</b></div>
-                        <div><b>To</b></div>
-                        <div><b>Count</b></div>
+                        <div class="text-align-right"><b>Box</b></div>
+                        <div class="text-align-right"><b>To</b></div>
+                        <div class="text-align-right"><b>Count</b></div>
                         <div><b>Description</b></div>
                         <div><b>Weight</b></div>
                         <div><b>Dimensions</b></div>
                         @foreach (var consignmentItem in Model.Consignment.GetPrintableLines())
                         {
-                            <div>@consignmentItem.LowValue</div>
-                            <div>@consignmentItem.HighValue</div>
-                            <div>@consignmentItem.Count</div>
+                            <div class="text-align-right">@consignmentItem.LowValue</div>
+                            <div class="text-align-right">@consignmentItem.HighValue</div>
+                            <div class="text-align-right">@consignmentItem.Count</div>
                             <div>@consignmentItem.ItemDescription</div>
                             <div>@consignmentItem.Weight Kgs</div>
                             <div>@consignmentItem.Dims</div>
