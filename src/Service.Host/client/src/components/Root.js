@@ -44,6 +44,7 @@ import LabourHoursInLoansReport from './LabourHoursInLoansReport';
 import ImportBookHome from './imports/ImportBookHome';
 import ImportBookUtility from './imports/ImportBookUtility';
 import ClearanceInstruction from './imports/ClearanceInstruction';
+import PackingListViewer from './PackingListViewer';
 
 function Root() {
     const location = useLocation();
@@ -191,6 +192,7 @@ function Root() {
                     path="/stores2/import-books/clearance-instruction"
                     element={<ClearanceInstruction />}
                 />
+                <Route path="/stores2/consignments/packing-lists" element={<PackingListViewer />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>
