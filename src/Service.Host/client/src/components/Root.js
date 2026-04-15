@@ -91,6 +91,7 @@ function Root() {
                 <Route path="/" element={<Navigate to="/stores2" replace />} />
                 <Route path="/stores2" element={<App />} />
                 <Route path="/stores2/reports" element={<App />} />
+                <Route path="/stores2/consignments" element={<PackingListViewer />} />
                 <Route path="/stores2/logged-out" element={<LoggedOut />} />
                 <Route path="/stores2/carriers" element={<Carriers />} />
                 <Route path="/stores2/carriers/create" element={<Carrier creating />} />
