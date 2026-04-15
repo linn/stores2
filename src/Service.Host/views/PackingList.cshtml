@@ -60,10 +60,6 @@
             font-family: Arial, sans-serif;
         }
 
-        pre {
-            font-family: Arial, sans-serif;
-        }
-
         .auto {
             grid-area: auto;
         }
@@ -103,14 +99,6 @@
             grid-area: customerRef;
         }
 
-        .table-item {
-            width: 110px
-        }
-
-        .short-table-item {
-            width: 60px
-        }
-
         .text-align-right {
             text-align: right;
         }
@@ -145,11 +133,11 @@
         }
 
         .footer-grid-container {
+            margin-top: 40px;
             row-gap: 10px;
-            column-gap: 10px;
+            column-gap: 40px;
             display: grid;
-            grid-template-areas:
-                '. . . goodsTotal vatTotal total'
+            grid-template-columns: auto auto auto;
         }
 
         #tcb-extension-uk-wrapper {
@@ -252,6 +240,18 @@
                 </td>
             </tr>
             }
+            <tr>
+                <td>
+                    <div class="footer-grid-container">
+                        <div></div>
+                        <div>Total Pallets: @Model.Consignment.TotalNumberOfPallets()</div>
+                        <div>Total Boxes: @Model.Consignment.TotalNumberOfBoxes()</div>
+                        <div></div>
+                        <div>Total Gross Weight: @Model.Consignment.TotalWeight() Kgs</div>
+                        <div>Total Volume: @Model.Consignment.TotalVolume().ToString("N3") m&sup3;</div>
+                    </div>
+                </td>
+            </tr>
             </tbody>
             <tfoot>
                 <tr>

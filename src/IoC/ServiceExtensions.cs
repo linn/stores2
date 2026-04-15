@@ -124,7 +124,9 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IHtmlTemplateService<PackingListDocument>>(
                     x => new HtmlTemplateService<PackingListDocument>(
                         $"{ConfigurationManager.Configuration["VIEWS_ROOT"]}PackingList.cshtml",
-                        x.GetService<ITemplateEngine>()));
+                        x.GetService<ITemplateEngine>()))
+                .AddScoped<IStringFromFileService>(
+                    x => new StringFromFileService(ConfigurationManager.Configuration["VIEWS_ROOT"]));
         }
 
         public static IServiceCollection AddFacadeServices(this IServiceCollection services)

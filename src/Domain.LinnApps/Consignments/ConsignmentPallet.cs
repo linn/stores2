@@ -14,7 +14,7 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
 
         public int? Depth { get; set; }
 
-        public int? Volume => this.Height * this.Width * this.Depth;
+        public decimal? Volume => decimal.Divide((this.Height ?? 0) * (this.Width ?? 0) * (this.Depth ?? 0), 1000000);
 
         public string PalletDimensions => $"{this.Height} x {this.Width} x {this.Depth} cm";
     }

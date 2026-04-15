@@ -12,7 +12,8 @@ using Linn.Stores2.Domain.LinnApps.Consignments.Models;
 public class PackingListService(
     IRepository<Consignment, int> consignmentRepository,
     IHtmlTemplateService<PackingListDocument> documentTemplateService,
-    IPdfService pdfService) : IPackingListService
+    IPdfService pdfService,
+    IStringFromFileService stringFromFileService) : IPackingListService
 {
     public async Task<string> GetPackingListAsHtml(int consignmentNumber)
     {
@@ -30,7 +31,8 @@ public class PackingListService(
     public async Task<Stream> GetPackingListAsPdf(int consignmentNumber)
     {
         var packingListHtml = await this.GetPackingListAsHtml(consignmentNumber);
+        var footerHtml = stringFromFileService.GetString("Footer.html").Result;
 
-        return await pdfService.ConvertHtmlToPdf(packingListHtml, true, null);
+        return await pdfService.ConvertHtmlToPdf(packingListHtml, true, footerHtml);
     }
 }

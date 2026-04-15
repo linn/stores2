@@ -13,5 +13,7 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments.Models
         public decimal? Weight { get; set; }
 
         public string Dims { get; set; }
+
+        public decimal? Volume { get; set; }
     }
 }

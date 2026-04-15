@@ -17,7 +17,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ConsignmentPalletTests
         [Test]
         public void ShouldReturnNull()
         {
-            this.Sut.Volume.Should().BeNull();
+            this.Sut.Volume.Should().Be(0);
         }
     }
 }

@@ -174,7 +174,8 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
                         HighValue = cpHighValue,
                         Count = cpCount,
                         Weight = cpWeight,
-                        Dims = FormatDims(cpHeight, cpDepth, cpWidth)
+                        Dims = FormatDims(cpHeight, cpDepth, cpWidth),
+                        Volume = decimal.Divide(cpHeight.GetValueOrDefault() * cpDepth.GetValueOrDefault() * cpWidth.GetValueOrDefault(), 1000000)
                     };
 
                     cpDescription = description;
@@ -197,7 +198,8 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
                     HighValue = cpHighValue,
                     Count = cpCount,
                     Weight = cpWeight,
-                    Dims = FormatDims(cpHeight, cpDepth, cpWidth)
+                    Dims = FormatDims(cpHeight, cpDepth, cpWidth),
+                    Volume = decimal.Divide(cpHeight.GetValueOrDefault() * cpDepth.GetValueOrDefault() * cpWidth.GetValueOrDefault(), 1000000)
                 };
             }
         }
@@ -301,6 +303,14 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
                 };
             }
         }
+
+        public int TotalNumberOfPallets() => this.Pallets?.Count ?? 0;
+
+        public int TotalNumberOfBoxes() => this.GetPrintableLines().Any() ? this.GetPrintableLines().ToList().Count : 0;
+
+        public decimal TotalWeight() => (this.GetPrintableLines()?.Sum(w => w.Weight) ?? 0) + (this.Pallets?.Sum(x => x.Weight) ?? 0);
+
+        public decimal TotalVolume() => (this.GetPrintableLines()?.Sum(w => w.Volume) ?? 0) + (this.Pallets?.Sum(x => x.Volume) ?? 0);
 
         private static string FormatDims(int? height, int? depth, int? width)
         {

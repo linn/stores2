@@ -17,7 +17,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ConsignmentPalletTests
         [Test]
         public void ShouldReturnHeightTimesWidthTimesDepth()
         {
-            this.Sut.Volume.Should().Be(6000);
+            this.Sut.Volume.Should().Be(0.006m);
         }
     }
 }
