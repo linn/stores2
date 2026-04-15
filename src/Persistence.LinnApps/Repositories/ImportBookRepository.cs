@@ -29,7 +29,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                        .Include(r => r.OrderDetails).ThenInclude(o => o.Rsn).ThenInclude(r => r.AllegedReason)
                        .Include(i => i.InvoiceDetails)
                        .Include(i => i.PostEntries)
-                       .Include(i => i.Supplier).ThenInclude(s => s.Country)
+                       .Include(i => i.Supplier).ThenInclude(s => s.OrderAddress).ThenInclude(s => s.Country)
                        .Include(i => i.Carrier)
                        .Include(i => i.CreatedBy)
                        .Include(i => i.ContactEmployee)
@@ -46,7 +46,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
             return this.serviceDbContext.ImportBooks.Where(filterExpression)
                 .Include(i => i.InvoiceDetails)
                 .Include(r => r.OrderDetails).ThenInclude(o => o.ImportBookCpcNumber)
-                .Include(i => i.Supplier).ThenInclude(s => s.Country)
+                .Include(i => i.Supplier).ThenInclude(s => s.OrderAddress).ThenInclude(a => a.Country)
                 .Include(i => i.Carrier)
                 .Include(i => i.CreatedBy);
         }

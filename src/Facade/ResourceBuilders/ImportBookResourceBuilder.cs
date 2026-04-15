@@ -52,7 +52,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                 SupplierCountry = model.Supplier != null ?
                                       new CountryResource
                                       {
-                                          CountryCode = model.Supplier.CountryCode,
+                                          CountryCode = model.Supplier.Country.CountryCode,
                                           Name = model.Supplier.Country?.BestName
                                       }
                                       : null,

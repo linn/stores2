@@ -1219,11 +1219,11 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.ToTable("SUPPLIERS");
             q.Property(e => e.Id).HasColumnName("SUPPLIER_ID");
             q.Property(e => e.Name).HasColumnName("SUPPLIER_NAME").HasMaxLength(50);
-            q.Property(e => e.CountryCode).HasColumnName("COUNTRY");
             q.Property(e => e.DateClosed).HasColumnName("DATE_CLOSED");
             q.Property(s => s.ApprovedCarrier).HasColumnName("APPROVED_CARRIER");
             q.Property(s => s.AccountingCompany).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
-            q.HasOne(s => s.Country).WithMany().HasForeignKey(s => s.CountryCode);
+            q.HasOne(s => s.Country).WithMany().HasForeignKey("COUNTRY");
+            q.HasOne(o => o.OrderAddress).WithMany().HasForeignKey("ORD_ADDRESS_ID");
         }
 
         private static void BuildImportBooks(ModelBuilder builder)

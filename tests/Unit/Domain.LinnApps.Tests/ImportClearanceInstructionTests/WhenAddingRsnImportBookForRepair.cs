@@ -85,6 +85,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
         {
             this.Sut.Supplier.Should().NotBeNull();
             this.Sut.Supplier.Name.Should().Be(TestSuppliers.TaktAndTon.Name);
+            this.Sut.Supplier.NiceSupplierName.Should().Be("Takt and Ton");
             this.Sut.Carrier.Should().NotBeNull();
             this.Sut.Invoices.Should().Be("1234");
         }
