@@ -110,6 +110,7 @@ namespace Linn.Stores2.Integration.Tests.StorageModuleTests
         {
             this.DbContext.StorageSites.RemoveAllAndSave(this.DbContext);
             this.DbContext.StorageLocations.RemoveAllAndSave(this.DbContext);
+            this.DbContext.StockStates.RemoveAllAndSave(this.DbContext);
         }
     }
 }

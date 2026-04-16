@@ -27,6 +27,8 @@ namespace Linn.Stores2.Service.Modules
             app.MapPut("/stores2/storage/locations/{id:int}", this.UpdateLocation);
             app.MapGet("/stores2/stock/states", this.GetStockStates);
             app.MapGet("/stores2/stock/states/{id}", this.GetStockState);
+            app.MapPost("/stores2/stock/states", this.CreateStockState);
+            app.MapPut("/stores2/stock/states/{id}", this.UpdateStockState);
             app.MapGet("/stores2/storage/audit-locations", this.GetAuditLocations);
         }
 
@@ -118,6 +120,31 @@ namespace Linn.Stores2.Service.Modules
             IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService)
         {
             await res.Negotiate(await facadeService.GetById(id));
+        }
+
+        private async Task CreateStockState(
+            HttpRequest req,
+            HttpResponse res,
+            StockStateResource resource,
+            IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService,
+            IUserPrivilegeService userPrivilegeService)
+        {
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+
+            await res.Negotiate(await facadeService.Add(resource, privileges));
+        }
+
+        private async Task UpdateStockState(
+            HttpRequest req,
+            HttpResponse res,
+            string id,
+            StockStateResource resource,
+            IAsyncFacadeService<StockState, string, StockStateResource, StockStateResource, StockStateResource> facadeService,
+            IUserPrivilegeService userPrivilegeService)
+        {
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+
+            await res.Negotiate(await facadeService.Update(id, resource, privileges));
         }
     }
 }
