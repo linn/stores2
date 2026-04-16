@@ -27,7 +27,7 @@ namespace Linn.Stores2.TestData.Suppliers
                 };
 
         // Retailers for RSN type Imports
-        private static readonly Country TaktAndTonCountry = TestCountries.Sweden;
+        public static readonly Country TaktAndTonCountry = TestCountries.Sweden;
 
         public static readonly Supplier TaktAndTon =
             new Supplier
@@ -37,7 +37,7 @@ namespace Linn.Stores2.TestData.Suppliers
                     AccountingCompany = "LINN",
                     Country = TaktAndTonCountry,
                     ApprovedCarrier = "N",
-                    OrderAddress = new Address("Takt and Ton", "Box 1102", "S-164 22 Kista", string.Empty, string.Empty, "", TaktAndTonCountry)
+                    OrderAddress = new Address("Takt and Ton", "Box 1102", "S-164 22 Kista", string.Empty, string.Empty, string.Empty, TaktAndTonCountry)
                 };
 
         public static readonly Supplier LinnJapan =
