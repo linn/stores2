@@ -60,52 +60,45 @@ namespace Linn.Stores2.Facade.Extensions
 
             if (!string.IsNullOrEmpty(searchResource.DateField))
             {
-                DateTime? fromDate = string.IsNullOrEmpty(searchResource.FromDate) ? null : DateTime.Parse(searchResource.FromDate);
-                DateTime? toDate = string.IsNullOrEmpty(searchResource.ToDate) ? null : DateTime.Parse(searchResource.ToDate);
+                DateTime? fromDate = string.IsNullOrEmpty(searchResource.FromDate)
+                    ? null
+                    : DateTime.Parse(searchResource.FromDate).Date;
+                DateTime? toDate = string.IsNullOrEmpty(searchResource.ToDate)
+                    ? null
+                    : DateTime.Parse(searchResource.ToDate).Date.AddDays(1).AddTicks(-1);
 
                 if (searchResource.DateField == "Date Created")
                 {
-                    if (fromDate != null && toDate != null)
-                    {
-                        filter = filter.And(ib => ib.DateCreated >= fromDate && ib.DateCreated <= toDate);
-                    }
-                    else if (fromDate != null)
+                    if (fromDate != null)
                     {
                         filter = filter.And(ib => ib.DateCreated >= fromDate);
                     }
-                    else if (toDate != null)
+
+                    if (toDate != null)
                     {
                         filter = filter.And(ib => ib.DateCreated <= toDate);
                     }
                 }
-
-                if (searchResource.DateField == "Date Received")
+                else if (searchResource.DateField == "Date Received")
                 {
-                    if (fromDate != null && toDate != null)
-                    {
-                        filter = filter.And(ib => ib.DateReceived >= fromDate && ib.DateReceived <= toDate);
-                    }
-                    else if (fromDate != null)
+                    if (fromDate != null)
                     {
                         filter = filter.And(ib => ib.DateReceived >= fromDate);
                     }
-                    else if (toDate != null)
+
+                    if (toDate != null)
                     {
                         filter = filter.And(ib => ib.DateReceived <= toDate);
                     }
                 }
-
-                if (searchResource.DateField == "Customs Date")
+                else if (searchResource.DateField == "Customs Date")
                 {
-                    if (fromDate != null && toDate != null)
-                    {
-                        filter = filter.And(ib => ib.CustomsEntryCodeDate >= fromDate && ib.CustomsEntryCodeDate <= toDate);
-                    }
-                    else if (fromDate != null)
+                    if (fromDate != null)
                     {
                         filter = filter.And(ib => ib.CustomsEntryCodeDate >= fromDate);
                     }
-                    else if (toDate != null)
+
+                    if (toDate != null)
                     {
                         filter = filter.And(ib => ib.CustomsEntryCodeDate <= toDate);
                     }

@@ -1,7 +1,8 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
 {
+    using System;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Text;
 
     using FluentAssertions;
 
@@ -14,9 +15,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
     using Linn.Stores2.TestData.SalesArticles;
     using Linn.Stores2.TestData.SalesOutlets;
     using Linn.Stores2.TestData.Suppliers;
+
     using NUnit.Framework;
 
-    public class WhenAddingRsnImportBookForRepair : ContextBase
+    public class WhenAddingComments : ContextBase
     {
         [SetUp]
         public void SetUp()
@@ -67,67 +69,22 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportClearanceInstructionTests
                 }
             };
 
+            var importBook = new ImportBook(candidate)
+            {
+                ClearanceComments = "Comment 1\nComment 2"
+            };
+
             this.Sut = new ImportClearanceInstruction(this.Master, "Marvin@tnt.com");
 
-            this.Sut.AddImportBook(new ImportBook(candidate), this.AuthNumbers);
+            this.Sut.AddImportBook(importBook, this.AuthNumbers);
         }
 
         [Test]
-        public void ShouldHaveCarrierDetails()
+        public void ShouldHaveComments()
         {
-            this.Sut.Carrier.Should().NotBeNull();
-            this.Sut.Carrier.Name.Should().Be(TestSuppliers.Fedex.Name);
-            this.Sut.TransportBillNumber.Should().Be("12345");
-        }
-
-        [Test]
-        public void ShouldHaveShippingDetails()
-        {
-            this.Sut.Supplier.Should().NotBeNull();
-            this.Sut.Supplier.Name.Should().Be(TestSuppliers.TaktAndTon.Name);
-            this.Sut.Supplier.NiceSupplierName.Should().Be("Takt and Ton");
-            this.Sut.Carrier.Should().NotBeNull();
-            this.Sut.Invoices.Should().Be("1234");
-        }
-
-        [Test]
-        public void ShouldHaveCorrectTotals()
-        {
-            this.Sut.Totals.Should().NotBeNull();
-            this.Sut.Totals.Count().Should().Be(1);
-            this.Sut.IPRTotals.First().ToString().Should().Be("SEK 100.00");
-            this.Sut.HasIPRAndBRG.Should().BeFalse();
-            this.Sut.BRGTotals.Should().BeEmpty();
-            this.Sut.ValuePrompt("IPR").Should().Be("Value:");
-        }
-
-        [Test]
-        public void ShouldHaveReturnForRepairSection()
-        {
-            this.Sut.Sections.Should().NotBeNull();
-            this.Sut.Sections.Count.Should().Be(1);
-            var section = this.Sut.Sections.First();
-
-            section.Should().NotBeNull();
-
-            section.ReasonForImport.Should().Be("Return for Repair");
-            section.CpcNumber.Should().Be("51 00 000");
-            section.CpcScheme.Should().Be("IPR");
-            section.IPR.Should().BeTrue();
-            section.Declaration.Should().StartWith("CDS IPR Reference - GBIPO3830942440020210510102146");
-
-            section.Details.Should().NotBeNull();
-            section.Details.Should().HaveCount(1);
-
-            var detail = section.Details.First();
-            detail.Should().NotBeNull();
-
-            detail.Currency.Code.Should().Be("SEK");
-            detail.CustomsValue.Should().Be(100);
-            detail.Description.Should().Be(TestSalesArticles.Akiva.Description);
-            detail.InvoiceNumber.Should().Be("1234");
-            detail.CountryOfOrigin.Should().Be("JP");
-            detail.CustomsValueString().Should().Be("SEK 100.00");
+            this.Sut.HasComments.Should().BeTrue();
+            this.Sut.Comments.Should().NotBeNull();
+            this.Sut.Comments.Length.Should().Be(2);
         }
     }
 }

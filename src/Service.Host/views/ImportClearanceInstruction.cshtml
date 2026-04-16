@@ -89,7 +89,8 @@
 			column-gap: 10px;
 			display: grid;
 			grid-template-areas:
-				'footer';
+				'commentsPrompt comments comments comments comments'
+				'footer footer footer footer footer';
 			border-top: 2px solid #000;
 			padding-top: 10px;
 		}
@@ -309,6 +310,18 @@
 			color: dodgerblue;
 		}
 
+		.comments {
+			grid-area: comments;
+			margin-top: 10px;
+			margin-bottom: 20px;
+		}
+
+		.commentsPrompt {
+			grid-area: commentsPrompt;
+			margin-top: 10px;
+			margin-bottom: 20px;
+		}
+
 		.footer {
 			grid-area: footer;
 			margin-top: 20px;
@@ -440,7 +453,7 @@
                         </div>
 
                         <div class="sender">
-                            @Model.Supplier?.Name
+                            @Model.Supplier?.NiceSupplierName
                         </div>
                             
                         <div class="awbPrompt">
@@ -591,9 +604,21 @@
             <tr>
                 <td>
                     <div class="footer-grid-container">
+                        @if (Model.HasComments)
+                        {
+                            <div class="commentsPrompt">
+                                <b>Notes/Other Info:</b>
+                            </div>
+                            <div class="comments">
+                                @foreach (var comment in Model.Comments)
+                                {
+                                    @comment<br/>
+                                }
+                            </div>
+                        }
                         <div class="footer">
                             @Model.Footer[0]<br/>
-                            @Model.Footer[1]<br />
+                            @Model.Footer[1]<br/>
                             @Model.Footer[2]
                         </div>
                     </div>

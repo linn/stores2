@@ -19,6 +19,7 @@ import useGet from '../../hooks/useGet';
 import usePost from '../../hooks/usePost';
 import Page from '../Page';
 import MainTab from './MainTab';
+import CommentsTab from './CommentsTab';
 import HistoryTab from './HistoryTab';
 
 function ImportBookUtility({ creating }) {
@@ -45,8 +46,9 @@ function ImportBookUtility({ creating }) {
         send: createImportBook,
         isLoading: createLoading,
         errorMessage: createError,
+        postResult: createResult,
         clearPostResult: clearCreateResult
-    } = usePost(itemTypes.importBooks.url, true, true);
+    } = usePost(itemTypes.importBooks.url, true, false);
 
     const {
         send: updateImportBook,
@@ -76,9 +78,11 @@ function ImportBookUtility({ creating }) {
     const [importBook, setImportBook] = useState();
     const [changesMade, setChangesMade] = useState(false);
 
-    if (importBookGetResult && !importBook) {
-        setImportBook(importBookGetResult);
-    }
+    useEffect(() => {
+        if (importBookGetResult) {
+            setImportBook(importBookGetResult);
+        }
+    }, [importBookGetResult]);
 
     useEffect(() => {
         if (updateResult) {
@@ -86,6 +90,14 @@ function ImportBookUtility({ creating }) {
             clearUpdateResult();
         }
     }, [updateResult, clearUpdateResult]);
+
+    useEffect(() => {
+        if (createResult) {
+            getImportBook(createResult.id);
+            navigate(utilities.getSelfHref(createResult));
+            clearCreateResult();
+        }
+    }, [createResult, clearCreateResult, navigate, getImportBook]);
 
     const canChange = () => {
         if (importBookGetResult) {
@@ -189,6 +201,7 @@ function ImportBookUtility({ creating }) {
                                                 creating ? 'New Import' : `Import ${importBook.id}`
                                             }
                                         />
+                                        <Tab label="Comments" />
                                         <Tab label="History" />
                                     </Tabs>
                                 </Box>
@@ -201,10 +214,17 @@ function ImportBookUtility({ creating }) {
                                         cpcNumbers={cpcNumbers}
                                         canChange={canChange()}
                                         handleFieldChange={handleFieldChange}
-                                        handleNumberFieldChange={handleNumberFieldChange}
+                                        creating={creating}
                                     />
                                 )}
                                 {tab === 1 && (
+                                    <CommentsTab
+                                        importBook={importBook}
+                                        canChange={canChange()}
+                                        handleFieldChange={handleFieldChange}
+                                    />
+                                )}
+                                {tab === 2 && (
                                     <HistoryTab
                                         importBook={importBook}
                                         canChange={canChange()}

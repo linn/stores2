@@ -12,7 +12,6 @@ namespace Linn.Stores2.TestData.Suppliers
                     Id = 29407,
                     Name = "FEDERAL EXPRESS UK LTD",
                     AccountingCompany = "LINN",
-                    CountryCode = TestCountries.UnitedKingdom.CountryCode,
                     Country = TestCountries.UnitedKingdom,
                     ApprovedCarrier = "Y"
             };
@@ -23,21 +22,22 @@ namespace Linn.Stores2.TestData.Suppliers
                     Id = 1054,
                     Name = "DHL LOGISTICS (UK) LTD",
                     AccountingCompany = "LINN",
-                    CountryCode = TestCountries.UnitedKingdom.CountryCode,
                     Country = TestCountries.UnitedKingdom,
                     ApprovedCarrier = "Y"
                 };
 
         // Retailers for RSN type Imports
+        public static readonly Country TaktAndTonCountry = TestCountries.Sweden;
+
         public static readonly Supplier TaktAndTon =
             new Supplier
                 {
                     Id = 54290,
-                    Name = "TAKT AND TON",
+                    Name = "TAKT AND TON (SEK ACCOUNT)",
                     AccountingCompany = "LINN",
-                    CountryCode = TestCountries.Sweden.CountryCode,
-                    Country = TestCountries.Sweden,
-                    ApprovedCarrier = "N"
+                    Country = TaktAndTonCountry,
+                    ApprovedCarrier = "N",
+                    OrderAddress = new Address("Takt and Ton", "Box 1102", "S-164 22 Kista", string.Empty, string.Empty, string.Empty, TaktAndTonCountry)
                 };
 
         public static readonly Supplier LinnJapan =
@@ -46,7 +46,6 @@ namespace Linn.Stores2.TestData.Suppliers
                 Id = 104164,
                 Name = "LINN JAPAN",
                 AccountingCompany = "LINN",
-                CountryCode = TestCountries.Japan.CountryCode,
                 Country = TestCountries.Japan,
                 ApprovedCarrier = "N"
             };
@@ -58,7 +57,6 @@ namespace Linn.Stores2.TestData.Suppliers
                 Id = 121628,
                 Name = "SEAS FABRIKKER AS (EURO ACCOUNT)",
                 AccountingCompany = "LINN",
-                CountryCode = TestCountries.Norway.CountryCode,
                 Country = TestCountries.Norway,
                 ApprovedCarrier = "N"
             };
@@ -70,7 +68,6 @@ namespace Linn.Stores2.TestData.Suppliers
                 Id = 146737,
                 Name = "ACME INCORPORATED (IMPORT ONLY)",
                 AccountingCompany = "LINN",
-                CountryCode = TestCountries.China.CountryCode,
                 Country = TestCountries.China,
                 ApprovedCarrier = "N"
             };

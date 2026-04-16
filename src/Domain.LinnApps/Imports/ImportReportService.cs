@@ -199,7 +199,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                         {
                             RowId = rowId,
                             ColumnId = "Sender Country",
-                            TextDisplay = import.Supplier?.CountryCode
+                            TextDisplay = import.Supplier?.Country.CountryCode
                         });
                     values.Add(
                         new CalculationValueModel

@@ -19,6 +19,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public string TransportBillNumber { get; set; }
 
+        public string Comments { get; set; }
+
+        public string ClearanceComments { get; set; }
+
         public DateTime? DateReceived { get; set; }
 
         public DateTime? DateInstructionSent { get; set; }

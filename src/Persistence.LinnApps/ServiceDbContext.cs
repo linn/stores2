@@ -1313,11 +1313,11 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.ToTable("SUPPLIERS");
             q.Property(e => e.Id).HasColumnName("SUPPLIER_ID");
             q.Property(e => e.Name).HasColumnName("SUPPLIER_NAME").HasMaxLength(50);
-            q.Property(e => e.CountryCode).HasColumnName("COUNTRY");
             q.Property(e => e.DateClosed).HasColumnName("DATE_CLOSED");
             q.Property(s => s.ApprovedCarrier).HasColumnName("APPROVED_CARRIER");
             q.Property(s => s.AccountingCompany).HasColumnName("ACCOUNTING_COMPANY").HasMaxLength(10);
-            q.HasOne(s => s.Country).WithMany().HasForeignKey(s => s.CountryCode);
+            q.HasOne(s => s.Country).WithMany().HasForeignKey("COUNTRY");
+            q.HasOne(o => o.OrderAddress).WithMany().HasForeignKey("ORD_ADDRESS_ID");
         }
 
         private static void BuildImportBooks(ModelBuilder builder)
@@ -1351,6 +1351,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.NumCartons).HasColumnName("NUM_CARTONS");
             q.Property(e => e.NumPallets).HasColumnName("NUM_PALLETS");
             q.Property(e => e.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
+            q.Property(e => e.ClearanceComments).HasColumnName("CLEARANCE_COMMENTS").HasMaxLength(2000);
             q.Property(e => e.CreatedById).HasColumnName("CREATED_BY");
             q.Property(e => e.CustomsEntryCodePrefix).HasColumnName("CUSTOMS_ENTRY_CODE_PREFIX").HasMaxLength(3);
             q.Property(e => e.Pva).HasColumnName("PVA").HasMaxLength(1);
@@ -1363,14 +1364,14 @@ namespace Linn.Stores2.Persistence.LinnApps
                 .HasForeignKey(detail => detail.ImportBookId);
             q.HasMany(t => t.PostEntries).WithOne()
                 .HasForeignKey(detail => detail.ImportBookId);
-            q.HasOne(d => d.Supplier).WithOne().HasForeignKey<ImportBook>(s => s.SupplierId);
-            q.HasOne(d => d.Carrier).WithOne().HasForeignKey<ImportBook>(s => s.CarrierId);
-            q.HasOne(d => d.CreatedBy).WithOne().HasForeignKey<ImportBook>(s => s.CreatedById);
-            q.HasOne(d => d.Currency).WithOne().HasForeignKey<ImportBook>(s => s.CurrencyCode);
-            q.HasOne(d => d.Period).WithOne().HasForeignKey<ImportBook>(s => s.PeriodNumber);
-            q.HasOne(d => d.BaseCurrency).WithOne().HasForeignKey<ImportBook>("BASE_CURRENCY");
-            q.HasOne(d => d.ExchangeCurrency).WithOne().HasForeignKey<ImportBook>("EXCHANGE_CURRENCY");
-            q.HasOne(d => d.ContactEmployee).WithOne().HasForeignKey<ImportBook>("CONTACT_EMPLOYEE");
+            q.HasOne(d => d.Supplier).WithMany().HasForeignKey(s => s.SupplierId);
+            q.HasOne(d => d.Carrier).WithMany().HasForeignKey(s => s.CarrierId);
+            q.HasOne(d => d.CreatedBy).WithMany().HasForeignKey(s => s.CreatedById);
+            q.HasOne(d => d.Currency).WithMany().HasForeignKey(s => s.CurrencyCode);
+            q.HasOne(d => d.Period).WithMany().HasForeignKey(s => s.PeriodNumber);
+            q.HasOne(d => d.BaseCurrency).WithMany().HasForeignKey("BASE_CURRENCY");
+            q.HasOne(d => d.ExchangeCurrency).WithMany().HasForeignKey("EXCHANGE_CURRENCY");
+            q.HasOne(d => d.ContactEmployee).WithMany().HasForeignKey("CONTACT_EMPLOYEE");
         }
 
         private static void BuildImportBookInvoiceDetails(ModelBuilder builder)
@@ -1478,7 +1479,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.Property(a => a.Description).HasColumnName("INVOICE_DESCRIPTION");
             e.Property(a => a.TariffId).HasColumnName("TARIFF_ID").HasMaxLength(3);
             e.Property(a => a.Weight).HasColumnName("WEIGHT").HasMaxLength(10);
-            e.HasOne(a => a.Tariff).WithOne().HasForeignKey<SalesArticle>(x => x.TariffId);
+            e.HasOne(a => a.Tariff).WithMany().HasForeignKey(x => x.TariffId);
             e.HasOne(a => a.CountryOfOrigin).WithMany().HasForeignKey("COUNTRY_CODE");
         }
 
