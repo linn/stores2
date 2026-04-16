@@ -67,6 +67,9 @@ function App() {
                         <ListItem component={Link} to="/stores2/consignments/packing-lists">
                             <Typography color="primary">Packing List Viewer</Typography>
                         </ListItem>
+                        <ListItem component={Link} to="/stores2/stock/states">
+                            <Typography color="primary">Stock States</Typography>
+                        </ListItem>
                     </List>
                 </Grid>
             </Grid>
