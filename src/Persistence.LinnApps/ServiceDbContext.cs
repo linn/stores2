@@ -1270,14 +1270,14 @@ namespace Linn.Stores2.Persistence.LinnApps
                 .HasForeignKey(detail => detail.ImportBookId);
             q.HasMany(t => t.PostEntries).WithOne()
                 .HasForeignKey(detail => detail.ImportBookId);
-            q.HasOne(d => d.Supplier).WithOne().HasForeignKey<ImportBook>(s => s.SupplierId);
-            q.HasOne(d => d.Carrier).WithOne().HasForeignKey<ImportBook>(s => s.CarrierId);
-            q.HasOne(d => d.CreatedBy).WithOne().HasForeignKey<ImportBook>(s => s.CreatedById);
-            q.HasOne(d => d.Currency).WithOne().HasForeignKey<ImportBook>(s => s.CurrencyCode);
-            q.HasOne(d => d.Period).WithOne().HasForeignKey<ImportBook>(s => s.PeriodNumber);
-            q.HasOne(d => d.BaseCurrency).WithOne().HasForeignKey<ImportBook>("BASE_CURRENCY");
-            q.HasOne(d => d.ExchangeCurrency).WithOne().HasForeignKey<ImportBook>("EXCHANGE_CURRENCY");
-            q.HasOne(d => d.ContactEmployee).WithOne().HasForeignKey<ImportBook>("CONTACT_EMPLOYEE");
+            q.HasOne(d => d.Supplier).WithMany().HasForeignKey(s => s.SupplierId);
+            q.HasOne(d => d.Carrier).WithMany().HasForeignKey(s => s.CarrierId);
+            q.HasOne(d => d.CreatedBy).WithMany().HasForeignKey(s => s.CreatedById);
+            q.HasOne(d => d.Currency).WithMany().HasForeignKey(s => s.CurrencyCode);
+            q.HasOne(d => d.Period).WithMany().HasForeignKey(s => s.PeriodNumber);
+            q.HasOne(d => d.BaseCurrency).WithMany().HasForeignKey("BASE_CURRENCY");
+            q.HasOne(d => d.ExchangeCurrency).WithMany().HasForeignKey("EXCHANGE_CURRENCY");
+            q.HasOne(d => d.ContactEmployee).WithMany().HasForeignKey("CONTACT_EMPLOYEE");
         }
 
         private static void BuildImportBookInvoiceDetails(ModelBuilder builder)
@@ -1385,7 +1385,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             e.Property(a => a.Description).HasColumnName("INVOICE_DESCRIPTION");
             e.Property(a => a.TariffId).HasColumnName("TARIFF_ID").HasMaxLength(3);
             e.Property(a => a.Weight).HasColumnName("WEIGHT").HasMaxLength(10);
-            e.HasOne(a => a.Tariff).WithOne().HasForeignKey<SalesArticle>(x => x.TariffId);
+            e.HasOne(a => a.Tariff).WithMany().HasForeignKey(x => x.TariffId);
             e.HasOne(a => a.CountryOfOrigin).WithMany().HasForeignKey("COUNTRY_CODE");
         }
 
