@@ -51,6 +51,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public string PVAText { get; set; }
 
+        public string[] Comments { get; set; }
+
         public string[] Footer { get; set; }
 
         public ImportMaster Master { get; set; }
@@ -59,6 +61,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         // Exists mainly for Linn Belgium instruction which may have EUR + SEK, DKK etc totals
         public ICollection<ImportClearanceInstructionTotal> Totals { get; set; }
+
+        public bool HasComments => this.Comments != null && this.Comments.Any();
 
         public bool HasIPRAndBRG => this.Sections.Any(s => s.CpcScheme == "IPR") && this.Sections.Any(s => s.CpcScheme == "BRG");
 
@@ -105,6 +109,18 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             if (importBook.DateInstructionSent != null)
             {
                 this.InstructionDate = importBook.DateInstructionSent.Value;
+            }
+
+            if (!string.IsNullOrEmpty(importBook.ClearanceComments))
+            {
+                if (!this.HasComments)
+                {
+                    this.Comments = importBook.ClearanceComments.Split("\n");
+                }
+                else
+                {
+                    this.Comments = this.Comments.Concat(importBook.ClearanceComments.Split("/n")).ToArray();
+                }
             }
 
             foreach (var orderDetail in importBook.OrderDetails)

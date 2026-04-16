@@ -1257,6 +1257,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.NumCartons).HasColumnName("NUM_CARTONS");
             q.Property(e => e.NumPallets).HasColumnName("NUM_PALLETS");
             q.Property(e => e.Comments).HasColumnName("COMMENTS").HasMaxLength(2000);
+            q.Property(e => e.ClearanceComments).HasColumnName("CLEARANCE_COMMENTS").HasMaxLength(2000);
             q.Property(e => e.CreatedById).HasColumnName("CREATED_BY");
             q.Property(e => e.CustomsEntryCodePrefix).HasColumnName("CUSTOMS_ENTRY_CODE_PREFIX").HasMaxLength(3);
             q.Property(e => e.Pva).HasColumnName("PVA").HasMaxLength(1);

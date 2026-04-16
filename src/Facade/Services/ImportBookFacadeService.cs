@@ -183,6 +183,8 @@ namespace Linn.Stores2.Facade.Services
                              CustomsEntryCodeDate = string.IsNullOrEmpty(updateResource.CustomsEntryCodeDate) ? null : Convert.ToDateTime(updateResource.CustomsEntryCodeDate),
                              CustomsEntryCodePrefix = updateResource.CustomsEntryCodePrefix,
                              TransportBillNumber = updateResource.TransportBillNumber,
+                             Comments = updateResource.Comments,
+                             ClearanceComments = updateResource.ClearanceComments,
                              DateInstructionSent = string.IsNullOrEmpty(updateResource.DateInstructionSent) ? null : Convert.ToDateTime(updateResource.DateInstructionSent),
                              DateReceived = string.IsNullOrEmpty(updateResource.DateReceived) ? null : Convert.ToDateTime(updateResource.DateReceived), 
                              Period = entity.Period,

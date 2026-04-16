@@ -78,6 +78,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                 NumCartons = model.NumCartons,
                 NumPallets = model.NumPallets,
                 Comments = model.Comments,
+                ClearanceComments = model.ClearanceComments,
                 CustomsEntryCodePrefix = model.CustomsEntryCodePrefix,
                 Pva = model.Pva,
                 ExchangeRate = model.ExchangeRate.GetValueOrDefault(),

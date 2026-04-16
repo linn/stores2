@@ -19,6 +19,7 @@ import useGet from '../../hooks/useGet';
 import usePost from '../../hooks/usePost';
 import Page from '../Page';
 import MainTab from './MainTab';
+import CommentsTab from './CommentsTab';
 import HistoryTab from './HistoryTab';
 
 function ImportBookUtility({ creating }) {
@@ -200,6 +201,7 @@ function ImportBookUtility({ creating }) {
                                                 creating ? 'New Import' : `Import ${importBook.id}`
                                             }
                                         />
+                                        <Tab label="Comments" />
                                         <Tab label="History" />
                                     </Tabs>
                                 </Box>
@@ -216,6 +218,13 @@ function ImportBookUtility({ creating }) {
                                     />
                                 )}
                                 {tab === 1 && (
+                                    <CommentsTab
+                                        importBook={importBook}
+                                        canChange={canChange()}
+                                        handleFieldChange={handleFieldChange}
+                                    />
+                                )}
+                                {tab === 2 && (
                                     <HistoryTab
                                         importBook={importBook}
                                         canChange={canChange()}

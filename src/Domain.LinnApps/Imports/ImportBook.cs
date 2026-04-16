@@ -144,6 +144,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public string Comments { get; set; }
 
+        public string ClearanceComments { get; set; }
+
         public string CustomsEntryCode { get; set; }
 
         public DateTime? CustomsEntryCodeDate { get; set; }
@@ -198,6 +200,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.TransportBillNumber = update.TransportBillNumber;
             this.DateReceived = update.DateReceived;
             this.DateInstructionSent = update.DateInstructionSent;
+            this.Comments = update.Comments;
+            this.ClearanceComments = update.ClearanceComments;
 
             if (update.Period != null && this.Period == null)
             {

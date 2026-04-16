@@ -42,6 +42,8 @@ namespace Linn.Stores2.Resources.Imports
 
         public string Comments { get; set; }
 
+        public string ClearanceComments { get; set; }
+
         public string Currency { get; set; }
 
         public string BaseCurrency { get; set; }
