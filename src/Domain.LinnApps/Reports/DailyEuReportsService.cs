@@ -674,7 +674,8 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                                           Align = "right", DecimalPlaces = 2
                                       },
                                   new AxisDetailsModel("serialNumber", "Serial No", GridDisplayType.TextValue, 150),
-                                  new AxisDetailsModel("invoiceDate", "Invoice Date", GridDisplayType.TextValue, 150)
+                                  new AxisDetailsModel("invoiceDate", "Invoice Date", GridDisplayType.TextValue, 150),
+                                  new AxisDetailsModel("packingList", "Packing List", GridDisplayType.TextValue, 150)
                               };
 
             var reportLayout = new SimpleGridLayout(this.reportingHelper, CalculationValueModelType.Value, null, null);
@@ -823,6 +824,13 @@ namespace Linn.Stores2.Domain.LinnApps.Reports
                         RowId = rowId,
                         ColumnId = "invoiceDate",
                         TextDisplay = line.InvoiceDate.ToString("dd-MMM-yyyy", CultureInfo.InvariantCulture)
+                    });
+                values.Add(
+                    new CalculationValueModel
+                    {
+                        RowId = rowId,
+                        ColumnId = "packingList",
+                        TextDisplay = $"{line.PackingList}"
                     });
                 if (line.UpgradeTotal.HasValue)
                 {

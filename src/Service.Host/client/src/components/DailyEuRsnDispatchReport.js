@@ -18,6 +18,7 @@ function DailyEuRsnDispatchReport() {
     const [fromDate, setFromDate] = useState(new Date());
     const [toDate, setToDate] = useState(new Date());
     const [exportBookIds, setExportBookIds] = useState([]);
+    const [consignmentNumbers, setConsignmentNumbers] = useState([]);
 
     const options = () => ({
         fromDate: fromDate.toISOString(),
@@ -33,6 +34,7 @@ function DailyEuRsnDispatchReport() {
     useEffect(() => {
         if (!result || !result.reportResults || result.reportResults.length === 0) {
             setExportBookIds([]);
+            setConsignmentNumbers([]);
         } else {
             var resultValues = result.reportResults[0].results
                 .map(a => a.values)
@@ -44,6 +46,17 @@ function DailyEuRsnDispatchReport() {
             }
 
             setExportBookIds([...new Set(resultValues)]);
+
+            var resultConsignmentValues = result.reportResults[0].results
+                .map(a => a.values)
+                .map(row => row[23]?.textDisplayValue);
+
+            if (!resultConsignmentValues || resultConsignmentValues.length === 0) {
+                setConsignmentNumbers([]);
+                return;
+            }
+
+            setConsignmentNumbers([...new Set(resultConsignmentValues)]);
         }
     }, [result]);
 
@@ -110,12 +123,21 @@ function DailyEuRsnDispatchReport() {
                         href={`${itemTypes.downloadExpbookInvoices.url}?documentType=E&${exportBookIds.map(id => `documentNumber=${id}`).join('&')}`}
                         fileName="DailyInvoices.pdf"
                         accept="application/pdf"
-                        tooltipText="Download as PDF"
+                        tooltipText="Download export book invoices as PDF"
                         disabled={!exportBookIds?.length}
                         buttonText="Download Invoices"
                     />
                 </Grid>
-                <Grid size={2} />
+                <Grid size={2} sx={{ marginTop: 4 }}>
+                    <ExportButton
+                        href={`${itemTypes.localConsignments.url}/multiple-packing-lists/pdf?${consignmentNumbers.map(id => `consignmentNumber=${id}`).join('&')}`}
+                        fileName="PackingLists.pdf"
+                        accept="application/pdf"
+                        tooltipText="Download packing lists as PDF"
+                        disabled={!consignmentNumbers?.length}
+                        buttonText="Packing Lists"
+                    />
+                </Grid>
                 {isLoading && (
                     <Grid size={12}>
                         <Loading />
