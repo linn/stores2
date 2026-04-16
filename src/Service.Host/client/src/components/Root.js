@@ -35,6 +35,8 @@ import Pallets from './Pallets';
 import Pallet from './Pallet';
 import StorageSites from './storageSites/StorageSites';
 import StorageSite from './storageSites/StorageSite';
+import StockStates from './StockStates';
+import StockState from './StockState';
 import DailyEuDispatchReport from './DailyEuDispatchReport';
 import DailyEuRsnDispatchReport from './DailyEuRsnDispatchReport';
 import DailyEuRsnImportReport from './DailyEuRsnImportReport';
@@ -91,6 +93,7 @@ function Root() {
                 <Route path="/" element={<Navigate to="/stores2" replace />} />
                 <Route path="/stores2" element={<App />} />
                 <Route path="/stores2/reports" element={<App />} />
+                <Route path="/stores2/stock" element={<App />} />
                 <Route path="/stores2/consignments" element={<PackingListViewer />} />
                 <Route path="/stores2/logged-out" element={<LoggedOut />} />
                 <Route path="/stores2/carriers" element={<Carriers />} />
@@ -158,6 +161,9 @@ function Root() {
                 <Route path="/stores2/pallets/:id" element={<Pallet />} />
                 <Route path="/stores2/pallets/create" element={<Pallet creating />} />
                 <Route path="/stores2/storage/locations/:id" element={<StorageLocation />} />
+                <Route path="/stores2/stock/states" element={<StockStates />} />
+                <Route path="/stores2/stock/states/create" element={<StockState creating />} />
+                <Route path="/stores2/stock/states/:state" element={<StockState />} />
                 <Route path="/stores2/stock-pools" element={<StockPools />} />
                 <Route path="/stores2/stores-trans-viewer" element={<StoresTransViewer />} />
                 <Route

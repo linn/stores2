@@ -49,5 +49,19 @@ namespace Linn.Stores2.Facade.Services
         {
             throw new NotImplementedException();
         }
+
+        protected override StockState CreateFromResource(StockStateResource resource, IEnumerable<string> privileges = null)
+        {
+            return new StockState(resource.State, resource.Description)
+                       {
+                           QCRequired = resource.QCRequired ?? "N"
+                       };
+        }
+
+        protected override void UpdateFromResource(StockState entity, StockStateResource updateResource, IEnumerable<string> privileges = null)
+        {
+            entity.Description = updateResource.Description;
+            entity.QCRequired = updateResource.QCRequired ?? entity.QCRequired;
+        }
     }
 }
