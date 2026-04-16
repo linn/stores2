@@ -12,6 +12,8 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
 
         public int? SalesAccountId { get; set; }
 
+        public SalesAccount SalesAccount { get; set; }
+
         public int? AddressId { get; set; }
 
         public DateTime? DateClosed { get; set; }

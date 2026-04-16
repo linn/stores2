@@ -14,6 +14,7 @@ namespace Linn.Stores2.IoC
     using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Accounts;
+    using Linn.Stores2.Domain.LinnApps.Consignments;
     using Linn.Stores2.Domain.LinnApps.Consignments.Models;
     using Linn.Stores2.Domain.LinnApps.Consignments.Services;
     using Linn.Stores2.Domain.LinnApps.External;
@@ -32,6 +33,7 @@ namespace Linn.Stores2.IoC
     using Linn.Stores2.Proxy.HttpClients;
     using Linn.Stores2.Proxy.StoredProcedureClients;
     using Linn.Stores2.Resources;
+    using Linn.Stores2.Resources.Consignments;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Resources.Parts;
     using Linn.Stores2.Resources.Pcas;
@@ -136,6 +138,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IStoragePlaceAuditReportFacadeService, StoragePlaceAuditReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<Carrier, string, CarrierResource, CarrierUpdateResource, CarrierResource>, CarrierService>()
                 .AddScoped<IAsyncFacadeService<StoresBudget, int, StoresBudgetResource, StoresBudgetResource, StoresBudgetSearchResource>, StoresBudgetFacadeService>()
+                .AddScoped<IAsyncFacadeService<Consignment, int, ConsignmentResource, ConsignmentResource, ConsignmentSearchResource>, ConsignmentFacadeService>()
                 .AddScoped<IAsyncFacadeService<Country, string, CountryResource, CountryResource, CountryResource>, CountryService>()
                 .AddScoped<IRequisitionFacadeService, RequisitionFacadeService>()
                 .AddScoped<IDailyEuReportFacadeService, DailyEuReportsFacadeService>()
@@ -180,6 +183,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IBuilder<StoresFunction>, StoresFunctionResourceBuilder>()
                 .AddScoped<IBuilder<NominalAccount>, NominalAccountResourceBuilder>()
                 .AddScoped<IBuilder<StoresBudget>, StoresBudgetResourceBuilder>()
+                .AddScoped<IBuilder<Consignment>, ConsignmentResourceBuilder>()
                 .AddScoped<IBuilder<StockState>, StockStateResourceBuilder>()
                 .AddScoped<IBuilder<StorageSite>, StorageSiteResourceBuilder>()
                 .AddScoped<IBuilder<StorageType>, StorageTypeResourceBuilder>()

@@ -7,6 +7,7 @@ namespace Linn.Stores2.IoC
     using Linn.Common.Service.Handlers;
     using Linn.Stores2.Resources;
     using Linn.Stores2.Resources.Accounts;
+    using Linn.Stores2.Resources.Consignments;
     using Linn.Stores2.Resources.External;
     using Linn.Stores2.Resources.Imports;
     using Linn.Stores2.Resources.Parts;
@@ -68,7 +69,9 @@ namespace Linn.Stores2.IoC
                 .AddSingleton<IHandler, JsonResultHandler<TotalResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<ImportBookResource>>()
-                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookCpcNumberResource>>>();
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookCpcNumberResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<ConsignmentResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ConsignmentResource>>>();
         }
     }
 }

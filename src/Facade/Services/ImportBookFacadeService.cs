@@ -184,7 +184,7 @@ namespace Linn.Stores2.Facade.Services
                              CustomsEntryCodePrefix = updateResource.CustomsEntryCodePrefix,
                              TransportBillNumber = updateResource.TransportBillNumber,
                              DateInstructionSent = string.IsNullOrEmpty(updateResource.DateInstructionSent) ? null : Convert.ToDateTime(updateResource.DateInstructionSent),
-                             DateReceived = string.IsNullOrEmpty(updateResource.DateReceived) ? null : Convert.ToDateTime(updateResource.DateReceived), 
+                             DateReceived = string.IsNullOrEmpty(updateResource.DateReceived) ? null : Convert.ToDateTime(updateResource.DateReceived),
                              Period = entity.Period,
                              Currency = currency,
                              OrderDetailCandidates = orderDetails
