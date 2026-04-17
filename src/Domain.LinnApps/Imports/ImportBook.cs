@@ -138,7 +138,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public string ArrivalPort { get; set; }
 
-        public int? CancelledBy { get; set; }
+        public int? CancelledById { get; set; }
+
+        public Employee CancelledBy { get; set; }
 
         public string CancelledReason { get; set; }
 
@@ -193,6 +195,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public decimal? Weight { get; set; }
 
+        public bool IsCancelled => this.DateCancelled.HasValue;
+
         public void Update(ImportUpdate update)
         {
             this.UpdateCustomsEntry(update.CustomsEntryCodePrefix, update.CustomsEntryCode, update.CustomsEntryCodeDate);
@@ -212,6 +216,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             if (update.ExchangeRate != null && this.ExchangeRate == null)
             {
                 this.ApplyExchangeRate(update.ExchangeRate);
+            }
+
+            if (update.CancelledBy != null && !this.IsCancelled)
+            {
+                this.Cancel(update.CancelledBy, update.CancelledReason);
             }
 
             if (update.OrderDetailCandidates != null)
@@ -319,6 +328,17 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             }
 
             return "Raised";
+        }
+
+        public void Cancel(Employee cancelledBy, string reason)
+        {
+            if (!this.IsCancelled)
+            {
+                this.CancelledBy = cancelledBy;
+                this.CancelledById = cancelledBy.Id;
+                this.CancelledReason = reason;
+                this.DateCancelled = DateTime.UtcNow;
+            }
         }
     }
 }

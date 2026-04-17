@@ -23,6 +23,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public string ClearanceComments { get; set; }
 
+        public Employee CancelledBy { get; set; }
+
+        public string CancelledReason { get; set; }
+
         public DateTime? DateReceived { get; set; }
 
         public DateTime? DateInstructionSent { get; set; }

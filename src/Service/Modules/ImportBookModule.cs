@@ -111,6 +111,11 @@ namespace Linn.Stores2.Service.Modules
             var employeeUrl = req.HttpContext.User.GetEmployeeUrl();
             var privs = await userPrivilegeService.GetUserPrivileges(employeeUrl);
 
+            if (resource.Cancelled && resource.CancelledById == null)
+            {
+                resource.CancelledById = req.HttpContext.User.GetEmployeeNumber();
+            }
+
             await res.Negotiate(
                 await service.Update(id, resource, privs));
         }

@@ -1346,7 +1346,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.LinnDuty).HasColumnName("LINN_DUTY");
             q.Property(e => e.LinnVat).HasColumnName("LINN_VAT");
             q.Property(e => e.DateCancelled).HasColumnName("DATE_CANCELLED");
-            q.Property(e => e.CancelledBy).HasColumnName("CANCELLED_BY");
+            q.Property(e => e.CancelledById).HasColumnName("CANCELLED_BY");
             q.Property(e => e.CancelledReason).HasColumnName("CANCELLED_REASON").HasMaxLength(500);
             q.Property(e => e.NumCartons).HasColumnName("NUM_CARTONS");
             q.Property(e => e.NumPallets).HasColumnName("NUM_PALLETS");
@@ -1367,6 +1367,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasOne(d => d.Supplier).WithMany().HasForeignKey(s => s.SupplierId);
             q.HasOne(d => d.Carrier).WithMany().HasForeignKey(s => s.CarrierId);
             q.HasOne(d => d.CreatedBy).WithMany().HasForeignKey(s => s.CreatedById);
+            q.HasOne(d => d.CancelledBy).WithMany().HasForeignKey(s => s.CancelledById);
             q.HasOne(d => d.Currency).WithMany().HasForeignKey(s => s.CurrencyCode);
             q.HasOne(d => d.Period).WithMany().HasForeignKey(s => s.PeriodNumber);
             q.HasOne(d => d.BaseCurrency).WithMany().HasForeignKey("BASE_CURRENCY");
