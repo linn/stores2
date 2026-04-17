@@ -236,16 +236,16 @@ function MainTab({
                 </>
             )}
 
-            <InvoiceDetails
-                invoiceDetails={importBook.importBookInvoiceDetails}
-                canChange={canChange}
-                handleFieldChange={handleFieldChange}
-            />
-
             <OrderDetails
                 orderDetails={importBook.importBookOrderDetails}
                 countries={countries}
                 cpcNumbers={cpcNumbers}
+                canChange={canChange}
+                handleFieldChange={handleFieldChange}
+            />
+
+            <InvoiceDetails
+                invoiceDetails={importBook.importBookInvoiceDetails}
                 canChange={canChange}
                 handleFieldChange={handleFieldChange}
             />

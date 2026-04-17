@@ -139,9 +139,7 @@ namespace Linn.Stores2.IoC
                     ImportBookExchangeRateRepository>()
                 .AddScoped<IRepository<ExportBook, int>, ExportBookRepository>()
                 .AddScoped<IRepository<ImportBook, int>, ImportBookRepository>()
-                .AddScoped<IQueryRepository<Supplier>,
-                    EntityFrameworkQueryRepository<Supplier>>(r =>
-                    new EntityFrameworkQueryRepository<Supplier>(r.GetService<ServiceDbContext>()?.Suppliers))
+                .AddScoped<IQueryRepository<Supplier>, SupplierRepository>()
                 .AddScoped<IQueryRepository<Currency>,
                     EntityFrameworkQueryRepository<Currency>>(r =>
                     new EntityFrameworkQueryRepository<Currency>(r.GetService<ServiceDbContext>()?.Currencies))

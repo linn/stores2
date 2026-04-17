@@ -49,7 +49,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                 ParcelNumber = model.ParcelNumber,
                 SupplierId = model.SupplierId,
                 SupplierName = model.Supplier?.Name,
-                SupplierCountry = model.Supplier != null ?
+                SupplierCountry = model.Supplier?.Country != null ?
                                       new CountryResource
                                       {
                                           CountryCode = model.Supplier.Country.CountryCode,
@@ -87,7 +87,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                 ImportBookPostEntries = model.PostEntries != null ? model.PostEntries.Select(e => (ImportBookPostEntryResource)this.postEntryResourceBuilder.Build(e, claims)) : new List<ImportBookPostEntryResource>(),
                 ImportBookOrderDetails = model.OrderDetails != null ? model.OrderDetails.Select(o => (ImportBookOrderDetailResource)this.orderDetailResourceBuilder.Build(o, claims)) : new List<ImportBookOrderDetailResource>(),
                 ImportBookInvoiceDetails = model.InvoiceDetails != null ? model.InvoiceDetails.Select(i => (ImportBookInvoiceDetailResource)this.invoiceDetailResourceBuilder.Build(i, claims)) : new List<ImportBookInvoiceDetailResource>(),
-                Links = this.BuildLinks(model, claims?.ToList()).ToArray()
+                Links = this.BuildLinks(model, claims?.ToList() ?? new List<string>()).ToArray()
             };
         }
 
