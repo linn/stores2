@@ -1,9 +1,18 @@
 import React from 'react';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import moment from 'moment';
 import { DatePicker, InputField } from '@linn-it/linn-form-components-library';
 
 function HistoryTab({ importBook, canChange, handleFieldChange }) {
+    const doCancel = () => {
+        if (!importBook.cancelled) {
+            handleFieldChange('cancelled', true);
+            handleFieldChange('dateCancelled', new Date());
+            handleFieldChange('cancelledByName', 'You');
+        }
+    };
+
     return (
         <>
             <Grid container spacing={1}>
@@ -81,6 +90,33 @@ function HistoryTab({ importBook, canChange, handleFieldChange }) {
                         label="Date Cancelled"
                         propertyName="dateCancelled"
                     />
+                </Grid>
+                <Grid size={4}>
+                    {importBook.cancelled ? (
+                        <InputField
+                            disabled
+                            value={importBook.cancelledByName}
+                            fullWidth
+                            label="Cancelled By"
+                            propertyName="cancelledByName"
+                        />
+                    ) : (
+                        <Button onClick={doCancel} variant="outlined" style={{ marginTop: '29px' }}>
+                            Cancel
+                        </Button>
+                    )}
+                </Grid>
+                <Grid size={4}>
+                    {importBook.cancelled && (
+                        <InputField
+                            value={importBook.cancelledReason}
+                            fullWidth
+                            label="Cancelled Reason"
+                            propertyName="cancelledReason"
+                            onChange={handleFieldChange}
+                            disabled={!canChange}
+                        />
+                    )}
                 </Grid>
             </Grid>
         </>

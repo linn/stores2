@@ -36,7 +36,11 @@ namespace Linn.Stores2.Resources.Imports
 
         public string ArrivalPort { get; set; }
 
-        public int? CancelledBy { get; set; }
+        public bool Cancelled { get; set; }
+
+        public int? CancelledById { get; set; }
+
+        public string CancelledByName { get; set; }
 
         public string CancelledReason { get; set; }
 

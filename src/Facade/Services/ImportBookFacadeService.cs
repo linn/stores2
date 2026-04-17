@@ -175,6 +175,10 @@ namespace Linn.Stores2.Facade.Services
                 ? null
                 : await this.currencyRepository.FindByAsync(c => c.Code == updateResource.Currency);
 
+            var cancelledBy = updateResource.CancelledById.HasValue
+                ? await this.employeeRepository.FindByIdAsync(updateResource.CancelledById.Value)
+                : null;
+
             var orderDetails = updateResource.ImportBookOrderDetails != null ? await this.GetOrderDetailCandidates(updateResource.ImportBookOrderDetails) : null;
 
             var update = new ImportUpdate
@@ -189,7 +193,9 @@ namespace Linn.Stores2.Facade.Services
                              DateReceived = string.IsNullOrEmpty(updateResource.DateReceived) ? null : Convert.ToDateTime(updateResource.DateReceived),
                              Period = entity.Period,
                              Currency = currency,
-                             OrderDetailCandidates = orderDetails
+                             CancelledBy = cancelledBy,
+                             CancelledReason = updateResource.CancelledReason,
+                             OrderDetailCandidates = orderDetails,
                          };
 
             if (update.Period == null && update.CustomsEntryCodeDate.HasValue)
