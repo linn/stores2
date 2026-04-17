@@ -101,7 +101,12 @@ function HistoryTab({ importBook, canChange, handleFieldChange }) {
                             propertyName="cancelledByName"
                         />
                     ) : (
-                        <Button onClick={doCancel} variant="outlined" style={{ marginTop: '29px' }}>
+                        <Button
+                            onClick={doCancel}
+                            variant="outlined"
+                            style={{ marginTop: '29px' }}
+                            disabled={!canChange}
+                        >
                             Cancel
                         </Button>
                     )}

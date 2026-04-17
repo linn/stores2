@@ -32,6 +32,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                        .Include(i => i.Supplier).ThenInclude(s => s.OrderAddress).ThenInclude(s => s.Country)
                        .Include(i => i.Carrier)
                        .Include(i => i.CreatedBy)
+                       .Include(i => i.CancelledBy)
                        .Include(i => i.ContactEmployee)
                        .Include(i => i.Currency)
                        .Include(i => i.BaseCurrency)
