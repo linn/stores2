@@ -6,6 +6,8 @@ namespace Linn.Stores2.Facade.Services
 
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
+    using Linn.Common.Reporting.Resources.ReportResultResources;
+    using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Common.Service.Handlers;
     using Linn.Stores2.Domain.LinnApps.Imports;
 
@@ -15,11 +17,14 @@ namespace Linn.Stores2.Facade.Services
 
         private readonly IPdfService pdfService;
 
+        private readonly IReportReturnResourceBuilder resourceBuilder;
+
         public ImportReportFacadeService(
-            IImportReportService importReportService, IPdfService pdfService)
+            IImportReportService importReportService, IPdfService pdfService, IReportReturnResourceBuilder resourceBuilder)
         {
             this.importReportService = importReportService;
             this.pdfService = pdfService;
+            this.resourceBuilder = resourceBuilder;
         }
 
         public async Task<IResult<StreamResponse>> GetClearanceInstructionAsPdf(
@@ -42,6 +47,15 @@ namespace Linn.Stores2.Facade.Services
             var htmlResult = await this.importReportService.GetClearanceInstructionAsHtml(impbookIds, toEmailAddress);
 
             return htmlResult;
+        }
+
+        public async Task<IResult<ReportReturnResource>> GetImportBookComparerReport(string toDate, string fromDate, List<string> customsEntryCodes)
+        {
+            var result = await this.importReportService.GetImportBookComparerReport(DateTime.Parse(toDate), DateTime.Parse(fromDate), customsEntryCodes);
+
+            var a = new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
+
+            return a;
         }
     }
 }

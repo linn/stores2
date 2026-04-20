@@ -43,6 +43,7 @@ import LabourHoursSummaryReport from './LabourHoursSummaryReport';
 import LabourHoursInLoansReport from './LabourHoursInLoansReport';
 import ImportBookHome from './imports/ImportBookHome';
 import ImportBookUtility from './imports/ImportBookUtility';
+import ImportBookComparer from './ImportBookComparer';
 import ClearanceInstruction from './imports/ClearanceInstruction';
 
 function Root() {
@@ -191,6 +192,7 @@ function Root() {
                     path="/stores2/import-books/clearance-instruction"
                     element={<ClearanceInstruction />}
                 />
+                <Route path="/stores2/import-books/compare" element={<ImportBookComparer />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </div>

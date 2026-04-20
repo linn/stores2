@@ -23,6 +23,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/import-books/clearance-instruction/pdf", this.ClearanceInstructionAsPdf);
             app.MapGet("/stores2/import-books/{id:int}/instruction/view", this.ImportClearanceInstructionAsHtml);
             app.MapGet("/stores2/import-books/{id:int}/instruction/pdf", this.ImportClearanceInstructionAsPdf);
+            app.MapGet("/stores2/import-books/comparer/view", this.ImportBookComparerReport);
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -68,6 +69,18 @@ namespace Linn.Stores2.Service.Modules
             res.StatusCode = (int)HttpStatusCode.OK;
 
             await res.WriteAsync(result);
+        }
+
+        private async Task ImportBookComparerReport(
+            HttpResponse res,
+            string toDate,
+            string fromDate,
+            string[] customEntryCodes,
+            IImportReportFacadeService facadeService)
+        {
+            var result = await facadeService.GetImportBookComparerReport(fromDate, toDate, [.. customEntryCodes]);
+
+            await res.Negotiate(result);
         }
 
         private async Task ImportClearanceInstructionAsPdf(

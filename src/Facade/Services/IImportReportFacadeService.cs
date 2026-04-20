@@ -5,6 +5,7 @@ namespace Linn.Stores2.Facade.Services
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
+    using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Service.Handlers;
 
     public interface IImportReportFacadeService
@@ -12,5 +13,10 @@ namespace Linn.Stores2.Facade.Services
         Task<IResult<StreamResponse>> GetClearanceInstructionAsPdf(IEnumerable<int> impbookId, string toEmailAddress);
 
         Task<string> GetClearanceInstructionAsHtml(IEnumerable<int> impbookId, string toEmailAddress);
+
+        Task<IResult<ReportReturnResource>> GetImportBookComparerReport(
+            string toDate,
+            string fromDate,
+            List<string> customsEntryCodes);
     }
 }
