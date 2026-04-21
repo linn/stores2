@@ -122,7 +122,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                     {
                         RowId = rowIndex.ToString(),
                         ColumnId = "countryOfDispatch",
-                        TextDisplay = b.Supplier.CountryCode
+                        TextDisplay = b.Supplier?.CountryCode
                     });
 
                 values.Add(
@@ -154,7 +154,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                     {
                         RowId = rowIndex.ToString(),
                         ColumnId = "invoiceCurrency",
-                        TextDisplay = b.CurrencyCode ?? string.Empty
+                        TextDisplay = b.CurrencyCode
                     });
 
                 values.Add(
