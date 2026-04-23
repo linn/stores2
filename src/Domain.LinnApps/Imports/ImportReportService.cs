@@ -1,25 +1,16 @@
 namespace Linn.Stores2.Domain.LinnApps.Imports
 {
     using System;
-    using System.Collections;
     using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
     using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Threading;
     using System.Threading.Tasks;
 
+    using Common.Persistence;
+    using Common.Rendering;
+    using Common.Reporting.Layouts;
+    using Common.Reporting.Models;
 
-    using Linn.Common.FileStorage;
-    using Linn.Common.Persistence;
-    using Linn.Common.Rendering;
-    using Linn.Common.Reporting.Layouts;
-    using Linn.Common.Reporting.Models;
-    using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using Linn.Stores2.Domain.LinnApps.Imports.Models;
-    using Linn.Stores2.Domain.LinnApps.Returns;
+    using Models;
 
     public class ImportReportService : IImportReportService
     {
@@ -33,15 +24,12 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private readonly IRepository<Employee, int> employeeRepository;
 
-        private readonly IFileStorageService fileStorageService;
-
         private readonly IReportingHelper reportingHelper;
 
         public ImportReportService(
             IRepository<ImportBook, int> importBookRepository,
             ISingleRecordRepository<ImportMaster> importMasterRepository,
             IQueryRepository<ImportAuthNumber> importAuthNumberRepository,
-            IFileStorageService fileStorageService,
             IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService,
             IRepository<Employee, int> employeeRepository,
             IReportingHelper reportingHelper)
@@ -52,7 +40,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.clearanceHtmlTemplateService = clearanceHtmlTemplateService;
             this.employeeRepository = employeeRepository;
             this.reportingHelper = reportingHelper;
-            this.fileStorageService = fileStorageService;
         }
 
         public async Task<string> GetClearanceInstructionAsHtml(IEnumerable<int> impbookIds, string toEmailAddress)

@@ -1,26 +1,20 @@
 namespace Linn.Stores2.Facade.Services
 {
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
     using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
 
-    using Common.Reporting.Resources.ReportResultResources;
-
     using CsvHelper;
     using CsvHelper.Configuration;
 
-    using Domain.LinnApps;
-
-    using Finance.Domain.LinnApps.Exceptions;
-
     using Linn.Common.Facade;
-    using Linn.Common.Persistence;
-    using Linn.Common.Reporting.Models;
+    using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
+    using Linn.Finance.Domain.LinnApps.Exceptions;
+    using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
 
     using Resources.Imports;
