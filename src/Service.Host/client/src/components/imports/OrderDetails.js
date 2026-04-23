@@ -372,7 +372,7 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
                                     disabled={!canChange}
                                     fullWidth
                                     type="number"
-                                    label="Customs Value"
+                                    label="Customs Value (GBP)"
                                     propertyName="orderValue"
                                     onChange={handleOrderChange}
                                 />

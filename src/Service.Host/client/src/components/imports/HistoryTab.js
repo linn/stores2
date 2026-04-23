@@ -70,6 +70,15 @@ function HistoryTab({ importBook, canChange, handleFieldChange }) {
                     />
                 </Grid>
                 <Grid size={4}>
+                    <InputField
+                        disabled
+                        value={importBook.customsPeriod}
+                        fullWidth
+                        label="Customs Period"
+                        propertyName="customsPeriod"
+                    />
+                </Grid>
+                <Grid size={4}>
                     <DatePicker
                         value={importBook.dateReceived}
                         label="Date Received"
@@ -78,6 +87,7 @@ function HistoryTab({ importBook, canChange, handleFieldChange }) {
                         disabled={!canChange}
                     />
                 </Grid>
+                <Grid size={8} />
                 <Grid size={4}>
                     <InputField
                         disabled

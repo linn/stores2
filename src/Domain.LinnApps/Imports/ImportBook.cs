@@ -176,6 +176,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public int? ParcelNumber { get; set; }
 
+        // this is period for Customs so based on Customs Entry Date not Date Created or Received
         public int? PeriodNumber { get; set; }
 
         public LedgerPeriod Period { get; set; }
