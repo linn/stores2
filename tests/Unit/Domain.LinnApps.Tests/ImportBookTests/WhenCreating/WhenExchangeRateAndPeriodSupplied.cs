@@ -37,7 +37,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
                     ExchangeCurrencyCode = TestCurrencies.SwedishKrona.Code,
                     ExchangeRate = 12.34m
                 },
-                Period = new LedgerPeriod { PeriodNumber = 1, MonthName = "Jan2026" }
+                CustomsPeriod = new LedgerPeriod { PeriodNumber = 1, MonthName = "Jan2026" }
             };
 
             this.sut = new ImportBook(candidate);
@@ -46,9 +46,9 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenCreating
         [Test]
         public void ShouldSetPeriod()
         {
-            this.sut.Period.Should().NotBeNull();
-            this.sut.Period.PeriodNumber.Should().Be(1);
-            this.sut.Period.MonthName.Should().Be("Jan2026");
+            this.sut.CustomsPeriod.Should().NotBeNull();
+            this.sut.CustomsPeriod.PeriodNumber.Should().Be(1);
+            this.sut.CustomsPeriod.MonthName.Should().Be("Jan2026");
         }
 
         [Test]

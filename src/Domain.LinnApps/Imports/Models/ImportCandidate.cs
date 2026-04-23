@@ -37,7 +37,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public string TransportBillNumber { get; set; }
 
-        public LedgerPeriod Period { get; set; }
+        public LedgerPeriod CustomsPeriod { get; set; }
 
         public ImportBookExchangeRate ExchangeRate { get; set; }
 

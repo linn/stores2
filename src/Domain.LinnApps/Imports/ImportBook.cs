@@ -92,10 +92,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 this.AddInvoiceDetail(invoiceDetailCandidate);
             }
 
-            if (candidate.Period != null)
+            if (candidate.CustomsPeriod != null)
             {
-                this.PeriodNumber = candidate.Period.PeriodNumber;
-                this.Period = candidate.Period;
+                this.CustomsPeriodNumber = candidate.CustomsPeriod.PeriodNumber;
+                this.CustomsPeriod = candidate.CustomsPeriod;
             }
 
             if (candidate.ExchangeRate != null)
@@ -177,9 +177,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         public int? ParcelNumber { get; set; }
 
         // this is period for Customs so based on Customs Entry Date not Date Created or Received
-        public int? PeriodNumber { get; set; }
+        public int? CustomsPeriodNumber { get; set; }
 
-        public LedgerPeriod Period { get; set; }
+        public LedgerPeriod CustomsPeriod { get; set; }
 
         public IList<ImportBookPostEntry> PostEntries { get; set; }
 
@@ -208,10 +208,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.Comments = update.Comments;
             this.ClearanceComments = update.ClearanceComments;
 
-            if (update.Period != null && this.Period == null)
+            if (update.CustomsPeriod != null && this.CustomsPeriod == null)
             {
-                this.PeriodNumber = update.Period.PeriodNumber;
-                this.Period = update.Period;
+                this.CustomsPeriodNumber = update.CustomsPeriod.PeriodNumber;
+                this.CustomsPeriod = update.CustomsPeriod;
             }
 
             if (update.ExchangeRate != null && this.ExchangeRate == null)

@@ -52,7 +52,7 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
                     ExchangeCurrencyCode = TestCurrencies.SwedishKrona.Code,
                     ExchangeRate = 12.34m
                 },
-                Period = new LedgerPeriod { PeriodNumber = 1 },
+                CustomsPeriod = new LedgerPeriod { PeriodNumber = 1 },
                 Currency = TestCurrencies.SwedishKrona,
                 OrderDetailCandidates = new List<ImportOrderDetailCandidate>
                 {

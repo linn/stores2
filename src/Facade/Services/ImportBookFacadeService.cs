@@ -191,21 +191,21 @@ namespace Linn.Stores2.Facade.Services
                              ClearanceComments = updateResource.ClearanceComments,
                              DateInstructionSent = string.IsNullOrEmpty(updateResource.DateInstructionSent) ? null : Convert.ToDateTime(updateResource.DateInstructionSent),
                              DateReceived = string.IsNullOrEmpty(updateResource.DateReceived) ? null : Convert.ToDateTime(updateResource.DateReceived),
-                             Period = entity.Period,
+                             CustomsPeriod = entity.CustomsPeriod,
                              Currency = currency,
                              CancelledBy = cancelledBy,
                              CancelledReason = updateResource.CancelledReason,
                              OrderDetailCandidates = orderDetails,
                          };
 
-            if (update.Period == null && update.CustomsEntryCodeDate.HasValue)
+            if (update.CustomsPeriod == null && update.CustomsEntryCodeDate.HasValue)
             {
                 // work out period from date
-                update.Period = await this.importCurrencyService.GetImportPeriod(update.CustomsEntryCodeDate.Value);
+                update.CustomsPeriod = await this.importCurrencyService.GetImportPeriod(update.CustomsEntryCodeDate.Value);
 
-                if (update.Period == null && entity.BaseCurrency != null && currency != null)
+                if (update.CustomsPeriod == null && entity.BaseCurrency != null && currency != null)
                 {
-                    update.ExchangeRate = await this.importCurrencyService.GetExchangeRate(update.Period, entity.BaseCurrency, currency);
+                    update.ExchangeRate = await this.importCurrencyService.GetExchangeRate(update.CustomsPeriod, entity.BaseCurrency, currency);
                 }
             }
 

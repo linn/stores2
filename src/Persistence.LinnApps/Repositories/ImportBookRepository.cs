@@ -37,7 +37,7 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
                        .Include(i => i.Currency)
                        .Include(i => i.BaseCurrency)
                        .Include(i => i.ExchangeCurrency)
-                       .Include(i => i.Period)
+                       .Include(i => i.CustomsPeriod)
                        .FirstOrDefaultAsync(r => r.Id == key);
         }
 

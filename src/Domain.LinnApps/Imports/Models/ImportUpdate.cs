@@ -9,7 +9,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public DateTime? CustomsEntryCodeDate { get; set; }
 
-        public LedgerPeriod Period { get; set; }
+        public LedgerPeriod CustomsPeriod { get; set; }
 
         public Currency Currency { get; set; }
 
