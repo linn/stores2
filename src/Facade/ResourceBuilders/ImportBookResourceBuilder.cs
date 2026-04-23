@@ -82,6 +82,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                 Comments = model.Comments,
                 ClearanceComments = model.ClearanceComments,
                 CustomsEntryCodePrefix = model.CustomsEntryCodePrefix,
+                CustomsPeriod = model.CustomsPeriod?.MonthName,
                 Pva = model.Pva,
                 ExchangeRate = model.ExchangeRate.GetValueOrDefault(),
                 ImportBookPostEntries = model.PostEntries != null ? model.PostEntries.Select(e => (ImportBookPostEntryResource)this.postEntryResourceBuilder.Build(e, claims)) : new List<ImportBookPostEntryResource>(),

@@ -62,10 +62,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public int? CpcNumberId { get; set; }
 
-        public decimal DutyValue { get; set; }
-
-        public decimal FreightValue { get; set; }
-
         public int ImportBookId { get; set; }
 
         public int? InsNumber { get; set; }
@@ -80,8 +76,6 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public int? OrderNumber { get; set; }
 
-        public decimal OrderValue { get; set; }
-
         public int POLineNumber { get; set; }
 
         public int Qty { get; set; }
@@ -92,15 +86,22 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public string TariffCode { get; set; }
 
-        public int? VatRate { get; set; }
-
-        public decimal VatValue { get; set; }
-
-        public decimal Weight { get; set; }
-
         public string PostDuty { get; set; }
 
         public string CountryOfOrigin { get; set; }
+
+        public decimal Weight { get; set; }
+
+        // important values on order details are in base currency
+        public decimal OrderValue { get; set; }
+
+        public decimal DutyValue { get; set; }
+
+        public decimal FreightValue { get; set; }
+
+        public int? VatRate { get; set; }
+
+        public decimal VatValue { get; set; }
 
         public ImportBookCpcNumber ImportBookCpcNumber { get; set; }
 

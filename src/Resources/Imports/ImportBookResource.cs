@@ -60,6 +60,8 @@ namespace Linn.Stores2.Resources.Imports
 
         public string CustomsEntryCodePrefix { get; set; }
 
+        public string CustomsPeriod { get; set; }
+
         public string DateCancelled { get; set; }
 
         public string DeliveryTermCode { get; set; }

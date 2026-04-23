@@ -1355,9 +1355,9 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.CreatedById).HasColumnName("CREATED_BY");
             q.Property(e => e.CustomsEntryCodePrefix).HasColumnName("CUSTOMS_ENTRY_CODE_PREFIX").HasMaxLength(3);
             q.Property(e => e.Pva).HasColumnName("PVA").HasMaxLength(1);
-            q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
+            q.Property(e => e.CustomsPeriodNumber).HasColumnName("PERIOD_NUMBER");
             q.Property(e => e.ExchangeRate).HasColumnName("EXCHANGE_RATE").HasMaxLength(20);
-            q.Property(e => e.PeriodNumber).HasColumnName("PERIOD_NUMBER");
+            q.Property(e => e.CustomsPeriodNumber).HasColumnName("PERIOD_NUMBER");
             q.HasMany(t => t.InvoiceDetails).WithOne()
                 .HasForeignKey(detail => detail.ImportBookId);
             q.HasMany(t => t.OrderDetails).WithOne()
@@ -1369,7 +1369,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.HasOne(d => d.CreatedBy).WithMany().HasForeignKey(s => s.CreatedById);
             q.HasOne(d => d.CancelledBy).WithMany().HasForeignKey(s => s.CancelledById);
             q.HasOne(d => d.Currency).WithMany().HasForeignKey(s => s.CurrencyCode);
-            q.HasOne(d => d.Period).WithMany().HasForeignKey(s => s.PeriodNumber);
+            q.HasOne(d => d.CustomsPeriod).WithMany().HasForeignKey(s => s.CustomsPeriodNumber);
             q.HasOne(d => d.BaseCurrency).WithMany().HasForeignKey("BASE_CURRENCY");
             q.HasOne(d => d.ExchangeCurrency).WithMany().HasForeignKey("EXCHANGE_CURRENCY");
             q.HasOne(d => d.ContactEmployee).WithMany().HasForeignKey("CONTACT_EMPLOYEE");

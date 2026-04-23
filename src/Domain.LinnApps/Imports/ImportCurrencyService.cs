@@ -22,7 +22,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public async Task<LedgerPeriod> GetImportPeriod(DateTime customsDate)
         {
-            var monthName = customsDate.ToString("MMMyyyy", CultureInfo.InvariantCulture);
+            var monthName = customsDate.ToString("MMMyyyy", CultureInfo.InvariantCulture).ToUpper();
 
             return await this.ledgerPeriodRepository.FindByAsync(p => p.MonthName == monthName);
         }
