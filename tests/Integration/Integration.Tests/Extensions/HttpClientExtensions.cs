@@ -73,5 +73,20 @@ namespace Linn.Stores2.Integration.Tests.Extensions
 
             return client.PostAsync(uri, content);
         }
+
+        public static Task<HttpResponseMessage> PostCsv(
+            this HttpClient client,
+            string uri,
+            string payload,
+            Action<HttpClient> configurationAction)
+        {
+            configurationAction(client);
+
+            var content = new StringContent(payload);
+
+            return client.PostAsync(
+                uri,
+                content);
+        }
     }
 }

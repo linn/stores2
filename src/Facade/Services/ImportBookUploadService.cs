@@ -20,6 +20,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Common.Reporting.Models;
+    using Linn.Common.Reporting.Resources.ResourceBuilders;
     using Linn.Stores2.Domain.LinnApps.Imports;
 
     using Resources.Imports;
@@ -28,21 +29,17 @@ namespace Linn.Stores2.Facade.Services
     {
         private readonly IImportReportService domainService;
 
-        private readonly IBuilder<ImportBookCompareReport> importbookCompareReportResourceBuilder;
-
-        private readonly ITransactionManager transactionManager;
+        private readonly IReportReturnResourceBuilder reportResourceBuilder;
 
         public ImportBookUploadService(
             IImportReportService domainService,
-            IBuilder<ImportBookCompareReport> importbookCompareReportResourceBuilder,
-            ITransactionManager transactionManager)
+            IReportReturnResourceBuilder reportResourceBuilder)
         {
             this.domainService = domainService;
-            this.importbookCompareReportResourceBuilder = importbookCompareReportResourceBuilder;
-            this.transactionManager = transactionManager;
+            this.reportResourceBuilder = reportResourceBuilder;
         }
 
-        public async Task<IEnumerable<ResultsModel>> UploadImportBookDetailCsvAsync(DateTime fromDate, DateTime toDate, Stream csvData)
+        public async Task<IResult<ReportReturnResource>> GetImportBookComparerWithCsvReport(DateTime fromDate, DateTime toDate, Stream csvData)
         {
             try
             {
@@ -80,7 +77,7 @@ namespace Linn.Stores2.Facade.Services
                     fromDate,
                     toDate);
 
-                return comparisonResults.ToList();
+                return new SuccessResult<ReportReturnResource>(this.reportResourceBuilder.Build(comparisonResults));
             }
             catch (Exception ex)
             {

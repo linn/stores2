@@ -14,10 +14,5 @@ namespace Linn.Stores2.Facade.Services
         Task<IResult<StreamResponse>> GetClearanceInstructionAsPdf(IEnumerable<int> impbookId, string toEmailAddress);
 
         Task<string> GetClearanceInstructionAsHtml(IEnumerable<int> impbookId, string toEmailAddress);
-
-        Task<IResult<ReportReturnResource>> GetImportBookComparerReport(
-            string fromDate,
-            string toDate,
-            Stream csvData);
     }
 }

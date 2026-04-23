@@ -38,8 +38,6 @@ namespace Linn.Stores2.Integration.Tests.ImportReportModuleTests
 
         protected IImportReportService ImportReportService { get; private set; }
 
-        protected IStorageTypeService StorageTypeService { get; set; }
-
         protected IPdfService PdfService { get; private set; }
 
         [SetUp]
@@ -51,13 +49,15 @@ namespace Linn.Stores2.Integration.Tests.ImportReportModuleTests
             this.ImportReportService = Substitute.For<IImportReportService>();
             this.ReportReturnResourceBuilder = new ReportReturnResourceBuilder();
 
+            IImportBookUploadService importBookUploadService = new ImportBookUploadService(this.ImportReportService, this.ReportReturnResourceBuilder);
 
             IImportReportFacadeService importBookReportFacadeService
-                = new ImportReportFacadeService(this.ImportReportService, this.PdfService, this.ReportReturnResourceBuilder);
+                = new ImportReportFacadeService(this.ImportReportService, importBookUploadService, this.PdfService, this.ReportReturnResourceBuilder);
 
             this.Client = TestClient.With<ImportReportModule>(services =>
                     {
                         services.AddSingleton(importBookReportFacadeService);
+                        services.AddSingleton(importBookUploadService);
                         services.AddHandlers();
                         services.AddRouting();
                     });

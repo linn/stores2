@@ -5,14 +5,11 @@ namespace Linn.Stores2.Facade.Services
     using System.IO;
     using System.Threading.Tasks;
 
-    using Common.Reporting.Models;
-
-    using Linn.Common.Facade;
-
-    using Resources.Imports;
+    using Common.Facade;
+    using Common.Reporting.Resources.ReportResultResources;
 
     public interface IImportBookUploadService
     {
-        Task<IEnumerable<ResultsModel>> UploadImportBookDetailCsvAsync(DateTime fromDate, DateTime toDate, Stream csvData);
+        Task<IResult<ReportReturnResource>> GetImportBookComparerWithCsvReport(DateTime fromDate, DateTime toDate, Stream csvData);
     }
 }

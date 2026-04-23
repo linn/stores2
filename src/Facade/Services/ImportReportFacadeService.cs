@@ -52,16 +52,5 @@ namespace Linn.Stores2.Facade.Services
 
             return htmlResult;
         }
-
-        public async Task<IResult<ReportReturnResource>> GetImportBookComparerReport(string fromDate, string toDate, Stream csvData)
-        {
-            var results = await this.importBookUploadService.UploadImportBookDetailCsvAsync(DateTime.Parse(fromDate), DateTime.Parse(toDate), csvData);
-
-            //var result = await this.importReportService.CompareImportBooksWithCsvReport(DateTime.Parse(toDate), DateTime.Parse(fromDate), csvData);
-
-            var a = new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(results));
-
-            return a;
-        }
     }
 }

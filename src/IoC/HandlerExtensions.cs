@@ -26,6 +26,7 @@ namespace Linn.Stores2.IoC
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CountryResource>>>()
                 .AddTransient<IHandler, JsonResultHandler<ReportReturnResource>>()
                 .AddTransient<IHandler, CsvResultHandler<ReportReturnResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ReportReturnResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<ProcessResultResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<CarrierResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<CarrierResource>>>()

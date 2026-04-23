@@ -2,15 +2,20 @@ namespace Linn.Stores2.Integration.Tests.ImportReportModuleTests
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Net.Http;
+    using System.Text;
+
+    using CsvHelper;
+
+    using Domain.LinnApps;
+
+    using Extensions;
 
     using FluentAssertions;
     using FluentAssertions.Extensions;
-
-    using global::Linn.Common.Reporting.Models;
-    using global::Linn.Common.Reporting.Resources.ReportResultResources;
-    using global::Linn.Stores2.Integration.Tests.Extensions;
 
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ReportResultResources;
@@ -29,21 +34,25 @@ namespace Linn.Stores2.Integration.Tests.ImportReportModuleTests
                 new ResultsModel { ReportTitle = new NameModel("TITLE") }
             };
 
-            this.ImportReportService.GetImportBookComparerReport(
+            this.ImportReportService.CompareImportBooksWithCsvReport(
+                    Arg.Any<List<ImportBookCompareReport>>(),
                     20.January(2005),
-                    22.January(2005),
-                    Arg.Any<List<string>>())
+                    22.January(2005))
                 .Returns(result);
 
-            this.Response = Client.Get(
-                "/stores2/import-books/comparer/view?"
-                + $"&fromDate={20.January(2005):yyyy-MM-dd}"
-                + $"&toDate={22.January(2005):yyyy-MM-dd}"
-                + "&customEntryCodes=1&customEntryCodes=2",
-                with =>
-                {
-                    with.Accept("application/json");
-                }).Result;
+
+
+            var csvContent = "Entry Identifier,Clearance Date,Consignor,Country of Dispatch,Commodity Code,CPC,Country of Origin,Invoice Currency,Item Price,Customs Value,VAT Value\n" +
+                "TEST001,2005-01-21,Test Supplier,FR,12345678,CPC001,FR,EUR,100.50,95.00,19.00";
+
+            this.Response = this.Client.PostCsv(
+                    $"/stores2/import-books/comparer/view?fromDate={20.January(2005):yyyy-MM-dd}&toDate={22.January(2005):yyyy-MM-dd}",
+                    csvContent,
+                    with =>
+                    {
+                        with.Accept("application/json");
+                    })
+                .Result;
         }
 
         [Test]
