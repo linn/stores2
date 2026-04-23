@@ -4,7 +4,33 @@ namespace Linn.Stores2.Domain.LinnApps
 
     public class ImportBookCompareReport
     {
-        public int EntryId { get; set; }
+        public ImportBookCompareReport(
+            string entryId,
+            DateTime clearenceDate,
+            string cosignor,
+            string countryOfDispatch,
+            int commodityCode,
+            string cpc,
+            string countryOfOrigin,
+            string invoiceCurrency,
+            decimal itemPrice,
+            decimal customsValue,
+            decimal vatValue)
+        {
+            this.EntryId = entryId;
+            this.ClearenceDate = clearenceDate;
+            this.Cosignor = cosignor;
+            this.CountryOfDispatch = countryOfDispatch;
+            this.CommodityCode = commodityCode;
+            this.Cpc = cpc;
+            this.CountryOfOrigin = countryOfOrigin;
+            this.InvoiceCurrency = invoiceCurrency;
+            this.ItemPrice = itemPrice;
+            this.CustomsValue = customsValue;
+            this.VatValue = vatValue;
+        }
+
+        public string EntryId { get; set; }
 
         public DateTime ClearenceDate { get; set; }
 

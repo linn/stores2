@@ -2,6 +2,7 @@ namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
@@ -15,8 +16,8 @@ namespace Linn.Stores2.Facade.Services
         Task<string> GetClearanceInstructionAsHtml(IEnumerable<int> impbookId, string toEmailAddress);
 
         Task<IResult<ReportReturnResource>> GetImportBookComparerReport(
-            string toDate,
             string fromDate,
-            List<string> customsEntryCodes);
+            string toDate,
+            Stream csvData);
     }
 }

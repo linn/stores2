@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportReportServiceTests
 {
+    using Common.FileStorage;
     using Common.Rendering;
 
     using global::Linn.Common.Persistence;
@@ -35,6 +36,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportReportServiceTests
 
         protected IHtmlTemplateService<ImportClearanceInstruction> ClearanceHtmlTemplateService { get; private set; }
 
+        protected IRepository<Employee, int> EmployeeRepository { get; private set; }
+
+        protected IFileStorageService FileStorageService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
@@ -42,12 +47,16 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportReportServiceTests
             this.ImportBookRepository = Substitute.For<IRepository<ImportBook, int>>();
             this.ImportMasterRepository = Substitute.For<ISingleRecordRepository<ImportMaster>>();
             this.ImportAuthNumberRepository = Substitute.For<IQueryRepository<ImportAuthNumber>>();
+            this.EmployeeRepository = Substitute.For<IRepository<Employee, int>>();
+            this.FileStorageService = Substitute.For<IFileStorageService>();
 
             this.Sut = new ImportReportService(
                 this.ImportBookRepository,
                 this.ImportMasterRepository,
                 this.ImportAuthNumberRepository,
+                this.FileStorageService,
                 this.ClearanceHtmlTemplateService,
+                this.EmployeeRepository,
                 this.ReportingHelper);
         }
     }

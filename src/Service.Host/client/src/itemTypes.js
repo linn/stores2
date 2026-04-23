@@ -68,6 +68,7 @@ const itemTypes = {
     currencies: { url: `${config.proxyRoot}/logistics/currencies` },
     consignments: { url: `${config.proxyRoot}/logistics/consignments` },
     cpcNumbers: { url: `${config.appRoot}/stores2/import-books/cpc-numbers` },
+    importBookComparer: { url: `${config.appRoot}/stores2/import-books/comparer/view` },
     downloadExpbookInvoices: { url: `${config.proxyRoot}/sales/documents/multiple-pdf` }
 };
 

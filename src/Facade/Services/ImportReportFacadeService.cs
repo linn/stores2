@@ -2,6 +2,7 @@ namespace Linn.Stores2.Facade.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading.Tasks;
 
     using Linn.Common.Facade;
@@ -15,14 +16,17 @@ namespace Linn.Stores2.Facade.Services
     {
         private readonly IImportReportService importReportService;
 
+        private readonly IImportBookUploadService importBookUploadService;
+
         private readonly IPdfService pdfService;
 
         private readonly IReportReturnResourceBuilder resourceBuilder;
 
         public ImportReportFacadeService(
-            IImportReportService importReportService, IPdfService pdfService, IReportReturnResourceBuilder resourceBuilder)
+            IImportReportService importReportService, IImportBookUploadService importBookUploadService, IPdfService pdfService, IReportReturnResourceBuilder resourceBuilder)
         {
             this.importReportService = importReportService;
+            this.importBookUploadService = importBookUploadService;
             this.pdfService = pdfService;
             this.resourceBuilder = resourceBuilder;
         }
@@ -49,11 +53,13 @@ namespace Linn.Stores2.Facade.Services
             return htmlResult;
         }
 
-        public async Task<IResult<ReportReturnResource>> GetImportBookComparerReport(string toDate, string fromDate, List<string> customsEntryCodes)
+        public async Task<IResult<ReportReturnResource>> GetImportBookComparerReport(string fromDate, string toDate, Stream csvData)
         {
-            var result = await this.importReportService.GetImportBookComparerReport(DateTime.Parse(toDate), DateTime.Parse(fromDate), customsEntryCodes);
+            var results = await this.importBookUploadService.UploadImportBookDetailCsvAsync(DateTime.Parse(fromDate), DateTime.Parse(toDate), csvData);
 
-            var a = new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(result));
+            //var result = await this.importReportService.CompareImportBooksWithCsvReport(DateTime.Parse(toDate), DateTime.Parse(fromDate), csvData);
+
+            var a = new SuccessResult<ReportReturnResource>(this.resourceBuilder.Build(results));
 
             return a;
         }

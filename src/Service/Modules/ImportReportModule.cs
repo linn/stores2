@@ -23,7 +23,8 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/import-books/clearance-instruction/pdf", this.ClearanceInstructionAsPdf);
             app.MapGet("/stores2/import-books/{id:int}/instruction/view", this.ImportClearanceInstructionAsHtml);
             app.MapGet("/stores2/import-books/{id:int}/instruction/pdf", this.ImportClearanceInstructionAsPdf);
-            app.MapGet("/stores2/import-books/comparer/view", this.ImportBookComparerReport);
+            //app.MapGet("/stores2/import-books/comparer/view", this.ImportBookComparerReport);
+            app.MapGet("/stores2/import-books/comparer/upload", this.UploadImportBook);
         }
 
         private async Task GetApp(HttpRequest req, HttpResponse res)
@@ -71,14 +72,39 @@ namespace Linn.Stores2.Service.Modules
             await res.WriteAsync(result);
         }
 
-        private async Task ImportBookComparerReport(
+        //private async Task ImportBookComparerReport(
+        //    HttpResponse res,
+        //    string toDate,
+        //    string fromDate,
+        //    string[] customEntryCodes,
+        //    IImportReportFacadeService facadeService)
+        //{
+        //    var result = await facadeService.GetImportBookComparerReport(fromDate, toDate, [.. customEntryCodes]);
+
+        //    await res.Negotiate(result);
+        //}
+
+        private async Task UploadImportBook(
+            HttpRequest req,
             HttpResponse res,
-            string toDate,
             string fromDate,
-            string[] customEntryCodes,
-            IImportReportFacadeService facadeService)
+            string toDate,
+            IImportBookUploadService service)
         {
-            var result = await facadeService.GetImportBookComparerReport(fromDate, toDate, [.. customEntryCodes]);
+            if (!req.HasFormContentType || req.Form.Files.Count == 0)
+            {
+                res.StatusCode = (int)HttpStatusCode.BadRequest;
+                await res.WriteAsJsonAsync(new { error = "No file uploaded" });
+                return;
+            }
+
+            var file = req.Form.Files[0];
+            await using var stream = file.OpenReadStream();
+
+            var result = await service.UploadImportBookDetailCsvAsync(
+                DateTime.Parse(fromDate),
+                DateTime.Parse(toDate),
+                stream);
 
             await res.Negotiate(result);
         }

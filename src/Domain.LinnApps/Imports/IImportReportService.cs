@@ -10,9 +10,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
     {
         Task<string> GetClearanceInstructionAsHtml(IEnumerable<int> impbookIds, string toEmailAddress);
 
-        Task<IEnumerable<ResultsModel>> GetImportBookComparerReport(
+        Task<IEnumerable<ResultsModel>> CompareImportBooksWithCsvReport(
+            List<ImportBookCompareReport> csvRecords,
             DateTime fromDate,
-            DateTime toDate,
-            List<string> customsEntryCodes);
+            DateTime toDate);
     }
 }
