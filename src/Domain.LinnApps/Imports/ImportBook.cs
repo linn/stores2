@@ -239,6 +239,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                         orderDetail.VatValue = orderDetailCandidate.VatValue;
                         orderDetail.OrderValue = orderDetailCandidate.OrderValue;
                         orderDetail.OrderDescription = orderDetailCandidate.OrderDescription;
+                        orderDetail.CpcNumberId = orderDetailCandidate.CpcNumber?.CpcNumber;
+                        orderDetail.ImportBookCpcNumber = orderDetailCandidate.CpcNumber;
+                        orderDetail.TariffCode = orderDetailCandidate.TariffCode;
                     }
                 }
 
