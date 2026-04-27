@@ -14,6 +14,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Stores2.Domain.LinnApps.External;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
+    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Facade.Extensions;
     using Linn.Stores2.Resources;
@@ -30,6 +31,8 @@ namespace Linn.Stores2.Facade.Services
         private readonly IQueryRepository<Currency> currencyRepository;
 
         private readonly IQueryRepository<Rsn> rsnRepository;
+
+        private readonly IRepository<PurchaseOrder, int> purchaseOrderRepository;
 
         private readonly IRepository<Country, string> countryRepository;
 
@@ -50,6 +53,7 @@ namespace Linn.Stores2.Facade.Services
             IQueryRepository<Supplier> supplierRepository,
             IQueryRepository<Currency> currencyRepository,
             IQueryRepository<Rsn> rsnRepository,
+            IRepository<PurchaseOrder, int> purchaseOrderRepository,
             IRepository<Country, string> countryRepository,
             IRepository<ImportBookCpcNumber, int> importBookCpcRepository,
             IImportFactory importFactory,
@@ -64,6 +68,7 @@ namespace Linn.Stores2.Facade.Services
             this.supplierRepository = supplierRepository;
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
+            this.purchaseOrderRepository = purchaseOrderRepository;
             this.countryRepository = countryRepository;
             this.importBookCpcRepository = importBookCpcRepository;
             this.importFactory = importFactory;
@@ -272,6 +277,10 @@ namespace Linn.Stores2.Facade.Services
                     ? await this.rsnRepository.FindByAsync(r => r.RsnNumber == orderDetailResource.RsnNumber.Value)
                     : null;
 
+                var purchaseOrder = orderDetailResource.OrderNumber.HasValue
+                    ? await this.purchaseOrderRepository.FindByIdAsync(orderDetailResource.OrderNumber.Value)
+                    : null;
+
                 orderDetails.Add(new ImportOrderDetailCandidate
                 {
                     LineType = orderDetailResource.LineType,
@@ -281,6 +290,7 @@ namespace Linn.Stores2.Facade.Services
                     TariffCode = orderDetailResource.TariffCode,
                     CountryOfOrigin = country,
                     Rsn = rsn,
+                    PurchaseOrder = purchaseOrder,
                     CpcNumber = cpcNumber,
                     OrderValue = orderDetailResource.OrderValue,
                     DutyValue = orderDetailResource.DutyValue,

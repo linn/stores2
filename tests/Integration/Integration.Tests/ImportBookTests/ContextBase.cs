@@ -80,6 +80,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     supplierRepository,
                     currencyRepository,
                     rsnRepository,
+                    purchaseOrderRepository,
                     countryRepository,
                     cpcNumberRepository,
                     importFactory,
