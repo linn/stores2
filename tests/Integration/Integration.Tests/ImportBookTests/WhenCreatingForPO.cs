@@ -1,14 +1,17 @@
 namespace Linn.Stores2.Integration.Tests.ImportBookTests
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net;
     using System.Net.Http.Json;
+    using System.Text;
 
     using FluentAssertions;
 
     using Linn.Stores2.Domain.LinnApps;
     using Linn.Stores2.Domain.LinnApps.Imports;
+    using Linn.Stores2.Domain.LinnApps.PurchaseOrders;
     using Linn.Stores2.Domain.LinnApps.Returns;
     using Linn.Stores2.Integration.Tests.Extensions;
     using Linn.Stores2.Resources.Imports;
@@ -21,7 +24,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
 
     using NUnit.Framework;
 
-    public class WhenCreating : ContextBase
+    public class WhenCreatingForPO : ContextBase
     {
         private ImportBookResource createResource;
 
@@ -48,9 +51,9 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                     new ImportBookOrderDetailResource
                     {
                         LineNumber = 1,
-                        LineType = "RSN",
-                        LineDocument = 12345,
-                        RsnNumber = 12345,
+                        LineType = "PO",
+                        LineDocument = 123,
+                        OrderNumber = 123,
                         CountryOfOrigin = "CN"
                     }
                 },
@@ -65,29 +68,14 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 }
             };
 
-            var rsn = new Rsn
+            var po = new PurchaseOrder
             {
-                RsnNumber = 12345,
-                SalesOutlet = new SalesOutlet
-                {
-                    AccountId = 1234,
-                    OutletNumber = 56,
-                    OutletAddress = new Address(
-                        "Neverland Hifi",
-                        "Never Street",
-                        null,
-                        null,
-                        null,
-                        "NE1",
-                        new Country(
-                            "NE",
-                            "Neverland"))
-                },
-                SalesArticle = TestSalesArticles.Akiva,
-                ImportBookOrderDetails = new List<ImportBookOrderDetail>()
+                DocumentType = "PO",
+                OrderNumber = 123,
+                Supplier = TestSuppliers.TaktAndTon
             };
 
-            this.DbContext.Rsns.AddAndSave(this.DbContext, rsn);
+            this.DbContext.PurchaseOrders.AddAndSave(this.DbContext, po);
 
             this.SetupCurrencies();
 
