@@ -230,9 +230,11 @@ function CreateTab() {
                     clearPurchaseOrderData();
                 } else if (
                     purchaseOrders.length > 0 &&
-                    purchaseOrder.supplier != purchaseOrders[0].supplier
+                    purchaseOrder.supplier.id !== purchaseOrders[0].supplier.id
                 ) {
-                    setError('Cannot mix suppliers');
+                    setError(
+                        `Cannot mix suppliers ${purchaseOrder.supplier.id} and ${purchaseOrders[0].supplier.id}`
+                    );
                     clearPurchaseOrderData();
                 } else {
                     if (!supplier) {

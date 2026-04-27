@@ -19,6 +19,7 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
     const [dialogOpen, setDialogOpen] = useState({
         forRow: null
     });
+    const [dialogChangesMade, setDialogChangesMade] = useState(false);
 
     const {
         send: getRsn,
@@ -40,22 +41,34 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
                 return;
             }
 
+            const changes = { [propertyName]: newValue };
+
+            if (propertyName === 'cpcNumberId') {
+                changes.cpcNumber =
+                    cpcNumbers.find(c => c.cpcNumber === Number(newValue))?.description ?? null;
+            }
+
             const updatedOrderDetails = orderDetails?.map(detail =>
-                detail.lineNumber === dialogOpen.forRow
-                    ? { ...detail, [propertyName]: newValue }
-                    : detail
+                detail.lineNumber === dialogOpen.forRow ? { ...detail, ...changes } : detail
             );
+
+            setDialogChangesMade(true);
 
             if (updatedOrderDetails) {
                 handleFieldChange('importBookOrderDetails', updatedOrderDetails);
             }
         },
-        [dialogOpen.forRow, orderDetails, handleFieldChange]
+        [dialogOpen.forRow, orderDetails, handleFieldChange, cpcNumbers]
     );
 
     const orderDetail = dialogOpen.forRow
         ? orderDetails?.find(od => od.lineNumber === dialogOpen.forRow)
         : null;
+
+    const dialogClose = () => {
+        setDialogOpen({ forRow: null });
+        setDialogChangesMade(false);
+    };
 
     useEffect(() => {
         if (rsnResult && orderDetail?.rsnNumber) {
@@ -402,7 +415,9 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
                         </Grid>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={() => setDialogOpen({ forRow: null })}>Close</Button>
+                        <Button onClick={dialogClose}>
+                            {dialogChangesMade ? 'Save' : 'Close'}
+                        </Button>
                     </DialogActions>
                 </Dialog>
             )}
