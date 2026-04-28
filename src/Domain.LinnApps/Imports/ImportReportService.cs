@@ -14,6 +14,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Requisitions;
 
     public class ImportReportService : IImportReportService
@@ -71,7 +72,18 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public async Task<ProcessResult> EmailClearanceInstruction(IEnumerable<int> impbookIds, string toEmailAddress)
         {
-            var idList = impbookIds.ToList();
+            var idList = impbookIds?.ToList();
+
+            if (idList == null || idList.Count == 0)
+            {
+                throw new ImportBookException("No import book ids supplied for clearance instruction email");
+            }
+
+            if (string.IsNullOrWhiteSpace(toEmailAddress))
+            {
+                throw new ImportBookException("No recipient email address supplied for clearance instruction email");
+            }
+
             var html = await this.GetClearanceInstructionAsHtml(idList, toEmailAddress);
             var pdf = await this.pdfService.ConvertHtmlToPdf(html, false);
 

@@ -10,6 +10,7 @@ namespace Linn.Stores2.Facade.Services
     using Linn.Common.Reporting.Models;
     using Linn.Common.Reporting.Resources.ReportResultResources;
     using Linn.Common.Reporting.Resources.ResourceBuilders;
+    using Linn.Common.Resources;
     using Linn.Common.Service.Handlers;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Facade.Extensions;
@@ -55,16 +56,16 @@ namespace Linn.Stores2.Facade.Services
             return htmlResult;
         }
 
-        public async Task<IResult<string>> EmailClearanceInstruction(IEnumerable<int> impbookIds, string toEmailAddress)
+        public async Task<IResult<ProcessResultResource>> EmailClearanceInstruction(IEnumerable<int> impbookIds, string toEmailAddress)
         {
             try
             {
                 var result = await this.importReportService.EmailClearanceInstruction(impbookIds, toEmailAddress);
-                return new SuccessResult<string>(result.Message);
+                return new SuccessResult<ProcessResultResource>(new ProcessResultResource { Success = result.Success, Message = result.Message });
             }
             catch (Exception ex)
             {
-                return new BadRequestResult<string>(ex.Message);
+                return new BadRequestResult<ProcessResultResource>(ex.Message);
             }
         }
 
