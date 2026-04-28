@@ -18,6 +18,7 @@ import {
     ExportButton,
     InputField,
     Loading,
+    SnackbarMessage,
     utilities
 } from '@linn-it/linn-form-components-library';
 import config from '../../config';
@@ -167,7 +168,7 @@ function ClearanceInstruction() {
                 }
             });
             if (response.ok) {
-                setEmailSuccess(`Clearance instruction emailed to ${options.toEmailAddress}.`);
+                setEmailSuccess(true);
             } else {
                 const text = await response.text();
                 setError(text);
@@ -337,7 +338,11 @@ function ClearanceInstruction() {
                         </Grid>
                         {emailSuccess && (
                             <Grid size={12}>
-                                <Typography color="success.main">{emailSuccess}</Typography>
+                                <SnackbarMessage
+                                    visible={emailSuccess}
+                                    onClose={() => setEmailSuccess(false)}
+                                    message={`Clearance instruction emailed to ${options.toEmailAddress}.`}
+                                />
                             </Grid>
                         )}
                     </>
