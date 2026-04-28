@@ -1,5 +1,6 @@
 namespace Linn.Stores2.Facade.Services
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
@@ -52,6 +53,19 @@ namespace Linn.Stores2.Facade.Services
             var htmlResult = await this.importReportService.GetClearanceInstructionAsHtml(impbookIds, toEmailAddress);
 
             return htmlResult;
+        }
+
+        public async Task<IResult<string>> EmailClearanceInstruction(IEnumerable<int> impbookIds, string toEmailAddress)
+        {
+            try
+            {
+                var result = await this.importReportService.EmailClearanceInstruction(impbookIds, toEmailAddress);
+                return new SuccessResult<string>(result.Message);
+            }
+            catch (Exception ex)
+            {
+                return new BadRequestResult<string>(ex.Message);
+            }
         }
 
         public async Task<IResult<ReportReturnResource>> GetImportBookReport(ImportBookSearchResource searchResource)

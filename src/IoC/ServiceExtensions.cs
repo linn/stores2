@@ -2,9 +2,14 @@ namespace Linn.Stores2.IoC
 {
     using System.Net.Http;
 
+    using Amazon;
+    using Amazon.Runtime;
+    using Amazon.SimpleEmail;
+
     using Linn.Common.Authorisation;
     using Linn.Common.Configuration;
     using Linn.Common.Domain.LinnApps.Services;
+    using Linn.Common.Email;
     using Linn.Common.Facade;
     using Linn.Common.Pdf;
     using Linn.Common.Proxy;
@@ -106,6 +111,11 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IImportFactory, ImportFactory>()
                 .AddScoped<IImportReportService, ImportReportService>()
                 .AddScoped<IImportCurrencyService, ImportCurrencyService>()
+                .AddSingleton<IAmazonSimpleEmailService>(
+                    x => new AmazonSimpleEmailServiceClient(
+                        x.GetRequiredService<AWSCredentials>(),
+                        x.GetRequiredService<RegionEndpoint>()))
+                .AddScoped<IEmailService>(x => new EmailService(x.GetService<IAmazonSimpleEmailService>()))
                 .AddTransient<ICalcLabourHoursProxy, CalcLabourTimesProxy>()
                 .AddScoped<IHtmlTemplateService<LabourHoursInStockReport>>(
                     x => new HtmlTemplateService<LabourHoursInStockReport>(

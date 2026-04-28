@@ -38,6 +38,8 @@ function ClearanceInstruction() {
         filename: ''
     });
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [emailSending, setEmailSending] = useState(false);
+    const [emailSuccess, setEmailSuccess] = useState(null);
 
     const {
         send: getImportBook,
@@ -149,6 +151,32 @@ function ClearanceInstruction() {
     const handleFindRowClick = row => {
         handleOptionChange('impbookId', row.id);
         setDialogOpen(false);
+    };
+
+    const handleSendEmail = async () => {
+        setEmailSending(true);
+        setEmailSuccess(null);
+        setError(null);
+        const url = `${itemTypes.importBooks.url}/clearance-instruction/email?impbooks=${importBooks.map(i => i.id).join(',')}&toEmailAddress=${options.toEmailAddress}`;
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                setEmailSuccess(`Clearance instruction emailed to ${options.toEmailAddress}.`);
+            } else {
+                const text = await response.text();
+                setError(text);
+            }
+        } catch (e) {
+            setError('Failed to send email.');
+        } finally {
+            setEmailSending(false);
+        }
     };
 
     return (
@@ -297,6 +325,21 @@ function ClearanceInstruction() {
                                 href={`${itemTypes.importBooks.url}/clearance-instruction/pdf?impbooks=${importBooks.map(i => i.id).join(',')}&toEmailAddress=${options.toEmailAddress}`}
                             />
                         </Grid>
+                        <Grid size={6}>
+                            <Button
+                                variant="outlined"
+                                onClick={handleSendEmail}
+                                disabled={emailSending || !options.toEmailAddress}
+                                style={{ marginTop: '8px' }}
+                            >
+                                {emailSending ? 'Sending...' : 'Send Email'}
+                            </Button>
+                        </Grid>
+                        {emailSuccess && (
+                            <Grid size={12}>
+                                <Typography color="success.main">{emailSuccess}</Typography>
+                            </Grid>
+                        )}
                     </>
                 )}
             </Grid>

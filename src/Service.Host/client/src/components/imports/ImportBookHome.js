@@ -34,7 +34,7 @@ function ImportBookHome() {
                         >
                             <Tab label="Search" />
                             <Tab label="Create" />
-                            <Tab label="Export" />
+                            <Tab label="Data Export" />
                         </Tabs>
                     </Box>
 

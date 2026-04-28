@@ -15,6 +15,8 @@ namespace Linn.Stores2.Facade.Services
 
         Task<string> GetClearanceInstructionAsHtml(IEnumerable<int> impbookId, string toEmailAddress);
 
+        Task<IResult<string>> EmailClearanceInstruction(IEnumerable<int> impbookIds, string toEmailAddress);
+
         Task<IResult<ReportReturnResource>> GetImportBookReport(ImportBookSearchResource searchResource);
     }
 }

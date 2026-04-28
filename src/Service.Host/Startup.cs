@@ -42,6 +42,7 @@ namespace Linn.Stores2.Service.Host
                 });
             services.AddLog();
 
+            services.AddCredentialsExtensions();
             services.AddServices();
             services.AddFacadeServices();
             services.AddBuilders();
