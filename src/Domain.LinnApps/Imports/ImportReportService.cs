@@ -88,6 +88,12 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             var pdf = await this.pdfService.ConvertHtmlToPdf(html, false);
 
             var fromAddress = ConfigurationManager.Configuration["CLEARANCE_FROM_ADDRESS"];
+
+            if (string.IsNullOrWhiteSpace(fromAddress))
+            {
+                throw new ImportBookException("CLEARANCE_FROM_ADDRESS is not configured");
+            }
+
             var subject = $"Import Customs Clearance Instruction - AWB {(await this.importBookRepository.FindByIdAsync(idList[0])).TransportBillNumber}";
             var attachments = new List<Attachment> { new PdfAttachment(pdf, "ImportClearanceInstruction") };
 
@@ -97,7 +103,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 null,
                 null,
                 fromAddress,
-                "Linn Products Ltd",
+                "Import Logistics",
                 subject,
                 "Please find the Import Customs Clearance Instruction attached.",
                 attachments);
