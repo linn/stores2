@@ -13,9 +13,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
     using Linn.Common.Persistence;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
-    using Linn.Stores2.Domain.LinnApps.Imports.Models;
     using Linn.Stores2.Domain.LinnApps.Exceptions;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
+    using Linn.Stores2.Domain.LinnApps.Imports.Models;
 
     public class ImportReportService : IImportReportService
     {
