@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from 'react-oidc-context';
 import { useSearchParams, Link as RouterLink } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -18,11 +17,13 @@ import {
     ExportButton,
     InputField,
     Loading,
+    SnackbarMessage,
     utilities
 } from '@linn-it/linn-form-components-library';
 import config from '../../config';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
+import usePost from '../../hooks/usePost';
 import Page from '../Page';
 import SearchParams from './SearchParams';
 
@@ -46,10 +47,17 @@ function ClearanceInstruction() {
         clearData
     } = useGet(itemTypes.importBooks.url, true);
 
-    const auth = useAuth();
-    const token = auth.user?.access_token;
+    const emailUrl = `${itemTypes.importBooks.url}/clearance-instruction/email?impbooks=${importBooks.map(i => i.id).join(',')}&toEmailAddress=${encodeURIComponent(options.toEmailAddress || '')}`;
 
-    if (!hasFetched && token) {
+    const {
+        send: sendEmail,
+        isLoading: emailSending,
+        errorMessage: emailError,
+        postResult: emailResult,
+        clearPostResult: clearEmailResult
+    } = usePost(emailUrl, true);
+
+    if (!hasFetched) {
         setHasFetched(true);
         getImportBook(impBookId);
     }
@@ -297,6 +305,30 @@ function ClearanceInstruction() {
                                 href={`${itemTypes.importBooks.url}/clearance-instruction/pdf?impbooks=${importBooks.map(i => i.id).join(',')}&toEmailAddress=${options.toEmailAddress}`}
                             />
                         </Grid>
+                        <Grid size={6}>
+                            <Button
+                                variant="outlined"
+                                onClick={() => sendEmail(null, {})}
+                                disabled={emailSending || !options.toEmailAddress}
+                                style={{ marginTop: '8px' }}
+                            >
+                                {emailSending ? 'Sending...' : 'Send Email'}
+                            </Button>
+                        </Grid>
+                        {emailResult && (
+                            <Grid size={12}>
+                                <SnackbarMessage
+                                    visible={!!emailResult}
+                                    onClose={clearEmailResult}
+                                    message={`Clearance instruction emailed to ${options.toEmailAddress}.`}
+                                />
+                            </Grid>
+                        )}
+                        {emailError && (
+                            <Grid size={12}>
+                                <ErrorCard errorMessage={emailError} />
+                            </Grid>
+                        )}
                     </>
                 )}
             </Grid>

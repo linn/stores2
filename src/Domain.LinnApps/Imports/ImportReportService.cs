@@ -6,11 +6,15 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Configuration;
+    using Linn.Common.Domain;
+    using Linn.Common.Email;
+    using Linn.Common.Pdf;
     using Linn.Common.Persistence;
     using Linn.Common.Rendering;
     using Linn.Common.Reporting.Models;
+    using Linn.Stores2.Domain.LinnApps.Exceptions;
     using Linn.Stores2.Domain.LinnApps.Imports.Models;
-    using Linn.Stores2.Domain.LinnApps.Requisitions;
 
     public class ImportReportService : IImportReportService
     {
@@ -24,6 +28,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private readonly IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService;
 
+        private readonly IPdfService pdfService;
+
+        private readonly IEmailService emailService;
+
         private ResultsModel model;
 
         public ImportReportService(
@@ -31,13 +39,17 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             ISingleRecordRepository<ImportMaster> importMasterRepository,
             IQueryRepository<ImportAuthNumber> importAuthNumberRepository,
             IReportingHelper reportingHelper,
-            IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService)
+            IHtmlTemplateService<ImportClearanceInstruction> clearanceHtmlTemplateService,
+            IPdfService pdfService,
+            IEmailService emailService)
         {
             this.importBookRepository = importBookRepository;
             this.importMasterRepository = importMasterRepository;
             this.importAuthNumberRepository = importAuthNumberRepository;
             this.reportingHelper = reportingHelper;
             this.clearanceHtmlTemplateService = clearanceHtmlTemplateService;
+            this.pdfService = pdfService;
+            this.emailService = emailService;
         }
 
         public async Task<string> GetClearanceInstructionAsHtml(IEnumerable<int> impbookIds, string toEmailAddress)
@@ -55,6 +67,47 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             }
 
             return await this.clearanceHtmlTemplateService.GetHtml(model);
+        }
+
+        public async Task<ProcessResult> EmailClearanceInstruction(IEnumerable<int> impbookIds, string toEmailAddress)
+        {
+            var idList = impbookIds?.ToList();
+
+            if (idList == null || idList.Count == 0)
+            {
+                throw new ImportBookException("No import book ids supplied for clearance instruction email");
+            }
+
+            if (string.IsNullOrWhiteSpace(toEmailAddress))
+            {
+                throw new ImportBookException("No recipient email address supplied for clearance instruction email");
+            }
+
+            var html = await this.GetClearanceInstructionAsHtml(idList, toEmailAddress);
+            var pdf = await this.pdfService.ConvertHtmlToPdf(html, false);
+
+            var fromAddress = ConfigurationManager.Configuration["CLEARANCE_FROM_ADDRESS"];
+
+            if (string.IsNullOrWhiteSpace(fromAddress))
+            {
+                throw new ImportBookException("CLEARANCE_FROM_ADDRESS is not configured");
+            }
+
+            var subject = $"Import Customs Clearance Instruction - AWB {(await this.importBookRepository.FindByIdAsync(idList[0])).TransportBillNumber}";
+            var attachments = new List<Attachment> { new PdfAttachment(pdf, "ImportClearanceInstruction") };
+
+            await this.emailService.SendEmailAsync(
+                toEmailAddress,
+                toEmailAddress,
+                null,
+                null,
+                fromAddress,
+                "Import Logistics",
+                subject,
+                "Please find the Import Customs Clearance Instruction attached.",
+                attachments);
+
+            return new ProcessResult(true, $"Clearance instruction emailed to {toEmailAddress}.");
         }
 
         public async Task<ResultsModel> GetImportReport(Expression<Func<ImportBook, bool>> expression)

@@ -22,6 +22,7 @@ namespace Linn.Stores2.Service.Modules
             app.MapGet("/stores2/import-books/clearance-instruction", this.GetApp);
             app.MapGet("/stores2/import-books/clearance-instruction/view", this.ClearanceInstructionAsHtml);
             app.MapGet("/stores2/import-books/clearance-instruction/pdf", this.ClearanceInstructionAsPdf);
+            app.MapPost("/stores2/import-books/clearance-instruction/email", this.EmailClearanceInstruction);
             app.MapGet("/stores2/import-books/{id:int}/instruction/view", this.ImportClearanceInstructionAsHtml);
             app.MapGet("/stores2/import-books/{id:int}/instruction/pdf", this.ImportClearanceInstructionAsPdf);
             app.MapGet("/stores2/import-books/report", this.ImportReport);
@@ -55,6 +56,17 @@ namespace Linn.Stores2.Service.Modules
         {
             var ids = Array.ConvertAll(impbooks.Split(','), int.Parse);
             var result = await facadeService.GetClearanceInstructionAsPdf(ids, toEmailAddress);
+            await res.Negotiate(result);
+        }
+
+        private async Task EmailClearanceInstruction(
+            HttpResponse res,
+            string impbooks,
+            string toEmailAddress,
+            IImportReportFacadeService facadeService)
+        {
+            var ids = Array.ConvertAll(impbooks.Split(','), int.Parse);
+            var result = await facadeService.EmailClearanceInstruction(ids, toEmailAddress);
             await res.Negotiate(result);
         }
 

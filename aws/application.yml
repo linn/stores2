@@ -41,6 +41,9 @@ Parameters:
   pdfServiceRoot:
     Type: String
     Description: Pdf Service API root url
+  clearanceFromAddress:
+    Type: String
+    Description: From address for import clearance instruction emails
   viewsRoot:
     Type: String
     Description: path to the views folder
@@ -201,6 +204,8 @@ Resources:
               Value: !Ref dockerTag
             - Name: PDF_SERVICE_ROOT
               Value: !Ref pdfServiceRoot
+            - Name: CLEARANCE_FROM_ADDRESS
+              Value: !Ref clearanceFromAddress
             - Name: VIEWS_ROOT
               Value: !Ref viewsRoot
             - Name: awsRegion
