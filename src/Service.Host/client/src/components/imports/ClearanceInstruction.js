@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from 'react-oidc-context';
 import { useSearchParams, Link as RouterLink } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -24,6 +23,7 @@ import {
 import config from '../../config';
 import itemTypes from '../../itemTypes';
 import useGet from '../../hooks/useGet';
+import usePost from '../../hooks/usePost';
 import Page from '../Page';
 import SearchParams from './SearchParams';
 
@@ -39,8 +39,6 @@ function ClearanceInstruction() {
         filename: ''
     });
     const [dialogOpen, setDialogOpen] = useState(false);
-    const [emailSending, setEmailSending] = useState(false);
-    const [emailSuccess, setEmailSuccess] = useState(null);
 
     const {
         send: getImportBook,
@@ -49,10 +47,17 @@ function ClearanceInstruction() {
         clearData
     } = useGet(itemTypes.importBooks.url, true);
 
-    const auth = useAuth();
-    const token = auth.user?.access_token;
+    const emailUrl = `${itemTypes.importBooks.url}/clearance-instruction/email?impbooks=${importBooks.map(i => i.id).join(',')}&toEmailAddress=${encodeURIComponent(options.toEmailAddress || '')}`;
 
-    if (!hasFetched && token) {
+    const {
+        send: sendEmail,
+        isLoading: emailSending,
+        errorMessage: emailError,
+        postResult: emailResult,
+        clearPostResult: clearEmailResult
+    } = usePost(emailUrl, true);
+
+    if (!hasFetched) {
         setHasFetched(true);
         getImportBook(impBookId);
     }
@@ -152,32 +157,6 @@ function ClearanceInstruction() {
     const handleFindRowClick = row => {
         handleOptionChange('impbookId', row.id);
         setDialogOpen(false);
-    };
-
-    const handleSendEmail = async () => {
-        setEmailSending(true);
-        setEmailSuccess(null);
-        setError(null);
-        const url = `${itemTypes.importBooks.url}/clearance-instruction/email?impbooks=${importBooks.map(i => i.id).join(',')}&toEmailAddress=${options.toEmailAddress}`;
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.ok) {
-                setEmailSuccess(true);
-            } else {
-                const text = await response.text();
-                setError(text);
-            }
-        } catch (e) {
-            setError('Failed to send email.');
-        } finally {
-            setEmailSending(false);
-        }
     };
 
     return (
@@ -329,20 +308,25 @@ function ClearanceInstruction() {
                         <Grid size={6}>
                             <Button
                                 variant="outlined"
-                                onClick={handleSendEmail}
+                                onClick={() => sendEmail(null, {})}
                                 disabled={emailSending || !options.toEmailAddress}
                                 style={{ marginTop: '8px' }}
                             >
                                 {emailSending ? 'Sending...' : 'Send Email'}
                             </Button>
                         </Grid>
-                        {emailSuccess && (
+                        {emailResult && (
                             <Grid size={12}>
                                 <SnackbarMessage
-                                    visible={emailSuccess}
-                                    onClose={() => setEmailSuccess(false)}
+                                    visible={!!emailResult}
+                                    onClose={clearEmailResult}
                                     message={`Clearance instruction emailed to ${options.toEmailAddress}.`}
                                 />
+                            </Grid>
+                        )}
+                        {emailError && (
+                            <Grid size={12}>
+                                <ErrorCard errorMessage={emailError} />
                             </Grid>
                         )}
                     </>
