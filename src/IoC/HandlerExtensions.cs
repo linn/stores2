@@ -70,6 +70,8 @@ namespace Linn.Stores2.IoC
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<ImportBookResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookCpcNumberResource>>>()
+                .AddSingleton<IHandler, JsonResultHandler<ImportBookExchangeRateResource>>()
+                .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ImportBookExchangeRateResource>>>()
                 .AddSingleton<IHandler, JsonResultHandler<ConsignmentResource>>()
                 .AddSingleton<IHandler, JsonResultHandler<IEnumerable<ConsignmentResource>>>();
         }
