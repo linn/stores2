@@ -36,7 +36,8 @@ namespace Linn.Stores2.Persistence.LinnApps.Repositories
         {
             return this.serviceDbContext.ImportBookExchangeRates
                 .Where(expression)
-                .Include(x => x.LedgerPeriod);
+                .Include(x => x.LedgerPeriod)
+                .Include(x => x.ExchangeCurrency);
         }
     }
 }

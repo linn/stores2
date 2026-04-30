@@ -1,6 +1,7 @@
 namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using FluentAssertions;
 
@@ -29,6 +30,10 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
                 InvoiceDetailCandidates = new List<ImportInvoiceDetailCandidate>
                 {
                     new ImportInvoiceDetailCandidate("TEST", 100)
+                },
+                OrderDetailCandidates = new List<ImportOrderDetailCandidate>
+                {
+                    new ImportOrderDetailCandidate { LineType = "SUNDRY", LineNumber = 1, CurrencyOrderValue = 100 }
                 }
             };
 
@@ -61,6 +66,16 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportBookTests.WhenUpdating
         public void ShouldUpdateTotalValue()
         {
             this.sut.TotalImportValue.Should().Be(8.10m);
+        }
+
+        [Test]
+        public void ShouldUpdateOrderDetails()
+        {
+            var orderDetail = this.sut.OrderDetails.FirstOrDefault();
+
+            orderDetail.Should().NotBeNull();
+            orderDetail.CurrencyOrderValue.Should().Be(100);
+            orderDetail.OrderValue.Should().Be(8.10m);
         }
     }
 }

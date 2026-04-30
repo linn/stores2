@@ -71,6 +71,8 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ImportFactoryTests
             candidate.TariffCode.Should().Be(TestSalesArticles.Akiva.Tariff.TariffCode);
             candidate.CountryOfOrigin.Should().Be(TestSalesArticles.Akiva.CountryOfOrigin);
             candidate.CpcNumber.CpcNumber.Should().Be(TestCpcNumbers.IPRCpc.CpcNumber);
+            candidate.OrderValue.Should().BeNull();
+            candidate.CurrencyOrderValue.Should().Be(421.28m);
         }
 
         [Test]

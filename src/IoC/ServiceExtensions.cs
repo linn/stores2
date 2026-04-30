@@ -173,6 +173,7 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IDeliveryNoteFacadeService, DeliveryNoteFacadeService>()
                 .AddScoped<IStockReportFacadeService, StockReportFacadeService>()
                 .AddScoped<IImportBookFacadeService, ImportBookFacadeService>()
+                .AddScoped<IAsyncFacadeService<ImportBookExchangeRate, ImportBookExchangeRateKey, ImportBookExchangeRateResource, ImportBookExchangeRateResource, ImportBookExchangeRateResource>, ImportBookExchangeRateFacadeService>()
                 .AddScoped<IImportReportFacadeService, ImportReportFacadeService>()
                 .AddScoped<IAsyncFacadeService<ImportBookCpcNumber, int, ImportBookCpcNumberResource, ImportBookCpcNumberResource, ImportBookCpcNumberResource>, ImportBookCpcNumberFacadeService>();
         }
@@ -214,7 +215,8 @@ namespace Linn.Stores2.IoC
                 .AddScoped<IBuilder<ImportBookOrderDetail>, ImportBookOrderDetailResourceBuilder>()
                 .AddScoped<IBuilder<ImportBookInvoiceDetail>, ImportBookInvoiceDetailResourceBuilder>()
                 .AddScoped<IBuilder<ImportBookPostEntry>, ImportBookPostEntryResourceBuilder>()
-                .AddScoped<IBuilder<ImportBookCpcNumber>, ImportBookCpcNumberResourceBuilder>();
+                .AddScoped<IBuilder<ImportBookCpcNumber>, ImportBookCpcNumberResourceBuilder>()
+                .AddScoped<IBuilder<ImportBookExchangeRate>, ImportBookExchangeRateResourceBuilder>();
         }
     }
 }

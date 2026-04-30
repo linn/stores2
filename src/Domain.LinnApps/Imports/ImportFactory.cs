@@ -22,6 +22,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         private readonly IRepository<ImportBookCpcNumber, int> importBookCpcRepository;
 
+        private readonly IRepository<ImportBook, int> importBookRepository;
+
         private ImportCandidate candidate;
 
         public ImportFactory(
@@ -29,13 +31,15 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             IQueryRepository<Currency> currencyRepository,
             IQueryRepository<Rsn> rsnRepository,
             IRepository<PurchaseOrder, int> purchaseOrderRepository,
-            IRepository<ImportBookCpcNumber, int> importBookCpcRepository)
+            IRepository<ImportBookCpcNumber, int> importBookCpcRepository,
+            IRepository<ImportBook, int> importBookRepository)
         {
             this.supplierRepository = supplierRepository;
             this.currencyRepository = currencyRepository;
             this.rsnRepository = rsnRepository;
             this.purchaseOrderRepository = purchaseOrderRepository;
             this.importBookCpcRepository = importBookCpcRepository;
+            this.importBookRepository = importBookRepository;
         }
 
         public async Task<ImportCandidate> CreateImportBook(
@@ -71,6 +75,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
         private async Task<ImportCandidate> CreateImportBookFromRsnNumbers(IEnumerable<int> rsnNumbers)
         {
             var cpcNumbers = await this.importBookCpcRepository.FilterByAsync(i => i.DateInvalid == null);
+            var isFirstRsn = true;
 
             foreach (var rsnNumber in rsnNumbers)
             {
@@ -80,6 +85,12 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                     throw new NotFoundException($"RSN {rsnNumber} not found");
                 }
 
+                if (isFirstRsn)
+                {
+                    await this.SetSupplierAndCarrierFromPreviousImport(rsn.AccountId, rsn.OutletNumber);
+                    isFirstRsn = false;
+                }
+
                 var cpc = cpcNumbers.FirstOrDefault(c => c.ReasonForImport == rsn.ImportScheme());
 
                 this.candidate.OrderDetailCandidates.Add(new ImportOrderDetailCandidate(rsn, cpc));
@@ -87,6 +98,37 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             }
 
             return this.candidate;
+        }
+
+        private async Task SetSupplierAndCarrierFromPreviousImport(int accountId, int? outletNumber)
+        {
+            var candidates = await this.rsnRepository.FilterByAsync(
+                r => r.AccountId == accountId
+                     && r.OutletNumber == outletNumber
+                     && r.ImportBookOrderDetails.Any());
+
+            var mostRecentRsnNumber = candidates
+                .OrderByDescending(r => r.RsnNumber)
+                .FirstOrDefault()?.RsnNumber;
+
+            if (mostRecentRsnNumber == null)
+            {
+                return;
+            }
+
+            var previousRsn = await this.rsnRepository.FindByAsync(r => r.RsnNumber == mostRecentRsnNumber);
+            if (previousRsn == null)
+            {
+                return;
+            }
+
+            var importBookId = previousRsn.ImportBookOrderDetails.First().ImportBookId;
+            var importBook = await this.importBookRepository.FindByIdAsync(importBookId);
+            if (importBook != null)
+            {
+                this.candidate.Supplier = importBook.Supplier;
+                this.candidate.Carrier = importBook.Carrier;
+            }
         }
 
         private async Task<ImportCandidate> CreateImportBookFromPoNumbers(IEnumerable<int> poNumbers)

@@ -22,7 +22,9 @@ namespace Linn.Stores2.Resources.Imports
 
         public decimal VatValue { get; set; }
 
-        public decimal OrderValue { get; set; }
+        public decimal CurrencyOrderValue { get; set; }
+
+        public decimal? OrderValue { get; set; }
 
         public decimal Weight { get; set; }
 

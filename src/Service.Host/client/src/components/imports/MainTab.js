@@ -144,7 +144,7 @@ function MainTab({
                             .sort((a, b) => a.name.localeCompare(b.name))
                             .map(c => ({
                                 id: c.code,
-                                displayText: c.name
+                                displayText: `${c.code} - ${c.name}`
                             }))}
                         onChange={handleFieldChange}
                     />
@@ -240,6 +240,7 @@ function MainTab({
                 orderDetails={importBook.importBookOrderDetails}
                 countries={countries}
                 cpcNumbers={cpcNumbers}
+                currency={importBook.currency}
                 canChange={canChange}
                 handleFieldChange={handleFieldChange}
             />

@@ -1398,6 +1398,7 @@ namespace Linn.Stores2.Persistence.LinnApps
             q.Property(e => e.DutyValue).HasColumnName("DUTY_VALUE");
             q.Property(e => e.FreightValue).HasColumnName("FREIGHT_VALUE");
             q.Property(e => e.VatValue).HasColumnName("VAT_VALUE");
+            q.Property(e => e.CurrencyOrderValue).HasColumnName("ORDER_VALUE_CURRENCY");
             q.Property(e => e.OrderValue).HasColumnName("ORDER_VALUE");
             q.Property(e => e.Weight).HasColumnName("WEIGHT");
             q.Property(e => e.LoanNumber).HasColumnName("LOAN_NUMBER").HasMaxLength(6);
