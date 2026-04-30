@@ -50,7 +50,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 = new EntityFrameworkQueryRepository<Supplier>(this.DbContext.Suppliers);
             var currencyRepository
                 = new EntityFrameworkQueryRepository<Currency>(this.DbContext.Currencies);
-            var rsnRepository = new EntityFrameworkQueryRepository<Rsn>(this.DbContext.Rsns);
+            var rsnRepository = new RsnRepository(this.DbContext);
             var countryRepository
                 = new EntityFrameworkRepository<Country, string>(this.DbContext.Countries);
             var purchaseOrderRepository = new PurchaseOrderRepository(this.DbContext);
@@ -65,7 +65,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookTests
                 currencyRepository,
                 rsnRepository,
                 purchaseOrderRepository,
-                cpcNumberRepository);
+                cpcNumberRepository,
+                importBookRepository);
 
             var importCurrencyService = new ImportCurrencyService(periodRepository, exchangeRateRepository);
 
