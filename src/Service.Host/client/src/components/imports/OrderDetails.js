@@ -15,7 +15,14 @@ import { Dropdown, InputField } from '@linn-it/linn-form-components-library';
 import useGet from '../../hooks/useGet';
 import itemTypes from '../../itemTypes';
 
-function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFieldChange }) {
+function OrderDetails({
+    orderDetails,
+    countries,
+    cpcNumbers,
+    currency,
+    canChange,
+    handleFieldChange
+}) {
     const [dialogOpen, setDialogOpen] = useState({
         forRow: null
     });
@@ -251,7 +258,7 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
         { field: 'tariffCode', headerName: 'Tariff no', width: 140 },
         { field: 'cpcNumber', headerName: 'CPC', width: 120 },
         { field: 'countryOfOrigin', headerName: 'CoO', width: 60 },
-        { field: 'orderValue', headerName: 'Customs Value', width: 140 },
+        { field: 'currencyOrderValue', headerName: 'Customs Value', width: 140 },
         { field: 'dutyValue', headerName: 'Duty Value', width: 120 },
         { field: 'qty', headerName: 'Qty', width: 60 },
         ...(canChange
@@ -381,6 +388,17 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
                             </Grid>
                             <Grid size={4}>
                                 <InputField
+                                    value={orderDetail?.currencyOrderValue}
+                                    disabled={!canChange}
+                                    fullWidth
+                                    type="number"
+                                    label={`Customs Value (${currency})`}
+                                    propertyName="currencyOrderValue"
+                                    onChange={handleOrderChange}
+                                />
+                            </Grid>
+                            <Grid size={4}>
+                                <InputField
                                     value={orderDetail?.orderValue}
                                     disabled={!canChange}
                                     fullWidth
@@ -390,6 +408,7 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
                                     onChange={handleOrderChange}
                                 />
                             </Grid>
+                            <Grid size={4} />
                             <Grid size={4}>
                                 <InputField
                                     value={orderDetail?.dutyValue}
@@ -412,6 +431,7 @@ function OrderDetails({ orderDetails, countries, cpcNumbers, canChange, handleFi
                                     onChange={handleOrderChange}
                                 />
                             </Grid>
+                            <Grid size={4} />
                         </Grid>
                     </DialogContent>
                     <DialogActions>

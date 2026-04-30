@@ -22,6 +22,7 @@ namespace Linn.Stores2.Facade.ResourceBuilders
                            FreightValue = model.FreightValue,
                            VatValue = model.VatValue,
                            OrderValue = model.OrderValue,
+                           CurrencyOrderValue = model.CurrencyOrderValue,
                            Weight = model.Weight,
                            LoanNumber = model.LoanNumber,
                            LineType = model.LineType,

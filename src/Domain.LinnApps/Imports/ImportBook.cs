@@ -198,6 +198,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public bool IsCancelled => this.DateCancelled.HasValue;
 
+        public bool IsBaseCurrency => this.CurrencyCode == this.BaseCurrency.Code;
+
         public void Update(ImportUpdate update)
         {
             this.UpdateCustomsEntry(update.CustomsEntryCodePrefix, update.CustomsEntryCode, update.CustomsEntryCodeDate);
@@ -238,6 +240,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                         orderDetail.DutyValue = orderDetailCandidate.DutyValue;
                         orderDetail.VatValue = orderDetailCandidate.VatValue;
                         orderDetail.OrderValue = orderDetailCandidate.OrderValue;
+                        orderDetail.CurrencyOrderValue = orderDetailCandidate.CurrencyOrderValue;
                         orderDetail.OrderDescription = orderDetailCandidate.OrderDescription;
                         orderDetail.CpcNumberId = orderDetailCandidate.CpcNumber?.CpcNumber;
                         orderDetail.ImportBookCpcNumber = orderDetailCandidate.CpcNumber;
@@ -277,6 +280,14 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
                 var currencyTotal = this.InvoiceDetails.Sum(d => d.InvoiceValue);
                 this.TotalImportValue = exchangeRate.ConvertToBaseValue(currencyTotal);
+
+                foreach (var orderDetail in this.OrderDetails)
+                {
+                    if (orderDetail.CurrencyOrderValue > 0)
+                    {
+                        orderDetail.OrderValue = exchangeRate.ConvertToBaseValue(orderDetail.CurrencyOrderValue);
+                    }
+                }
             }
         }
 

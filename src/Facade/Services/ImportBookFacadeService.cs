@@ -139,7 +139,7 @@ namespace Linn.Stores2.Facade.Services
 
             var baseCurrency = await this.currencyRepository.FindByAsync(c => c.Code == "GBP");
 
-            var orderDetails = resource.ImportBookOrderDetails != null ? await this.GetOrderDetailCandidates(resource.ImportBookOrderDetails) : null;
+            var orderDetails = resource.ImportBookOrderDetails != null ? await this.GetOrderDetailCandidates(resource.ImportBookOrderDetails, baseCurrency.Code == currency?.Code) : null;
 
             var invoiceDetails = new List<ImportInvoiceDetailCandidate>();
             if (resource.ImportBookInvoiceDetails != null)
@@ -184,7 +184,7 @@ namespace Linn.Stores2.Facade.Services
                 ? await this.employeeRepository.FindByIdAsync(updateResource.CancelledById.Value)
                 : null;
 
-            var orderDetails = updateResource.ImportBookOrderDetails != null ? await this.GetOrderDetailCandidates(updateResource.ImportBookOrderDetails) : null;
+            var orderDetails = updateResource.ImportBookOrderDetails != null ? await this.GetOrderDetailCandidates(updateResource.ImportBookOrderDetails, entity.BaseCurrency.Code == currency?.Code) : null;
 
             var update = new ImportUpdate
                          {
@@ -260,7 +260,7 @@ namespace Linn.Stores2.Facade.Services
                 .Select(int.Parse);
         }
 
-        private async Task<IList<ImportOrderDetailCandidate>> GetOrderDetailCandidates(IEnumerable<ImportBookOrderDetailResource> candidates)
+        private async Task<IList<ImportOrderDetailCandidate>> GetOrderDetailCandidates(IEnumerable<ImportBookOrderDetailResource> candidates, bool isBaseCurrency)
         {
             var orderDetails = new List<ImportOrderDetailCandidate>();
             foreach (var orderDetailResource in candidates)
@@ -293,6 +293,7 @@ namespace Linn.Stores2.Facade.Services
                     PurchaseOrder = purchaseOrder,
                     CpcNumber = cpcNumber,
                     OrderValue = orderDetailResource.OrderValue,
+                    CurrencyOrderValue = orderDetailResource.CurrencyOrderValue,
                     DutyValue = orderDetailResource.DutyValue,
                     VatValue = orderDetailResource.VatValue,
                 });

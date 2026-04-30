@@ -10,6 +10,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
         public ImportOrderDetailCandidate()
         {
             this.Qty = 1;
+            this.IsBaseCurrency = false;
         }
 
         public ImportOrderDetailCandidate(Rsn rsn, ImportBookCpcNumber cpc)
@@ -21,6 +22,8 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.TariffCode = rsn.SalesArticle?.Tariff?.TariffCode;
             this.CountryOfOrigin = rsn.SalesArticle?.CountryOfOrigin;
             this.CpcNumber = cpc;
+            this.CurrencyOrderValue = rsn.CustomsValue() ?? 0;
+            this.IsBaseCurrency = false;
         }
 
         public ImportOrderDetailCandidate(PurchaseOrder po, ImportBookCpcNumber cpc)
@@ -32,6 +35,7 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
             this.TariffCode = po.Details?.FirstOrDefault()?.SalesArticle?.Tariff?.TariffCode;
             this.CountryOfOrigin = po.Details?.FirstOrDefault()?.SalesArticle?.CountryOfOrigin;
             this.CpcNumber = cpc;
+            this.IsBaseCurrency = false;
         }
 
         public int ImportBookId { get; set; }
@@ -48,7 +52,11 @@ namespace Linn.Stores2.Domain.LinnApps.Imports.Models
 
         public Country CountryOfOrigin { get; set; }
 
-        public decimal OrderValue { get; set; }
+        public decimal CurrencyOrderValue { get; set; }
+
+        public decimal? OrderValue { get; set; }
+
+        public bool IsBaseCurrency { get; set; }
 
         public decimal DutyValue { get; set; }
 

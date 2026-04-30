@@ -192,33 +192,37 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                 {
                     SortOrder = 14, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 100
                 },
+                new AxisDetailsModel("Base Line Value")
+                {
+                    SortOrder = 15, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 100
+                },
                 new AxisDetailsModel("Line Duty (GBP)")
                 {
-                    SortOrder = 15, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 140
+                    SortOrder = 16, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 140
                 },
                 new AxisDetailsModel("Import Clearance")
                 {
-                    SortOrder = 16, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 200
+                    SortOrder = 17, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 200
                 },
                 new AxisDetailsModel("Clearance Date")
                 {
-                    SortOrder = 17, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 100
+                    SortOrder = 18, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 100
                 },
                 new AxisDetailsModel("A00 Value (GBP)")
                 {
-                    SortOrder = 18, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 140
+                    SortOrder = 19, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 140
                 },
                 new AxisDetailsModel("B00 Value (GBP)")
                 {
-                    SortOrder = 19, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 140
+                    SortOrder = 20, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 140
                 },
                 new AxisDetailsModel("Status")
                 {
-                    SortOrder = 20, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 200
+                    SortOrder = 21, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 200
                 },
                 new AxisDetailsModel("Import Book")
                 {
-                    SortOrder = 21, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 100
+                    SortOrder = 22, GridDisplayType = GridDisplayType.TextValue, ColumnWidth = 100
                 },
             };
         }
@@ -329,7 +333,14 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
                         {
                             RowId = rowId,
                             ColumnId = "Line Value",
-                            TextDisplay = line.OrderValue.ToString("N2")
+                            TextDisplay = line.CurrencyOrderValue.ToString("N2")
+                        });
+                    values.Add(
+                        new CalculationValueModel
+                        {
+                            RowId = rowId,
+                            ColumnId = "Base Line Value",
+                            TextDisplay = line.OrderValue?.ToString("N2")
                         });
                     values.Add(
                         new CalculationValueModel

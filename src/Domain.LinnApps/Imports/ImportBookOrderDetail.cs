@@ -57,7 +57,9 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
             this.CpcNumberId = candidate.CpcNumber?.CpcNumber;
             this.DutyValue = candidate.DutyValue;
             this.VatValue = candidate.VatValue;
-            this.OrderValue = candidate.OrderValue;
+            this.CurrencyOrderValue = candidate.CurrencyOrderValue;
+
+            this.OrderValue = candidate.IsBaseCurrency ? candidate.CurrencyOrderValue : candidate.OrderValue;
         }
 
         public int? CpcNumberId { get; set; }
@@ -92,8 +94,10 @@ namespace Linn.Stores2.Domain.LinnApps.Imports
 
         public decimal Weight { get; set; }
 
+        public decimal CurrencyOrderValue { get; set; }
+
         // important values on order details are in base currency
-        public decimal OrderValue { get; set; }
+        public decimal? OrderValue { get; set; }
 
         public decimal DutyValue { get; set; }
 
