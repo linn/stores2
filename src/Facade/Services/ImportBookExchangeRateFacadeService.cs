@@ -5,6 +5,7 @@ namespace Linn.Stores2.Facade.Services
     using System.Linq.Expressions;
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence;
     using Linn.Stores2.Domain.LinnApps;
@@ -17,20 +18,28 @@ namespace Linn.Stores2.Facade.Services
     {
         private readonly IQueryRepository<Currency> currencyRepository;
 
+        private readonly IAuthorisationService authService;
+
         public ImportBookExchangeRateFacadeService(
             IRepository<ImportBookExchangeRate, ImportBookExchangeRateKey> repository,
             ITransactionManager transactionManager,
             IBuilder<ImportBookExchangeRate> resourceBuilder,
-            IQueryRepository<Currency> currencyRepository)
+            IQueryRepository<Currency> currencyRepository,
+            IAuthorisationService authService)
             : base(repository, transactionManager, resourceBuilder)
         {
             this.currencyRepository = currencyRepository;
+            this.authService = authService;
         }
 
         protected override async Task<ImportBookExchangeRate> CreateFromResourceAsync(
             ImportBookExchangeRateResource resource,
             IEnumerable<string> privileges = null)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to create import book exchange rates");
+            }
             if (string.IsNullOrEmpty(resource.ExchangeCurrencyCode))
             {
                 throw new ImportBookException("Exchange currency code must be provided");
@@ -68,6 +77,11 @@ namespace Linn.Stores2.Facade.Services
             ImportBookExchangeRateResource updateResource,
             IEnumerable<string> privileges = null)
         {
+            if (!this.authService.HasPermissionFor(AuthorisedActions.ImportBookAdmin, privileges))
+            {
+                throw new UnauthorisedActionException("You are not authorised to update import book exchange rates");
+            }
+
             entity.ExchangeRate = updateResource.ExchangeRate;
             return Task.CompletedTask;
         }

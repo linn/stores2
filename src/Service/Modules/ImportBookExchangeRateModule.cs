@@ -2,11 +2,13 @@ namespace Linn.Stores2.Service.Modules
 {
     using System.Threading.Tasks;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Service;
     using Linn.Common.Service.Extensions;
     using Linn.Stores2.Domain.LinnApps.Imports;
     using Linn.Stores2.Resources.Imports;
+    using Linn.Stores2.Service.Extensions;
     using Linn.Stores2.Service.Models;
 
     using Microsoft.AspNetCore.Builder;
@@ -55,19 +57,24 @@ namespace Linn.Stores2.Service.Modules
         }
 
         private async Task Create(
+            HttpRequest req,
             HttpResponse res,
             ImportBookExchangeRateResource resource,
+            IUserPrivilegeService userPrivilegeService,
             IAsyncFacadeService<ImportBookExchangeRate, ImportBookExchangeRateKey, ImportBookExchangeRateResource, ImportBookExchangeRateResource, ImportBookExchangeRateResource> facadeService)
         {
-            await res.Negotiate(await facadeService.Add(resource));
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+            await res.Negotiate(await facadeService.Add(resource, privileges));
         }
 
         private async Task Update(
+            HttpRequest req,
             HttpResponse res,
             int periodNumber,
             string baseCurrency,
             string exchangeCurrency,
             ImportBookExchangeRateResource resource,
+            IUserPrivilegeService userPrivilegeService,
             IAsyncFacadeService<ImportBookExchangeRate, ImportBookExchangeRateKey, ImportBookExchangeRateResource, ImportBookExchangeRateResource, ImportBookExchangeRateResource> facadeService)
         {
             var key = new ImportBookExchangeRateKey
@@ -79,7 +86,8 @@ namespace Linn.Stores2.Service.Modules
             resource.PeriodNumber = periodNumber;
             resource.BaseCurrency = baseCurrency;
             resource.ExchangeCurrencyCode = exchangeCurrency;
-            await res.Negotiate(await facadeService.Update(key, resource));
+            var privileges = await userPrivilegeService.GetUserPrivileges(req.HttpContext.User.GetEmployeeUrl());
+            await res.Negotiate(await facadeService.Update(key, resource, privileges));
         }
     }
 }

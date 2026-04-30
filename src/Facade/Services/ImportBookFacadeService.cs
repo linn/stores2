@@ -296,6 +296,7 @@ namespace Linn.Stores2.Facade.Services
                     CurrencyOrderValue = orderDetailResource.CurrencyOrderValue,
                     DutyValue = orderDetailResource.DutyValue,
                     VatValue = orderDetailResource.VatValue,
+                    IsBaseCurrency = isBaseCurrency
                 });
             }
 

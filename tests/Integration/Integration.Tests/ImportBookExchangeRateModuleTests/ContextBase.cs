@@ -1,7 +1,9 @@
 namespace Linn.Stores2.Integration.Tests.ImportBookExchangeRateModuleTests
 {
+    using System.Collections.Generic;
     using System.Net.Http;
 
+    using Linn.Common.Authorisation;
     using Linn.Common.Facade;
     using Linn.Common.Persistence.EntityFramework;
     using Linn.Stores2.Domain.LinnApps;
@@ -16,6 +18,8 @@ namespace Linn.Stores2.Integration.Tests.ImportBookExchangeRateModuleTests
 
     using Microsoft.Extensions.DependencyInjection;
 
+    using NSubstitute;
+
     using NUnit.Framework;
 
     public class ContextBase
@@ -26,10 +30,20 @@ namespace Linn.Stores2.Integration.Tests.ImportBookExchangeRateModuleTests
 
         protected TestServiceDbContext DbContext { get; private set; }
 
+        protected IAuthorisationService AuthorisationService { get; private set; }
+
+        protected IUserPrivilegeService UserPrivilegeService { get; private set; }
+
         [SetUp]
         public void SetUpContext()
         {
             this.DbContext = new TestServiceDbContext();
+            this.AuthorisationService = Substitute.For<IAuthorisationService>();
+            this.UserPrivilegeService = Substitute.For<IUserPrivilegeService>();
+
+            this.AuthorisationService
+                .HasPermissionFor(Arg.Any<string>(), Arg.Any<IEnumerable<string>>())
+                .Returns(true);
 
             var exchangeRateRepository = new ImportBookExchangeRateRepository(this.DbContext);
             var currencyRepository = new EntityFrameworkQueryRepository<Currency>(this.DbContext.Currencies);
@@ -40,12 +54,14 @@ namespace Linn.Stores2.Integration.Tests.ImportBookExchangeRateModuleTests
                     exchangeRateRepository,
                     transactionManager,
                     new ImportBookExchangeRateResourceBuilder(),
-                    currencyRepository);
+                    currencyRepository,
+                    this.AuthorisationService);
 
             this.Client = TestClient.With<ImportBookExchangeRateModule>(
                 services =>
                     {
                         services.AddSingleton(facadeService);
+                        services.AddSingleton(this.UserPrivilegeService);
                         services.AddHandlers();
                         services.AddRouting();
                     });
