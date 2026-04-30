@@ -8,27 +8,31 @@ namespace Linn.Stores2.Domain.LinnApps.Tests.ConsignmentTests
 
     using NUnit.Framework;
 
-    public class WhenGettingTotalNumberOfBoxes : ContextBase
+    public class WhenGettingTotalNumberOfBoxesWithMultipleBoxesPerLine : ContextBase
     {
         [SetUp]
         public void SetUp()
         {
+            // Containers 1, 2, 3 share the same description/weight/dims → one line with Count=3
+            // Container 4 has different weight → one line with Count=1
+            // Total boxes = 3 + 1 = 4
             this.Sut.Items = new List<ConsignmentItem>
             {
                 new ConsignmentItem { ContainerNumber = 1, ItemType = "C", Weight = 2.5m, Height = 10, Depth = 20, Width = 30 },
                 new ConsignmentItem { ContainerNumber = 2, ItemType = "C", Weight = 2.5m, Height = 10, Depth = 20, Width = 30 },
-                new ConsignmentItem { ContainerNumber = 3, ItemType = "C", Weight = 5.0m, Height = 15, Depth = 25, Width = 35 },
+                new ConsignmentItem { ContainerNumber = 3, ItemType = "C", Weight = 2.5m, Height = 10, Depth = 20, Width = 30 },
+                new ConsignmentItem { ContainerNumber = 4, ItemType = "C", Weight = 5.0m, Height = 10, Depth = 20, Width = 30 },
                 new ConsignmentItem { ContainerNumber = 1, ItemType = "I", ItemDescription = "Widget A", Quantity = 1, MaybeHalfAPair = "N" },
                 new ConsignmentItem { ContainerNumber = 2, ItemType = "I", ItemDescription = "Widget A", Quantity = 1, MaybeHalfAPair = "N" },
-                new ConsignmentItem { ContainerNumber = 3, ItemType = "I", ItemDescription = "Widget B", Quantity = 1, MaybeHalfAPair = "N" }
+                new ConsignmentItem { ContainerNumber = 3, ItemType = "I", ItemDescription = "Widget A", Quantity = 1, MaybeHalfAPair = "N" },
+                new ConsignmentItem { ContainerNumber = 4, ItemType = "I", ItemDescription = "Widget B", Quantity = 1, MaybeHalfAPair = "N" }
             };
         }
 
         [Test]
-        public void ShouldReturnSumOfCountsAcrossAllPrintableLines()
+        public void ShouldSumCountsAcrossAllLines()
         {
-            // containers 1 & 2 share same weight/dims → Count=2; container 3 differs → Count=1; total = 3
-            this.Sut.TotalNumberOfBoxes().Should().Be(3);
+            this.Sut.TotalNumberOfBoxes().Should().Be(4);
         }
     }
 }

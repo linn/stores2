@@ -308,11 +308,11 @@ namespace Linn.Stores2.Domain.LinnApps.Consignments
 
         public int TotalNumberOfPallets() => this.Pallets?.Count ?? 0;
 
-        public int TotalNumberOfBoxes() => this.GetPrintableLines().Any() ? this.GetPrintableLines().ToList().Count : 0;
+        public int TotalNumberOfBoxes() => this.GetPrintableLines()?.Sum(l => l.Count) ?? 0;
 
-        public decimal TotalWeight() => (this.GetPrintableLines()?.Sum(w => w.Weight) ?? 0) + (this.Pallets?.Sum(x => x.Weight) ?? 0);
+        public decimal TotalWeight() => (this.GetPrintableLines()?.Sum(w => w.Count * (w.Weight ?? 0)) ?? 0) + (this.Pallets?.Sum(x => x.Weight) ?? 0);
 
-        public decimal TotalVolume() => (this.GetPrintableLines()?.Sum(w => w.Volume) ?? 0) + (this.Pallets?.Sum(x => x.Volume) ?? 0);
+        public decimal TotalVolume() => (this.GetPrintableLines()?.Sum(w => w.Count * (w.Volume ?? 0)) ?? 0) + (this.Pallets?.Sum(x => x.Volume) ?? 0);
 
         private static string FormatDims(int? height, int? depth, int? width)
         {
