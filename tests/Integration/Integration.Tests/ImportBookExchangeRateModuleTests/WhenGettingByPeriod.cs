@@ -27,10 +27,12 @@ namespace Linn.Stores2.Integration.Tests.ImportBookExchangeRateModuleTests
                 PeriodNumber = 1234,
                 BaseCurrency = TestCurrencies.UKPound.Code,
                 ExchangeCurrencyCode = TestCurrencies.SwedishKrona.Code,
+                ExchangeCurrency = TestCurrencies.SwedishKrona,
                 ExchangeRate = 12.5m
             };
 
             this.DbContext.LedgerPeriods.AddAndSave(this.DbContext, period);
+            this.DbContext.Currencies.AddAndSave(this.DbContext, TestCurrencies.SwedishKrona);
             this.DbContext.ImportBookExchangeRates.AddAndSave(this.DbContext, this.exchangeRate);
 
             this.Response = this.Client.Get(
@@ -60,6 +62,7 @@ namespace Linn.Stores2.Integration.Tests.ImportBookExchangeRateModuleTests
             result.BaseCurrency.Should().Be(this.exchangeRate.BaseCurrency);
             result.ExchangeCurrencyCode.Should().Be(this.exchangeRate.ExchangeCurrencyCode);
             result.ExchangeRate.Should().Be(this.exchangeRate.ExchangeRate);
+            result.ExchangeCurrencyName.Should().Be(TestCurrencies.SwedishKrona.Name);
         }
     }
 }
